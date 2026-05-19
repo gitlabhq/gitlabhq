@@ -9,7 +9,11 @@ describe('WebAuthnError', () => {
       WEBAUTHN_AUTHENTICATE,
     ],
     ['InvalidStateError', 'This device has not been registered with us.', WEBAUTHN_AUTHENTICATE],
-    ['InvalidStateError', 'This device has already been registered with us.', WEBAUTHN_REGISTER],
+    [
+      'InvalidStateError',
+      'This device has already been registered as a passkey or WebAuthn device. Delete it and try again.',
+      WEBAUTHN_REGISTER,
+    ],
     ['UnknownError', 'Failed to connect to your device. Try again.', WEBAUTHN_REGISTER],
   ])('exception %s will have message %s, flow type: %s', (exception, expectedMessage, flowType) => {
     expect(new WebAuthnError(new DOMException('', exception), flowType).message()).toEqual(

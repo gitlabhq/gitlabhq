@@ -217,8 +217,7 @@ export function renderImageLightbox(els, container) {
       lightboxInstance.show(index);
     });
 
-    newLink.setAttribute('role', 'button');
-    newLink.setAttribute('aria-label', __('View image'));
+    newLink.setAttribute('aria-description', __('Click to view image in full screen'));
     newLink.setAttribute('aria-haspopup', 'dialog');
     newLink.style.cursor = 'zoom-in';
 

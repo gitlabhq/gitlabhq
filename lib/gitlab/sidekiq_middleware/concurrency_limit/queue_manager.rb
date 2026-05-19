@@ -105,6 +105,7 @@ module Gitlab
         def serialize(job, context)
           {
             args: job['args'],
+            jid: job['jid'],
             context: context,
             buffered_at: Time.now.utc.to_f,
             wal_locations: job['wal_locations']
@@ -141,6 +142,7 @@ module Gitlab
 
         def job_metadata(job)
           {
+            'jid' => job['jid'],
             'concurrency_limit_buffered_at' => job['buffered_at'],
             'concurrency_limit_resume' => true,
             'wal_locations' => job['wal_locations']

@@ -16,7 +16,9 @@ and provide the [required information for Support](#required-information-for-sup
 
 To troubleshoot GitLab Duo errors in your IDE:
 
-1. Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
+1. Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo) and the necessary settings
+   are on.
+1. Ensure that [Admin mode is disabled](../../administration/settings/sign_in_restrictions.md#turn-off-admin-mode-for-your-session).
 1. Review diagnostics output:
    - In your JetBrains IDE, go to **Tools** > **GitLab** > **Diagnostics** and review the output for
      any failed checks.
@@ -28,10 +30,59 @@ To troubleshoot GitLab Duo errors in your IDE:
 1. If the diagnostics indicate that Agentic Chat is not supported for the current project,
    [set a default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment).
 
-For additional support:
+For support with Code Suggestions, see [troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting).
 
-- [Troubleshooting the GitLab Duo Agent Platform in your IDE](../../user/duo_agent_platform/troubleshooting_ide.md)
-- [Troubleshooting GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting)
+## Network issues
+
+If you are seeing `HTTP/1.1` responses from GitLab Duo rather than `/-/cable`
+WebSocket endpoints in your logs, your WebSocket connections may be blocked.
+
+Your GitLab instance must allow inbound WebSocket connections from IDE clients.
+Ask your network administrator to
+[allow WebSocket traffic to your GitLab instance](../../administration/gitlab_duo/configure/_index.md#allow-inbound-connections-from-clients-to-the-gitlab-instance)
+if you suspect this is the issue.
+
+## IDE commands fail or run indefinitely
+
+When using GitLab Duo Agentic Chat or the Software Development Flow in your IDE,
+GitLab Duo can get stuck in a loop or have difficulty running commands.
+
+This issue can occur when you are using shell themes or integrations, like `Oh My ZSH!` or `powerlevel10k`.
+When a GitLab Duo agent spawns a terminal, a theme or integration can prevent commands from running properly.
+
+As a workaround, use a simpler theme for commands sent by agents.
+[Issue 2070](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/2070) in the VS Code extension project tracks improvements to this behavior so this workaround is no longer needed.
+
+### Edit your `.zshrc` file
+
+In VS Code and JetBrains IDEs, configure `Oh My ZSH!` or `powerlevel10k` to use a simpler
+theme when it runs commands sent by an agent. You can use the environment variables exposed
+by the IDEs to set these values.
+
+Edit your `~/.zshrc` file to include this code:
+
+```shell
+# ~/.zshrc
+
+# Path to your oh-my-zsh installation
+export ZSH="$HOME/.oh-my-zsh"
+
+# ...
+
+# Decide whether to load a full terminal environment,
+# or keep it minimal for agentic AI in IDEs
+if [[ "$TERM_PROGRAM" == "vscode" || "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" ]]; then
+  echo "IDE agentic environment detected, not loading full shell integrations"
+else
+  # Oh My ZSH
+  source $ZSH/oh-my-zsh.sh
+  # Theme: Powerlevel10k
+  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+  # Other integrations like syntax highlighting
+fi
+
+# Other setup, like PATH variables
+```
 
 ## Enable debug mode
 

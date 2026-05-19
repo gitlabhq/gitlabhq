@@ -26,7 +26,7 @@ RSpec.describe PurgeDependencyProxyCacheWorker, type: :worker, feature_category:
       end
     end
 
-    context 'an admin user' do
+    context 'with an admin user' do
       context 'when admin mode is enabled', :enable_admin_mode do
         it_behaves_like 'an idempotent worker' do
           let(:job_args) { [user.id, group_id] }
@@ -45,19 +45,19 @@ RSpec.describe PurgeDependencyProxyCacheWorker, type: :worker, feature_category:
       end
     end
 
-    context 'a non-admin user' do
+    context 'with a non-admin user' do
       let(:user) { create(:user) }
 
       it_behaves_like 'not expiring blobs and manifests'
     end
 
-    context 'an invalid user id' do
+    context 'with an invalid user id' do
       let(:user) { double('User', id: 99999) }
 
       it_behaves_like 'not expiring blobs and manifests'
     end
 
-    context 'an invalid group' do
+    context 'with an invalid group' do
       let(:group_id) { 99999 }
 
       it_behaves_like 'not expiring blobs and manifests'

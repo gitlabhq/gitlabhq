@@ -327,11 +327,58 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response["url"]).to eq("http://example.com")
       expect(json_response).not_to include("token")
+      expect(json_response["token_present"]).to be(true)
 
       hook = scope.find(json_response["id"])
 
       expect(hook.url).to eq("http://example.com")
       expect(hook.token).to eq(token)
+    end
+
+    context 'with signing_token' do
+      it "saves the signing_token without including it in the response" do
+        signing_token = "whsec_#{Base64.strict_encode64('a' * 32)}"
+
+        expect do
+          post api(collection_uri, user, admin_mode: user.admin?),
+            params: { url: "http://example.com", signing_token: signing_token }
+        end.to change { hooks_count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).not_to have_key("signing_token")
+        expect(json_response["signing_token_present"]).to be(true)
+
+        hook = scope.find(json_response["id"])
+
+        expect(hook.signing_token).to eq(signing_token)
+      end
+
+      it "returns signing_token_present: false when no signing_token is set" do
+        post api(collection_uri, user, admin_mode: user.admin?), params: { url: "http://example.com" }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response["signing_token_present"]).to be(false)
+      end
+
+      context 'when webhook_signing_token feature flag is disabled' do
+        before do
+          stub_feature_flags(webhook_signing_token: false)
+        end
+
+        it "ignores the signing_token param" do
+          signing_token = "whsec_#{Base64.strict_encode64('a' * 32)}"
+
+          post api(collection_uri, user, admin_mode: user.admin?),
+            params: { url: "http://example.com", signing_token: signing_token }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response["signing_token_present"]).to be(false)
+
+          hook = scope.find(json_response["id"])
+
+          expect(hook.signing_token).to be_nil
+        end
+      end
     end
 
     it "returns a 400 error if url not given" do
@@ -430,9 +477,22 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response["url"]).to eq("http://example.org")
       expect(json_response).not_to include("token")
+      expect(json_response["token_present"]).to be(true)
 
       expect(hook.reload.url).to eq("http://example.org")
       expect(hook.reload.token).to eq(token)
+    end
+
+    it "updates the signing_token without including it in the response" do
+      signing_token = "whsec_#{Base64.strict_encode64('a' * 32)}"
+
+      put api(hook_uri, user, admin_mode: user.admin?),
+        params: { url: "http://example.com", signing_token: signing_token }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).not_to have_key("signing_token")
+      expect(json_response["signing_token_present"]).to be(true)
+      expect(hook.reload.signing_token).to eq(signing_token)
     end
 
     it "returns 404 error if hook id not found" do
@@ -465,6 +525,23 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
       expect(json_response["error"]).to include("Custom headers validation failed")
+    end
+
+    context 'when webhook_signing_token feature flag is disabled' do
+      before do
+        stub_feature_flags(webhook_signing_token: false)
+      end
+
+      it "ignores the signing_token param" do
+        signing_token = "whsec_#{Base64.strict_encode64('a' * 32)}"
+
+        put api(hook_uri, user, admin_mode: user.admin?),
+          params: { url: "http://example.com", signing_token: signing_token }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response["signing_token_present"]).to be(false)
+        expect(hook.reload.signing_token).to be_nil
+      end
     end
   end
 

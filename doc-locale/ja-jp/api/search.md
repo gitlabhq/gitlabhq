@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Global Search
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 検索API
 ---
 
@@ -12,15 +12,15 @@ title: 検索API
 
 {{< /details >}}
 
-検索に対するすべてのAPIコールは認証されている必要があります。
+このAPIを使用して[GitLab全体を検索](../user/search/_index.md)します。このAPIへのすべての呼び出しには認証が必要です。
 
-一部のスコープは、[基本検索](../user/search/_index.md#available-scopes)で利用できます。[高度な検索](../user/search/advanced_search.md#available-scopes)または[完全一致コードの検索](../user/search/exact_code_search.md#available-scopes)が有効になっている場合、[グローバル検索](#global-search) 、[グループ検索](#group-search) 、および[プロジェクト検索](#project-search) APIで追加のスコープを利用できます。
+一部のスコープは[基本的な検索](../user/search/_index.md#available-scopes)で利用可能です。[高度な検索](../user/search/advanced_search.md#available-scopes)または[完全一致コードの検索](../user/search/exact_code_search.md#available-scopes)が有効な場合、[グローバル検索](#search-an-instance) 、[グループ検索](#search-a-group) 、および[プロジェクト検索](#search-a-project)操作で追加のスコープが利用できます。
 
 代わりに基本的な検索を使用する場合は、[検索タイプを指定する](../user/search/_index.md#specify-a-search-type)を参照してください。
 
-検索APIは、[オフセットベースのページネーション](rest/_index.md#offset-based-pagination)をサポートしています。
+検索APIは[オフセットベースのページネーション](rest/_index.md#offset-based-pagination)をサポートしています。
 
-## グローバル検索 {#global-search}
+## インスタンスを検索 {#search-an-instance}
 
 GitLabインスタンス全体で[用語](../user/search/advanced_search.md#syntax)を検索します。応答は、リクエストされたスコープによって異なります。
 
@@ -28,16 +28,21 @@ GitLabインスタンス全体で[用語](../user/search/advanced_search.md#synt
 GET /search
 ```
 
-| 属性     | 型     | 必須   | 説明 |
-| ------------- | -------- | ---------- | ------------|
-| `scope`       | 文字列   | はい | 検索するスコープ。値には、`projects`、`issues`、`merge_requests`、`milestones`、`snippet_titles`、`users`が含まれます。追加のスコープは、`wiki_blobs`、`commits`、`blobs`、`notes`です。 |
-| `search`      | 文字列   | はい | 検索語。 |
-| `search_type` | 文字列   | いいえ | 使用する検索タイプ。値には、`basic`、`advanced`、`zoekt`が含まれます。 |
-| `confidential` | ブール値   | いいえ | 機密性でフィルターします。`issues`スコープをサポートします。他のスコープは無視されます。 |
-| `order_by`    | 文字列   | いいえ | 使用できる値は`created_at`のみです。設定されていない場合、結果は、基本検索では`created_at`で降順にソートされ、高度な検索では最も関連性の高いドキュメントでソートされます。|
-| `sort`    | 文字列   | いいえ | 使用できる値は`asc`または`desc`のみです。設定されていない場合、結果は、基本検索では`created_at`で降順にソートされ、高度な検索では最も関連性の高いドキュメントでソートされます。|
-| `state`       | 文字列   | いいえ | 状態でフィルターします。`issues`および`merge_requests`スコープをサポートします。他のスコープは無視されます。 |
-| `fields` | 文字列の配列 | いいえ | 検索するフィールドの配列。使用できる値は`title`のみです。`issues`および`merge_requests`スコープをサポートします。他のスコープは無視されます。PremiumおよびUltimateのみです。 |
+| 属性          | 型             | 必須 | 説明                                                                                                                                                                                                    |
+|--------------------|------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `scope`            | 文字列           | はい      | 検索するスコープ。値には`projects`、`issues`、`work_items`、`merge_requests`、`milestones`、`snippet_titles`、および`users`が含まれます。追加のスコープは、`wiki_blobs`、`commits`、`blobs`、`notes`です。               |
+| `search`           | 文字列           | はい      | 検索語。                                                                                                                                                                                               |
+| `search_type`      | 文字列           | いいえ       | 使用する検索タイプです。値には`basic`、`advanced`、および`zoekt`が含まれます。                                                                                                                                       |
+| `confidential`     | ブール値          | いいえ       | 機密性でフィルタリングします。`issues`および`work_items`スコープをサポートします。他のスコープは無視されます。                                                                                                                                  |
+| `exclude_forks`      | ブール値          | いいえ       | 検索からフォークしたプロジェクトを除外します。完全一致コードの検索で利用可能です。設定されていない場合、フォークは除外されます。GitLab 18.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281)されました。          |
+| `regex`              | ブール値          | いいえ       | 正規表現を使用してコードを検索します。完全一致コードの検索で利用可能です。設定されていない場合、正規表現が使用されます。GitLab 18.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686)されました。 |
+| `fields`             | 文字列の配列 | いいえ       | 検索するフィールドの配列。使用できる値は`title`のみです。`issues`および`merge_requests`スコープのみをサポートします。PremiumおよびUltimateのみです。                                                            |
+| `include_archived`   | ブール値          | いいえ       | アーカイブされたプロジェクトを検索に含めます。デフォルトは`false`です。GitLab 18.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281)されました。                                                           |
+| `num_context_lines`  | 整数          | いいえ       | 結果内の各一致周辺に含めるコンテキスト行の数です。高度な検索と完全一致コードの検索でのみ利用可能です。GitLab 18.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217)されました。 |
+| `state`              | 文字列           | いいえ       | 状態でフィルターします。`issues`、`work_items`、および`merge_requests`スコープをサポートします。その他のスコープは無視されます。                                                                                                                      |
+| `type`               | 文字列の配列 | いいえ       | 作業アイテムをタイプでフィルタリングします。`work_items`スコープにのみ適用されます。利用可能なタイプ: `issue` (イシュー)、`task`、`epic`、`incident`、`test_case`、`requirement`、`objective`、`key_result`、`ticket`。                          |
+| `order_by`           | 文字列           | いいえ       | 使用できる値は`created_at`のみです。設定されていない場合、結果は、基本検索では`created_at`で降順にソートされ、高度な検索では最も関連性の高いドキュメントでソートされます。                              |
+| `sort`               | 文字列           | いいえ       | 使用できる値は`asc`または`desc`のみです。設定されていない場合、結果は、基本検索では`created_at`で降順にソートされ、高度な検索では最も関連性の高いドキュメントでソートされます。                           |
 
 ### スコープ: `projects` {#scope-projects}
 
@@ -47,7 +52,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/search?scope=projects&search=flight"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -82,7 +87,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/search?scope=issues&search=file"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -139,11 +144,74 @@ curl --request GET \
 ]
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> `assignee`列は非推奨です。GitLab EE APIに準拠するために、単一サイズの配列`assignees`として表示されます。
 
-`assignee`列は非推奨になりました。GitLab EE APIに準拠するために、単一サイズの配列`assignees`として表示されます。
+### スコープ: `work_items` {#scope-work_items}
 
-{{< /alert >}}
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=work_items&search=migrate"
+```
+
+レスポンス例: 
+
+```json
+[
+  {
+    "id": 142,
+    "iid": 9,
+    "project_id": 12,
+    "title": "Migrate to new database",
+    "description": "Database migration task",
+    "state": "opened",
+    "created_at": "2018-03-15T08:12:31.489Z",
+    "updated_at": "2018-03-20T14:22:18.371Z",
+    "closed_at": null,
+    "labels": ["backend"],
+    "milestone": null,
+    "assignees": [{
+      "id": 25,
+      "name": "John Doe",
+      "username": "john.doe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/a1b2c3d4e5f6g7h8i9j0?s=80&d=identicon",
+      "web_url": "http://localhost:3000/john.doe"
+    }],
+    "author": {
+      "id": 1,
+      "name": "Administrator",
+      "username": "root",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "web_url": "http://localhost:3000/root"
+    },
+    "type": "TASK",
+    "user_notes_count": 2,
+    "upvotes": 1,
+    "downvotes": 0,
+    "due_date": "2018-04-01",
+    "confidential": false,
+    "discussion_locked": null,
+    "web_url": "http://localhost:3000/my-group/my-project/-/work_items/9",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
+  }
+]
+```
+
+作業アイテムを`type`パラメータを使用してタイプでフィルタリングできます:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=work_items&search=backend&type[]=task&type[]=issue"
+```
 
 ### スコープ: `merge_requests` {#scope-merge_requests}
 
@@ -153,7 +221,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/search?scope=merge_requests&search=file"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -234,7 +302,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/search?scope=milestones&search=release"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -261,7 +329,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/search?scope=snippet_titles&search=sample"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -294,7 +362,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/search?scope=users&search=doe"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -317,9 +385,19 @@ curl --request GET \
 
 {{< /details >}}
 
-このスコープを使用して、Wikiを検索します。
+このスコープを使用してWikiを検索します。
 
 このスコープは、[高度な検索が有効](../user/search/advanced_search.md#use-advanced-search)になっている場合にのみ使用できます。
+
+このスコープで使用できるフィルターは次のとおりです。
+
+- `filename`
+- `path`
+- `extension`
+
+フィルターを使用するには、クエリにそれを含めます（例: `a query filename:some_name*`）。
+
+グロブマッチングにはワイルドカード (`*`) を使用できます。
 
 ```shell
 curl --request GET \
@@ -327,7 +405,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/search?scope=wiki_blobs&search=bye"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 
@@ -346,11 +424,8 @@ curl --request GET \
 ]
 ```
 
-{{< alert type="note" >}}
-
-`filename`は非推奨になり、`path`が推奨されます。どちらもリポジトリ内のファイルのフルパスを返しますが、将来的には`filename`は、フルパスではなく、ファイル名のみになる予定です。詳細については、[イシュー34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521)を参照してください。
-
-{{< /alert >}}
+> [!note]
+> `filename`は`path`の使用が推奨されるため、非推奨です。どちらもリポジトリ内のファイルのフルパスを返しますが、将来的には`filename`は、フルパスではなく、ファイル名のみになる予定です。詳細については、[イシュー34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521)を参照してください。
 
 ### スコープ: `commits` {#scope-commits}
 
@@ -368,7 +443,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/search?scope=commits&search=bye"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 
@@ -401,25 +476,27 @@ curl --request GET \
 
 {{< /details >}}
 
-このスコープを使用して、コードを検索します。
+このスコープを使用してコードを検索します。
 
-このスコープは、[高度な検索](../user/search/advanced_search.md#use-advanced-search)または[完全一致コードの検索](../user/search/exact_code_search.md#use-exact-code-search)が有効になっている場合にのみ使用できます。
+このスコープは、[高度な検索](../user/search/advanced_search.md#use-advanced-search)または[完全一致コードの検索](../user/search/exact_code_search.md#use-exact-code-search)が有効な場合にのみ利用可能です。
 
-このスコープで使用できるフィルターは次のとおりです:
+このスコープで使用できるフィルターは次のとおりです。
 
 - `filename`
 - `path`
 - `extension`
 
-フィルターを使用するには、フィルターをクエリに含めます。例: `a query filename:some_name*`。
+フィルターを使用するには、クエリにそれを含めます（例: `a query filename:some_name*`）。
 
-グロブマッチングを使用するときは、ワイルドカード（`*`）を使用できます。
+グロブマッチングにはワイルドカード (`*`) を使用できます。
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=blobs&search=installation"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=blobs&search=installation"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 
@@ -437,11 +514,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-{{< alert type="note" >}}
-
-`filename`は非推奨になり、`path`が推奨されます。どちらもリポジトリ内のファイルのフルパスを返しますが、将来的には`filename`は、フルパスではなく、ファイル名のみになる予定です。詳細については、[イシュー34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521)を参照してください。
-
-{{< /alert >}}
+> [!note]
+> `filename`は`path`の使用が推奨されるため、非推奨です。どちらもリポジトリ内のファイルのフルパスを返しますが、将来的には`filename`は、フルパスではなく、ファイル名のみになる予定です。詳細については、[イシュー34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521)を参照してください。Elasticsearchの構文は、完全一致コードの検索で正しく機能しない場合があります。Elasticsearchのワイルドカードクエリを、完全一致コードの検索の正規表現に置き換えてください。詳細については、[イシュー521686](https://gitlab.com/gitlab-org/gitlab/-/issues/521686)を参照してください。
 
 ### スコープ: `notes` {#scope-notes}
 
@@ -454,10 +528,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 このスコープは、[高度な検索が有効](../user/search/advanced_search.md#use-advanced-search)になっている場合にのみ使用できます。
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=notes&search=maxime"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=notes&search=maxime"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -484,7 +560,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## グループ検索 {#group-search}
+## グループを検索する {#search-a-group}
 
 指定されたグループの[用語](../user/search/_index.md)を検索します。
 
@@ -494,26 +570,34 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 GET /groups/:id/search
 ```
 
-| 属性 | 型 | 必須 | 説明  |
-| --------- | ---- | -------- | -------------|
-| `id`                | 整数または文字列   | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `scope`       | 文字列   | はい | 検索するスコープ。値には、`projects`、`issues`、`merge_requests`、`milestones`、`users`が含まれます。追加のスコープは、`wiki_blobs`、`commits`、`blobs`、`notes`です。 |
-| `search`      | 文字列   | はい | 検索語。 |
-| `search_type` | 文字列   | いいえ | 使用する検索タイプ。値には、`basic`、`advanced`、`zoekt`が含まれます。 |
-| `confidential` | ブール値   | いいえ | 機密性でフィルターします。`issues`スコープのみをサポートします。他のスコープは無視されます。 |
-| `order_by`    | 文字列   | いいえ | 使用できる値は`created_at`のみです。設定されていない場合、結果は、基本検索では`created_at`で降順にソートされ、高度な検索では最も関連性の高いドキュメントでソートされます。|
-| `sort`    | 文字列   | いいえ | 使用できる値は`asc`または`desc`のみです。設定されていない場合、結果は、基本検索では`created_at`で降順にソートされ、高度な検索では最も関連性の高いドキュメントでソートされます。|
-| `state`       | 文字列   | いいえ | 状態でフィルターします。`issues`および`merge_requests`のみをサポートします。他のスコープは無視されます。 |
+| 属性          | 型              | 必須 | 説明                                                                                                                                                                                                    |
+|--------------------|-------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`               | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。                                                                                                                                    |
+| `scope`            | 文字列            | はい      | 検索するスコープ。値には、`projects`、`issues`、`work_items`、`merge_requests`、`milestones`、`users`が含まれます。追加のスコープは、`wiki_blobs`、`commits`、`blobs`、`notes`です。                                 |
+| `search`           | 文字列            | はい      | 検索語。                                                                                                                                                                                               |
+| `search_type`      | 文字列            | いいえ       | 使用する検索タイプです。値には`basic`、`advanced`、および`zoekt`が含まれます。                                                                                                                                       |
+| `confidential`     | ブール値           | いいえ       | 機密性でフィルタリングします。`issues`および`work_items`スコープをサポートします。他のスコープは無視されます。                                                                                                                                  |
+| `exclude_forks`      | ブール値           | いいえ       | 検索からフォークしたプロジェクトを除外します。完全一致コードの検索で利用可能です。設定されていない場合、フォークは除外されます。GitLab 18.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281)されました。          |
+| `regex`              | ブール値           | いいえ       | 正規表現を使用してコードを検索します。完全一致コードの検索で利用可能です。設定されていない場合、正規表現が使用されます。GitLab 18.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686)されました。 |
+| `fields`             | 文字列の配列  | いいえ       | 検索するフィールドの配列。使用できる値は`title`のみです。`issues`および`merge_requests`スコープのみをサポートします。PremiumおよびUltimateのみです。                                                            |
+| `include_archived`   | ブール値           | いいえ       | アーカイブされたプロジェクトを検索に含めます。デフォルトは`false`です。GitLab 18.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281)されました。                                                           |
+| `num_context_lines`  | 整数           | いいえ       | 結果内の各一致周辺に含めるコンテキスト行の数です。高度な検索と完全一致コードの検索でのみ利用可能です。GitLab 18.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217)されました。 |
+| `state`              | 文字列            | いいえ       | 状態でフィルターします。`issues`、`work_items`、および`merge_requests`スコープをサポートします。その他のスコープは無視されます。                                                                                                                      |
+| `type`               | 文字列の配列  | いいえ       | 作業アイテムをタイプでフィルタリングします。`work_items`スコープにのみ適用されます。利用可能なタイプ: `issue` (イシュー)、`task`、`epic`、`incident`、`test_case`、`requirement`、`objective`、`key_result`、`ticket`。                          |
+| `order_by`           | 文字列            | いいえ       | 使用できる値は`created_at`のみです。設定されていない場合、結果は、基本検索では`created_at`で降順にソートされ、高度な検索では最も関連性の高いドキュメントでソートされます。                              |
+| `sort`               | 文字列            | いいえ       | 使用できる値は`asc`または`desc`のみです。設定されていない場合、結果は、基本検索では`created_at`で降順にソートされ、高度な検索では最も関連性の高いドキュメントでソートされます。                           |
 
 応答は、リクエストされたスコープによって異なります。
 
 ### スコープ: `projects` {#scope-projects-1}
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/search?scope=projects&search=flight"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/search?scope=projects&search=flight"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -543,10 +627,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ### スコープ: `issues` {#scope-issues-1}
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/search?scope=issues&search=file"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/search?scope=issues&search=file"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -603,19 +689,84 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> `assignee`列は非推奨です。現在は単一サイズの`assignees`配列です。
 
-`assignee`列は非推奨になりました。GitLab EE APIに準拠するために、単一サイズの配列`assignees`として表示されるようになりました。
+### スコープ: `work_items` {#scope-work_items-1}
 
-{{< /alert >}}
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/search?scope=work_items&search=migrate"
+```
+
+レスポンス例: 
+
+```json
+[
+  {
+    "id": 142,
+    "iid": 9,
+    "project_id": 12,
+    "title": "Migrate to new database",
+    "description": "Database migration task",
+    "state": "opened",
+    "created_at": "2018-03-15T08:12:31.489Z",
+    "updated_at": "2018-03-20T14:22:18.371Z",
+    "closed_at": null,
+    "labels": ["backend"],
+    "milestone": null,
+    "assignees": [{
+      "id": 25,
+      "name": "John Doe",
+      "username": "john.doe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/a1b2c3d4e5f6g7h8i9j0?s=80&d=identicon",
+      "web_url": "http://localhost:3000/john.doe"
+    }],
+    "author": {
+      "id": 1,
+      "name": "Administrator",
+      "username": "root",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "web_url": "http://localhost:3000/root"
+    },
+    "type": "TASK",
+    "user_notes_count": 2,
+    "upvotes": 1,
+    "downvotes": 0,
+    "due_date": "2018-04-01",
+    "confidential": false,
+    "discussion_locked": null,
+    "web_url": "http://localhost:3000/my-group/my-project/-/work_items/9",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
+  }
+]
+```
+
+作業アイテムを`type`パラメータを使用してタイプでフィルタリングできます:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/search?scope=work_items&search=backend&type[]=task&type[]=issue"
+```
 
 ### スコープ: `merge_requests` {#scope-merge_requests-1}
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/search?scope=merge_requests&search=file"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/search?scope=merge_requests&search=file"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -691,10 +842,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ### スコープ: `milestones` {#scope-milestones-1}
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/search?scope=milestones&search=release"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/search?scope=milestones&search=release"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -716,10 +869,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ### スコープ: `users` {#scope-users-1}
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/search?scope=users&search=doe"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/search?scope=users&search=doe"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -742,15 +897,27 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 {{< /details >}}
 
-このスコープを使用して、Wikiを検索します。
+このスコープを使用してWikiを検索します。
 
 このスコープは、[高度な検索が有効](../user/search/advanced_search.md#use-advanced-search)になっている場合にのみ使用できます。
 
+このスコープで使用できるフィルターは次のとおりです。
+
+- `filename`
+- `path`
+- `extension`
+
+フィルターを使用するには、クエリにそれを含めます（例: `a query filename:some_name*`）。
+
+グロブマッチングにはワイルドカード (`*`) を使用できます。
+
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/6/search?scope=wiki_blobs&search=bye"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/6/search?scope=wiki_blobs&search=bye"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 
@@ -769,11 +936,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-{{< alert type="note" >}}
-
-`filename`は非推奨になり、`path`が推奨されます。どちらもリポジトリ内のファイルのフルパスを返しますが、将来的には`filename`は、フルパスではなく、ファイル名のみになる予定です。詳細については、[イシュー34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521)を参照してください。
-
-{{< /alert >}}
+> [!note]
+> `filename`は`path`の使用が推奨されるため、非推奨です。どちらもリポジトリ内のファイルのフルパスを返しますが、将来的には`filename`は、フルパスではなく、ファイル名のみになる予定です。詳細については、[イシュー34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521)を参照してください。
 
 ### スコープ: `commits` {#scope-commits-1}
 
@@ -786,10 +950,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 このスコープは、[高度な検索が有効](../user/search/advanced_search.md#use-advanced-search)になっている場合にのみ使用できます。
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/6/search?scope=commits&search=bye"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/6/search?scope=commits&search=bye"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 
@@ -822,25 +988,27 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 {{< /details >}}
 
-このスコープを使用して、コードを検索します。
+このスコープを使用してコードを検索します。
 
-このスコープは、[高度な検索](../user/search/advanced_search.md#use-advanced-search)または[完全一致コードの検索](../user/search/exact_code_search.md#use-exact-code-search)が有効になっている場合にのみ使用できます。
+このスコープは、[高度な検索](../user/search/advanced_search.md#use-advanced-search)または[完全一致コードの検索](../user/search/exact_code_search.md#use-exact-code-search)が有効な場合にのみ利用可能です。
 
-このスコープで使用できるフィルターは次のとおりです:
+このスコープで使用できるフィルターは次のとおりです。
 
 - `filename`
 - `path`
 - `extension`
 
-フィルターを使用するには、フィルターをクエリに含めます。例: `a query filename:some_name*`。
+フィルターを使用するには、クエリにそれを含めます（例: `a query filename:some_name*`）。
 
-グロブマッチングを使用するときは、ワイルドカード（`*`）を使用できます。
+グロブマッチングにはワイルドカード (`*`) を使用できます。
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/6/search?scope=blobs&search=installation"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/6/search?scope=blobs&search=installation"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 
@@ -858,11 +1026,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-{{< alert type="note" >}}
-
-`filename`は非推奨になり、`path`が推奨されます。どちらもリポジトリ内のファイルのフルパスを返しますが、将来的には`filename`は、フルパスではなく、ファイル名のみになる予定です。詳細については、[イシュー34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521)を参照してください。
-
-{{< /alert >}}
+> [!note]
+> `filename`は`path`の使用が推奨されるため、非推奨です。どちらもリポジトリ内のファイルのフルパスを返しますが、将来的には`filename`は、フルパスではなく、ファイル名のみになる予定です。詳細については、[イシュー34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521)を参照してください。Elasticsearchの構文は、完全一致コードの検索で正しく機能しない場合があります。Elasticsearchのワイルドカードクエリを、完全一致コードの検索の正規表現に置き換えてください。詳細については、[イシュー521686](https://gitlab.com/gitlab-org/gitlab/-/issues/521686)を参照してください。
 
 ### スコープ: `notes` {#scope-notes-1}
 
@@ -875,10 +1040,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 このスコープは、[高度な検索が有効](../user/search/advanced_search.md#use-advanced-search)になっている場合にのみ使用できます。
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/6/search?scope=notes&search=maxime"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/6/search?scope=notes&search=maxime"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -905,7 +1072,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## プロジェクト検索 {#project-search}
+## プロジェクトを検索 {#search-a-project}
 
 指定されたプロジェクトの[用語](../user/search/_index.md)を検索します。
 
@@ -915,27 +1082,33 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 GET /projects/:id/search
 ```
 
-| 属性 | 型 | 必須 | 説明 |
-| --------- | ---- | -------- | ------------|
-| `id` | 整数または文字列 | はい | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `scope`       | 文字列   | はい | 検索するスコープ。値には、`issues`、`merge_requests`、`milestones`、`users`が含まれます。追加のスコープは、`wiki_blobs`、`commits`、`blobs`、`notes`です。 |
-| `search`      | 文字列   | はい | 検索語。 |
-| `search_type` | 文字列   | いいえ | 使用する検索タイプ。値には、`basic`、`advanced`、`zoekt`が含まれます。 |
-| `confidential` | ブール値   | いいえ | 機密性でフィルターします。`issues`スコープをサポートします。他のスコープは無視されます。 |
-| `ref`         | 文字列   | いいえ | 検索するリポジトリブランチまたはタグの名前。プロジェクトのデフォルトブランチはデフォルトで使用されます。`blobs`、`commits`、および`wiki_blobs`スコープにのみ適用可能です。 |
-| `order_by`    | 文字列   | いいえ | 使用できる値は`created_at`のみです。設定されていない場合、結果は、基本検索では`created_at`で降順にソートされ、高度な検索では最も関連性の高いドキュメントでソートされます。|
-| `sort`    | 文字列   | いいえ | 使用できる値は`asc`または`desc`のみです。設定されていない場合、結果は、基本検索では`created_at`で降順にソートされ、高度な検索では最も関連性の高いドキュメントでソートされます。|
-| `state`       | 文字列   | いいえ | 状態でフィルターします。`issues`および`merge_requests`スコープをサポートします。他のスコープは無視されます。 |
+| 属性      | 型              | 必須 | 説明                                                                                                                                                                                                    |
+|----------------|-------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                 | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。                                                                                                                                  |
+| `scope`              | 文字列            | はい      | 検索するスコープ。値には、`issues`、`work_items`、`merge_requests`、`milestones`、`users`が含まれます。追加のスコープは、`wiki_blobs`、`commits`、`blobs`、`notes`です。                                             |
+| `search`             | 文字列            | はい      | 検索語。                                                                                                                                                                                               |
+| `search_type`        | 文字列            | いいえ       | 使用する検索タイプです。値には`basic`、`advanced`、および`zoekt`が含まれます。                                                                                                                                       |
+| `confidential`       | ブール値           | いいえ       | 機密性でフィルタリングします。`issues`および`work_items`スコープをサポートします。他のスコープは無視されます。                                                                                                                                  |
+| `regex`              | ブール値           | いいえ       | 正規表現を使用してコードを検索します。完全一致コードの検索で利用可能です。設定されていない場合、正規表現が使用されます。GitLab 18.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686)されました。 |
+| `fields`             | 文字列の配列  | いいえ       | 検索するフィールドの配列。使用できる値は`title`のみです。`issues`および`merge_requests`スコープのみをサポートします。PremiumおよびUltimateのみです。                                                            |
+| `num_context_lines`  | 整数           | いいえ       | 結果内の各一致周辺に含めるコンテキスト行の数です。高度な検索と完全一致コードの検索でのみ利用可能です。GitLab 18.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217)されました。 |
+| `ref`                | 文字列            | いいえ       | 検索するリポジトリブランチまたはタグの名前。プロジェクトのデフォルトブランチはデフォルトで使用されます。`blobs`、`commits`、および`wiki_blobs`スコープにのみ適用可能です。                                         |
+| `state`              | 文字列            | いいえ       | 状態でフィルターします。`issues`、`work_items`、および`merge_requests`スコープをサポートします。その他のスコープは無視されます。                                                                                                                      |
+| `type`               | 文字列の配列  | いいえ       | 作業アイテムをタイプでフィルタリングします。`work_items`スコープにのみ適用されます。利用可能なタイプ: `issue` (イシュー)、`task`、`epic`、`incident`、`test_case`、`requirement`、`objective`、`key_result`、`ticket`。                          |
+| `order_by`           | 文字列            | いいえ       | 使用できる値は`created_at`のみです。設定されていない場合、結果は、基本検索では`created_at`で降順にソートされ、高度な検索では最も関連性の高いドキュメントでソートされます。                              |
+| `sort`               | 文字列            | いいえ       | 使用できる値は`asc`または`desc`のみです。設定されていない場合、結果は、基本検索では`created_at`で降順にソートされ、高度な検索では最も関連性の高いドキュメントでソートされます。                           |
 
 応答は、リクエストされたスコープによって異なります。
 
 ### スコープ: `issues` {#scope-issues-2}
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/12/search?scope=issues&search=file"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/12/search?scope=issues&search=file"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -992,19 +1165,84 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> `assignee`列は非推奨です。現在は単一サイズの`assignees`配列です。
 
-`assignee`列は非推奨になりました。GitLab EE APIに準拠するために、単一サイズの配列`assignees`として表示されるようになりました。
+### スコープ: `work_items` {#scope-work_items-2}
 
-{{< /alert >}}
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/12/search?scope=work_items&search=migrate"
+```
+
+レスポンス例: 
+
+```json
+[
+  {
+    "id": 142,
+    "iid": 9,
+    "project_id": 12,
+    "title": "Migrate to new database",
+    "description": "Database migration task",
+    "state": "opened",
+    "created_at": "2018-03-15T08:12:31.489Z",
+    "updated_at": "2018-03-20T14:22:18.371Z",
+    "closed_at": null,
+    "labels": ["backend"],
+    "milestone": null,
+    "assignees": [{
+      "id": 25,
+      "name": "John Doe",
+      "username": "john.doe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/a1b2c3d4e5f6g7h8i9j0?s=80&d=identicon",
+      "web_url": "http://localhost:3000/john.doe"
+    }],
+    "author": {
+      "id": 1,
+      "name": "Administrator",
+      "username": "root",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "web_url": "http://localhost:3000/root"
+    },
+    "type": "TASK",
+    "user_notes_count": 2,
+    "upvotes": 1,
+    "downvotes": 0,
+    "due_date": "2018-04-01",
+    "confidential": false,
+    "discussion_locked": null,
+    "web_url": "http://localhost:3000/my-group/my-project/-/work_items/9",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
+  }
+]
+```
+
+作業アイテムを`type`パラメータを使用してタイプでフィルタリングできます:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/12/search?scope=work_items&search=backend&type[]=task&type[]=issue"
+```
 
 ### スコープ: `merge_requests` {#scope-merge_requests-2}
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=merge_requests&search=file"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/6/search?scope=merge_requests&search=file"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -1080,10 +1318,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ### スコープ: `milestones` {#scope-milestones-2}
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/12/search?scope=milestones&search=release"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/12/search?scope=milestones&search=release"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -1105,10 +1345,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ### スコープ: `users` {#scope-users-2}
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=users&search=doe"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/6/search?scope=users&search=doe"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -1125,26 +1367,30 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ### スコープ: `wiki_blobs` {#scope-wiki_blobs-2}
 
-このスコープを使用して、Wikiを検索します。
+このスコープを使用してWikiを検索します。
 
-このスコープで使用できるフィルターは次のとおりです:
+このスコープで使用できるフィルターは次のとおりです。
 
 - `filename`
 - `path`
 - `extension`
 
-フィルターを使用するには、フィルターをクエリに含めます。例: `a query filename:some_name*`。グロブマッチングを使用するときは、ワイルドカード（`*`）を使用できます。
+フィルターを使用するには、クエリにそれを含めます（例: `a query filename:some_name*`）。
 
-Wiki blobの検索は、ファイル名とコンテンツの両方で実行されます。検索結果は次のようになります:
+グロブマッチングにはワイルドカード (`*`) を使用できます。
+
+Wiki blobの検索は、ファイル名とコンテンツの両方で実行されます。検索結果は次のようになります。
 
 - ファイル名で見つかった結果は、コンテンツで見つかった結果の前に表示されます。
 - 検索文字列がファイル名とコンテンツの両方で見つかったり、コンテンツに複数回表示されたりする可能性があるため、同じblobに対して複数の一致が含まれる場合があります。
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=wiki_blobs&search=bye"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/6/search?scope=wiki_blobs&search=bye"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 
@@ -1163,19 +1409,18 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-{{< alert type="note" >}}
-
-`filename`は非推奨になり、`path`が推奨されます。どちらもリポジトリ内のファイルのフルパスを返しますが、将来的には`filename`は、フルパスではなく、ファイル名のみになる予定です。詳細については、[イシュー34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521)を参照してください。
-
-{{< /alert >}}
+> [!note]
+> `filename`は`path`の使用が推奨されるため、非推奨です。どちらもリポジトリ内のファイルのフルパスを返しますが、将来的には`filename`は、フルパスではなく、ファイル名のみになる予定です。詳細については、[イシュー34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521)を参照してください。
 
 ### スコープ: `commits` {#scope-commits-2}
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=commits&search=bye"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/6/search?scope=commits&search=bye"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 
@@ -1202,26 +1447,30 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ### スコープ: `blobs` {#scope-blobs-2}
 
-このスコープを使用して、コードを検索します。
+このスコープを使用してコードを検索します。
 
-このスコープで使用できるフィルターは次のとおりです:
+このスコープで使用できるフィルターは次のとおりです。
 
 - `filename`
 - `path`
 - `extension`
 
-フィルターを使用するには、フィルターをクエリに含めます。例: `a query filename:some_name*`。グロブマッチングを使用するときは、ワイルドカード（`*`）を使用できます。
+フィルターを使用するには、クエリにそれを含めます（例: `a query filename:some_name*`）。
 
-blobの検索は、ファイル名とコンテンツの両方で実行されます。検索結果は次のようになります:
+グロブマッチングにはワイルドカード (`*`) を使用できます。
+
+blobの検索は、ファイル名とコンテンツの両方で実行されます。検索結果は次のようになります。
 
 - ファイル名で見つかった結果は、コンテンツで見つかった結果の前に表示されます。
 - 検索文字列がファイル名とコンテンツの両方で見つかったり、コンテンツに複数回表示されたりする可能性があるため、同じblobに対して複数の一致が含まれる場合があります。
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/6/search?scope=blobs&search=keyword%20filename:*.py
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/6/search?scope=blobs&search=keyword%20filename:*.py"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 
@@ -1239,19 +1488,18 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.
 ]
 ```
 
-{{< alert type="note" >}}
-
-`filename`は非推奨になり、`path`が推奨されます。どちらもリポジトリ内のファイルのフルパスを返しますが、将来的には`filename`は、フルパスではなく、ファイル名のみになる予定です。詳細については、[イシュー34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521)を参照してください。
-
-{{< /alert >}}
+> [!note]
+> `filename`は`path`の使用が推奨されるため、非推奨です。どちらもリポジトリ内のファイルのフルパスを返しますが、将来的には`filename`は、フルパスではなく、ファイル名のみになる予定です。詳細については、[イシュー34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521)を参照してください。Elasticsearchの構文は、完全一致コードの検索で正しく機能しない場合があります。Elasticsearchのワイルドカードクエリを、完全一致コードの検索の正規表現に置き換えてください。詳細については、[イシュー521686](https://gitlab.com/gitlab-org/gitlab/-/issues/521686)を参照してください。
 
 ### スコープ: `notes` {#scope-notes-2}
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=notes&search=maxime"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/6/search?scope=notes&search=maxime"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [

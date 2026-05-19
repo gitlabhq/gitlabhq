@@ -2,6 +2,8 @@
 description: Tracks updates to the wiki format.
 action: wiki_format_updated
 product_group: knowledge
+product_categories:
+- wiki
 milestone: '14.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74079
 tiers:

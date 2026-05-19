@@ -211,7 +211,7 @@ Prerequisites:
 To change the maximum number of policies your organization can store in a security policy project:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Security and compliance**.
+1. In the left sidebar, select **Settings** > **Security and compliance**.
 1. Expand the **Security policies** section.
 1. For each type of policy you want to change, set a new value for **Maximum number of {policy type} allowed per security policy configuration**.
 1. Select **Save changes**.
@@ -230,7 +230,7 @@ Prerequisites:
 To adjust the limit for a top-level group:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Groups**.
+1. In the left sidebar, select **Overview** > **Groups**.
 1. In the row of the top-level group you want to modify, select **Edit**.
 1. For each type of policy you want to change, set a new value for **Maximum number of {policy type} allowed per security policy configuration**.
 1. Select **Save changes**.

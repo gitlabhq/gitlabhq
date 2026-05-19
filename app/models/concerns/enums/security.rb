@@ -20,7 +20,8 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
     ANALYZER_STATUSES = {
       not_configured: 0,
       success: 1,
-      failed: 2
+      failed: 2,
+      stale: 3
     }.freeze
 
     EDITABLE_STATES = {

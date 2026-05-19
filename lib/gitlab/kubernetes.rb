@@ -7,7 +7,7 @@ module Gitlab
       Hash.new { |h, k| h[k] = [] }
     end
 
-    # This is the comand that is run to start a terminal session. Kubernetes
+    # This is the command that is run to start a terminal session. Kubernetes
     # expects `command=foo&command=bar, not `command[]=foo&command[]=bar`
     EXEC_COMMAND = URI.encode_www_form(
       ['sh', '-c', 'bash || sh'].map { |value| ['command', value] }

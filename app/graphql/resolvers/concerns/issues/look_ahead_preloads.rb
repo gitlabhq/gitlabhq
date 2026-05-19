@@ -15,8 +15,7 @@ module Issues
         {
           project: [:project_feature, :group]
         },
-        :author,
-        :work_item_type
+        :author
       ]
     end
 
@@ -24,12 +23,12 @@ module Issues
       {
         reference: { namespace: [{ parent: :route }, :route] },
         alert_management_alert: [:alert_management_alert],
+        alert_management_alerts: [:alert_management_alerts],
         assignees: [:assignees],
         participants: Issue.participant_includes,
         timelogs: [:timelogs],
         customer_relations_contacts: { customer_relations_contacts: [:group] },
-        escalation_status: [:incident_management_issuable_escalation_status],
-        type: :work_item_type
+        escalation_status: [:incident_management_issuable_escalation_status]
       }
     end
   end

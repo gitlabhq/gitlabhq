@@ -1,0 +1,80 @@
+---
+name: siphon_merge_request_diff_files
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (traversal_path, merge_request_diff_id, relative_order) ORDER BY (traversal_path,
+  merge_request_diff_id, relative_order) SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode
+  = 'rebuild'
+primary_key: traversal_path, merge_request_diff_id, relative_order
+sorting_key: traversal_path, merge_request_diff_id, relative_order
+settings:
+  index_granularity: '2048'
+  deduplicate_merge_projection_mode: "'rebuild'"
+columns:
+- name: merge_request_diff_id
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: relative_order
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: new_file
+  type: Bool
+  compression_codec: CODEC(ZSTD(1))
+- name: renamed_file
+  type: Bool
+  compression_codec: CODEC(ZSTD(1))
+- name: deleted_file
+  type: Bool
+  compression_codec: CODEC(ZSTD(1))
+- name: too_large
+  type: Bool
+  compression_codec: CODEC(ZSTD(1))
+- name: a_mode
+  type: String
+- name: b_mode
+  type: String
+- name: new_path
+  type: Nullable(String)
+- name: old_path
+  type: String
+- name: diff
+  type: Nullable(String)
+- name: binary
+  type: Nullable(Bool)
+  compression_codec: CODEC(ZSTD(1))
+- name: external_diff_offset
+  type: Nullable(Int64)
+- name: external_diff_size
+  type: Nullable(Int64)
+- name: generated
+  type: Nullable(Bool)
+  compression_codec: CODEC(ZSTD(1))
+- name: encoded_file_path
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: project_id
+  type: Nullable(Int64)
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
+    'traversal_path', project_id, '0/'), '0/')
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))

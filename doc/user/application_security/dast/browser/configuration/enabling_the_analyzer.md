@@ -3,7 +3,7 @@ type: reference, howto
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Enabling the analyzer
+title: Enable the analyzer
 ---
 
 To run a DAST scan:
@@ -20,7 +20,6 @@ and crawls the site using an embedded browser.
 
 {{< history >}}
 
-- This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in GitLab 15.0.
 - This template was updated to DAST_VERSION: 4 in GitLab 16.0.
 - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151910) to DAST_VERSION: 5 in GitLab 17.0.
 - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188703) to DAST_VERSION: 6 in GitLab 18.0.
@@ -31,8 +30,16 @@ To add DAST scanning to your application, use the DAST job defined
 in the GitLab DAST CI/CD template file. Updates to the template are provided with GitLab
 upgrades, allowing you to benefit from any improvements and additions.
 
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
 To create the CI/CD job:
 
+1. On the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Build** > **Pipeline editor**.
+
+   If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example content.
 1. Include the appropriate CI/CD template:
 
    - [`DAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml):
@@ -78,7 +85,7 @@ You must define `DAST_TARGET_URL` or create an `environment_url.txt` file for th
 
 ### Network connectivity
 
-Your runner must be able to connect to the target application URL. If your application uses a non-standard port, include it in the URL.
+Your runner must connect to the target application URL. If your application uses a non-standard port, include it in the URL.
 
 ## After you enable the analyzer
 
@@ -90,7 +97,7 @@ When your pipeline runs, the DAST job:
 
 ### Configure authentication
 
-If your application requires users to log in, configure DAST to authenticate before scanning. Without authentication, DAST can only scan publicly accessible pages.
+If your application requires users to sign in, configure DAST to authenticate before scanning. Without authentication, DAST can only scan publicly accessible pages.
 
 To configure authentication, see [authentication](authentication.md).
 

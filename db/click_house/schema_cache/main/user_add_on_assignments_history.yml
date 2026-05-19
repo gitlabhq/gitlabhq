@@ -1,0 +1,34 @@
+---
+name: user_add_on_assignments_history
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(assignment_id) PARTITION BY toYear(assigned_at) ORDER
+  BY (namespace_path, assigned_at, user_id) SETTINGS index_granularity = 8192
+partition_key: toYear(assigned_at)
+primary_key: namespace_path, assigned_at, user_id
+sorting_key: namespace_path, assigned_at, user_id
+settings:
+  index_granularity: '8192'
+columns:
+- name: assignment_id
+  type: UInt64
+- name: namespace_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'0/'"
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: user_id
+  type: UInt64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: purchase_id
+  type: UInt64
+- name: add_on_name
+  type: String
+- name: assigned_at
+  type: DateTime64(6, 'UTC')
+  is_in_partition_key: true
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: revoked_at
+  type: Nullable(DateTime64(6, 'UTC'))

@@ -1,0 +1,11 @@
+---
+name: create_github_import
+description: Grants the ability to import projects from GitHub
+deprecated: true
+boundaries:
+  - group
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - create_github_import

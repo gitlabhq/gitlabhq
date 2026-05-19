@@ -15,6 +15,7 @@ query getDashboardIssuesCount(
   $myReactionEmoji: String
   $subscribed: SubscriptionStatus
   $types: [IssueType!]
+  $workItemTypeIds: [WorkItemsTypeID!]
   $in: [IssuableSearchableField!]
   $not: NegatedIssueFilterInput
   $or: UnionedIssueFilterInput
@@ -37,6 +38,7 @@ query getDashboardIssuesCount(
     myReactionEmoji: $myReactionEmoji
     subscribed: $subscribed
     types: $types
+    workItemTypeIds: $workItemTypeIds
     in: $in
     not: $not
     or: $or
@@ -61,6 +63,7 @@ query getDashboardIssuesCount(
     myReactionEmoji: $myReactionEmoji
     subscribed: $subscribed
     types: $types
+    workItemTypeIds: $workItemTypeIds
     in: $in
     not: $not
     or: $or
@@ -85,6 +88,7 @@ query getDashboardIssuesCount(
     myReactionEmoji: $myReactionEmoji
     subscribed: $subscribed
     types: $types
+    workItemTypeIds: $workItemTypeIds
     in: $in
     not: $not
     or: $or

@@ -1,0 +1,6 @@
+---
+event: Members::DestroyedEvent
+description: Published after a member record is removed from a group or project. Fires
+  once per user per destroy operation; not published on recursive cascades (for example,
+  when a parent group destroy removes child memberships). Deferred via run_after_commit_or_now.
+feature_category: user_management

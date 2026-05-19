@@ -1,7 +1,10 @@
+---
 name: delete_virtual_registry
 description: Grants the ability to delete virtual registries
 boundaries:
   - group
+available_for:
+  - granular_access_token
 permissions:
   - delete_container_virtual_registry
   - delete_container_virtual_registry_upstream

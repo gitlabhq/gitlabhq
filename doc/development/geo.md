@@ -490,7 +490,7 @@ graph TB
 
 If you add a feature that is backed by Git repositories, then you must add Geo support. See [the repository replicator strategy of the Geo self-service framework](geo/framework.md#repository-replicator-strategy).
 
-Create an issue based on the [Geo Replicate a new blob type template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Geo%20Replicate%20a%20new%20blob%20type) and follow the guidelines.
+Create an issue based on the [Geo Replicate a new blob type template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Geo%20Replicate%20a%20new%20blob%20type) and follow the guidelines.
 
 ### Blobs
 
@@ -500,7 +500,7 @@ If your blobs are tracked in a new table, perhaps because you expect millions of
 
 [Geo detects new blobs with a spec](https://gitlab.com/gitlab-org/gitlab/-/blob/eeba0e4d231ae39012a5bbaeac43a72c2bd8affb/ee/spec/uploaders/every_gitlab_uploader_spec.rb) that fails when an `Uploader` does not have a corresponding `Replicator`.
 
-Create an issue based on the [Geo Replicate a new Git repository type template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Geo%20Replicate%20a%20new%20Git%20repository%20type) and follow the guidelines.
+Create an issue based on the [Geo Replicate a new Git repository type template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Geo%20Replicate%20a%20new%20Git%20repository%20type) and follow the guidelines.
 
 ### Features with more than one kind of data
 

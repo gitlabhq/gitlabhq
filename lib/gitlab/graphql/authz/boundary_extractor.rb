@@ -13,12 +13,13 @@ module Gitlab
         STANDALONE_BOUNDARIES = %w[user instance].freeze
         VALID_BOUNDARY_ACCESSOR_METHODS = %w[project group itself owner].freeze
 
-        def initialize(object:, arguments:, context:, directive:)
+        def initialize(object:, arguments:, context:, directive:, boundary_proc: nil)
           @object = object
           @arguments = arguments
           @context = context
           @directive = directive
           @boundary_accessor = directive.arguments[:boundary]
+          @boundary_proc = boundary_proc
         end
 
         def extract
@@ -39,7 +40,10 @@ module Gitlab
           boundary_arg = @directive.arguments[:boundary_argument]
           return extract_from_argument(boundary_arg) if boundary_arg
 
-          # Extract from resolved object (for type fields)
+          # Proc-based extraction: proc handles everything, no id fallback applies.
+          return extract_from_method if @boundary_proc
+
+          # Method-based extraction: may fall back to :id argument for unresolved query fields.
           if @boundary_accessor
             return extract_from_id_argument if should_use_id_fallback?
 
@@ -57,6 +61,8 @@ module Gitlab
         end
 
         def extract_from_method
+          return @boundary_proc.call(unwrap_object(@object)) if @boundary_proc
+
           obj = unwrap_object(@object)
 
           return obj if object_matches_boundary_type?(obj)
@@ -104,9 +110,9 @@ module Gitlab
           obj = unwrap_object(object)
 
           return obj if obj.is_a?(::Project) || obj.is_a?(::Group)
-          return obj.project if obj.respond_to?(:project)
-          return obj.group if obj.respond_to?(:group)
-          return obj.owner if obj.respond_to?(:owner)
+          return obj.project if obj.respond_to?(:project) && obj.project
+          return obj.group if obj.respond_to?(:group) && obj.group
+          return obj.owner if obj.respond_to?(:owner) && obj.owner
 
           nil
         end

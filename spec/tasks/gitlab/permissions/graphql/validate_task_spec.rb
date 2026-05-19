@@ -156,7 +156,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
   describe '#validate_permission_exists' do
     before do
-      allow(Authz::PermissionGroups::Assignable).to receive(:all_permissions)
+      allow(Authz::PermissionGroups::Assignable).to receive(:available_permissions)
         .and_return([:read_project])
     end
 
@@ -194,7 +194,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
     context 'when assignables are empty' do
       it 'returns without adding a violation' do
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([])
 
         expect do
@@ -215,7 +215,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
     before do
       allow(GitlabSchema).to receive(:types).and_return({ 'Mutation' => empty_mutation_type })
-      allow(Authz::PermissionGroups::Assignable).to receive(:all_permissions)
+      allow(Authz::PermissionGroups::Assignable).to receive(:available_permissions)
         .and_return([:read_project, :update_project, :create_issue, :read_something])
       allow(task).to receive(:class_source_path).and_return('app/graphql/types/test_type.rb')
     end
@@ -263,7 +263,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
       before do
         allow(GitlabSchema).to receive(:types).and_return({ 'ProjectType' => type, 'Mutation' => empty_mutation_type })
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
       end
 
@@ -290,7 +290,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
       before do
         allow(GitlabSchema).to receive(:types).and_return({ 'ProjectType' => type, 'Mutation' => empty_mutation_type })
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
       end
 
@@ -308,7 +308,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
         allow(GitlabSchema).to receive(:types).and_return(
           'SomethingType' => type, 'Mutation' => empty_mutation_type
         )
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_something).and_return([mock_assignable])
       end
 
@@ -340,7 +340,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
         allow(GitlabSchema).to receive(:types).and_return(
           'SomethingType' => type, 'Mutation' => empty_mutation_type
         )
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_something).and_return([mock_assignable])
       end
 
@@ -367,7 +367,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
       before do
         allow(GitlabSchema).to receive(:types).and_return({ 'Mutation' => mutation_type })
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:create_issue).and_return([mock_assignable])
       end
 
@@ -424,7 +424,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
       before do
         allow(GitlabSchema).to receive(:types).and_return({ 'Mutation' => mutation_type })
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:create_issue).and_return([mock_assignable])
       end
 
@@ -451,7 +451,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
       before do
         allow(GitlabSchema).to receive(:types).and_return({ 'Mutation' => mutation_type })
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:create_issue).and_return([mock_assignable])
       end
 
@@ -480,7 +480,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
       before do
         allow(GitlabSchema).to receive(:types).and_return({ 'QueryType' => type, 'Mutation' => empty_mutation_type })
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
       end
 
@@ -523,7 +523,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
       before do
         allow(GitlabSchema).to receive(:types).and_return({ 'QueryType' => type, 'Mutation' => empty_mutation_type })
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
       end
 
@@ -603,6 +603,55 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
       end
     end
 
+    context 'when a type uses a deprecated permission' do
+      let(:directive) { mock_directive(permissions: :deprecated_action, boundary_type: :project) }
+      let(:type) { mock_type('DeprecatedType', directive: directive) }
+
+      before do
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_permissions)
+          .and_return([:read_project, :update_project])
+        allow(GitlabSchema).to receive(:types).and_return(
+          'DeprecatedType' => type, 'Mutation' => empty_mutation_type
+        )
+      end
+
+      it 'returns an error listing the deprecated permission as invalid' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following GraphQL types/mutations/fields reference permissions not included in any assignable permission.
+          #  Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#create-the-assignable-permission-file
+          #
+          #    - [type] DeprecatedType: deprecated_action (app/graphql/types/test_type.rb)
+          #
+          #######################################################################
+        OUTPUT
+      end
+    end
+
+    context 'when a type has a deprecated permission with mismatched boundary' do
+      let(:directive) { mock_directive(permissions: :deprecated_action, boundary_type: :user) }
+      let(:type) { mock_type('DeprecatedType', directive: directive) }
+      let(:deprecated_assignable) do
+        instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project], deprecated?: true)
+      end
+
+      before do
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_permissions)
+          .and_return([:read_project, :update_project, :deprecated_action])
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:deprecated_action).and_return([])
+        allow(GitlabSchema).to receive(:types).and_return(
+          'DeprecatedType' => type, 'Mutation' => empty_mutation_type
+        )
+      end
+
+      it 'skips boundary validation when no available assignables exist' do
+        expect { run }.to output(/GraphQL permissions are valid/).to_stdout
+      end
+    end
+
     context 'when a type has an invalid permission' do
       let(:directive) { mock_directive(permissions: :not_a_real_permission, boundary_type: :project) }
       let(:type) { mock_type('BadType', directive: directive) }
@@ -636,7 +685,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
         allow(GitlabSchema).to receive(:types).and_return(
           'ProjectType' => type, 'Mutation' => empty_mutation_type
         )
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([])
       end
 
@@ -653,7 +702,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
       before do
         allow(GitlabSchema).to receive(:types).and_return({ 'QueryType' => type, 'Mutation' => empty_mutation_type })
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
       end
 
@@ -680,7 +729,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
           mock_directive(permissions: :read_runner, boundary_type: bt)
         end
         assignable = instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[group instance project])
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_runner).and_return([assignable])
 
         type = Object.new
@@ -694,7 +743,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
       before do
         allow(GitlabSchema).to receive(:types).and_return({ 'CiRunner' => type, 'Mutation' => empty_mutation_type })
-        allow(Authz::PermissionGroups::Assignable).to receive(:all_permissions)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_permissions)
           .and_return([:read_project, :read_runner])
       end
 

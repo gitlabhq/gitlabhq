@@ -32,10 +32,10 @@ RSpec.describe BulkImports::Common::Extractors::NdjsonExtractor do
         ].join("\n")
       end
 
-      expect(BulkImports::FileDownloadService).to receive(:new)
+      expect(BulkImports::FileDownloadService).to receive(:for_context)
         .with(
           context: context,
-          relative_url: entity.relation_download_url_path('labels'),
+          relation: 'labels',
           tmpdir: tmpdir,
           filename: 'labels.ndjson.gz')
         .and_return(instance_double(BulkImports::FileDownloadService, execute: nil))

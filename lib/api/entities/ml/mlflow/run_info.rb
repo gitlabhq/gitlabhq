@@ -7,16 +7,21 @@ module API
         class RunInfo < Grape::Entity
           include ::API::Helpers::RelatedResourcesHelpers
 
-          expose :run_id
-          expose :run_id, as: :run_uuid
-          expose(:experiment_id) { |candidate| candidate.experiment.iid.to_s }
-          expose(:start_time) { |candidate| candidate.start_time || 0 }
-          expose :end_time, expose_nil: false
-          expose :name, as: :run_name, expose_nil: false
-          expose(:status) { |candidate| candidate.status.to_s.upcase }
-          expose :artifact_uri
-          expose(:lifecycle_stage) { |candidate| 'active' }
-          expose(:user_id) { |candidate| candidate.user_id.to_s }
+          expose :run_id, documentation: { type: 'String' }
+          expose :run_id, as: :run_uuid, documentation: { type: 'String' }
+          expose(:experiment_id, documentation: { type: 'String' }) { |candidate| candidate.experiment.iid.to_s }
+          expose(:start_time, documentation: { type: 'Integer', desc: 'Unix timestamp in milliseconds' }) do |candidate|
+            candidate.start_time || 0
+          end
+          expose :end_time, expose_nil: false,
+            documentation: { type: 'Integer', desc: 'Unix timestamp in milliseconds' }
+          expose :name, as: :run_name, expose_nil: false, documentation: { type: 'String' }
+          expose(:status, documentation: { type: 'String', example: 'FINISHED' }) do |candidate|
+            candidate.status.to_s.upcase
+          end
+          expose :artifact_uri, documentation: { type: 'String' }
+          expose(:lifecycle_stage, documentation: { type: 'String', example: 'active' }) { |candidate| 'active' }
+          expose(:user_id, documentation: { type: 'String' }) { |candidate| candidate.user_id.to_s }
 
           private
 

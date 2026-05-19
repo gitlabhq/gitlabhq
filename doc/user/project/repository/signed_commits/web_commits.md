@@ -79,7 +79,7 @@ Prerequisites:
 To turn on web-based commit signing for all projects in a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **General**.
 1. Select the **Sign web-based commits** checkbox.
 
@@ -98,7 +98,7 @@ Prerequisites:
 To turn on web-based commit signing for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **General**.
 1. Select the **Sign web-based commits** checkbox.
 

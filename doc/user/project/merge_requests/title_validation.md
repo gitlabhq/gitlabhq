@@ -44,7 +44,7 @@ Prerequisites:
 To configure title validation:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. In the left sidebar, select **Settings > Merge requests**.
 1. In the **Title pattern** text box, enter a regex pattern.
 1. In the **Title example** text box, enter a description of the expected format.
    Include a valid example so merge request authors know what to use.

@@ -71,6 +71,8 @@ describe('CompareVersions', () => {
     findDropdowns().wrappers.find((w) => w.attributes('data-testid') === 'source-version-dropdown');
   const findTargetDropdown = () =>
     findDropdowns().wrappers.find((w) => w.attributes('data-testid') === 'target-version-dropdown');
+  const findShowLatestVersionButton = () =>
+    wrapper.find('[data-testid="show-latest-version-button"]');
 
   beforeEach(() => {
     createComponent();
@@ -142,6 +144,27 @@ describe('CompareVersions', () => {
       });
     });
 
+    it('passes truncate when selected target is a branch', () => {
+      expect(findTargetDropdown().props('truncate')).toBe(true);
+    });
+
+    it('does not pass truncate when selected target is a version', () => {
+      const versionTargets = [
+        {
+          id: 2,
+          version_index: 2,
+          selected: true,
+          href: '/project/-/merge_requests/1/diffs?diff_id=2',
+          short_commit_sha: 'def456',
+          created_at: '2024-01-02T00:00:00Z',
+        },
+      ];
+
+      createComponent({ targetVersions: versionTargets });
+
+      expect(findTargetDropdown().props('truncate')).toBe(false);
+    });
+
     it('only passes title for base versions', () => {
       const targetVersionsWithBase = [
         {
@@ -167,6 +190,77 @@ describe('CompareVersions', () => {
         href: '/project/-/merge_requests/1/diffs?diff_id=3',
         versionName: 'main',
       });
+    });
+  });
+
+  describe('show latest version button', () => {
+    it('is hidden when the latest source and latest target are selected', () => {
+      expect(findShowLatestVersionButton().exists()).toBe(false);
+    });
+
+    it('is shown when a non-latest target version is selected', () => {
+      const targetVersionsWithCompare = [
+        {
+          id: 2,
+          version_index: 2,
+          head: false,
+          latest: false,
+          selected: true,
+          href: '/project/-/merge_requests/1/diffs?diff_id=3&start_sha=def456',
+          short_commit_sha: 'def456',
+          created_at: '2024-01-02T00:00:00Z',
+        },
+        {
+          id: 'head',
+          version_index: null,
+          head: true,
+          latest: false,
+          selected: false,
+          href: '/project/-/merge_requests/1/diffs',
+          branch: 'main',
+        },
+      ];
+
+      createComponent({ targetVersions: targetVersionsWithCompare });
+
+      const button = findShowLatestVersionButton();
+      expect(button.exists()).toBe(true);
+      expect(button.text()).toBe('Show latest version');
+      expect(button.attributes('href')).toBe('/project/-/merge_requests/1/diffs');
+    });
+
+    it('is shown when a non-latest source version is selected', () => {
+      const sourceVersionsWithNonLatest = [
+        {
+          id: 3,
+          version_index: 3,
+          head: false,
+          latest: true,
+          selected: false,
+          href: '/project/-/merge_requests/1/diffs?diff_id=3',
+          short_commit_sha: 'abc123',
+          commits_count: 3,
+          created_at: '2024-01-01T00:00:00Z',
+        },
+        {
+          id: 2,
+          version_index: 2,
+          head: false,
+          latest: false,
+          selected: true,
+          href: '/project/-/merge_requests/1/diffs?diff_id=2',
+          short_commit_sha: 'def456',
+          commits_count: 1,
+          created_at: '2024-01-02T00:00:00Z',
+        },
+      ];
+
+      createComponent({ sourceVersions: sourceVersionsWithNonLatest });
+
+      const button = findShowLatestVersionButton();
+      expect(button.exists()).toBe(true);
+      expect(button.text()).toBe('Show latest version');
+      expect(button.attributes('href')).toBe('/project/-/merge_requests/1/diffs?diff_head=true');
     });
   });
 });

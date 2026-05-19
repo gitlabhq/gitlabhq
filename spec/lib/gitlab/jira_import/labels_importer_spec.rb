@@ -9,6 +9,7 @@ RSpec.describe Gitlab::JiraImport::LabelsImporter, :clean_gitlab_redis_shared_st
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:jira_integration) { create(:jira_integration, project: project) }
+  let(:context_path) { '' }
 
   let(:importer) { described_class.new(project) }
 
@@ -41,9 +42,9 @@ RSpec.describe Gitlab::JiraImport::LabelsImporter, :clean_gitlab_redis_shared_st
 
       context 'when labels are returned from jira' do
         before do
-          client = double
-          expect(importer).to receive(:client).twice.and_return(client)
-          allow(client).to receive(:get).twice.and_return(jira_labels_1, jira_labels_2)
+          client = double(options: { context_path: context_path })
+          allow(importer).to receive(:client).and_return(client)
+          expect(client).to receive(:get).twice.and_return(jira_labels_1, jira_labels_2)
         end
 
         it 'caches import label' do
@@ -62,6 +63,27 @@ RSpec.describe Gitlab::JiraImport::LabelsImporter, :clean_gitlab_redis_shared_st
         end
       end
 
+      context 'when client has a context path set' do
+        let(:context_path) { '/ex/jira/8be4df61-93ca-11d2-aa0d-00e098032b8c' }
+
+        let(:expected_request_first_page) do
+          "#{context_path}/rest/api/2/label?maxResults=2&startAt=0"
+        end
+
+        let(:expected_request_second_page) do
+          "#{context_path}/rest/api/2/label?maxResults=2&startAt=2"
+        end
+
+        it 'prepends the context path when requesting labels' do
+          client = double(options: { context_path: context_path })
+          allow(importer).to receive(:client).and_return(client)
+          expect(client).to receive(:get).with(expected_request_first_page).and_return(jira_labels_1)
+          expect(client).to receive(:get).with(expected_request_second_page).and_return(jira_labels_2)
+
+          subject
+        end
+      end
+
       context 'when there are no labels to be handled' do
         shared_examples 'no labels handling' do
           it 'does not call Gitlab::JiraImport::HandleLabelsService' do
@@ -74,9 +96,9 @@ RSpec.describe Gitlab::JiraImport::LabelsImporter, :clean_gitlab_redis_shared_st
         let(:jira_labels) { { "maxResults" => 2, "startAt" => 0, "total" => 3, "values" => [] } }
 
         before do
-          client = double
-          expect(importer).to receive(:client).and_return(client)
-          allow(client).to receive(:get).and_return(jira_labels)
+          client = double(options: { context_path: context_path })
+          allow(importer).to receive(:client).and_return(client)
+          expect(client).to receive(:get).and_return(jira_labels)
         end
 
         context 'when the labels field is empty' do

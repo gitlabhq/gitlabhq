@@ -16,7 +16,7 @@ module API
               documentation: { type: 'String', example: 'https://gitlab.com/gitlab-org/gitlab/-/raw/e52d6d0246d7375291850e61f0abc101fbda9dc2/.gitlab/ci/build-images.gitlab-ci.yml' }
             expose :extra, as: :extra,
               documentation: { type: 'object',
-                               example: '{ "job_name": "test", "project": "gitlab-org/gitlab", "ref": "master" }' }
+                               example: { "job_name" => "test", "project" => "gitlab-org/gitlab", "ref" => "master" } }
             expose :context_project, as: :context_project,
               documentation: { type: 'String', example: 'gitlab-org/gitlab' }
             expose :context_sha, as: :context_sha,

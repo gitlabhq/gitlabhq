@@ -1,17 +1,17 @@
 <script>
-import { GlInfiniteScroll } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { GlButton } from '@gitlab/ui';
+import { mapActions } from 'pinia';
 import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { useWhatsNew } from '../store';
 import Feature from './feature.vue';
 import SkeletonLoader from './skeleton_loader.vue';
 
 export default {
   name: 'OtherUpdates',
   components: {
-    GlInfiniteScroll,
+    GlButton,
     Feature,
     SkeletonLoader,
   },
@@ -38,39 +38,43 @@ export default {
       required: false,
       default: null,
     },
-    drawerBodyHeight: {
-      type: Number,
+    pageInfo: {
+      type: Object,
       required: true,
     },
   },
-  emits: ['bottom-reached', 'close-drawer'],
+  emits: ['load-more', 'close-drawer'],
   data() {
     return {
-      initialListPopulated: false,
+      previousButtonCount: 0,
     };
   },
   watch: {
-    fetching(newVal) {
-      if (!newVal) {
-        const container = this.$refs.infiniteScroll?.$refs?.infiniteContainer;
-        if (!container) return;
-
-        // fetched items do not fully populate the container
-        if (container.scrollHeight <= container.clientHeight) {
-          this.bottomReached();
-        } else if (!this.initialListPopulated) {
-          this.initialListPopulated = true;
-        }
+    fetching(newVal, oldVal) {
+      if (oldVal && !newVal && this.previousButtonCount > 0) {
+        this.focusFirstNewItem();
       }
-    },
-    initialListPopulated() {
-      this.$refs.infiniteScroll.scrollUp();
     },
   },
   methods: {
-    ...mapActions(['setReadArticles']),
-    bottomReached() {
-      this.$emit('bottom-reached');
+    ...mapActions(useWhatsNew, ['setReadArticles']),
+    loadMore() {
+      this.previousButtonCount = this.getArticleToggleButtons().length;
+      this.$emit('load-more');
+    },
+    getArticleToggleButtons() {
+      return (
+        this.$refs.featureList?.querySelectorAll('[data-testid="whats-new-article-toggle"]') || []
+      );
+    },
+    focusFirstNewItem() {
+      this.$nextTick(() => {
+        const buttons = this.getArticleToggleButtons();
+        const firstNewButton = buttons[this.previousButtonCount];
+        if (firstNewButton) {
+          firstNewButton.focus();
+        }
+      });
     },
     showUnread(index) {
       return index <= this.totalArticlesToRead && !this.readArticles.includes(index);
@@ -95,26 +99,29 @@ export default {
 <template>
   <div>
     <template v-if="features.length || !fetching">
-      <!-- eslint-disable vue/v-on-event-hyphenation -->
-      <gl-infinite-scroll
-        ref="infiniteScroll"
-        :fetched-items="features.length"
-        :max-list-height="drawerBodyHeight"
-        class="gl-p-0"
-        @bottomReached="bottomReached"
-      >
-        <template #items>
-          <feature
-            v-for="(feature, index) in features"
-            :key="feature.name"
-            :feature="feature"
-            :show-unread="showUnread(index)"
-            @mark-article-as-read="markAsRead(index)"
-            @close-drawer="closeDrawer"
-          />
-        </template>
-      </gl-infinite-scroll>
-      <!-- eslint-enable vue/v-on-event-hyphenation -->
+      <div ref="featureList" class="gl-p-0">
+        <feature
+          v-for="(feature, index) in features"
+          :key="feature.name"
+          :feature="feature"
+          :show-unread="showUnread(index)"
+          @mark-article-as-read="markAsRead(index)"
+          @close-drawer="closeDrawer"
+        />
+      </div>
+
+      <div v-if="pageInfo.nextPage" class="gl-mb-6 gl-mt-5 gl-flex gl-justify-center">
+        <gl-button
+          data-testid="load-more-button"
+          size="small"
+          category="tertiary"
+          variant="confirm"
+          :loading="fetching"
+          @click="loadMore"
+        >
+          {{ __('Load more') }}
+        </gl-button>
+      </div>
     </template>
     <div v-else class="gl-mt-5">
       <skeleton-loader />

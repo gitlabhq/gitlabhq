@@ -10,7 +10,7 @@ module Gitlab
         # Timestamps are stored with 6 digit microseconds precision in both PG and in CH (our schema)
         TIME_PATTERN = "%Y-%m-%d %H:%M:%S.%6N"
 
-        # rubocop: disable Naming/PredicateName -- methods required by PageInfo
+        # rubocop: disable Naming/PredicatePrefix -- methods required by PageInfo
         # https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo.Fields
         def has_previous_page
           if after
@@ -44,7 +44,7 @@ module Gitlab
         end
         strong_memoize_attr :has_next_page
 
-        # rubocop: enable Naming/PredicateName
+        # rubocop: enable Naming/PredicatePrefix
         def nodes
           limited_nodes.take(limit_value)
         end

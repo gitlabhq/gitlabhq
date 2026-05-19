@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Achievements::UpdateUserAchievementService, feature_category: :user_profile do
   describe '#execute' do
     let_it_be(:achievement_owner) { create(:user) }
-    let_it_be(:user_achievement) { create(:user_achievement, user: achievement_owner) }
+    let_it_be(:user_achievement, freeze: false) { create(:user_achievement, user: achievement_owner) }
 
     let(:params) do
       { show_on_profile: false }

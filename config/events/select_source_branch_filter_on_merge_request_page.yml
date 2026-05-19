@@ -10,6 +10,8 @@ additional_properties:
   label:
     description: include or exclude
 product_group: global_search
+product_categories:
+- global_search
 milestone: '17.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156491
 tiers:

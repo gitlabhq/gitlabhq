@@ -42,7 +42,7 @@ module Mutations
           response = ::Authn::PersonalAccessTokens::CreateGranularService.new(
             current_user: current_user,
             organization: Current.organization,
-            params: args,
+            params: args.merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API),
             granular_scopes: granular_scopes
           ).execute
 

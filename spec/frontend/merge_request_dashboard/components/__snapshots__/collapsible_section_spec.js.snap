@@ -11,6 +11,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
   >
     <header
       class="@md/panel:gl-flex-nowrap crud-header gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-2 gl-justify-between gl-pl-3 gl-pr-2 gl-pr-9 gl-py-0 gl-relative gl-rounded-t-lg"
+      data-testid="crud-header"
     >
       <div
         class="gl-flex gl-flex-col gl-grow gl-py-3 gl-self-center"

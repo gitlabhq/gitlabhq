@@ -61,7 +61,7 @@ To search for and clone a GitLab project:
 1. If cloning a GitLab repository, select a cloning method:
    - To clone with Git, select the URL that begins with `user@hostname.com`.
    - To clone with HTTPS, select the URL that begins with `https://`. This method uses your access token to clone the repository, fetch commits, and push commits.
-1. Select whether to open the cloned repository, or add it to your current workspace.
+1. Select whether to open the cloned repository, or add it to your current VS Code workspace.
 
 ## Browse a repository in read-only mode
 
@@ -82,5 +82,5 @@ To browse a GitLab repository in read-only mode:
 1. To view a repository you've already added, select **Choose a project**, then select your desired project from the dropdown list.
 1. In the dropdown list, select the Git branch you want to view, then press <kbd>Enter</kbd> to confirm.
 
-To add a `gitlab-remote` URL to your workspace file, see
+To add a `gitlab-remote` URL to your VS Code workspace file, see
 [Workspace file](https://code.visualstudio.com/docs/editor/multi-root-workspaces#_workspace-file) in the VS Code documentation.

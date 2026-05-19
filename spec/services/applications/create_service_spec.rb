@@ -14,10 +14,6 @@ RSpec.describe ::Applications::CreateService, feature_category: :system_access d
 
     it { expect { subject.execute }.to change { Authn::OauthApplication.count }.by(1) }
 
-    it 'leaves ROPC enabled' do
-      expect(service.execute.ropc_enabled?).to be_truthy
-    end
-
     it 'sets device_code_enabled to false for new applications' do
       expect(service.execute.device_code_enabled?).to be_falsy
     end
@@ -32,12 +28,6 @@ RSpec.describe ::Applications::CreateService, feature_category: :system_access d
       application = subject.execute
 
       expect(application.errors.full_messages).to include "Scopes can't be blank"
-    end
-  end
-
-  describe '.disable_ropc_for_all_applications?' do
-    it 'returns false by default' do
-      expect(described_class).not_to be_disable_ropc_for_all_applications
     end
   end
 end

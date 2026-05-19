@@ -4,6 +4,7 @@ import { GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'ObservabilityNoDataEmptyState',
   NO_DATA_SVG,
   i18n: {
     title: s__('Observability|Sorry, your filter produced no results'),

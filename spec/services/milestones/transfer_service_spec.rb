@@ -28,7 +28,7 @@ RSpec.describe Milestones::TransferService, feature_category: :team_planning do
 
       context 'without existing milestone at the new group level' do
         it 'recreates the missing group milestones at project level' do
-          expect { service.execute }.to change(project.milestones, :count).by(1)
+          expect { service.execute }.to change { project.milestones.count }.by(1)
         end
 
         it 'applies new project milestone to issues with group milestone' do
@@ -47,7 +47,7 @@ RSpec.describe Milestones::TransferService, feature_category: :team_planning do
           let(:group_milestone) { create(:milestone, group: old_group_ancestor) }
 
           it 'recreates the missing group milestones at project level' do
-            expect { service.execute }.to change(project.milestones, :count).by(1)
+            expect { service.execute }.to change { project.milestones.count }.by(1)
           end
         end
 
@@ -131,7 +131,7 @@ RSpec.describe Milestones::TransferService, feature_category: :team_planning do
         let!(:existing_milestone) { create(:milestone, group: new_group, title: group_milestone.title) }
 
         it 'does not create a new milestone' do
-          expect { service.execute }.not_to change(project.milestones, :count)
+          expect { service.execute }.not_to change { project.milestones.count }
         end
 
         it 'applies existing milestone to issues with group milestone' do

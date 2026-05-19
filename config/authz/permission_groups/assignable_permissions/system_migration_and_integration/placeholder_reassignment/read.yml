@@ -1,7 +1,0 @@
----
-name: read_placeholder_reassignment
-description: Grants the ability to read placeholder reassignments
-permissions:
-  - read_placeholder_reassignment
-boundaries:
-  - group

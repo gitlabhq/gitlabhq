@@ -32,7 +32,7 @@ class JobFinder < Base
     return if artifact_path.nil?
 
     client.pipelines(project, pipeline_query_params).paginate_with_limit(MAX_PIPELINES_TO_ITERATE) do |pipeline|
-      $stderr.puts "Iterating over #{pipeline}" # rubocop:disable Style/StderrPuts
+      warn "Iterating over #{pipeline}"
       client.pipeline_jobs(project, pipeline.id, job_query_params).auto_paginate do |job|
         next if job_name && !found_job_by_name?(job)
 

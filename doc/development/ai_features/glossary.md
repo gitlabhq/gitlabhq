@@ -206,6 +206,10 @@ consistently across projects. Flows are ideal when a task follows a predictable 
 fixing failing pipelines, updating dependencies, or applying policy checks. Flows can be
 executed without continuous human input.
 
+#### Adding new foundational flows
+
+For detailed instructions on how to add new foundational flows to GitLab, see the [foundational flows development guide](foundational_flows.md). Foundational flows are defined in the monolith at `ee/app/models/ai/catalog/foundational_flow.rb` and implemented in GitLab Duo Workflow Service.
+
 ### Agent
 
 An Agent is an autonomous, persona-like software component powered by an AI

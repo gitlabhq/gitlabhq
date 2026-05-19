@@ -8,19 +8,21 @@ module Ci
 
         attr_reader :pipeline
 
-        def initialize(pipeline)
+        def initialize(pipeline, observe_processing_delay: false)
           @pipeline = pipeline
+          @observe_processing_delay = observe_processing_delay
           @stage_jobs = {}
           @prior_stage_jobs = {}
         end
 
         # This method updates internal status for given ID
-        def set_job_status(id, status, lock_version)
+        def set_job_status(id, status, lock_version, finished_at)
           job = all_jobs_by_id[id]
           return unless job
 
           job[:status] = status
           job[:lock_version] = lock_version
+          job[:finished_at] = finished_at
         end
 
         # This methods gets composite status of all jobs
@@ -67,6 +69,24 @@ module Ci
           all_jobs.lazy.reject { |job| job[:processed] }
         end
 
+        def max_finished_at_of_jobs(names)
+          names.lazy.filter_map { |name| all_jobs_by_name[name]&.[](:finished_at) }.max
+        end
+
+        def max_finished_at_prior_to_stage(stage_position)
+          strong_memoize_with(:max_finished_at_prior_to_stage, stage_position) do
+            next nil if stage_position <= 0
+
+            previous_max = max_finished_at_prior_to_stage(stage_position - 1)
+            stage_max = (all_jobs_grouped_by_stage_position[stage_position - 1] || [])
+              .lazy
+              .filter_map { |job| job[:finished_at] }
+              .max
+
+            [previous_max, stage_max].compact.max
+          end
+        end
+
         # This method returns the names of jobs that have a stopped status
         def stopped_job_names
           all_jobs.select { |job| job[:status].in?(Ci::HasStatus::STOPPED_STATUSES) }.pluck(:name) # rubocop: disable CodeReuse/ActiveRecord
@@ -74,11 +94,21 @@ module Ci
 
         private
 
-        # We use these columns to perform an efficient calculation of a status
         JOB_ATTRS = [
           :id, :name, :status, :allow_failure,
           :stage_idx, :processed, :lock_version
         ].freeze
+
+        JOB_ATTRS_WITH_FINISHED_AT = (JOB_ATTRS + [:finished_at]).freeze
+
+        # We use these columns to perform an efficient calculation of a status
+        def job_attrs
+          if @observe_processing_delay
+            JOB_ATTRS_WITH_FINISHED_AT
+          else
+            JOB_ATTRS
+          end
+        end
 
         def status_for_array(jobs, dag: false)
           result = Gitlab::Ci::Status::Composite
@@ -113,13 +143,15 @@ module Ci
           #
           # Since we need to reprocess everything we can fetch all of them and do processing ourselves.
           strong_memoize(:all_jobs) do
+            attrs = job_attrs
+
             raw_jobs = pipeline
               .current_jobs
               .ordered_by_stage
-              .pluck(*JOB_ATTRS)
+              .pluck(*attrs)
 
             raw_jobs.map do |row|
-              JOB_ATTRS.zip(row).to_h
+              attrs.zip(row).to_h
             end
           end
         end

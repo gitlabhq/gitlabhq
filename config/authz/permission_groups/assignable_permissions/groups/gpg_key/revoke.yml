@@ -1,0 +1,9 @@
+---
+name: revoke_gpg_key
+description: Grants the ability to revoke GPG keys
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - revoke_user_gpg_key

@@ -44,7 +44,7 @@ import mergeRequestTimeTrackingQuery from './merge_request_time_tracking.query.g
 import mergeRequestTodoQuery from './merge_request_todo.query.graphql';
 import mergeRequestTodoSubscription from './merge_request_todo.subscription.graphql';
 import todoCreateMutation from './todo_create.mutation.graphql';
-import todoMarkDoneMutation from './todo_mark_done.mutation.graphql';
+import todosMarkAllDoneMutation from './todos_mark_all_done.mutation.graphql';
 import updateEpicConfidentialMutation from './update_epic_confidential.mutation.graphql';
 import updateEpicDueDateMutation from './update_epic_due_date.mutation.graphql';
 import updateEpicStartDateMutation from './update_epic_start_date.mutation.graphql';
@@ -288,7 +288,7 @@ export const todoQueries = {
 
 export const todoMutations = {
   [todoMutationTypes.create]: todoCreateMutation,
-  [todoMutationTypes.markDone]: todoMarkDoneMutation,
+  [todoMutationTypes.markDone]: todosMarkAllDoneMutation,
 };
 
 export const escalationStatusQuery = getEscalationStatusQuery;

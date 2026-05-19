@@ -26,9 +26,9 @@ import (
 
 // GkgServer holds the connection parameters for a GKG gRPC server.
 type GkgServer struct {
-	Address string `json:"address"`
-	JWT     string `json:"jwt"`
-	TLS     bool   `json:"tls"`
+	Address string            `json:"address"`
+	TLS     bool              `json:"tls"`
+	Headers map[string]string `json:"headers,omitempty"`
 }
 
 type cacheKey struct {

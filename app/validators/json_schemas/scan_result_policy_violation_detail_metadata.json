@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Overflow count metadata for scan result policy violation details",
+  "type": "object",
+  "properties": {
+    "total_dependencies_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "total_commit_shas_count": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false
+}

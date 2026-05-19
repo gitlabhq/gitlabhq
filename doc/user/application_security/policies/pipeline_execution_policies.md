@@ -33,7 +33,8 @@ Use pipeline execution policies to manage and enforce CI/CD jobs for multiple pr
 
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159858) the `suffix` field in GitLab 17.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165096) pipeline execution so later stages wait for the `.pipeline-policy-pre` stage to complete in GitLab 17.7.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/558233) pipeline execution so that when a `.pipeline-policy-pre` stage fails, all later jobs are skipped in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ensure_pipeline_policy_pre_succeeds`. Enabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/558233) pipeline execution so that when a `.pipeline-policy-pre` stage fails, all later jobs are skipped in GitLab 18.10. Enabled by default.
+- New pipeline execution [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233245) in GitLab 19.0. Feature flag `ensure_pipeline_policy_pre_succeeds` removed.
 
 {{< /history >}}
 
@@ -117,21 +118,12 @@ The security policy pipeline check behaves as follows:
 
 ### `.pipeline-policy-pre` stage
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/558233) pipeline execution so that when a `.pipeline-policy-pre` stage fails, all later jobs are skipped in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ensure_pipeline_policy_pre_succeeds`. Enabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/558233) pipeline execution so that when a `.pipeline-policy-pre` stage fails, all later jobs are skipped in GitLab 18.10. Enabled by default.
+- New pipeline execution [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233245) in GitLab 19.0. Feature flag `ensure_pipeline_policy_pre_succeeds` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Jobs in the `.pipeline-policy-pre` stage always execute.
 This stage is designed for security and compliance use cases.
@@ -148,12 +140,8 @@ use the `.pre` stage or a custom stage instead.
 
 > [!note]
 > In GitLab 18.9 and earlier, jobs with `needs: []` or `when: always`
-> could bypass a failed `.pipeline-policy-pre` stage unless you enabled
-> the `ensure_pipeline_policy_pre_succeeds` experiment.
-> This experiment is no longer required. The behavior is now the default.
-> On GitLab Self-Managed, an administrator
-> can [disable this feature flag](../../../administration/feature_flags/_index.md)
-> to revert to the previous behavior where only `needs` jobs are blocked.
+> could bypass a failed `.pipeline-policy-pre` stage.
+> This behavior became the default in GitLab 18.10 and is permanent as of GitLab 19.0.
 
 ### Job naming best practice
 
@@ -905,7 +893,7 @@ To recreate a pipeline execution policy:
 <!-- markdownlint-disable MD044 -->
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Policies**.
+1. In the left sidebar, select **Secure** > **Policies**.
 1. Select the pipeline execution policy you want to recreate.
 1. In the right sidebar, select the **YAML** tab and copy the contents of the entire policy file.
 1. Next to the policies table, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), and select **Delete**.

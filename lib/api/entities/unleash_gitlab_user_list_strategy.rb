@@ -3,10 +3,10 @@
 module API
   module Entities
     class UnleashGitlabUserListStrategy < Grape::Entity
-      expose :name do |_strategy|
+      expose :name, documentation: { type: 'String' } do |_strategy|
         ::Operations::FeatureFlags::Strategy::STRATEGY_USERWITHID
       end
-      expose :parameters do |strategy|
+      expose :parameters, documentation: { type: 'Hash' } do |strategy|
         { userIds: strategy.user_list.user_xids }
       end
     end

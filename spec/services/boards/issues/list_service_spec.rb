@@ -7,7 +7,7 @@ RSpec.describe Boards::Issues::ListService, feature_category: :portfolio_managem
     let_it_be(:user) { create(:user) }
 
     context 'when parent is a project' do
-      let_it_be(:project) { create(:project, :empty_repo) }
+      let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
       let_it_be(:board)   { create(:board, project: project) }
 
       let_it_be(:m1) { create(:milestone, project: project) }
@@ -42,7 +42,7 @@ RSpec.describe Boards::Issues::ListService, feature_category: :portfolio_managem
 
       let(:parent) { project }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -86,16 +86,56 @@ RSpec.describe Boards::Issues::ListService, feature_category: :portfolio_managem
         end
 
         context 'when filtering by task type' do
-          it 'only returns the task type' do
-            params = { board_id: board.id, id: list1.id, issue_types: 'task' }
+          # Tasks are only filterable on boards when work_item_tasks_on_boards is enabled.
+          # The provider also short-circuits to false for user-namespaced projects, so the
+          # board's project must be group-owned for the FF check to apply.
+          let_it_be(:group_for_tasks) { create(:group) }
+          let_it_be(:task_project) { create(:project, :empty_repo, group: group_for_tasks) }
+          let_it_be(:task_board) { create(:board, project: task_project) }
+          let_it_be(:task_list) { create(:list, board: task_board) }
+          let_it_be(:task_only) do
+            create(:labeled_issue, :task, project: task_project, labels: [task_list.label])
+          end
 
-            expect(described_class.new(parent, user, params).execute).to eq [task]
+          before_all do
+            task_project.add_developer(user)
+          end
+
+          before do
+            stub_feature_flags(work_item_tasks_on_boards: true)
+          end
+
+          it 'only returns the task type' do
+            params = { board_id: task_board.id, id: task_list.id, issue_types: 'task' }
+
+            expect(described_class.new(task_project, user, params).execute).to eq [task_only]
           end
         end
 
         context 'when filtering by negated type' do
           it 'only returns the specified type' do
             params = { board_id: board.id, id: list1.id, not: { issue_types: %w[issue task] } }
+
+            expect(described_class.new(parent, user, params).execute).to contain_exactly(incident)
+          end
+        end
+
+        context 'when filtering by work_item_type_ids' do
+          let(:incident_type) { build(:work_item_system_defined_type, :incident) }
+
+          it 'only returns issues with the specified work item type' do
+            params = { board_id: board.id, id: list1.id, work_item_type_ids: [incident_type.id] }
+
+            expect(described_class.new(parent, user, params).execute).to eq [incident]
+          end
+        end
+
+        context 'when filtering by negated work_item_type_ids' do
+          let(:issue_type) { build(:work_item_system_defined_type, :issue) }
+          let(:task_type) { build(:work_item_system_defined_type, :task) }
+
+          it 'excludes issues with the specified work item types' do
+            params = { board_id: board.id, id: list1.id, not: { work_item_type_ids: [issue_type.id, task_type.id] } }
 
             expect(described_class.new(parent, user, params).execute).to contain_exactly(incident)
           end
@@ -176,7 +216,7 @@ RSpec.describe Boards::Issues::ListService, feature_category: :portfolio_managem
 
   describe '.initialize_relative_positions' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :empty_repo) }
+    let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
     let_it_be(:board) { create(:board, project: project) }
 
     let(:issue) { create(:issue, project: project, relative_position: nil) }
@@ -195,7 +235,7 @@ RSpec.describe Boards::Issues::ListService, feature_category: :portfolio_managem
       end
 
       context 'user can move issues' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 

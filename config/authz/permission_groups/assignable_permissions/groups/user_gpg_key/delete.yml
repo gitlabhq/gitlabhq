@@ -1,7 +1,10 @@
 ---
 name: delete_user_gpg_key
 description: Grants the ability to delete user GPG keys
+deprecated: true
 boundaries:
   - user
+available_for:
+  - granular_access_token
 permissions:
   - delete_user_gpg_key

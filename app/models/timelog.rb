@@ -19,7 +19,7 @@ class Timelog < ApplicationRecord
   validates_with ExactlyOnePresentValidator, fields: [:issue, :merge_request]
   validate :check_total_time_spent_is_within_range, on: :create, unless: :importing?, if: :time_spent
 
-  belongs_to :issue, touch: true
+  belongs_to :issue, touch: true, inverse_of: :timelogs
   belongs_to :merge_request, touch: true
   belongs_to :project
   belongs_to :user

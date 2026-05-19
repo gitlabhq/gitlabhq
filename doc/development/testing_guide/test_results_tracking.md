@@ -5,17 +5,19 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Test results tracking
 ---
 
-We developed the [`gitlab_quality-test_tooling`](https://gitlab.com/gitlab-org/ruby/gems/gitlab_quality-test_tooling) gem that includes several commands to automate test results tracking.
-
-The goal of this gem is to have a consolidated set of tooling that we use across our various test suite (for example, GitLab Rails & E2E test suites).
-
-The initial motivation and development was tracked by [this epic](https://gitlab.com/groups/gitlab-org/-/epics/10536).
-
 ## Rails test results tracking
 
-The `relate-failure-issue` command from the gem creates or updates issues in the
-[Test Failure Issues](https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues) project.
-For more information about the command, see the gem's README.
+`GitlabQuality::TestTooling::TestMetricsExporter::Formatter` from the
+[`gitlab_quality-test_tooling`](https://gitlab.com/gitlab-org/ruby/gems/gitlab_quality-test_tooling)
+gem exports test execution data to a ClickHouse instance
+during CI pipeline runs, collecting per-example metrics including run type,
+pipeline type, feature category, and ownership information.
+
+Use the [test metrics dashboards](https://dashboards.gitlab.net/dashboards/f/dx/dx?tag=test-metrics)
+to view test results, track flaky tests, and monitor test suite health.
+
+Additionally, see [flaky tests](https://handbook.gitlab.com/handbook/engineering/testing/flaky-tests/) handbook page on how
+this data is used for flaky test reporting.
 
 ## End-to-end test results tracking
 

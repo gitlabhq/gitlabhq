@@ -16,6 +16,16 @@ module Namespaces
       no_archived_ancestor_banner_message(namespace)
     end
 
+    def archived_banner_message_mobile(namespace)
+      messages = {
+        group: _('This group is %{strong_open}read-only%{strong_close}.'),
+        project: _('This project is %{strong_open}read-only%{strong_close}.')
+      }
+
+      message = message_for_namespace(namespace, messages)
+      safe_format(message, tag_pair(tag.strong, :strong_open, :strong_close))
+    end
+
     private
 
     def no_archived_ancestor_banner_message(namespace)

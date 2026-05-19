@@ -112,7 +112,8 @@ module Projects
             project_id: project.id,
             ip_address: request.remote_ip,
             timestamp: Time.current.iso8601,
-            action: 'project_ci_cd_settings_page_viewed'
+            action: 'project_ci_cd_settings_page_viewed',
+            user_agent: Gitlab::Audit::Sanitizer.sanitize_user_agent(request.user_agent)
           }
         }
 

@@ -14,18 +14,15 @@ module Gitlab
           def authenticate!
             resource = mapping.to.find_for_database_authentication(authentication_hash)
 
-            # We check the OTP / backup code, then defer to DatabaseAuthenticatable
+            # We check the OTP / backup code, then defer to DatabaseAuthenticatable.
+            # Since devise-two-factor v6.0.0, both validate_and_consume_otp! and
+            # invalidate_otp_backup_code! persist changes internally via save!, so
+            # no explicit save! is needed here.
             is_valid = validate(resource) do
               validate_otp(resource) || resource.invalidate_otp_backup_code!(params[scope]['otp_attempt'])
             end
 
-            if is_valid
-              # Devise fails to authenticate invalidated resources, but if we've
-              # gotten here, the object changed (Since we deleted a recovery code)
-              resource.save!
-
-              super
-            end
+            super if is_valid
 
             fail(::Devise.paranoid ? :invalid : :not_found_in_database) unless resource # rubocop: disable Style/SignalException
 

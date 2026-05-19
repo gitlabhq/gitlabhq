@@ -42,11 +42,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
     context 'when config is defined in a custom path in the repository' do
       let(:ci_config_path) { 'path/to/config.yml' }
       let(:config_content_result) do
-        <<~EOY
+        <<~YAML
           ---
           include:
           - local: #{ci_config_path}
-        EOY
+        YAML
       end
 
       before do
@@ -68,11 +68,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
     context 'when config is defined remotely' do
       let(:ci_config_path) { 'http://example.com/path/to/ci/config.yml' }
       let(:config_content_result) do
-        <<~EOY
+        <<~YAML
           ---
           include:
           - remote: #{ci_config_path}
-        EOY
+        YAML
       end
 
       it 'builds root config including the remote config' do
@@ -87,12 +87,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
     context 'when config is defined in a separate repository' do
       let(:ci_config_path) { 'path/to/.gitlab-ci.yml@another-group/another-repo' }
       let(:config_content_result) do
-        <<~EOY
+        <<~YAML
           ---
           include:
           - project: another-group/another-repo
             file: path/to/.gitlab-ci.yml
-        EOY
+        YAML
       end
 
       it 'builds root config including the path to another repository' do
@@ -106,13 +106,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
       context 'when path specifies a refname' do
         let(:ci_config_path) { 'path/to/.gitlab-ci.yml@another-group/another-repo:refname' }
         let(:config_content_result) do
-          <<~EOY
+          <<~YAML
             ---
             include:
             - project: another-group/another-repo
               file: path/to/.gitlab-ci.yml
               ref: refname
-          EOY
+          YAML
         end
 
         it 'builds root config including the path and refname to another repository' do
@@ -128,11 +128,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
     context 'when config is defined in the default .gitlab-ci.yml' do
       let(:ci_config_path) { nil }
       let(:config_content_result) do
-        <<~EOY
+        <<~YAML
           ---
           include:
           - local: ".gitlab-ci.yml"
-        EOY
+        YAML
       end
 
       before do
@@ -188,11 +188,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
     context 'when config is the Auto-Devops template' do
       let(:ci_config_path) { nil }
       let(:config_content_result) do
-        <<~EOY
+        <<~YAML
           ---
           include:
           - template: Auto-DevOps.gitlab-ci.yml
-        EOY
+        YAML
       end
 
       before do
@@ -212,11 +212,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
       let(:source) { :ondemand_dast_scan }
       let(:ci_config_path) { nil }
       let(:content) do
-        <<~EOY
+        <<~YAML
           ---
           stages:
           - dast
-        EOY
+        YAML
       end
 
       it 'uses the parameter content' do
@@ -229,11 +229,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
 
       context 'when passing inputs' do
         let(:content) do
-          <<~EOY
+          <<~YAML
             ---
             stages:
               - $[[ inputs.stage ]]
-          EOY
+          YAML
         end
 
         let(:inputs) { { stage: 'bar' } }

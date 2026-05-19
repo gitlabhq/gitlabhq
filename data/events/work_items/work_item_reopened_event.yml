@@ -1,0 +1,6 @@
+---
+event: WorkItems::WorkItemReopenedEvent
+description: Published when a previously closed work item (issue or epic work item)
+  is reopened.
+feature_category: team_planning
+ee_only: true

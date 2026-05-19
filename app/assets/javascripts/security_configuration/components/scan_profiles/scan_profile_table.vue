@@ -10,9 +10,14 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { PROMO_URL } from '~/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { SCAN_PROFILE_CATEGORIES, SCAN_PROFILE_I18N } from '~/security_configuration/constants';
+import { InternalEvents } from '~/tracking';
+import {
+  SCAN_PROFILE_I18N,
+  EVENT_VIEW_SCAN_PROFILE_TABLE,
+  EVENT_CLICK_SCAN_PROFILE_LEARN_MORE_LINK,
+} from '~/security_configuration/constants';
+import ScanTypeCell from '~/security_configuration/components/scan_profiles/scan_type_cell.vue';
 
 export default {
   name: 'ScanProfileTable',
@@ -25,7 +30,9 @@ export default {
     GlLink,
     GlSkeletonLoader,
     GlSprintf,
+    ScanTypeCell,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     tableItems: {
       type: Array,
@@ -52,12 +59,10 @@ export default {
       );
     },
   },
-  methods: {
-    getScannerMetadata(scanType) {
-      return SCAN_PROFILE_CATEGORIES[scanType] || {};
-    },
+  mounted() {
+    this.trackEvent(EVENT_VIEW_SCAN_PROFILE_TABLE);
   },
-  LEARN_MORE_LINK: `${PROMO_URL}/solutions/application-security-testing/`,
+  EVENT_CLICK_SCAN_PROFILE_LEARN_MORE_LINK,
   SCAN_PROFILE_I18N,
 };
 </script>
@@ -96,7 +101,14 @@ export default {
         >
           <gl-sprintf :message="$options.SCAN_PROFILE_I18N.profileHelpDescription">
             <template #link="{ content }">
-              <gl-link :href="scanProfileHelpPath" target="_blank">{{ content }}</gl-link>
+              <gl-link
+                :href="scanProfileHelpPath"
+                target="_blank"
+                :data-event-tracking="$options.EVENT_CLICK_SCAN_PROFILE_LEARN_MORE_LINK"
+                data-event-label="profile_help"
+              >
+                {{ content }}
+              </gl-link>
             </template>
           </gl-sprintf>
         </gl-popover>
@@ -104,40 +116,11 @@ export default {
     </template>
 
     <template #cell(scanType)="{ item }">
-      <div class="gl-flex gl-items-center">
-        <div
-          class="gl-border gl-mr-3 gl-flex gl-h-7 gl-w-7 gl-items-center gl-justify-center gl-rounded-lg gl-p-2"
-          :class="
-            item.isConfigured
-              ? 'gl-border-green-500 gl-bg-green-100 gl-text-green-800'
-              : 'gl-border-dashed gl-border-strong gl-bg-default gl-text-strong'
-          "
-        >
-          <span class="gl-font-weight-bold gl-text-xs">{{
-            getScannerMetadata(item.scanType).label
-          }}</span>
-        </div>
-        <span class="gl-font-bold">{{ getScannerMetadata(item.scanType).displayName }}</span>
-        <gl-icon
-          :id="`scanner-info-${item.scanType}`"
-          name="information-o"
-          variant="info"
-          class="gl-ml-2"
-        />
-        <gl-popover
-          :target="`scanner-info-${item.scanType}`"
-          placement="top"
-          :title="getScannerMetadata(item.scanType).helpTitle"
-        >
-          <gl-sprintf :message="getScannerMetadata(item.scanType).helpDescription">
-            <template #link="{ content }">
-              <gl-link :href="getScannerMetadata(item.scanType).helpLink" target="_blank">{{
-                content
-              }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </gl-popover>
-      </div>
+      <scan-type-cell
+        :scan-type="item.scanType"
+        :is-configured="item.isConfigured"
+        :status="item.status"
+      />
     </template>
 
     <template #cell(name)="{ item }">
@@ -152,25 +135,13 @@ export default {
     <template #cell(status)="{ item }">
       <slot v-if="$scopedSlots['cell(status)']" name="cell(status)" v-bind="{ item }"></slot>
       <div v-else class="gl-flex gl-flex-col">
-        <span class="gl-font-weight-bold">
-          {{ __('Available with Ultimate') }}
-        </span>
-        <span class="gl-mt-1 gl-text-sm gl-text-subtle">
-          <gl-link
-            :href="$options.LEARN_MORE_LINK"
-            target="_blank"
-            data-testid="learn-more-ultimate-link"
-          >
-            {{ __('Learn more about the Ultimate security suite') }}
-            <gl-icon name="external-link" :aria-label="__('(external link)')" />
-          </gl-link>
-        </span>
+        {{ __('—') }}
       </div>
     </template>
 
     <template #cell(lastScan)="{ item }">
       <slot v-if="$scopedSlots['cell(last-scan)']" name="cell(last-scan)" v-bind="{ item }"></slot>
-      <span v-else>{{ item.lastScan || '—' }}</span>
+      <span v-else>{{ item.lastScan || __('—') }}</span>
     </template>
 
     <template #cell(actions)="{ item }">

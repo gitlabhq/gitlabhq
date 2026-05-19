@@ -140,6 +140,13 @@ RSpec.describe MergeRequests::UpdateAssigneesService, :request_store, feature_ca
         update_merge_request
         expect(merge_request.reload.assignees).to eq([service_account])
       end
+
+      it 'attributes the system note to the human user, not the service account', :sidekiq_inline do
+        update_merge_request
+
+        system_note = merge_request.notes.system.last
+        expect(system_note.author).to eq(user)
+      end
     end
 
     context 'when assigning to a regular account with composite identity enforced' do

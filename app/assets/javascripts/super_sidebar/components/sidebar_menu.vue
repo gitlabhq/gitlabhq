@@ -7,7 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { userCounts } from '~/super_sidebar/user_counts_manager';
 import { formatAsyncCount } from '~/super_sidebar/utils';
-import { PANELS_WITH_PINS, PINNED_NAV_STORAGE_KEY } from '../constants';
+import { PANELS_WITH_PINS, PINNED_NAV_STORAGE_KEY, MAX_OPEN_WORK_ITEMS_COUNT } from '../constants';
 import NavItem from './nav_item.vue';
 import PinnedSection from './pinned_section.vue';
 import MenuSection from './menu_section.vue';
@@ -77,6 +77,9 @@ export default {
       variables() {
         return { fullPath: this.currentPath };
       },
+      context: {
+        featureCategory: 'navigation',
+      },
       skip() {
         return !this.currentPath;
       },
@@ -85,9 +88,17 @@ export default {
         const result = {};
 
         for (const [key, value] of Object.entries(values)) {
-          const formatted = formatAsyncCount(value);
-          if (formatted) {
-            result[key] = formatted;
+          if (
+            key === 'openWorkItemsCount' &&
+            value >= MAX_OPEN_WORK_ITEMS_COUNT &&
+            this.glFeatures.showWorkItemsSidebarCount
+          ) {
+            result[key] = `${formatAsyncCount(MAX_OPEN_WORK_ITEMS_COUNT)}+`;
+          } else {
+            const formatted = formatAsyncCount(value);
+            if (formatted) {
+              result[key] = formatted;
+            }
           }
         }
 
@@ -257,6 +268,7 @@ export default {
     </ul>
     <pinned-section
       v-if="supportsPins"
+      id="super-sidebar-pinned-section"
       ref="pinnedSectionButton"
       :items="pinnedItems"
       :has-flyout="showFlyoutMenus"
@@ -268,10 +280,11 @@ export default {
     <hr
       v-if="supportsPins"
       aria-hidden="true"
-      class="super-sidebar-main-separator gl-my-4"
+      class="gl-mx-3 gl-my-4"
       data-testid="main-menu-separator"
     />
     <ul
+      id="super-sidebar-non-static-section"
       aria-labelledby="super-sidebar-context-header"
       class="gl-mb-0 gl-list-none gl-p-0"
       data-testid="non-static-items-section"

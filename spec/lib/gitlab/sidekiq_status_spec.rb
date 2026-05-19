@@ -89,15 +89,15 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues_metadata do
     end
   end
 
-  describe '.running?' do
+  describe '.running_or_enqueued?' do
     it 'returns true if job is running' do
       described_class.set('123')
 
-      expect(described_class.running?('123')).to be(true)
+      expect(described_class.running_or_enqueued?('123')).to be(true)
     end
 
     it 'returns false if job is not found' do
-      expect(described_class.running?('123')).to be(false)
+      expect(described_class.running_or_enqueued?('123')).to be(false)
     end
   end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DeploymentsFinder, feature_category: :deployment_management do
+RSpec.describe DeploymentsFinder, feature_category: :deployment_management, factory_default: :keep do
   subject { described_class.new(params).execute }
 
   describe "validation" do
@@ -77,7 +77,8 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management do
     end
 
     context 'at project scope' do
-      let_it_be(:project) { create(:project, :public, :test_repo) }
+      let_it_be(:project) { create_default(:project, :public, :test_repo) }
+      let_it_be(:environment) { create_default(:environment, project: project) }
 
       let(:base_params) { { project: project } }
 
@@ -96,13 +97,13 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management do
         end
 
         context 'when the environment name is specified' do
-          let!(:environment1) { create(:environment, project: project) }
-          let!(:environment2) { create(:environment, project: project) }
-          let!(:deployment1) do
+          let(:environment1) { create(:environment, project: project) }
+          let(:environment2) { create(:environment, project: project) }
+          let(:deployment1) do
             create(:deployment, project: project, environment: environment1)
           end
 
-          let!(:deployment2) do
+          let(:deployment2) do
             create(:deployment, project: project, environment: environment2)
           end
 
@@ -114,13 +115,13 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management do
         end
 
         context 'when the environment ID is specified' do
-          let!(:environment1) { create(:environment, project: project) }
-          let!(:environment2) { create(:environment, project: project) }
-          let!(:deployment1) do
+          let(:environment1) { create(:environment, project: project) }
+          let(:environment2) { create(:environment, project: project) }
+          let(:deployment1) do
             create(:deployment, project: project, environment: environment1)
           end
 
-          let!(:deployment2) do
+          let(:deployment2) do
             create(:deployment, project: project, environment: environment2)
           end
 
@@ -155,9 +156,9 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management do
 
         let(:params) { { **base_params, order_by: order_by, sort: sort } }
 
-        let!(:deployment_1) { create(:deployment, :success, project: project, ref: 'master', created_at: 2.days.ago, updated_at: Time.now, finished_at: Time.now) }
-        let!(:deployment_2) { create(:deployment, :success, project: project, ref: 'feature', created_at: 1.day.ago, updated_at: 2.hours.ago, finished_at: 2.hours.ago) }
-        let!(:deployment_3) { create(:deployment, :success, project: project, ref: 'video', created_at: Time.now, updated_at: 1.hour.ago, finished_at: 1.hour.ago) }
+        let_it_be(:deployment_1) { create(:deployment, :success, project: project, ref: 'master', created_at: 2.days.ago, updated_at: Time.now, finished_at: Time.now) }
+        let_it_be(:deployment_2) { create(:deployment, :success, project: project, ref: 'feature', created_at: 1.day.ago, updated_at: 2.hours.ago, finished_at: 2.hours.ago) }
+        let_it_be(:deployment_3) { create(:deployment, :success, project: project, ref: 'video', created_at: Time.now, updated_at: 1.hour.ago, finished_at: 1.hour.ago) }
 
         where(:order_by, :sort, :ordered_deployments) do
           'created_at'  | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]
@@ -258,9 +259,9 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management do
       end
 
       context 'when filtering by finished time' do
-        let!(:deployment_1) { create(:deployment, :success, project: project, finished_at: 2.days.ago) }
-        let!(:deployment_2) { create(:deployment, :success, project: project, finished_at: 4.days.ago) }
-        let!(:deployment_3) { create(:deployment, :success, project: project, finished_at: 5.hours.ago) }
+        let_it_be(:deployment_1) { create(:deployment, :success, project: project, finished_at: 2.days.ago) }
+        let_it_be(:deployment_2) { create(:deployment, :success, project: project, finished_at: 4.days.ago) }
+        let_it_be(:deployment_3) { create(:deployment, :success, project: project, finished_at: 5.hours.ago) }
 
         context 'when filtering by finished_after and finished_before' do
           let(:params) { { **base_params, finished_after: 3.days.ago, finished_before: 1.day.ago, status: :success, order_by: :finished_at } }
@@ -306,6 +307,10 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management do
       let_it_be(:group_project_2) { create(:project, :public, :test_repo, group: group) }
       let_it_be(:subgroup_project_1) { create(:project, :public, :test_repo, group: subgroup) }
 
+      let_it_be(:group_project_1_environment) { create(:environment, project: group_project_1) }
+      let_it_be(:group_project_2_environment) { create(:environment, project: group_project_2) }
+      let_it_be(:subgroup_project_1_environment) { create(:environment, project: subgroup_project_1) }
+
       let(:base_params) { { group: group } }
 
       describe 'ordering' do
@@ -313,9 +318,9 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management do
 
         let(:params) { { **base_params, order_by: order_by, sort: sort } }
 
-        let!(:group_project_1_deployment) { create(:deployment, :success, project: group_project_1, iid: 11, ref: 'master', created_at: 2.days.ago, updated_at: Time.now, finished_at: Time.now) }
-        let!(:group_project_2_deployment) { create(:deployment, :success, project: group_project_2, iid: 12, ref: 'feature', created_at: 1.day.ago, updated_at: 2.hours.ago, finished_at: 2.hours.ago) }
-        let!(:subgroup_project_1_deployment) { create(:deployment, :success, project: subgroup_project_1, iid: 8, ref: 'video', created_at: Time.now, updated_at: 1.hour.ago, finished_at: 1.hour.ago) }
+        let_it_be(:group_project_1_deployment) { create(:deployment, :success, project: group_project_1, environment: group_project_1_environment, iid: 11, ref: 'master', created_at: 2.days.ago, updated_at: Time.now, finished_at: Time.now) }
+        let_it_be(:group_project_2_deployment) { create(:deployment, :success, project: group_project_2, environment: group_project_2_environment, iid: 12, ref: 'feature', created_at: 1.day.ago, updated_at: 2.hours.ago, finished_at: 2.hours.ago) }
+        let_it_be(:subgroup_project_1_deployment) { create(:deployment, :success, project: subgroup_project_1, environment: subgroup_project_1_environment, iid: 8, ref: 'video', created_at: Time.now, updated_at: 1.hour.ago, finished_at: 1.hour.ago) }
 
         where(:order_by, :sort) do
           'created_at'  | 'asc'

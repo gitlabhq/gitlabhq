@@ -54,7 +54,7 @@ module Lint
     def commit_from_head
       return [] unless first_commit_on_branch?
 
-      output, success = run_command("git log -1 --format='%h%n%B' HEAD")
+      output, success = run_command("git log -1 --no-show-signature --format='%h%n%B' HEAD")
       return [] unless success
 
       short_sha, message = output.strip.split("\n", 2)
@@ -96,7 +96,7 @@ module Lint
       first_sha = shas_output.split("\n").last
       return [] unless first_sha&.match?(SHA_PATTERN)
 
-      output, = run_command("git log -1 --format='%h%n%B' #{first_sha}")
+      output, = run_command("git log -1 --no-show-signature --format='%h%n%B' #{first_sha}")
       short_sha, message = output.strip.split("\n", 2)
       [CommitData.new(message.to_s.strip, short_sha)]
     end

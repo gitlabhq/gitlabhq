@@ -1,10 +1,12 @@
 import { GlForm, GlFormInput } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import EmailVerification from '~/sessions/new/components/email_verification.vue';
 import EmailForm from '~/sessions/new/components/email_form.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -302,6 +304,83 @@ describe('EmailVerification', () => {
 
         expect(findSecondaryEmailForm().exists()).toBe(false);
         expect(findCodeInput().element.value).toBe('');
+      });
+    });
+  });
+
+  describe('resend cooldown', () => {
+    const futureTimestamp = Date.now() + 60_000;
+    const pastTimestamp = Date.now() - 1_000;
+    const findCountdown = () => wrapper.findComponent(GlCountdown);
+
+    describe('when no initialShowResendAfter prop is given', () => {
+      it('shows the resend link immediately', () => {
+        createComponent();
+
+        expect(findResendLink().exists()).toBe(true);
+        expect(findCountdown().exists()).toBe(false);
+      });
+    });
+
+    describe('when initialShowResendAfter is in the past', () => {
+      it('shows the resend link immediately', () => {
+        createComponent({ props: { initialShowResendAfter: pastTimestamp } });
+
+        expect(findResendLink().exists()).toBe(true);
+        expect(findCountdown().exists()).toBe(false);
+      });
+    });
+
+    describe('when initialShowResendAfter is in the future', () => {
+      beforeEach(() => {
+        createComponent({ props: { initialShowResendAfter: futureTimestamp } });
+      });
+
+      it('hides the resend link and shows a countdown', () => {
+        expect(findResendLink().exists()).toBe(false);
+        expect(findCountdown().exists()).toBe(true);
+        expect(findCountdown().props('endDateString')).toBe(new Date(futureTimestamp).toString());
+      });
+
+      it('shows the resend link when the countdown expires', async () => {
+        findCountdown().vm.$emit('timer-expired');
+
+        await nextTick();
+
+        expect(findResendLink().exists()).toBe(true);
+        expect(findCountdown().exists()).toBe(false);
+      });
+    });
+
+    describe('when resend is clicked and succeeds', () => {
+      const showResendAfter = futureTimestamp;
+
+      beforeEach(async () => {
+        createComponent();
+
+        axiosMock.onPost(defaultPropsData.resendPath).replyOnce(HTTP_STATUS_OK, {
+          status: 'success',
+          show_resend_after: showResendAfter,
+        });
+
+        findResendLink().trigger('click');
+
+        await axios.waitForAll();
+      });
+
+      it('hides the resend link and shows a countdown', () => {
+        expect(findResendLink().exists()).toBe(false);
+        expect(findCountdown().exists()).toBe(true);
+        expect(findCountdown().props('endDateString')).toBe(new Date(showResendAfter).toString());
+      });
+
+      it('shows the resend link again after the countdown expires', async () => {
+        findCountdown().vm.$emit('timer-expired');
+
+        await nextTick();
+
+        expect(findResendLink().exists()).toBe(true);
+        expect(findCountdown().exists()).toBe(false);
       });
     });
   });

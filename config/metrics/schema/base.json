@@ -191,6 +191,9 @@
       "$ref": "status.json"
     },
     {
+      "$ref": "product_categories.json"
+    },
+    {
       "$ref": "internal_events/valid_timeframe_for_unique_property.json"
     }
   ]

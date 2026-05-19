@@ -4,12 +4,31 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import BlobHeaderViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
+import InlineBlamePopover from '~/blob/components/inline_blame_popover.vue';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import {
   RICH_BLOB_VIEWER,
   RICH_BLOB_VIEWER_TITLE,
   SIMPLE_BLOB_VIEWER,
   SIMPLE_BLOB_VIEWER_TITLE,
 } from '~/blob/components/constants';
+
+const mockDismiss = jest.fn();
+let mockShouldShowCallout = true;
+
+// Replaces the Apollo-backed UserCalloutDismisser with a simple slot renderer
+// so tests can control `shouldShowCallout` and assert `dismiss` calls.
+jest.mock('~/vue_shared/components/user_callout_dismisser.vue', () => ({
+  __esModule: true,
+  default: {
+    name: 'UserCalloutDismisser',
+    props: ['featureName'],
+    render() {
+      const slot = this.$scopedSlots?.default ?? this.$slots?.default;
+      return slot?.({ dismiss: mockDismiss, shouldShowCallout: mockShouldShowCallout }) ?? null;
+    },
+  },
+}));
 
 describe('Blob Header Viewer Switcher', () => {
   let wrapper;
@@ -27,6 +46,13 @@ describe('Blob Header Viewer Switcher', () => {
   const findSimpleViewerButton = () => wrapper.findComponent('[data-viewer="simple"]');
   const findRichViewerButton = () => wrapper.findComponent('[data-viewer="rich"]');
   const findBlameButton = () => wrapper.findByTestId('blame-button');
+  const findInlineBlamePopover = () => wrapper.findComponent(InlineBlamePopover);
+  const findUserCalloutDismisser = () => wrapper.findComponent(UserCalloutDismisser);
+
+  beforeEach(() => {
+    mockDismiss.mockClear();
+    mockShouldShowCallout = true;
+  });
 
   describe('initialization', () => {
     it('is initialized with simple viewer as active', () => {
@@ -149,6 +175,41 @@ describe('Blob Header Viewer Switcher', () => {
       createComponent({ showViewerToggles: true });
       expect(findSimpleViewerButton().text()).toBe('Code');
       expect(findRichViewerButton().text()).toBe('Preview');
+    });
+  });
+
+  describe('inline blame popover', () => {
+    it('does not render the popover when the Blame toggle is hidden', () => {
+      createComponent({ showBlameToggle: false });
+      expect(findUserCalloutDismisser().exists()).toBe(false);
+    });
+
+    it('renders UserCalloutDismisser with the correct feature name', async () => {
+      createComponent({ showBlameToggle: true });
+      await nextTick();
+      expect(findUserCalloutDismisser().props('featureName')).toBe('inline_blame_popover');
+    });
+
+    it('passes a function that returns the Blame button element as targetElement', async () => {
+      createComponent({ showBlameToggle: true });
+      await nextTick();
+      const { targetElement } = findInlineBlamePopover().props();
+      expect(typeof targetElement).toBe('function');
+      expect(targetElement()).toBe(findBlameButton().element);
+    });
+
+    it('calls dismiss when the popover emits dismiss', async () => {
+      createComponent({ showBlameToggle: true });
+      await nextTick();
+      findInlineBlamePopover().vm.$emit('dismiss');
+      expect(mockDismiss).toHaveBeenCalled();
+    });
+
+    it('does not render the popover when the callout has been dismissed', async () => {
+      mockShouldShowCallout = false;
+      createComponent({ showBlameToggle: true });
+      await nextTick();
+      expect(findInlineBlamePopover().exists()).toBe(false);
     });
   });
 });

@@ -1,6 +1,12 @@
 ---
 name: write_work_item
 description: Grants the ability to create and update work items
+deprecated: true
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - add_issue_spent_time
   - add_merge_request_spent_time
@@ -37,7 +43,6 @@ permissions:
   - create_snippet_note_award_emoji
   - create_wiki_page_meta_note
   - move_issue
-  - move_issue
   - promote_milestone
   - reorder_issue
   - reset_issue_spent_time
@@ -49,7 +54,6 @@ permissions:
   - update_epic_link
   - update_epic_note
   - update_issue
-  - update_work_item
   - update_issue_board
   - update_issue_board_list
   - update_issue_discussion
@@ -63,6 +67,3 @@ permissions:
   - update_snippet_discussion_note
   - update_snippet_note
   - update_wiki_page_meta_note
-boundaries:
-  - group
-  - project

@@ -8,7 +8,7 @@ title: Ask GitLab Duo Chat
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Add-on: GitLab Duo Pro or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -22,6 +22,7 @@ title: Ask GitLab Duo Chat
 {{< history >}}
 
 - Updated default LLM to Claude Sonnet 4.5 in GitLab 18.6.
+- Access to GitLab Duo Non-Agentic Chat removed for GitLab Duo Core customers on May 21, 2026 as part of GitLab 19.0, with a feature flag named `no_duo_classic_for_duo_core_users`. Enabled by default.
 
 {{< /history >}}
 
@@ -717,7 +718,7 @@ To troubleshoot a failed CI/CD job from a merge request:
 To troubleshoot a failed CI/CD job from the job log:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Jobs**.
+1. In the left sidebar, select **Build** > **Jobs**.
 1. Select the failed CI/CD job.
 1. Below the job log, either:
    - Select **Troubleshoot**.

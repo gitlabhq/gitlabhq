@@ -8,30 +8,9 @@ description: "(Deprecated) Kubernetes specific details for a cluster integration
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/d0cff7f5855f91b5479f9fdaa39d8d95ec691a9e
 milestone: '10.2'
 gitlab_schema: gitlab_main_org
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: cluster_id
-        table: clusters
-        sharding_key: project_id
-        belongs_to: cluster
-  group_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: cluster_id
-        table: clusters
-        sharding_key: group_id
-        belongs_to: cluster
-  organization_id:
-    references: organizations
-    backfill_via:
-      parent:
-        foreign_key: cluster_id
-        table: clusters
-        sharding_key: organization_id
-        belongs_to: cluster
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/582113
+sharding_key:
+  project_id: projects
+  group_id: namespaces
+  organization_id: organizations
+organization_transfer_support: todo
 table_size: small

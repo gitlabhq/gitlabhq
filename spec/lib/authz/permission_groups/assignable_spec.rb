@@ -80,6 +80,36 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
       end
     end
 
+    describe '.available_permissions' do
+      it 'returns all unique permissions across all assignables' do
+        unique_permissions = %i[read_resource write_resource delete_other_resource write_other_resource]
+        expect(described_class.available_permissions).to match_array(unique_permissions)
+      end
+
+      context 'when a definition is deprecated' do
+        let(:deprecated_assignable) do
+          described_class.new({
+            name: 'deprecated_resource',
+            description: 'A deprecated permission',
+            permissions: %w[deprecated_action],
+            deprecated: true
+          }, 'path/to/deprecated_resource/action.yml')
+        end
+
+        before do
+          allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return({
+            assignable.name => assignable,
+            another_assignable.name => another_assignable,
+            deprecated_assignable.name => deprecated_assignable
+          })
+        end
+
+        it 'excludes permissions from deprecated definitions' do
+          expect(described_class.available_permissions).not_to include(:deprecated_action)
+        end
+      end
+    end
+
     describe '.for_permission' do
       it 'returns assignables that include the given permission' do
         expect(described_class.for_permission(:delete_other_resource))
@@ -90,6 +120,41 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
         it 'returns assignables that include the given permission' do
           expect(described_class.for_permission('delete_other_resource'))
             .to match_array([another_assignable])
+        end
+      end
+    end
+
+    describe '.available_for_permission' do
+      it 'returns non-deprecated assignables that include the given permission' do
+        expect(described_class.available_for_permission(:delete_other_resource))
+          .to match_array([another_assignable])
+      end
+
+      context 'when the matching assignable is deprecated' do
+        let(:deprecated_assignable) do
+          described_class.new({
+            name: 'deprecated_resource',
+            description: 'A deprecated permission',
+            permissions: %w[deprecated_action],
+            deprecated: true
+          }, 'path/to/deprecated_resource/action.yml')
+        end
+
+        before do
+          allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return({
+            assignable.name => assignable,
+            another_assignable.name => another_assignable,
+            deprecated_assignable.name => deprecated_assignable
+          })
+        end
+
+        it 'excludes deprecated assignables' do
+          expect(described_class.available_for_permission(:deprecated_action)).to be_empty
+        end
+
+        it 'still returns deprecated assignables via .for_permission' do
+          expect(described_class.for_permission(:deprecated_action))
+            .to match_array([deprecated_assignable])
         end
       end
     end
@@ -125,6 +190,59 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
 
       context 'when deprecated is false' do
         let(:definition) { super().merge(deprecated: false) }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    describe '#available_for' do
+      subject { assignable.available_for }
+
+      context 'when available_for is not set' do
+        it { is_expected.to eq([]) }
+      end
+
+      context 'when available_for is a list of strings' do
+        let(:definition) { super().merge(available_for: %w[granular_access_token role]) }
+
+        it { is_expected.to eq([:granular_access_token, :role]) }
+      end
+
+      context 'when available_for is a single value' do
+        let(:definition) { super().merge(available_for: 'granular_access_token') }
+
+        it { is_expected.to eq([:granular_access_token]) }
+      end
+    end
+
+    describe '#available_for?' do
+      subject { assignable.available_for?(consumer) }
+
+      context 'when available_for is not set' do
+        let(:consumer) { :granular_access_token }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when available_for includes the consumer' do
+        let(:definition) { super().merge(available_for: %w[granular_access_token role]) }
+
+        context 'with a symbol' do
+          let(:consumer) { :granular_access_token }
+
+          it { is_expected.to be(true) }
+        end
+
+        context 'with a string' do
+          let(:consumer) { 'granular_access_token' }
+
+          it { is_expected.to be(true) }
+        end
+      end
+
+      context 'when available_for does not include the consumer' do
+        let(:definition) { super().merge(available_for: %w[role]) }
+        let(:consumer) { :granular_access_token }
 
         it { is_expected.to be(false) }
       end

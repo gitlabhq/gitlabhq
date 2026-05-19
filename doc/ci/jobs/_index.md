@@ -224,7 +224,7 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 To view jobs that ran in a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Jobs**.
+1. In the left sidebar, select **Build** > **Jobs**.
 
 You can filter the list by job status, source, name, and kind.
 
@@ -263,7 +263,7 @@ CI/CD jobs can have the following statuses:
 
 {{< /history >}}
 
-GitLab CI/CD jobs now include a source attribute that indicates the action that initially triggered a CI/CD job.
+GitLab CI/CD jobs include a source attribute that indicates the action that triggered the job.
 Use this attribute to track how a job was initiated or filter job runs based on the specific sources.
 
 #### Available job sources
@@ -281,7 +281,7 @@ The source attribute can have the following values:
 - `ondemand_dast_validation`: Job initiated by an on-demand DAST validation.
 - `parent_pipeline`: Job initiated by a parent pipeline
 - `pipeline`: Job initiated by a user manually running a pipeline.
-- `pipeline_execution_policy`: Job initiated by a triggered pipeline execution policy.
+- `pipeline_execution_policy`: Job initiated by a pipeline execution policy.
 - `pipeline_execution_policy_schedule`: Job initiated by a scheduled pipeline execution policy.
 - `push`: Job initiated by a code push.
 - `scan_execution_policy`: Job initiated by a scan execution policy.
@@ -381,7 +381,7 @@ To retry a job from the job log:
 To retry a job from a pipeline:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Pipelines**.
+1. In the left sidebar, select **Build** > **Pipelines**.
 1. Find the pipeline that contains the job you want to retry.
 1. From the pipeline graph, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
 
@@ -435,7 +435,7 @@ To cancel a job from the job log:
 To cancel a job from a pipeline:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Pipelines**.
+1. In the left sidebar, select **Build** > **Pipelines**.
 1. Find the pipeline that contains the job you want to cancel.
 1. From the pipeline graph, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
 

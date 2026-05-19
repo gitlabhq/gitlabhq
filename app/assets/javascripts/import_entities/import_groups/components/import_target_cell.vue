@@ -17,6 +17,7 @@ export default {
       required: true,
     },
   },
+  emits: ['update-new-name', 'update-target-namespace'],
 
   computed: {
     selectedImportTarget() {

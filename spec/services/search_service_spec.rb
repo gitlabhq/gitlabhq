@@ -419,10 +419,10 @@ RSpec.describe SearchService, feature_category: :global_search do
   describe '#abuse_messages' do
     let(:scope) { 'work_items' }
     let(:search) { 'foobar' }
-    let(:params) { instance_double(Gitlab::Search::Params) }
+    let(:params) { instance_double(Search::Params) }
 
     before do
-      allow(Gitlab::Search::Params).to receive(:new).and_return(params)
+      allow(Search::Params).to receive(:new).and_return(params)
     end
 
     it 'returns an empty array when not abusive' do
@@ -447,7 +447,7 @@ RSpec.describe SearchService, feature_category: :global_search do
     before do
       allow(search_service).to receive_messages(search_service: search_service_double, search_type: 'basic')
 
-      allow(Gitlab::Search::Params).to receive(:new)
+      allow(Search::Params).to receive(:new)
         .with(raw_params, detect_abuse: true).and_call_original
     end
 

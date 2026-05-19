@@ -7,13 +7,13 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::PromoteFromNote, fe
   include NotesHelper
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:comment) { create(:note, project: project, noteable: incident) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:issue_comment) { create(:note, project: project, noteable: issue) }
-  let_it_be(:alert) { create(:alert_management_alert, project: project) }
-  let_it_be(:alert_comment) { create(:note, project: project, noteable: alert) }
+  let_it_be(:alert, freeze: false) { create(:alert_management_alert, project: project) }
+  let_it_be(:alert_comment, freeze: false) { create(:note, project: project, noteable: alert) }
 
   let(:args) { { note_id: comment.to_global_id.to_s } }
   let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }

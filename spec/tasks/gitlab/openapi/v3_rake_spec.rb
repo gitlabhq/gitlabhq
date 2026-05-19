@@ -98,8 +98,7 @@ RSpec.describe 'gitlab:openapi:v3 namespace rake tasks', :silence_stdout, featur
 
     it 'generates the OpenAPI v3 documentation' do
       expect(Gitlab::GrapeOpenapi::Generator).to receive(:new).with(
-        api_classes: api_descendants,
-        entity_classes: entity_descendants
+        api_classes: api_descendants
       ).and_return(generator)
 
       expect(generator).to receive(:generate).and_return(generated_spec)

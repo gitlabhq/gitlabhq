@@ -16,6 +16,7 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
 
   describe 'GET requests' do
     let(:service) { test_get_service_class.new(name: service_name) }
+
     let(:test_get_service_class) do
       Class.new(described_class) do
         def description
@@ -47,6 +48,10 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
     end
 
     let(:arguments) { { arguments: { id: 'test-123' } } }
+    let(:success) { true }
+    let(:response_code) { 200 }
+    let(:response_body) { { 'web_url' => 'test' }.to_json }
+
     let(:api_response) do
       instance_double(Gitlab::HTTP::Response, body: response_body, success?: success, code: response_code)
     end
@@ -56,9 +61,88 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
       service.set_cred(access_token: oauth_token, current_user: nil)
     end
 
+    it 'handles JSON parser errors gracefully' do
+      allow(Gitlab::Json).to receive(:safe_parse).and_raise(JSON::ParserError.new('boom'))
+
+      result = service.execute(request: nil, params: arguments)
+
+      expect(result).to include(isError: true)
+      expect(result[:content]).to include(
+        hash_including(text: 'Invalid JSON response')
+      )
+    end
+
+    it 'sets verify when in dev or test env' do
+      allow(Gitlab).to receive(:dev_or_test_env?).and_return(true)
+
+      service.execute(request: nil, params: arguments)
+
+      expect(Gitlab::HTTP).to have_received(:get).with(
+        anything,
+        hash_including(:verify)
+      )
+    end
+
+    it 'does not set verify when not in dev or test env' do
+      allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+
+      service.execute(request: nil, params: arguments)
+
+      expect(Gitlab::HTTP).to have_received(:get).with(
+        anything,
+        hash_not_including(:verify)
+      )
+    end
+
+    it 'returns error when parsed_response is nil on success' do
+      allow(Gitlab::Json).to receive(:safe_parse).and_return(nil)
+
+      result = service.execute(request: nil, params: arguments)
+
+      expect(result[:content]).to include(hash_including(text: 'Invalid JSON response'))
+    end
+
+    context 'with error response and nil parsed_response' do
+      let(:success) { false }
+      let(:response_code) { 500 }
+      let(:response_body) { '' }
+
+      before do
+        allow(Gitlab::Json).to receive(:safe_parse).and_return(nil)
+      end
+
+      it 'falls back to HTTP code when parsed_response is nil' do
+        result = service.execute(request: nil, params: arguments)
+
+        expect(result).to eq({
+          content: [{ type: 'text', text: 'HTTP 500' }],
+          structuredContent: {},
+          isError: true
+        })
+      end
+    end
+
+    context 'with error response and parsed_response missing message key' do
+      let(:success) { false }
+      let(:response_code) { 500 }
+      let(:response_body) { '{"not_message":"value"}' }
+
+      before do
+        allow(Gitlab::Json).to receive(:safe_parse).and_return({ 'not_message' => 'value' })
+      end
+
+      it 'evaluates left side of || and falls back to HTTP code' do
+        result = service.execute(request: nil, params: arguments)
+
+        expect(result).to eq({
+          content: [{ type: 'text', text: 'HTTP 500' }],
+          structuredContent: { error: { 'not_message' => 'value' } },
+          isError: true
+        })
+      end
+    end
+
     context 'with single record response' do
-      let(:success) { true }
-      let(:response_code) { 200 }
       let(:response_body) { { 'web_url' => 'https://example.com/test', 'id' => 1 }.to_json }
 
       it 'returns success response' do
@@ -86,134 +170,17 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
       end
     end
 
-    context 'with array response' do
-      let(:service) { test_list_service_class.new(name: service_name) }
-      let(:test_list_service_class) do
-        Class.new(described_class) do
-          def description
-            'Test GET API tool'
-          end
-
-          def input_schema
-            {
-              type: 'object',
-              properties: {
-                id: { type: 'string' },
-                page: { type: 'integer' },
-                per_page: { type: 'integer' }
-              },
-              required: ['id']
-            }
-          end
-
-          protected
-
-          def perform(arguments = {})
-            query = arguments.except(:id)
-            http_get(access_token, "/api/v4/test/#{arguments[:id]}/list", query)
-          end
-
-          private
-
-          def format_response_content(response)
-            response.map do |item|
-              { type: 'text', text: "web_url: #{item['web_url']}\ntitle: #{item['title']}" }
-            end
-          end
-        end
-      end
-
-      let(:success) { true }
-      let(:response_code) { 200 }
-      let(:response_body) do
-        [
-          {
-            id: "1",
-            title: "A title",
-            web_url: "https://gitlab.example.com/project/-/commit/1"
-          },
-          {
-            id: "2",
-            title: "Another title",
-            web_url: "https://gitlab.example.com/project/-/commit/2"
-          }
-        ].to_json
-      end
-
-      it 'returns success response' do
-        result = service.execute(request: nil, params: arguments)
-
-        expect(result).to eq({
-          content: [
-            { type: 'text', text: "web_url: https://gitlab.example.com/project/-/commit/1\ntitle: A title" },
-            { type: 'text', text: "web_url: https://gitlab.example.com/project/-/commit/2\ntitle: Another title" }
-          ],
-          structuredContent: {
-            items: [
-              {
-                'id' => '1',
-                'title' => 'A title',
-                'web_url' => 'https://gitlab.example.com/project/-/commit/1'
-              },
-              {
-                'id' => '2',
-                'title' => 'Another title',
-                'web_url' => 'https://gitlab.example.com/project/-/commit/2'
-              }
-            ],
-            metadata: {
-              count: 2,
-              has_more: false
-            }
-          },
-          isError: false
-        })
-      end
-
-      it 'makes request with correct parameters' do
-        service.execute(request: nil, params: arguments)
-
-        expect(Gitlab::HTTP).to have_received(:get).with(
-          "#{Gitlab.config.gitlab.url}/api/v4/test/test-123/list",
-          hash_including(
-            headers: {
-              'Content-Type' => 'application/json',
-              'Authorization' => 'Bearer test_token_123'
-            },
-            query: {}
-          )
-        )
-      end
-
-      it 'makes handles query parameters' do
-        arguments[:arguments].merge!({ page: 1, per_page: 1 })
-
-        service.execute(request: nil, params: arguments)
-
-        expect(Gitlab::HTTP).to have_received(:get).with(
-          "#{Gitlab.config.gitlab.url}/api/v4/test/test-123/list",
-          hash_including(
-            headers: {
-              'Content-Type' => 'application/json',
-              'Authorization' => 'Bearer test_token_123'
-            },
-            query: { page: 1, per_page: 1 }
-          )
-        )
-      end
-    end
-
-    context 'with error response' do
+    context 'with error response with message' do
       let(:success) { false }
-      let(:response_code) { 404 }
-      let(:response_body) { { 'message' => 'Not found' }.to_json }
+      let(:response_code) { 400 }
+      let(:response_body) { { 'message' => 'Bad request' }.to_json }
 
-      it 'returns error response' do
+      it 'returns API error message' do
         result = service.execute(request: nil, params: arguments)
 
         expect(result).to eq({
-          content: [{ type: 'text', text: 'Not found' }],
-          structuredContent: { error: { 'message' => 'Not found' } },
+          content: [{ type: 'text', text: 'Bad request' }],
+          structuredContent: { error: { 'message' => 'Bad request' } },
           isError: true
         })
       end
@@ -230,39 +197,6 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
         expect(result).to eq({
           content: [{ type: 'text', text: 'HTTP 500' }],
           structuredContent: { error: {} },
-          isError: true
-        })
-      end
-    end
-
-    context 'with invalid JSON response' do
-      let(:success) { false }
-      let(:response_code) { 400 }
-      let(:response_body) { '{invalid,json}' }
-
-      it 'returns error response' do
-        result = service.execute(request: nil, params: arguments)
-
-        expect(result).to match({
-          content: [{ type: 'text', text: 'Invalid JSON response' }],
-          structuredContent: { error: { message: /unexpected character/ } },
-          isError: true
-        })
-      end
-    end
-
-    context 'with invalid path' do
-      let(:invalid_arguments) { { arguments: { id: 'group-1/../admin/test-123' } } }
-      let(:success) { false }
-      let(:response_code) { 400 }
-      let(:response_body) { { error: '400 Bad Request' }.to_json }
-
-      it 'returns error response' do
-        result = service.execute(request: nil, params: invalid_arguments)
-
-        expect(result).to eq({
-          content: [{ type: 'text', text: 'Validation error: path is invalid' }],
-          structuredContent: {},
           isError: true
         })
       end
@@ -305,8 +239,11 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
 
     let(:service) { test_post_service_class.new(name: 'test_post_tool') }
     let(:arguments) { { arguments: { id: 'project-1', title: 'New Issue' } } }
-    let(:api_response) { instance_double(Gitlab::HTTP::Response, body: response_body, success?: true, code: 201) }
     let(:response_body) { { 'id' => 123, 'web_url' => 'https://example.com/issue/123' }.to_json }
+
+    let(:api_response) do
+      instance_double(Gitlab::HTTP::Response, body: response_body, success?: true, code: 201)
+    end
 
     before do
       allow(Gitlab::HTTP).to receive(:post).and_return(api_response)
@@ -339,42 +276,9 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
   describe 'When token is not set' do
     let(:arguments) { { arguments: { id: 'test-123' } } }
 
-    let(:test_post_service_class) do
-      Class.new(described_class) do
-        def description
-          'Test POST API tool'
-        end
+    let(:service) { described_class.new(name: 'test_api_tool') }
 
-        def input_schema
-          {
-            type: 'object',
-            properties: {
-              id: { type: 'string' },
-              title: { type: 'string' }
-            },
-            required: %w[id title]
-          }
-        end
-
-        protected
-
-        def perform(arguments = {})
-          path = "/api/v4/projects/#{arguments[:id]}/issues"
-          body = arguments.except(:id)
-          http_post(access_token, path, body)
-        end
-
-        private
-
-        def format_response_content(response)
-          [{ type: 'text', text: response['web_url'] }]
-        end
-      end
-    end
-
-    let(:service) { test_post_service_class.new(name: 'test_post_tool') }
-
-    it 'raise access token is not set' do
+    it 'returns error when access token is not set' do
       result = service.execute(request: nil, params: arguments)
 
       expect(result).to eq({

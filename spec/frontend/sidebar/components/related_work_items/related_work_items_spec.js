@@ -5,7 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
+import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 import MRRelatedWorkItems from '~/sidebar/components/related_work_items/related_work_items.vue';
 import mergeRequestRelatedWorkItemsQuery from '~/sidebar/queries/merge_request_related_work_items.query.graphql';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
@@ -60,7 +60,7 @@ describe('MRRelatedWorkItems', () => {
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
   const findPopover = () => wrapper.findComponent(GlPopover);
   const findCollapse = () => wrapper.findComponent(GlCollapse);
-  const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
+  const findDetailPanel = () => wrapper.findComponent(WorkItemDetailPanel);
   const findAllLinks = () => wrapper.findAllComponents(GlLink);
   const findNoneText = () => wrapper.find('.hide-collapsed.gl-text-subtle');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -245,8 +245,8 @@ describe('MRRelatedWorkItems', () => {
       findAllLinks().at(0).vm.$emit('click', { preventDefault: jest.fn(), metaKey: false });
       await nextTick();
 
-      expect(findDrawer().props('open')).toBe(true);
-      expect(findDrawer().props('activeItem')).toMatchObject({
+      expect(findDetailPanel().props('open')).toBe(true);
+      expect(findDetailPanel().props('activeItem')).toMatchObject({
         iid: '1',
         title: 'Fix bug',
       });
@@ -256,24 +256,24 @@ describe('MRRelatedWorkItems', () => {
       findAllLinks().at(0).vm.$emit('click', { preventDefault: jest.fn(), metaKey: true });
       await nextTick();
 
-      expect(findDrawer().props('open')).toBe(false);
+      expect(findDetailPanel().props('open')).toBe(false);
     });
 
     it('does not open drawer on ctrl+click', async () => {
       findAllLinks().at(0).vm.$emit('click', { preventDefault: jest.fn(), ctrlKey: true });
       await nextTick();
 
-      expect(findDrawer().props('open')).toBe(false);
+      expect(findDetailPanel().props('open')).toBe(false);
     });
 
     it('closes drawer on close event', async () => {
       findAllLinks().at(0).vm.$emit('click', { preventDefault: jest.fn(), metaKey: false });
       await nextTick();
-      expect(findDrawer().props('open')).toBe(true);
+      expect(findDetailPanel().props('open')).toBe(true);
 
-      findDrawer().vm.$emit('close');
+      findDetailPanel().vm.$emit('close');
       await nextTick();
-      expect(findDrawer().props('open')).toBe(false);
+      expect(findDetailPanel().props('open')).toBe(false);
     });
   });
 
@@ -289,8 +289,8 @@ describe('MRRelatedWorkItems', () => {
       });
       await waitForPromises();
 
-      expect(findDrawer().props('open')).toBe(true);
-      expect(findDrawer().props('activeItem')).toMatchObject({
+      expect(findDetailPanel().props('open')).toBe(true);
+      expect(findDetailPanel().props('activeItem')).toMatchObject({
         iid: '1',
         title: 'Fix bug',
       });
@@ -310,7 +310,7 @@ describe('MRRelatedWorkItems', () => {
       expect(updateHistory).toHaveBeenCalledWith({
         url: 'http://test.host/',
       });
-      expect(findDrawer().props('open')).toBe(false);
+      expect(findDetailPanel().props('open')).toBe(false);
     });
 
     it('removes param when base64 is invalid', async () => {
@@ -323,7 +323,7 @@ describe('MRRelatedWorkItems', () => {
       await waitForPromises();
 
       expect(updateHistory).toHaveBeenCalled();
-      expect(findDrawer().props('open')).toBe(false);
+      expect(findDetailPanel().props('open')).toBe(false);
     });
 
     it('sets activeItem to null when no show param', async () => {
@@ -334,7 +334,7 @@ describe('MRRelatedWorkItems', () => {
       });
       await waitForPromises();
 
-      expect(findDrawer().props('open')).toBe(false);
+      expect(findDetailPanel().props('open')).toBe(false);
     });
 
     it('responds to popstate events', async () => {
@@ -345,13 +345,13 @@ describe('MRRelatedWorkItems', () => {
       });
       await waitForPromises();
 
-      expect(findDrawer().props('open')).toBe(false);
+      expect(findDetailPanel().props('open')).toBe(false);
 
       getParameterByName.mockReturnValue(encodedParam);
       window.dispatchEvent(new PopStateEvent('popstate'));
       await nextTick();
 
-      expect(findDrawer().props('open')).toBe(true);
+      expect(findDetailPanel().props('open')).toBe(true);
     });
   });
 });

@@ -644,7 +644,7 @@ Prerequisites:
 To disable publishing duplicate file names:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Packages and registries**.
+1. In the left sidebar, select **Settings** > **Packages and registries**.
 1. In the **Generic** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
 

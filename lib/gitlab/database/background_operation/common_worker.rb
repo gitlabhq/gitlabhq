@@ -265,6 +265,10 @@ module Gitlab
               .limit(limit)
           end
 
+          def resolve_job_class(job_class_name)
+            "#{JOB_CLASS_MODULE}::#{job_class_name}".constantize
+          end
+
           def previous_max_cursor(job_class_name, table_name, column_name, job_arguments, org_id: nil)
             completed_with_config(job_class_name, table_name, column_name, job_arguments, org_id: org_id)
               .order(created_at: :desc, id: :desc)

@@ -13,11 +13,6 @@ RSpec.shared_examples 'verified navigation bar' do
       nav_sub_items = item.all('li', visible: :all, wait: false).map do |list_item|
         link = list_item.all('a', visible: :all, wait: false).first
         text = link.text(:all)
-
-        # Remove counts and badges in navigation
-        badge_text = link.all('[data-testid="nav-item-feature-announcement-badge"]', visible: :all,
-          wait: false).first&.text(:all)
-        text = text.gsub(badge_text, '').strip if badge_text.present?
         text.gsub(/\s+\d+$/, '')
       end
 

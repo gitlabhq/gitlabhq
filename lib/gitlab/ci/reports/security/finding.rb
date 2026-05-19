@@ -17,7 +17,6 @@ module Gitlab
             report_type
             scanner
             scan
-            uuid
           ].freeze
 
           attr_reader :confidence
@@ -34,6 +33,7 @@ module Gitlab
           attr_reader :scan
           attr_reader :severity
           attr_accessor :uuid
+          attr_accessor :context_unaware_uuid
           attr_accessor :overridden_uuid
           attr_reader :remediations
           attr_reader :details
@@ -42,6 +42,7 @@ module Gitlab
           attr_reader :original_data
           attr_reader :found_by_pipeline
           attr_reader :cvss
+          attr_reader :project_tracked_context
 
           delegate :file_path, :start_line, :end_line, to: :location
 
@@ -65,7 +66,6 @@ module Gitlab
             @scanner = args[:scanner]
             @scan = args[:scan]
             @severity = args[:severity]
-            @uuid = args[:uuid]
             @remediations = args.fetch(:remediations, [])
             @details = args.fetch(:details, {})
             @signatures = args.fetch(:signatures, [])
@@ -73,6 +73,9 @@ module Gitlab
             @vulnerability_finding_signatures_enabled = args.fetch(:vulnerability_finding_signatures_enabled, false)
             @found_by_pipeline = args[:found_by_pipeline]
             @cvss = args.fetch(:cvss, [])
+            @project_tracked_context = args[:tracked_context]
+            @uuid = generate_uuid
+            @context_unaware_uuid = generate_context_unaware_uuid
           end
 
           def to_hash
@@ -216,7 +219,38 @@ module Gitlab
           end
           strong_memoize_attr :has_vulnerability_resolution?
 
+          def policy_comparison_uuid
+            context_unaware_uuid || uuid
+          end
+
           private
+
+          def generate_uuid
+            return if any_uuid_params_invalid?
+
+            ::Security::VulnerabilityUUID.generate(
+              report_type: report_type,
+              primary_identifier_fingerprint: primary_identifier_fingerprint,
+              location_fingerprint: location_fingerprint,
+              project_id: project_id,
+              tracked_context: project_tracked_context
+            )
+          end
+
+          def generate_context_unaware_uuid
+            return if any_uuid_params_invalid?
+
+            ::Security::VulnerabilityUUID.generate_v1(
+              report_type,
+              primary_identifier_fingerprint,
+              location_fingerprint,
+              project_id
+            )
+          end
+
+          def any_uuid_params_invalid?
+            report_type.nil? || primary_identifier_fingerprint.nil? || location_fingerprint.nil? || project_id.nil?
+          end
 
           def location_fingerprints
             @location_fingerprints ||= signature_hexes << location&.fingerprint

@@ -45,6 +45,11 @@ module API
                 desc: 'Type of link. Supported values: relates_to.'
             end
 
+            optional :crm_contacts, type: Hash, desc: 'Input for CRM contacts widget.' do
+              requires :contact_ids, type: Array[Integer],
+                desc: 'IDs of CRM contacts to set on the work item.'
+            end
+
             use :work_item_create_features_ee
           end
         end

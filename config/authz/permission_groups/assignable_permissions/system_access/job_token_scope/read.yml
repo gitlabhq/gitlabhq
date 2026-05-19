@@ -3,5 +3,7 @@ name: read_job_token_scope
 description: Grants the ability to read CI/CD job token scope settings
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - read_job_token_scope

@@ -12,6 +12,7 @@ import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_sel
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import * as constants from '~/notes/constants';
 
 export default {
@@ -150,6 +151,12 @@ export default {
       return this.isResolved ? __('Reopen thread') : __('Resolve thread');
     },
   },
+  methods: {
+    async onCopyUrl() {
+      await copyToClipboard(this.noteUrl).catch(() => {});
+      this.$toast.show(__('Link copied to clipboard.'));
+    },
+  },
 };
 </script>
 
@@ -228,11 +235,7 @@ export default {
         placement="bottom-end"
         no-caret
       >
-        <gl-disclosure-dropdown-item
-          v-if="noteUrl"
-          :data-clipboard-text="noteUrl"
-          @action="$toast.show(__('Link copied to clipboard.'))"
-        >
+        <gl-disclosure-dropdown-item v-if="noteUrl" @action="onCopyUrl">
           <template #list-item>{{ __('Copy link') }}</template>
         </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-group v-if="canReportAsAbuse || canEdit" bordered>

@@ -10,6 +10,7 @@ import {
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
   MR_TOGGLE_REVIEW,
+  MR_TOGGLE_DIFF_VIEW_TYPE,
   ISSUABLE_COMMENT_OR_REPLY,
 } from '~/behaviors/shortcuts/keybindings';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
@@ -39,6 +40,7 @@ import {
   ALERT_MERGE_CONFLICT,
   ALERT_COLLAPSED_FILES,
   INLINE_DIFF_VIEW_TYPE,
+  PARALLEL_DIFF_VIEW_TYPE,
   TRACKING_DIFF_VIEW_INLINE,
   TRACKING_DIFF_VIEW_PARALLEL,
   TRACKING_FILE_BROWSER_TREE,
@@ -664,6 +666,7 @@ export default {
         this.moveToNeighboringCommit({ direction: 'previous' }),
       );
       Mousetrap.bind(keysFor(MR_TOGGLE_REVIEW), () => this.toggleActiveFileReview());
+      Mousetrap.bind(keysFor(MR_TOGGLE_DIFF_VIEW_TYPE), () => this.toggleDiffViewType());
       Mousetrap.bind(['mod+f', 'mod+g'], () => {
         this.keydownTime = new Date().getTime();
       });
@@ -679,6 +682,7 @@ export default {
       Mousetrap.unbind(keysFor(MR_COMMITS_NEXT_COMMIT));
       Mousetrap.unbind(keysFor(MR_COMMITS_PREVIOUS_COMMIT));
       Mousetrap.unbind(keysFor(MR_TOGGLE_REVIEW));
+      Mousetrap.unbind(keysFor(MR_TOGGLE_DIFF_VIEW_TYPE));
       Mousetrap.unbind(keysFor(ISSUABLE_COMMENT_OR_REPLY));
       Mousetrap.unbind(['ctrl+f', 'command+f', 'mod+f', 'mod+g']);
       window.removeEventListener('blur', this.handleBrowserFindActivation);
@@ -778,6 +782,13 @@ export default {
     },
     toggleFileByFile() {
       this.setFileByFile({ fileByFile: !this.viewDiffsFileByFile });
+    },
+    toggleDiffViewType() {
+      const newViewType =
+        this.diffViewType === INLINE_DIFF_VIEW_TYPE
+          ? PARALLEL_DIFF_VIEW_TYPE
+          : INLINE_DIFF_VIEW_TYPE;
+      this.setDiffViewType(newViewType);
     },
     toggleWhitespace(updatedSetting) {
       this.setShowWhitespace({ showWhitespace: updatedSetting });

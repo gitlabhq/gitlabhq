@@ -210,7 +210,7 @@ a merge request, or:
 1. Search for the user you want to assign, and select the user. GitLab Free allows one
    assignee per merge request, but GitLab Premium and GitLab Ultimate allow multiple assignees:
 
-   ![Two assignees for merge requests sidebar](img/merge_request_assignees_v16_0.png)
+   ![The merge request sidebar displaying multiple assigned users.](img/merge_request_assignees_v16_0.png)
 
 GitLab adds the merge request to the user's **Assigned merge requests** page.
 
@@ -444,7 +444,7 @@ When you enable this setting, the **Open threads** counter in a merge request
 is shown in orange while at least one thread remains open.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **Merge checks** section, select the **All threads must be resolved** checkbox.
 1. Select **Save changes**.
 
@@ -454,7 +454,7 @@ You can set merge requests to automatically resolve threads when a new push
 changes the lines they describe.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **Merge options** section, select
    **Automatically resolve merge request diff threads when they become outdated**.
 1. Select **Save changes**.

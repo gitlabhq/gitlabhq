@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:user) { create(:user) }
 
   let(:prev_pipeline) { create(:ci_pipeline, project: project) }

@@ -29,7 +29,7 @@ Note the diagram has been updated as part of increasing rollback availability by
 
 ### Staging Ref
 
-[Staging Ref](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/) is a Sandbox environment used for pre-production testing of the latest Staging Canary code. It is a shared
+[Staging Ref](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/environments/staging-ref/) is a Sandbox environment used for pre-production testing of the latest Staging Canary code. It is a shared
 environment with wide access permissions and as a result of engineers testing their code, the environment may become unstable and may need to be rebuilt.
 
 The full or smoke E2E test suite can be triggered on an as-needed basis from the `staging-ref` project's [pipeline schedules](https://ops.gitlab.net/gitlab-org/quality/staging-ref/-/pipeline_schedules).
@@ -39,7 +39,7 @@ on Staging Ref but not on Staging Canary, it may indicate that the failure is en
 
 ### Preprod
 
-[Preprod](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/#pre) is used to perform validation of release candidates. Every month around the [release date](https://handbook.gitlab.com/handbook/engineering/releases/), and the few days before, it is essential that there are no unexpected failures in the pipeline that will delay the release. There is a pipeline scheduled to run prior to deployment of the release candidate, to give us a chance to identify and resolve any issues with tests or the test environment. This scheduled pipeline should be given equal priority with `Production` and `Staging` pipelines because of the potential impact failures can have on a release.
+[Preprod](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/environments/#pre) is used to perform validation of release candidates. Every month around the [release date](https://handbook.gitlab.com/handbook/engineering/releases/), and the few days before, it is essential that there are no unexpected failures in the pipeline that will delay the release. There is a pipeline scheduled to run prior to deployment of the release candidate, to give us a chance to identify and resolve any issues with tests or the test environment. This scheduled pipeline should be given equal priority with `Production` and `Staging` pipelines because of the potential impact failures can have on a release.
 
 Tests pipelines are also triggered by the [Kubernetes Workload configuration project](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com) to ensure that any configuration changes are valid.
 

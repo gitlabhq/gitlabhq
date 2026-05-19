@@ -130,14 +130,6 @@ RSpec.describe 'Projects > User sees sidebar', :js, feature_category: :groups_an
         expect(page).to have_selector '.project-show-wiki'
       end
 
-      it 'shows the issues when enabled' do
-        project.project_feature.update!(issues_access_level: ProjectFeature::ENABLED)
-
-        visit project_path(project)
-
-        expect(page).to have_selector '.issues-list'
-      end
-
       it 'shows the wiki when wiki and issues are enabled' do
         project.project_feature.update!(
           issues_access_level: ProjectFeature::ENABLED,
@@ -240,14 +232,6 @@ RSpec.describe 'Projects > User sees sidebar', :js, feature_category: :groups_an
         visit project_path(project)
 
         expect(page).to have_selector '.project-show-wiki'
-      end
-
-      it 'shows the issues when enabled' do
-        project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
-
-        visit project_path(project)
-
-        expect(page).to have_selector '.issues-list'
       end
     end
   end

@@ -1,21 +1,12 @@
 # frozen_string_literal: true
 
-# Note: initial thinking behind `icon_name` is for it to do triple duty:
-# 1. one of our svg icon names, such as `external-link` or a new one `bug`
-# 2. if it's an absolute url, then url to a user uploaded icon/image
-# 3. an emoji, with the format of `:smile:`
+# DEPRECATED: This class is retained only as a constant marker for GraphQL
+# GlobalID resolution (GlobalIDType[::WorkItems::Type]).
+#
+# All type logic now lives in WorkItems::TypesFramework::SystemDefined::Type.
+# Use WorkItems::TypesFramework::Provider for type lookups.
 module WorkItems
-  class Type < ApplicationRecord
-    include Gitlab::Utils::StrongMemoize
-
-    DEFAULT_TYPES_NOT_SEEDED = Class.new(StandardError)
-
-    self.table_name = 'work_item_types'
-
-    include CacheMarkdownField
-
-    # type name is used in restrictions DB seeder to assure restrictions for
-    # default types are pre-filled
+  class Type
     TYPE_NAMES = {
       issue: 'Issue',
       incident: 'Incident',
@@ -28,219 +19,16 @@ module WorkItems
       ticket: 'Ticket'
     }.freeze
 
-    # Base types need to exist on the DB on app startup
-    # This constant is used by the DB seeder
-    # TODO - where to add new icon names created?
     BASE_TYPES = {
       issue: { name: TYPE_NAMES[:issue], icon_name: 'work-item-issue', enum_value: 0, id: 1 },
       incident: { name: TYPE_NAMES[:incident], icon_name: 'work-item-incident', enum_value: 1, id: 2 },
-      test_case: { name: TYPE_NAMES[:test_case], icon_name: 'work-item-test-case', enum_value: 2, id: 3 }, ## EE-only
-      requirement: { name: TYPE_NAMES[:requirement], icon_name: 'work-item-requirement', enum_value: 3, id: 4 }, ## EE
+      test_case: { name: TYPE_NAMES[:test_case], icon_name: 'work-item-test-case', enum_value: 2, id: 3 },
+      requirement: { name: TYPE_NAMES[:requirement], icon_name: 'work-item-requirement', enum_value: 3, id: 4 },
       task: { name: TYPE_NAMES[:task], icon_name: 'work-item-task', enum_value: 4, id: 5 },
-      objective: { name: TYPE_NAMES[:objective], icon_name: 'work-item-objective', enum_value: 5, id: 6 }, ## EE-only
-      key_result: { name: TYPE_NAMES[:key_result], icon_name: 'work-item-keyresult', enum_value: 6, id: 7 }, ## EE-only
-      epic: { name: TYPE_NAMES[:epic], icon_name: 'work-item-epic', enum_value: 7, id: 8 }, ## EE-only
+      objective: { name: TYPE_NAMES[:objective], icon_name: 'work-item-objective', enum_value: 5, id: 6 },
+      key_result: { name: TYPE_NAMES[:key_result], icon_name: 'work-item-keyresult', enum_value: 6, id: 7 },
+      epic: { name: TYPE_NAMES[:epic], icon_name: 'work-item-epic', enum_value: 7, id: 8 },
       ticket: { name: TYPE_NAMES[:ticket], icon_name: 'work-item-ticket', enum_value: 8, id: 9 }
     }.freeze
-
-    EE_BASE_TYPES = %w[epic key_result objective requirement].freeze
-
-    ignore_column :correct_id, remove_with: '18.1', remove_after: '2025-05-15'
-
-    cache_markdown_field :description, pipeline: :single_line
-
-    enum :base_type, BASE_TYPES.transform_values { |value| value[:enum_value] }
-
-    before_validation :strip_whitespace
-
-    # TODO: review validation rules
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/336919
-    validates :name, presence: true
-    validates :name, custom_uniqueness: { unique_sql: 'TRIM(BOTH FROM lower(?))' }
-    validates :name, length: { maximum: 255 }
-    validates :icon_name, length: { maximum: 255 }
-
-    scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
-    scope :by_type, ->(base_type) { where(base_type: base_type) }
-    def self.default_by_type(type)
-      found_type = find_by(base_type: type)
-      return found_type if found_type || !WorkItems::Type.base_types.key?(type.to_s)
-
-      error_message = <<~STRING
-        Default work item types have not been created yet. Make sure the DB has been seeded successfully.
-        See related documentation in
-        https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
-
-        If you have additional questions, you can ask in
-        https://gitlab.com/gitlab-org/gitlab/-/issues/423483
-      STRING
-
-      raise DEFAULT_TYPES_NOT_SEEDED, error_message
-    end
-
-    def self.default_issue_type
-      default_by_type(:issue)
-    end
-
-    # resource_parent is used in EE
-    def widgets(_resource_parent)
-      WorkItems::TypesFramework::SystemDefined::WidgetDefinition
-        .where(work_item_type_id: id)
-        .filter(&:widget_class)
-    end
-
-    def widget_classes(resource_parent)
-      widgets(resource_parent).map(&:widget_class)
-    end
-
-    def supports_assignee?(resource_parent)
-      widget_classes(resource_parent).include?(::WorkItems::Widgets::Assignees)
-    end
-
-    def supports_time_tracking?(resource_parent)
-      widget_classes(resource_parent).include?(::WorkItems::Widgets::TimeTracking)
-    end
-
-    def allowed_child_types_by_name
-      child_type_ids = WorkItems::TypesFramework::SystemDefined::HierarchyRestriction
-        .where(parent_type_id: id)
-        .map(&:child_type_id)
-
-      WorkItems::Type.where(id: child_type_ids).order_by_name_asc
-    end
-
-    def allowed_parent_types_by_name
-      parent_type_ids = WorkItems::TypesFramework::SystemDefined::HierarchyRestriction
-        .where(child_type_id: id)
-        .map(&:parent_type_id)
-      WorkItems::Type.where(id: parent_type_ids).order_by_name_asc
-    end
-
-    def supported_conversion_types(resource_parent, user)
-      type_names = supported_conversion_base_types(resource_parent, user) - [base_type]
-      WorkItems::Type.by_type(type_names).order_by_name_asc
-    end
-
-    def unavailable_widgets_on_conversion(target_type, resource_parent)
-      source_widgets = widgets(resource_parent)
-      target_widgets = target_type.widgets(resource_parent)
-      target_widget_types = target_widgets.map(&:widget_type).to_set
-      source_widgets.reject { |widget| target_widget_types.include?(widget.widget_type) }
-    end
-
-    def allowed_child_types(authorize: false, resource_parent: nil)
-      types = allowed_child_types_by_name
-
-      return types unless authorize
-
-      authorized_types(types, resource_parent, :child)
-    end
-
-    def allowed_parent_types(authorize: false, resource_parent: nil)
-      types = allowed_parent_types_by_name
-
-      return types unless authorize
-
-      authorized_types(types, resource_parent, :parent)
-    end
-
-    def descendant_types
-      descendant_types = []
-      next_level_child_types = allowed_child_types
-
-      loop do
-        descendant_types += next_level_child_types
-
-        # We remove types that we've already seen to avoid circular dependencies
-        next_level_child_types = next_level_child_types.flat_map(&:allowed_child_types) - descendant_types
-
-        break if next_level_child_types.empty?
-      end
-
-      descendant_types.uniq
-    end
-    strong_memoize_attr :descendant_types
-
-    # Temporary method for adding configuration thought the API
-    def supports_roadmap_view?
-      nil
-    end
-
-    # Temporary method for adding configuration thought the API
-    def use_legacy_view?
-      nil
-    end
-
-    # Temporary method for adding configuration thought the API
-    def can_promote_to_objective?
-      nil
-    end
-
-    # Temporary method for adding configuration thought the API
-    def show_project_selector?
-      nil
-    end
-
-    # Temporary method for adding configuration thought the API
-    def supports_move_action?
-      nil
-    end
-
-    # Temporary method for adding configuration thought the API
-    def service_desk?
-      base_type.to_s == "ticket"
-    end
-
-    # Temporary method for adding configuration thought the API
-    def incident_management?
-      base_type.to_s == "incident"
-    end
-
-    # Temporary method for adding configuration thought the API
-    def configurable?
-      nil
-    end
-
-    # Temporary method for adding configuration thought the API
-    def creatable?
-      nil
-    end
-
-    # Temporary method for adding configuration thought the API
-    def visible_in_settings?
-      nil
-    end
-
-    # Temporary method for adding configuration thought the API
-    def archived?
-      nil
-    end
-
-    # Temporary method for adding configuration thought the API
-    def only_for_group?
-      nil
-    end
-
-    def enabled?
-      true
-    end
-
-    private
-
-    def strip_whitespace
-      name&.strip!
-    end
-
-    # resource_parent is used in EE
-    def supported_conversion_base_types(_resource_parent, _user)
-      WorkItems::Type.base_types.keys.excluding(*EE_BASE_TYPES)
-    end
-
-    # overridden in EE to check for EE-specific restrictions
-    def authorized_types(types, _resource_parent, _relation)
-      types
-    end
   end
 end
-
-WorkItems::Type.prepend_mod

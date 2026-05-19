@@ -15,7 +15,7 @@ RSpec.describe Ci::ChangeVariableService, feature_category: :pipeline_compositio
 
       it 'persists a variable' do
         result = nil
-        expect { result = execute }.to change(container.variables, :count).from(0).to(1)
+        expect { result = execute }.to change { container.variables.count }.from(0).to(1)
         expect(result.masked).to be_falsey
         expect(result.hidden).to be_falsey
       end
@@ -28,7 +28,7 @@ RSpec.describe Ci::ChangeVariableService, feature_category: :pipeline_compositio
 
       it 'persists a variable' do
         result = nil
-        expect { result = execute }.to change(container.variables, :count).from(0).to(1)
+        expect { result = execute }.to change { container.variables.count }.from(0).to(1)
         expect(result.masked).to be_truthy
       end
     end
@@ -40,7 +40,7 @@ RSpec.describe Ci::ChangeVariableService, feature_category: :pipeline_compositio
 
       it 'persists a variable' do
         result = nil
-        expect { result = execute }.to change(container.variables, :count).from(0).to(1)
+        expect { result = execute }.to change { container.variables.count }.from(0).to(1)
         expect(result.masked).to be_falsey
       end
     end
@@ -54,7 +54,7 @@ RSpec.describe Ci::ChangeVariableService, feature_category: :pipeline_compositio
       it 'persists a variable and set hidden and masked attributes' do
         result = nil
 
-        expect { result = execute }.to change(container.variables, :count).from(0).to(1)
+        expect { result = execute }.to change { container.variables.count }.from(0).to(1)
         expect(result.masked).to be_truthy
         expect(result.hidden).to be_truthy
       end
@@ -69,7 +69,7 @@ RSpec.describe Ci::ChangeVariableService, feature_category: :pipeline_compositio
       it 'persists a variable and set hidden and masked attributes' do
         result = nil
 
-        expect { result = execute }.to change(container.variables, :count).from(0).to(1)
+        expect { result = execute }.to change { container.variables.count }.from(0).to(1)
         expect(result.masked).to be_falsey
         expect(result.hidden).to be_falsey
       end

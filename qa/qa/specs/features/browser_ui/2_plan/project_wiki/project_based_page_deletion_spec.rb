@@ -14,6 +14,11 @@ module QA
 
       it(
         'can delete a page',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41029',
+          type: :stale,
+          only: { subdomain: :staging }
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347815') do
         initial_wiki.visit!
 

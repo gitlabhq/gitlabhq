@@ -78,6 +78,8 @@ module RuboCop
           check_feature_category(node, optional: true)
         end
 
+        alias_method :on_numblock, :on_block
+
         def external_dependency_checksum
           FeatureCategories.config_checksum
         end

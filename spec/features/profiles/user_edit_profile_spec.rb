@@ -162,9 +162,12 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
     it 'clears the reset password token' do
       expect(user.reset_password_token?).to be true
+      expect(page).not_to have_text("Please click the link in the confirmation email before continuing.")
 
       update_user_email
       confirm_password(user.password)
+
+      expect(page).to have_text("Please click the link in the confirmation email before continuing. It was sent to new-email@example.com.")
 
       user.reload
       expect(user.confirmation_token).not_to be_nil

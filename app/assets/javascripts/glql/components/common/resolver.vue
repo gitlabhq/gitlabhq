@@ -2,6 +2,7 @@
 import { pick } from 'lodash-es';
 import { sha256 } from '~/lib/utils/text_utility';
 import { InternalEvents } from '~/tracking';
+import { MODE_ANALYTICS } from '~/glql/constants';
 import { parse } from '../../core/parser';
 import { execute } from '../../core/executor';
 import { transform } from '../../core/transformer';
@@ -37,6 +38,7 @@ export default {
       config: undefined,
       variables: undefined,
       fields: undefined,
+      mode: undefined,
       error: undefined,
     };
   },
@@ -63,6 +65,7 @@ export default {
       this.config = undefined;
       this.variables = undefined;
       this.fields = undefined;
+      this.mode = undefined;
       this.error = undefined;
     },
 
@@ -75,6 +78,7 @@ export default {
           'config',
           'variables',
           'fields',
+          'mode',
           'error',
           'loading',
           'hasNextPage',
@@ -96,15 +100,26 @@ export default {
       this.emitChange();
 
       try {
-        const { query, config, variables, fields } = await parse(this.glqlQuery);
+        const { query, config, variables, fields, mode } = await parse(this.glqlQuery);
 
         this.query = query;
         this.config = config;
         this.variables = variables;
         this.fields = fields;
+        this.mode = mode;
 
         this.setVariable('limit', this.config.limit ?? DEFAULT_PAGE_SIZE);
-        this.data = await transform(await execute(this.query, this.variables), this.config);
+
+        const executionResult = await execute(this.query, this.variables);
+
+        if (this.mode === MODE_ANALYTICS) {
+          this.data = await transform(executionResult, {
+            fields: this.fields,
+            mode: this.mode,
+          });
+        } else {
+          this.data = await transform(executionResult, this.config);
+        }
 
         this.trackRender();
       } catch (error) {
@@ -123,7 +138,18 @@ export default {
         this.loading = true;
         this.emitChange();
 
-        const data = await transform(await execute(this.query, this.variables), this.config);
+        const executionResult = await execute(this.query, this.variables);
+
+        let data;
+        if (this.mode === MODE_ANALYTICS) {
+          data = await transform(executionResult, {
+            fields: this.fields,
+            mode: this.mode,
+          });
+        } else {
+          data = await transform(executionResult, this.config);
+        }
+
         this.data = {
           ...this.data,
           pageInfo: data.pageInfo,
@@ -161,6 +187,7 @@ export default {
       :data="data"
       :fields="fields"
       :display-type="config.display"
+      :display-config="config.displayConfig"
       :loading="loading"
       @error="handlePresenterError"
     />

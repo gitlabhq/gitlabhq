@@ -6,7 +6,7 @@ module Import
     expose :import_status, documentation: { type: 'string', example: 'importing' }
     expose :stats,
       documentation: {
-        type: 'object', example: '{"fetched":{"label":10},"imported":{"label":10}}'
+        type: 'object', example: { "fetched" => { "label" => 10 }, "imported" => { "label" => 10 } }
       } do |project|
         ::Gitlab::GithubImport::ObjectCounter.summary(project)
       end

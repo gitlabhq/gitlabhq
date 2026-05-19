@@ -120,7 +120,7 @@ RSpec.describe Gitlab::TopologyServiceClient::ConcurrencyLimitInterceptor,
     end
   end
 
-  describe '#server_streaming' do
+  describe '#server_streamer' do
     let(:tracked_method) { '/gitlab.cells.topology_service.claims.v1.ClaimService/CommitUpdate' }
     let(:untracked_method) { '/TopologyService/StreamCells' }
     let(:request) { double }
@@ -133,13 +133,13 @@ RSpec.describe Gitlab::TopologyServiceClient::ConcurrencyLimitInterceptor,
       end
 
       it 'returns an enumerator that yields all items' do
-        result = interceptor.server_streaming(request: request, method: tracked_method) { enum }
+        result = interceptor.server_streamer(request: request, method: tracked_method) { enum }
 
         expect(result.to_a).to eq(items)
       end
 
       it 'keeps request tracked until enumeration completes' do
-        result = interceptor.server_streaming(request: request, method: tracked_method) { enum }
+        result = interceptor.server_streamer(request: request, method: tracked_method) { enum }
 
         # Request should still be tracked before enumeration
         expect(service.concurrent_request_count).to eq(1)
@@ -157,7 +157,7 @@ RSpec.describe Gitlab::TopologyServiceClient::ConcurrencyLimitInterceptor,
           raise StandardError, 'enumeration error'
         end
 
-        result = interceptor.server_streaming(request: request, method: tracked_method) { error_enum }
+        result = interceptor.server_streamer(request: request, method: tracked_method) { error_enum }
 
         expect(service.concurrent_request_count).to eq(1)
 
@@ -172,14 +172,14 @@ RSpec.describe Gitlab::TopologyServiceClient::ConcurrencyLimitInterceptor,
       it 'skips concurrency tracking and yields immediately' do
         expect(service).not_to receive(:track_request_start)
 
-        result = interceptor.server_streaming(request: request, method: untracked_method) { enum }
+        result = interceptor.server_streamer(request: request, method: untracked_method) { enum }
 
         expect(result.to_a).to eq(items)
       end
     end
   end
 
-  describe '#client_streaming' do
+  describe '#client_streamer' do
     let(:tracked_method) { '/gitlab.cells.topology_service.claims.v1.ClaimService/RollbackUpdate' }
     let(:untracked_method) { '/TopologyService/SendRequests' }
     let(:requests) { double }
@@ -191,13 +191,13 @@ RSpec.describe Gitlab::TopologyServiceClient::ConcurrencyLimitInterceptor,
       end
 
       it 'yields control to the block' do
-        expect { |b| interceptor.client_streaming(requests: requests, method: tracked_method, &b) }.to yield_control
+        expect { |b| interceptor.client_streamer(requests: requests, method: tracked_method, &b) }.to yield_control
       end
 
       it 'increments and decrements the counter immediately' do
         initial_count = service.concurrent_request_count
 
-        interceptor.client_streaming(requests: requests, method: tracked_method) { response }
+        interceptor.client_streamer(requests: requests, method: tracked_method) { response }
 
         # Counter should be back to initial value after request completes
         expect(service.concurrent_request_count).to eq(initial_count)
@@ -211,7 +211,7 @@ RSpec.describe Gitlab::TopologyServiceClient::ConcurrencyLimitInterceptor,
 
         it 'raises RESOURCE_EXHAUSTED error' do
           expect do
-            interceptor.client_streaming(requests: requests, method: tracked_method) { response }
+            interceptor.client_streamer(requests: requests, method: tracked_method) { response }
           end.to raise_error(GRPC::ResourceExhausted)
         end
       end
@@ -226,7 +226,7 @@ RSpec.describe Gitlab::TopologyServiceClient::ConcurrencyLimitInterceptor,
       it 'skips concurrency tracking and yields immediately' do
         expect(service).not_to receive(:track_request_start)
 
-        expect { |b| interceptor.client_streaming(requests: requests, method: untracked_method, &b) }.to yield_control
+        expect { |b| interceptor.client_streamer(requests: requests, method: untracked_method, &b) }.to yield_control
       end
     end
   end
@@ -359,13 +359,13 @@ RSpec.describe Gitlab::TopologyServiceClient::ConcurrencyLimitInterceptor,
     end
 
     it 'returns nil when the block yields nil' do
-      result = interceptor.server_streaming(request: request, method: tracked_method) { nil }
+      result = interceptor.server_streamer(request: request, method: tracked_method) { nil }
 
       expect(result).to be_nil
     end
 
     it 'still cleans up request tracking when enum is nil' do
-      interceptor.server_streaming(request: request, method: tracked_method) { nil }
+      interceptor.server_streamer(request: request, method: tracked_method) { nil }
 
       expect(service.concurrent_request_count).to eq(0)
     end
@@ -386,7 +386,7 @@ RSpec.describe Gitlab::TopologyServiceClient::ConcurrencyLimitInterceptor,
         raise error
       end
 
-      result = interceptor.server_streaming(request: request, method: tracked_method) { error_enum }
+      result = interceptor.server_streamer(request: request, method: tracked_method) { error_enum }
 
       expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
         error,

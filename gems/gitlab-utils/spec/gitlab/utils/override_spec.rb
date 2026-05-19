@@ -76,6 +76,27 @@ RSpec.describe Gitlab::Utils::Override do
       described_class.verify!
     end
 
+    it 'checks ok when super method has negative arity from a forwarding wrapper' do
+      skip 'only applicable when subject is a class' unless subject.is_a?(Class)
+
+      # Prepend a forwarding wrapper onto the *base* module so it sits
+      # between the derived class and the original method, simulating
+      # patterns like `def execute(...) super end` in ServiceTracking.
+      # Ancestor chain becomes: [derived, wrapper, base, ...]
+      wrapper = Module.new do
+        def good(...) # rubocop:disable Lint/UselessMethodDefinition -- intentional forwarding wrapper for test
+          super
+        end
+      end
+      klass.superclass.prepend(wrapper) if klass.superclass != Object
+
+      good(subject)
+      result = instance.good
+
+      expect(result).to eq(1)
+      described_class.verify!
+    end
+
     it 'raises NotImplementedError when it is not overriding anything' do
       expect do
         bad(subject)

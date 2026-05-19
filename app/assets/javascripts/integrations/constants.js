@@ -138,9 +138,18 @@ export const jiraIntegrationAuthFields = {
   AUTH_TYPE: 'jira_auth_type',
   USERNAME: 'username',
   PASSWORD: 'password',
+  WEB_URL: 'url',
+  API_URL: 'api_url',
 };
-export const jiraAuthTypeFieldProps = [
-  {
+
+export const jiraAuthTypes = {
+  BASIC: 0,
+  PAT: 1,
+  SERVICE_ACCOUNT: 2,
+};
+
+export const jiraAuthTypeFieldProps = {
+  [jiraAuthTypes.BASIC]: {
     username: s__('JiraService|Email or username'),
     password: s__('JiraService|API token or password'),
     passwordHelp: s__(
@@ -148,8 +157,15 @@ export const jiraAuthTypeFieldProps = [
     ),
     nonEmptyPassword: s__('JiraService|New API token or password'),
   },
-  {
+  [jiraAuthTypes.PAT]: {
     password: s__('JiraService|Jira personal access token'),
     nonEmptyPassword: s__('JiraService|New Jira personal access token'),
   },
-];
+  [jiraAuthTypes.SERVICE_ACCOUNT]: {
+    password: s__('JiraService|Service account token'),
+    passwordHelp: s__(
+      'JiraService|API token for a Jira Cloud service account. The account must have sufficient permissions to manage Jira.',
+    ),
+    nonEmptyPassword: s__('JiraService|New service account token'),
+  },
+};

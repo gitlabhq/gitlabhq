@@ -20,7 +20,7 @@ module SystemCheck
 
         SystemCheck.run('Reply by email', checks)
       else
-        $stdout.puts 'Reply by email is disabled in config/gitlab.yml'
+        say 'Reply by email is disabled in config/gitlab.yml'
       end
     end
   end

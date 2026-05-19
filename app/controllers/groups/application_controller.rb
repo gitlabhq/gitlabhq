@@ -51,10 +51,6 @@ class Groups::ApplicationController < ApplicationController
     render_403 unless can?(current_user, :admin_group_member, group)
   end
 
-  def authorize_owner_access!
-    render_403 unless can?(current_user, :owner_access, group)
-  end
-
   def authorize_billings_page!
     render_404 unless can?(current_user, :read_billing, group)
   end
@@ -113,8 +109,6 @@ class Groups::ApplicationController < ApplicationController
     push_namespace_setting(:math_rendering_limits_enabled, @group)
     push_force_frontend_feature_flag(:allow_iframes_in_markdown,
       @group&.allow_iframes_in_markdown_feature_flag_enabled? == true)
-    push_force_frontend_feature_flag(:use_mermaid_v11,
-      @group&.use_mermaid_v11_feature_flag_enabled? == true)
   end
 end
 

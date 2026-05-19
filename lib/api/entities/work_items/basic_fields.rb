@@ -37,7 +37,9 @@ module API
             expose_nil: true
           expose_field :title_html,
             documentation: { type: 'String', example: '<p>Fix the bug</p>' },
-            expose_nil: true
+            expose_nil: true do |work_item, options|
+            MarkupHelper.markdown_field(work_item, :title, current_user: options[:current_user])
+          end
 
           expose_field :author,
             using: ::API::Entities::UserBasic,

@@ -433,5 +433,45 @@ RSpec.describe SnippetsController do
 
       expect(json_response.keys).to match_array(%w[body references])
     end
+
+    context 'with cross-project GFM references' do
+      let_it_be(:public_project) { create(:project, :public) }
+      let_it_be(:issue) { create(:issue, project: public_project) }
+      let(:full_reference) { issue.to_reference(full: true) }
+
+      before do
+        sign_in(user)
+      end
+
+      context 'when personal_snippet_reference_filters feature flag is enabled' do
+        it 'resolves fully-qualified cross-project references' do
+          post :preview_markdown, params: { text: "See #{full_reference}" }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['body']).to include('class="gfm gfm-issue')
+          expect(json_response['body']).to include(issue.title)
+        end
+
+        it 'does not resolve unqualified references without a project context' do
+          post :preview_markdown, params: { text: "See ##{issue.iid}" }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['body']).not_to include('class="gfm')
+        end
+      end
+
+      context 'when personal_snippet_reference_filters feature flag is disabled' do
+        before do
+          stub_feature_flags(personal_snippet_reference_filters: false)
+        end
+
+        it 'does not resolve any references' do
+          post :preview_markdown, params: { text: "See #{full_reference}" }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['body']).not_to include('class="gfm')
+        end
+      end
+    end
   end
 end

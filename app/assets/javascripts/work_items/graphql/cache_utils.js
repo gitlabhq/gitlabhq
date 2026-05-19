@@ -4,7 +4,6 @@ import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getBaseURL } from '~/lib/utils/url_utility';
-import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
 import { getDraft, clearDraft } from '~/lib/utils/autosave';
 import {
   newWorkItemOptimisticUserPermissions,
@@ -26,6 +25,7 @@ import {
   WIDGET_TYPE_CRM_CONTACTS,
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_LINKED_ITEMS,
+  WIDGET_TYPE_LINKED_RESOURCES,
   STATE_CLOSED,
   WIDGET_TYPE_CUSTOM_FIELDS,
   WIDGET_TYPE_STATUS,
@@ -284,7 +284,11 @@ export const removeHierarchyChild = ({ cache, id, workItem }) => {
 export const updateParent = ({ cache, fullPath, iid, workItem }) => {
   const queryArgs = {
     query: workItemByIidQuery,
-    variables: { fullPath, iid },
+    variables: {
+      fullPath,
+      iid,
+      useWorkItemFeatures: Boolean(window.gon.features.workItemFeaturesField),
+    },
   };
   const sourceData = cache.readQuery(queryArgs);
 
@@ -305,7 +309,11 @@ export const updateParent = ({ cache, fullPath, iid, workItem }) => {
 export const updateWorkItemCurrentTodosWidget = ({ cache, fullPath, iid, todos }) => {
   const query = {
     query: workItemByIidQuery,
-    variables: { fullPath, iid },
+    variables: {
+      fullPath,
+      iid,
+      useWorkItemFeatures: Boolean(window.gon.features.workItemFeaturesField),
+    },
   };
 
   const sourceData = cache.readQuery(query);
@@ -395,6 +403,7 @@ export const getNewWorkItemSharedCache = ({
     },
     startAndDueDate: {
       ...startAndDueDateWidgetDefinitionHash,
+      type: WIDGET_TYPE_START_AND_DUE_DATE,
       dueDate: startAndDueDateWidgetDefinitionHash?.dueDate || null,
       startDate: startAndDueDateWidgetDefinitionHash?.startDate || null,
       isFixed: startAndDueDateWidgetDefinitionHash?.isFixed || false,
@@ -412,14 +421,18 @@ export const getNewWorkItemSharedCache = ({
       textColor: '#FFFFFF',
       __typename: 'WorkItemWidgetColor',
     },
-    status: {
-      ...widgetDefinitionsHash[WIDGET_TYPE_STATUS],
-      status:
-        draftWorkItemCache[WIDGET_TYPE_STATUS]?.status ||
-        widgetDefinitionsHash[WIDGET_TYPE_STATUS]?.defaultOpenStatus ||
-        null,
-      __typename: 'WorkItemWidgetStatus',
-    },
+    status: (() => {
+      const statusWidgetDefinition = widgetDefinitionsHash[WIDGET_TYPE_STATUS];
+      const { defaultOpenStatus, allowedStatuses } = statusWidgetDefinition || {};
+      const cachedStatus = draftWorkItemCache[WIDGET_TYPE_STATUS]?.status;
+      const isCachedStatusAllowed =
+        cachedStatus && allowedStatuses?.some((s) => s.name === cachedStatus.name);
+      return {
+        ...statusWidgetDefinition,
+        status: isCachedStatusAllowed ? cachedStatus : defaultOpenStatus || null,
+        __typename: 'WorkItemWidgetStatus',
+      };
+    })(),
     hierarchy: {
       ...widgetDefinitionsHash[WIDGET_TYPE_HIERARCHY],
       hasChildren: false,
@@ -486,6 +499,14 @@ export const getNewWorkItemSharedCache = ({
       ...widgetDefinitionsHash[WIDGET_TYPE_NOTES],
       discussionLocked: false,
       __typename: 'WorkItemWidgetNotes',
+    },
+    linkedResources: {
+      ...widgetDefinitionsHash[WIDGET_TYPE_LINKED_RESOURCES],
+      linkedResources: {
+        nodes: [],
+        __typename: 'WorkItemLinkedResourceConnection',
+      },
+      __typename: 'WorkItemWidgetLinkedResources',
     },
     development: {
       __typename: 'WorkItemWidgetDevelopment',
@@ -738,14 +759,16 @@ export const legacyGetNewWorkItemSharedCache = ({
       }
 
       if (widgetName === WIDGET_TYPE_STATUS) {
-        const { defaultOpenStatus } = widgetDefinitions.find(
+        const statusWidgetDefinition = widgetDefinitions.find(
           (widget) => widget.type === WIDGET_TYPE_STATUS,
         );
+        const { defaultOpenStatus, allowedStatuses } = statusWidgetDefinition;
+        const cachedStatus = sharedCacheWidgets[WIDGET_TYPE_STATUS]?.status;
+        const isCachedStatusAllowed =
+          cachedStatus && allowedStatuses?.some((s) => s.name === cachedStatus.name);
         widgets.push({
           type: 'STATUS',
-          status: sharedCacheWidgets[WIDGET_TYPE_STATUS]
-            ? sharedCacheWidgets[WIDGET_TYPE_STATUS]?.status || defaultOpenStatus
-            : defaultOpenStatus,
+          status: isCachedStatusAllowed ? cachedStatus : defaultOpenStatus,
           __typename: 'WorkItemWidgetStatus',
         });
       }
@@ -903,7 +926,6 @@ export const setNewWorkItemCache = ({
     return;
   }
 
-  const workItemTitleCase = convertEachWordToTitleCase(workItemType.split('_').join(' '));
   const currentUserId = convertToGraphQLId(TYPENAME_USER, gon?.current_user_id);
   const baseURL = getBaseURL();
   const isValidWorkItemTitle = workItemTitle.trim().length > 0;
@@ -1024,7 +1046,7 @@ export const setNewWorkItemCache = ({
           },
           workItemType: {
             id: workItemTypeId || 'mock-work-item-type-id',
-            name: workItemTitleCase,
+            name: workItemType,
             iconName: workItemTypeIconName,
             __typename: 'WorkItemType',
           },

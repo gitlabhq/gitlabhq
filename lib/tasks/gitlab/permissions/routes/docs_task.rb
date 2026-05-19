@@ -78,6 +78,23 @@ module Tasks
             end
           end
 
+          def publicly_accessible_endpoints
+            entries = routes.select { |s| publicly_accessible?(s.route, s.boundary) }
+            unique = entries.uniq do |s|
+              [s.route.request_method, route_path(s.route), s.permissions.map { |p| [p.resource_name, p.action] }]
+            end
+            sorted = unique.sort_by do |s|
+              [route_path(s.route), REQUEST_METHOD_SORT_ORDER[s.route.request_method.to_sym]]
+            end
+
+            build_table(%w[Action Method Path]) do
+              sorted.map do |s|
+                actions = s.permissions.map { |p| "#{p.resource_name}: #{p.action&.titleize}" }.uniq.join(', ')
+                markdown_row([actions, "`#{s.route.request_method}`", "`#{route_path(s.route)}`"])
+              end
+            end
+          end
+
           private
 
           attr_reader :routes, :skipped_routes, :doc_path, :template_path
@@ -124,7 +141,7 @@ module Tasks
 
           def route_permissions(route)
             Array(route.settings.dig(:authorization, :permissions)).map do |p|
-              ::Authz::PermissionGroups::Assignable.for_permission(p).first
+              ::Authz::PermissionGroups::Assignable.available_for_permission(p).first
             end
           end
 
@@ -142,6 +159,16 @@ module Tasks
           def route_reason(route)
             value = route.settings.dig(:authorization, :skip_granular_token_authorization)
             value if value.is_a?(Symbol)
+          end
+
+          def publicly_accessible?(route, boundary)
+            scope = boundary.to_sym
+            return false unless ::Authz::Role::RESOURCE_SCOPES.include?(scope)
+
+            permissions = Array(route.settings.dig(:authorization, :permissions)).map(&:to_sym)
+            return false if permissions.empty?
+
+            permissions.all? { |p| ::Authz::Role.get(:public_anonymous).permissions(scope).include?(p) }
           end
 
           def reason_label(reason)

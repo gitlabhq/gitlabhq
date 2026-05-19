@@ -52,7 +52,7 @@ Prerequisites:
 {{< tab title="The environment already exists" >}}
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Select the environment to be associated with the agent for Kubernetes.
 1. Select **Edit**.
 1. Select a GitLab agent for Kubernetes.
@@ -65,7 +65,7 @@ Prerequisites:
 {{< tab title="The environment doesn't exist" >}}
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Select **New environment**.
 1. Complete the **Name** field.
 1. Select a GitLab agent for Kubernetes.
@@ -120,7 +120,7 @@ The status of your Kubernetes resources and Flux reconciliation updates in real 
 To view a configured dashboard:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Select the environment associated with the agent for Kubernetes.
 1. Select the **Kubernetes overview** tab.
 

@@ -9,7 +9,6 @@ issues:
 - updated_by
 - milestone
 - iteration
-- work_item_type
 - notes
 - resource_label_events
 - resource_weight_events
@@ -97,8 +96,6 @@ work_item_transition:
 work_item_position:
 - namespace
 - work_item
-work_item_type:
-- user_preferences
 events:
 - author
 - group
@@ -121,6 +118,7 @@ notes:
 - diff_note_positions
 - review
 - note_metadata
+- duo_metadata
 - user_agent_detail
 note_metadata:
   - note
@@ -141,6 +139,7 @@ commit_notes:
 - diff_note_positions
 - review
 - note_metadata
+- duo_metadata
 - user_agent_detail
 label_links:
 - target
@@ -484,6 +483,7 @@ builds:
 - dast_scanner_profile
 - job_annotations
 - job_artifacts_annotations
+- job_artifacts_environment_key
 - project_mirror
 - job_source
 - supply_chain_attestation
@@ -563,11 +563,13 @@ merge_access_levels:
 - protected_branch
 - user
 - group
+- member_role
 push_access_levels:
 - protected_branch
 - user
 - group
 - deploy_key
+- member_role
 create_access_levels:
 - user
 - protected_tag
@@ -633,7 +635,6 @@ project:
 - pipelines_email_integration
 - mattermost_slash_commands_integration
 - matrix_integration
-- slack_slash_commands_integration
 - harbor_integration
 - irker_integration
 - packagist_integration
@@ -735,14 +736,12 @@ project:
 - redirect_routes
 - statistics
 - container_repositories
-- container_registry_data_repair_detail
 - container_registry_protection_rules
 - container_registry_protection_tag_rules
 - uploads
 - file_uploads
 - import_state
 - members_and_requesters
-- build_trace_chunks
 - job_artifacts
 - root_of_fork_network
 - fork_network_member
@@ -804,6 +803,7 @@ project:
 - rpm_repository_files
 - npm_metadata_caches
 - helm_metadata_caches
+- rubygems_spec_files
 - packages_cleanup_policy
 - dependency_proxy_packages_setting
 - project_setting
@@ -864,6 +864,7 @@ project:
 - ci_feature_usages
 - bulk_import_exports
 - ci_project_mirror
+- ci_project_metric
 - sync_events
 - secure_files
 - security_trainings
@@ -991,6 +992,7 @@ unprotect_access_levels:
 - user
 - protected_branch
 - group
+- member_role
 epic_issues:
 - issue
 - epic
@@ -1123,7 +1125,6 @@ status_page_published_incident:
 issuable_sla:
   - issue
 push_rule:
-  - group
   - organization
 project_push_rule:
   - project

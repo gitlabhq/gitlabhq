@@ -88,10 +88,10 @@ module BulkImports
       return if pipeline_tracker.canceled?
       return if invalid_entity_status?
 
-      raise(Pipeline::FailedError, "Export from source instance failed: #{export_status.error}") if export_failed?
-      raise(Pipeline::ExpiredError, 'Empty export status on source instance') if empty_export_timeout?
+      raise(Pipeline::FailedError, export_failed_error_message) if export_failed?
+      raise(Pipeline::ExpiredError, 'Empty export status on source instance') if export_timeout?
 
-      return re_enqueue if export_empty? || export_started?
+      return re_enqueue if waiting_on_export? || export_started?
 
       if file_extraction_pipeline? && export_status.batched?
         log_extra_metadata_on_done(:batched, true)
@@ -154,15 +154,15 @@ module BulkImports
     end
 
     def export_status
-      @export_status ||= ExportStatus.new(pipeline_tracker, pipeline_tracker.pipeline_class.relation)
+      @export_status ||= ::Import::ExportStatus.for_context(pipeline_tracker, pipeline_tracker.pipeline_class.relation)
     end
 
     def file_extraction_pipeline?
       pipeline_tracker.file_extraction_pipeline?
     end
 
-    def empty_export_timeout?
-      export_empty? && time_since_tracker_created > Pipeline::EMPTY_EXPORT_STATUS_TIMEOUT
+    def export_timeout?
+      waiting_on_export? && time_since_tracker_created > Pipeline::EXPORT_PENDING_TIMEOUT
     end
 
     def export_failed?
@@ -177,10 +177,10 @@ module BulkImports
       export_status.in_progress?
     end
 
-    def export_empty?
+    def waiting_on_export?
       return false unless file_extraction_pipeline?
 
-      export_status.empty?
+      export_status.waiting_on_export?
     end
 
     def retry_tracker(exception)
@@ -227,12 +227,8 @@ module BulkImports
       next_batch.numbers.each do |batch_number|
         batch = pipeline_tracker.batches.create!(batch_number: batch_number)
 
-        export_batch = export_status.batch(batch_number)
-
         # Mark the batch tracker as failed if the corresponding export batch on the source instance has failed.
-        if export_batch&.dig('status') == BulkImports::ExportBatch::STATE_VALUES[:failed]
-          fail_batch_tracker(batch, export_batch)
-        end
+        fail_batch_tracker(batch) if export_status.batch_failed?(batch_number)
 
         # Enqueue the worker for all batches regardless of status.
         # PipelineBatchWorker will only process batches in 'started' or 'created' states
@@ -251,7 +247,7 @@ module BulkImports
     end
 
     def next_batch
-      all_batch_numbers = (1..export_status.batches_count).to_a
+      all_batch_numbers = export_status.all_batch_numbers
 
       created_batch_numbers = pipeline_tracker.batches.pluck_batch_numbers
 
@@ -285,10 +281,18 @@ module BulkImports
       "gitlab:bulk_imports:pipeline_worker:#{pipeline_tracker.id}"
     end
 
-    def fail_batch_tracker(batch, export_batch)
+    def export_failed_error_message
+      return "Export from source instance failed: #{export_status.error}" unless entity.bulk_import.offline_export?
+
+      "Export file error: #{export_status.error}"
+    end
+
+    def fail_batch_tracker(batch)
       batch.fail_op!
+
+      batch_number = batch.batch_number
       exception_message =
-        "Batch export #{export_batch&.dig('batch_number')} from source instance failed: #{export_batch&.dig('error')}"
+        "Batch export #{batch_number} from source instance failed: #{export_status.batch_error(batch_number)}"
 
       BulkImports::Failure.create(
         bulk_import_entity_id: entity.id,

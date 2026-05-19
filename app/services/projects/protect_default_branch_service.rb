@@ -42,7 +42,7 @@ module Projects
         .execute(skip_authorization: true)
     end
 
-    # overriden in EE
+    # overridden in EE
     def code_owner_approval_required?
       false
     end

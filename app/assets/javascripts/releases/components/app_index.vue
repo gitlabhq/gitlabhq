@@ -5,6 +5,7 @@ import { historyPushState } from '~/lib/utils/common_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { setUrlParams, getParameterByName } from '~/lib/utils/url_utility';
+import { projectComparePath } from '~/lib/utils/path_helpers/repository';
 import { i18n, PAGE_SIZE, DEFAULT_SORT } from '~/releases/constants';
 import { convertAllReleasesGraphQLResponse } from '~/releases/util';
 import { popDeleteReleaseNotification } from '~/releases/release_notification_service';
@@ -195,6 +196,33 @@ export default {
     shouldRenderPagination() {
       return this.isFullRequestLoaded && !this.shouldRenderEmptyState;
     },
+    releasesWithComparePaths() {
+      return this.releases.map((release) => {
+        const currentSha = release.commit?.sha || '';
+        let previousReleaseSha = '';
+        let comparePath = '';
+
+        if (currentSha) {
+          const releaseDate = release.releasedAt || release.createdAt;
+          const previousRelease = this.releases.find((r) => {
+            const otherDate = r.releasedAt || r.createdAt;
+            return otherDate < releaseDate && r.commit?.sha && r.commit.sha !== currentSha;
+          });
+
+          previousReleaseSha = previousRelease?.commit?.sha || '';
+
+          if (previousReleaseSha && this.projectPath) {
+            comparePath = projectComparePath(this.projectPath, previousReleaseSha, currentSha);
+          }
+        }
+
+        return {
+          ...release,
+          previousReleaseSha,
+          comparePath,
+        };
+      });
+    },
   },
   mounted() {
     popDeleteReleaseNotification(this.projectPath);
@@ -287,46 +315,51 @@ export default {
       </template>
     </ci-cd-catalog-wrapper>
     <releases-empty-state v-if="shouldRenderEmptyState" />
-    <div v-else class="gl-flex gl-gap-3 gl-self-end">
-      <releases-sort :value="sort" @input="onSortChanged" />
+    <div v-else class="gl-flex gl-flex-col gl-justify-between gl-gap-3 @sm:gl-flex-row">
+      <h1 class="gl-heading-1 gl-my-0">{{ __('Releases') }}</h1>
+      <div class="@ gl-flex gl-w-full gl-gap-3 gl-self-end sm:gl-w-auto">
+        <releases-sort :value="sort" @input="onSortChanged" />
 
-      <gl-button
-        v-if="atomFeedPath"
-        v-gl-tooltip.hover
-        :title="atomFeedBtnTitle"
-        :href="atomFeedPath"
-        icon="rss"
-        class="gl-ml-2"
-        data-testid="atom-feed-btn"
-        :aria-label="atomFeedBtnTitle"
-      />
+        <gl-button
+          v-if="atomFeedPath"
+          v-gl-tooltip.hover
+          :title="atomFeedBtnTitle"
+          :href="atomFeedPath"
+          icon="rss"
+          class="gl-ml-2"
+          data-testid="atom-feed-btn"
+          :aria-label="atomFeedBtnTitle"
+        />
 
-      <ci-cd-catalog-wrapper>
-        <template #default="{ isCiCdCatalogProject }">
-          <div
-            v-if="newReleasePath"
-            v-gl-tooltip.hover
-            :title="releaseBtnTitle(isCiCdCatalogProject)"
-            data-testid="new-release-btn-tooltip"
-          >
-            <gl-button
-              :disabled="isCiCdCatalogProject"
-              :href="newReleasePath"
-              class="gl-ml-2"
-              category="primary"
-              variant="confirm"
-              >{{ $options.i18n.newRelease }}</gl-button
+        <ci-cd-catalog-wrapper>
+          <template #default="{ isCiCdCatalogProject }">
+            <div
+              v-if="newReleasePath"
+              v-gl-tooltip.hover
+              :title="releaseBtnTitle(isCiCdCatalogProject)"
+              data-testid="new-release-btn-tooltip"
             >
-          </div>
-        </template>
-      </ci-cd-catalog-wrapper>
+              <gl-button
+                :disabled="isCiCdCatalogProject"
+                :href="newReleasePath"
+                class="gl-ml-2"
+                category="primary"
+                variant="confirm"
+                >{{ $options.i18n.newRelease }}</gl-button
+              >
+            </div>
+          </template>
+        </ci-cd-catalog-wrapper>
+      </div>
     </div>
 
     <release-block
-      v-for="(release, index) in releases"
+      v-for="(release, index) in releasesWithComparePaths"
       :key="getReleaseKey(release, index)"
       :release="release"
       :sort="sort"
+      :previous-release-sha="release.previousReleaseSha"
+      :compare-path="release.comparePath"
     />
 
     <release-skeleton-loader v-if="shouldRenderLoadingIndicator" class="gl-mt-5" />

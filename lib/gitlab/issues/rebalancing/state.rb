@@ -13,11 +13,16 @@ module Gitlab
         NAMESPACE = 1
         PROJECT = 2
 
-        def initialize(root_namespace, projects)
-          @root_namespace = root_namespace
-          @projects = projects
-          @rebalanced_container_type = @root_namespace.is_a?(Group) ? NAMESPACE : PROJECT
-          @rebalanced_container_id = @rebalanced_container_type == NAMESPACE ? @root_namespace.id : projects.take.id # rubocop:disable CodeReuse/ActiveRecord
+        def initialize(namespace)
+          @root_namespace = namespace.root_ancestor
+
+          if namespace.is_a?(::Namespaces::ProjectNamespace)
+            @rebalanced_container_type = PROJECT
+            @rebalanced_container_id = namespace.owner_entity.id # = Project.id, for recently_finished compatibility
+          else
+            @rebalanced_container_type = NAMESPACE
+            @rebalanced_container_id = namespace.id
+          end
         end
 
         def track_new_running_rebalance
@@ -39,10 +44,10 @@ module Gitlab
           is_running = case rebalanced_container_type
                        when NAMESPACE
                          namespace_ids = self.class.current_rebalancing_containers.filter_map { |string| string.split("#{NAMESPACE}/").second.to_i }
-                         namespace_ids.include?(root_namespace.id)
+                         namespace_ids.include?(rebalanced_container_id)
                        when PROJECT
                          project_ids = self.class.current_rebalancing_containers.filter_map { |string| string.split("#{PROJECT}/").second.to_i }
-                         project_ids.include?(projects.take.id) # rubocop:disable CodeReuse/ActiveRecord
+                         project_ids.include?(rebalanced_container_id)
                        else
                          false
                        end
@@ -81,11 +86,11 @@ module Gitlab
           with_redis { |redis| redis.get(current_index_key).to_i }
         end
 
-        def cache_current_project_id(project_id)
-          with_redis { |redis| redis.set(current_project_key, project_id, ex: REDIS_EXPIRY_TIME) }
+        def cache_current_namespace_id(namespace_id)
+          with_redis { |redis| redis.set(current_project_key, namespace_id, ex: REDIS_EXPIRY_TIME) }
         end
 
-        def get_current_project_id
+        def get_current_namespace_id
           with_redis { |redis| redis.get(current_project_key) }
         end
 
@@ -93,7 +98,7 @@ module Gitlab
           @issue_count ||= with_redis { |redis| redis.zcard(issue_ids_key) }
         end
 
-        def remove_current_project_id_cache
+        def remove_current_namespace_id_cache
           with_redis { |redis| redis.del(current_project_key) }
         end
 
@@ -130,9 +135,12 @@ module Gitlab
           end
         end
 
-        def self.rebalance_recently_finished?(project_id, namespace_id)
-          container_id = project_id || namespace_id
-          container_type = project_id.present? ? PROJECT : NAMESPACE
+        def self.rebalance_recently_finished?(namespace)
+          container_type, container_id = if namespace.is_a?(::Namespaces::ProjectNamespace)
+                                           [PROJECT, namespace.owner_entity.id]
+                                         else
+                                           [NAMESPACE, namespace.id]
+                                         end
 
           Gitlab::Redis::SharedState.with { |redis| redis.get(recently_finished_key(container_type, container_id)) }
         end
@@ -161,7 +169,7 @@ module Gitlab
           Gitlab::Redis::SharedState.with { |redis| redis.smembers(CONCURRENT_RUNNING_REBALANCES_KEY) }
         end
 
-        attr_accessor :root_namespace, :projects, :rebalanced_container_type, :rebalanced_container_id
+        attr_accessor :root_namespace, :rebalanced_container_type, :rebalanced_container_id
 
         def concurrent_rebalance_within_limit?
           concurrent_running_rebalances_count <= MAX_NUMBER_OF_CONCURRENT_REBALANCES

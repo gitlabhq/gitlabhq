@@ -78,13 +78,14 @@
 // Aligns collapsed sidebar toggle height and border color with topbar
 .panels-container {
   .milestone-sidebar {
+    // stylelint-disable-next-line gitlab/no-js-class
     .js-sidebar-toggle.gutter-toggle {
       height: 49px;
-      border-bottom-color: var(--super-sidebar-bg) !important;
     }
   }
 }
 
+// stylelint-disable-next-line gitlab/no-js-class
 .js-right-sidebar.right-sidebar-expanded {
     display: block !important;
 }

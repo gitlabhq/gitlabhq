@@ -12,6 +12,12 @@ RSpec.describe Types::WorkItems::WidgetInterface, feature_category: :team_planni
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
+  describe 'fields with :ai_workflows scope' do
+    it 'includes :ai_workflows scope for the type field' do
+      expect(described_class.fields['type']).to include_graphql_scopes(:ai_workflows)
+    end
+  end
+
   where(:widget_class, :widget_type_name) do
     WorkItems::Widgets::Description       | Types::WorkItems::Widgets::DescriptionType
     WorkItems::Widgets::Hierarchy         | Types::WorkItems::Widgets::HierarchyType

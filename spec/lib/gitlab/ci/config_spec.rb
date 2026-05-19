@@ -20,14 +20,14 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
   context 'when config is valid' do
     let(:yml) do
-      <<-EOS
+      <<-YAML
         image: image:1.0
 
         rspec:
           script:
             - gem install rspec
             - rspec
-      EOS
+      YAML
     end
 
     describe '#to_hash' do
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
       context 'when yml has stages' do
         let(:yml) do
-          <<-EOS
+          <<-YAML
             image: image:1.0
             stages:
               - custom_stage
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
               script:
                 - gem install rspec
                 - rspec
-          EOS
+          YAML
         end
 
         specify do
@@ -97,7 +97,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
       context 'with custom stages' do
         let(:yml) do
-          <<-EOS
+          <<-YAML
             stages:
               - stage1
               - stage2
@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
               stage: stage1
               script:
                 - ls
-          EOS
+          YAML
         end
 
         it { is_expected.to eq %w[.pre stage1 stage2 .post] }
@@ -117,10 +117,10 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
       let(:ref) { 'master' }
 
       let(:yml) do
-        <<-EOS
+        <<-YAML
           rspec:
             script: exit 0
-        EOS
+        YAML
       end
 
       it 'sets the ref in the pipeline' do
@@ -133,19 +133,19 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
   describe '#included_templates' do
     let(:yml) do
-      <<-EOS
+      <<-YAML
         include:
           - template: Jobs/Deploy.gitlab-ci.yml
           - template: Jobs/Build.gitlab-ci.yml
           - remote: https://example.com/gitlab-ci.yml
-      EOS
+      YAML
     end
 
     before do
-      stub_request(:get, 'https://example.com/gitlab-ci.yml').to_return(status: 200, body: <<-EOS)
+      stub_request(:get, 'https://example.com/gitlab-ci.yml').to_return(status: 200, body: <<-YAML)
         test:
           script: [ 'echo hello world' ]
-      EOS
+      YAML
     end
 
     subject(:included_templates) do
@@ -189,14 +189,14 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
     let(:server_fqdn) { 'acme.com' }
 
     let(:yml) do
-      <<-EOS
+      <<-YAML
         include:
           - component: #{server_fqdn}/#{project1.full_path}/dast@1.0.0
           - component: #{server_fqdn}/#{project2.full_path}/template@1.0.0
           - local: templates/secret-detection.yml
             inputs:
               website: test.com
-      EOS
+      YAML
     end
 
     subject(:included_components) { config.included_components }
@@ -218,11 +218,11 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
     context 'when duplicate components are included' do
       let(:yml) do
-        <<-EOS
+        <<-YAML
           include:
             - component: #{server_fqdn}/#{project1.full_path}/dast@1.0.0
             - component: #{server_fqdn}/#{project1.full_path}/dast@1.0.0
-        EOS
+        YAML
       end
 
       it 'returns only unique components' do
@@ -236,7 +236,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
   context 'when using extendable hash' do
     let(:yml) do
-      <<-EOS
+      <<-YAML
         image: image:1.0
 
         rspec:
@@ -245,7 +245,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
         test:
           extends: rspec
           image: ruby:alpine
-      EOS
+      YAML
     end
 
     it 'correctly extends the hash' do
@@ -289,7 +289,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
       describe '.new' do
         it 'raises error' do
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
 
           expect { config }.to raise_error(
             described_class::ConfigError,
@@ -321,11 +321,11 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
     context 'when invalid extended hash has been provided' do
       let(:yml) do
-        <<-EOS
+        <<-YAML
           test:
             extends: test
             script: rspec
-        EOS
+        YAML
       end
 
       it 'raises an error' do
@@ -338,12 +338,12 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
     context 'when ports have been set' do
       context 'in the main image' do
         let(:yml) do
-          <<-EOS
+          <<-YAML
             image:
               name: image:1.0
               ports:
                 - 80
-          EOS
+          YAML
         end
 
         it 'raises an error' do
@@ -353,7 +353,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
       context 'in the job image' do
         let(:yml) do
-          <<-EOS
+          <<-YAML
             image: image:1.0
 
             test:
@@ -362,7 +362,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
                 name: image:1.0
                 ports:
                   - 80
-          EOS
+          YAML
         end
 
         it 'raises an error' do
@@ -372,7 +372,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
       context 'in the services' do
         let(:yml) do
-          <<-EOS
+          <<-YAML
             image: image:1.0
 
             test:
@@ -383,7 +383,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
                   alias: test
                   ports:
                     - 80
-          EOS
+          YAML
         end
 
         it 'raises an error' do
@@ -415,10 +415,10 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
   context 'when project is nil' do
     let(:yml) do
-      <<-EOS
+      <<-YAML
         rspec:
           script: rspec
-      EOS
+      YAML
     end
 
     let(:config) do
@@ -630,7 +630,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
       end
 
       it 'raises error TimeoutError' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
 
         expect { config }.to raise_error(
           described_class::ConfigError,
@@ -1102,14 +1102,14 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
     subject(:workflow_rules) { config.workflow_rules }
 
     let(:yml) do
-      <<-EOS
+      <<-YAML
         workflow:
           rules:
             - if: $CI_COMMIT_REF_NAME == "master"
 
         rspec:
           script: exit 0
-      EOS
+      YAML
     end
 
     it { is_expected.to eq([{ if: '$CI_COMMIT_REF_NAME == "master"' }]) }
@@ -1119,23 +1119,23 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
     subject(:workflow_name) { config.workflow_name }
 
     let(:yml) do
-      <<-EOS
+      <<-YAML
         workflow:
           name: 'Pipeline name'
 
         rspec:
           script: exit 0
-      EOS
+      YAML
     end
 
     it { is_expected.to eq('Pipeline name') }
 
     context 'with no name' do
       let(:yml) do
-        <<-EOS
+        <<-YAML
           rspec:
             script: exit 0
-        EOS
+        YAML
       end
 
       it { is_expected.to be_nil }

@@ -813,25 +813,26 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
       end
     end
 
-    context 'when gitaly is not available' do
-      let(:request) { get :index, format: :html, params: { namespace_id: project.namespace, project_id: project } }
-
+    context 'when gitaly is unavailable' do
       before do
         allow_next_instance_of(Gitlab::GitalyClient::RefService) do |ref_service|
-          allow(ref_service).to receive(:local_branches).and_raise(GRPC::DeadlineExceeded)
+          allow(ref_service).to receive(:local_branches)
+            .and_raise(Gitlab::Git::CommandError, 'Gitaly unavailable')
         end
       end
 
-      it 'returns with a status 503' do
-        request
+      it 'returns 503 and sets gitaly_unavailable' do
+        get :index, format: :html, params: { namespace_id: project.namespace, project_id: project }
 
         expect(response).to have_gitlab_http_status(:service_unavailable)
+        expect(assigns(:gitaly_unavailable)).to be true
       end
 
-      it 'sets gitaly_unavailable variable' do
-        request
+      it 'tracks the exception' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(instance_of(Gitlab::Git::CommandError))
 
-        expect(assigns[:gitaly_unavailable]).to be_truthy
+        get :index, format: :html, params: { namespace_id: project.namespace, project_id: project }
       end
     end
   end
@@ -892,6 +893,37 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.count).to be > 1
+      end
+    end
+
+    context 'when gitaly is unavailable' do
+      before do
+        allow_next_instance_of(Gitlab::Git::Finders::RefsFinder) do |finder|
+          allow(finder).to receive(:execute)
+            .and_raise(Gitlab::Git::CommandError, 'Gitaly unavailable')
+        end
+      end
+
+      it 'returns 503 and JSON error message' do
+        get :diverging_commit_counts, format: :json, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          names: %w[fix]
+        }
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+        expect(json_response['error']).to be_present
+      end
+
+      it 'tracks the exception' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(instance_of(Gitlab::Git::CommandError))
+
+        get :diverging_commit_counts, format: :json, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          names: %w[fix]
+        }
       end
     end
   end

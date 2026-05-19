@@ -274,6 +274,7 @@ module Types
     mount_mutation Mutations::Pages::MarkOnboardingComplete
     mount_mutation Mutations::Pages::SetPagesForceHttps
     mount_mutation Mutations::Pages::SetPagesUseUniqueDomain
+    mount_mutation Mutations::Uploads::Create, experiment: { milestone: '19.0' }
     mount_mutation Mutations::Uploads::Delete
     mount_mutation Mutations::Users::SetNamespaceCommitEmail
     mount_mutation Mutations::WorkItems::Subscribe, experiment: { milestone: '16.3' }

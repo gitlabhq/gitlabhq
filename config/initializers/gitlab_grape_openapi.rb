@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
-I18n.load_path += Dir[Rails.root.join('config/locales/doorkeeper.en.yml')]
-I18n.reload!
-
 Gitlab::GrapeOpenapi.configure do |config|
   config.info = Gitlab::GrapeOpenapi::Models::Info.new(
     title: 'GitLab REST API',
     description: 'GitLab REST API used to interact with a GitLab installation.',
     version: 'v4',
-    terms_of_service: 'https://about.gitlab.com/terms/'
+    terms_of_service: 'https://handbook.gitlab.com/handbook/legal/api-terms/',
+    license: {
+      name: 'CC BY-SA 4.0',
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/blob/master/LICENSE',
+      'x-gitlab-description':
+        'The license applies to the OpenAPI specification document itself. ' \
+        'For terms governing use of the GitLab API, see the termsOfService field.'
+    }
   )
 
   config.api_prefix = "api"
@@ -42,8 +46,10 @@ Gitlab::GrapeOpenapi.configure do |config|
           authorizationUrl: Gitlab::Utils.append_path('https://gitlab.com/api', "/oauth/authorize"),
           tokenUrl: Gitlab::Utils.append_path('https://gitlab.com/api', "/oauth/token"),
           refreshUrl: Gitlab::Utils.append_path('https://gitlab.com/api', "/oauth/refresh"),
-          scopes: Gitlab::Auth::API_SCOPES.reject { |k, _| k == :granular }
-                                          .index_with { |s| I18n.t(s, scope: [:doorkeeper, :scope_desc]) }
+          scopes: -> {
+            Gitlab::Auth::API_SCOPES.reject { |k, _| k == :granular }
+                                  .index_with { |s| I18n.t(s, scope: [:doorkeeper, :scope_desc]) }
+          }
         }
       }
     )
@@ -142,7 +148,6 @@ Gitlab::GrapeOpenapi.configure do |config|
     'GitlabSubscriptions::API::Internal::API',
     'API::Internal::SecretsManager',
     'API::Internal::Observability',
-    'API::Internal::Ai::XRay::Scan',
     'API::Internal::Search::Zoekt',
     'API::Internal::Ci::JobRouter',
     'API::Internal::AppSec::Dast::SiteValidations',

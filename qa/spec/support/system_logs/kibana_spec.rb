@@ -30,19 +30,19 @@ RSpec.describe QA::Support::SystemLogs::Kibana do
 
     let(:staging_url) do
       "https://nonprod-log.gitlab.net/app/discover#/?_a=%28index:%27ed942d00-5186-11ea-ad8a-f3610a492295%27" \
-      "%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20#{correlation_id}%27%29" \
+      "%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20%22#{correlation_id}%22%27%29" \
       "%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29"
     end
 
     let(:production_url) do
       "https://log.gprd.gitlab.net/app/discover#/?_a=%28index:%277092c4e2-4eb5-46f2-8305-a7da2edad090%27" \
-      "%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20#{correlation_id}%27%29" \
+      "%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20%22#{correlation_id}%22%27%29" \
       "%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29"
     end
 
     let(:pre_url) do
       "https://nonprod-log.gitlab.net/app/discover#/?_a=%28index:%27pubsub-rails-inf-pre%27" \
-      "%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20#{correlation_id}%27%29" \
+      "%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20%22#{correlation_id}%22%27%29" \
       "%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29"
     end
 

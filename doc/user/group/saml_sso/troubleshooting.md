@@ -535,7 +535,7 @@ Prerequisites:
 To implement this workaround:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **New user account restrictions**.
 1. Add or remove a domain as appropriate to **Domains allowed for new users** and **Domains denied for new users**.
 1. Select **Save changes**.

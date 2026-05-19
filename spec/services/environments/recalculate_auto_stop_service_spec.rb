@@ -28,9 +28,11 @@ RSpec.describe Environments::RecalculateAutoStopService, feature_category: :envi
 
     shared_examples 'recalculating auto stop at' do |can_reset_timer|
       it 'updates the environment auto_stop_at' do
-        expected_stop_at = be_like_time(1.day.from_now)
+        freeze_time do
+          expected_stop_at = be_like_time(1.day.from_now)
 
-        expect { recalculate }.to change { environment.reload.auto_stop_at }.from(nil).to(expected_stop_at)
+          expect { recalculate }.to change { environment.reload.auto_stop_at }.from(nil).to(expected_stop_at)
+        end
       end
 
       context 'when the environment no longer exists' do
@@ -69,13 +71,15 @@ RSpec.describe Environments::RecalculateAutoStopService, feature_category: :envi
 
             if can_reset_timer
               it 'updates the environment auto_stop_at' do
-                expected_stop_at = be_like_time(
-                  ::Gitlab::Ci::Build::DurationParser
-                    .new(previous_auto_stop_in)
-                    .seconds_from_now
-                )
+                freeze_time do
+                  expected_stop_at = be_like_time(
+                    ::Gitlab::Ci::Build::DurationParser
+                      .new(previous_auto_stop_in)
+                      .seconds_from_now
+                  )
 
-                expect { recalculate }.to change { environment.reload.auto_stop_at }.from(nil).to(expected_stop_at)
+                  expect { recalculate }.to change { environment.reload.auto_stop_at }.from(nil).to(expected_stop_at)
+                end
               end
             else
               it 'does not update the environment' do

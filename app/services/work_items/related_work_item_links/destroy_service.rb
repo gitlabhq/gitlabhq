@@ -49,7 +49,7 @@ module WorkItems
         end
       end
 
-      # Overriden on EE to sync deletion with
+      # Overridden on EE to sync deletion with
       # related epic links records
       def perform_destroy_link(link, linked_item)
         link.destroy!

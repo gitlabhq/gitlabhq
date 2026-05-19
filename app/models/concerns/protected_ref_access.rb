@@ -62,17 +62,22 @@ module ProtectedRefAccess
 
   def humanize
     # humanize_role
+    # humanize_member_role
     # humanize_user
     # humanize_group
     # humanize_deploy_key
     send(:"humanize_#{type}") # rubocop:disable GitlabSecurity/PublicSend -- Intentional meta programming to direct to correct type
   end
 
-  def check_access(current_user, current_project = protected_ref_project)
+  # Normally this check runs when pushing to a project so current_project is
+  # passed in, however, if we are checking if a user can has access to delete
+  # aka unprotect a protected branch then current project will be nil.
+  def check_access(current_user, current_project = nil)
     return false if current_user.nil? || no_access?
     return current_user.admin? if admin_access?
 
     # role_access_allowed?
+    # member_role_access_allowed?
     # user_access_allowed?
     # group_access_allowed?
     # deploy_key_access_allowed?
@@ -93,18 +98,31 @@ module ProtectedRefAccess
     role? && access_level == Gitlab::Access::NO_ACCESS
   end
 
+  # current_project is only present when merging or pushing into a protected
+  # branch/tag, otherwise we are checking a project or group level protected
+  # branch can be unprotected by current_user.
+  #
+  # Project level protected branches have a protected_ref_project and group
+  # level protected branches have a protected_branch_group.
+  #
+  # Protected tags cannot be configured at group level hence the naming
+  # difference.
   def role_access_allowed?(current_user, current_project)
-    # NOTE: A user could be a group member which would be inherited in
-    # projects, however, the same user can have direct membership to a
-    # project with a higher role. For this reason we need to check group-level
-    # rules against the current project when merging an MR or pushing changes
-    # to a protected branch.
     if current_project
-      current_user.can?(:push_code, current_project) &&
-        current_project.team.max_member_access(current_user.id) >= access_level
+      role_access_allowed_for_project?(current_user, current_project)
+    elsif protected_ref_project
+      role_access_allowed_for_project?(current_user, protected_ref_project)
     elsif protected_branch_group
       protected_branch_group.max_member_access_for_user(current_user) >= access_level
     end
+  end
+
+  def role_access_allowed_for_project?(current_user, project)
+    # current_user could be a group member with inherited membership in project
+    # or could have direct membership to project with a higher role so we check
+    # max_member_access
+    current_user.can?(:push_code, project) &&
+      project.team.max_member_access(current_user.id) >= access_level
   end
 end
 

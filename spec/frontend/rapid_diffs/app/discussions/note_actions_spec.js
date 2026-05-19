@@ -7,15 +7,18 @@ import {
   GlButton,
 } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import NoteActions from '~/rapid_diffs/app/discussions/note_actions.vue';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import * as constants from '~/notes/constants';
 
 jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/copy_to_clipboard');
 // Vue 3 compat doesn't like async components
 jest.mock('~/emoji/components/picker.vue', () => {
   return {
@@ -249,11 +252,23 @@ describe('NoteActions', () => {
         expect(findMoreActionsDropdown().text().includes('Copy link')).toBe(false);
       });
 
-      it('shows toast when copy link is clicked', async () => {
+      it('copies URL and shows toast when copy link is clicked', async () => {
+        copyToClipboard.mockResolvedValue();
         createComponent({ noteUrl: 'http://note.url' });
 
         findCopyLinkButton().vm.$emit('action');
-        await nextTick();
+        await waitForPromises();
+
+        expect(copyToClipboard).toHaveBeenCalledWith('http://note.url');
+        expect(toast.show).toHaveBeenCalledWith('Link copied to clipboard.');
+      });
+
+      it('shows toast even when clipboard copy fails', async () => {
+        copyToClipboard.mockRejectedValue(new Error('Copy failed'));
+        createComponent({ noteUrl: 'http://note.url' });
+
+        findCopyLinkButton().vm.$emit('action');
+        await waitForPromises();
 
         expect(toast.show).toHaveBeenCalledWith('Link copied to clipboard.');
       });

@@ -7,6 +7,7 @@ module Integrations
 
       include NotificationBranchSelection
       include NotificationPipelineStatusSelection
+      include NotificationPipelineSourceSelection
 
       RECIPIENTS_LIMIT = 30
 
@@ -63,6 +64,18 @@ module Integrations
           },
           choices: branch_choices
 
+        field :notify_child_pipelines,
+          type: :checkbox,
+          description: -> { _('Send notifications for child pipelines.') }
+
+        def fields
+          if parent&.root_ancestor && Feature.enabled?(:pipelines_email_notify_child_pipelines, parent.root_ancestor)
+            super
+          else
+            super.reject { |field| field.name == 'notify_child_pipelines' }
+          end
+        end
+
         def initialize_properties
           super
 
@@ -70,6 +83,7 @@ module Integrations
             self.notify_only_broken_pipelines = true
             self.notify_only_when_pipeline_status_changes = false
             self.branches_to_be_notified = "default"
+            self.notify_child_pipelines = true
           elsif !notify_only_default_branch.nil?
             # In older versions, there was only a boolean property named
             # `notify_only_default_branch`. Now we have a string property named
@@ -80,6 +94,11 @@ module Integrations
 
             self.branches_to_be_notified ||= notify_only_default_branch? ? "default" : "all"
           end
+
+          # Always set default for notify_child_pipelines if not already present
+          # This handles existing integrations after upgrade, to ensure existing
+          # functionality doesn't change, but users can opt out
+          self.notify_child_pipelines = true if notify_child_pipelines.nil?
         end
 
         def execute(data, force: false)
@@ -107,7 +126,7 @@ module Integrations
         end
 
         def should_pipeline_be_notified?(data)
-          notify_for_branch?(data) && notify_for_pipeline?(data)
+          notify_for_branch?(data) && notify_for_pipeline?(data) && notify_for_pipeline_source?(data)
         end
 
         def retrieve_recipients

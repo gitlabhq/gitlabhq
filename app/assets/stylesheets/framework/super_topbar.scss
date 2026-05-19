@@ -1,0 +1,35 @@
+.super-topbar {
+  @apply gl-px-3;
+  @apply lg:gl-pl-4; // visually aligns app logo with sidebar icons
+
+  height: var(--top-bar-height);
+
+  // Placeholder styles
+  .topbar-search-button-placeholder {
+    font-weight: 320;
+    line-height: 1.25;
+  }
+
+  // Search button
+  .topbar-search-button {
+    @apply gl-text-subtle #{!important};
+    @apply gl-border-alpha-dark-24 #{!important};
+
+    kbd {
+      @apply gl-border-strong;
+      @apply gl-font-semibold;
+      @apply gl-text-subtle;
+      @apply gl-shadow-none;
+      @apply dark:gl-border-transparent;
+    }
+
+    @media (forced-colors: active) {
+      border: 1px solid !important;
+    }
+  }
+
+  .topbar-search-button:not(:hover):not(:focus):not(:active) {
+    @apply dark:gl-bg-alpha-light-8 #{!important};
+    @apply dark:gl-border-alpha-light-16 #{!important};
+  }
+}

@@ -1,11 +1,15 @@
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
+import Vue from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
-import { createStore } from '~/integrations/edit/store';
+import { useIntegrationForm } from '~/integrations/edit/store';
+
+Vue.use(PiniaVuePlugin);
 
 describe('JiraIssuesFields', () => {
-  let store;
   let wrapper;
 
   const defaultProps = {
@@ -18,13 +22,16 @@ describe('JiraIssuesFields', () => {
     props,
     ...options
   } = {}) => {
-    store = createStore({
-      defaultState: isInheriting ? {} : undefined,
+    const pinia = createTestingPinia({ stubActions: false });
+    const store = useIntegrationForm();
+    Object.assign(store, {
+      defaultState: isInheriting ? {} : null,
+      override: !isInheriting,
     });
 
     wrapper = mountFn(JiraIssuesFields, {
       propsData: { ...defaultProps, ...props },
-      store,
+      pinia,
       stubs: ['jira-issue-creation-vulnerabilities'],
       ...options,
     });

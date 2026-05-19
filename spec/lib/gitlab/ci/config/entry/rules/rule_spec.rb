@@ -562,7 +562,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
   end
 
   describe '.default' do
-    let(:config) {}
+    let(:config) { nil }
 
     it 'does not have default value' do
       expect(described_class.default).to be_nil

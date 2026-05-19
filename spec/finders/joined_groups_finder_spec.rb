@@ -4,19 +4,19 @@ require 'spec_helper'
 
 RSpec.describe JoinedGroupsFinder do
   describe '#execute' do
-    let!(:profile_owner)    { create(:user) }
-    let!(:profile_visitor)  { create(:user) }
+    let_it_be(:profile_owner) { create(:user) }
+    let_it_be_with_reload(:profile_visitor) { create(:user) }
 
-    let!(:private_group)    { create(:group, :private) }
-    let!(:private_group_2)  { create(:group, :private) }
-    let!(:internal_group)   { create(:group, :internal) }
-    let!(:internal_group_2) { create(:group, :internal) }
-    let!(:public_group)     { create(:group, :public) }
-    let!(:public_group_2)   { create(:group, :public) }
-    let!(:finder) { described_class.new(profile_owner) }
+    let_it_be(:private_group)    { create(:group, :private) }
+    let_it_be(:private_group_2)  { create(:group, :private) }
+    let_it_be(:internal_group)   { create(:group, :internal) }
+    let_it_be(:internal_group_2) { create(:group, :internal) }
+    let_it_be(:public_group)     { create(:group, :public) }
+    let_it_be(:public_group_2)   { create(:group, :public) }
+    let(:finder) { described_class.new(profile_owner) }
 
     context 'without a user' do
-      before do
+      before_all do
         public_group.add_maintainer(profile_owner)
       end
 
@@ -26,14 +26,14 @@ RSpec.describe JoinedGroupsFinder do
     end
 
     context "with a user" do
-      before do
+      before_all do
         private_group.add_maintainer(profile_owner)
         internal_group.add_maintainer(profile_owner)
         public_group.add_maintainer(profile_owner)
       end
 
       context "when the profile visitor is in the private group" do
-        before do
+        before_all do
           private_group.add_developer(profile_visitor)
         end
 
@@ -65,7 +65,7 @@ RSpec.describe JoinedGroupsFinder do
         end
 
         context "if authorized" do
-          before do
+          before_all do
             internal_group.add_maintainer(profile_visitor)
           end
 

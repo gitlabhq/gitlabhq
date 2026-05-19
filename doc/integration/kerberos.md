@@ -118,7 +118,7 @@ If you're an administrator, you can link a Kerberos account to an
 existing GitLab account. To do so:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Users**.
+1. In the left sidebar, select **Overview** > **Users**.
 1. Select a user, then select the **Identities** tab.
 1. From the **Provider** dropdown list, select **Kerberos**.
 1. Make sure the **Identifier** corresponds to the Kerberos username.

@@ -48,6 +48,19 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
       project.add_developer(user)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_pipeline do
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(
+          :pipeline_create,
+          { project_path: project.full_path, **params },
+          'errors'
+        )
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when the pipeline creation is not successful' do
       it 'returns error' do
         stub_ci_builds_disabled

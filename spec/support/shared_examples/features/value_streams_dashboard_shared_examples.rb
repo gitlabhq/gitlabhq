@@ -151,7 +151,7 @@ RSpec.shared_examples 'VSD renders as an analytics dashboard' do
   let(:vsd_background_aggregation_disabled_alert) { find_by_testid('vsd-background-aggregation-disabled-warning') }
 
   it 'renders VSD page correctly' do
-    expect(find_by_testid('gridstack-grid')).to be_visible
+    expect(find_by_testid('analytics-dashboard')).to be_visible
     expect(page).not_to have_selector(dashboard_list_item_testid)
     expect(page).to have_content _('Value Streams Dashboard')
 

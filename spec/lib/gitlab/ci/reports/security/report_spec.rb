@@ -230,6 +230,12 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report, feature_category: :vulnera
     end
   end
 
+  describe '#tracked_context' do
+    subject { report.tracked_context }
+
+    it { is_expected.to be_nil }
+  end
+
   describe '#has_signatures?' do
     let(:finding) { create(:ci_reports_security_finding, signatures: signatures) }
 

@@ -1,11 +1,13 @@
 ---
 name: create_commit
 description: Grants the ability to create commits
+boundaries:
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - create_commit
   - cherry_pick_commit
   - revert_commit
   - create_commit_discussion
   - create_commit_discussion_note
-boundaries:
-  - project

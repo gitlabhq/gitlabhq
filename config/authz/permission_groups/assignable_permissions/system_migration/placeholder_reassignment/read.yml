@@ -1,0 +1,9 @@
+---
+name: read_placeholder_reassignment
+description: Grants the ability to read placeholder reassignments
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - read_placeholder_reassignment

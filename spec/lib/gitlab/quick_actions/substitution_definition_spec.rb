@@ -4,11 +4,11 @@ require 'fast_spec_helper'
 
 RSpec.describe Gitlab::QuickActions::SubstitutionDefinition do
   let(:content) do
-    <<EOF
+    <<TEXT
 Hello! Let's do this!
 /sub_name I like this stuff
 /sub_name second substitution
-EOF
+TEXT
   end
 
   subject do
@@ -22,27 +22,27 @@ EOF
 
     context 'when content contains command name' do
       it 'performs the substitution by default' do
-        expect(subject.perform_substitution(self, content)).to eq <<EOF
+        expect(subject.perform_substitution(self, content)).to eq <<TEXT
 Hello! Let's do this!
 I like this stuff foo
 /sub_name second substitution
-EOF
+TEXT
       end
     end
 
     context 'when content contains command name in word' do
       let(:content) do
-        <<EOF
+        <<TEXT
 Hello! Let's do this!
 `/sub_names` I like this stuff
-EOF
+TEXT
       end
 
       it 'does not perform the substitution' do
-        expect(subject.perform_substitution(self, content)).to eq <<EOF
+        expect(subject.perform_substitution(self, content)).to eq <<TEXT
 Hello! Let's do this!
 `/sub_names` I like this stuff
-EOF
+TEXT
       end
     end
   end

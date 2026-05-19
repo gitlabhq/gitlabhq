@@ -267,7 +267,7 @@ RSpec.describe Issuable::BulkUpdateService, feature_category: :team_planning do
       context 'when the new assignee IDs array is empty' do
         it 'removes all assignees' do
           expect { bulk_update(merge_request, assignee_ids: []) }
-            .to change(merge_request.assignees, :count).by(-1)
+            .to change { merge_request.assignees.count }.by(-1)
         end
       end
     end
@@ -304,7 +304,7 @@ RSpec.describe Issuable::BulkUpdateService, feature_category: :team_planning do
       context 'when the new assignee IDs array is empty' do
         it 'removes all assignees' do
           expect { bulk_update(issue, assignee_ids: []) }
-            .to change(issue.assignees, :count).by(-1)
+            .to change { issue.assignees.count }.by(-1)
         end
       end
     end

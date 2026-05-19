@@ -12,7 +12,7 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
-export default (containerId = 'js-jobs-table') => {
+export const initJobsPage = (containerId = 'js-jobs-table') => {
   const containerEl = document.getElementById(containerId);
 
   if (!containerEl) {

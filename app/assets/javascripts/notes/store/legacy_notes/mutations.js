@@ -140,7 +140,7 @@ export default {
           const newDiscussion = {
             ...discussion,
             ...diffData,
-            notes: [n], // override notes array to only have one item to mimick individual_note
+            notes: [n], // override notes array to only have one item to mimic individual_note
           };
           const oldDiscussion = useDiscussions().discussions.find(
             (existingDiscussion) =>

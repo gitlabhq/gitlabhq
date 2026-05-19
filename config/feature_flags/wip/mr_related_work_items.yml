@@ -1,8 +1,0 @@
----
-name: mr_related_work_items
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221290
-rollout_issue_url:
-milestone: '18.11'
-type: wip
-group: group::source code
-default_enabled: false

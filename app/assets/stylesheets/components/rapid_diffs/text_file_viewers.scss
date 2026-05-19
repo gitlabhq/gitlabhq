@@ -26,6 +26,11 @@ diff-file[data-line-range-dragging] {
   display: block;
 }
 
+.rd-text-view-root.rd-text-view-root {
+  // override .code-syntax-highlight-theme
+  background: transparent;
+}
+
 .rd-text-view-content {
   --rd-code-border-adjust: var(--code-border-lightness-adjust, -0.075);
   --rd-line-added-background-color: var(--custom-diff-addition-color, var(--code-new-diff-background-color, $line-number-new));
@@ -34,6 +39,25 @@ diff-file[data-line-range-dragging] {
   --rd-line-theme-border-color: oklch(from var(--code-background) calc(l + var(--rd-code-border-adjust)) c h);
   margin: 0 -1px;
   background-color: var(--code-background, $gl-color-neutral-0);
+}
+
+// Each hunk's tbody is virtualized so off-screen hunks within an on-screen file
+// are skipped during rendering. Mirrors the file-level content-visibility setup.
+.rd-diff-file[data-virtual] .rd-text-view-content {
+  content-visibility: var(--rd-content-visibility-auto, auto);
+  contain-intrinsic-size:
+    auto 0
+    auto calc(var(--rd-row-intrinsic-height) * var(--virtual-total-rows));
+}
+
+// Disable per-tbody content-visibility when it hosts a discussion row or a
+// new-discussion toggle, since those extend beyond the tbody's paint container.
+.rd-diff-file[data-virtual] .rd-text-view-content:has([data-discussion-row]),
+.rd-diff-file[data-virtual] .rd-text-view-content:has([data-has-new-discussion-toggle]) {
+  --rd-content-visibility-auto: visible;
+}
+
+.rd-text-view-content:last-child {
   border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
 }
 
@@ -53,16 +77,16 @@ diff-file[data-line-range-dragging] {
   font-size: var(--rd-body-font-size);
 }
 
-.rd-text-view-content > tr:last-child {
+.rd-text-view-content:last-child > tr:last-child {
   --rd-row-bottom-left-radius: var(--rd-diff-file-border-radius);
   --rd-row-bottom-right-radius: var(--rd-diff-file-border-radius);
 }
 
-.rd-text-view-content > tr:last-child > td:not(:last-child) {
+.rd-text-view-content:last-child > tr:last-child > td:not(:last-child) {
   --rd-row-bottom-right-radius: 0;
 }
 
-.rd-text-view-content > tr:last-child > td:not(:first-child) {
+.rd-text-view-content:last-child > tr:last-child > td:not(:first-child) {
   --rd-row-bottom-left-radius: 0;
 }
 

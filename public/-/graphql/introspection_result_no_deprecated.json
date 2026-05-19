@@ -4808,6 +4808,154 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "AiAdditionalContext",
+          "description": "Additional context for AI message.",
+          "fields": [
+            {
+              "name": "category",
+              "description": "Category of the additional context.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "AiAdditionalContextCategory",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "content",
+              "description": "Content of the additional context.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "ID of the additional context.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "metadata",
+              "description": "Metadata of the additional context.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "JSON",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AiAdditionalContextCategory",
+          "description": "The category of the additional context",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "FILE",
+              "description": "File content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SNIPPET",
+              "description": "Snippet content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MERGE_REQUEST",
+              "description": "Merge_request content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ISSUE",
+              "description": "Issue content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DEPENDENCY",
+              "description": "Dependency content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LOCAL_GIT",
+              "description": "Local_git content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TERMINAL",
+              "description": "Terminal content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "USER_RULE",
+              "description": "User_rule content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REPOSITORY",
+              "description": "Repository content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DIRECTORY",
+              "description": "Directory content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "AGENT_USER_ENVIRONMENT",
+              "description": "Agent_user_environment content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "SCALAR",
           "name": "AiDuoWorkflowsWorkflowID",
           "description": "A `AiDuoWorkflowsWorkflowID` is a global ID. It is encoded as a string.\n\nAn example `AiDuoWorkflowsWorkflowID` is: `\"gid://gitlab/Ai::DuoWorkflows::Workflow/1\"`.",
@@ -4846,6 +4994,12 @@
             {
               "name": "PIPELINE_HOOKS",
               "description": "Flow trigger pipeline_hooks event.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MERGE_REQUEST_READY",
+              "description": "Flow trigger merge_request_ready event.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -7110,6 +7264,22 @@
               "deprecationReason": null
             },
             {
+              "name": "stale",
+              "description": "Number of projects where `analyzer_type` has not run in three consecutive pipelines in the default branch.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "success",
               "description": "Number of projects where `analyzer_type` completed successfully.",
               "args": [],
@@ -7289,6 +7459,12 @@
             {
               "name": "NOT_CONFIGURED",
               "description": "Analyzer is not configured.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "STALE",
+              "description": "Analyzer is configured, but has not run in any recent pipelines.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -21194,7 +21370,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "CiInputsValue",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -33490,6 +33666,59 @@
           "description": "Represents a ComplianceFramework associated with a Project",
           "fields": [
             {
+              "name": "approvalPolicies",
+              "description": "Approval Policies of the compliance framework.",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ScanResultPolicyConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "color",
               "description": "Hexadecimal representation of compliance framework's label color.",
               "args": [],
@@ -33893,8 +34122,8 @@
               "deprecationReason": null
             },
             {
-              "name": "scanResultPolicies",
-              "description": "Scan Result Policies of the compliance framework.",
+              "name": "securityPolicies",
+              "description": "All security policies scoped to the compliance framework.",
               "args": [
                 {
                   "name": "after",
@@ -33939,7 +34168,7 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "ScanResultPolicyConnection",
+                "name": "ComplianceFrameworkPolicySummaryConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -34258,6 +34487,155 @@
             }
           ],
           "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ComplianceFrameworkPolicySummary",
+          "description": "A security policy scoped to a compliance framework",
+          "fields": [
+            {
+              "name": "name",
+              "description": "Name of the security policy.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "source",
+              "description": "Source of the security policy.",
+              "args": [],
+              "type": {
+                "kind": "UNION",
+                "name": "SecurityPolicySource",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Type of the security policy.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ComplianceFrameworkPolicySummaryConnection",
+          "description": "The connection type for ComplianceFrameworkPolicySummary.",
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ComplianceFrameworkPolicySummaryEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ComplianceFrameworkPolicySummary",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ComplianceFrameworkPolicySummaryEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ComplianceFrameworkPolicySummary",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
           "enumValues": null,
           "possibleTypes": null
         },
@@ -38132,6 +38510,33 @@
               "deprecationReason": null
             },
             {
+              "name": "tagDetails",
+              "description": "Details for a specific tag in the container repository.",
+              "args": [
+                {
+                  "name": "name",
+                  "description": "Name of the tag.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ContainerRepositoryTagDetails",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "tags",
               "description": "Tags of the container repository.",
               "args": [
@@ -38324,6 +38729,124 @@
           "fields": null,
           "inputFields": null,
           "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ContainerRepositoryImageManifest",
+          "description": "A manifest describing a reference to an image.",
+          "fields": [
+            {
+              "name": "digest",
+              "description": "Digest of the manifest.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mediaType",
+              "description": "Media type of the manifest.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "platform",
+              "description": "Platform specifier for the image reference.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ContainerRepositoryImagePlatform",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "size",
+              "description": "Size of the manifest in bytes.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "BigInt",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ContainerRepositoryImagePlatform",
+          "description": "Description of the target platform for an image.",
+          "fields": [
+            {
+              "name": "architecture",
+              "description": "CPU architecture of the platform.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "os",
+              "description": "Operating system of the platform.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "osVersion",
+              "description": "Operating system version, typically used for Windows images.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "variant",
+              "description": "CPU variant of the platform.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
           "enumValues": null,
           "possibleTypes": null
         },
@@ -39105,6 +39628,157 @@
                   "name": "PageInfo",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ContainerRepositoryTagDetails",
+          "description": "Details of a tag within a container repository",
+          "fields": [
+            {
+              "name": "createdAt",
+              "description": "Timestamp when the tag was created.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "digest",
+              "description": "Digest of the tag.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "location",
+              "description": "URL of the tag.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "manifests",
+              "description": "Manifests of the index tag. Null for non-index tags.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "ContainerRepositoryImageManifest",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mediaType",
+              "description": "Media type of the tag.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Name of the tag.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "path",
+              "description": "Path of the tag.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "platform",
+              "description": "Platform of the image tag. Null for index tags.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ContainerRepositoryImagePlatform",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "publishedAt",
+              "description": "Timestamp when the tag was published.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalSize",
+              "description": "Size of the tag.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "BigInt",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -42565,7 +43239,7 @@
             },
             {
               "name": "iterationId",
-              "description": "Global iteration ID. Mutually exlusive argument with `iterationWildcardId`.",
+              "description": "Global iteration ID. Mutually exclusive argument with `iterationWildcardId`.",
               "type": {
                 "kind": "SCALAR",
                 "name": "IterationID",
@@ -43458,6 +44132,22 @@
                 "kind": "SCALAR",
                 "name": "Date",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "hasGitlabCreditsAddOn",
+              "description": "Whether the license has an active GitLab Credits add-on.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -47574,13 +48264,9 @@
               "description": "Timestamp when the dashboard was created.",
               "args": [],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Time",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -47618,7 +48304,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "AnalyticsCustomDashboardsDashboardID",
+                  "name": "ID",
                   "ofType": null
                 }
               },
@@ -47698,6 +48384,22 @@
               "deprecationReason": null
             },
             {
+              "name": "system",
+              "description": "Whether the dashboard is a built-in GitLab dashboard.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "updatedAt",
               "description": "Timestamp when the dashboard was last updated.",
               "args": [],
@@ -47727,14 +48429,130 @@
             }
           ],
           "inputFields": null,
-          "interfaces": [],
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "CustomDashboardInterface",
+              "ofType": null
+            }
+          ],
           "enumValues": null,
           "possibleTypes": null
         },
         {
+          "kind": "INTERFACE",
+          "name": "CustomDashboardInterface",
+          "description": null,
+          "fields": [
+            {
+              "name": "config",
+              "description": "Dashboard layout and widget configuration.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "JSON",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "createdAt",
+              "description": "Timestamp when the dashboard was created.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": "Optional summary or purpose of the dashboard.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "Global ID of the dashboard.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Display name of the dashboard.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "system",
+              "description": "Whether the dashboard is a built-in GitLab dashboard.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "CustomDashboard",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "CustomSystemDashboard",
+              "ofType": null
+            }
+          ]
+        },
+        {
           "kind": "OBJECT",
-          "name": "CustomDashboardConnection",
-          "description": "The connection type for CustomDashboard.",
+          "name": "CustomDashboardInterfaceConnection",
+          "description": "The connection type for CustomDashboardInterface.",
           "fields": [
             {
               "name": "edges",
@@ -47745,7 +48563,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "CustomDashboardEdge",
+                  "name": "CustomDashboardInterfaceEdge",
                   "ofType": null
                 }
               },
@@ -47760,8 +48578,8 @@
                 "kind": "LIST",
                 "name": null,
                 "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CustomDashboard",
+                  "kind": "INTERFACE",
+                  "name": "CustomDashboardInterface",
                   "ofType": null
                 }
               },
@@ -47792,7 +48610,7 @@
         },
         {
           "kind": "OBJECT",
-          "name": "CustomDashboardEdge",
+          "name": "CustomDashboardInterfaceEdge",
           "description": "An edge in a connection.",
           "fields": [
             {
@@ -47816,8 +48634,8 @@
               "description": "The item at the end of the edge.",
               "args": [],
               "type": {
-                "kind": "OBJECT",
-                "name": "CustomDashboard",
+                "kind": "INTERFACE",
+                "name": "CustomDashboardInterface",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -47827,6 +48645,35 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "CustomDashboardScope",
+          "description": "Scope filter for custom dashboards",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ALL",
+              "description": "Return all dashboards.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "GITLAB",
+              "description": "Return only GitLab-provided system dashboards.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "USER",
+              "description": "Return only user-created dashboards.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -48167,6 +49014,111 @@
               "ofType": null
             }
           ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CustomSystemDashboard",
+          "description": "GitLab built-in analytics dashboard (read-only)",
+          "fields": [
+            {
+              "name": "config",
+              "description": "Dashboard layout and widget configuration.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "JSON",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "createdAt",
+              "description": "Timestamp when the dashboard was created.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": "Optional summary or purpose of the dashboard.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "Global ID of the dashboard.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Display name of the dashboard.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "system",
+              "description": "Whether the dashboard is a built-in GitLab dashboard.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "CustomDashboardInterface",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
         },
         {
           "kind": "OBJECT",
@@ -49653,6 +50605,30 @@
               "deprecationReason": null
             },
             {
+              "name": "views",
+              "description": "Visualizations the user can switch between within the panel.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "CustomizableDashboardPanelView",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "visualization",
               "description": "Visualization of the panel.",
               "args": [],
@@ -49796,6 +50772,41 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CustomizableDashboardPanelView",
+          "description": "Represents a view that can be selected within a customizable dashboard panel.",
+          "fields": [
+            {
+              "name": "text",
+              "description": "Label shown in the segmented control for the view.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "visualization",
+              "description": "Visualization rendered when the view is selected.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CustomizableDashboardVisualization",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -63210,6 +64221,26 @@
           "description": "A message in a Duo Workflow chat log",
           "fields": [
             {
+              "name": "additionalContext",
+              "description": "Additional context items attached to the message.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AiAdditionalContext",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "content",
               "description": "Content of the message.",
               "args": [],
@@ -63227,11 +64258,23 @@
             },
             {
               "name": "correlationId",
-              "description": "Correlation ID of the message.",
+              "description": "Optional client-supplied identifier echoed back to correlate this message with the request that initiated it.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "messageId",
+              "description": "Opaque identifier for the message, assigned by the workflow executor.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -63477,6 +64520,18 @@
               "deprecationReason": null
             },
             {
+              "name": "name",
+              "description": "Name or title of the object.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "namespace",
               "description": "namespace that the session is in.",
               "args": [],
@@ -63545,6 +64600,30 @@
               "deprecationReason": null
             },
             {
+              "name": "resourceIid",
+              "description": "IID of the associated resource (issue or merge request).",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "resourceWebUrl",
+              "description": "Web URL of the associated resource (issue or merge request).",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "stalled",
               "description": "Workflow got created but has no checkpoints.",
               "args": [],
@@ -63583,6 +64662,18 @@
             {
               "name": "statusName",
               "description": "Status name of the session.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "summary",
+              "description": "Summary of the session.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -63649,6 +64740,18 @@
               "deprecationReason": null
             },
             {
+              "name": "webUrl",
+              "description": "URL of the object.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "workflowDefinition",
               "description": "GitLab Duo Agent Platform flow type based on its capabilities.",
               "args": [],
@@ -63662,7 +64765,13 @@
             }
           ],
           "inputFields": null,
-          "interfaces": [],
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Todoable",
+              "ofType": null
+            }
+          ],
           "enumValues": null,
           "possibleTypes": null
         },
@@ -63769,6 +64878,18 @@
           "name": "DuoWorkflowEvent",
           "description": "Events that describe the history and progress of a GitLab Duo Agent Platform session",
           "fields": [
+            {
+              "name": "compressedCheckpoint",
+              "description": "Checkpoint of the event, zlib-compressed and Base64-encoded.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "duoMessages",
               "description": "Messages from the ui_chat_log for the checkpoint.",
@@ -71107,7 +72228,7 @@
             },
             {
               "name": "function",
-              "description": "Name of the function where the error occured.",
+              "description": "Name of the function where the error occurred.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -71270,7 +72391,7 @@
           "enumValues": [
             {
               "name": "SUCCESS",
-              "description": "Successfuly fetch the stack trace.",
+              "description": "Successfully fetch the stack trace.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -82761,6 +83882,568 @@
               "deprecationReason": null
             },
             {
+              "name": "workItem",
+              "description": "Find a work item by IID directly associated with the group.",
+              "args": [
+                {
+                  "name": "iid",
+                  "description": "IID of the work item.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "WorkItem",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workItemStateCounts",
+              "description": "Counts of work items by state for the namespace.",
+              "args": [
+                {
+                  "name": "search",
+                  "description": "Search query for title or description.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "in",
+                  "description": "Specify the fields to perform the search in.\nDefaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'\n",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "IssuableSearchableField",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "Filter by global IDs of work items (maximum is 100 IDs).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "WorkItemID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "authorUsername",
+                  "description": "Filter work items by author username.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "confidential",
+                  "description": "Filter for confidential work items. If `false`, excludes confidential work items. If `true`, returns only confidential work items.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "assigneeUsernames",
+                  "description": "Usernames of users assigned to the work item (maximum is 100 usernames).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "assigneeWildcardId",
+                  "description": "Filter by assignee wildcard. Incompatible with `assigneeUsernames`.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AssigneeWildcardId",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "labelName",
+                  "description": "Labels applied to the work item (maximum is 100 labels).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "milestoneTitle",
+                  "description": "Milestone applied to the work item (maximum is 100 milestones).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "milestoneWildcardId",
+                  "description": "Filter by milestone ID wildcard. Incompatible with `milestoneTitle`.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MilestoneWildcardId",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "myReactionEmoji",
+                  "description": "Filter by reaction emoji applied by the current user. Wildcard values `NONE` and `ANY` are supported.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "iids",
+                  "description": "List of IIDs of work items. For example, `[\"1\", \"2\"]` (maximum is 100 IIDs).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "state",
+                  "description": "Current state of the work item.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "IssuableState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "types",
+                  "description": "Filter work items by the given work item types.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "IssueType",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "workItemTypeIds",
+                  "description": "Filter work items by work item type global IDs.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "WorkItemsTypeID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "createdBefore",
+                  "description": "Work items created before the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "createdAfter",
+                  "description": "Work items created after the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "updatedBefore",
+                  "description": "Work items updated before the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "updatedAfter",
+                  "description": "Work items updated after the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "dueBefore",
+                  "description": "Work items due before the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "dueAfter",
+                  "description": "Work items due after the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "closedBefore",
+                  "description": "Work items closed before the date.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "closedAfter",
+                  "description": "Work items closed after the date.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "subscribed",
+                  "description": "Work items the current user is subscribed to.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "SubscriptionStatus",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "not",
+                  "description": "Negated work item arguments.",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "NegatedWorkItemFilterInput",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "or",
+                  "description": "List of arguments with inclusive `OR`.",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "UnionedWorkItemFilterInput",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "parentIds",
+                  "description": "Filter work items by global IDs of their parent items (maximum is 100 IDs).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "WorkItemID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "releaseTag",
+                  "description": "Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "releaseTagWildcardId",
+                  "description": "Filter by release tag wildcard.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ReleaseTagWildcardId",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "crmContactId",
+                  "description": "Filter by ID of CRM contact.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "crmOrganizationId",
+                  "description": "Filter by ID of CRM contact organization.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "iid",
+                  "description": "IID of the work item. For example, \"1\".",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "sort",
+                  "description": "Sort work items by criteria.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "WorkItemSort",
+                    "ofType": null
+                  },
+                  "defaultValue": "CREATED_DESC"
+                },
+                {
+                  "name": "verificationStatusWidget",
+                  "description": "Input for verification status widget filter.",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "VerificationStatusFilterInput",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "healthStatusFilter",
+                  "description": "Health status of the work item, \"none\" and \"any\" values are supported.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "HealthStatusFilter",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "weight",
+                  "description": "Weight applied to the work item, \"none\" and \"any\" values are supported.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "weightWildcardId",
+                  "description": "Filter by weight ID wildcard. Incompatible with weight.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "WeightWildcardId",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "iterationId",
+                  "description": "List of iteration Global IDs applied to the issue (maximum is 100 IDs).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "iterationWildcardId",
+                  "description": "Filter by iteration ID wildcard.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "IterationWildcardId",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "iterationCadenceId",
+                  "description": "Filter by a list of iteration cadence IDs (maximum is 100 IDs).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "IterationsCadenceID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "includeAncestors",
+                  "description": "Include work items from ancestor groups. Ignored for project namespaces.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                },
+                {
+                  "name": "includeDescendants",
+                  "description": "Include work items from descendant groups and projects. Ignored for project namespaces.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                },
+                {
+                  "name": "timeframe",
+                  "description": "List items overlapping the given timeframe. Ignored for project namespaces.",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "Timeframe",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "WorkItemStateCountsType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "workItemTypes",
               "description": "Work item types available to the group.",
               "args": [
@@ -82808,6 +84491,581 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "WorkItemTypeConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workItems",
+              "description": "Work items that belong to the namespace.",
+              "args": [
+                {
+                  "name": "search",
+                  "description": "Search query for title or description.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "in",
+                  "description": "Specify the fields to perform the search in.\nDefaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'\n",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "IssuableSearchableField",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "Filter by global IDs of work items (maximum is 100 IDs).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "WorkItemID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "authorUsername",
+                  "description": "Filter work items by author username.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "confidential",
+                  "description": "Filter for confidential work items. If `false`, excludes confidential work items. If `true`, returns only confidential work items.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "assigneeUsernames",
+                  "description": "Usernames of users assigned to the work item (maximum is 100 usernames).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "assigneeWildcardId",
+                  "description": "Filter by assignee wildcard. Incompatible with `assigneeUsernames`.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AssigneeWildcardId",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "labelName",
+                  "description": "Labels applied to the work item (maximum is 100 labels).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "milestoneTitle",
+                  "description": "Milestone applied to the work item (maximum is 100 milestones).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "milestoneWildcardId",
+                  "description": "Filter by milestone ID wildcard. Incompatible with `milestoneTitle`.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MilestoneWildcardId",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "myReactionEmoji",
+                  "description": "Filter by reaction emoji applied by the current user. Wildcard values `NONE` and `ANY` are supported.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "iids",
+                  "description": "List of IIDs of work items. For example, `[\"1\", \"2\"]` (maximum is 100 IIDs).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "state",
+                  "description": "Current state of the work item.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "IssuableState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "types",
+                  "description": "Filter work items by the given work item types.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "IssueType",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "workItemTypeIds",
+                  "description": "Filter work items by work item type global IDs.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "WorkItemsTypeID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "createdBefore",
+                  "description": "Work items created before the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "createdAfter",
+                  "description": "Work items created after the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "updatedBefore",
+                  "description": "Work items updated before the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "updatedAfter",
+                  "description": "Work items updated after the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "dueBefore",
+                  "description": "Work items due before the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "dueAfter",
+                  "description": "Work items due after the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "closedBefore",
+                  "description": "Work items closed before the date.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "closedAfter",
+                  "description": "Work items closed after the date.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "subscribed",
+                  "description": "Work items the current user is subscribed to.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "SubscriptionStatus",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "not",
+                  "description": "Negated work item arguments.",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "NegatedWorkItemFilterInput",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "or",
+                  "description": "List of arguments with inclusive `OR`.",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "UnionedWorkItemFilterInput",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "parentIds",
+                  "description": "Filter work items by global IDs of their parent items (maximum is 100 IDs).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "WorkItemID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "releaseTag",
+                  "description": "Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "releaseTagWildcardId",
+                  "description": "Filter by release tag wildcard.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ReleaseTagWildcardId",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "crmContactId",
+                  "description": "Filter by ID of CRM contact.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "crmOrganizationId",
+                  "description": "Filter by ID of CRM contact organization.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "iid",
+                  "description": "IID of the work item. For example, \"1\".",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "sort",
+                  "description": "Sort work items by criteria.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "WorkItemSort",
+                    "ofType": null
+                  },
+                  "defaultValue": "CREATED_DESC"
+                },
+                {
+                  "name": "verificationStatusWidget",
+                  "description": "Input for verification status widget filter.",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "VerificationStatusFilterInput",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "healthStatusFilter",
+                  "description": "Health status of the work item, \"none\" and \"any\" values are supported.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "HealthStatusFilter",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "weight",
+                  "description": "Weight applied to the work item, \"none\" and \"any\" values are supported.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "weightWildcardId",
+                  "description": "Filter by weight ID wildcard. Incompatible with weight.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "WeightWildcardId",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "iterationId",
+                  "description": "List of iteration Global IDs applied to the issue (maximum is 100 IDs).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "iterationWildcardId",
+                  "description": "Filter by iteration ID wildcard.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "IterationWildcardId",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "iterationCadenceId",
+                  "description": "Filter by a list of iteration cadence IDs (maximum is 100 IDs).",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "IterationsCadenceID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "includeAncestors",
+                  "description": "Include work items from ancestor groups. Ignored for project namespaces.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                },
+                {
+                  "name": "includeDescendants",
+                  "description": "Include work items from descendant groups and projects. Ignored for project namespaces.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                },
+                {
+                  "name": "timeframe",
+                  "description": "List items overlapping the given timeframe. Ignored for project namespaces.",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "Timeframe",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "WorkItemConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -88606,6 +90864,142 @@
                 "kind": "OBJECT",
                 "name": "InheritedCiVariable",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "InstanceSecretsManagerEnrollInput",
+          "description": "Autogenerated input type of InstanceSecretsManagerEnroll",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "InstanceSecretsManagerEnrollPayload",
+          "description": "Autogenerated return type of InstanceSecretsManagerEnroll.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "InstanceSecretsManagerUnenrollInput",
+          "description": "Autogenerated input type of InstanceSecretsManagerUnenroll",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "InstanceSecretsManagerUnenrollPayload",
+          "description": "Autogenerated return type of InstanceSecretsManagerUnenroll.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -96534,6 +98928,12 @@
               "description": "SARIF job artifact file type.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "ENVIRONMENT_KEY",
+              "description": "ENVIRONMENT KEY job artifact file type.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -100515,6 +102915,12 @@
               "deprecationReason": null
             },
             {
+              "name": "ADMIN_AI_CATALOG_ITEM_CONSUMER",
+              "description": "Enable, disable, and configure custom agents and flows from the AI catalog for a project.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "REMOVE_PROJECT",
               "description": "Allows deletion of projects.",
               "isDeprecated": false,
@@ -100529,6 +102935,12 @@
             {
               "name": "MANAGE_SECURITY_POLICY_LINK",
               "description": "Allows linking security policy projects.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ADMIN_AI_CATALOG_ITEM",
+              "description": "Create, edit, and delete custom agents and flows in the AI catalog.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -100589,12 +103001,6 @@
             {
               "name": "ADMIN_PROTECTED_ENVIRONMENTS",
               "description": "Create, read, update, and delete protected environments",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "MANAGE_PROTECTED_TAGS",
-              "description": "Create, read, update, and delete protected tags.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -100696,7 +103102,7 @@
             },
             {
               "name": "READ_SECURITY_ATTRIBUTE",
-              "description": "Allows read-only access to the security categories and attributes belonging to a top-level group.",
+              "description": "Allows read-only access to the security categories and attributes that belong to a top-level group.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -125443,6 +127849,60 @@
               "deprecationReason": null
             },
             {
+              "name": "instanceSecretsManagerEnroll",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for InstanceSecretsManagerEnroll",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "InstanceSecretsManagerEnrollInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "InstanceSecretsManagerEnrollPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "instanceSecretsManagerUnenroll",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for InstanceSecretsManagerUnenroll",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "InstanceSecretsManagerUnenrollInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "InstanceSecretsManagerUnenrollPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "issuableResourceLinkCreate",
               "description": null,
               "args": [
@@ -126841,6 +129301,60 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "NamespaceDeleteRemoteDevelopmentClusterAgentMappingPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "namespaceSecretsManagerEnroll",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for NamespaceSecretsManagerEnroll",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "NamespaceSecretsManagerEnrollInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "NamespaceSecretsManagerEnrollPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "namespaceSecretsManagerUnenroll",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for NamespaceSecretsManagerUnenroll",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "NamespaceSecretsManagerUnenrollInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "NamespaceSecretsManagerUnenrollPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -132442,13 +134956,13 @@
             },
             {
               "name": "namespaceId",
-              "description": "GlobalID of the namespace to be associated with the cluster agent.",
+              "description": "GlobalID of the group to be associated with the cluster agent.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "NamespaceID",
+                  "name": "GroupID",
                   "ofType": null
                 }
               },
@@ -132538,13 +135052,13 @@
             },
             {
               "name": "namespaceId",
-              "description": "GlobalID of the namespace to be un-associated from the cluster agent.",
+              "description": "GlobalID of the group to be un-associated from the cluster agent.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "NamespaceID",
+                  "name": "GroupID",
                   "ofType": null
                 }
               },
@@ -133049,6 +135563,194 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "NamespaceSecretsManagerEnrollInput",
+          "description": "Autogenerated input type of NamespaceSecretsManagerEnroll",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "namespacePath",
+              "description": "Full path of the namespace to enroll.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "NamespaceSecretsManagerEnrollPayload",
+          "description": "Autogenerated return type of NamespaceSecretsManagerEnroll.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "enrollment",
+              "description": "Enrollment record.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecretsManagerEnrollment",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "NamespaceSecretsManagerUnenrollInput",
+          "description": "Autogenerated input type of NamespaceSecretsManagerUnenroll",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "namespacePath",
+              "description": "Full path of the namespace to unenroll.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "NamespaceSecretsManagerUnenrollPayload",
+          "description": "Autogenerated return type of NamespaceSecretsManagerUnenroll.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "enrollment",
+              "description": "Enrollment record.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecretsManagerEnrollment",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
           "possibleTypes": null
         },
         {
@@ -133806,6 +136508,219 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "NegatedWorkItemFilterInput",
+          "description": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "assigneeUsernames",
+              "description": "Usernames of users not assigned to the work item (maximum is 100 usernames).",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "authorUsername",
+              "description": "Username of a user who didn't author the work item (maximum is 100 usernames).",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "labelName",
+              "description": "Labels not applied to the work item (maximum is 100 labels).",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "milestoneTitle",
+              "description": "Milestone not applied to the work item (maximum is 100 milestones).",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "milestoneWildcardId",
+              "description": "Filter by negated milestone wildcard values.",
+              "type": {
+                "kind": "ENUM",
+                "name": "NegatedMilestoneWildcardId",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "myReactionEmoji",
+              "description": "Filter by reaction emoji not applied by the current user.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "releaseTag",
+              "description": "Release tag not associated with the work items's milestone (maximum is 100 tags). Ignored when parent is a group .",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "types",
+              "description": "Filter out work items by the given types.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "IssueType",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "workItemTypeIds",
+              "description": "Filter out work items by work item type global IDs.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "WorkItemsTypeID",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "healthStatusFilter",
+              "description": "Health status not applied to the work items.\n                    Includes work items where health status is not set.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "HealthStatus",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "weight",
+              "description": "Weight not applied to the work items.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "iterationId",
+              "description": "List of iteration Global IDs not applied to the work items (maximum is 100 IDs).",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "iterationWildcardId",
+              "description": "Filter by negated iteration ID wildcard.",
+              "type": {
+                "kind": "ENUM",
+                "name": "IterationWildcardId",
                 "ofType": null
               },
               "defaultValue": null
@@ -136605,7 +139520,20 @@
           "kind": "OBJECT",
           "name": "Organization",
           "description": null,
-          "fields": [],
+          "fields": [
+            {
+              "name": "visibility",
+              "description": "Visibility level of the organization.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
@@ -162121,6 +165049,18 @@
           "description": null,
           "fields": [
             {
+              "name": "crossProjectPushForJobTokenAllowed",
+              "description": "Indicates the ability to push to this repository using a job token from an allowlisted project",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "displayPipelineVariables",
               "description": "Indicates whether pipeline variables can be displayed in the UI.",
               "args": [],
@@ -162175,6 +165115,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "maxPipelinesPerMergeTrain",
+              "description": "Maximum number of parallel pipelines per merge train. When null, the plan limit applies.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -162349,6 +165301,16 @@
               "defaultValue": null
             },
             {
+              "name": "crossProjectPushForJobTokenAllowed",
+              "description": "Indicates the ability to push to this repository using a job token from an allowlisted project",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "displayPipelineVariables",
               "description": "Indicates whether pipeline variables can be displayed in the UI.",
               "type": {
@@ -162404,6 +165366,16 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "maxPipelinesPerMergeTrain",
+              "description": "Maximum number of parallel pipelines per merge train.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               },
               "defaultValue": null
@@ -170833,15 +173805,11 @@
               "args": [
                 {
                   "name": "organizationId",
-                  "description": "Organization ID to filter dashboards.",
+                  "description": "Organization ID to filter dashboards. Defaults to the current organization if not provided.",
                   "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "OrganizationsOrganizationID",
-                      "ofType": null
-                    }
+                    "kind": "SCALAR",
+                    "name": "OrganizationsOrganizationID",
+                    "ofType": null
                   },
                   "defaultValue": null
                 },
@@ -170874,6 +173842,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "scope",
+                  "description": "Filter dashboards by scope.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "CustomDashboardScope",
+                    "ofType": null
+                  },
+                  "defaultValue": "ALL"
                 },
                 {
                   "name": "after",
@@ -170918,7 +173896,7 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "CustomDashboardConnection",
+                "name": "CustomDashboardInterfaceConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -183259,6 +186237,33 @@
         },
         {
           "kind": "OBJECT",
+          "name": "SecretsManagerEnrollment",
+          "description": "Representation of a Secrets Manager namespace enrollment.",
+          "fields": [
+            {
+              "name": "namespace",
+              "description": "Namespace the enrollment belongs to.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Namespace",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "SecurityAttribute",
           "description": "A security attribute",
           "fields": [
@@ -184780,7 +187785,7 @@
             },
             {
               "name": "secretPushProtectionAvailable",
-              "description": "Whether secret push protection is available at the instance level.",
+              "description": "Whether secret push protection is available for projects in the instance.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -184797,6 +187802,18 @@
             {
               "name": "secretPushProtectionEnabled",
               "description": "Whether secret push protection is enabled for the project.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "secretPushProtectionEnforced",
+              "description": "Whether secret push protection is automatically enforced for all projects in the instance.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -188827,12 +191844,6 @@
             {
               "name": "SLACK_SERVICE",
               "description": "Slack notifications integration",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SLACK_SLASH_COMMANDS_SERVICE",
-              "description": "Slack slash commands integration",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -198760,6 +201771,12 @@
               "description": "Todo action name for duo_core_access_granted.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "duo_workflow_input_required",
+              "description": "Todo action name for duo_workflow_input_required.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -199464,6 +202481,12 @@
               "description": "Project Compliance Violation.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "DUO_WORKFLOW",
+              "description": "Duo Workflow session.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -199540,6 +202563,11 @@
             {
               "kind": "OBJECT",
               "name": "Design",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "DuoWorkflow",
               "ofType": null
             },
             {
@@ -200759,6 +203787,71 @@
             {
               "name": "assigneeUsernames",
               "description": "Filters MRs that are assigned to at least one of the given users.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "UnionedWorkItemFilterInput",
+          "description": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "assigneeUsernames",
+              "description": "Filters work items that are assigned to at least one of the given users (maximum is 100 usernames).",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "authorUsernames",
+              "description": "Filters work items that are authored by one of the given users (maximum is 100 usernames).",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "labelNames",
+              "description": "Filters work items that have at least one of the given labels (maximum is 100 labels).",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -208679,12 +211772,6 @@
               "deprecationReason": null
             },
             {
-              "name": "WORK_ITEMS_NAV_BADGE",
-              "description": "Callout feature name for work_items_nav_badge.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "WORK_ITEMS_ONBOARDING_MODAL",
               "description": "Callout feature name for work_items_onboarding_modal.",
               "isDeprecated": false,
@@ -208693,6 +211780,12 @@
             {
               "name": "DUO_PANEL_EMPTY_STATE_AUTO_EXPANDED",
               "description": "Callout feature name for duo_panel_empty_state_auto_expanded.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INLINE_BLAME_POPOVER",
+              "description": "Callout feature name for inline_blame_popover.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -212545,24 +215638,6 @@
               "deprecationReason": null
             },
             {
-              "name": "PROJECT_PREMIUM_MESSAGE_CALLOUT",
-              "description": "Callout feature name for project_premium_message_callout.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "REPOSITORY_PREMIUM_MESSAGE_CALLOUT",
-              "description": "Callout feature name for repository_premium_message_callout.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "MRS_PREMIUM_MESSAGE_CALLOUT",
-              "description": "Callout feature name for mrs_premium_message_callout.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "END_OF_TRIAL_MODAL",
               "description": "Callout feature name for end_of_trial_modal.",
               "isDeprecated": false,
@@ -212761,6 +215836,18 @@
               "deprecationReason": null
             },
             {
+              "name": "knowledgeGraphGoverningNamespace",
+              "description": "Governing and billing namespace for Orbit.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Namespace",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "mergeRequestDashboardListType",
               "description": "Merge request dashboard list rendering type.",
               "args": [],
@@ -212941,6 +216028,16 @@
             {
               "name": "duoDefaultNamespaceId",
               "description": "Default namespace context for Duo features when namespace can not be inferred.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "knowledgeGraphGoverningNamespaceId",
+              "description": "Governing and billing namespace for Orbit.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
@@ -214558,12 +217655,43 @@
               "deprecationReason": null
             },
             {
+              "name": "EXPIRED_KEY",
+              "description": "expired_key verification status.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "VERIFIED_CA",
               "description": "verified_ca verification status.",
               "isDeprecated": false,
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "VerificationStatusFilterInput",
+          "description": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "verificationStatus",
+              "description": "Verification status of the work item.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "RequirementStatusFilter",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
           "possibleTypes": null
         },
         {
@@ -224356,6 +227484,89 @@
         },
         {
           "kind": "ENUM",
+          "name": "WorkItemSort",
+          "description": "Values for sorting work items",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "UPDATED_DESC",
+              "description": "Updated at descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UPDATED_ASC",
+              "description": "Updated at ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_DESC",
+              "description": "Created at descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_ASC",
+              "description": "Created at ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TITLE_ASC",
+              "description": "Title by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TITLE_DESC",
+              "description": "Title by descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LABEL_PRIORITY_ASC",
+              "description": "Label priority by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LABEL_PRIORITY_DESC",
+              "description": "Label priority by descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BLOCKING_ISSUES_ASC",
+              "description": "Blocking items count by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BLOCKING_ISSUES_DESC",
+              "description": "Blocking items count by descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MILESTONE_DUE_ASC",
+              "description": "Milestone due date by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MILESTONE_DUE_DESC",
+              "description": "Milestone due date by descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
           "name": "WorkItemState",
           "description": "State of a GitLab work item",
           "fields": null,
@@ -224375,6 +227586,53 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "WorkItemStateCountsType",
+          "description": "Represents total number of work items for the represented states",
+          "fields": [
+            {
+              "name": "all",
+              "description": "Number of work items for the project or group.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "closed",
+              "description": "Number of work items with state CLOSED for the project or group.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "opened",
+              "description": "Number of work items with state OPENED for the project or group.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
           "possibleTypes": null
         },
         {
@@ -224841,6 +228099,11 @@
           "possibleTypes": [
             {
               "kind": "OBJECT",
+              "name": "WorkItemWidgetAgentPlan",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "WorkItemWidgetAiSession",
               "ofType": null
             },
@@ -224995,6 +228258,59 @@
               "ofType": null
             }
           ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "WorkItemWidgetAgentPlan",
+          "description": "Represents an agent plan widget.",
+          "fields": [
+            {
+              "name": "content",
+              "description": "Content of the agent plan. This field can only be resolved for one work item in any single request.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "contentHtml",
+              "description": "GitLab Flavored Markdown rendering of `content`. This field can only be resolved for one work item in any single request.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Widget type.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WorkItemWidgetType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "WorkItemWidget",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
         },
         {
           "kind": "OBJECT",
@@ -228021,6 +231337,12 @@
           "interfaces": null,
           "enumValues": [
             {
+              "name": "AGENT_PLAN",
+              "description": "Agent Plan widget.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "AI_SESSION",
               "description": "Ai Session widget.",
               "isDeprecated": false,
@@ -229041,7 +232363,7 @@
             },
             {
               "name": "email",
-              "description": "Email associated with the cerificate.",
+              "description": "Email associated with the certificate.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   let(:params) { { namespace_id: project.namespace.to_param, project_id: project.to_param, created_after: '2010-01-01', created_before: '2010-02-01' } }
 

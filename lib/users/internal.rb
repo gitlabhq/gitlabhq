@@ -145,23 +145,19 @@ module Users
     # NOTE: This method is patched in spec/spec_helper.rb to allow use of exclusive lease in RSpec's
     # :before_all scope to keep the specs DRY.
     def unique_internal(scope, username, email_pattern, &block)
-      if @organization_id && organization_users_internal_enabled? # rubocop:disable Style/IfUnlessModifier -- exceeds line length
-        scope = scope.in_organization(@organization_id)
-      end
+      scope = scope.in_organization(@organization_id) if @organization_id
 
       scope.first || create_unique_internal(scope, username, email_pattern, &block)
     end
 
     def username_with_organization_suffix(username)
       return username if organization.nil? || organization == first_organization
-      return username unless organization_users_internal_enabled?
 
       [username, organization.path].join('_')
     end
 
     def display_name_with_organization_suffix(display_name)
       return display_name if organization.nil? || organization == first_organization
-      return display_name unless organization_users_internal_enabled?
 
       "#{display_name} (#{organization.name})"
     end
@@ -170,11 +166,6 @@ module Users
       Organizations::Organization.first
     end
     strong_memoize_attr :first_organization
-
-    def organization_users_internal_enabled?
-      Feature.enabled?(:organization_users_internal, ::Organizations::Organization.actor_from_id(@organization_id))
-    end
-    strong_memoize_attr :organization_users_internal_enabled?
 
     def create_unique_internal(scope, username, email_pattern, &creation_block)
       # Since we only want a single one of these in an instance, we use an
@@ -216,11 +207,7 @@ module Users
         &creation_block
       )
 
-      user_organization = if organization && organization_users_internal_enabled?
-                            organization
-                          else
-                            first_organization
-                          end
+      user_organization = organization || first_organization
 
       user.assign_personal_namespace(user_organization)
       user.organizations << user_organization
@@ -229,14 +216,12 @@ module Users
       uniquify = Gitlab::Utils::Uniquify.new
       organization_username = uniquify.string(username) { |s| Namespace.in_organization(user_organization).by_path(s) }
 
-      if organization_users_internal_enabled?
-        org_user_details = user_organization.organization_user_details.build(
-          user: user,
-          username: organization_username,
-          display_name: display_name_with_organization_suffix(user.name)
-        )
-        user.organization_user_details << org_user_details
-      end
+      org_user_details = user_organization.organization_user_details.build(
+        user: user,
+        username: organization_username,
+        display_name: display_name_with_organization_suffix(user.name)
+      )
+      user.organization_user_details << org_user_details
 
       Users::UpdateService.new(user, user: user).execute(validate: false)
       user

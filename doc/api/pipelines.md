@@ -60,7 +60,7 @@ control the pagination of results.
 When `scope` is set to `branches` or `tags`, the API returns only the latest pipeline for each branch or tag ref.
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/pipelines"
 ```
@@ -124,7 +124,7 @@ control the pagination of results.
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
@@ -199,7 +199,7 @@ control the pagination of results.
 | `ref`     | string | No       | The branch or tag to check for the latest pipeline. Defaults to the default branch when not specified. |
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
 ```
@@ -268,7 +268,7 @@ control the pagination of results.
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/variables"
 ```
@@ -309,7 +309,7 @@ control the pagination of results.
 Sample request:
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report"
 ```
@@ -368,7 +368,7 @@ control the pagination of results.
 Sample request:
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report_summary"
 ```
@@ -439,8 +439,8 @@ Example request with [inputs](../ci/inputs/_index.md):
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "Content-Type: application/json" \
-  --data '{"inputs": {"environment": "environment", "scan_security": false, "level": 3}}' \
-  --url "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
+  --url "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main" \
+  --data '{"inputs": {"environment": "environment", "scan_security": false, "level": 3}}'
 ```
 
 Example of response
@@ -637,8 +637,8 @@ Sample request:
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "Content-Type: application/json" \
-  --data '{"name": "Some new pipeline name"}' \
-  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/metadata"
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/metadata" \
+  --data '{"name": "Some new pipeline name"}'
 ```
 
 Sample response:

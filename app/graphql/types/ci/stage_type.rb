@@ -5,6 +5,7 @@ module Types
     class StageType < BaseObject
       graphql_name 'CiStage'
       authorize :read_build
+      authorize_granular_token permissions: :read_pipeline_stage, boundary: :project, boundary_type: :project
 
       field :detailed_status, Types::Ci::DetailedStatusType, null: true,
         description: 'Detailed status of the stage.'
@@ -30,23 +31,7 @@ module Types
         key = ::Gitlab::Graphql::BatchKey.new(object, lookahead, object_name: :stage)
 
         BatchLoader::GraphQL.for(key).batch(default_value: []) do |keys, loader|
-          by_pipeline = keys.group_by(&:pipeline)
-          include_needs = keys.any? do |k|
-            k.requires?(%i[nodes jobs nodes needs]) ||
-              k.requires?(%i[nodes jobs nodes previousStageJobsOrNeeds])
-          end
-
-          by_pipeline.each do |pl, key_group|
-            project = pl.project
-            indexed = key_group.index_by(&:id)
-
-            jobs_for_pipeline(pl, indexed.keys, include_needs).each do |stage_id, statuses|
-              key = indexed[stage_id]
-              groups = ::Ci::Group.fabricate(project, key.stage, statuses)
-
-              loader.call(key, groups)
-            end
-          end
+          process_groups_batch(keys, loader)
         end
       end
 
@@ -79,6 +64,29 @@ module Types
 
       def preload_deployment_associations(jobs)
         # noop: Overridden in EE
+      end
+
+      def process_groups_batch(keys, loader)
+        include_needs = include_needs?(keys)
+
+        keys.group_by(&:pipeline).each do |pipeline, key_group|
+          project = pipeline.project
+          indexed = key_group.index_by(&:id)
+
+          jobs_for_pipeline(pipeline, indexed.keys, include_needs).each do |stage_id, statuses|
+            key = indexed[stage_id]
+            groups = ::Ci::Group.fabricate(project, key.stage, statuses)
+
+            loader.call(key, groups)
+          end
+        end
+      end
+
+      def include_needs?(keys)
+        keys.any? do |k|
+          k.requires?(%i[nodes jobs nodes needs]) ||
+            k.requires?(%i[nodes jobs nodes previousStageJobsOrNeeds])
+        end
       end
     end
   end

@@ -9,10 +9,13 @@ module BulkImports
       FileTransfer::ProjectConfig::DESIGN_BUNDLE_RELATION
     ].freeze
 
-    def initialize(portable, export_path, relation, user)
-      @portable = portable
+    # @param export [BulkImports::Export] the export record providing portable and relation
+    # @param export_path [String] directory path where the exported file will be written
+    # @param user [User] the user performing the export (currently unused)
+    def initialize(export, export_path, user)
+      @portable = export.portable
       @export_path = export_path
-      @relation = relation
+      @relation = export.relation
       @user = user # not used anywhere in this class at the moment
     end
 
@@ -54,7 +57,7 @@ module BulkImports
                           when FileTransfer::ProjectConfig::DESIGN_BUNDLE_RELATION
                             RepositoryBundleExportService.new(portable.design_repository, export_path, relation)
                           else
-                            raise BulkImports::Error, 'Unsupported relation export type'
+                            raise BulkImports::Error, 'Unsupported file relation export type'
                           end
     end
 

@@ -339,7 +339,7 @@ RSpec.describe Gitlab::Ci::Config::Normalizer, feature_category: :pipeline_compo
 
     context 'when parallel config does not matches a factory' do
       let(:variables_config) { {} }
-      let(:parallel_config) {}
+      let(:parallel_config) { nil }
 
       it 'does not alter the job config' do
         is_expected.to match(config)

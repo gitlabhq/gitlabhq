@@ -15,12 +15,12 @@ module SystemCheck
     private
 
     def check_sidekiq_running
-      $stdout.print "Running? ... "
+      print "Running? ... " # rubocop:disable Rails/Output -- system check CLI output
 
       if sidekiq_worker_process_count > 0
-        $stdout.puts Rainbow("yes").green
+        say Rainbow("yes").green
       else
-        $stdout.puts Rainbow("no").red
+        say Rainbow("no").red
         try_fixing_it(
           sudo_gitlab("RAILS_ENV=production bin/background_jobs start")
         )
@@ -37,18 +37,18 @@ module SystemCheck
       cluster_count = sidekiq_cluster_process_count
       return if worker_count == 0
 
-      $stdout.print 'Number of Sidekiq processes (cluster/worker) ... '
+      print 'Number of Sidekiq processes (cluster/worker) ... ' # rubocop:disable Rails/Output -- system check CLI output
 
       if cluster_count == 1 && worker_count >= 1
-        $stdout.puts Rainbow("#{cluster_count}/#{worker_count}").green
+        say Rainbow("#{cluster_count}/#{worker_count}").green
       elsif File.symlink?(SYSTEMD_UNIT_PATH)
-        $stdout.puts Rainbow("#{cluster_count}/#{worker_count}").red
+        say Rainbow("#{cluster_count}/#{worker_count}").red
         try_fixing_it(
           'sudo systemctl restart gitlab-sidekiq.service'
         )
         fix_and_rerun
       else
-        $stdout.puts Rainbow("#{cluster_count}/#{worker_count}").red
+        say Rainbow("#{cluster_count}/#{worker_count}").red
         try_fixing_it(
           'sudo service gitlab stop',
           "sudo pkill -u #{gitlab_user} -f sidekiq",

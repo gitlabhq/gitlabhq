@@ -1,9 +1,9 @@
 <script>
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
 import { capitalize, lowerCase, isEmpty } from 'lodash-es';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { useIntegrationForm } from '../store';
 
 export default {
   name: 'DynamicField',
@@ -79,13 +79,14 @@ export default {
       default: false,
     },
   },
+  emits: ['update'],
   data() {
     return {
       model: this.value,
     };
   },
   computed: {
-    ...mapGetters(['isInheriting', 'propsSource']),
+    ...mapState(useIntegrationForm, ['isInheriting', 'propsSource']),
     isCheckbox() {
       return this.type === 'checkbox';
     },

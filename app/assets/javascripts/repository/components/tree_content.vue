@@ -74,13 +74,19 @@ export default {
   },
 
   watch: {
-    $route: function routeChange() {
-      this.entries.trees = [];
-      this.entries.submodules = [];
-      this.entries.blobs = [];
-      this.nextPageCursor = '';
-      resetRequestedCommits();
-      this.fetchFiles();
+    path(newPath, oldPath) {
+      // Skip on initial mount
+      if (!oldPath) return;
+
+      // Refetch when path changes
+      if (newPath !== oldPath) {
+        this.entries.trees = [];
+        this.entries.submodules = [];
+        this.entries.blobs = [];
+        this.nextPageCursor = '';
+        resetRequestedCommits();
+        this.fetchFiles();
+      }
     },
   },
   mounted() {
@@ -92,7 +98,7 @@ export default {
   },
   methods: {
     fetchFiles() {
-      const originalPath = this.path || '/';
+      const originalPath = this.path;
       this.isLoadingFiles = true;
 
       return this.$apollo
@@ -109,7 +115,7 @@ export default {
         })
         .then(({ data }) => {
           if (data.errors) throw data.errors;
-          if (!data?.project?.repository || originalPath !== (this.path || '/')) return;
+          if (!data?.project?.repository || originalPath !== this.path) return;
 
           const {
             project: {

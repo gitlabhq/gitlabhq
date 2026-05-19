@@ -99,7 +99,7 @@ RSpec.describe 'getting a WorkItem description template and content', feature_ca
     end
 
     before do
-      group.file_template_project_id = group_default_template_project.id
+      set_file_template_project_id(group, group_default_template_project.id)
     end
 
     it 'returns the template from the specified project' do

@@ -49,6 +49,20 @@ module Types
       end
 
       def open_work_items_count
+        return unless Feature.enabled?(:show_work_items_sidebar_count, context[:current_user])
+
+        case namespace
+        when ::Group
+          group_open_work_items_count
+        when ::Namespaces::ProjectNamespace
+          ::Projects::OpenWorkItemsCountService.new(namespace.project, context[:current_user]).count
+        end
+      end
+
+      def group_open_work_items_count
+        ::Groups::OpenWorkItemsCountService.new(namespace, context[:current_user], fast_timeout: true).count
+      rescue ActiveRecord::QueryCanceled => e # rubocop:disable Database/RescueQueryCanceled -- used with fast_read_statement_timeout to prevent this count from slowing down the rest of the request
+        Gitlab::ErrorTracking.log_exception(e, group_id: namespace.id, query: 'group_sidebar_work_items_count')
         nil
       end
     end

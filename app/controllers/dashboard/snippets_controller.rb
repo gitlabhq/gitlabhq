@@ -11,7 +11,7 @@ class Dashboard::SnippetsController < Dashboard::ApplicationController
 
   def index
     @snippet_counts = Snippets::CountService
-      .new(current_user, author: current_user)
+      .new(current_user, organization_id: Current.organization.id, author: current_user)
       .execute
 
     @snippets = SnippetsFinder.new(current_user, organization_id: Current.organization.id, author: current_user,

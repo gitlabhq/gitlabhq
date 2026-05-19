@@ -731,7 +731,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     it 'returns 404 if the issue ID is used' do
-      # Make sure other issues don't exist with a matching id or iid to avoid flakyness
+      # Make sure other issues don't exist with a matching id or iid to avoid flakiness
       max_id = [Issue.maximum(:iid), Issue.maximum(:id)].max + 10
       new_issue = create(:issue, project: project, id: max_id)
 

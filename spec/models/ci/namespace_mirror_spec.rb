@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Ci::NamespaceMirror, feature_category: :continuous_integration do
-  let!(:group1) { create(:group) }
-  let!(:group2) { create(:group, parent: group1) }
-  let!(:group3) { create(:group, parent: group2) }
-  let!(:group4) { create(:group, parent: group3) }
+  let_it_be_with_reload(:group1) { create(:group) }
+  let_it_be_with_reload(:group2) { create(:group, parent: group1) }
+  let_it_be_with_reload(:group3) { create(:group, parent: group2) }
+  let_it_be_with_reload(:group4) { create(:group, parent: group3) }
 
   before do
     # refreshing ci mirrors according to the parent tree above
@@ -43,10 +43,10 @@ RSpec.describe Ci::NamespaceMirror, feature_category: :continuous_integration do
     end
 
     describe '.contains_traversal_ids' do
-      let!(:other_group1) { create(:group) }
-      let!(:other_group2) { create(:group, parent: other_group1) }
-      let!(:other_group3) { create(:group, parent: other_group2) }
-      let!(:other_group4) { create(:group) }
+      let_it_be_with_reload(:other_group1) { create(:group) }
+      let_it_be_with_reload(:other_group2) { create(:group, parent: other_group1) }
+      let_it_be_with_reload(:other_group3) { create(:group, parent: other_group2) }
+      let_it_be_with_reload(:other_group4) { create(:group) }
 
       subject(:result) { described_class.contains_traversal_ids(all_traversal_ids) }
 

@@ -137,6 +137,23 @@ RSpec.describe Commit, feature_category: :source_code_management do
 
       expect(commit.diff_stats).to be_nil
     end
+
+    context 'when commit has no parent (initial commit)' do
+      let(:commit) { project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') } # initial commit SHA
+
+      it 'calls repository.diff_stats with empty_tree_id as left_sha' do
+        expect(project.repository)
+          .to receive(:diff_stats)
+          .with(project.repository.empty_tree_id, commit.diff_refs.head_sha)
+          .and_call_original
+
+        commit.diff_stats
+      end
+
+      it 'returns non-empty diff stats' do
+        expect(commit.diff_stats.count).to be > 0
+      end
+    end
   end
 
   describe '#author', :request_store do
@@ -440,10 +457,10 @@ RSpec.describe Commit, feature_category: :source_code_management do
     end
 
     it "does not truncates a message with a newline after 80 but less 100 characters" do
-      message = <<EOS
+      message = <<TEXT
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit.
 Vivamus egestas lacinia lacus, sed rutrum mauris.
-EOS
+TEXT
 
       allow(commit).to receive(:safe_message).and_return(message)
       expect(commit.title).to eq(message.split("\n").first)
@@ -492,20 +509,20 @@ EOS
     end
 
     it 'returns description of commit message if title less than 100 characters' do
-      message = <<EOS
+      message = <<TEXT
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit.
 Vivamus egestas lacinia lacus, sed rutrum mauris.
-EOS
+TEXT
 
       allow(commit).to receive(:safe_message).and_return(message)
       expect(commit.description).to eq('Vivamus egestas lacinia lacus, sed rutrum mauris.')
     end
 
     it 'returns full commit message if commit title more than 100 characters' do
-      message = <<EOS
+      message = <<TEXT
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit. Vivamus egestas lacinia lacus, sed rutrum mauris.
 Vivamus egestas lacinia lacus, sed rutrum mauris.
-EOS
+TEXT
 
       allow(commit).to receive(:safe_message).and_return(message)
       expect(commit.description).to eq(message)
@@ -1101,6 +1118,45 @@ EOS
     it_behaves_like 'diffs for streaming' do
       let(:repository) { commit.repository }
       let(:resource) { commit }
+    end
+  end
+
+  describe '#verified_committer' do
+    let_it_be(:gpg_key) { create(:gpg_key) }
+
+    context 'when there is no signature' do
+      it 'returns nil' do
+        allow(commit).to receive(:signature).and_return(nil)
+
+        expect(commit.verified_committer).to be_nil
+      end
+    end
+
+    context 'when the signature is verified' do
+      it 'returns the signed_by_user' do
+        signature = build(:gpg_signature, gpg_key: gpg_key, verification_status: :verified)
+        allow(commit).to receive(:signature).and_return(signature)
+
+        expect(commit.verified_committer).to eq(gpg_key.user)
+      end
+    end
+
+    context 'when the signature is verified_system' do
+      it 'returns the signed_by_user' do
+        signature = build(:gpg_signature, gpg_key: gpg_key, verification_status: :verified_system)
+        allow(commit).to receive(:signature).and_return(signature)
+
+        expect(commit.verified_committer).to eq(gpg_key.user)
+      end
+    end
+
+    context 'when the signature is unverified' do
+      it 'returns nil' do
+        signature = build(:gpg_signature, gpg_key: gpg_key, verification_status: :unverified)
+        allow(commit).to receive(:signature).and_return(signature)
+
+        expect(commit.verified_committer).to be_nil
+      end
     end
   end
 end

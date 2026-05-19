@@ -1,0 +1,9 @@
+---
+name: read_status
+description: Grants the ability to read status
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_user_status

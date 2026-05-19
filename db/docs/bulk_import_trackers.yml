@@ -13,6 +13,6 @@ sharding_key:
   project_id: projects
   namespace_id: namespaces
   organization_id: organizations
-organization_transfer_support: todo
+organization_transfer_support: no_work_needed
 table_size: small
 desired_sharding_key_migration_job_name: BackfillBulkImportTrackersShardingKey

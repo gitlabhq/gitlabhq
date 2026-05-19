@@ -11,6 +11,11 @@ fi
 
 # Check there's no differences after re-initialising
 ruby -I ../../lib ../../bin/bundler-checksum init
+
+# Check no duplicate entries (guards against multi-platform gem over-counting)
+dupes=$(sort Gemfile.checksum | uniq -d | wc -l | tr -d ' ')
+[ "$dupes" -eq 0 ] || { echo "ERROR: $dupes duplicate lines in Gemfile.checksum"; exit 1; }
+
 git diff --exit-code Gemfile.checksum
 
 # Verify against rubygems.org

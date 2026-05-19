@@ -32,6 +32,11 @@ See [Externalization for GitLab](externalization.md).
 
 If you edit externalized strings in GitLab, you must [update the `pot` file](externalization.md#updating-the-po-files-with-the-new-content) before pushing your changes.
 
+### Pluralization
+
+Pluralization rules vary across languages. For guidance on `n_()` and `n__()` syntax, [CLDR](https://cldr.unicode.org/)
+plural categories, and common anti-patterns, see [pluralization](pluralization.md).
+
 ## Translate strings
 
 The translation process is managed at <https://crowdin.com/project/gitlab-ee>

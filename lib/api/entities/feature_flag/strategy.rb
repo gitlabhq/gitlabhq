@@ -7,8 +7,8 @@ module API
         expose :id, documentation: { type: 'Integer', example: 1 }
         expose :name, documentation: { type: 'String', example: 'userWithId' }
         expose :parameters, documentation: { type: 'String', example: '{"userIds": "user1"}' }
-        expose :scopes, using: FeatureFlag::Scope
-        expose :user_list, using: FeatureFlag::BasicUserList
+        expose :scopes, using: ::API::Entities::FeatureFlag::Scope
+        expose :user_list, using: ::API::Entities::FeatureFlag::BasicUserList
       end
     end
   end

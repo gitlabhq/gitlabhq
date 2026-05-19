@@ -9,7 +9,6 @@ class TestsMetadata < Struct.new( # rubocop:disable Style/StructInheritance -- O
   :knapsack_report_path, :flaky_report_path, :fast_quarantine_path,
   :average_knapsack,
   keyword_init: true)
-
   FALLBACK_JSON = '{}'
 
   def main

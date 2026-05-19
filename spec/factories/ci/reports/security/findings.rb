@@ -13,6 +13,8 @@ FactoryBot.define do
 
     transient do
       solution { "GCM mode introduces an HMAC into the resulting encrypted data, providing integrity of the result." }
+      uuid { nil }
+      context_unaware_uuid { nil }
     end
 
     original_data do
@@ -84,14 +86,7 @@ FactoryBot.define do
     scanner factory: :ci_reports_security_scanner
     severity { :high }
     scan factory: :ci_reports_security_scan
-    sequence(:uuid) do |n|
-      ::Security::VulnerabilityUUID.generate(
-        report_type: report_type,
-        primary_identifier_fingerprint: identifiers.first&.fingerprint,
-        location_fingerprint: location.fingerprint,
-        project_id: n
-      )
-    end
+    sequence(:project_id) { |n| n }
     vulnerability_finding_signatures_enabled { false }
 
     skip_create
@@ -102,6 +97,11 @@ FactoryBot.define do
 
     initialize_with do
       ::Gitlab::Ci::Reports::Security::Finding.new(**attributes)
+    end
+
+    after(:build) do |report, evaluator|
+      report.uuid = evaluator.uuid if evaluator.uuid.present?
+      report.context_unaware_uuid = evaluator.context_unaware_uuid if evaluator.context_unaware_uuid.present?
     end
 
     trait :dependency_scanning do

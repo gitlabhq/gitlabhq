@@ -7,8 +7,8 @@ module API
         module ModelVersions
           module Types
             class ModelVersionTag < Grape::Entity
-              expose :key
-              expose :value
+              expose :key, documentation: { type: 'String' }
+              expose :value, documentation: { type: 'String' }
             end
           end
         end

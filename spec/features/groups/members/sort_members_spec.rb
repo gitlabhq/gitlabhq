@@ -69,7 +69,7 @@ RSpec.describe 'Groups > Members > Sort members', :js, feature_category: :groups
   end
 
   it 'sorts by last activity ascending' do
-    visit_members_list(sort: :oldest_last_activity)
+    visit_members_list(sort: :last_activity_on_asc)
 
     expect(first_row.text).to include(developer.name)
     expect(second_row.text).to include(owner.name)
@@ -78,7 +78,7 @@ RSpec.describe 'Groups > Members > Sort members', :js, feature_category: :groups
   end
 
   it 'sorts by last activity descending' do
-    visit_members_list(sort: :recent_last_activity)
+    visit_members_list(sort: :last_activity_on_desc)
 
     expect(first_row.text).to include(owner.name)
     expect(second_row.text).to include(developer.name)

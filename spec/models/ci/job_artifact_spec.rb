@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
-  let(:artifact) { create(:ci_job_artifact, :archive) }
+  let_it_be_with_refind(:job) { create(:ci_build) }
+
+  let(:artifact) { create(:ci_job_artifact, :archive, job: job) }
 
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
@@ -60,15 +62,15 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
   end
 
   describe '.all_reports' do
-    let!(:artifact) { create(:ci_job_artifact, :archive) }
+    let!(:artifact) { create(:ci_job_artifact, :archive, job: job) }
 
     subject { described_class.all_reports }
 
     it { is_expected.to be_empty }
 
     context 'when there are reports' do
-      let!(:metrics_report) { create(:ci_job_artifact, :junit) }
-      let!(:codequality_report) { create(:ci_job_artifact, :codequality) }
+      let!(:metrics_report) { create(:ci_job_artifact, :junit, job: job) }
+      let!(:codequality_report) { create(:ci_job_artifact, :codequality, job: job) }
 
       it { is_expected.to match_array([metrics_report, codequality_report]) }
     end
@@ -81,13 +83,13 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
       let(:report_type) { :test }
 
       context 'when there is a test report' do
-        let!(:artifact) { create(:ci_job_artifact, :junit) }
+        let!(:artifact) { create(:ci_job_artifact, :junit, job: job) }
 
         it { is_expected.to eq([artifact]) }
       end
 
       context 'when there are no test reports' do
-        let!(:artifact) { create(:ci_job_artifact, :archive) }
+        let!(:artifact) { create(:ci_job_artifact, :archive, job: job) }
 
         it { is_expected.to be_empty }
       end
@@ -97,13 +99,13 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
       let(:report_type) { :accessibility }
 
       context 'when there is an accessibility report' do
-        let(:artifact) { create(:ci_job_artifact, :accessibility) }
+        let(:artifact) { create(:ci_job_artifact, :accessibility, job: job) }
 
         it { is_expected.to eq([artifact]) }
       end
 
       context 'when there are no accessibility report' do
-        let(:artifact) { create(:ci_job_artifact, :archive) }
+        let(:artifact) { create(:ci_job_artifact, :archive, job: job) }
 
         it { is_expected.to be_empty }
       end
@@ -113,19 +115,19 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
       let(:report_type) { :coverage }
 
       context 'when there is a cobertura report' do
-        let!(:artifact) { create(:ci_job_artifact, :cobertura) }
+        let!(:artifact) { create(:ci_job_artifact, :cobertura, job: job) }
 
         it { is_expected.to eq([artifact]) }
       end
 
       context 'when there is a jacoco report' do
-        let!(:artifact) { create(:ci_job_artifact, :jacoco) }
+        let!(:artifact) { create(:ci_job_artifact, :jacoco, job: job) }
 
         it { is_expected.to eq([artifact]) }
       end
 
       context 'when there are no coverage reports' do
-        let!(:artifact) { create(:ci_job_artifact, :archive) }
+        let!(:artifact) { create(:ci_job_artifact, :archive, job: job) }
 
         it { is_expected.to be_empty }
       end
@@ -135,13 +137,13 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
       let(:report_type) { :codequality }
 
       context 'when there is a codequality report' do
-        let!(:artifact) { create(:ci_job_artifact, :codequality) }
+        let!(:artifact) { create(:ci_job_artifact, :codequality, job: job) }
 
         it { is_expected.to eq([artifact]) }
       end
 
       context 'when there are no codequality reports' do
-        let!(:artifact) { create(:ci_job_artifact, :archive) }
+        let!(:artifact) { create(:ci_job_artifact, :archive, job: job) }
 
         it { is_expected.to be_empty }
       end
@@ -151,13 +153,13 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
       let(:report_type) { :terraform }
 
       context 'when there is a terraform report' do
-        let!(:artifact) { create(:ci_job_artifact, :terraform) }
+        let!(:artifact) { create(:ci_job_artifact, :terraform, job: job) }
 
         it { is_expected.to eq([artifact]) }
       end
 
       context 'when there are no terraform reports' do
-        let!(:artifact) { create(:ci_job_artifact, :archive) }
+        let!(:artifact) { create(:ci_job_artifact, :archive, job: job) }
 
         it { is_expected.to be_empty }
       end
@@ -168,13 +170,13 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     subject { artifact.public_access? }
 
     context 'when job artifact created by default' do
-      let!(:artifact) { create(:ci_job_artifact) }
+      let!(:artifact) { create(:ci_job_artifact, job: job) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when job artifact created as public' do
-      let!(:artifact) { create(:ci_job_artifact, :public) }
+      let!(:artifact) { create(:ci_job_artifact, :public, job: job) }
 
       it { is_expected.to be_truthy }
     end
@@ -190,13 +192,13 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     subject { artifact.none_access? }
 
     context 'when job artifact created by default' do
-      let!(:artifact) { create(:ci_job_artifact) }
+      let!(:artifact) { create(:ci_job_artifact, job: job) }
 
       it { is_expected.to be_falsey }
     end
 
     context 'when job artifact created as none access' do
-      let!(:artifact) { create(:ci_job_artifact, :none) }
+      let!(:artifact) { create(:ci_job_artifact, :none, job: job) }
 
       it { is_expected.to be_truthy }
     end
@@ -210,7 +212,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     end
 
     context 'when job artifact created as maintainer access' do
-      let!(:artifact) { create(:ci_job_artifact, :maintainer) }
+      let!(:artifact) { create(:ci_job_artifact, :maintainer, job: job) }
 
       it { is_expected.to be_truthy }
     end
@@ -258,13 +260,13 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     subject { described_class.erasable }
 
     context 'when there is an erasable artifact' do
-      let!(:artifact) { create(:ci_job_artifact, :junit) }
+      let!(:artifact) { create(:ci_job_artifact, :junit, job: job) }
 
       it { is_expected.to eq([artifact]) }
     end
 
     context 'when there are no erasable artifacts' do
-      let!(:artifact) { create(:ci_job_artifact, :trace) }
+      let!(:artifact) { create(:ci_job_artifact, :trace, job: job) }
 
       it { is_expected.to be_empty }
     end
@@ -274,20 +276,20 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     subject { described_class.non_trace }
 
     context 'when there is only a trace job artifact' do
-      let!(:trace) { create(:ci_job_artifact, :trace) }
+      let!(:trace) { create(:ci_job_artifact, :trace, job: job) }
 
       it { is_expected.to be_empty }
     end
 
     context 'when there is only a non-trace job artifact' do
-      let!(:junit) { create(:ci_job_artifact, :junit) }
+      let!(:junit) { create(:ci_job_artifact, :junit, job: job) }
 
       it { is_expected.to eq([junit]) }
     end
 
     context 'when there are both trace and non-trace job artifacts' do
-      let!(:trace) { create(:ci_job_artifact, :trace) }
-      let!(:junit) { create(:ci_job_artifact, :junit) }
+      let!(:trace) { create(:ci_job_artifact, :trace, job: job) }
+      let!(:junit) { create(:ci_job_artifact, :junit, job: job) }
 
       it { is_expected.to eq([junit]) }
     end
@@ -297,8 +299,8 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     subject { described_class.downloadable }
 
     it 'filters for downloadable artifacts' do
-      downloadable_artifact = create(:ci_job_artifact, :codequality)
-      _not_downloadable_artifact = create(:ci_job_artifact, :trace)
+      downloadable_artifact = create(:ci_job_artifact, :codequality, job: job)
+      _not_downloadable_artifact = create(:ci_job_artifact, :trace, job: job)
 
       expect(subject).to contain_exactly(downloadable_artifact)
     end
@@ -370,7 +372,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
   end
 
   describe '.unlocked' do
-    let_it_be(:job_artifact) { create(:ci_job_artifact) }
+    let_it_be_with_refind(:job_artifact) { create(:ci_job_artifact, job: job) }
 
     context 'with locked pipelines' do
       before do
@@ -478,7 +480,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
   end
 
   context 'when updating any field except the file' do
-    let(:artifact) { create(:ci_job_artifact, :unarchived_trace_artifact, file_store: 2) }
+    let(:artifact) { create(:ci_job_artifact, :unarchived_trace_artifact, file_store: 2, job: job) }
 
     before do
       stub_artifacts_object_storage(direct_upload: true)
@@ -832,7 +834,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     let(:artifact) { build(:ci_job_artifact, job: job, partition_id: nil) }
 
     it 'copies the partition_id from job' do
-      expect { artifact.valid? }.to change(artifact, :partition_id).from(nil).to(123)
+      expect { artifact.valid? }.to change { artifact.partition_id }.from(nil).to(123)
     end
 
     context 'when the job is missing' do
@@ -844,7 +846,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
       end
 
       it 'does not change the partition_id value' do
-        expect { artifact.valid? }.not_to change(artifact, :partition_id)
+        expect { artifact.valid? }.not_to change { artifact.partition_id }
       end
     end
   end

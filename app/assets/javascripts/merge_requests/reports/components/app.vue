@@ -27,16 +27,21 @@ export default {
     GlLoadingIcon,
     StatusIcon,
     SecurityScansProvider: () =>
-      import('ee_component/merge_requests/reports/components/security_scans_provider.vue'),
-    SecurityNavItem: () => import('~/merge_requests/reports/components/security_nav_item.vue'),
+      import('ee_component/merge_requests/reports/security_scans/security_scans_provider.vue'),
+    SecurityNavItem: () =>
+      import('ee_component/merge_requests/reports/security_scans/security_nav_item.vue'),
     LicenseComplianceProvider: () =>
-      import('ee_component/merge_requests/reports/components/license_compliance_provider.vue'),
+      import(
+        'ee_component/merge_requests/reports/license_compliance/license_compliance_provider.vue'
+      ),
     LicenseComplianceNavItem: () =>
-      import('ee_component/merge_requests/reports/components/license_compliance_nav_item.vue'),
+      import(
+        'ee_component/merge_requests/reports/license_compliance/license_compliance_nav_item.vue'
+      ),
     CodeQualityProvider: () =>
-      import('~/merge_requests/reports/components/code_quality_provider.vue'),
+      import('~/merge_requests/reports/code_quality/code_quality_provider.vue'),
     CodeQualityNavItem: () =>
-      import('~/merge_requests/reports/components/code_quality_nav_item.vue'),
+      import('~/merge_requests/reports/code_quality/code_quality_nav_item.vue'),
   },
   data() {
     return {

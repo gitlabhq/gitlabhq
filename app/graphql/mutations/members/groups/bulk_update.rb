@@ -6,6 +6,7 @@ module Mutations
       class BulkUpdate < BulkUpdateBase
         graphql_name 'GroupMemberBulkUpdate'
         authorize :admin_group_member
+        authorize_granular_token permissions: :update_member, boundary_argument: :group_id, boundary_type: :group
 
         field :group_members,
           [Types::GroupMemberType],

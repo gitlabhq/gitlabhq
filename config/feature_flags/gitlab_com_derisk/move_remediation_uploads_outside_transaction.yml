@@ -1,0 +1,9 @@
+---
+name: move_remediation_uploads_outside_transaction
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/589516
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/232193
+rollout_issue_url:
+milestone: '18.11'
+group: group::security insights
+type: gitlab_com_derisk
+default_enabled: false

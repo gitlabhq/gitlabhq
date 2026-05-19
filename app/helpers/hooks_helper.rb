@@ -10,7 +10,11 @@ module HooksHelper
       url_variables: Gitlab::Json.dump(hook.url_variables.keys.map { { key: _1 } }),
       custom_headers: Gitlab::Json.dump(hook.custom_headers.keys.map { { key: _1, value: WebHook::SECRET_MASK } }),
       is_new_hook: hook.new_record?.to_s,
-      triggers: Gitlab::Json.dump(all_triggers(hook))
+      is_system_hook: hook.is_a?(SystemHook).to_s,
+      triggers: Gitlab::Json.dump(all_triggers(hook)),
+      has_signing_token: hook.signing_token.present?.to_s,
+      signing_token_docs_path: help_page_path('user/project/integrations/webhooks.md',
+        anchor: 'signing-tokens')
     }
 
     if hook.is_a?(ProjectHook) && hook.project

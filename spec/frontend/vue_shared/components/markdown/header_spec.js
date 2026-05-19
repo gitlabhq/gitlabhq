@@ -15,6 +15,7 @@ import {
   shallowMountExtended,
   extendedWrapper,
 } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { updateText } from '~/lib/utils/text_markdown';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
@@ -176,7 +177,9 @@ describe('Markdown field header component', () => {
 
   describe('markdown table button', () => {
     beforeEach(() => {
-      setHTMLFixture('<div class="md-area"><textarea></textarea><div id="root"></div></div>');
+      setHTMLFixture(
+        '<div class="md-area"><textarea class="js-gfm-input"></textarea><div id="root"></div></div>',
+      );
 
       wrapper = mountExtended(HeaderComponent, {
         attachTo: '#root',
@@ -209,6 +212,71 @@ describe('Markdown field header component', () => {
         cursorOffset: 0,
         wrap: false,
       });
+    });
+  });
+
+  describe('with multiple textareas (immersive mode regression)', () => {
+    let titleTextarea;
+    let contentTextarea;
+
+    beforeEach(() => {
+      // Simulate immersive mode where a title textarea appears before the content textarea
+      setHTMLFixture(`
+        <div class="md-area">
+          <textarea id="title" class="wiki-title"></textarea>
+          <textarea id="content" class="js-gfm-input"></textarea>
+          <div id="root"></div>
+        </div>
+      `);
+
+      titleTextarea = document.getElementById('title');
+      contentTextarea = document.getElementById('content');
+      titleTextarea.value = 'My Title';
+      contentTextarea.value = 'My content';
+
+      wrapper = mountExtended(HeaderComponent, {
+        attachTo: '#root',
+        propsData: {
+          previewMarkdown: false,
+        },
+        stubs: { GlToggle },
+        provide: {
+          glFeatures: {
+            findAndReplace: true,
+          },
+        },
+      });
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it('targets the content textarea with js-gfm-input, not the first textarea', async () => {
+      const tableButton = findToolbarTableButton();
+      const button = tableButton.findComponent({ ref: 'table-1-1' });
+
+      await button.trigger('click');
+
+      expect(updateText).toHaveBeenCalledWith({
+        textArea: contentTextarea,
+        tag: expect.stringContaining('header'),
+        cursorOffset: 0,
+        wrap: false,
+      });
+
+      // Verify title textarea was not modified
+      expect(titleTextarea.value).toBe('My Title');
+    });
+
+    it('focuses the content textarea when "Skip to input" is clicked', async () => {
+      const skipButton = wrapper.findByTestId('skip-to-input');
+      const focusSpy = jest.spyOn(contentTextarea, 'focus');
+
+      await skipButton.trigger('click');
+
+      expect(focusSpy).toHaveBeenCalled();
+      expect(document.activeElement).toBe(contentTextarea);
     });
   });
 
@@ -306,7 +374,9 @@ describe('Markdown field header component', () => {
 
   describe('when selecting a saved reply from the comment templates dropdown', () => {
     beforeEach(() => {
-      setHTMLFixture('<div class="md-area"><textarea></textarea><div id="root"></div></div>');
+      setHTMLFixture(
+        '<div class="md-area"><textarea class="js-gfm-input"></textarea><div id="root"></div></div>',
+      );
     });
 
     afterEach(() => {
@@ -357,6 +427,7 @@ describe('Markdown field header component', () => {
       const root = document.createElement('div');
       const textarea = document.createElement('textarea');
       textarea.value = 'lorem ipsum dolor sit amet lorem <img src="prompt">';
+      textarea.classList.add('js-gfm-input');
       field.classList = 'js-vue-markdown-field';
       form.classList = 'md-area';
       form.appendChild(textarea);
@@ -388,6 +459,12 @@ describe('Markdown field header component', () => {
 
     const closeFindAndReplace = async () => {
       await findFindAndReplaceBar().trigger('keydown', { key: 'Escape' });
+    };
+
+    const triggerSearch = async (value) => {
+      findFindInput().vm.$emit('keyup', { target: { value } });
+      await nextTick();
+      await nextTick();
     };
 
     beforeEach(() => {
@@ -485,12 +562,8 @@ describe('Markdown field header component', () => {
 
     it('embeds a clone to div to color highlighted text', async () => {
       await showFindAndReplace();
-      await findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
-      await nextTick();
+      await triggerSearch('my-text');
       expect(findCloneDiv().exists()).toBe(true);
-
-      // Wait till the highlighting is complete
-      await nextTick();
 
       // Check that closing the find and replace removes the clone div
       await closeFindAndReplace();
@@ -501,25 +574,20 @@ describe('Markdown field header component', () => {
       await showFindAndReplace();
 
       // Text that does not match
-      await findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
-      await nextTick();
-
+      await triggerSearch('my-text');
       expect(formWrapper.element.querySelector('.js-highlight')).toBe(null);
 
       // Text that matches
-      await findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
-      await nextTick();
-
+      await triggerSearch('lorem');
       expect(formWrapper.element.querySelector('.js-highlight').innerHTML).toBe('lorem');
     });
 
     it('is not vulnerable to XSS', async () => {
       await showFindAndReplace();
-      await findFindInput().vm.$emit('keyup', { target: { value: 'prompt' } });
-      await nextTick();
+      await triggerSearch('prompt');
 
       expect(findCloneDiv().element.innerHTML).toBe(
-        'lorem ipsum dolor sit amet lorem &lt;img src="<span class="js-highlight js-highlight-active" style="background-color: rgb(233, 190, 116); display: inline-block;">prompt</span>"&gt;',
+        'lorem ipsum dolor sit amet lorem &lt;img src="<span class="js-highlight js-highlight-active">prompt</span>"&gt;',
       );
     });
 
@@ -527,18 +595,11 @@ describe('Markdown field header component', () => {
       await showFindAndReplace();
 
       // Text that does not match
-      await findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
-      await nextTick();
-
+      await triggerSearch('my-text');
       expect(findAndReplaceMatchCount()).toBe('No results');
 
       // Text that matches
-      findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
-      await nextTick();
-
-      // The second one is required for VUE_VERSION=3
-      await nextTick();
-
+      await triggerSearch('lorem');
       expect(findAndReplaceMatchCount()).toBe('1 of 2');
     });
 
@@ -546,8 +607,7 @@ describe('Markdown field header component', () => {
       await showFindAndReplace();
 
       // Text that matches
-      await findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
-      await nextTick();
+      await triggerSearch('lorem');
 
       expect(findCloneDiv().element.querySelectorAll('.js-highlight-active')).toHaveLength(1);
     });
@@ -558,8 +618,7 @@ describe('Markdown field header component', () => {
       await showFindAndReplace();
 
       // Text that matches
-      await findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
-      await nextTick();
+      await triggerSearch('lorem');
 
       const matches = findCloneDiv().element.querySelectorAll('.js-highlight');
 
@@ -598,8 +657,7 @@ describe('Markdown field header component', () => {
       await showFindAndReplace();
 
       // Text that matches
-      findFindInput().vm.$emit('keyup', { target: { value: 'LoReM' } });
-      await nextTick();
+      await triggerSearch('LoReM');
 
       const matches = findCloneDiv().element.querySelectorAll('.js-highlight');
       expect(matches).toHaveLength(0);
@@ -642,23 +700,48 @@ describe('Markdown field header component', () => {
       // Show the replace form section
       findToggleReplaceSectionButton().vm.$emit('click');
 
-      findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
-
       // We need this one as well as keyup won't set the value
       findFindInput().vm.$emit('input', 'lorem');
-      await nextTick();
+      await triggerSearch('lorem');
 
       findReplaceInput().vm.$emit('input', 'LOREM');
       await nextTick();
 
       findReplaceButton().trigger('click');
       await nextTick();
-
-      // The second one is required for VUE_VERSION=3
       await nextTick();
 
       expect(findTextarea().value).toBe('LOREM ipsum dolor sit amet lorem <img src="prompt">');
       expect(findAndReplaceMatchCount()).toBe('1 of 1');
+    });
+
+    it('keeps the match index at the replaced position after replacing a single match', async () => {
+      // This doesn't exist in the jest environment so mock it
+      document.execCommand = jest.fn();
+
+      findTextarea().value = 'lorem ipsum lorem ipsum lorem';
+
+      await showFindAndReplace();
+
+      findToggleReplaceSectionButton().vm.$emit('click');
+
+      findFindInput().vm.$emit('input', 'lorem');
+      await triggerSearch('lorem');
+
+      // Navigate to the second match
+      findNextButton().vm.$emit('click');
+      await nextTick();
+      expect(findAndReplaceMatchCount()).toBe('2 of 3');
+
+      findReplaceInput().vm.$emit('input', 'LOREM');
+      findReplaceButton().trigger('click');
+
+      await waitForPromises();
+
+      // Should stay at position 2 (now pointing to the next remaining match),
+      // not reset back to 1.
+      expect(findTextarea().value).toBe('lorem ipsum LOREM ipsum lorem');
+      expect(findAndReplaceMatchCount()).toBe('2 of 2');
     });
 
     it('replaces all matches when replace all button is clicked', async () => {
@@ -670,19 +753,15 @@ describe('Markdown field header component', () => {
       // Show the replace section
       findToggleReplaceSectionButton().vm.$emit('click');
 
-      findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
-
       // We need this one as well as keyup won't set the value
       findFindInput().vm.$emit('input', 'lorem');
-      await nextTick();
+      await triggerSearch('lorem');
 
       findReplaceInput().vm.$emit('input', 'LOREM');
       await nextTick();
 
       findReplaceAllButton().trigger('click');
       await nextTick();
-
-      // The second one is required for VUE_VERSION=3
       await nextTick();
 
       expect(findTextarea().value).toBe('LOREM ipsum dolor sit amet LOREM <img src="prompt">');
@@ -692,9 +771,8 @@ describe('Markdown field header component', () => {
     describe('keyboard shortcuts', () => {
       beforeEach(async () => {
         await showFindAndReplace();
-        findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
         findFindInput().vm.$emit('input', 'lorem');
-        await nextTick();
+        await triggerSearch('lorem');
       });
 
       it('navigates to next match when F3 is pressed', async () => {

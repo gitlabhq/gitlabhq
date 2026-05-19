@@ -86,10 +86,10 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
         extraction_service = instance_double("BulkImports::ArchiveExtractionService")
 
         expect(BulkImports::FileDownloadService)
-          .to receive(:new)
+          .to receive(:for_context)
           .with(
             context: context,
-            relative_url: "/#{entity.pluralized_name}/#{CGI.escape(entity.source_full_path)}/export_relations/download?relation=uploads",
+            relation: 'uploads',
             tmpdir: tmpdir,
             filename: 'uploads.tar.gz')
           .and_return(download_service)

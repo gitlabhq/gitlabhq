@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Profiles::AccountsController do
+RSpec.describe Profiles::AccountsController, feature_category: :system_access do
   describe 'DELETE unlink' do
     let(:user) { create(:omniauth_user) }
 

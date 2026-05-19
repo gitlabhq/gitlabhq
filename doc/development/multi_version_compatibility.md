@@ -53,7 +53,7 @@ familiarizing yourself with:
 
 - [Upgrade instructions](../update/_index.md)
 - [Reference architectures](../administration/reference_architectures/_index.md)
-- [GitLab.com's architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/)
+- [GitLab.com's architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/production/architecture/)
 - [GitLab.com's upgrade pipeline](https://gitlab.com/gitlab-org/release/docs/blob/master/general/deploy/gitlab-com-deployer.md#upgrade-pipeline-default)
 
 To illustrate how these problems arise, take a look at this example:
@@ -76,7 +76,7 @@ This example is not exhaustive. GitLab can be deployed in many different ways. E
 
 ## GitLab Next
 
-GitLab.com runs a [canary stage](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage) that runs the next version that is going to be deployed to production. This means that we
+GitLab.com runs a [canary stage](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/environments/canary-stage) that runs the next version that is going to be deployed to production. This means that we
 run multiple versions of GitLab for an extended period of time.
 
 We route a small percentage of traffic to canary to test out the next version. Users can also opt-in to GitLab next by [setting a cookie](https://next.gitlab.com/). We also route paths starting with `gitlab-org` or `gitlab-com` to canary and this often exposes a lot of multi-version compatibility issues that last until the version in canary is deployed to production which can take several hours.
@@ -113,7 +113,7 @@ These users accept some downtime during the update. Unfortunately we can't ignor
 
 ## What kind of components can GitLab be broken down into?
 
-The [1000 RPS or 50,000 user reference architecture](../administration/reference_architectures/50k_users.md) runs GitLab on 48+ nodes. GitLab.com is [bigger than that](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/), plus a portion of the [infrastructure runs on Kubernetes](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#gitlab-com-architecture), plus there is a ["canary" stage which receives updates first](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage/).
+The [1000 RPS or 50,000 user reference architecture](../administration/reference_architectures/50k_users.md) runs GitLab on 48+ nodes. GitLab.com is [bigger than that](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/production/architecture/), plus a portion of the [infrastructure runs on Kubernetes](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/production/architecture/#gitlab-com-architecture), plus there is a ["canary" stage which receives updates first](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/environments/canary-stage/).
 
 But the problem isn't just that there are many nodes. The bigger problem is that a deployment can be divided into different contexts. And GitLab.com is not the only one that does this. Some possible divisions:
 

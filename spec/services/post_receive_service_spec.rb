@@ -186,7 +186,7 @@ RSpec.describe PostReceiveService, feature_category: :source_code_management do
     context 'when there are merge_request push options' do
       let(:params) { super().merge(push_options: ['merge_request.create']) }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -203,7 +203,7 @@ RSpec.describe PostReceiveService, feature_category: :source_code_management do
       end
 
       it 'creates a new merge request' do
-        expect { Sidekiq::Testing.fake! { subject } }.to change(MergeRequest, :count).by(1)
+        expect { Sidekiq::Testing.fake! { subject } }.to change { MergeRequest.count }.by(1)
       end
 
       it 'links to the newly created merge request' do
@@ -310,15 +310,15 @@ RSpec.describe PostReceiveService, feature_category: :source_code_management do
   end
 
   context "broadcast message has a target_path" do
-    let!(:older_scoped_message) do
+    let_it_be(:older_scoped_message) do
       create(:broadcast_message, message: "Old top secret", target_path: "/company/sekrit-project")
     end
 
-    let!(:latest_scoped_message) do
+    let_it_be(:latest_scoped_message) do
       create(:broadcast_message, message: "Top secret", target_path: "/company/sekrit-project")
     end
 
-    let!(:unscoped_message) do
+    let_it_be(:unscoped_message) do
       create(:broadcast_message, message: "Hi")
     end
 

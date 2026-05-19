@@ -24,7 +24,7 @@ module Gitlab
             description: description,
             content: {
               content_type => {
-                schema: { '$ref': schema_ref(schema_registry) },
+                schema: { '$ref' => schema_ref(schema_registry) },
                 example: @example,
                 examples: @examples
               }.compact

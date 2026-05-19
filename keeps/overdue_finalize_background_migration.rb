@@ -27,6 +27,7 @@ module Keeps
   class OverdueFinalizeBackgroundMigration < ::Gitlab::Housekeeper::Keep
     MERGE_REQUEST_URL_REGEX = %r{/-/merge_requests/(?<mr_iid>\d+)}
     API_MERGE_REQUEST_URL = "https://gitlab.com/api/v4/projects/278964/merge_requests/%<mr_iid>s"
+    MAX_UNIQUE_NAME_ATTEMPTS = 5
 
     def each_identified_change
       batched_background_migrations.each do |migration_yaml_file, migration|
@@ -65,7 +66,7 @@ module Keeps
 
       queue_method_node = find_queue_method_node(last_migration_file)
 
-      migration_name = truncate_migration_name("FinalizeHK#{job_name}")
+      migration_name = unique_migration_name("FinalizeHK#{job_name}")
       PostDeploymentMigration::PostDeploymentMigrationGenerator
         .source_root('generator_templates/post_deployment_migration/post_deployment_migration/')
       generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name])
@@ -131,11 +132,22 @@ module Keeps
       # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl
     end
 
+    def unique_migration_name(migration_name)
+      (1..MAX_UNIQUE_NAME_ATTEMPTS).each do |i|
+        candidate = i == 1 ? migration_name : "#{migration_name}#{i}"
+        name = truncate_migration_name(candidate)
+
+        return name unless Dir.glob("db/post_migrate/*_#{name.underscore}.rb").any?
+      end
+
+      raise "Could not find unique migration name for #{migration_name} after #{MAX_UNIQUE_NAME_ATTEMPTS} attempts"
+    end
+
     def truncate_migration_name(migration_name)
       # File names not allowed to exceed 100 chars due to Cop/FilenameLength so we truncate to 70 because there will be
       # underscores added.
       if migration_name.length > 70
-        # Consisten 5 digit integer hash so that we always get the same name every time we run this keep
+        # Consistent 5 digit integer hash so that we always get the same name every time we run this keep
         hash = Digest::SHA256.hexdigest(migration_name).to_i(16) % 100000
       end
 
@@ -336,7 +348,7 @@ module Keeps
     end
 
     # Override to force push when migration is overdue (3 weeks old or before required stop)
-    def should_push_code?(change, push_when_approved)
+    def should_push_code?(change, push_when_approved, push_when_conflict: true)
       super || outdated_migration_checker.existing_migration_timestamp_outdated?(change.identifiers)
     end
 

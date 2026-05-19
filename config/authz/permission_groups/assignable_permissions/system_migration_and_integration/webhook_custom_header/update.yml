@@ -1,9 +1,0 @@
----
-name: update_webhook_custom_header
-description: Grants the ability to update webhook custom headers
-boundaries:
-  - group
-  - project
-  - instance
-permissions:
-  - update_webhook_custom_header

@@ -11,5 +11,4 @@ gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
   project_id: projects
-organization_transfer_support: todo
 table_size: small

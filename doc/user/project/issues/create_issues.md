@@ -59,7 +59,7 @@ Prerequisites:
 To create an issue from a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Work items**.
+1. In the left sidebar, select **Plan** > **Work items**.
 1. In the upper-right corner, select **Select project to create issue**.
 1. Select the project you'd like to create an issue for. The button now reflects the selected
    project.
@@ -103,7 +103,7 @@ Prerequisites:
 To create an issue from a project issue board:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issue boards**.
+1. In the left sidebar, select **Plan** > **Issue boards**.
 1. At the top of a board list, select **Create new issue** ({{< icon name="plus-square" >}}).
 1. Enter the issue's title.
 1. Select **Create issue**.
@@ -111,7 +111,7 @@ To create an issue from a project issue board:
 To create an issue from a group issue board:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Issue boards**.
+1. In the left sidebar, select **Plan** > **Issue boards**.
 1. At the top of a board list, select **Create new issue** ({{< icon name="plus-square" >}}).
 1. Enter the issue's title.
 1. Under **Projects**, select the project in the group that the issue should belong to.
@@ -141,7 +141,7 @@ Prerequisites:
 To email an issue to a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**.
+1. In the left sidebar, select **Plan** > **Work items**.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Email work item to this project**.
 1. To copy the email address, select **Copy** ({{< icon name="copy-to-clipboard" >}}).
 1. From your email client, send an email to this address.

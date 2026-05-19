@@ -1,0 +1,12 @@
+---
+api_type:
+attr: duo_settings
+clusterwide: true
+column: duo_settings
+db_type: jsonb
+default: "'{}'::jsonb"
+description: Application-level GitLab Duo related settings.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

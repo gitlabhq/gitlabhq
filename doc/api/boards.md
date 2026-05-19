@@ -100,7 +100,7 @@ Example response:
 ]
 ```
 
-Another example response when no board has been activated or exist in the project:
+Another example response when no board has been activated or exists in the project:
 
 ```json
 []
@@ -454,11 +454,11 @@ POST /projects/:id/boards/:board_id/lists
 | `label_id` | integer | no | The ID of a label. |
 | `assignee_id` | integer | no | The ID of a user. Premium and Ultimate only. |
 | `milestone_id` | integer | no | The ID of a milestone. Premium and Ultimate only. |
-| `iteration_id` | integer | no | The ID of a iteration. Premium and Ultimate only. |
+| `iteration_id` | integer | no | The ID of an iteration. Premium and Ultimate only. |
 
 > [!note]
 > Label, assignee and milestone arguments are mutually exclusive,
-> that is, only one of them are accepted in a request.
+> that is, only one of them is accepted in a request.
 > Check the [issue board documentation](../user/project/issue_board.md)
 > for more information regarding the required license for each list type.
 
@@ -527,7 +527,13 @@ Example response:
 
 ## Delete a board list from a board
 
-Deletes a specified list from an issue board. Only for administrators and project owners.
+Deletes a specified list from an issue board.
+
+Prerequisites:
+
+- Either:
+  - The Planner, Reporter, Security Manager, Developer, Maintainer, or Owner role for the project.
+  - Administrator access.
 
 ```plaintext
 DELETE /projects/:id/boards/:board_id/lists/:list_id

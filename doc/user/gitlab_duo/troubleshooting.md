@@ -122,7 +122,7 @@ To resolve this issue:
 ## Troubleshooting GitLab Duo on GitLab Dedicated
 
 GitLab Duo Core should work out-of-the-box on GitLab 18.3 and later for Premium
-and Ultimate customers.
+and Ultimate customers, for all GitLab Duo features excluding GitLab Duo Non-Agentic Chat.
 
 Pre-production GitLab Dedicated instances do not support GitLab Duo Core by design.
 
@@ -152,7 +152,7 @@ To resolve this issue:
 1. Verify outbound connections to `cloud.gitlab.com:443` and `customers.gitlab.com:443`.
 1. Add [Cloudflare IP ranges](https://www.cloudflare.com/ips/) to your allowlist if needed.
 1. Check for allowlist or firewall restrictions with
-   [private link](../../administration/dedicated/configure_instance/network_security.md#aws-private-link-connectivity).
+   [private link](../../administration/dedicated/configure_instance/network_security.md#aws-privatelink-connectivity).
 1. Follow [filtering outbound requests](../../security/webhooks.md#gitlab-duo-functionality-is-blocked)
    to troubleshoot connectivity issues.
 1. Test connectivity from the instance.
@@ -181,6 +181,8 @@ you can also do the following:
 - If you have GitLab Duo Core, verify that you have:
   - A Premium or Ultimate subscription.
   - [Turned on IDE features](turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+  > [!note]
+  > GitLab Duo Non-Agentic Chat is not available for GitLab Duo Core users.
 - If you have GitLab Duo Pro or Enterprise:
   - Verify that [a subscription add-on has been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo).
   - Ensure that [seats are assigned to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).

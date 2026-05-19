@@ -10,7 +10,10 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
   let(:diff_options) { { ignore_whitespace_changes: true } }
   let(:diffs_count) { 20 }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/merge_requests/#{merge_request.to_param}" }
-  let(:merge_request_diff) { instance_double(MergeRequestDiff, id: 999, merge_head?: false) }
+  let(:merge_request_diff) do
+    instance_double(MergeRequestDiff, id: 999, merge_head?: false, diff_stats: nil, persisted?: true)
+  end
+
   let(:resolved_diff_id) { merge_request_diff.id }
   let(:request_params) { {} }
   let(:current_user) { build_stubbed(:user) }
@@ -182,6 +185,12 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
       it { is_expected.not_to include('diff_id') }
     end
+
+    context 'when only_context_commits is set' do
+      let(:request_params) { { only_context_commits: 'true' } }
+
+      it { is_expected.to end_with('only_context_commits=true') }
+    end
   end
 
   describe '#diffs_stats_endpoint' do
@@ -253,12 +262,9 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
         it { is_expected.to be_nil }
       end
 
-      context 'when diff_stats is available' do
+      context 'when diff_stats is available on the resolved diff' do
         let(:stats) { instance_double(Gitlab::Git::DiffStatsCollection, count: 42) }
-
-        before do
-          allow(merge_request).to receive(:diff_stats).and_return(stats)
-        end
+        let(:merge_request_diff) { instance_double(MergeRequestDiff, id: 999, merge_head?: false, diff_stats: stats) }
 
         it 'uses stats count without calling diffs_for_streaming' do
           expect(merge_request).not_to receive(:diffs_for_streaming)
@@ -267,9 +273,8 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
         end
       end
 
-      context 'when diff_stats returns nil' do
+      context 'when diff_stats returns nil on the resolved diff' do
         before do
-          allow(merge_request).to receive(:diff_stats).and_return(nil)
           allow(merge_request).to receive_message_chain(:diffs_for_streaming, :diff_files,
             :count).and_return(diffs_count)
         end
@@ -401,6 +406,14 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     it { is_expected.to eq('/-/abuse_reports/add_category') }
   end
 
+  describe '#new_comment_template_paths' do
+    subject(:method) { presenter.new_comment_template_paths }
+
+    it 'returns the user comment templates entry' do
+      expect(method).to match_array([{ text: 'Your comment templates', href: '/-/profile/comment_templates' }])
+    end
+  end
+
   describe '#versions' do
     let(:request_params) { { diff_id: '10', start_sha: 'abc123' } }
 
@@ -409,11 +422,43 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
       expect(RapidDiffs::DiffCompareVersionsEntity).to receive(:represent).with(
         resource,
         diff_id: '10',
-        start_sha: 'abc123'
+        start_sha: 'abc123',
+        commit_id: nil
       ).and_return(entity)
       expect(entity).to receive(:as_json).and_return({ 'source_versions' => [], 'target_versions' => [] })
 
       expect(presenter.versions).to eq({ 'source_versions' => [], 'target_versions' => [] })
+    end
+
+    context 'when commit_id is present' do
+      let(:request_params) { { commit_id: 'abc123' } }
+
+      it 'passes commit_id to the entity' do
+        entity = instance_double(RapidDiffs::DiffCompareVersionsEntity)
+        expect(RapidDiffs::DiffCompareVersionsEntity).to receive(:represent).with(
+          resource,
+          hash_including(commit_id: 'abc123')
+        ).and_return(entity)
+        allow(entity).to receive(:as_json).and_return({})
+
+        presenter.versions
+      end
+    end
+
+    context 'when merge request diff is not persisted' do
+      let(:merge_request_diff) { instance_double(MergeRequestDiff, id: nil, persisted?: false, merge_head?: false) }
+
+      it 'returns nil' do
+        expect(presenter.versions).to be_nil
+      end
+    end
+
+    context 'when merge request diff is nil' do
+      let(:merge_request_diff) { nil }
+
+      it 'returns nil' do
+        expect(presenter.versions).to be_nil
+      end
     end
   end
 

@@ -20,13 +20,13 @@ RSpec.describe Gitlab::Issues::Rebalancing::State, :clean_gitlab_redis_shared_st
       end
     end
 
-    describe '#set and get current_project' do
-      it 'returns nil if there is no project_id cached' do
-        expect(rebalance_caching.get_current_project_id).to be_nil
+    describe '#set and get current_namespace' do
+      it 'returns nil if there is no namespace_id cached' do
+        expect(rebalance_caching.get_current_namespace_id).to be_nil
       end
 
-      it 'returns cached current project_id' do
-        expect { rebalance_caching.cache_current_project_id(456) }.to change { rebalance_caching.get_current_project_id }.from(nil).to('456')
+      it 'returns cached current namespace_id' do
+        expect { rebalance_caching.cache_current_namespace_id(456) }.to change { rebalance_caching.get_current_namespace_id }.from(nil).to('456')
       end
     end
 
@@ -131,7 +131,7 @@ RSpec.describe Gitlab::Issues::Rebalancing::State, :clean_gitlab_redis_shared_st
         end
 
         it 'has expiration set' do
-          rebalance_caching.cache_current_project_id(456)
+          rebalance_caching.cache_current_namespace_id(456)
 
           ::Gitlab::Redis::SharedState.with do |redis|
             expect(redis.ttl(rebalance_caching.send(:current_project_key))).to be_between(0, described_class::REDIS_EXPIRY_TIME.ago.to_i)
@@ -177,7 +177,7 @@ RSpec.describe Gitlab::Issues::Rebalancing::State, :clean_gitlab_redis_shared_st
     let_it_be(:group) { create(:group, :private) }
     let_it_be(:project) { create(:project, namespace: group) }
 
-    subject(:rebalance_caching) { described_class.new(group, group.projects) }
+    subject(:rebalance_caching) { described_class.new(group) }
 
     it { expect(rebalance_caching.send(:rebalanced_container_type)).to eq(described_class::NAMESPACE) }
 
@@ -197,7 +197,7 @@ RSpec.describe Gitlab::Issues::Rebalancing::State, :clean_gitlab_redis_shared_st
   context 'rebalancing issues in a project' do
     let_it_be(:project) { create(:project) }
 
-    subject(:rebalance_caching) { described_class.new(project.namespace, Project.where(id: project)) }
+    subject(:rebalance_caching) { described_class.new(project.project_namespace) }
 
     it { expect(rebalance_caching.send(:rebalanced_container_type)).to eq(described_class::PROJECT) }
 
@@ -243,7 +243,7 @@ RSpec.describe Gitlab::Issues::Rebalancing::State, :clean_gitlab_redis_shared_st
     end
 
     index += 1 if rebalance_caching.get_current_index > 0
-    index += 1 if rebalance_caching.get_current_project_id.present?
+    index += 1 if rebalance_caching.get_current_namespace_id.present?
     index += 1 if rebalance_caching.get_cached_issue_ids(0, 100).present?
     index += 1 if rebalance_caching.rebalance_in_progress?
     index += 1 if recently_finished_keys_count > 0

@@ -63,7 +63,7 @@ Gitaly executes Git operations from GitLab Shell and the GitLab web app, and pro
 GitLab web app to get attributes from Git (for example, title, branches, tags, or other metadata),
 and to get blobs (for example, diffs, commits, or files).
 
-You may also be interested in the [production architecture of GitLab.com](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/).
+You may also be interested in the [production architecture of GitLab.com](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/production/architecture/).
 
 ## Adapting existing and introducing new components
 
@@ -490,7 +490,7 @@ You can read more about:
   - [Source](../install/self_compiled/_index.md#using-https)
   - [GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/nginx/)
 - Layer: Core Service (Processor)
-- GitLab.com: [Secrets Management](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#secrets-management)
+- GitLab.com: [Secrets Management](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/production/architecture/#secrets-management)
 
 #### Consul
 
@@ -691,7 +691,7 @@ Mattermost is an open source, private cloud, Slack-alternative from <https://mat
   - [Charts](https://docs.gitlab.com/charts/advanced/external-object-storage/)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/object_storage.md)
 - Layer: Core Service (Data)
-- GitLab.com: [Storage Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#storage-architecture)
+- GitLab.com: [Storage Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/production/architecture/#storage-architecture)
 
 GitLab requires an S3-compatible object storage for storing data such as CI artifacts, LFS objects, uploads, and container registry images. GitLab is compatible with any object storage provider that offers full S3 API compatibility. The choice of provider is your responsibility. Cloud-managed services such as Amazon S3, Google Cloud Storage, and Azure Blob Storage are commonly used, as is any self-hosted S3-compatible solution.
 
@@ -728,7 +728,7 @@ NGINX has an Ingress port for all HTTP requests and routes them to the appropria
   - [Omnibus](../administration/postgresql/replication_and_failover.md#patroni)
 - Layer: Core Service (Data)
 - Process: `patroni`
-- GitLab.com: [Database Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#database-architecture)
+- GitLab.com: [Database Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/production/architecture/#database-architecture)
 
 #### PgBouncer
 
@@ -737,7 +737,7 @@ NGINX has an Ingress port for all HTTP requests and routes them to the appropria
   - [Omnibus](../administration/postgresql/pgbouncer.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment/#postgresql)
 - Layer: Core Service (Data)
-- GitLab.com: [Database Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#database-architecture)
+- GitLab.com: [Database Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/production/architecture/#database-architecture)
 
 Lightweight connection pooler for PostgreSQL.
 
@@ -761,7 +761,7 @@ Prometheus exporter for PgBouncer. Exports metrics at 9127/metrics.
   - [Source](../install/self_compiled/_index.md#7-database)
 - Layer: Core Service (Data)
 - Process: `postgresql`
-- GitLab.com: [PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure/database/)
+- GitLab.com: [PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/database/)
 
 GitLab packages the popular Database to provide storage for Application meta data and user information.
 
@@ -1207,7 +1207,7 @@ they don't always work in RHEL.
 
 ## GitLab.com
 
-The [GitLab.com architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/)
+The [GitLab.com architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/production/architecture/)
 is detailed for your reference, but this architecture is only useful if you have
 millions of users.
 

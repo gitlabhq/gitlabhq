@@ -849,6 +849,197 @@ end
 > [!note]
 > [Additional filters](#perform-migration-for-a-subset-of-the-table) defined with `scope_to` are ignored by `LooseIndexScanBatchingStrategy` and `distinct_each_batch`.
 
+### Partitioned tables
+
+When working with partitioned tables, you can parallelize migrations to improve performance. Multiple migrations can run simultaneously (up to 4 on GitLab.com), allowing you to process different partitions or partition ranges in parallel.
+
+> [!warning]
+> The patterns described in this section have so far been used only on GitLab.com,
+> and only for a specific type of partitioned tables (CI sliding list partitions that
+> are manually managed). They are **not recommended for self-managed instances** because:
+>
+> - The set of queued migrations depends on the data (number and identity of partitions),
+>   so different self-managed instances would see different sets of migrations. This can
+>   be confusing for self-managed administrators, who already deal with frustration around
+>   background migrations.
+> - View-based parallelization requires pre-calculating ID ranges based on production data,
+>   which is impractical to do generically for self-managed.
+>
+> Before using these patterns, consult with the Database team and make sure the trade-offs
+> are acceptable for your use case.
+
+#### Pattern 1: Per-partition parallelization
+
+Queue one BBM per partition so they run in parallel.
+
+**When to use**: Your table has multiple partitions and each can be migrated independently.
+Prefer this pattern only on GitLab.com or on tables with a stable, well-known set of partitions.
+
+**Enqueue migration example**:
+
+```ruby
+class QueueMyMigration < Gitlab::Database::Migration[2.3]
+  MIGRATION = 'MyBatchedMigration'
+  TABLE_NAME = :my_partitioned_table
+
+  def up
+    Gitlab::Database::PostgresPartitionedTable.each_partition(TABLE_NAME) do |partition|
+      next if empty_partition?(partition)
+
+      queue_batched_background_migration(MIGRATION, partition.identifier, :id)
+    end
+  end
+
+  def down
+    Gitlab::Database::PostgresPartitionedTable.each_partition(TABLE_NAME) do |partition|
+      delete_batched_background_migration(MIGRATION, partition.identifier, :id, [])
+    end
+  end
+
+  private
+
+  def empty_partition?(partition)
+    !connection.select_value("SELECT true FROM #{partition.identifier} LIMIT 1")
+  end
+
+  # Workaround to allow a single migration to enqueue multiple background migrations
+  def assign_attributes_safely(migration, max_batch_size, batch_table_name, gitlab_schema, _queued_migration_version)
+    super(migration, max_batch_size, batch_table_name, gitlab_schema, nil)
+  end
+end
+```
+
+**Finalization**: See [MR !223822](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223822) for an example of finalizing per-partition migrations.
+
+**Key considerations**:
+
+- Empty partitions are skipped to avoid unnecessary migrations
+- New partitions created after queueing are not automatically included
+- Each partition's migration runs independently and can be monitored separately
+- The set of queued migrations depends on which partitions exist at queue time, so it
+  varies between instances. This is a poor fit for self-managed releases.
+- If a partition is detached and dropped (for example, daily or monthly partitions that
+  age out) before its migration starts or finishes, the migration fails or never completes.
+  Only use this pattern for partitions that are guaranteed to exist for the entire
+  duration of the migration.
+
+#### Pattern 2: View-Based Parallelization
+
+Create database views to slice a partition into multiple ranges, then queue separate BBMs for each view. This pattern is useful when a single partition is too large or to work around the "one migration per table" framework limitation.
+
+**When to use**:
+
+- A single partition would take too many months/years to migrate
+- You need to work around the framework limitation of "one active migration per table"
+- The migration runs on GitLab.com, where view boundaries can be calculated in advance
+  from production data
+
+> [!warning]
+> This pattern is **not suitable for self-managed instances**. View boundaries must be
+> calculated in advance from the actual data distribution, which is not possible to do
+> generically across self-managed installations.
+
+**View creation example**:
+
+Create views with ID ranges to split the partition. Calculate view boundaries in advance to find the actual ID values at specific row positions. Finding the correct ID ranges is expensive and can timeout if computed during migration.
+
+```ruby
+class CreatePartitionViews < Gitlab::Database::Migration[2.3]
+  # Pre-calculate view boundaries using COUNT and OFFSET queries
+  # For 4 views, divide total row count by 4 and find the ID at each boundary:
+  # SELECT id FROM p_ci_builds WHERE partition_id = 100 ORDER BY id LIMIT 1 OFFSET 0;
+  # SELECT id FROM p_ci_builds WHERE partition_id = 100 ORDER BY id LIMIT 1 OFFSET <total_rows/4>;
+  # SELECT id FROM p_ci_builds WHERE partition_id = 100 ORDER BY id LIMIT 1 OFFSET <total_rows/2>;
+  # etc.
+  VIEW_BOUNDARIES = [1, 1500384395, 2951960143, 4355055910, 12168556334].freeze
+  VIEW_PREFIX = 'gitlab_partitions_dynamic.ci_builds_views_100'
+
+  def up
+    view_ranges.each_with_index do |range, index|
+      create_view(index + 1, range)
+    end
+  end
+
+  def down
+    view_ranges.each_with_index do |_, index|
+      execute("DROP VIEW IF EXISTS #{VIEW_PREFIX}_#{index + 1};")
+    end
+  end
+
+  private
+
+  def view_ranges
+    VIEW_BOUNDARIES.each_cons(2).map { |lower, upper| (lower..upper) }
+  end
+
+  def create_view(view_number, range)
+    execute(<<~SQL.squish)
+      CREATE OR REPLACE VIEW #{VIEW_PREFIX}_#{view_number} AS
+      SELECT id, partition_id
+      FROM p_ci_builds
+      WHERE id >= #{range.min} AND id < #{range.max} AND partition_id = 100
+    SQL
+  end
+end
+```
+
+**Enqueue migration example**:
+
+```ruby
+class SplitMigration < Gitlab::Database::Migration[2.3]
+  MIGRATION = 'MyBatchedMigration'
+  VIEW_PREFIX = 'gitlab_partitions_dynamic.ci_builds_views_100'
+  VIEW_BOUNDARIES = [1, 1500384395, 2951960143, 4355055910, 12168556334].freeze
+  TOTAL_TUPLE_COUNT = 4774979600
+
+  def up
+    VIEW_BOUNDARIES.each_cons(2).map.with_index(1) do |range, view_number|
+      queue_batched_background_migration(
+        MIGRATION,
+        "#{VIEW_PREFIX}_#{view_number}",
+        :id,
+        batch_min_value: range.first,
+        batch_max_value: range.last
+      )
+    end
+
+    # Update tuple count statistics for accurate progress reporting
+    Gitlab::Database::BackgroundMigration::BatchedMigration
+      .where(job_class_name: MIGRATION)
+      .update_all(total_tuple_count: TOTAL_TUPLE_COUNT / (VIEW_BOUNDARIES.size - 1))
+  end
+
+  def down
+    1.upto(VIEW_BOUNDARIES.size - 1) do |view_number|
+      delete_batched_background_migration(MIGRATION, "#{VIEW_PREFIX}_#{view_number}", :id, [])
+    end
+  end
+
+  private
+
+  def assign_attributes_safely(migration, max_batch_size, batch_table_name, gitlab_schema, _queued_migration_version)
+    super(migration, max_batch_size, batch_table_name, gitlab_schema, nil)
+  end
+end
+```
+
+See [MR !221430](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221430) for a complete example of handling an existing migration that's already running.
+
+**Trade-offs**:
+
+- Views bypass autovacuum throttling (could cause table bloat), but WAL throttling still applies
+- Only use when necessary (e.g., migration would take 7+ months)
+- Reduces migration time from months to weeks by utilizing all available workers
+- Saturates worker slots for one table, which may delay other migrations queued for the
+  same database during the same period
+- Requires pre-calculated view boundaries from production data, making it impractical for
+  self-managed deployments
+
+**Real-world example**: [MR !221430](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221430) - MoveCiBuildsMetadata
+
+- Original: 1 migration on partition 100 (4.7B rows, ~7 months)
+- After: 4 migrations on views (parallelized, ~2 months total)
+
 ### Calculate overall time estimation of a batched background migration
 
 It's possible to estimate how long a BBM takes to complete. GitLab already provides an estimation through the `db:gitlabcom-database-testing` pipeline.

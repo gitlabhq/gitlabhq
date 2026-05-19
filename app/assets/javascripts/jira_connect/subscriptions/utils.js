@@ -1,3 +1,4 @@
+/* global AP */
 import AccessorUtilities from '~/lib/utils/accessor';
 import { ALERT_LOCALSTORAGE_KEY, BASE_URL_LOCALSTORAGE_KEY } from './constants';
 

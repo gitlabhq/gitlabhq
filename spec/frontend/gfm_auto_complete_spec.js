@@ -25,7 +25,8 @@ import {
   currentAssignees,
   currentReviewers,
   appliedLabels,
-} from '~/graphql_shared/issuable_client';
+  supportedConversionTypes,
+} from '~/graphql_shared/issuable_client_state';
 import {
   eventlistenersMockDefaultMap,
   crmContactsMock,
@@ -37,11 +38,12 @@ import { InternalEvents } from '~/tracking';
 
 const mockSpriteIcons = '/icons.svg';
 
-jest.mock('~/graphql_shared/issuable_client', () => ({
+jest.mock('~/graphql_shared/issuable_client_state', () => ({
   linkedItems: jest.fn(),
   currentAssignees: jest.fn(),
   currentReviewers: jest.fn().mockReturnValue([]),
   appliedLabels: jest.fn(),
+  supportedConversionTypes: jest.fn().mockReturnValue({}),
 }));
 
 jest.mock('fuzzaldrin-plus', () => ({
@@ -580,6 +582,11 @@ describe('GfmAutoComplete', () => {
       type: 'User',
     };
 
+    const agentUser = {
+      ...defaultUser,
+      composite_identity_enforced: true,
+    };
+
     const defaultExpectedOutput = {
       username: 'my-group',
       avatarTag:
@@ -587,6 +594,7 @@ describe('GfmAutoComplete', () => {
       title: 'My Group (2)',
       search: 'MyGroup my-group',
       icon: '',
+      disabled: false,
     };
 
     const userDefaultOutput = {
@@ -595,6 +603,7 @@ describe('GfmAutoComplete', () => {
       title: 'My User',
       search: 'MyUser my-user',
       icon: '',
+      disabled: false,
     };
 
     it('should return the original object when username is null', () => {
@@ -642,29 +651,41 @@ describe('GfmAutoComplete', () => {
         {
           ...userDefaultOutput,
           compositeIdentityEnforced: true,
+          disabled: true,
         },
       ]);
     });
 
-    describe('when disabled field is present', () => {
-      it.each`
-        disabled | description
-        ${true}  | ${'disabled is true'}
-        ${false} | ${'disabled is false'}
-      `('should include disabled field when $description', ({ disabled }) => {
-        expect(
-          membersBeforeSave([
-            {
-              ...defaultUser,
-              disabled,
-            },
-          ]),
-        ).toEqual([
-          {
-            ...userDefaultOutput,
-            disabled,
-          },
-        ]);
+    describe('disabled attribute', () => {
+      const disabledUser = {
+        ...defaultUser,
+        disabled: true,
+      };
+      const disabledAgent = {
+        ...agentUser,
+        disabled: true,
+      };
+      const agentWithNoMentionTrigger = {
+        ...agentUser,
+        disabled: false,
+        flow_trigger_events: ['ASSIGN'],
+      };
+      const agentWithMentionTrigger = {
+        ...agentUser,
+        disabled: false,
+        flow_trigger_events: ['MENTION'],
+      };
+
+      it.each([
+        [defaultUser, false],
+        [disabledUser, true],
+        [disabledAgent, true],
+        [agentWithNoMentionTrigger, true],
+        [agentWithMentionTrigger, false],
+      ])('with %s returns %s', (rawMember, expected) => {
+        const [member] = membersBeforeSave([rawMember]);
+
+        expect(member.disabled).toBe(expected);
       });
     });
   });
@@ -1665,6 +1686,128 @@ describe('GfmAutoComplete', () => {
           expect(getDropdownItems()).toEqual([mockLabels[0]].map(labelMatcher));
           expect(appliedLabels).toHaveBeenCalled();
         });
+      });
+    });
+  });
+
+  describe('Types', () => {
+    const mockWorkItemFullPath = 'gitlab-org/gitlab-test';
+    const mockWorkItemTypeId = 'gid://gitlab/WorkItems::Type/1';
+    const mockTypes = [
+      {
+        id: 'gid://gitlab/WorkItems::Type/2',
+        name: 'Task',
+        iconName: 'issue-type-task',
+      },
+      {
+        id: 'gid://gitlab/WorkItems::Type/3',
+        name: 'Incident',
+        iconName: 'issue-type-incident',
+      },
+      {
+        id: 'gid://gitlab/WorkItems::Type/4',
+        name: 'Issue',
+        iconName: 'issue-type-issue',
+      },
+    ];
+
+    let autocomplete;
+    let $textarea;
+
+    beforeEach(() => {
+      document.body.dataset.page = 'projects:issues:show';
+      setHTMLFixture(`
+        <section>
+          <div class="js-gfm-wrapper"
+            data-work-item-full-path="${mockWorkItemFullPath}"
+            data-work-item-type-id="${mockWorkItemTypeId}">
+            <textarea></textarea>
+          </div>
+        </section>
+      `);
+      $textarea = $('textarea');
+      supportedConversionTypes.mockReturnValue({
+        [mockWorkItemFullPath]: { [mockWorkItemTypeId]: mockTypes },
+      });
+      autocomplete = new GfmAutoComplete({});
+      autocomplete.setup($textarea, { types: true });
+    });
+
+    afterEach(() => {
+      autocomplete.destroy();
+      resetHTMLFixture();
+    });
+
+    it('should list all types when `/type "` is typed', () => {
+      triggerDropdown($textarea, '/type "');
+
+      expect(supportedConversionTypes).toHaveBeenCalled();
+      expect(getAutocompleteDropdownItems('at-view-quotedCompletions')).toEqual([
+        'Task',
+        'Incident',
+        'Issue',
+      ]);
+    });
+
+    it('should call fuzzaldrin filter when `/type "ta` is typed', () => {
+      triggerDropdown($textarea, '/type "ta');
+
+      expect(supportedConversionTypes).toHaveBeenCalled();
+      expect(fuzzaldrinPlus.filter).toHaveBeenCalledWith(expect.any(Array), 'ta', {
+        key: 'name',
+      });
+    });
+
+    describe('templateFunction', () => {
+      const { templateFunction } = GfmAutoComplete.quotedCompletions['/type'];
+      const mockType = {
+        id: 'gid://gitlab/WorkItems::Type/2',
+        name: 'Task',
+        iconName: 'issue-type-task',
+      };
+
+      it('should return html with type icon and name', () => {
+        expect(templateFunction({ ...mockType })).toMatchInlineSnapshot(`
+          <li
+            data-id="gid://gitlab/WorkItems::Type/2"
+          >
+            <svg
+              class="gl-fill-current gl-mr-2 s12"
+            >
+              <use
+                xlink:href="/icons.svg#issue-type-task"
+              />
+            </svg>
+            <span>
+              Task
+            </span>
+          </li>
+        `);
+      });
+
+      it.each`
+        xssPayload                                           | escapedPayload
+        ${'<script>alert(1)</script>'}                       | ${'&lt;script&gt;alert(1)&lt;/script&gt;'}
+        ${'%3Cscript%3E alert(1) %3C%2Fscript%3E'}           | ${'&lt;script&gt; alert(1) &lt;/script&gt;'}
+        ${'%253Cscript%253E alert(1) %253C%252Fscript%253E'} | ${'&lt;script&gt; alert(1) &lt;/script&gt;'}
+      `('escapes name correctly for "$xssPayload"', ({ xssPayload, escapedPayload }) => {
+        // eslint-disable-next-line jest/no-interpolation-in-snapshots
+        expect(templateFunction({ ...mockType, name: xssPayload })).toMatchInlineSnapshot(`
+          <li
+            data-id="gid://gitlab/WorkItems::Type/2"
+          >
+            <svg
+              class="gl-fill-current gl-mr-2 s12"
+            >
+              <use
+                xlink:href="/icons.svg#issue-type-task"
+              />
+            </svg>
+            <span>
+              ${escapedPayload}
+            </span>
+          </li>
+        `);
       });
     });
   });

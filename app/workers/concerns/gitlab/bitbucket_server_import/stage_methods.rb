@@ -39,15 +39,12 @@ module Gitlab
         import(project)
 
         info(project_id, message: 'stage finished')
-      rescue StandardError => e
-        Gitlab::Import::ImportFailureService.track(
-          project_id: project_id,
-          exception: e,
-          error_source: self.class.name,
-          fail_import: abort_on_failure
-        )
+      rescue BitbucketServer::Connection::ConnectionError => e
+        raise if e.retryable?
 
-        raise(e)
+        log_non_retryable_error(project_id, e)
+      rescue StandardError => e
+        track_and_raise(project_id, e)
       end
 
       def find_project(id)
@@ -63,6 +60,35 @@ module Gitlab
       end
 
       private
+
+      def track_and_raise(project_id, exception)
+        Gitlab::Import::ImportFailureService.track(
+          project_id: project_id,
+          exception: exception,
+          error_source: self.class.name,
+          fail_import: abort_on_failure
+        )
+
+        raise(exception)
+      end
+
+      def log_non_retryable_error(project_id, exception)
+        Logger.warn(
+          log_attributes(
+            project_id,
+            message: 'Non-retryable Bitbucket Server error, failing import',
+            http_status_code: exception.http_status_code,
+            error: exception.message
+          )
+        )
+
+        Gitlab::Import::ImportFailureService.track(
+          project_id: project_id,
+          exception: exception,
+          error_source: self.class.name,
+          fail_import: true
+        )
+      end
 
       def info(project_id, extra = {})
         Logger.info(log_attributes(project_id, extra))

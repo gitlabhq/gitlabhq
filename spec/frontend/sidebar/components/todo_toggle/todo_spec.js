@@ -32,9 +32,9 @@ describe('SidebarTodo', () => {
   });
 
   it.each`
-    isTodo   | iconClass        | label                 | icon
-    ${false} | ${''}            | ${'Add a to-do item'} | ${'todo-add'}
-    ${true}  | ${'todo-undone'} | ${'Mark as done'}     | ${'todo-done'}
+    isTodo   | iconClass        | label                      | icon
+    ${false} | ${''}            | ${'Add a to-do item'}      | ${'todo-add'}
+    ${true}  | ${'todo-undone'} | ${'Mark to-do items done'} | ${'todo-done'}
   `(
     'renders proper button when `isTodo` prop is `$isTodo`',
     ({ isTodo, iconClass, label, icon }) => {
@@ -67,7 +67,7 @@ describe('SidebarTodo', () => {
     it('renders button label element when `collapsed` prop is `false`', () => {
       createComponent({ collapsed: false });
 
-      expect(wrapper.find('span.issuable-todo-inner').text()).toBe('Mark as done');
+      expect(wrapper.find('span.issuable-todo-inner').text()).toBe('Mark to-do items done');
     });
 
     it('renders button icon when `collapsed` prop is `true`', () => {

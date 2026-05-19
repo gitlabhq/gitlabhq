@@ -150,6 +150,57 @@ RSpec.describe Gitlab::Graphql::Authz::BoundaryExtractor, feature_category: :per
       end
     end
 
+    context 'with boundary_proc' do
+      let(:directive) { create_directive(boundary_type: 'project') }
+      let(:object) { issue }
+
+      subject(:boundary) do
+        described_class.new(object:, arguments:, context:, directive:, boundary_proc:).extract
+      end
+
+      context 'when proc returns a project' do
+        let(:boundary_proc) { ->(_obj) { project } }
+
+        it_behaves_like 'extracts project boundary'
+      end
+
+      context 'when proc returns nil' do
+        let(:boundary_proc) { ->(_obj) { nil } }
+
+        it_behaves_like 'returns nil'
+      end
+
+      context 'when an :id argument is present alongside a boundary_proc' do
+        # The :id argument (issue -> project) would yield a ProjectBoundary via the id fallback.
+        # The proc returns group instead, so a GroupBoundary confirms the proc was used.
+        let(:boundary_proc) { ->(_obj) { group } }
+        let(:arguments) { { id: issue.to_global_id } }
+
+        it_behaves_like 'extracts group boundary'
+      end
+
+      context 'when object is wrapped in a GraphQL type' do
+        let(:wrapped_object) do
+          instance_double(Types::BaseObject, object: issue).tap do |obj|
+            allow(obj).to receive(:is_a?).with(Types::BaseObject).and_return(true)
+          end
+        end
+
+        let(:boundary_proc) { ->(obj) { obj.project } }
+
+        subject(:boundary) do
+          described_class.new(
+            object: wrapped_object, arguments: arguments, context: context,
+            directive: directive, boundary_proc: boundary_proc
+          ).extract
+        end
+
+        it 'unwraps the object before passing it to the proc' do
+          expect(boundary).to be_a(Authz::Boundary::ProjectBoundary)
+        end
+      end
+    end
+
     context 'when directive has neither boundary nor boundary_argument' do
       let(:directive) { create_directive }
 
@@ -223,6 +274,22 @@ RSpec.describe Gitlab::Graphql::Authz::BoundaryExtractor, feature_category: :per
         let(:arguments) { { resource_id: label.to_global_id } }
 
         it_behaves_like 'extracts group boundary'
+      end
+
+      context 'when object responds to both :project and :group' do
+        context 'with a project label' do
+          let_it_be(:project_label) { create(:label, project: project) }
+          let(:arguments) { { resource_id: project_label.to_global_id } }
+
+          it_behaves_like 'extracts project boundary'
+        end
+
+        context 'with a group label' do
+          let_it_be(:group_label) { create(:group_label, group: group) }
+          let(:arguments) { { resource_id: group_label.to_global_id } }
+
+          it_behaves_like 'extracts group boundary'
+        end
       end
 
       context 'when object type has no project or group method' do

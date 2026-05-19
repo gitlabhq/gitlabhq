@@ -6,11 +6,11 @@ RSpec.describe Resolvers::ReleasesResolver, feature_category: :release_orchestra
   include GraphqlHelpers
 
   let_it_be(:today) { Time.now }
-  let_it_be(:yesterday) { today - 1.day }
-  let_it_be(:tomorrow) { today + 1.day }
+  let_it_be(:yesterday, freeze: false) { today - 1.day }
+  let_it_be(:tomorrow, freeze: false) { today + 1.day }
 
-  let_it_be(:project) { create(:project, :private) }
-  let_it_be(:release_v1) { create(:release, project: project, tag: 'v1.0.0', released_at: yesterday, created_at: tomorrow) }
+  let_it_be(:project, freeze: false) { create(:project, :private) }
+  let_it_be(:release_v1, freeze: false) { create(:release, project: project, tag: 'v1.0.0', released_at: yesterday, created_at: tomorrow) }
   let_it_be(:release_v2) { create(:release, project: project, tag: 'v2.0.0', released_at: today,     created_at: yesterday) }
   let_it_be(:release_v3) { create(:release, project: project, tag: 'v3.0.0', released_at: tomorrow,  created_at: today) }
   let_it_be(:developer) { create(:user, developer_of: project) }

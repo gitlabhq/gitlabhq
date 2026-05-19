@@ -31,7 +31,7 @@ Prerequisites:
 To access the visibility and access control options:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 
 ## Define which roles can create projects
@@ -48,7 +48,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. For **Default minimum role required to create projects**, select the desired role:
    - No one.
@@ -78,7 +78,7 @@ Prerequisites:
 To restrict project deletion to only administrators:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to **Allowed to delete projects**, and select **Administrators**.
 1. Select **Save changes**.
@@ -111,7 +111,7 @@ Prerequisites:
 To configure deletion protection for groups and projects:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to **Retention period** and set the retention period to a value between `1` and `90` days.
 1. Select **Save changes**.
@@ -133,7 +133,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Select the desired default project visibility:
    - **Private** - Grant project access explicitly to each user. If this
@@ -151,7 +151,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. For **Default snippet visibility**, select your desired visibility level:
    - **Private**.
@@ -170,7 +170,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. For **Default group visibility**, select your desired visibility level:
    - **Private** - Only members can view the group and its projects.
@@ -206,7 +206,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. For **Restricted visibility levels**, select the desired visibility levels to restrict.
    - If you restrict the **Public** level:
@@ -243,7 +243,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. For **Enabled Git access protocols**, select your desired protocols:
    - Both SSH and HTTP(S).
@@ -280,7 +280,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Enter a root URL for **Custom Git clone URL for HTTP(S)**.
 1. Select **Save changes**.
@@ -292,7 +292,7 @@ These options specify the [permitted types and lengths](../../security/ssh_keys_
 To specify a restriction for each key type:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Go to **RSA SSH keys**.
 1. For each key type, you can allow or prevent their use entirely, or allow only lengths of:
@@ -317,7 +317,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Repository mirroring**.
 1. Select **Allow project maintainers to configure repository mirroring**.
 1. Select **Save changes**.
@@ -340,7 +340,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. In **Globally-allowed IP ranges**, provide a list of IP address ranges. This list:
    - Has no limit on the number of IP address ranges.
@@ -369,7 +369,7 @@ Prerequisites:
 To prevent invitations:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Select the **Prevent group member invitations** checkbox.
 1. Select **Save changes**.
@@ -399,7 +399,7 @@ Prerequisites:
 To turn on the display of user data on the [GitLab Credits dashboard](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard):
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. For the **GitLab Credits dashboard**, select the **Display user data** checkbox.
 1. Select **Save changes**.

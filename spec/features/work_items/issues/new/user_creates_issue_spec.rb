@@ -144,7 +144,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
 
             expect(page).to have_button('Attach a file or image')
             expect(page).not_to have_button('Cancel')
-            expect(page).not_to have_selector('.uploading-progress-container', visible: true)
+            expect(page).not_to have_selector('.uploading-progress-container', visible: :visible)
           end
         end
       end

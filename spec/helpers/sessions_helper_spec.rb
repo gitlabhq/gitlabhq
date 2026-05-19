@@ -27,7 +27,8 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
           obfuscated_email: obfuscated_email(user.email),
           verify_path: helper.session_path(:user),
           resend_path: users_resend_verification_code_path,
-          skip_path: nil
+          skip_path: nil,
+          show_resend_after: nil
         })
       end
     end
@@ -45,8 +46,18 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
           obfuscated_email: obfuscated_email(user.email),
           verify_path: helper.session_path(:user),
           resend_path: users_resend_verification_code_path,
-          skip_path: users_skip_verification_for_now_path
+          skip_path: users_skip_verification_for_now_path,
+          show_resend_after: nil
         })
+      end
+    end
+
+    context 'when user has email_otp_last_sent_at set', :freeze_time do
+      let(:sent_at) { 10.seconds.ago }
+      let(:user) { build_stubbed(:user, user_detail: build_stubbed(:user_detail, email_otp_last_sent_at: sent_at)) }
+
+      it 'includes the resend cooldown timestamp from show_email_otp_resend_after' do
+        expect(helper.verification_data(user)[:show_resend_after]).to eq(helper.show_email_otp_resend_after(user))
       end
     end
   end

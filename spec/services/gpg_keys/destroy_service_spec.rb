@@ -9,7 +9,7 @@ RSpec.describe GpgKeys::DestroyService, feature_category: :source_code_managemen
   subject { described_class.new(user) }
 
   it 'destroys the GPG key' do
-    expect { subject.execute(gpg_key) }.to change(GpgKey, :count).by(-1)
+    expect { subject.execute(gpg_key) }.to change { GpgKey.count }.by(-1)
   end
 
   it 'nullifies the related signatures in batches' do

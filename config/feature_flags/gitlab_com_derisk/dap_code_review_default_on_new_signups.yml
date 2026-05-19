@@ -1,0 +1,10 @@
+---
+name: dap_code_review_default_on_new_signups
+description: Enable Code Review foundational flows for new customers by default.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592822
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234643
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/593558
+milestone: '19.0'
+group: group::ai coding
+type: gitlab_com_derisk
+default_enabled: false

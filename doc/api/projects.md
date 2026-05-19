@@ -30,7 +30,7 @@ The Projects API contains endpoints that:
 ## Prerequisites
 
 - Any [default role](../user/permissions.md#roles) on a project to read the project's properties.
-- The Owner or Maintainer role on a project to edit the project's properties.
+- The Maintainer or Owner role on a project to edit the project's properties.
 
 ## Project visibility level
 
@@ -112,6 +112,13 @@ Use the alternative attributes instead.
 | `restrict_user_defined_variables` | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154510) in GitLab 17.7. Use `ci_pipeline_variables_minimum_override_role` instead. |
 
 ## Retrieve a project
+
+{{< history >}}
+
+- `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
+- Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+
+{{< /history >}}
 
 Retrieves the specified project. This endpoint can be accessed without authentication if
 the project is publicly accessible.
@@ -281,6 +288,7 @@ following response attributes:
 | `enforce_auth_checks_on_uploads` | boolean | Whether authentication checks are enforced on uploads. |
 | `suggestion_commit_message` | string | Custom commit message for suggestions. |
 | `merge_commit_template` | string | Template for merge commit messages. |
+| `mr_default_title_template` | string | Template for merge request titles. |
 | `squash_commit_template` | string | Template for squash commit messages. |
 | `issue_branch_template` | string | Template for branch names created from issues. |
 | `warn_about_potentially_unwanted_characters` | boolean | Whether to warn about potentially unwanted characters. |
@@ -301,12 +309,14 @@ following response attributes:
 | `merge_pipelines_enabled` | boolean | Indicates if merge pipelines are enabled. |
 | `merge_trains_enabled` | boolean | Indicates if merge trains are enabled. |
 | `merge_trains_skip_train_allowed` | boolean | Indicates if skipping the merge train is allowed. |
+| `max_pipelines_per_merge_train` | integer | Maximum number of parallel pipelines per merge train. |
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
 | `prevent_merge_without_jira_issue` | boolean | Indicates if merges require an associated Jira issue. |
 | `duo_remote_flows_enabled` | boolean | Indicates if GitLab Duo remote flows are enabled. |
 | `duo_foundational_flows_enabled` | boolean | Indicates if GitLab Duo foundational flows are enabled. |
 | `duo_sast_fp_detection_enabled` | boolean | Indicates if GitLab Duo SAST false positive detection is enabled. |
+| `duo_sast_vr_workflow_enabled` | boolean | Indicates if GitLab Duo SAST vulnerability resolution workflow is enabled. |
 | `web_based_commit_signing_enabled` | boolean | Indicates if web-based commit signing is enabled. |
 | `spp_repository_pipeline_access` | boolean | Repository pipeline access for security policies. Only visible if the security orchestration policies feature is available. |
 | `permissions` | object | User permissions for the project. |
@@ -498,6 +508,7 @@ Example response:
   "suggestion_commit_message": null,
   "enforce_auth_checks_on_uploads": true,
   "merge_commit_template": null,
+  "mr_default_title_template": null,
   "squash_commit_template": null,
   "issue_branch_template": "gitlab/%{id}-%{title}",
   "marked_for_deletion_at": "2020-04-03", // Deprecated in favor of marked_for_deletion_on. Planned for removal in a future version of the REST API.
@@ -542,6 +553,8 @@ List projects and project attributes.
 {{< history >}}
 
 - `web_based_commit_signing_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194650) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `use_web_based_commit_signing_enabled`. Disabled by default.
+- `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
+- Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
 
 {{< /history >}}
 
@@ -715,6 +728,7 @@ following response attributes:
 | `enforce_auth_checks_on_uploads` | boolean | Whether authentication checks are enforced on uploads. |
 | `suggestion_commit_message` | string | Custom commit message for suggestions. |
 | `merge_commit_template` | string | Template for merge commit messages. |
+| `mr_default_title_template` | string | Template for merge request titles. |
 | `squash_commit_template` | string | Template for squash commit messages. |
 | `issue_branch_template` | string | Template for branch names created from issues. |
 | `warn_about_potentially_unwanted_characters` | boolean | Whether to warn about potentially unwanted characters. |
@@ -732,12 +746,14 @@ following response attributes:
 | `merge_pipelines_enabled` | boolean | Indicates if merge pipelines are enabled. |
 | `merge_trains_enabled` | boolean | Indicates if merge trains are enabled. |
 | `merge_trains_skip_train_allowed` | boolean | Indicates if skipping the merge train is allowed. |
+| `max_pipelines_per_merge_train` | integer | Maximum number of parallel pipelines per merge train. |
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
 | `prevent_merge_without_jira_issue` | boolean | Indicates if merges require an associated Jira issue. |
 | `duo_remote_flows_enabled` | boolean | Indicates if GitLab Duo remote flows are enabled. |
 | `duo_foundational_flows_enabled` | boolean | Indicates if GitLab Duo foundational flows are enabled. |
 | `duo_sast_fp_detection_enabled` | boolean | Indicates if GitLab Duo SAST false positive detection is enabled. |
+| `duo_sast_vr_workflow_enabled` | boolean | Indicates if GitLab Duo SAST vulnerability resolution workflow is enabled. |
 | `spp_repository_pipeline_access` | boolean | Repository pipeline access for security policies. Only visible if the security orchestration policies feature is available. |
 | `permissions` | object | User permissions for the project. |
 | `permissions.project_access` | object | Project access permissions for the user. |
@@ -750,7 +766,7 @@ Example request:
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Accept: application/json" \
-     --url "https://gitlab.example.com/api/v4/projects
+     --url "https://gitlab.example.com/api/v4/projects"
 ```
 
 Example response:
@@ -880,6 +896,7 @@ Example response:
     "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "mr_default_title_template": null,
     "squash_commit_template": null,
     "issue_branch_template": "gitlab/%{id}-%{title}",
     "auto_devops_enabled": false,
@@ -913,6 +930,13 @@ Example response:
 > `updated_at` is updated whenever the project record is changed in the database.
 
 ### List all personal projects for a user
+
+{{< history >}}
+
+- `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
+- Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+
+{{< /history >}}
 
 Lists all personal projects for a specified user. The following restrictions apply:
 
@@ -1082,6 +1106,7 @@ following response attributes:
 | `enforce_auth_checks_on_uploads` | boolean | Whether authentication checks are enforced on uploads. |
 | `suggestion_commit_message` | string | Custom commit message for suggestions. |
 | `merge_commit_template` | string | Template for merge commit messages. |
+| `mr_default_title_template` | string | Template for merge request titles. |
 | `squash_commit_template` | string | Template for squash commit messages. |
 | `issue_branch_template` | string | Template for branch names created from issues. |
 | `warn_about_potentially_unwanted_characters` | boolean | Whether to warn about potentially unwanted characters. |
@@ -1099,12 +1124,14 @@ following response attributes:
 | `merge_pipelines_enabled` | boolean | Indicates if merge pipelines are enabled. |
 | `merge_trains_enabled` | boolean | Indicates if merge trains are enabled. |
 | `merge_trains_skip_train_allowed` | boolean | Indicates if skipping the merge train is allowed. |
+| `max_pipelines_per_merge_train` | integer | Maximum number of parallel pipelines per merge train. |
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
 | `prevent_merge_without_jira_issue` | boolean | Indicates if merges require an associated Jira issue. |
 | `duo_remote_flows_enabled` | boolean | Indicates if GitLab Duo remote flows are enabled. |
 | `duo_foundational_flows_enabled` | boolean | Indicates if GitLab Duo foundational flows are enabled. |
 | `duo_sast_fp_detection_enabled` | boolean | Indicates if GitLab Duo SAST false positive detection is enabled. |
+| `duo_sast_vr_workflow_enabled` | boolean | Indicates if GitLab Duo SAST vulnerability resolution workflow is enabled. |
 | `spp_repository_pipeline_access` | boolean | Repository pipeline access for security policies. Only visible if the security orchestration policies feature is available. |
 | `permissions` | object | User permissions for the project. |
 | `permissions.project_access` | object | Project access permissions for the user. |
@@ -1211,6 +1238,7 @@ Example response:
     "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "mr_default_title_template": null,
     "squash_commit_template": null,
     "secret_push_protection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
@@ -1354,6 +1382,7 @@ Example response:
     "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "mr_default_title_template": null,
     "squash_commit_template": null,
     "secret_push_protection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
@@ -1386,6 +1415,13 @@ Example response:
 ```
 
 ### List all projects contributions for a user
+
+{{< history >}}
+
+- `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
+- Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+
+{{< /history >}}
 
 Lists all contributions to visible projects for a specified user. Returns only contributions in
 the past year. For more information about what counts as a contribution, see
@@ -1530,6 +1566,7 @@ following response attributes:
 | `enforce_auth_checks_on_uploads` | boolean | Whether authentication checks are enforced on uploads. |
 | `suggestion_commit_message` | string | Custom commit message for suggestions. |
 | `merge_commit_template` | string | Template for merge commit messages. |
+| `mr_default_title_template` | string | Template for merge request titles. |
 | `squash_commit_template` | string | Template for squash commit messages. |
 | `issue_branch_template` | string | Template for branch names created from issues. |
 | `warn_about_potentially_unwanted_characters` | boolean | Whether to warn about potentially unwanted characters. |
@@ -1547,12 +1584,14 @@ following response attributes:
 | `merge_pipelines_enabled` | boolean | Indicates if merge pipelines are enabled. |
 | `merge_trains_enabled` | boolean | Indicates if merge trains are enabled. |
 | `merge_trains_skip_train_allowed` | boolean | Indicates if skipping the merge train is allowed. |
+| `max_pipelines_per_merge_train` | integer | Maximum number of parallel pipelines per merge train. |
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
 | `prevent_merge_without_jira_issue` | boolean | Indicates if merges require an associated Jira issue. |
 | `duo_remote_flows_enabled` | boolean | Indicates if GitLab Duo remote flows are enabled. |
 | `duo_foundational_flows_enabled` | boolean | Indicates if GitLab Duo foundational flows are enabled. |
 | `duo_sast_fp_detection_enabled` | boolean | Indicates if GitLab Duo SAST false positive detection is enabled. |
+| `duo_sast_vr_workflow_enabled` | boolean | Indicates if GitLab Duo SAST vulnerability resolution workflow is enabled. |
 | `spp_repository_pipeline_access` | boolean | Repository pipeline access for security policies. Only visible if the security orchestration policies feature is available. |
 | `permissions` | object | User permissions for the project. |
 | `permissions.project_access` | object | Project access permissions for the user. |
@@ -1643,6 +1682,7 @@ Example response:
     "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "mr_default_title_template": null,
     "squash_commit_template": null,
     "secret_push_protection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
@@ -1768,6 +1808,7 @@ Example response:
     "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "mr_default_title_template": null,
     "squash_commit_template": null,
     "secret_push_protection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
@@ -2136,6 +2177,7 @@ Supported general project attributes:
 | `merge_requests_enabled`                           | boolean | No                             | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `merge_trains_enabled`                             | boolean | No                             | Enable or disable merge trains. |
 | `merge_trains_skip_train_allowed`                  | boolean | No                             | Allows merge train merge requests to be merged without waiting for pipelines to finish. |
+| `max_pipelines_per_merge_train`                    | integer | No                             | Maximum number of parallel pipelines per merge train. |
 | `mirror_trigger_builds`                            | boolean | No                             | Pull mirroring triggers builds. Premium and Ultimate only. |
 | `mirror`                                           | boolean | No                             | Enables pull mirroring in a project. Premium and Ultimate only. |
 | `namespace_id`                                     | integer | No                             | Namespace for the new project. Specify a group ID or subgroup ID. If not provided, defaults to the current user's personal namespace. |
@@ -2186,6 +2228,8 @@ see [Project feature visibility level](#project-feature-visibility-level).
 - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 - `packages_enabled` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10.
 - `package_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 18.5.
+- `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
+- Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
 
 {{< /history >}}
 
@@ -2237,6 +2281,7 @@ Supported general project attributes:
 | `merge_commit_template`                            | string  | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create merge commit message in merge requests. |
 | `merge_method`                                     | string  | No       | Set the project's [merge method](../user/project/merge_requests/methods/_index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_requests_enabled`                           | boolean | No       | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
+| `mr_default_title_template`                        | string  | No       | [Template](../user/project/merge_requests/title_templates.md) used to set default merge request title. |
 | `mirror_trigger_builds`                            | boolean | No       | Pull mirroring triggers builds. Premium and Ultimate only. |
 | `mirror`                                           | boolean | No       | Enables pull mirroring in a project. Premium and Ultimate only. |
 | `namespace_id`                                     | integer | No       | Namespace for the new project (defaults to the current user's namespace). |
@@ -2280,6 +2325,8 @@ see [Project feature visibility level](#project-feature-visibility-level).
 - `packages_enabled` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10.
 - `package_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 18.5.
 - `protect_merge_request_pipelines` and `ci_display_pipeline_variables` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/584488) in GitLab 18.10.
+- `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
+- Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
 
 {{< /history >}}
 
@@ -2327,6 +2374,8 @@ Supported general project attributes:
 | `default_branch`                                   | string            | No       | The [default branch](../user/project/repository/branches/default.md) name. |
 | `description`                                      | string            | No       | Short project description. |
 | `duo_remote_flows_enabled`                         | boolean           | No       | Determine whether or not [flows](../user/duo_agent_platform/flows/_index.md) can run in your project. |
+| `duo_sast_fp_detection_enabled` | boolean | No | Enable or disable SAST false positive detection. See [turn on SAST false positive detection](../user/application_security/vulnerabilities/false_positive_detection.md#turn-on-for-a-project). |
+| `duo_sast_vr_workflow_enabled` | boolean | No | Enable or disable SAST vulnerability resolution workflow. See [turn on SAST vulnerability resolution workflow](../user/application_security/vulnerabilities/agentic_vulnerability_resolution.md#turn-on-for-a-project). |
 | `emails_disabled`                                  | boolean           | No       | _(Deprecated)_ Disable email notifications. Use `emails_enabled` instead |
 | `emails_enabled`                                   | boolean           | No       | Enable email notifications. |
 | `enforce_auth_checks_on_uploads`                   | boolean           | No       | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
@@ -2344,8 +2393,10 @@ Supported general project attributes:
 | `merge_method`                                     | string            | No       | Set the project's [merge method](../user/project/merge_requests/methods/_index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_pipelines_enabled`                          | boolean           | No       | Enable or disable merged results pipelines. |
 | `merge_requests_enabled`                           | boolean           | No       | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
+| `mr_default_title_template`                        | string            | No       | [Template](../user/project/merge_requests/title_templates.md) used to set default merge request title. |
 | `merge_trains_enabled`                             | boolean           | No       | Enable or disable merge trains. |
 | `merge_trains_skip_train_allowed`                  | boolean           | No       | Allows merge train merge requests to be merged without waiting for pipelines to finish. |
+| `max_pipelines_per_merge_train`                    | integer           | No       | Maximum number of parallel pipelines per merge train. |
 | `mirror_overwrites_diverged_branches`              | boolean           | No       | Pull mirror overwrites diverged branches. Premium and Ultimate only. |
 | `mirror_trigger_builds`                            | boolean           | No       | Pull mirroring triggers builds. Premium and Ultimate only. |
 | `mirror_user_id`                                   | integer           | No       | User responsible for all the activity surrounding a pull mirror event. _(administrators only)_ Premium and Ultimate only. |
@@ -2457,6 +2508,13 @@ Example responses:
 ```
 
 ### Archive a project
+
+{{< history >}}
+
+- `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
+- Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+
+{{< /history >}}
 
 Archives the specified project.
 
@@ -2590,6 +2648,7 @@ Example response:
   "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
+  "mr_default_title_template": null,
   "secret_push_protection_enabled": false,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
@@ -2606,6 +2665,13 @@ Example response:
 ```
 
 ### Unarchive a project
+
+{{< history >}}
+
+- `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
+- Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+
+{{< /history >}}
 
 Unarchives the specified project.
 
@@ -2739,6 +2805,7 @@ Example response:
   "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
+  "mr_default_title_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "secret_push_protection_enabled": false,
   "_links": {
@@ -2806,6 +2873,13 @@ Supported attributes:
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ### Transfer a project to a new namespace
+
+{{< history >}}
+
+- `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
+- Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+
+{{< /history >}}
 
 Transfers a project to a new namespace.
 
@@ -2936,6 +3010,7 @@ Example response:
   "squash_option": "default_on",
   "suggestion_commit_message": null,
   "merge_commit_template": null,
+  "mr_default_title_template": null,
   "auto_devops_enabled": true,
   "auto_devops_deploy_strategy": "continuous",
   "autoclose_referenced_issues": true,

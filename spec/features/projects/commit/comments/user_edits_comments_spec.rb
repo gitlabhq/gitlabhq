@@ -18,13 +18,13 @@ RSpec.describe "User edits a comment on a commit", :js, feature_category: :sourc
       stub_feature_flags(rapid_diffs_on_commit_show: rapid_diffs_enabled)
       sign_in(user)
       project.add_developer(user)
-
-      visit(project_commit_path(project, sample_commit.id))
-
-      add_note("XML attached")
     end
 
     it "edits comment" do
+      visit(project_commit_path(project, sample_commit.id))
+
+      add_note("XML attached")
+
       new_comment_text = "+1 Awesome!"
 
       page.within(

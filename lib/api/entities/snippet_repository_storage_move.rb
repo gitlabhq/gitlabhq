@@ -3,7 +3,7 @@
 module API
   module Entities
     class SnippetRepositoryStorageMove < BasicRepositoryStorageMove
-      expose :snippet, using: Entities::BasicSnippet
+      expose :snippet, using: ::API::Entities::BasicSnippet, documentation: { type: '::API::Entities::BasicSnippet' }
     end
   end
 end

@@ -380,4 +380,82 @@ RSpec.describe UserPolicy, feature_category: :permissions do
       end
     end
   end
+
+  describe "managing a service account's personal access tokens" do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+
+    shared_examples 'follows admin_service_accounts on the provisioning scope' do
+      context 'when the actor owns the provisioning scope' do
+        before do
+          scope_owner.add_owner(current_user)
+        end
+
+        it { is_expected.to be_allowed(:create_personal_access_token) }
+        it { is_expected.to be_allowed(:rotate_personal_access_token) }
+
+        context 'when the actor is blocked' do
+          let(:current_user) { create(:user, :blocked) }
+
+          it { is_expected.not_to be_allowed(:create_personal_access_token) }
+          it { is_expected.not_to be_allowed(:rotate_personal_access_token) }
+        end
+      end
+
+      context 'when the actor is not a member of the provisioning scope' do
+        it { is_expected.not_to be_allowed(:create_personal_access_token) }
+        it { is_expected.not_to be_allowed(:rotate_personal_access_token) }
+      end
+    end
+
+    context 'for a group-provisioned service account' do
+      let_it_be(:user) { create(:user, :service_account, provisioned_by_group: group) }
+      let(:scope_owner) { group }
+
+      it_behaves_like 'follows admin_service_accounts on the provisioning scope'
+
+      context 'when the actor is a group maintainer (no admin_service_accounts at group level)' do
+        before_all do
+          group.add_maintainer(regular_user)
+        end
+
+        it { is_expected.not_to be_allowed(:create_personal_access_token) }
+        it { is_expected.not_to be_allowed(:rotate_personal_access_token) }
+      end
+    end
+
+    context 'for a project-provisioned service account' do
+      let_it_be(:user) { create(:user, :service_account, provisioned_by_project: project) }
+      let(:scope_owner) { project }
+
+      it_behaves_like 'follows admin_service_accounts on the provisioning scope'
+
+      context 'when the actor is a project maintainer (has admin_service_accounts at project level)' do
+        before_all do
+          project.add_maintainer(regular_user)
+        end
+
+        it { is_expected.to be_allowed(:create_personal_access_token) }
+        it { is_expected.to be_allowed(:rotate_personal_access_token) }
+      end
+    end
+
+    context 'for a service account with no provisioning scope' do
+      let_it_be(:user) { create(:user, :service_account) }
+
+      it { is_expected.not_to be_allowed(:create_personal_access_token) }
+      it { is_expected.not_to be_allowed(:rotate_personal_access_token) }
+    end
+
+    context 'when the target user is not a service account' do
+      let_it_be(:user) { create(:user) }
+
+      before_all do
+        group.add_owner(regular_user)
+      end
+
+      it { is_expected.not_to be_allowed(:create_personal_access_token) }
+      it { is_expected.not_to be_allowed(:rotate_personal_access_token) }
+    end
+  end
 end

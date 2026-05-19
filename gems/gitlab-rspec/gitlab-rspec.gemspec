@@ -18,9 +18,9 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*.rb"]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "activerecord", ">= 6.1", "< 8"
-  spec.add_dependency "activesupport", ">= 6.1", "< 8"
-  spec.add_dependency "gitlab_quality-test_tooling", ">= 3.8", "< 4"
+  spec.add_dependency "activerecord", ">= 7", "< 9"
+  spec.add_dependency "activesupport", ">= 7", "< 9"
+  spec.add_dependency "gitlab_quality-test_tooling", ">= 3.13", "< 4"
   spec.add_dependency "rspec", "~> 3.0"
   spec.add_dependency "test-prof", "~> 1.5"
 

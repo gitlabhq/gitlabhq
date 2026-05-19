@@ -3,5 +3,7 @@ name: update_admin_member_role
 description: Grants the ability to update admin member roles
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - update_admin_member_role

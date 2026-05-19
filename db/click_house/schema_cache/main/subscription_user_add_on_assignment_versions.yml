@@ -1,0 +1,46 @@
+---
+name: subscription_user_add_on_assignment_versions
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(version, deleted) ORDER BY (namespace_path, user_id,
+  item_id, event, id) SETTINGS index_granularity = 8192
+primary_key: namespace_path, user_id, item_id, event, id
+sorting_key: namespace_path, user_id, item_id, event, id
+settings:
+  index_granularity: '8192'
+columns:
+- name: id
+  type: UInt64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: organization_id
+  type: UInt64
+- name: item_id
+  type: UInt64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: user_id
+  type: UInt64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: purchase_id
+  type: UInt64
+- name: namespace_path
+  type: String
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: add_on_name
+  type: String
+- name: event
+  type: String
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: created_at
+  type: DateTime64(6, 'UTC')
+- name: version
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'

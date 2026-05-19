@@ -1,0 +1,3 @@
+---
+name: _read_protected_branch_rule
+description: Allows reading branch rules for individual protected branches. This does not allow reading branch rules targetting "all branches" or "all protected branches".

@@ -70,13 +70,13 @@ namespace :gitlab do
                 end
 
       queries.each do |defn|
-        $stdout.puts defn.file
+        Gitlab::TaskHelpers.say defn.file
         summary, errs = defn.validate(GitlabSchema)
 
         if summary == :client_query
-          $stdout.puts " - client query"
+          Gitlab::TaskHelpers.say " - client query"
         elsif errs.present?
-          $stdout.puts Rainbow(" - invalid query").red
+          Gitlab::TaskHelpers.say Rainbow(" - invalid query").red
         else
           complexity = defn.complexity(GitlabSchema)
           color = case complexity
@@ -90,10 +90,10 @@ namespace :gitlab do
                     :red
                   end
 
-          $stdout.puts Rainbow(" - complexity: #{complexity}").color(color)
+          Gitlab::TaskHelpers.say Rainbow(" - complexity: #{complexity}").color(color)
         end
 
-        $stdout.puts ""
+        Gitlab::TaskHelpers.say ""
       end
     end
 

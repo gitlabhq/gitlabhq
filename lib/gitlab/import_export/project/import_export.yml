@@ -45,7 +45,6 @@ tree:
       - :zoom_meetings
       - :sentry_issue
       - :award_emoji
-      - :work_item_type
     - snippets:
       - :award_emoji
       - notes:
@@ -790,8 +789,6 @@ included_attributes:
     - :source_commit
     - :close_after_error_tracking_resolve
     - :close_auto_resolve_prometheus_alert
-  work_item_type:
-    - :base_type
   work_item_description:
     - :description
     - :last_edited_at
@@ -1152,15 +1149,6 @@ excluded_attributes:
     - :roll_over
     - :description
     - :sequence
-  work_item_type:
-    - :id
-    - :cached_markdown_version
-    - :name
-    - :description
-    - :description_html
-    - :icon_name
-    - :namespace_id
-    - :updated_at
   current_status:
     - :id
     - :namespace_id
@@ -1207,6 +1195,7 @@ methods:
     - :list_type
   issues:
     - :state
+    - :exported_work_item_type
   note_diff_file:
     - :diff_export
 
@@ -1423,6 +1412,12 @@ ee:
     approval_rules:
       - :created_at
       - :updated_at
+    merge_access_levels:
+      - :member_role_id
+    push_access_levels:
+      - :member_role_id
+    unprotect_access_levels:
+      - :member_role_id
   methods:
     approval_project_rules_protected_branches:
       - :branch_name

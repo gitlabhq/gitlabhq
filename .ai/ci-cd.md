@@ -19,7 +19,8 @@ The CI/CD configuration spans ~58 YAML files and ~12,500 lines across `.gitlab-c
   rails.gitlab-ci.yml             # RSpec jobs (FOSS + EE), predictive pipelines, coverage, artifact collectors
   rails/
     shared.gitlab-ci.yml          # RSpec base job definitions, parallel configs, DB service mixins
-    rspec-predictive.gitlab-ci.yml.erb  # ERB template for dynamically generated predictive RSpec jobs
+    rspec-predictive.gitlab-ci.yml.erb           # ERB template for dynamically generated predictive RSpec jobs
+    rspec-predictive-system-full.gitlab-ci.yml.erb  # ERB template for full system test child pipeline (tier-2 fallback)
   frontend.gitlab-ci.yml          # Jest, Storybook, Webpack, ESLint, frontend fixtures
   static-analysis.gitlab-ci.yml   # RuboCop, ESLint, Semgrep, Haml-lint
   database.gitlab-ci.yml          # DB setup, schema validation, migration testing
@@ -189,6 +190,12 @@ Child pipelines are triggered via `trigger:` jobs. Key patterns:
 ### RSpec predictive pipelines
 
 `rspec-predictive:pipeline-generate` generates YAML from an ERB template based on detected test files, then `rspec:predictive:trigger` triggers a child pipeline from the generated artifact.
+
+On tier-2, `rspec-predictive:pipeline-generate` also calls `scripts/generate_predictive_system_pipeline.rb`
+first, which merges GitLab Duo system test predictions into the filter files and generates the
+`rspec-predictive-system-full` child pipeline YAML (full suite on bail-out) or a no-op.
+`rspec:predictive:system-full:trigger` then triggers the child pipeline from the generated artifact.
+Set `GLCI_DUO_SYSTEM_TESTS_DISABLED = "true"` to disable Duo selection; the full suite runs as fallback.
 
 ### Gem pipelines
 

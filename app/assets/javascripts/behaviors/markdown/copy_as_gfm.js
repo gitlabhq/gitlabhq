@@ -128,11 +128,21 @@ export class CopyAsGFM {
     let lineSelector = '.line';
 
     if (target) {
-      const lineClass = ['left-side', 'right-side'].filter((name) =>
-        target.classList.contains(name),
-      )[0];
-      if (lineClass) {
-        lineSelector = `.line_content.${lineClass} ${lineSelector}`;
+      if (target.closest('diff-file')) {
+        const lineContent = target.closest('[data-position]');
+        const linePosition = ['old', 'new'].filter(
+          (name) => lineContent?.dataset.position === name,
+        )[0];
+        if (linePosition) {
+          lineSelector = `[data-position='${linePosition}'] ${lineSelector}`;
+        }
+      } else {
+        const lineClass = ['left-side', 'right-side'].filter((name) =>
+          target.classList.contains(name),
+        )[0];
+        if (lineClass) {
+          lineSelector = `.line_content.${lineClass} ${lineSelector}`;
+        }
       }
     }
 

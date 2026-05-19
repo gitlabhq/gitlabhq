@@ -23,7 +23,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
     let_it_be(:second_organization) { create(:organization) }
     let_it_be(:group) { create(:group) }
 
-    let_it_be(:tokens) do
+    let_it_be(:tokens, freeze: false) do
       {
         active: create(:personal_access_token, user: user, name: 'my_pat_1', organization: organization),
         active_other: create(:personal_access_token, user: other_user, name: 'my_pat_2', organization: organization),

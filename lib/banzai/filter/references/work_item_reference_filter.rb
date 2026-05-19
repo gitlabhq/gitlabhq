@@ -13,7 +13,7 @@ module Banzai
 
         def parent_records(parent, ids)
           parent.work_items.iid_in(ids.to_a)
-                .includes(:project, :namespace, :work_item_type)
+                .includes(:project, :namespace)
         end
 
         def parent_type

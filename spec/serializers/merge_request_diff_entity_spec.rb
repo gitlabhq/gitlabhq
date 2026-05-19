@@ -125,16 +125,6 @@ RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow d
           "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_head=true"
         )
       end
-
-      context 'when path extra options are set' do
-        let(:path_extra_options) { { rapid_diffs: true } }
-
-        it 'returns diff path with extra options' do
-          expect(subject[:head_version_path]).to eq(
-            "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_head=true&rapid_diffs=true"
-          )
-        end
-      end
     end
 
     context 'merge request cannot be merged' do
@@ -151,16 +141,6 @@ RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow d
       expect(subject[:base_version_path]).to eq(
         "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_id=#{diff_id}"
       )
-    end
-
-    context 'when path extra options are set' do
-      let(:path_extra_options) { { rapid_diffs: true } }
-
-      it 'returns diff path with extra options' do
-        expect(subject[:base_version_path]).to eq(
-          "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_id=#{diff_id}&rapid_diffs=true"
-        )
-      end
     end
   end
 
@@ -180,16 +160,6 @@ RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow d
         )
       end
     end
-
-    context 'when path extra options are set' do
-      let(:path_extra_options) { { rapid_diffs: true } }
-
-      it 'returns diff path with extra options' do
-        expect(subject[:version_path]).to eq(
-          "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_id=#{diff_id}&rapid_diffs=true"
-        )
-      end
-    end
   end
 
   describe '#compare_path' do
@@ -197,16 +167,6 @@ RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow d
       expect(subject[:compare_path]).to eq(
         "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_id=#{diff_id}&start_sha=#{start_sha}"
       )
-    end
-
-    context 'when path extra options are set' do
-      let(:path_extra_options) { { rapid_diffs: true } }
-
-      it 'returns diff path with extra options' do
-        expect(subject[:compare_path]).to eq(
-          "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_id=#{diff_id}&rapid_diffs=true&start_sha=#{start_sha}"
-        )
-      end
     end
   end
 end

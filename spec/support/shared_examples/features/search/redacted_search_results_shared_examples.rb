@@ -31,9 +31,11 @@ RSpec.shared_examples 'a redacted search results' do
     Kaminari.paginate_array(objects).page(1).per(20)
   end
 
-  before do
+  before_all do
     accessible_project.add_maintainer(user)
+  end
 
+  before do
     allow(search_service)
       .to receive_message_chain(:search_results, :objects)
             .and_return(unredacted_results)
@@ -60,6 +62,30 @@ RSpec.shared_examples 'a redacted search results' do
             filtered: array_including(
               [
                 { class_name: 'Issue', id: unreadable.id, ability: :read_issue }
+              ]
+            )
+          )
+        )
+
+      expect(result).to contain_exactly(readable)
+    end
+  end
+
+  context 'for work_items' do
+    let(:readable) { create(:work_item, project: accessible_project) }
+    let(:unreadable) { create(:work_item, project: inaccessible_project) }
+    let(:unredacted_results) { ar_relation(WorkItem, readable, unreadable) }
+    let(:scope) { 'work_items' }
+
+    it 'redacts the inaccessible work item' do
+      expect(search_service.send(:logger))
+        .to receive(:error)
+        .with(
+          hash_including(
+            message: "redacted_search_results",
+            filtered: array_including(
+              [
+                { class_name: 'WorkItem', id: unreadable.id, ability: :read_work_item }
               ]
             )
           )

@@ -1,0 +1,9 @@
+---
+name: rate_limiter_use_labkit_cohort_2
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/28809
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234565
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/598560
+milestone: '19.0'
+type: wip
+group: group::networking and incident management
+default_enabled: false

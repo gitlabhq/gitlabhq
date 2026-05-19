@@ -64,6 +64,8 @@ mise install
 
 # Activate mise so that the installed tools are on PATH for the steps below
 : "${PROMPT_COMMAND:=}"
+# Allow clean mise re-activation if this script is run via "mise exec --"
+unset __MISE_DIFF __MISE_SESSION __MISE_ORIG_PATH
 eval "$(mise activate bash)"
 
 # ---- Ruby / Bundler ------------------------------------------------------

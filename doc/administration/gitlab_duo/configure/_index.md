@@ -29,16 +29,6 @@ You can configure GitLab Duo to use:
   - You cannot use a license key.
   - You cannot use GitLab Duo with an offline license, with the exception of [GitLab Duo Self-Hosted](../../gitlab_duo_self_hosted/_index.md).
 
-## Turn on composite identity (removed)
-
----
-
-<!--- start_remove The following content will be removed on remove_date: '2026-04-11' -->
-
-This feature was [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/588629) in GitLab 18.9.
-
-<!--- end_remove -->
-
 ## Allow outbound connections from the GitLab instance to GitLab Duo
 
 - GitLab application nodes must connect to the GitLab Duo Workflow at `https://duo-workflow-svc.runway.gitlab.net` with HTTP/2. The application and service communicate with gRPC.

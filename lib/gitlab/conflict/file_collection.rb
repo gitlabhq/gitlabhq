@@ -75,12 +75,12 @@ module Gitlab
           "#   #{conflict.our_path}"
         end
 
-        <<EOM.chomp
+        <<TEXT.chomp
 Merge branch '#{merge_request.target_branch}' into '#{merge_request.source_branch}'
 
 # Conflicts:
 #{conflict_filenames.join("\n")}
-EOM
+TEXT
       end
 
       private

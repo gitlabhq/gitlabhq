@@ -1,0 +1,34 @@
+# Accessibility Journey Configuration: Authoring MR
+# Stage: Create
+# Groups: Code Review
+
+stage: create
+journey_name: authoring_mr
+feature_category: code_review_workflow
+description: 'Golden user journey for authoring merge requests in GitLab'
+
+feature_test_hints:
+  - merge_requests
+
+e2e_test_files:
+  # MR creation
+  - path: qa/qa/specs/features/browser_ui/3_create/merge_request/create_merge_request_spec.rb
+    description: Creates an MR from a project and exercises the standard MR creation flow
+    focus_area: MR creation
+    has_ui: true
+
+  - path: qa/specs/features/ee/browser_ui/3_create/merge_request/default_merge_request_template_spec.rb
+    description: Creates default merge request template in Project Settings. Uses default MR templates when creating an MR (important for real-world MR authoring).
+    focus_area: MR creation
+    has_ui: true
+
+  # Branch setup
+  - path: qa/qa/specs/features/browser_ui/3_create/repository/add_new_branch_rule_spec.rb
+    description: Configures branch rules that affect how branches can be used in MRs
+    focus_area: Branch setup
+    has_ui: true
+
+  - path: qa/qa/specs/features/browser_ui/3_create/repository/branch_with_unusual_name_spec.rb
+    description: Ensures branches with unusual names work end-to-end
+    focus_area: Branch setup
+    has_ui: true

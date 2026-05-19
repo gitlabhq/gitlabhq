@@ -6,7 +6,7 @@ RSpec.describe Import::BulkImports::RemoveExportUploadsService, feature_category
   describe '#execute' do
     let_it_be(:project) { create(:project) }
     let_it_be(:export) { create(:bulk_import_export, project: project) }
-    let_it_be(:export_upload) { create(:bulk_import_export_upload, export: export) }
+    let_it_be(:export_upload, freeze: false) { create(:bulk_import_export_upload, export: export) }
 
     subject(:service) { described_class.new(project) }
 

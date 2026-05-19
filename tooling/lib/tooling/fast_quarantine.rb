@@ -16,7 +16,7 @@ module Tooling
           quarantined_entity_identifier.delete_prefix('./').strip
         end
       rescue => e # rubocop:disable Style/RescueStandardError
-        $stdout.puts e
+        puts e
         []
       end
     end

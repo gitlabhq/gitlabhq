@@ -14,7 +14,7 @@ RSpec.describe AdminEmailWorker, feature_category: :source_code_management do
       worker.perform
     end
 
-    context 'repository_checks enabled' do
+    context 'when repository_checks are enabled' do
       before do
         stub_application_setting(repository_checks_enabled: true)
       end

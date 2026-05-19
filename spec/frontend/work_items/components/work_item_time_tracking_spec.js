@@ -1,7 +1,47 @@
 import { GlProgressBar, GlSprintf } from '@gitlab/ui';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemTimeTracking from '~/work_items/components/work_item_time_tracking.vue';
+import workItemTimeTrackingQuery from '~/work_items/graphql/work_item_time_tracking.query.graphql';
+
+Vue.use(VueApollo);
+
+const buildTimeTrackingQueryResponse = ({
+  timeEstimate = 0,
+  totalTimeSpent = 0,
+  useFeatures = false,
+} = {}) => {
+  const widget = {
+    __typename: 'WorkItemWidgetTimeTracking',
+    type: 'TIME_TRACKING',
+    timeEstimate,
+    humanReadableAttributes: {
+      __typename: 'WorkItemTimeTrackingHumanReadableAttributes',
+      timeEstimate: '',
+    },
+    timelogs: { __typename: 'WorkItemTimelogConnection', nodes: [] },
+    totalTimeSpent,
+  };
+
+  return {
+    data: {
+      namespace: {
+        __typename: 'Namespace',
+        id: 'gid://gitlab/Group/1',
+        workItem: {
+          __typename: 'WorkItem',
+          id: 'gid://gitlab/WorkItem/13',
+          widgets: useFeatures ? null : [widget],
+          features: useFeatures ? { __typename: 'WorkItemFeatures', timeTracking: widget } : null,
+        },
+      },
+    },
+  };
+};
 
 describe('WorkItemTimeTracking component', () => {
   let wrapper;
@@ -17,27 +57,30 @@ describe('WorkItemTimeTracking component', () => {
   const findTimeTrackingBody = () => wrapper.findByTestId('time-tracking-body');
   const getProgressBarTooltip = () => getBinding(findProgressBar().element, 'gl-tooltip');
 
-  const createComponent = ({
+  const createComponent = async ({
     canUpdate = true,
     timeEstimate = 0,
     totalTimeSpent = 0,
     provide = {},
   } = {}) => {
+    const queryHandler = jest
+      .fn()
+      .mockResolvedValue(buildTimeTrackingQueryResponse({ timeEstimate, totalTimeSpent }));
+
     wrapper = shallowMountExtended(WorkItemTimeTracking, {
+      apolloProvider: createMockApollo([[workItemTimeTrackingQuery, queryHandler]]),
       directives: {
         GlModal: createMockDirective('gl-modal'),
         GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: {
         canUpdate,
-        timeEstimate,
-        totalTimeSpent,
+        fullPath: 'gitlab-org/gitlab',
         workItemId: 'gid://gitlab/WorkItem/13',
         workItemIid: '13',
         workItemType: 'Task',
       },
       provide: {
-        fullPath: 'gitlab-org/gitlab',
         timeTrackingLimitToHours: false,
         ...provide,
       },
@@ -45,17 +88,19 @@ describe('WorkItemTimeTracking component', () => {
         GlSprintf,
       },
     });
+
+    await waitForPromises();
   };
 
-  it('renders heading text', () => {
-    createComponent();
+  it('renders heading text', async () => {
+    await createComponent();
 
     expect(wrapper.find('h3').text()).toBe('Time tracking');
   });
 
   describe('"Add time entry" button', () => {
-    beforeEach(() => {
-      createComponent();
+    beforeEach(async () => {
+      await createComponent();
     });
 
     it('renders as "plus" icon', () => {
@@ -75,8 +120,8 @@ describe('WorkItemTimeTracking component', () => {
   });
 
   describe('with no time spent and no time estimate', () => {
-    beforeEach(() => {
-      createComponent({ timeEstimate: 0, totalTimeSpent: 0 });
+    beforeEach(async () => {
+      await createComponent({ timeEstimate: 0, totalTimeSpent: 0 });
     });
 
     it('shows help text', () => {
@@ -102,8 +147,8 @@ describe('WorkItemTimeTracking component', () => {
   });
 
   describe('with time spent and no time estimate', () => {
-    beforeEach(() => {
-      createComponent({ timeEstimate: 0, totalTimeSpent: 10800 });
+    beforeEach(async () => {
+      await createComponent({ timeEstimate: 0, totalTimeSpent: 10800 });
     });
 
     it('shows time spent', () => {
@@ -130,8 +175,8 @@ describe('WorkItemTimeTracking component', () => {
   });
 
   describe('with no time spent and time estimate', () => {
-    beforeEach(() => {
-      createComponent({ timeEstimate: 10800, totalTimeSpent: 0 });
+    beforeEach(async () => {
+      await createComponent({ timeEstimate: 10800, totalTimeSpent: 0 });
     });
 
     it('shows 0h time spent and time estimate', () => {
@@ -157,8 +202,8 @@ describe('WorkItemTimeTracking component', () => {
 
   describe('with time spent and time estimate', () => {
     describe('when time spent is less than the time estimate', () => {
-      beforeEach(() => {
-        createComponent({ timeEstimate: 18000, totalTimeSpent: 10800 });
+      beforeEach(async () => {
+        await createComponent({ timeEstimate: 18000, totalTimeSpent: 10800 });
       });
 
       it('shows time spent and time estimate', () => {
@@ -175,8 +220,8 @@ describe('WorkItemTimeTracking component', () => {
     });
 
     describe('when time spent is greater than the time estimate', () => {
-      beforeEach(() => {
-        createComponent({ timeEstimate: 10800, totalTimeSpent: 18000 });
+      beforeEach(async () => {
+        await createComponent({ timeEstimate: 10800, totalTimeSpent: 18000 });
       });
 
       it('shows time spent and time estimate', () => {
@@ -194,8 +239,8 @@ describe('WorkItemTimeTracking component', () => {
   });
 
   describe('when global time tracking hours only preference is turned on', () => {
-    beforeEach(() => {
-      createComponent({
+    beforeEach(async () => {
+      await createComponent({
         timeEstimate: 0,
         totalTimeSpent: 60 * 60 * 24 * 3 + 60 * 60 * 3,
         provide: { timeTrackingLimitToHours: true },
@@ -209,15 +254,15 @@ describe('WorkItemTimeTracking component', () => {
   });
 
   describe('when user has no permissions', () => {
-    it('does not show "Add time entry" button', () => {
-      createComponent({ canUpdate: false });
+    it('does not show "Add time entry" button', async () => {
+      await createComponent({ canUpdate: false });
 
       expect(findAddTimeEntryButton().exists()).toBe(false);
     });
 
     describe('with no time spent and no time estimate', () => {
-      beforeEach(() => {
-        createComponent({ canUpdate: false, timeEstimate: 0, totalTimeSpent: 0 });
+      beforeEach(async () => {
+        await createComponent({ canUpdate: false, timeEstimate: 0, totalTimeSpent: 0 });
       });
 
       it('shows help text', () => {
@@ -234,8 +279,8 @@ describe('WorkItemTimeTracking component', () => {
     });
 
     describe('with time spent and no time estimate', () => {
-      beforeEach(() => {
-        createComponent({ canUpdate: false, timeEstimate: 0, totalTimeSpent: 10800 });
+      beforeEach(async () => {
+        await createComponent({ canUpdate: false, timeEstimate: 0, totalTimeSpent: 10800 });
       });
 
       it('shows only time spent', () => {
@@ -252,8 +297,8 @@ describe('WorkItemTimeTracking component', () => {
     });
 
     describe('with no time spent and time estimate', () => {
-      beforeEach(() => {
-        createComponent({ canUpdate: false, timeEstimate: 10800, totalTimeSpent: 0 });
+      beforeEach(async () => {
+        await createComponent({ canUpdate: false, timeEstimate: 10800, totalTimeSpent: 0 });
       });
 
       it('shows 0h time spent and time estimate', () => {

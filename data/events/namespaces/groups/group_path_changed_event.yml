@@ -1,0 +1,5 @@
+---
+event: Namespaces::Groups::GroupPathChangedEvent
+description: Published when a group's URL path is changed. Not fired for group updates
+  that leave the path unchanged. Deferred via run_after_commit_or_now.
+feature_category: groups_and_projects

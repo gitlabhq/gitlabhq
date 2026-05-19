@@ -1,14 +1,21 @@
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 
 import IntegrationSectionGooglePlay from '~/integrations/edit/components/sections/google_play.vue';
 import UploadDropzoneField from '~/integrations/edit/components/upload_dropzone_field.vue';
-import { createStore } from '~/integrations/edit/store';
+import { useIntegrationForm } from '~/integrations/edit/store';
+
+Vue.use(PiniaVuePlugin);
 
 describe('IntegrationSectionGooglePlay', () => {
   let wrapper;
 
   const createComponent = (fileName = '') => {
-    const store = createStore({
+    const pinia = createTestingPinia({ stubActions: false });
+    const store = useIntegrationForm();
+    Object.assign(store, {
       customState: {
         fields: [
           {
@@ -20,7 +27,7 @@ describe('IntegrationSectionGooglePlay', () => {
     });
 
     wrapper = shallowMount(IntegrationSectionGooglePlay, {
-      store,
+      pinia,
     });
   };
 

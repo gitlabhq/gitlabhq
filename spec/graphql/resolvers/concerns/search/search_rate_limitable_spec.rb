@@ -113,7 +113,7 @@ RSpec.describe Search::SearchRateLimitable, feature_category: :global_search do
         let(:abusive_resolver) { abusive_resolver_class.new(context) }
 
         before do
-          allow_next_instance_of(Gitlab::Search::Params) do |search_params|
+          allow_next_instance_of(Search::Params) do |search_params|
             allow(search_params).to receive(:abusive?).and_return(true)
           end
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled_request?).and_return(false)

@@ -40,7 +40,7 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_
     end
 
     it 'creates project entity' do
-      expect { subject.run }.to change(BulkImports::Entity, :count).by(1)
+      expect { subject.run }.to change { BulkImports::Entity.count }.by(1)
 
       project_entity = BulkImports::Entity.last
 
@@ -54,8 +54,8 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_
     end
 
     it 'does not create duplicate entities on rerun' do
-      expect { subject.run }.to change(BulkImports::Entity, :count).by(1)
-      expect { subject.run }.not_to change(BulkImports::Entity, :count)
+      expect { subject.run }.to change { BulkImports::Entity.count }.by(1)
+      expect { subject.run }.not_to change { BulkImports::Entity.count }
     end
   end
 

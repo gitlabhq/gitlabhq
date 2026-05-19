@@ -66,6 +66,8 @@ module Mcp
         private
 
         def process_result(result)
+          return resource_not_found_error if resource_not_found?(result)
+
           processed_result = super
 
           return processed_result if processed_result[:isError]
@@ -79,6 +81,17 @@ module Mcp
 
         def extract_labels(structured_content)
           structured_content&.dig('labels', 'nodes')
+        end
+
+        def resource_not_found?(result)
+          result['errors'].blank? && result.dig('data', operation_name).nil?
+        end
+
+        def resource_not_found_error
+          resource_type = params[:is_project] ? 'Project' : 'Group'
+          message = "#{resource_type} not found: the provided #{resource_type.downcase} path " \
+            "\"#{params[:full_path]}\" does not exist or you do not have access to it."
+          ::Mcp::Tools::Response.error(message)
         end
       end
     end

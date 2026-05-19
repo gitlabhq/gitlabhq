@@ -176,7 +176,7 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_man
             sample1 = duration_for { described_class.match("deploy abc t" + ("o" * 100000) + "X") }
             sample2 = duration_for { described_class.match("deploy abc t" + ("o" * 400000) + "X") }
 
-            # Expectation uses 2x as linear function to allow for runtime variations and avoid flakyness
+            # Expectation uses 2x as linear function to allow for runtime variations and avoid flakiness
             expect(sample2 / sample1).to be < 8
           end
         end.not_to raise_error

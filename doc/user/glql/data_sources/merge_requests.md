@@ -18,6 +18,15 @@ title: Merge requests
 
 {{< /history >}}
 
+## Allowed scopes
+
+| Scope     | Description                                           |
+| --------- | ----------------------------------------------------- |
+| `project` | Query merge requests in a specific project.           |
+| `group`   | Query merge requests across all projects in a group, including subgroups. |
+
+For more information, see [scopes](_index.md#scopes).
+
 ## Query fields
 
 | Field                                                    | Name (and alias)                             | Operators                  |
@@ -29,7 +38,6 @@ title: Merge requests
 | [Created at](#mr-created-at)                             | `created`, `createdAt`, `opened`, `openedAt` | `=`, `>`, `<`, `>=`, `<=`  |
 | [Draft](#mr-draft)                                       | `draft`                                      | `=`, `!=`                  |
 | [Environment](#mr-environment)                           | `environment`                                | `=`                        |
-| [Group](#mr-group)                                       | `group`                                      | `=`                        |
 | [ID](#mr-identifier)                                     | `id`                                         | `=`, `in`                  |
 | [Include subgroups](#mr-include-subgroups)               | `includeSubgroups`                            | `=`, `!=`                  |
 | [Labels](#mr-labels)                                     | `label`, `labels`                            | `=`, `!=`                  |
@@ -37,7 +45,6 @@ title: Merge requests
 | [Merged by user](#mr-merged-by-user)                     | `merger`, `mergedBy`                         | `=`                        |
 | [Milestone](#mr-milestone)                               | `milestone`                                  | `=`, `!=`                  |
 | [My reaction emoji](#mr-my-reaction-emoji)               | `myReaction`, `myReactionEmoji`              | `=`, `!=`                  |
-| [Project](#mr-project)                                   | `project`                                    | `=`                        |
 | [Reviewers](#mr-reviewers)                               | `reviewer`, `reviewers`, `reviewedBy`        | `=`, `!=`                  |
 | [Source branch](#mr-source-branch)                       | `sourceBranch`                               | `=`, `in`, `!=`            |
 | [State](#mr-state)                                       | `state`                                      | `=`                        |
@@ -163,20 +170,6 @@ title: Merge requests
 
 **Allowed value types**: `String`
 
-### Group {#mr-group}
-
-**Description**: Query merge requests in all projects in a given group.
-
-**Allowed value types**: `String`
-
-**Notes**:
-
-- Only one group can be queried at a time.
-- The `group` cannot be used together with the `project` field.
-- Using the `group` field queries all merge requests in that group, all its subgroups, and child projects.
-- By default, merge requests are searched in all descendant projects across all subgroups.
-  To query only the direct child projects of the group, set the [`includeSubgroups` field](#mr-include-subgroups) to `false`.
-
 ### ID {#mr-identifier}
 
 **Description**: Query merge requests by their IDs.
@@ -196,7 +189,7 @@ title: Merge requests
 
 **Notes**:
 
-- This field can only be used with the `group` field.
+- This field can only be used with a `group` scope.
 - The value of this field defaults to `false`.
 
 ### Labels {#mr-labels}
@@ -273,18 +266,6 @@ title: Merge requests
 **Description**: Query merge requests by the current user's [emoji reaction](../../emoji_reactions.md) on it.
 
 **Allowed value types**: `String`
-
-### Project {#mr-project}
-
-**Description**: Query merge requests in a particular project.
-
-**Allowed value types**: `String`
-
-**Notes**:
-
-- Only one project can be queried at a time.
-- The `project` field cannot be used together with the `group` field.
-- If omitted when using inside an embedded view, `project` is assumed to be the current project.
 
 ### Reviewers {#mr-reviewers}
 
@@ -379,19 +360,21 @@ title: Merge requests
 
 | Field            | Name or alias                         | Description |
 | ---------------- | ------------------------------------- | ----------- |
+| Approved         | `approved`                            | Display `Yes` or `No` indicating whether the merge request has been approved |
 | Approved by user | `approver`, `approvers`, `approvedBy` | Display users who approved the merge request |
 | Assignees        | `assignee`, `assignees`               | Display users assigned to the merge request |
 | Author           | `author`                              | Display the author of the merge request |
 | Closed at        | `closed`, `closedAt`                  | Display time since the merge request was closed |
 | Created at       | `created`, `createdAt`                | Display time since the merge request was created |
-| Deployed at      | `deployed`, `deployedAt`              | Display time since the merge request was deployed |
 | Description      | `description`                         | Display the description of the merge request |
 | Draft            | `draft`                               | Display `Yes` or `No` indicating whether the merge request is in draft state |
 | ID               | `id`                                  | Display the ID of the merge request |
 | Labels           | `label`, `labels`                     | Display labels associated with the merge request |
 | Last comment     | `lastComment`                         | Display the last comment made on the merge request |
 | Merged at        | `merged`, `mergedAt`                  | Display time since the merge request was merged |
+| Merged by user   | `merger`, `mergedBy`                  | Display the user who merged the merge request |
 | Milestone        | `milestone`                           | Display the milestone associated with the merge request |
+| Project          | `project`                             | Display the project the merge request belongs to |
 | Reviewers        | `reviewer`, `reviewers`               | Display users assigned to review the merge request |
 | Source branch    | `sourceBranch`                        | Display the source branch of the merge request |
 | Source project   | `sourceProject`                       | Display the source project of the merge request |
@@ -399,7 +382,9 @@ title: Merge requests
 | Subscribed       | `subscribed`                          | Display `Yes` or `No` indicating whether the current user is subscribed |
 | Target branch    | `targetBranch`                        | Display the target branch of the merge request |
 | Target project   | `targetProject`                       | Display the target project of the merge request |
+| Time estimate    | `timeEstimate`                        | Display the estimated time for the merge request |
 | Title            | `title`                               | Display the title of the merge request |
+| Total time spent | `totalTimeSpent`                      | Display the total time spent on the merge request |
 | Updated at       | `updated`, `updatedAt`                | Display time since the merge request was last updated |
 
 ## Sort fields
@@ -414,7 +399,7 @@ title: Merge requests
 | Title         | `title`                | Sort by title                                   |
 | Updated at    | `updated`, `updatedAt` | Sort by last updated date                       |
 
-**Examples**:
+## Examples
 
 - List all merge requests in the `gitlab-org` group created by me sorted by the merge date (latest first):
 

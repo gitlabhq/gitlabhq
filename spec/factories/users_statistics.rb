@@ -6,6 +6,7 @@ FactoryBot.define do
     with_highest_role_guest { 5 }
     with_highest_role_planner { 7 }
     with_highest_role_reporter { 9 }
+    with_highest_role_security_manager { 3 }
     with_highest_role_developer { 21 }
     with_highest_role_maintainer { 6 }
     with_highest_role_owner { 5 }

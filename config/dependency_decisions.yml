@@ -454,3 +454,10 @@
     :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/work_items/3327
     :versions: []
     :when: 2026-03-17 00:00:00.000000000 Z
+- - :permit
+  - BlueOak-1.0.0
+  - :who: Jacques Erasmus <jerasmus@gitlab.com>
+    :why: Blue Oak Model License 1.0.0 is on the Blue Oak Council list and is not
+      Lead-rated; pre-approved per handbook 'Using open source software'.
+    :versions: []
+    :when: 2026-04-23 09:27:48.285066000 Z

@@ -6,6 +6,8 @@ module Gitlab
       class ImportRepositoryWorker # rubocop:disable Scalability/IdempotentWorker
         include StageMethods
 
+        MAX_IID_CACHE_KEY = 'bitbucket-server-importer/max-iid/%{project_id}/%{usage}'
+
         private
 
         # project - An instance of Project.
@@ -27,12 +29,21 @@ module Gitlab
 
           unless iid_allocated?(project, :merge_requests)
             max_pr_iid = fetch_max_pull_request_iid(project)
-            max_iids[:merge_requests] = max_pr_iid if Gitlab::Import::IidPreallocator.valid_iid_value?(max_pr_iid)
+            if Gitlab::Import::IidPreallocator.valid_iid_value?(max_pr_iid)
+              max_iids[:merge_requests] = max_pr_iid
+              cache_max_iid(project, :merge_requests, max_pr_iid)
+            end
           end
 
           return if max_iids.empty?
 
           Gitlab::Import::IidPreallocator.new(project, max_iids).execute
+        end
+
+        def cache_max_iid(project, usage, max_iid)
+          cache_key = format(MAX_IID_CACHE_KEY, project_id: project.id, usage: usage)
+          Gitlab::Cache::Import::Caching.write(cache_key, max_iid,
+            timeout: Gitlab::Cache::Import::Caching::LONGER_TIMEOUT)
         end
 
         def iid_allocated?(project, usage)

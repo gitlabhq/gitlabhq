@@ -1,6 +1,6 @@
 ---
 stage: Platforms
-group: Scalability
+group: Observability
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Rails request SLIs (service level indicators)
 ---
@@ -117,7 +117,7 @@ a case-by-case basis. Take the following into account:
    the incoming slow requests alongside the regular traffic.
 
 When lowering the urgency for an existing endpoint, involve a
-[Scalability team member](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/scalability/)
+[Observability](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/production-engineering/observability/) team member
 in the review. We can use request rates and durations available in the
 logs to come up with a recommendation. You can pick a threshold
 using the same process as for
@@ -160,7 +160,7 @@ information in the logs to check:
    the target duration we want to set.
 
 As decreasing a threshold too much could result in alerts for the
-Apdex degradation, also involve a Scalability team member in
+Apdex degradation, also involve a [Observability](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/production-engineering/observability/) team member in
 the merge request.
 
 ## How to adjust the urgency

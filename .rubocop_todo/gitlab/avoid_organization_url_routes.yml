@@ -1,0 +1,4 @@
+---
+Gitlab/AvoidOrganizationUrlRoutes:
+  Exclude:
+    - 'app/models/organizations/organization.rb'

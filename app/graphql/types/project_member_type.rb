@@ -10,6 +10,7 @@ module Types
     implements MemberInterface
 
     authorize :read_project
+    authorize_granular_token permissions: :read_member, boundary: :project, boundary_type: :project
 
     field :project, Types::ProjectType, null: true,
       description: 'Project that User is a member of.'

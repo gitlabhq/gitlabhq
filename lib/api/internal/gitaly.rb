@@ -39,6 +39,7 @@ module API
             requires :storage, type: String, desc: 'The storage shard name'
             optional :upstream_only, type: Boolean, default: false, desc: 'Return only the upstream repository'
           end
+          desc 'List Gitaly object pool members'
           route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
           get '/object_pool_members', feature_category: :gitaly, urgency: :low do
             pools = PoolRepository.by_disk_path_and_shard_name(params[:disk_paths], params[:storage])

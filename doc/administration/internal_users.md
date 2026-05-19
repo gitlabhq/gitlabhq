@@ -72,3 +72,16 @@ GitLab Security Bot is an internal user responsible for commenting on merge requ
 GitLab Security Policy Bot is an internal user responsible for triggering scheduled pipelines
 defined in [security policies](../user/application_security/policies/_index.md#gitlab-security-policy-bot-user). This account is
 created in every project on which a security policy is enforced.
+
+For scheduled pipeline execution policies, this bot can read CI/CD configuration from private
+projects when project owners explicitly allow access.
+
+Bot access has these limits:
+
+- The target project must enable **Security policy bot access**.
+- The requested file path must match the project's allowed file patterns.
+- The bot project must be in the allowed group hierarchy. If no group is configured, GitLab uses
+  the root ancestor group.
+
+To set up Security Policy Bot access, see
+[scheduled pipeline execution policies](../user/application_security/policies/scheduled_pipeline_execution_policies.md#option-2-allow-security-policy-bot-access-to-private-projects).

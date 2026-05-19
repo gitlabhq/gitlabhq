@@ -24,7 +24,7 @@ RSpec.shared_examples 'issuable participants endpoint' do
   end
 
   it 'returns a 404 when id is used instead of iid' do
-    # Make sure other issues don't exist with a matching id or iid to avoid flakyness
+    # Make sure other issues don't exist with a matching id or iid to avoid flakiness
     max_id = [entity.class.maximum(:iid), entity.class.maximum(:id)].max + 10
     new_entity = entity.dup.tap { |e| e.id = max_id }
     entity.class.where(id: entity.id).delete_all

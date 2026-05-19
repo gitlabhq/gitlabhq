@@ -5,7 +5,10 @@ module API
     include PaginationParams
 
     freeze_periods_tags = %w[freeze_periods]
-    before { authenticate! }
+    before do
+      authenticate!
+      set_current_organization
+    end
 
     feature_category :continuous_delivery
     urgency :low

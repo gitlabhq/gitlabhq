@@ -13,7 +13,7 @@ import MergeRequest from '../merge_request';
 import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
 import { initMrStateLazyLoad } from './init_state_lazy_load';
 
-export function setupMrNotesState(notesDataset, diffsDataset = {}) {
+export function setupNotesState(notesDataset) {
   const noteableData = JSON.parse(notesDataset.noteableData);
   noteableData.noteableType = notesDataset.noteableType;
   noteableData.targetType = notesDataset.targetType;
@@ -23,13 +23,16 @@ export function setupMrNotesState(notesDataset, diffsDataset = {}) {
   const currentUserData = JSON.parse(notesDataset.currentUserData);
   const endpoints = { metadata: notesDataset.endpointMetadata };
 
-  const { mrPath } = getDerivedMergeRequestInformation({ endpoint: diffsDataset.endpoint });
-
   useNotes().setNotesData(notesData);
   useNotes().setNoteableData(noteableData);
   useNotes().setUserData(currentUserData);
   useNotes().setTargetNoteHash(getLocationHash());
   useMrNotes(pinia).setEndpoints(endpoints);
+}
+
+export function setupDiffsState(diffsDataset) {
+  const { mrPath } = getDerivedMergeRequestInformation({ endpoint: diffsDataset.endpoint });
+
   useLegacyDiffs(pinia).setBaseConfig({
     endpoint: diffsDataset.endpoint,
     endpointMetadata: diffsDataset.endpointMetadata,
@@ -57,7 +60,19 @@ export default function initMrNotes(createRapidDiffsApp) {
 
   const discussionsEl = document.getElementById('js-vue-mr-discussions');
   const diffsEl = document.getElementById('js-diffs-app');
-  setupMrNotesState(discussionsEl.dataset, diffsEl?.dataset);
+  setupNotesState(discussionsEl.dataset);
+  if (diffsEl) {
+    setupDiffsState(diffsEl.dataset);
+  } else {
+    const rapidDiffsEl = document.querySelector('[data-rapid-diffs]');
+    if (rapidDiffsEl) {
+      const appData = JSON.parse(rapidDiffsEl.dataset.appData);
+      useLegacyDiffs(pinia).$patch({
+        projectPath: appData.project_path,
+        defaultSuggestionCommitMessage: appData.default_suggestion_commit_message,
+      });
+    }
+  }
 
   const mrShowNode = document.querySelector('.merge-request');
   // eslint-disable-next-line no-new
@@ -66,7 +81,7 @@ export default function initMrNotes(createRapidDiffsApp) {
     createRapidDiffsApp,
   });
 
-  initMrStateLazyLoad();
+  initMrStateLazyLoad(createRapidDiffsApp);
 
   document.addEventListener('merged:UpdateActions', () => {
     initRevertCommitModal('i_code_review_post_merge_submit_revert_modal');

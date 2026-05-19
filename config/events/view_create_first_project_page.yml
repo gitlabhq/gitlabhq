@@ -1,0 +1,16 @@
+---
+description: Admin views the Create your first project page
+internal_events: true
+status: active
+action: view_create_first_project_page
+identifiers:
+  - user
+product_group: acquisition
+product_categories:
+  - onboarding
+milestone: '19.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234658
+tiers:
+  - free
+  - premium
+  - ultimate

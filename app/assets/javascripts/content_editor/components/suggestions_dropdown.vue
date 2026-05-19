@@ -123,6 +123,10 @@ export default {
       return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.STATUS;
     },
 
+    isType() {
+      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.TYPE;
+    },
+
     isMergeRequest() {
       return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.MERGE_REQUEST;
     },
@@ -197,6 +201,7 @@ export default {
         case REFERENCE_TYPES.ITERATION:
           return item.title;
         case REFERENCE_TYPES.STATUS:
+        case REFERENCE_TYPES.TYPE:
           return `${this.char}${item.name}${this.char}`;
         default:
           return '';
@@ -246,7 +251,7 @@ export default {
         });
       }
 
-      if (this.isStatus) {
+      if (this.isStatus || this.isType) {
         Object.assign(props, {
           originalText: `${this.char}${item.name}${this.char}`,
         });
@@ -350,7 +355,7 @@ export default {
             :id="`suggestion-option-${index}`"
             :key="index"
             role="option"
-            class="gl-new-dropdown-item"
+            class="gl-new-dropdown-item !gl-ml-0 !gl-pl-2"
             :class="{ focused: index === selectedIndex }"
           >
             <div
@@ -423,6 +428,10 @@ export default {
                     :size="12"
                     :style="`color: ${getAdaptiveStatusColor(item.color)}`"
                   />
+                  <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.name)"></span>
+                </span>
+                <span v-if="isType">
+                  <gl-icon class="gl-mr-2" :name="item.iconName" :size="12" />
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.name)"></span>
                 </span>
                 <span v-if="isMilestone">

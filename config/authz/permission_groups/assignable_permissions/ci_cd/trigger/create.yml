@@ -3,5 +3,7 @@ name: create_trigger
 description: Grants the ability to create pipeline triggers
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - create_trigger

@@ -55,7 +55,7 @@ PermitRootLogin no
 # Allow client to pass locale environment variables
 AcceptEnv LANG LC_*
 
-# Change default od 120 seconds to 60
+# Change default of 120 seconds to 60
 LoginGraceTime 60
 
 # override default of no subsystems

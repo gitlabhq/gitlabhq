@@ -1,0 +1,10 @@
+---
+migration_job_name: BackfillAggregateBooleansInSecurityInventoryFilters
+description: >
+  Backfill has_scanners, has_failed_or_warning, and has_stale boolean columns
+  from existing security_inventory_filters value
+feature_category: security_asset_inventories
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231784
+milestone: '19.0'
+queued_migration_version: 20260416120000
+finalized_by:

@@ -23,7 +23,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceTraversalIdsOnIssue
     }
   end
 
-  let(:issue_type) { work_item_types.find_by!(base_type: 0) } # Issue type
+  let(:issue_type) { work_item_types.create!(id: 1, name: 'Issue') } # Issue type
   let!(:organization) { organizations.create!(name: 'organization', path: 'organization') }
 
   let!(:user) do

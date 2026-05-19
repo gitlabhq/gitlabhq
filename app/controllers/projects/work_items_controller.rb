@@ -17,6 +17,9 @@ class Projects::WorkItemsController < Projects::ApplicationController
       Feature.enabled?(:work_item_features_field, current_user))
     push_frontend_feature_flag(:duo_quick_action_work_item_list, current_user)
     push_frontend_feature_flag(:vue3_migrate_work_items, current_user)
+    push_frontend_feature_flag(:work_item_rest_api_frontend_users, current_user)
+    push_frontend_feature_flag(:work_item_rest_api, current_user)
+    push_frontend_feature_flag(:work_item_list_display_settings_drawer, current_user)
   end
 
   before_action :check_search_rate_limit!, if: ->(c) do
@@ -44,13 +47,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
     end
   end
 
-  def index
-    return unless current_user
-
-    ::Users::DismissCalloutService.new(
-      container: nil, current_user: current_user, params: { feature_name: :work_items_nav_badge }
-    ).execute
-  end
+  def index; end
 
   def new
     service = ::WorkItems::BuildService.new(

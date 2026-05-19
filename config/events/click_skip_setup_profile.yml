@@ -1,0 +1,16 @@
+---
+description: Admin clicks Skip on the Set up your profile page
+internal_events: true
+status: active
+action: click_skip_setup_profile
+identifiers:
+  - user
+product_group: acquisition
+product_categories:
+  - onboarding
+milestone: '19.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234659
+tiers:
+  - free
+  - premium
+  - ultimate

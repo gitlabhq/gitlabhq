@@ -57,7 +57,7 @@ RSpec.describe ::Ci::Runners::ResetRegistrationTokenService, '#execute', feature
   end
 
   context 'with instance scope' do
-    let_it_be(:scope) { create(:application_setting, allow_runner_registration_token: true) }
+    let_it_be(:scope, freeze: false) { create(:application_setting, allow_runner_registration_token: true) }
 
     before do
       allow(ApplicationSetting).to receive(:current).and_return(scope)
@@ -71,7 +71,7 @@ RSpec.describe ::Ci::Runners::ResetRegistrationTokenService, '#execute', feature
   end
 
   context 'with group scope' do
-    let_it_be(:scope) { create(:group, :allow_runner_registration_token) }
+    let_it_be(:scope, freeze: false) { create(:group, :allow_runner_registration_token) }
 
     it_behaves_like 'a registration token reset operation' do
       let(:token_method_name) { :runners_token }
@@ -80,7 +80,7 @@ RSpec.describe ::Ci::Runners::ResetRegistrationTokenService, '#execute', feature
   end
 
   context 'with project scope' do
-    let_it_be(:scope) { create(:project, :allow_runner_registration_token) }
+    let_it_be(:scope, freeze: false) { create(:project, :allow_runner_registration_token) }
 
     it_behaves_like 'a registration token reset operation' do
       let(:token_method_name) { :runners_token }

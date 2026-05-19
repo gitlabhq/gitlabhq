@@ -87,7 +87,7 @@
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /devops::fulfillment/'
 
 .if-automated-merge-request: &if-automated-merge-request
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && ($CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-(ee|jh)$/)'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && ($CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitlab-pages" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-(ee|jh)$/)'
 
 .if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/'
@@ -145,9 +145,6 @@
 
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
-
-.if-merge-request-labels-skip-check-deprecated-files: &if-merge-request-labels-skip-check-deprecated-files
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-check-deprecated-files/'
 
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
@@ -275,6 +272,9 @@
 .if-group-code-review-label-or-maintenance-label-on-mr: &if-group-code-review-label-or-maintenance-label-on-mr
   if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && ($CI_MERGE_REQUEST_LABELS =~ /group::code review/ || $CI_MERGE_REQUEST_LABELS =~ /maintenance::dependency/)'
 
+.if-canonical-mr: &if-canonical-mr
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_PROJECT_NAMESPACE =~ /^gitlab(-org)?($|\/)/'
+
 .if-dev-internal-release: &if-dev-internal-release
   if: '$CI_SERVER_HOST == "dev.gitlab.org" && $CI_PROJECT_PATH == "gitlab/gitlab-ee" && $CI_COMMIT_REF_NAME =~
   /^[\d-]+-stable-ee$/ && $CI_COMMIT_TITLE =~ /^Update VERSION file.*internal/'
@@ -311,6 +311,9 @@
   - "GITALY_SERVER_VERSION"
   - "lib/gitlab/setup_helper.rb"
 
+.gitlab-pages-patterns: &gitlab-pages-patterns
+  - "GITLAB_PAGES_VERSION"
+
 # versions of all these components can affect cloud native deployment
 .cng-dependency-patterns: &cng-dependency-patterns
   - GITLAB_WORKHORSE_VERSION
@@ -338,6 +341,7 @@
 .lint-pipeline-yaml-patterns: &lint-pipeline-yaml-patterns
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*.yml"
+  - ".gitlab/duo/**/*.{yml,yaml}"
   - "lib/gitlab/ci/templates/**/*.yml"
   - "data/deprecations/**/*.yml"
   - "data/whats_new/**/*.yml"
@@ -368,6 +372,7 @@
   - "doc-locale/.markdownlint/.markdownlint-cli2.yaml"
   - "scripts/i18n_lint_doc.sh"
   - "scripts/i18n_verify_paths.sh"
+  - "scripts/i18n_fix_alert_box.sh"
 
 .docs-ja-jp-patterns: &docs-ja-jp-patterns
   - ".gitlab/ci/docs.gitlab-ci.yml"
@@ -381,17 +386,50 @@
   - "doc-locale/ja-jp/.*"
   - "doc-locale/ja-jp/.vale/**/*"
 
+.docs-ko-kr-patterns: &docs-ko-kr-patterns
+  - ".gitlab/ci/docs.gitlab-ci.yml"
+  - ".gitlab/ci/rules.gitlab-ci.yml"
+  - ".gitlab/route-map.yml"
+  - ".markdownlint-cli2.yaml"
+  - "doc/.markdownlint/**/*"
+  - "doc/.vale/**/*"
+  - "scripts/i18n_lint_language_vale.sh"
+  - "doc-locale/ko-kr/**/*"
+  - "doc-locale/ko-kr/.*"
+  - "doc-locale/ko-kr/.vale/**/*"
+
+.docs-fr-fr-patterns: &docs-fr-fr-patterns
+  - ".gitlab/ci/docs.gitlab-ci.yml"
+  - ".gitlab/ci/rules.gitlab-ci.yml"
+  - ".gitlab/route-map.yml"
+  - ".markdownlint-cli2.yaml"
+  - "doc/.markdownlint/**/*"
+  - "doc/.vale/**/*"
+  - "scripts/i18n_lint_language_vale.sh"
+  - "doc-locale/fr-fr/**/*"
+  - "doc-locale/fr-fr/.*"
+  - "doc-locale/fr-fr/.vale/**/*"
+
 .if-tech-docs-localization: &if-tech-docs-localization
   if: '($CI_PROJECT_PATH == "gitlab-com/localization" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH) ||
       ($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train")'
 
-.docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
+.docs-generated-content-patterns: &docs-generated-content-patterns
+  # deprecations and breaking windows
   - "doc/update/breaking_windows.md"
   - "doc/update/deprecations.md"
   - "data/deprecations/**/*"
   - "tooling/docs/**/*"
   - "lib/tasks/gitlab/docs/compile_deprecations.rake"
   - "lib/tasks/gitlab/docs/compile_windows.rake"
+  # event store index
+  - "doc/development/events/_index.md"
+  - "data/events/**/*"
+  - "lib/tasks/gitlab/docs/compile_events.rake"
+
+.docs-release-note-categories-patterns: &docs-release-note-categories-patterns
+  - "doc/releases/**/*"
+  - "scripts/lint/validate_release_categories.py"
 
 .nodejs-patterns: &nodejs-patterns
   - '{package.json,*/package.json,*/*/package.json}'
@@ -900,6 +938,7 @@
   - "vendor/assets/**/*"
   - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - "eslint.config.mjs"
+  - ".eslint_todo/*.mjs"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
@@ -950,6 +989,11 @@
 
 .static-analysis-patterns: &static-analysis-patterns
   - ".{haml-lint,haml-lint_todo}.yml"
+
+.codeowners-patterns: &codeowners-patterns
+  - ".gitlab/CODEOWNERS"
+  - "*"
+  - "*/*"
 
 # this is a combination of ruby-patterns and additional paths that contain ruby scripts without extension
 .rubocop-target-patterns: &rubocop-target-patterns
@@ -1024,7 +1068,6 @@
   - "ee/lib/ee/gitlab/audit/type/definition.rb"
 
 .custom-roles-patterns: &custom-roles-patterns
-  - "ee/config/feature_flags/**/custom_ability_*.yml"
   - "ee/config/custom_abilities/*.yml"
   - "doc/user/custom_roles/abilities.md"
   - "tooling/custom_roles/docs/templates/custom_abilities.md.erb"
@@ -1033,6 +1076,7 @@
 .permissions-patterns: &permissions-patterns
   - "config/authz/permissions/**/*.yml"
   - "config/authz/permission_groups/**/*.yml"
+  - "config/authz/roles/**/*.yml"
   - "lib/tasks/gitlab/permissions/**/*.rb"
   - "{,ee/}app/policies/**/*.rb"
   - "{,ee/}lib/api/**/*.rb"
@@ -1059,6 +1103,23 @@
   - Gemfile.next
   - Gemfile.next.lock
   - Gemfile.next.checksum
+
+# Keep in sync with doctor runtime dependencies:
+#   - scripts/ai_harness/doctor (entrypoint + helper scripts)
+#   - tooling/ai_harness/doctor/**/* (library code under tooling/)
+#   - tooling/ai_harness/config.yml (harness-wide config consumed by the doctor)
+#   - lib/gitlab/fp/**/* (functional programming utilities used by doctor)
+# When adding new runtime dependencies to doctor, add their paths here
+# in the same MR.
+.ai-harness-doctor-patterns: &ai-harness-doctor-patterns
+  - "**/AGENTS.md"
+  - "**/CLAUDE.md"
+  - ".ai/**/*"
+  - "**/.ai/**/*"
+  - "scripts/ai_harness/doctor"
+  - "tooling/ai_harness/doctor/**/*"
+  - "tooling/ai_harness/config.yml"
+  - "lib/gitlab/fp/**/*"
 
 ##################
 # Conditions set #
@@ -1213,15 +1274,6 @@
     - <<: *if-merge-request
       changes: *backend-spec-patterns
 
-# TODO: Why is this rule unused? It seems .rails:rules:rspec-predictive:pipeline-generate superseded it, but that provides no way to selectively target system tests
-.rails:rules:ee-and-foss-system:predictive:
-  rules:
-    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
-    - <<: *if-fork-merge-request
-      changes: *code-backstage-spec-patterns
-    - !reference [".rails:rules:predictive-default-rules", rules]
-    - !reference [".rails:rules:system:predictive-default-rules", rules]
-
 .rails:rules:ee-only-migration:predictive:
   rules:
     - <<: *if-not-ee
@@ -1251,29 +1303,6 @@
     - <<: *if-merge-request
       changes: *backend-spec-patterns
 
-# TODO: Why is this rule unused? It seems .rails:rules:rspec-predictive:pipeline-generate superseded it, but that provides no way to selectively target system tests
-.rails:rules:ee-only-integration:predictive:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-fork-merge-request
-      changes: *backend-spec-patterns
-    - !reference [".rails:rules:predictive-default-rules", rules]
-    - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
-    - <<: *if-merge-request
-      changes: *backend-spec-patterns
-
-# TODO: Why is this rule unused? It seems .rails:rules:rspec-predictive:pipeline-generate superseded it, but that provides no way to selectively target system tests
-.rails:rules:ee-only-system:predictive:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
-    - <<: *if-fork-merge-request
-      changes: *code-backstage-spec-patterns
-    - !reference [".rails:rules:predictive-default-rules", rules]
-    - !reference [".rails:rules:system:predictive-default-rules", rules]
-
 ######################
 # DB rules #
 ######################
@@ -1302,7 +1331,6 @@
 ######################
 .build-images:rules:build-qa-image-merge-requests:
   rules:
-    - if: '$ENABLE_BUILD_QA_IMAGE == "true"'
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-merge-request
       changes: *ruby-version-patterns
@@ -1468,10 +1496,25 @@
     - <<: *if-tech-docs-localization
       changes: *docs-ja-jp-patterns
 
-.docs:rules:deprecations-and-removals:
+.docs:rules:docs-i18n-lint-korean:
+  rules:
+    - <<: *if-tech-docs-localization
+      changes: *docs-ko-kr-patterns
+
+.docs:rules:docs-i18n-lint-french:
+  rules:
+    - <<: *if-tech-docs-localization
+      changes: *docs-fr-fr-patterns
+
+.docs:rules:generated-content:
   rules:
     - <<: *if-default-refs
-      changes: *docs-deprecations-and-removals-patterns
+      changes: *docs-generated-content-patterns
+
+.docs:rules:release-note-categories:
+  rules:
+    - <<: *if-default-refs
+      changes: *docs-release-note-categories-patterns
 
 .docs:rules:rubocop-docs-site:
   rules:
@@ -1591,6 +1634,9 @@
     - <<: *if-tag
     - <<: *if-sync-changes-on-stable-branches
     - <<: *if-group-code-review-label-or-maintenance-label-on-mr
+      changes: *backend-only-patterns
+    # Automatically run on canonical MRs with backend changes (before assets-shared to avoid prevent-tier-1 exclusion)
+    - <<: *if-canonical-mr
       changes: *backend-only-patterns
     - !reference [".frontend:rules:assets-shared", rules]
     # Always build on stable branches to serve release-environments pipeline
@@ -2045,6 +2091,9 @@
     # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
     - <<: *if-merge-request
       changes: *gitaly-patterns
+    # Run tests automatically for MRs that touch GITLAB_PAGES_VERSION
+    - <<: *if-merge-request
+      changes: *gitlab-pages-patterns
     - <<: *if-merge-request
       # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
       changes: *gdk-component-patterns
@@ -2089,6 +2138,9 @@
     # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
     - <<: *if-merge-request
       changes: *gitaly-patterns
+    # Run tests automatically for MRs that touch GITLAB_PAGES_VERSION
+    - <<: *if-merge-request
+      changes: *gitlab-pages-patterns
 
 .qa:rules:e2e-blocking-base-after:
   rules:
@@ -2227,6 +2279,8 @@
       when: never
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
+    - <<: *if-merge-request
+      changes: *workhorse-patterns
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
     - !reference [".prevent-tier-1", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
@@ -2235,6 +2289,10 @@
 
 .qa:rules:e2e:perf-on-cng:
   rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
     - <<: *if-merge-request-targeting-stable-branch
       when: never
     - !reference [".qa:rules:e2e-test-never-run", rules]
@@ -2248,13 +2306,19 @@
     # Do not run for scheduled pipeline for rails-next branch
     - <<: *if-rails-branch-schedule
       when: never
+    # Automatically run for MRs with group::code review label or maintenance::dependency label and backend changes
     - <<: *if-group-code-review-label-or-maintenance-label-on-mr
       changes: *backend-only-patterns
+    # Allow manual triggering for CNG dependency changes
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
       when: manual
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
+    # Allow manual triggering on all other canonical MRs (with backend and frontend change but not docs-only changes)
+    - <<: *if-canonical-mr
+      changes: *backend-only-patterns
+      when: manual
+      allow_failure: true
 
 .qa:rules:fulfillment-e2e-quarantine-report:
   rules:
@@ -2517,6 +2581,14 @@
     - <<: *if-merge-request
       changes: *code-backstage-spec-patterns
 
+.rails:rules:rspec-predictive:system-full:trigger:
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - !reference [".prevent-tier-1", rules]
+    - !reference [".prevent-tier-3-and-above", rules]
+    - !reference [".rails:rules:rspec-predictive", rules]
+
 # Inverse rules compared to .rails:rules:single-db
 #
 # See CI specs in spec/dot_gitlab_ci/rules_spec.rb for details.
@@ -2615,6 +2687,22 @@
       when: never
     - !reference [".rails:rules:clickhouse-changes", rules]
 
+.rails:rules:clickhouse-system-changes:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - if: '$ENABLE_RSPEC_SYSTEM == "true"'
+    - !reference [".rails:rules:ee-and-foss-default-rules", rules]
+    - <<: *if-default-refs
+      changes: *backend-patterns
+
+.rails:rules:ee-only-clickhouse-system-changes:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:clickhouse-system-changes", rules]
+
 .rails:rules:ee-and-foss-integration:
   rules:
     - <<: *if-fork-merge-request
@@ -2640,9 +2728,30 @@
       when: never
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - if: '$ENABLE_RSPEC_SYSTEM == "true"'
+    - <<: *if-merge-request-labels-run-all-rspec
+    # tier-2: run full suite for high-risk patterns
+    - <<: *if-merge-request-tier-2
+      changes: *core-backend-patterns
+    - <<: *if-merge-request-tier-2
+      changes: *workhorse-patterns
+    - <<: *if-security-merge-request  # security fork: no full system pipeline available, run normally
+    - <<: *if-merge-request-tier-2
+      when: never
     - !reference [".rails:rules:system-default-rules", rules]
     - <<: *if-default-refs
       changes: *code-backstage-patterns
+
+# Used by tier-2 test jobs that run when changes match backend-spec-patterns
+.rails:rules:tier-2-with-backend-spec:
+  rules:
+    - <<: *if-merge-request-tier-2
+      changes: *backend-spec-patterns
+
+# Used by jobs that should run in tier-3, when changes match setup-test-env-patterns
+.rails:rules:tier-3-with-test-env:
+  rules:
+    - <<: *if-merge-request-tier-3
+      changes: *setup-test-env-patterns
 
 .rails:rules:ee-and-foss-fast_spec_helper:
   rules:
@@ -2712,12 +2821,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-fork-merge-request
-      when: never
-    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
-    - !reference [".rails:rules:system-default-rules", rules]
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
+    - !reference [".rails:rules:ee-and-foss-system", rules]
 
 .rails:rules:db:check-schema:
   rules:
@@ -2745,6 +2849,11 @@
     - if: '$START_AS_IF_FOSS == "true"'
     - !reference [".rails:rules:ee-and-foss-system", rules]
     - !reference ['.rails:rules:ee-and-foss-background-migration', rules]
+
+.rails:rules:artifact-collector-part-c:
+  rules:
+    - if: '$START_AS_IF_FOSS == "true"'
+    - !reference [".rails:rules:clickhouse-system-changes", rules]
 
 .rails:rules:artifact-collector-part-b:
   rules:
@@ -2847,6 +2956,7 @@
     - <<: *if-export-coverage
     - <<: *if-schedule-pipeline
       when: manual
+      allow_failure: true
 
 # These rules should match .rails:rules:rspec-coverage to ensure undercoverage runs whenever coverage data is generated
 .rails:rules:rspec-undercoverage:
@@ -2940,6 +3050,15 @@
     - <<: *if-default-refs
       changes: *static-analysis-patterns
 
+.static-analysis:rules:validate-codeowners-coverage:
+  rules:
+    - <<: *if-merge-request
+      changes: *codeowners-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *static-analysis-patterns
+
 .static-analysis:rules:static-verification-with-database:
   rules:
     - <<: *if-default-refs
@@ -2985,17 +3104,6 @@
       changes: *spec-only-patterns
     - <<: *if-default-refs
       changes: *docs-patterns
-
-.static-analysis:rules:check-deprecated-files:
-  rules:
-    - <<: *if-merge-request-labels-skip-check-deprecated-files
-      when: never
-    - <<: *if-security-merge-request
-      when: never
-    - <<: *if-merge-request-targeting-stable-branch
-      when: never
-    - <<: *if-merge-request
-      changes: *code-patterns
 
 .semgrep-appsec-custom-rules:rules:
   rules:
@@ -3076,6 +3184,31 @@
     - !reference [".reports:rules:code_quality", rules]
     - <<: *if-default-refs
       changes: *docs-patterns
+
+.reports:rules:gitlab-advanced-sast:
+  rules:
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
+      when: never
+    - <<: *if-default-refs
+      changes:
+        # this list should match https://gitlab.com/gitlab-org/gitlab/blob/aa896069360f/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml#L53-53
+        - '**/*.py'
+        - '**/*.go'
+        - '**/*.java'
+        - '**/*.jsp'
+        - '**/*.js'
+        - '**/*.jsx'
+        - '**/*.ts'
+        - '**/*.tsx'
+        - '**/*.cjs'
+        - '**/*.mjs'
+        - '**/*.cs'
+        - '**/*.rb'
+        - '**/*.php'
 
 .reports:rules:semgrep-sast:
   rules:
@@ -3236,6 +3369,12 @@
         - ".gitlab/ci/setup.gitlab-ci.yml"
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
+
+.setup:rules:verify-start-workflow-service-assets:
+  rules:
+    - <<: *if-default-refs
+      changes:
+        - "ee/app/services/ai/duo_workflows/start_workflow_service.rb"
 
 ###################
 # Preflight rules #
@@ -3599,6 +3738,33 @@
     - <<: *if-merge-request-tier-1
       when: never
 
+.allow-on-tier-3:
+  rules:
+    - <<: *if-merge-request-tier-3
+
+.prevent-on-full-system-changes:
+  rules:
+    - <<: *if-merge-request
+      changes: *core-backend-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *workhorse-patterns
+      when: never
+
+.prevent-run-all-rspec:
+  rules:
+    - <<: *if-merge-request-labels-run-all-rspec
+      when: never
+
+.prevent-spec-only:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && $CI_MERGE_REQUEST_LABELS =~ /pipeline:spec-only/'
+      when: never
+
+.allow-on-tier-2:
+  rules:
+    - <<: *if-merge-request-tier-2
+
 .prevent-tier-2-and-below:
   rules:
     - !reference [".prevent-tier-1", rules]
@@ -3627,9 +3793,23 @@
 ##################
 .api-docs:rules:trigger-api-docs-pipeline:
   rules:
-    - <<: *if-dot-com-gitlab-org-default-branch
+    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+      changes:
+        - "doc/api/openapi/openapi_v3.yaml"
 
 .test-metadata:rules:export-predictive-test-metrics:
   rules:
     - <<: *if-merge-request-tier-3
       changes: *code-backstage-patterns
+
+#########################
+# AI Harness rules      #
+#########################
+.ai-harness:rules:doctor:
+  rules:
+    - <<: *if-default-refs
+      changes: *ai-harness-doctor-patterns
+
+.test-metadata:rules:export-diff-stats:
+  rules:
+    - *if-merge-request

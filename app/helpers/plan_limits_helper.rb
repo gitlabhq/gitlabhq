@@ -25,6 +25,8 @@ module PlanLimitsHelper
       s_('AdminSettings|Maximum number of variables in a dotenv artifact')
     when :pipeline_hierarchy_size
       s_("AdminSettings|Maximum number of downstream pipelines in a pipeline's hierarchy tree")
+    when :max_pipelines_per_merge_train
+      s_('AdminSettings|Maximum parallel pipelines per merge train')
     else
       raise ArgumentError, "No description available for plan limit #{limit_name}"
     end

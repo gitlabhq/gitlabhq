@@ -53,18 +53,6 @@ RSpec.describe 'profiles/two_factor_auths/_default_2fa_method.html.haml', featur
 
       expect(rendered).to have_css('.gl-badge', text: s_('ProfilesAuthentication|One-time password authenticator'))
     end
-
-    context 'when :passkeys feature flag is disabled' do
-      before do
-        stub_feature_flags(passkeys: false)
-      end
-
-      it 'does not display default 2FA method badge' do
-        render
-
-        expect(rendered).to eq("")
-      end
-    end
   end
 
   context 'when the user does not have a 2FA method' do

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_composition do
   include StubRequests
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
   before do

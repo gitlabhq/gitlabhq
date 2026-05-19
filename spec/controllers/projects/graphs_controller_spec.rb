@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::GraphsController do
+RSpec.describe Projects::GraphsController, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
 
@@ -57,7 +57,7 @@ RSpec.describe Projects::GraphsController do
 
   describe 'GET languages' do
     it "redirects_to action charts" do
-      get(:commits, params: { namespace_id: project.namespace.path, project_id: project.path, id: 'master' })
+      get(:languages, params: { namespace_id: project.namespace.path, project_id: project.path, id: 'master' })
 
       expect(response).to redirect_to action: :charts
     end
@@ -161,6 +161,80 @@ RSpec.describe Projects::GraphsController do
            label: repository_language.name,
            color: repository_language.color,
            highlight: repository_language.color])
+      end
+    end
+  end
+
+  describe 'when gitaly is unavailable', feature_category: :source_code_management do
+    let(:params) do
+      {
+        namespace_id: project.namespace.to_param, project_id: project, id: 'master'
+      }
+    end
+
+    before do
+      allow(Gitlab::Git::Commit).to receive(:find)
+        .and_raise(Gitlab::Git::CommandError, 'Gitaly unavailable')
+    end
+
+    describe 'GET #show' do
+      it 'returns 503' do
+        get :show, params: params
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+      end
+
+      it 'sets @gitaly_unavailable' do
+        get :show, params: params
+
+        expect(assigns[:gitaly_unavailable]).to be(true)
+      end
+
+      context 'with JSON format' do
+        it 'returns 503 with JSON error' do
+          get :show, params: params.merge(format: :json)
+
+          expect(response).to have_gitlab_http_status(:service_unavailable)
+          expect(json_response['error']).to be_present
+        end
+      end
+    end
+
+    describe 'GET #charts' do
+      it 'returns 503' do
+        get :charts, params: params
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+      end
+
+      it 'sets @gitaly_unavailable' do
+        get :charts, params: params
+
+        expect(assigns[:gitaly_unavailable]).to be(true)
+      end
+    end
+
+    context 'when Gitaly health check fails (Commit.find returns nil)' do
+      before do
+        # Simulate Gitlab::Git::Commit.find swallowing the error and returning nil
+        allow(Gitlab::Git::Commit).to receive(:find).and_return(nil)
+
+        # Simulate Gitaly health check failing
+        allow_next_instance_of(Gitlab::GitalyClient::HealthCheckService) do |service|
+          allow(service).to receive(:check).and_return({ success: false, message: 'Gitaly unavailable' })
+        end
+      end
+
+      it 'returns 503' do
+        get :show, params: params
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+      end
+
+      it 'sets @gitaly_unavailable' do
+        get :show, params: params
+
+        expect(assigns[:gitaly_unavailable]).to be(true)
       end
     end
   end

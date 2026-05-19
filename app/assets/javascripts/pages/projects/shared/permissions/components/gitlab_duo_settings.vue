@@ -97,6 +97,21 @@ export default {
       required: false,
       default: false,
     },
+    toolApprovalForSessionCascadingSettings: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    initialToolApprovalForSessionEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    toolApprovalForSessionLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -108,6 +123,7 @@ export default {
       duoSastFpDetectionEnabled: this.initialDuoSastFpDetectionEnabled,
       duoSecretDetectionFpEnabled: this.initialDuoSecretDetectionFpEnabled,
       duoSastVrWorkflowEnabled: this.initialDuoSastVrWorkflowEnabled,
+      toolApprovalForSessionEnabled: this.initialToolApprovalForSessionEnabled,
     };
   },
   computed: {
@@ -146,6 +162,13 @@ export default {
       return (
         this.duoFoundationalFlowsCascadingSettings?.lockedByAncestor ||
         this.duoFoundationalFlowsCascadingSettings?.lockedByApplicationSetting
+      );
+    },
+    showToolApprovalCascadingLock() {
+      return (
+        this.toolApprovalForSessionLocked &&
+        (this.toolApprovalForSessionCascadingSettings?.lockedByAncestor ||
+          this.toolApprovalForSessionCascadingSettings?.lockedByApplicationSetting)
       );
     },
     showSastFpDetection() {
@@ -306,6 +329,38 @@ export default {
             label-position="hidden"
             name="project[project_setting_attributes][duo_foundational_flows_enabled]"
             data-testid="duo-foundational-flows-enabled"
+          />
+        </project-setting-row>
+        <project-setting-row
+          :label="s__('AiPowered|Tool approval for sessions')"
+          class="gl-mt-5"
+          :help-text="
+            s__('AiPowered|Allow users to approve tools for a session in the IDE and CLI.')
+          "
+          :locked="showToolApprovalCascadingLock"
+        >
+          <template #label-icon>
+            <cascading-lock-icon
+              v-if="showToolApprovalCascadingLock"
+              data-testid="tool-approval-cascading-lock-icon"
+              :is-locked-by-group-ancestor="
+                toolApprovalForSessionCascadingSettings.lockedByAncestor
+              "
+              :is-locked-by-application-settings="
+                toolApprovalForSessionCascadingSettings.lockedByApplicationSetting
+              "
+              :ancestor-namespace="toolApprovalForSessionCascadingSettings.ancestorNamespace"
+              class="gl-ml-1"
+            />
+          </template>
+          <gl-toggle
+            v-model="toolApprovalForSessionEnabled"
+            class="gl-mt-2"
+            :disabled="duoFeaturesLocked || !duoEnabled || showToolApprovalCascadingLock"
+            :label="s__('AiPowered|Tool approval for sessions')"
+            label-position="hidden"
+            name="project[project_setting_attributes][tool_approval_for_session_enabled]"
+            data-testid="tool-approval-for-session-enabled"
           />
         </project-setting-row>
         <project-setting-row

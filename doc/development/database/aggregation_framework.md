@@ -135,7 +135,6 @@ The ClickHouse engine (`Gitlab::Database::Aggregation::ClickHouse::Engine`) gene
 ```ruby
 class SessionAnalyticsEngine < Gitlab::Database::Aggregation::ClickHouse::Engine
   self.table_name = 'sessions'
-  self.table_primary_key = %i[user_id session_id] # must match table primary key.
 
   filters do
     exact_match :flow_type, :string, description: 'Filter by flow type'
@@ -232,7 +231,8 @@ Key characteristics:
 - Inner query handles row-level calculations and primary key grouping. Outer query performs final aggregations. This approach allows to use `*Merge` columns easily as well as `*If` aggregations.
 - Conditional metrics use `*If` functions
 - All columns are prefixed with `aeq_` (Aggregation Engine Query). This prefix is removed by `AggregationResult` object.
-- Filters are applied as `WHERE` or `HAVING` clauses on **inner query**
+- Column filters are applied as `WHERE` or `HAVING` clauses on the **inner query**
+- Metric filters are applied as `HAVING` clauses on the **outer query**
 - Dimensions become `GROUP BY` columns on **outer query**
 - Metrics use aggregate functions on **outer query**
 
@@ -352,6 +352,70 @@ Filters rows by value range using `BETWEEN`. Supports filtering on regular colum
 | `expression` | Proc | No | Custom expression instead of column |
 | `merge_column` | Boolean | No | If `true`, applies filter using `HAVING` instead of `WHERE` |
 | `description` | String | No | Human-readable description |
+
+#### `metric_exact_match` filter
+
+Filters groups by exact match on an aggregated metric value. Applied as a `HAVING` clause in post-aggregation.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Identifier of the metric to filter by. Must match a metric defined in the same engine. |
+| `type` | Symbol | Yes | Data type of filter values |
+| `max_size` | Integer | No | Maximum number of values allowed in filter |
+| `description` | String | No | Human-readable description |
+
+The referenced metric must also be requested in the same `Request`. For parameterized metrics,
+the filter `parameters` must match the parameters of the requested metric instance.
+
+Example:
+
+```ruby
+filters do
+  metric_exact_match :total_count, :integer
+end
+```
+
+```ruby
+Gitlab::Database::Aggregation::Request.new(
+  filters: [{ identifier: :total_count, values: [1, 2] }],
+  dimensions: [{ identifier: :user_id }],
+  metrics: [{ identifier: :total_count }]
+)
+```
+
+#### `metric_range` filter
+
+Filters groups by value range on an aggregated metric using `BETWEEN`. Applied as a `HAVING`
+clause in post-aggregation.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Identifier of the metric to filter by. Must match a metric defined in the same engine. |
+| `type` | Symbol | Yes | Data type of filter values (`:integer`, `:float`, etc.) |
+| `description` | String | No | Human-readable description |
+
+The referenced metric must also be requested in the same `Request`. For parameterized metrics,
+the filter `parameters` must match the parameters of the requested metric instance, so the filter
+targets the correct metric instance.
+
+Example:
+
+```ruby
+filters do
+  metric_range :total_count, :integer
+  metric_range :duration_quantile, :float
+end
+```
+
+```ruby
+Gitlab::Database::Aggregation::Request.new(
+  filters: [
+    { identifier: :duration_quantile, parameters: { quantile: 0.1 }, values: 200..nil }
+  ],
+  dimensions: [{ identifier: :user_id }],
+  metrics: [{ identifier: :duration_quantile, parameters: { quantile: 0.1 } }]
+)
+```
 
 ## Transient columns
 

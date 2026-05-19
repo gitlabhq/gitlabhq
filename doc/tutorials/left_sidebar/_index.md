@@ -105,7 +105,7 @@ By default, work items like issues or epics open in the details panel.
 If you prefer to turn it off:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Work items**.
+1. In the left sidebar, select **Plan** > **Work items**.
 1. On the right of the filter bar, select **Display options** ({{< icon name="preferences" >}})
    and turn off the **Open items in side panel** toggle.
 

@@ -1,0 +1,4 @@
+---
+event: WorkItems::WorkItemDeletedEvent
+description: Published after a work item is permanently deleted.
+feature_category: team_planning

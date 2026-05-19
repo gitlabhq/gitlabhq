@@ -20,13 +20,13 @@ module Gitlab
 
           def variables_hash
             strong_memoize(:variables_hash) do
-              variables.to_hash
+              variables.to_lazy_hash
             end
           end
 
           def variables_hash_expanded
             strong_memoize(:variables_hash_expanded) do
-              variables_sorted_and_expanded.to_hash
+              variables_sorted_and_expanded.to_lazy_hash
             end
           end
 

@@ -165,7 +165,8 @@ type DuoWorkflow struct {
 	McpServers                map[string]McpServerConfig
 	LockConcurrentFlow        bool
 	// ServerCapabilities is a list of capability strings provided by Rails.
-	ServerCapabilities []string
+	ServerCapabilities  []string
+	TimeoutHTTPRequests bool
 }
 
 // Response represents a structure containing various GitLab-related environment variables.
@@ -348,6 +349,8 @@ type GitAuditEventRequest struct {
 	Identifier    string                                  `json:"identifier"`
 	PackfileStats *gitalypb.PackfileNegotiationStatistics `json:"packfile_stats,omitempty"`
 	Changes       string                                  `json:"changes"`
+	WrittenBytes  int64                                   `json:"written_bytes,omitempty"`
+	ReceivedBytes int64                                   `json:"received_bytes,omitempty"`
 }
 
 // SendGitAuditEvent sends a Git audit event using the API client.

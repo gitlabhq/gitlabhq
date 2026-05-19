@@ -14,6 +14,11 @@ module Gitlab
 
     extend self
 
+    # Write a line to stdout for rake task output
+    def say(message = '')
+      puts message
+    end
+
     def invoke_and_time_task(task)
       start = Time.now
       Rake::Task[task].invoke

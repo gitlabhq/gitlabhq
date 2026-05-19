@@ -200,18 +200,6 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
               expect(page).to have_current_path(profile_two_factor_auth_path)
             end
           end
-
-          context 'when passkeys FF is disabled for 2FA registration' do
-            before do
-              stub_feature_flags(passkeys: false)
-            end
-
-            it 'does not render any passkeys content' do
-              visit profile_two_factor_auth_path
-
-              expect(page).not_to have_content(s_('ProfilesAuthentication|Add passkey'))
-            end
-          end
         end
       end
     end
@@ -337,33 +325,6 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
               expect(page).to have_current_path(root_path)
             end
           end
-
-          context 'when passkeys FF is disabled for 2FA authentication' do
-            before do
-              stub_feature_flags(passkeys: false)
-            end
-
-            it 'allows a user to sign-in with second_factor & OTP authenticators, not passkeys' do
-              # with passkey
-              passkey = add_passkey(app_id, user)
-              gitlab_sign_in(user)
-              passkey.respond_to_webauthn_authentication
-              expect(page).to have_current_path(new_user_session_path)
-
-              # with WebAuthn
-              second_factor_authenticator = add_webauthn_device(app_id, user)
-              gitlab_sign_in(user)
-              second_factor_authenticator.respond_to_webauthn_authentication
-              expect(page).to have_current_path(root_path)
-              gitlab_sign_out
-
-              # with OTP
-              gitlab_sign_in(user)
-              add_otp(user)
-              expect(page).to have_current_path(root_path)
-              gitlab_sign_out
-            end
-          end
         end
       end
     end
@@ -420,18 +381,6 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
 
               expect(page).to have_current_path(root_path)
             end
-          end
-        end
-
-        context 'when passkeys FF is disabled' do
-          before do
-            stub_feature_flags(passkeys: false)
-          end
-
-          it 'does not show the Passkey button' do
-            visit root_path
-
-            expect(page).not_to have_button(_('Passkey'))
           end
         end
       end

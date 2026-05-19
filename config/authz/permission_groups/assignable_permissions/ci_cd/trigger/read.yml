@@ -3,5 +3,7 @@ name: read_trigger
 description: Grants the ability to read pipeline triggers
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - read_trigger

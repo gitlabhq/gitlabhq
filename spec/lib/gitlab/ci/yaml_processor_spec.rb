@@ -447,13 +447,13 @@ module Gitlab
       describe 'workflow attributes' do
         context 'with disallowed workflow:variables' do
           let(:config) do
-            <<-EOYML
+            <<-YAML
               workflow:
                 rules:
                   - if: $VAR == "value"
                 variables:
                   UNSUPPORTED: "unparsed"
-            EOYML
+            YAML
           end
 
           it_behaves_like 'returns errors', 'workflow config contains unknown keys: variables'
@@ -461,7 +461,7 @@ module Gitlab
 
         context 'with rules and variables' do
           let(:config) do
-            <<-EOYML
+            <<-YAML
               variables:
                 SUPPORTED: "parsed"
 
@@ -471,7 +471,7 @@ module Gitlab
 
               hello:
                 script: echo world
-            EOYML
+            YAML
           end
 
           it 'parses the workflow:rules configuration' do
@@ -486,14 +486,14 @@ module Gitlab
 
         context 'with rules and no variables' do
           let(:config) do
-            <<-EOYML
+            <<-YAML
               workflow:
                 rules:
                   - if: $VAR == "value"
 
               hello:
                 script: echo world
-            EOYML
+            YAML
           end
 
           it 'parses the workflow:rules configuration' do
@@ -507,13 +507,13 @@ module Gitlab
 
         context 'with variables and no rules' do
           let(:config) do
-            <<-EOYML
+            <<-YAML
               variables:
                 SUPPORTED: "parsed"
 
               hello:
                 script: echo world
-            EOYML
+            YAML
           end
 
           it 'parses the workflow:rules configuration' do
@@ -528,10 +528,10 @@ module Gitlab
 
         context 'with no rules and no variables' do
           let(:config) do
-            <<-EOYML
+            <<-YAML
               hello:
                 script: echo world
-            EOYML
+            YAML
           end
 
           it 'parses the workflow:rules configuration' do
@@ -545,13 +545,13 @@ module Gitlab
 
         context 'with name' do
           let(:config) do
-            <<-EOYML
+            <<-YAML
               workflow:
                 name: 'Pipeline name'
 
               hello:
                 script: echo world
-            EOYML
+            YAML
           end
 
           it 'parses the workflow:name as workflow_name' do
@@ -561,10 +561,10 @@ module Gitlab
 
         context 'with no name' do
           let(:config) do
-            <<-EOYML
+            <<-YAML
               hello:
                 script: echo world
-            EOYML
+            YAML
           end
 
           it 'parses the workflow:name' do
@@ -623,12 +623,12 @@ module Gitlab
       describe '#warnings' do
         context 'when a warning is raised in a given entry' do
           let(:config) do
-            <<-EOYML
+            <<-YAML
             rspec:
               script: echo
               rules:
                 - when: always
-            EOYML
+            YAML
           end
 
           it 'is propagated all the way up to the processor' do
@@ -638,7 +638,7 @@ module Gitlab
 
         context 'when a warning is raised together with errors' do
           let(:config) do
-            <<-EOYML
+            <<-YAML
               rspec:
                 script: rspec
                 rules:
@@ -647,7 +647,7 @@ module Gitlab
                 script: echo
                 artifacts:
                   - wrong_key: value
-            EOYML
+            YAML
           end
 
           it 'is propagated all the way up into the raised exception' do
@@ -660,13 +660,13 @@ module Gitlab
 
         context 'when error is raised before composing the config' do
           let(:config) do
-            <<-EOYML
+            <<-YAML
               include: unknown/file.yml
               rspec:
                 script: rspec
                 rules:
                   - when: always
-            EOYML
+            YAML
           end
 
           it 'has empty warnings' do
@@ -686,13 +686,13 @@ module Gitlab
 
           context 'when stage does not exist' do
             let(:config) do
-              <<-EOYML
+              <<-YAML
                 rspec:
                   stage: custom_stage
                   script: rspec
                   rules:
                     - when: always
-              EOYML
+              YAML
             end
 
             it_behaves_like 'has warnings and expected error', /rspec job: chosen stage custom_stage does not exist/
@@ -700,7 +700,7 @@ module Gitlab
 
           context 'job dependency does not exist' do
             let(:config) do
-              <<-EOYML
+              <<-YAML
                 build:
                   stage: build
                   script: echo
@@ -710,7 +710,7 @@ module Gitlab
                   stage: test
                   script: echo
                   needs: [unknown_job]
-              EOYML
+              YAML
             end
 
             it_behaves_like 'has warnings and expected error', /test job: undefined need: unknown_job/
@@ -718,7 +718,7 @@ module Gitlab
 
           context 'job dependency defined in later stage' do
             let(:config) do
-              <<-EOYML
+              <<-YAML
                 build:
                   stage: build
                   script: echo
@@ -728,7 +728,7 @@ module Gitlab
                 test:
                   stage: test
                   script: echo
-              EOYML
+              YAML
             end
 
             it_behaves_like 'has warnings and expected error', /build job: need test is not defined in current or prior stages/
@@ -737,7 +737,7 @@ module Gitlab
           describe '#validate_job_needs!' do
             context "when all validations pass" do
               let(:config) do
-                <<-EOYML
+                <<-YAML
                     stages:
                       - lint
                     lint_job:
@@ -760,7 +760,7 @@ module Gitlab
                       script: 'echo job'
                       rules:
                         - if: $var == null
-                EOYML
+                YAML
               end
 
               it 'returns a valid response' do
@@ -772,7 +772,7 @@ module Gitlab
             context 'needs as array' do
               context 'single need in following stage' do
                 let(:config) do
-                  <<-EOYML
+                  <<-YAML
                       stages:
                         - lint
                         - test
@@ -787,7 +787,7 @@ module Gitlab
                         script: 'echo job'
                         rules:
                           - if: $var == null
-                  EOYML
+                  YAML
                 end
 
                 it_behaves_like 'returns errors', 'lint_job job: need test_job is not defined in current or prior stages'
@@ -795,7 +795,7 @@ module Gitlab
 
               context 'multiple needs in the following stage' do
                 let(:config) do
-                  <<-EOYML
+                  <<-YAML
                       stages:
                         - lint
                         - test
@@ -815,7 +815,7 @@ module Gitlab
                         script: 'echo job'
                         rules:
                           - if: $var == null
-                  EOYML
+                  YAML
                 end
 
                 it_behaves_like 'returns errors', 'lint_job job: need test_job is not defined in current or prior stages'
@@ -823,7 +823,7 @@ module Gitlab
 
               context 'single need in following state - hyphen need' do
                 let(:config) do
-                  <<-EOYML
+                  <<-YAML
                       stages:
                         - lint
                         - test
@@ -839,7 +839,7 @@ module Gitlab
                         script: 'echo job'
                         rules:
                           - if: $var == null
-                  EOYML
+                  YAML
                 end
 
                 it_behaves_like 'returns errors', 'lint_job job: need test_job is not defined in current or prior stages'
@@ -847,7 +847,7 @@ module Gitlab
 
               context 'when there are duplicate needs (string and hash)' do
                 let(:config) do
-                  <<-EOYML
+                  <<-YAML
                       stages:
                         - test
                       test_job_1:
@@ -863,7 +863,7 @@ module Gitlab
                         script: 'echo job'
                         rules:
                           - if: $var == null
-                  EOYML
+                  YAML
                 end
 
                 it_behaves_like 'returns errors', 'test_job_1 has the following needs duplicated: test_job_2.'
@@ -873,7 +873,7 @@ module Gitlab
             context 'rule needs as hash' do
               context 'single hash need in following stage' do
                 let(:config) do
-                  <<-EOYML
+                  <<-YAML
                       stages:
                         - lint
                         - test
@@ -891,7 +891,7 @@ module Gitlab
                         script: 'echo job'
                         rules:
                           - if: $var == null
-                  EOYML
+                  YAML
                 end
 
                 it_behaves_like 'returns errors', 'lint_job job: need test_job is not defined in current or prior stages'
@@ -900,7 +900,7 @@ module Gitlab
 
             context 'job rule need does not exist' do
               let(:config) do
-                <<-EOYML
+                <<-YAML
                   build:
                     stage: build
                     script: echo
@@ -912,7 +912,7 @@ module Gitlab
                     rules:
                       - if: $var == null
                         needs: [unknown_job]
-                EOYML
+                YAML
               end
 
               it_behaves_like 'has warnings and expected error', /test job: undefined need: unknown_job/
@@ -2567,7 +2567,7 @@ module Gitlab
         subject { described_class.new(YAML.dump(config)).execute }
 
         context 'no dependencies' do
-          let(:dependencies) {}
+          let(:dependencies) { nil }
 
           it { is_expected.to be_valid }
         end
@@ -2623,8 +2623,8 @@ module Gitlab
       end
 
       describe "Job Needs" do
-        let(:needs) {}
-        let(:dependencies) {}
+        let(:needs) { nil }
+        let(:dependencies) { nil }
 
         let(:config) do
           {
@@ -3209,13 +3209,13 @@ module Gitlab
 
         context 'when template is a job' do
           let(:config) do
-            <<~EOT
+            <<~YAML
             job1: &JOBTMPL
               stage: build
               script: execute-script-for-job
 
             job2: *JOBTMPL
-            EOT
+            YAML
           end
 
           it_behaves_like 'job_templates_handling'
@@ -3223,7 +3223,7 @@ module Gitlab
 
         context 'when template is a hidden job' do
           let(:config) do
-            <<~EOT
+            <<~YAML
             .template: &JOBTMPL
               stage: build
               script: execute-script-for-job
@@ -3231,7 +3231,7 @@ module Gitlab
             job1: *JOBTMPL
 
             job2: *JOBTMPL
-            EOT
+            YAML
           end
 
           it_behaves_like 'job_templates_handling'
@@ -3239,7 +3239,7 @@ module Gitlab
 
         context 'when job adds its own keys to a template definition' do
           let(:config) do
-            <<~EOT
+            <<~YAML
             .template: &JOBTMPL
               stage: build
 
@@ -3250,7 +3250,7 @@ module Gitlab
             job2:
               <<: *JOBTMPL
               script: execute-script-for-job
-            EOT
+            YAML
           end
 
           it_behaves_like 'job_templates_handling'
@@ -3883,11 +3883,11 @@ module Gitlab
         context 'on publish option' do
           context 'when not in a pages job' do
             let(:config) do
-              <<-EOYML
+              <<-YAML
               not-pages:
                 script: echo
                 publish: 'foo'
-              EOYML
+              YAML
             end
 
             it_behaves_like 'returns errors', 'jobs:not-pages publish can only be used within a `pages` job'
@@ -3895,11 +3895,11 @@ module Gitlab
 
           context 'when in a pages job' do
             let(:config) do
-              <<-EOYML
+              <<-YAML
               pages:
                 script: echo
                 publish: 'foo'
-              EOYML
+              YAML
             end
 
             it { is_expected.to be_valid }
@@ -3913,12 +3913,12 @@ module Gitlab
         context 'on pages option' do
           context 'when in a pages job' do
             let(:config) do
-              <<-EOYML
+              <<-YAML
               pages:
                 script: echo
                 pages:
                   path_prefix: 'foo'
-              EOYML
+              YAML
             end
 
             it { is_expected.to be_valid }

@@ -65,10 +65,14 @@ module Integrations
             confidential: confidential?,
             description: description,
             escalation_status: { status: status },
-            issue_type: "incident",
+            work_item_type: incident_work_item_type,
             assignee_ids: [assignee],
             label_ids: labels
           }
+        end
+
+        def incident_work_item_type
+          ::WorkItems::TypesFramework::Provider.new(project).find_by_base_type(:incident)
         end
 
         def strip_markup(string)

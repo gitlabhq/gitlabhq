@@ -14,6 +14,7 @@ module Organizations
     before_action :authorize_read_organization!, only: [:activity, :show, :groups_and_projects]
     before_action only: [:index] do
       push_frontend_feature_flag(:organization_switching, current_user)
+      push_frontend_feature_flag(:organization_reconciliation, current_user)
     end
 
     skip_before_action :authenticate_user!, only: [:activity, :show, :groups_and_projects]

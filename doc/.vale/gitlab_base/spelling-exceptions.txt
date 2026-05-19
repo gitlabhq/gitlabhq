@@ -371,6 +371,7 @@ fastlane
 Fastly
 Fastzip
 favicon
+favicons
 favorited
 Fediverse
 ffaker
@@ -489,6 +490,7 @@ idempotency
 IDEs
 idmapper
 Iglu
+IID
 IIFEs
 Immer
 inclusivity
@@ -1168,6 +1170,8 @@ unescaped
 unfollow
 unfollowed
 unfollows
+unforgeable
+Unforgeable
 Unicorn
 unindexed
 unlink

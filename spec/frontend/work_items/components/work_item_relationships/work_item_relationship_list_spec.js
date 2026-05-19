@@ -8,7 +8,7 @@ import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/w
 import removeLinkedItemsMutation from '~/work_items/graphql/remove_linked_items.mutation.graphql';
 import addLinkedItemsMutation from '~/work_items/graphql/add_linked_items.mutation.graphql';
 
-import { mockBlockingLinkedItem, incidentType, issueType, ticketType } from '../../mock_data';
+import { mockBlockingLinkedItem, incidentType, ticketType } from '../../mock_data';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -33,6 +33,19 @@ describe('WorkItemRelationshipList', () => {
     }
 
     wrapper = shallowMountExtended(WorkItemRelationshipList, {
+      provide: {
+        workItemTypesConfiguration: [
+          { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue', useIssueView: false },
+          { id: 'gid://gitlab/WorkItems::Type/2', name: 'Incident', useIssueView: true },
+          { id: 'gid://gitlab/WorkItems::Type/3', name: 'Test Case', useIssueView: true },
+          { id: 'gid://gitlab/WorkItems::Type/4', name: 'Requirement', useIssueView: true },
+          { id: 'gid://gitlab/WorkItems::Type/5', name: 'Task', useIssueView: false },
+          { id: 'gid://gitlab/WorkItems::Type/6', name: 'Objective', useIssueView: false },
+          { id: 'gid://gitlab/WorkItems::Type/7', name: 'Key Result', useIssueView: false },
+          { id: 'gid://gitlab/WorkItems::Type/8', name: 'Epic', useIssueView: false },
+          { id: 'gid://gitlab/WorkItems::Type/9', name: 'Ticket', useIssueView: true },
+        ],
+      },
       propsData: {
         parentWorkItemId,
         parentWorkItemIid,
@@ -116,12 +129,6 @@ describe('WorkItemRelationshipList', () => {
       {
         description: 'when the item is an incident',
         linkedItems: createMockLinkedItemWithType(incidentType),
-      },
-      {
-        description: 'when the item is a Service Desk issue',
-        linkedItems: createMockLinkedItemWithType(issueType, {
-          author: { username: 'support-bot' },
-        }),
       },
       {
         description: 'when the item is a ticket',

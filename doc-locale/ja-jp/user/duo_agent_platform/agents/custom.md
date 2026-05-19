@@ -8,7 +8,7 @@ title: カスタムエージェント
 {{< details >}}
 
 - プラン: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom)、Premium、Ultimate
-- 提供形態: GitLab.com、GitLab Self-Managed
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
@@ -28,11 +28,9 @@ title: カスタムエージェント
 - 機能フラグ`global_ai_catalog`は18.10で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223135)されました。
 - メンテナーとしてプロジェクトで直接有効化する機能は、GitLab 18.10で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/20743)され、`ai_catalog_project_level_enablement`という名前の[フラグ](../../../administration/feature_flags/_index.md)が付けられました。GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedでデフォルトで有効になっています。
 - GitLab 18.10でGitLab.comのFreeティアでGitLabクレジットとともに利用可能です。
+- 機能フラグ`ai_catalog_project_level_enablement`はGitLab 18.11で削除されました。
 
 {{< /history >}}
-
-> [!flag]
-> メンテナーとしてプロジェクトでエージェントを直接有効化する機能は、機能フラグによって制御されます。詳細については、履歴を参照してください。
 
 エージェントはAIを使用してタスクを実行し、複雑な質問に答えます。マージリクエストの作成やコードのレビューなど、特定のタスクを実行するためのカスタムエージェントを作成できます。また、AIカタログを使用して、GitLabによって作成されたエージェントを見つけることもできます。
 
@@ -238,7 +236,7 @@ VS Codeでカスタムエージェントを使用するには:
 前提条件: 
 
 - エージェントを使用したいプロジェクトで有効にします。
-- [GitLabプラグインfor JetBrains](../../../editor_extensions/jetbrains_ide/setup.md)バージョン3.19.0以降をインストールおよび設定します。
+- [JetBrains IDE用GitLab Duoプラグイン](../../../editor_extensions/jetbrains_ide/setup.md)バージョン3.19.0以降をインストールして設定してください。
 - [デフォルトのGitLab Duoネームスペース](../../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定します。
 
 まず、GitLab Duo Agent Platformを有効にします:

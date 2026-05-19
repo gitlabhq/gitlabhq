@@ -6,7 +6,7 @@ RSpec.describe CloudSeed::GoogleCloud::ServiceAccountsService, feature_category:
   let(:service) { described_class.new(project) }
 
   describe 'find_for_project' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
 
     context 'when a project does not have GCP service account vars' do
       before do
@@ -57,7 +57,7 @@ RSpec.describe CloudSeed::GoogleCloud::ServiceAccountsService, feature_category:
   end
 
   describe 'add_for_project' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
 
     it 'saves GCP creds as project CI vars' do
       service.add_for_project('env_1', 'gcp_prj_id_1', 'srv_acc_1', 'srv_acc_key_1', true)

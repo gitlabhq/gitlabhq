@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Trigger and manage parent-child and multi-project pipelines.
 title: Downstream pipelines
 ---
 
@@ -301,7 +302,7 @@ Use:
 ## Trigger a multi-project pipeline by using the API
 
 You can use the [CI/CD job token (`CI_JOB_TOKEN`)](../jobs/ci_job_token.md) with the
-[pipeline trigger API endpoint](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token)
+[pipeline trigger tokens API endpoint](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token)
 to trigger multi-project pipelines from inside a CI/CD job. GitLab sets pipelines triggered
 with a job token as downstream pipelines of the pipeline that contains the job that
 made the API call.
@@ -312,7 +313,11 @@ For example:
 trigger_pipeline:
   stage: deploy
   script:
-    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=main "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
+    - |
+      curl --request POST \
+        --form "token=$CI_JOB_TOKEN" \
+        --form ref=main \
+        --url "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
   rules:
     - if: $CI_COMMIT_TAG
   environment: production

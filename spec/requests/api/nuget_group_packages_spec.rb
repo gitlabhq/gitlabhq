@@ -208,6 +208,28 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
       end
     end
 
+    describe 'X-NuGet-Warning header' do
+      context 'with an unauthorized request' do
+        let(:url) { "/groups/#{target.id}/-/packages/nuget/metadata/Dummy.Package/index.json" }
+        let(:expected_status) { :unauthorized }
+
+        subject { get api(url) }
+
+        it_behaves_like 'setting the X-NuGet-Warning header on error responses',
+          expected_warning: '401 Unauthorized'
+      end
+
+      context 'with a not found request' do
+        let(:url) { "/groups/#{non_existing_record_id}/-/packages/nuget/metadata/Dummy.Package/index.json" }
+        let(:expected_status) { :not_found }
+
+        subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
+
+        it_behaves_like 'setting the X-NuGet-Warning header on error responses',
+          expected_warning: '404 Not Found'
+      end
+    end
+
     def update_visibility_to(visibility)
       project.update!(visibility_level: visibility)
       subgroup.update!(visibility_level: visibility)

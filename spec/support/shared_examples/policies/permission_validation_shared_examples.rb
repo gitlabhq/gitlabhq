@@ -21,3 +21,11 @@ RSpec.shared_examples 'prevent all except' do
     expect_disallowed(*denied_permissions)
   end
 end
+
+RSpec.shared_examples 'prevent all' do
+  let(:denied_permissions) { described_class.ability_map.map.keys }
+
+  it 'does not allow any permissions', :aggregate_failures do
+    expect_disallowed(*denied_permissions)
+  end
+end

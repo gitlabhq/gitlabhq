@@ -3,7 +3,7 @@ import { GlAlert } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import ZenMode from '~/zen_mode';
-import WorkItemDetail from '../components/work_item_detail.vue';
+import WorkItemDetail from 'ee_else_ce/work_items/components/work_item_detail.vue';
 import { I18N_WORK_ITEM_ERROR_DELETING, WORK_ITEM_TYPE_NAME_EPIC } from '../constants';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 

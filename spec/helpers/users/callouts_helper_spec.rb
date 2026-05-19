@@ -252,10 +252,16 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
   describe '#show_email_otp_enrollment_callout?' do
     subject { helper.show_email_otp_enrollment_callout? }
 
-    let(:email_otp_required_after) { 8.days.from_now }
+    let(:now) { Time.zone.parse('2025-09-10 12:00') }
+    let(:email_otp_required_after) { now + 8.days }
 
     before do
+      travel_to(now)
       user.update!(email_otp_required_after: email_otp_required_after)
+    end
+
+    after do
+      travel_back
     end
 
     it { is_expected.to be true }
@@ -314,14 +320,26 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       it { is_expected.to be false }
     end
 
-    context 'when email_otp_required_after is more than 60 days away' do
-      let(:email_otp_required_after) { 61.days.from_now }
+    context 'when at the start of the callout period' do
+      let(:email_otp_required_after) { now + 14.days }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when almost at the end of the callout period' do
+      let(:email_otp_required_after) { now + 7.days + 1.minute }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when before the callout period starts' do
+      let(:email_otp_required_after) { now + 14.days + 1.hour }
 
       it { is_expected.to be false }
     end
 
-    context 'when email_otp_required_after is less than 31 days away' do
-      let(:email_otp_required_after) { 30.days.from_now }
+    context 'when after the callout period ends' do
+      let(:email_otp_required_after) { now + 7.days }
 
       it { is_expected.to be false }
     end

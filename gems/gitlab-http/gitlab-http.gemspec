@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.test_files = Dir['spec/**/*']
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency 'activesupport', '~> 7'
+  spec.add_runtime_dependency 'activesupport', '>= 7', '< 9'
   spec.add_runtime_dependency 'concurrent-ruby', '~> 1.2'
   spec.add_runtime_dependency 'httparty', '~> 0.21'
   spec.add_runtime_dependency 'ipaddress', '~> 0.8.3'

@@ -39,6 +39,32 @@ RSpec.shared_examples 'commit signature' do
     end
   end
 
+  describe '#verified_committer?' do
+    context 'when verification_status is verified' do
+      it 'returns true' do
+        signature = described_class.new(attributes.merge(verification_status: :verified))
+
+        expect(signature.verified_committer?).to be(true)
+      end
+    end
+
+    context 'when verification_status is verified_system' do
+      it 'returns true' do
+        signature = described_class.new(attributes.merge(verification_status: :verified_system))
+
+        expect(signature.verified_committer?).to be(true)
+      end
+    end
+
+    context 'when verification_status is unverified' do
+      it 'returns false' do
+        signature = described_class.new(attributes.merge(verification_status: :unverified))
+
+        expect(signature.verified_committer?).to be(false)
+      end
+    end
+  end
+
   describe '#commit' do
     it 'fetches the commit through the project' do
       expect_next_instance_of(Project) do |instance|

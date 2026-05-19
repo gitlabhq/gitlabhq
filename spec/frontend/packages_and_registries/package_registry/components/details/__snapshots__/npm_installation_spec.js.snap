@@ -21,11 +21,7 @@ exports[`NpmInstallation renders all the messages 1`] = `
   <gl-form-radio-group-stub
     checked="instance"
     class="gl-my-5"
-    disabledfield="disabled"
-    htmlfield="html"
     options="[object Object],[object Object],[object Object]"
-    textfield="text"
-    valuefield="value"
   />
   <code-instruction-stub
     copytext="Copy npm setup command"

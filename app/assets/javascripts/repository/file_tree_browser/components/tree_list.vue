@@ -1,25 +1,21 @@
 <script>
 import { mapState } from 'pinia';
-import { GlTooltipDirective, GlLoadingIcon, GlTooltip, GlButton } from '@gitlab/ui';
+import { GlLoadingIcon, GlHoverLoadDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
-import { s__, __ } from '~/locale';
-import { waitForElement } from '~/lib/utils/dom_utils';
+import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { joinPaths, buildURLwithRefType, visitUrl } from '~/lib/utils/url_utility';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { TREE_PAGE_SIZE } from '~/repository/constants';
 import { getRefType } from '~/repository/utils/ref_type';
-import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
-import { Mousetrap } from '~/lib/mousetrap';
-import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
-import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import getRefMixin from '~/repository/mixins/get_ref';
 import FileTreeBrowserPopover from '~/repository/file_tree_browser/components/file_tree_browser_popover.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
+import FileTreeSearch from '~/repository/file_tree_browser/components/file_tree_search.vue';
+import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import { createItemVisibilityObserver, observeElements } from '~/lib/utils/lazy_render_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import {
@@ -35,19 +31,16 @@ import {
 
 export default {
   name: 'FileTreeBrowser',
-  FOCUS_FILE_TREE_BROWSER_FILTER_BAR,
   directives: {
-    GlTooltip: GlTooltipDirective,
+    GlHoverLoad: GlHoverLoadDirective,
   },
   components: {
     UserCalloutDismisser,
     FileTreeBrowserPopover,
-    GlButton,
     FileRow,
     GlLoadingIcon,
     FileTreeBrowserToggle,
-    GlTooltip,
-    Shortcut,
+    FileTreeSearch,
   },
   mixins: [InternalEvents.mixin(), getRefMixin],
   props: {
@@ -88,15 +81,6 @@ export default {
     },
     isRootLoading() {
       return this.isDirectoryLoading('/') && this.isDirectoryEmpty('/');
-    },
-    filterSearchShortcutKey() {
-      if (this.shortcutsDisabled) {
-        return null;
-      }
-      return keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR)[0];
-    },
-    shortcutsDisabled() {
-      return shouldDisableShortcuts();
     },
     currentRouterPath() {
       return this.$route.params?.path && normalizePath(this.$route.params.path);
@@ -139,15 +123,9 @@ export default {
   mounted() {
     this.observeItemVisibility();
     this.loadInitialPath();
-    this.mousetrap = new Mousetrap();
-
-    if (!this.shortcutsDisabled) {
-      this.mousetrap.bind(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR), this.triggerFocusFilterBar);
-    }
   },
   beforeDestroy() {
     this.itemObserver?.disconnect();
-    this.mousetrap.unbind(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
     if (this.focusRAFId) {
       cancelAnimationFrame(this.focusRAFId);
     }
@@ -414,133 +392,106 @@ export default {
       const lastItemPath = normalizePath([...trees, ...blobs, ...submodules].at(-1)?.path);
       return itemPath === lastItemPath && pageInfo?.hasNextPage;
     },
-    triggerFocusFilterBar() {
-      const filterBar = this.$refs.filterInput;
-      if (filterBar && filterBar.$el) {
-        this.trackEvent('focus_file_tree_browser_filter_bar_on_repository_page', {
-          label: 'shortcut',
-        });
-        this.openGlobalSearch();
-      }
-    },
-    onFilterBarClick() {
-      this.trackEvent('focus_file_tree_browser_filter_bar_on_repository_page', {
-        label: 'click',
-      });
-
-      this.openGlobalSearch();
-    },
-    async openGlobalSearch() {
-      document.dispatchEvent(new CustomEvent(EVENT_OPEN_GLOBAL_SEARCH));
-      const searchInput = await waitForElement('#super-sidebar-search-modal #search');
-      if (!searchInput) return;
-      searchInput.value = '~';
-      searchInput.dispatchEvent(new Event('input')); // Ensures the @input handler is called on global_search.vue
-    },
-    filterInputTooltipTarget() {
-      // The input might not always be available (i.e. when the FTB is in collapsed state)
-      return this.$refs.filterInput?.$el;
-    },
-    siblingInfo(item) {
-      const siblings = this.siblingMap.get(`${item.parentPath || ''}-${item.level}`);
-      return [siblings.length, siblings.indexOf(item.id) + 1];
-    },
     onTreeKeydown(event) {
       const items = this.flatFilesList;
       const current = items.findIndex((i) => i.id === this.activeItemId);
       const item = items[current];
 
-      // Enter/Space
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        if (item?.isShowMore) this.handleShowMore(item.parentPath, event);
-        if (item?.type === 'tree') this.toggleDirectory(item.path, { toggleClose: false });
-        if (item?.submodule && item?.webUrl) visitUrl(item.webUrl);
-        if (item?.routerPath && !this.isCurrentPath(item?.path)) this.$router.push(item.routerPath);
-        return;
-      }
-
-      // Home/End
-      if (event.key === 'Home' || event.key === 'End') {
-        event.preventDefault();
-        const index = event.key === 'Home' ? 0 : items.length - 1;
-        if (items.length) {
-          this.activeItemId = items[index].id;
-          this.$nextTick(() => this.focusActiveItemThrottled());
-        }
-        return;
-      }
-
-      // Asterisk (*)
-      if (event.key === '*' && item) {
-        event.preventDefault();
-        items
-          .filter((i) => i.type === 'tree' && !i.opened && i.parentPath === item.parentPath)
-          .forEach((i) => this.toggleDirectory(i.path, { toggleClose: false }));
-      }
-
-      // a-z
-      if (/^[a-zA-Z]$/.test(event.key)) {
-        event.preventDefault();
-        const key = event.key.toLowerCase();
-        const idx = items.findIndex((i) => i.id === this.activeItemId);
-
-        // Search after current, then wrap to beginning
-        const match =
-          items.slice(idx + 1).find((i) => i.name?.[0]?.toLowerCase() === key) ||
-          items.slice(0, idx + 1).find((i) => i.name?.[0]?.toLowerCase() === key);
-
-        if (match) {
-          this.activeItemId = match.id;
-          this.$nextTick(() => this.focusActiveItemThrottled());
-        }
-        return;
-      }
-
-      // Right Arrow
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        if (item?.type === 'tree' && !item.opened) {
-          this.toggleDirectory(item.path, { toggleClose: false });
+      // Allow all browser/OS shortcuts to pass through
+      if (!event.metaKey && !event.ctrlKey && !event.altKey) {
+        // Enter/Space
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          if (item?.isShowMore) this.handleShowMore(item.parentPath, event);
+          if (item?.type === 'tree') this.toggleDirectory(item.path, { toggleClose: false });
+          if (item?.submodule && item?.webUrl) visitUrl(item.webUrl);
+          if (item?.routerPath && !this.isCurrentPath(item?.path))
+            this.$router.push(item.routerPath);
           return;
         }
-        const child = items[current + 1];
-        if (item?.type === 'tree' && child?.level > item.level) {
-          this.activeItemId = child.id;
-          this.$nextTick(() => this.focusActiveItemThrottled());
-        }
-        return;
-      }
 
-      // Left Arrow
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        if (item?.type === 'tree' && item.opened) {
-          this.toggleDirectory(item.path);
+        // Home/End
+        if (event.key === 'Home' || event.key === 'End') {
+          event.preventDefault();
+          const index = event.key === 'Home' ? 0 : items.length - 1;
+          if (items.length) {
+            this.activeItemId = items[index].id;
+            this.$nextTick(() => this.focusActiveItemThrottled());
+          }
           return;
         }
-        const parent = items
-          .slice(0, current)
-          .reverse()
-          .find((i) => i.level === item.level - 1);
-        if (parent) {
-          this.activeItemId = parent.id;
-          this.$nextTick(() => this.focusActiveItemThrottled());
+
+        // Asterisk (*)
+        if (event.key === '*' && item) {
+          event.preventDefault();
+          items
+            .filter((i) => i.type === 'tree' && !i.opened && i.parentPath === item.parentPath)
+            .forEach((i) => this.toggleDirectory(i.path, { toggleClose: false }));
         }
-        return;
+
+        // a-z
+        if (/^[a-zA-Z]$/.test(event.key)) {
+          event.preventDefault();
+          const key = event.key.toLowerCase();
+          const idx = items.findIndex((i) => i.id === this.activeItemId);
+
+          // Search after current, then wrap to beginning
+          const match =
+            items.slice(idx + 1).find((i) => i.name?.[0]?.toLowerCase() === key) ||
+            items.slice(0, idx + 1).find((i) => i.name?.[0]?.toLowerCase() === key);
+
+          if (match) {
+            this.activeItemId = match.id;
+            this.$nextTick(() => this.focusActiveItemThrottled());
+          }
+          return;
+        }
+
+        // Right Arrow
+        if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          if (item?.type === 'tree' && !item.opened) {
+            this.toggleDirectory(item.path, { toggleClose: false });
+            return;
+          }
+          const child = items[current + 1];
+          if (item?.type === 'tree' && child?.level > item.level) {
+            this.activeItemId = child.id;
+            this.$nextTick(() => this.focusActiveItemThrottled());
+          }
+          return;
+        }
+
+        // Left Arrow
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          if (item?.type === 'tree' && item.opened) {
+            this.toggleDirectory(item.path);
+            return;
+          }
+          const parent = items
+            .slice(0, current)
+            .reverse()
+            .find((i) => i.level === item.level - 1);
+          if (parent) {
+            this.activeItemId = parent.id;
+            this.$nextTick(() => this.focusActiveItemThrottled());
+          }
+          return;
+        }
+
+        // Arrow keys (Up/Down)
+        if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+
+        event.preventDefault();
+        const move = event.key === 'ArrowDown' ? 1 : -1;
+        const next = current + move;
+
+        if (next < 0 || next >= items.length) return;
+
+        this.activeItemId = items[next].id;
+        this.$nextTick(() => this.focusActiveItemThrottled());
       }
-
-      // Arrow keys (Up/Down)
-      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
-
-      event.preventDefault();
-      const move = event.key === 'ArrowDown' ? 1 : -1;
-      const next = current + move;
-
-      if (next < 0 || next >= items.length) return;
-
-      this.activeItemId = items[next].id;
-      this.$nextTick(() => this.focusActiveItemThrottled());
     },
     observeListItems() {
       this.$nextTick(() => observeElements(this.$refs.fileTreeList, this.itemObserver));
@@ -590,8 +541,49 @@ export default {
       this.toggleDirectory(item.path, { toggleClose: false });
       this.handleNavigate(item.path, item.routerPath);
     },
+    siblingInfo(item) {
+      const siblings = this.siblingMap.get(`${item.parentPath || ''}-${item.level}`);
+      return [siblings.length, siblings.indexOf(item.id) + 1];
+    },
+    handlePreload(item) {
+      if (item.submodule || item.isSkeleton || item.isShowMore) return;
+      if (item.type === 'tree') {
+        this.preloadFolder(item.path);
+      } else {
+        this.preloadBlob(item.path);
+      }
+    },
+    preloadFolder(path) {
+      const apiPath = normalizePath(path);
+      if (this.directoriesCache[apiPath] || this.loadingPathsMap[apiPath]) return;
+      this.$apollo.query({
+        query: paginatedTreeQuery,
+        fetchPolicy: 'cache-first',
+        variables: {
+          projectPath: this.projectPath,
+          ref: this.currentRef,
+          refType: getRefType(this.refType),
+          path: apiPath === '/' ? apiPath : apiPath.substring(1),
+          nextPageCursor: '',
+          pageSize: TREE_PAGE_SIZE,
+        },
+      });
+    },
+    preloadBlob(path) {
+      const apiPath = normalizePath(path).substring(1);
+      this.$apollo.query({
+        query: blobInfoQuery,
+        fetchPolicy: 'cache-first',
+        variables: {
+          projectPath: this.projectPath,
+          filePath: [apiPath],
+          ref: this.currentRef,
+          refType: getRefType(this.refType),
+          shouldFetchRawText: true,
+        },
+      });
+    },
   },
-  searchLabel: s__('Repository|Search files (*.vue, *.rb...)'),
 };
 </script>
 
@@ -618,29 +610,7 @@ export default {
     </div>
 
     <div class="gl-relative gl-flex gl-pr-3">
-      <gl-button
-        ref="filterInput"
-        icon="search"
-        data-testid="search-trigger"
-        :aria-label="$options.searchLabel"
-        :aria-keyshortcuts="filterSearchShortcutKey"
-        class="gl-w-full !gl-px-3"
-        button-text-classes="gl-flex gl-w-full gl-text-subtle"
-        @click="onFilterBarClick"
-      >
-        <span class="gl-grow gl-text-left">{{ $options.searchLabel }}</span>
-      </gl-button>
-      <gl-tooltip
-        v-if="!shortcutsDisabled"
-        custom-class="file-browser-filter-tooltip"
-        :target="filterInputTooltipTarget"
-      >
-        {{ __('Focus on the search bar') }}
-        <shortcut
-          class="gl-whitespace-nowrap"
-          :shortcuts="$options.FOCUS_FILE_TREE_BROWSER_FILTER_BAR.defaultKeys"
-        />
-      </gl-tooltip>
+      <file-tree-search :project-path="projectPath" :ref-type="refType" :escaped-ref="escapedRef" />
     </div>
     <gl-loading-icon v-if="isRootLoading" class="gl-mt-5" />
     <nav
@@ -674,6 +644,7 @@ export default {
         >
           <file-row
             v-if="item.isSkeleton || appearedItems[item.id]"
+            v-gl-hover-load="() => handlePreload(item)"
             :file="item"
             :level="item.level"
             :opened="item.opened"

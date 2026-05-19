@@ -142,7 +142,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
       expect(importer)
         .to receive(:update_repository)
 
-      importer.each_object_to_import {}
+      importer.each_object_to_import { nil }
     end
   end
 

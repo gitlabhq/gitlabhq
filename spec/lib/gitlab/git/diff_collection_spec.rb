@@ -609,6 +609,50 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
         end
       end
 
+      shared_examples 'marks generated file using to_path' do |description, diff_double|
+        context "with generated_files containing a #{description} path" do
+          let(:target_diff) { diff_double }
+          let(:diff_params) { [target_diff, diff_2] }
+          let(:generated_files) { [target_diff.to_path] }
+
+          it "marks the #{description} as generated using to_path" do
+            collection.each do |d|
+              if d.new_path == target_diff.to_path
+                expect(d.generated).to be true
+              else
+                expect(d.generated).to be false
+              end
+            end
+          end
+        end
+      end
+
+      it_behaves_like 'marks generated file using to_path', 'new file',
+        OpenStruct.new(
+          to_path: "new-generated-file.txt",
+          from_path: "",
+          old_mode: 0,
+          new_mode: 0100644,
+          from_id: '0000000000000000000000000000000000000000',
+          to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0',
+          patch: 'a' * 10,
+          raw_patch_data: 'a' * 10,
+          end_of_patch: true
+        )
+
+      it_behaves_like 'marks generated file using to_path', 'renamed file',
+        OpenStruct.new(
+          to_path: "new-name-generated.txt",
+          from_path: "old-name.txt",
+          old_mode: 0100644,
+          new_mode: 0100644,
+          from_id: '357406f3075a57708d0163752905cc1576fceacc',
+          to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0',
+          patch: 'a' * 10,
+          raw_patch_data: 'a' * 10,
+          end_of_patch: true
+        )
+
       context 'without generated_files' do
         let(:generated_files) { nil }
 

@@ -1,28 +1,23 @@
 # frozen_string_literal: true
 
 module BulkImports
-  class ExportStatus
-    include Gitlab::Utils::StrongMemoize
-
-    CACHE_KEY = 'bulk_imports/export_status/%{entity_id}/%{relation}'
-
+  class ExportStatus < ::Import::ExportStatus
     def initialize(pipeline_tracker, relation)
-      @pipeline_tracker = pipeline_tracker
-      @relation = relation
-      @entity = @pipeline_tracker.entity
+      super
+
       @configuration = @entity.bulk_import.configuration
       @client = Clients::HTTP.new(url: @configuration.url, token: @configuration.access_token)
     end
 
     def in_progress?
-      !empty? && Export::IN_PROGRESS_STATUSES.include?(status['status'])
+      !waiting_on_export? && Export::IN_PROGRESS_STATUSES.include?(status['status'])
     end
 
     def failed?
-      !empty? && status['status'] == Export::FAILED
+      !waiting_on_export? && status['status'] == Export::FAILED
     end
 
-    def empty?
+    def waiting_on_export?
       status.nil?
     end
 
@@ -38,23 +33,27 @@ module BulkImports
       status['batches_count'].to_i
     end
 
-    def batch(batch_number)
-      raise ArgumentError if batch_number < 1
+    def all_batch_numbers
+      (1..batches_count).to_a
+    end
 
-      return unless batched?
+    def batch_failed?(batch_number)
+      batch(batch_number)&.dig('status') == BulkImports::ExportBatch::STATE_VALUES[:failed]
+    end
 
-      status['batches'].find { |item| item['batch_number'] == batch_number }
+    def batch_error(batch_number)
+      batch(batch_number)&.dig('error')
     end
 
     def total_objects_count
-      return 0 if empty?
+      return 0 if waiting_on_export?
 
       status['total_objects_count']
     end
 
     private
 
-    attr_reader :client, :entity, :relation, :pipeline_tracker
+    attr_reader :client
 
     def status
       # As an optimization, once an export status has finished or failed it will
@@ -71,12 +70,6 @@ module BulkImports
       default_error_response(e.message)
     end
     strong_memoize_attr :status
-
-    def status_from_cache
-      status = Gitlab::Cache::Import::Caching.read(cache_key)
-
-      Gitlab::Json.safe_parse(status) if status
-    end
 
     def status_from_remote
       raw_status = client.get(status_endpoint, relation: relation).parsed_response
@@ -98,16 +91,16 @@ module BulkImports
       status.present? && status['status'].in?([Export::FINISHED, Export::FAILED])
     end
 
-    def cache_status(status)
-      Gitlab::Cache::Import::Caching.write(cache_key, status.to_json)
-    end
-
-    def cache_key
-      Kernel.format(CACHE_KEY, entity_id: entity.id, relation: relation)
-    end
-
     def status_endpoint
       File.join(entity.export_relations_url_path_base, 'status')
+    end
+
+    def batch(batch_number)
+      raise ArgumentError, "Batch number (#{batch_number}) must be >= 1" if batch_number < 1
+
+      return unless batched?
+
+      status['batches'].find { |item| item['batch_number'] == batch_number }
     end
 
     def default_error_response(message)

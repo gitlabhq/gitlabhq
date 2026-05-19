@@ -43,15 +43,6 @@ RSpec.describe 'Merge request > User sees closing issues message', :js, feature_
     end
   end
 
-  context 'closing some issues in title and mentioning, but not closing, others' do
-    let(:merge_request_title) { "closes #{issue_1.to_reference}\n\n refers to #{issue_2.to_reference}" }
-
-    it 'does not display closing issue message' do
-      expect(page).to have_content("Closes issue #{issue_1.to_reference}")
-      expect(page).to have_content("Mentions issue #{issue_2.to_reference}")
-    end
-  end
-
   context 'closing issues using title but not mentioning any other issue' do
     let(:merge_request_title) { "closing #{issue_1.to_reference}, #{issue_2.to_reference}" }
 

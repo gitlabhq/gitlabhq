@@ -4,6 +4,8 @@ description: Grants the ability to update members
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
 permissions:
   - approve_member
   - create_ldap_member_override

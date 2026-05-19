@@ -27,6 +27,30 @@ RSpec.describe API::Metadata, feature_category: :shared do
       end
     end
 
+    context 'when authenticated with OAuth token having ai_workflows scope' do
+      # The :ai_workflows scope is intentionally not creatable as a PAT scope
+      # (see Gitlab::Auth#unavailable_ai_features_scopes), so we exercise the
+      # actual production path: an OAuth access token issued via
+      # PreConfiguredWorkflowTokenService for the Duo Workflow executor.
+      let_it_be(:user) { create(:user) }
+      let_it_be(:application) { create(:oauth_application, scopes: 'ai_workflows') }
+      let_it_be(:oauth_token) do
+        create(:oauth_access_token, application: application, resource_owner: user, scopes: 'ai_workflows')
+      end
+
+      it 'returns the metadata information' do
+        get api(endpoint, oauth_access_token: oauth_token)
+
+        expect_metadata
+      end
+
+      it 'returns "200" response on head requests' do
+        head api(endpoint, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     context 'when authenticated with token' do
       let(:personal_access_token) { create(:personal_access_token, scopes: scopes) }
 

@@ -72,5 +72,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::SetBuildSources, feature_category: :
         expect(build.job_source.source).to eq('push')
       end
     end
+
+    # The CE base class defines security_scan_profile_build? as a stub
+    # returning false, overridden in EE via prepend_mod_with. Since EE is
+    # always loaded in the EE test suite, the CE method is unreachable
+    # through perform!. We invoke it directly to verify and cover the stub.
+    it 'returns false for security_scan_profile_build? in CE' do
+      step = described_class.new(pipeline, command)
+      build = instance_double(::Ci::Build, name: 'test')
+      method = described_class.instance_method(:security_scan_profile_build?)
+      ce_method = method.super_method || method
+
+      expect(ce_method.bind_call(step, build)).to be false
+    end
   end
 end

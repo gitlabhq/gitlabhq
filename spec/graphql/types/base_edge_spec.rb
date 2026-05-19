@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Types::BaseEdge, feature_category: :api do
   include GraphqlHelpers
 
-  let_it_be(:test_schema) do
+  let_it_be(:test_schema, freeze: false) do
     project_edge_type = Class.new(described_class) do
       field :proof_of_admin_rights, String, null: true, authorize: :admin_project
 

@@ -2,24 +2,20 @@
 <script>
 import TreeContent from 'jh_else_ce/repository/components/tree_content.vue';
 import preloadMixin from '../mixins/preload';
+import repositoryPathMixin from '../mixins/repository_path';
 import { updateElementsVisibility } from '../utils/dom';
 
 export default {
   components: {
     TreeContent,
   },
-  mixins: [preloadMixin],
+  mixins: [preloadMixin, repositoryPathMixin],
   provide() {
     return {
       refType: this.refType,
     };
   },
   props: {
-    path: {
-      type: String,
-      required: false,
-      default: '/',
-    },
     refType: {
       type: String,
       required: false,
@@ -28,7 +24,7 @@ export default {
   },
   computed: {
     isRoot() {
-      return this.path === '/';
+      return this.computedPath === '/';
     },
   },
   watch: {
@@ -47,5 +43,5 @@ export default {
 </script>
 
 <template>
-  <tree-content :path="path" :loading-path="loadingPath" />
+  <tree-content :path="computedPath" :loading-path="loadingPath" />
 </template>

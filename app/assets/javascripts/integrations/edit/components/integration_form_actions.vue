@@ -1,8 +1,8 @@
 <script>
 import { GlButton, GlModalDirective } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import { integrationLevels } from '~/integrations/constants';
+import { useIntegrationForm } from '../store';
 import ConfirmationModal from './confirmation_modal.vue';
 import ResetConfirmationModal from './reset_confirmation_modal.vue';
 
@@ -33,9 +33,9 @@ export default {
       default: false,
     },
   },
+  emits: ['reset', 'save', 'test'],
   computed: {
-    ...mapGetters(['propsSource']),
-    ...mapState(['customState']),
+    ...mapState(useIntegrationForm, ['propsSource', 'customState']),
     isInstanceOrGroupLevel() {
       return (
         this.customState.integrationLevel === integrationLevels.INSTANCE ||

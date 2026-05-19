@@ -1,0 +1,55 @@
+---
+name: contributions_new
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(version, deleted) PARTITION BY toYear(created_at)
+  ORDER BY (path, created_at, author_id, id) SETTINGS index_granularity = 8192
+partition_key: toYear(created_at)
+primary_key: path, created_at, author_id, id
+sorting_key: path, created_at, author_id, id
+settings:
+  index_granularity: '8192'
+columns:
+- name: id
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: path
+  type: String
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: author_id
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: target_type
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: action
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  is_in_partition_key: true
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: version
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))

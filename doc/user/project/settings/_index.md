@@ -21,7 +21,7 @@ title: Project settings
 To configure features and permissions for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. To allow users to request access to the project, select the **Users can request access** checkbox.
 1. To turn features on or off in the project, use the feature toggles.
@@ -55,7 +55,7 @@ and accessible to project members, regardless of their role.
 To toggle the availability of individual features in a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. To change the availability of a feature, turn the toggle on or off.
 1. Select **Save changes**.
@@ -69,7 +69,7 @@ By default, project analytics are displayed under the **Analyze** item in the le
 To turn this feature off and remove the **Analyze** item from the left sidebar:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn off the **Analytics** toggle.
 1. Select **Save changes**.
@@ -94,7 +94,7 @@ In some environments, users can submit a [CVE identifier request](../../applicat
 To turn off the CVE identifier request option in issues in your project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Work items**, turn off the **CVE ID requests in the issue sidebar** toggle.
 1. Select **Save changes**.
@@ -106,7 +106,7 @@ Prerequisites:
 - You must have the Owner role for the project.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Clear the **Enable email notifications** checkbox.
 
@@ -132,7 +132,7 @@ Prerequisites:
 To turn off diff previews for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Clear **Include diff previews**.
 1. Select **Save changes**.
@@ -155,6 +155,7 @@ Configure your project's merge request settings:
 - Configure:
   - [Suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
   - [Merge and squash commit message templates](../merge_requests/commit_templates.md).
+  - [Merge request title templates](../merge_requests/title_templates.md).
   - [Default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
 
 ### Delete the source branch on merge by default
@@ -165,7 +166,7 @@ In merge requests, you can change the default behavior so that the
 To set this default:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. Select **Enable "Delete source branch" option by default**.
 1. Select **Save changes**.
 
@@ -185,7 +186,7 @@ before a project token expires. By default, these webhooks trigger 7 days before
 To configure these webhooks to also trigger 60 days and 30 days before a token expires:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Select the **Add additional webhook triggers for project access token expiration** checkbox.
 1. Select **Save changes**.

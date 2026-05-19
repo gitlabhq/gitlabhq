@@ -247,6 +247,17 @@ describe('ReportSection', () => {
         expect(supportingText.text()).toBe(MOCK_DENIED_SECTION.children[0].supportingText);
       });
 
+      it('renders supportingText as plain text instead of HTML', () => {
+        createComponent({
+          sections: [{ children: [{ supportingText: '<strong>hello</strong>' }] }],
+        });
+
+        const supportingText = wrapper.findByTestId('item-supporting-text');
+
+        expect(supportingText.text()).toBe('<strong>hello</strong>');
+        expect(supportingText.find('strong').exists()).toBe(false);
+      });
+
       it('renders item text when text is provided', () => {
         createComponent({ sections: MOCK_SECTIONS });
 

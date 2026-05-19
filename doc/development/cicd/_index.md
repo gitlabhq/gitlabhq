@@ -25,7 +25,7 @@ responsibly, and integrating security considerations from the beginning of the d
 - **Remote execution and isolation**: The CI/CD pipeline functions as a remote execution environment where jobs can
   execute scripts performing a wide range of actions. Ensure that jobs are adequately isolated and do not unintentionally
   expose sensitive data or systems.
-- **Collaborate with AppSec and Verify teams**: Include [Application Security (AppSec)](https://handbook.gitlab.com/handbook/security/product-security/application-security/)
+- **Collaborate with AppSec and Verify teams**: Include [Application Security (AppSec)](https://handbook.gitlab.com/handbook/security/product-security/security-platforms-architecture/application-security/)
   and [Verify](https://handbook.gitlab.com/handbook/engineering/development/ops/verify/) team members early in
   the design process and when drafting proposals. Their expertise can help identify potential security risks and ensure
   that security considerations are integrated into the feature from the outset. Additionally, involve them in the code

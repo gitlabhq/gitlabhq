@@ -1,0 +1,24 @@
+---
+name: sync_cursors
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(recorded_at) PRIMARY KEY table_name ORDER BY table_name
+  SETTINGS index_granularity = 8192
+primary_key: table_name
+sorting_key: table_name
+settings:
+  index_granularity: '8192'
+columns:
+- name: table_name
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: primary_key_value
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: recorded_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')

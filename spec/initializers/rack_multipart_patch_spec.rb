@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Rack::Multipart do # rubocop:disable RSpec/SpecFilePathFormat
   def multipart_fixture(name, length, boundary = "AaB03x")
-    data = <<EOF
+    data = <<MULTIPART
 --#{boundary}\r
 content-disposition: form-data; name="reply"\r
 \r
@@ -16,7 +16,7 @@ Content-Transfer-Encoding: base64\r
 \r
 /9j/4AAQSkZJRgABAQAAAQABAAD//gA+Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcg\r
 --#{boundary}--\r
-EOF
+MULTIPART
 
     type = %(multipart/form-data; boundary=#{boundary})
 

@@ -6,12 +6,15 @@ module QA
 
     describe "Gitlab migration", :import, :orchestrated, requires_admin: 'creates a user via API' do
       context 'with subgroups and labels' do
-        let(:subgroup) do
+        let!(:subgroup) do
           create(:group,
             path: "subgroup-for-import-#{SecureRandom.hex(4)}",
             sandbox: source_group,
             api_client: source_admin_api_client)
         end
+
+        # Increase timeout for subgroup imports which take longer than flat group imports
+        let!(:import_wait_duration) { { max_duration: 240, sleep_interval: 2 } }
 
         let(:imported_subgroup) { build(:group, api_client: api_client, sandbox: imported_group, path: subgroup.path) }
 
@@ -31,10 +34,6 @@ module QA
 
         it(
           'successfully imports groups and labels',
-          quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24286',
-            type: :investigating
-          },
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347674'
         ) do
           expect_group_import_finished_successfully

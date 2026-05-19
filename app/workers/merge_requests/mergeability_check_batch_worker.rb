@@ -33,34 +33,18 @@ module MergeRequests
         merge_status_recheck_not_allowed?(merge_request.project, user)
       end
 
-      if Feature.enabled?(:batch_merge_status_updates, allowed_merge_requests.first&.project)
-        MergeRequest.batch_mark_as_checking(allowed_merge_requests.map(&:id))
+      MergeRequest.batch_mark_as_checking(allowed_merge_requests.map(&:id))
 
-        allowed_merge_requests.each do |merge_request|
-          result = merge_request.check_mergeability
+      allowed_merge_requests.each do |merge_request|
+        result = merge_request.check_mergeability
 
-          next unless result&.error?
+        next unless result&.error?
 
-          logger.error(
-            worker: self.class.name,
-            message: "Failed to check mergeability of merge request: #{result.message}",
-            merge_request_id: merge_request.id
-          )
-        end
-      else
-        allowed_merge_requests.each do |merge_request|
-          merge_request.mark_as_checking
-
-          result = merge_request.check_mergeability
-
-          next unless result&.error?
-
-          logger.error(
-            worker: self.class.name,
-            message: "Failed to check mergeability of merge request: #{result.message}",
-            merge_request_id: merge_request.id
-          )
-        end
+        logger.error(
+          worker: self.class.name,
+          message: "Failed to check mergeability of merge request: #{result.message}",
+          merge_request_id: merge_request.id
+        )
       end
     end
 

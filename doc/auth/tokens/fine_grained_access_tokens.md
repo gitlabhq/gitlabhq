@@ -68,17 +68,6 @@ Fine-grained personal access tokens can access the following REST API endpoints:
 
 ### Application Security resources
 
-#### Audit Event
-
-Grants the ability to read audit events.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | Group | `GET` | `/groups/:id/audit_events` |
-| Read | Group | `GET` | `/groups/:id/audit_events/:audit_event_id` |
-| Read | Instance | `GET` | `/audit_events` |
-| Read | Instance | `GET` | `/audit_events/:id` |
-
 #### Compliance Policy Setting
 
 Grants the ability to read and update compliance policy settings.
@@ -104,27 +93,6 @@ Grants the ability to create dependency list exports.
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/projects/:id/dependency_list_exports` |
 | Create | Group | `POST` | `/groups/:id/dependency_list_exports` |
-
-#### External Status Check
-
-Grants the ability to read, retry, and update external status checks.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/status_checks` |
-| Retry | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/status_checks/:external_status_check_id/retry` |
-| Update | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/status_check_responses` |
-
-#### External Status Check Service
-
-Grants the ability to create, delete, read, and update external status check services.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Project | `POST` | `/projects/:id/external_status_checks` |
-| Delete | Project | `DELETE` | `/projects/:id/external_status_checks/:check_id` |
-| Read | Project | `GET` | `/projects/:id/external_status_checks` |
-| Update | Project | `PUT` | `/projects/:id/external_status_checks/:check_id` |
 
 #### SBOM Occurrence
 
@@ -294,9 +262,33 @@ Grants the ability to create, delete, read, stop, and update environments.
 | Stop | Project | `POST` | `/projects/:id/environments/stop_stale` |
 | Update | Project | `PUT` | `/projects/:id/environments/:environment_id` |
 
+#### Feature Flag
+
+Grants the ability to create, delete, read, and update feature flags.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Project | `POST` | `/projects/:id/feature_flags` |
+| Delete | Project | `DELETE` | `/projects/:id/feature_flags/:feature_flag_name` |
+| Read | Project | `GET` | `/projects/:id/feature_flags` |
+| Read | Project | `GET` | `/projects/:id/feature_flags/:feature_flag_name` |
+| Update | Project | `PUT` | `/projects/:id/feature_flags/:feature_flag_name` |
+
+#### Freeze Period
+
+Grants the ability to create, delete, read, and update freeze periods.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Project | `POST` | `/projects/:id/freeze_periods` |
+| Delete | Project | `DELETE` | `/projects/:id/freeze_periods/:freeze_period_id` |
+| Read | Project | `GET` | `/projects/:id/freeze_periods` |
+| Read | Project | `GET` | `/projects/:id/freeze_periods/:freeze_period_id` |
+| Update | Project | `PUT` | `/projects/:id/freeze_periods/:freeze_period_id` |
+
 #### Job
 
-Grants the ability to delete, read, run job, and update jobs.
+Grants the ability to delete, read, run, and update jobs.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -304,8 +296,8 @@ Grants the ability to delete, read, run job, and update jobs.
 | Read | Project | `GET` | `/projects/:id/jobs` |
 | Read | Project | `GET` | `/projects/:id/jobs/:job_id` |
 | Read | Project | `GET` | `/projects/:id/jobs/:job_id/trace` |
-| Run Job | Project | `POST` | `/projects/:id/jobs/:job_id/retry` |
-| Run Job | Project | `POST` | `/projects/:id/jobs/:job_id/play` |
+| Run | Project | `POST` | `/projects/:id/jobs/:job_id/retry` |
+| Run | Project | `POST` | `/projects/:id/jobs/:job_id/play` |
 | Update | Project | `POST` | `/projects/:id/jobs/:job_id/cancel` |
 
 #### Job Artifact
@@ -410,7 +402,7 @@ Grants the ability to create, read, and update pull mirrors.
 
 #### Repository Storage Move
 
-Grants the ability to create, manage, and read repository storage moves.
+Grants the ability to create and read repository storage moves.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -449,7 +441,7 @@ Grants the ability to read and update resource groups.
 
 #### Runner
 
-Grants the ability to assign, create, and read runners.
+Grants the ability to assign, create, delete, read, and update runners.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -529,6 +521,40 @@ Grants the ability to create, delete, read, and update CI variables.
 | Update | Group | `PUT` | `/groups/:id/variables/:key` |
 | Update | Instance | `PUT` | `/admin/ci/variables/:key` |
 
+### Compliance resources
+
+#### Audit Event
+
+Grants the ability to read audit events.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Group | `GET` | `/groups/:id/audit_events` |
+| Read | Group | `GET` | `/groups/:id/audit_events/:audit_event_id` |
+| Read | Instance | `GET` | `/audit_events` |
+| Read | Instance | `GET` | `/audit_events/:id` |
+
+#### External Status Check
+
+Grants the ability to read, retry, and update external status checks.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/status_checks` |
+| Retry | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/status_checks/:external_status_check_id/retry` |
+| Update | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/status_check_responses` |
+
+#### External Status Check Service
+
+Grants the ability to create, delete, read, and update external status check services.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Project | `POST` | `/projects/:id/external_status_checks` |
+| Delete | Project | `DELETE` | `/projects/:id/external_status_checks/:check_id` |
+| Read | Project | `GET` | `/projects/:id/external_status_checks` |
+| Update | Project | `PUT` | `/projects/:id/external_status_checks/:check_id` |
+
 ### Duo resources
 
 #### Chat Completion
@@ -571,13 +597,21 @@ Grants the ability to read code suggestion enabled status.
 | ------ | ------ | ------ | ---- |
 | Read | Project | `POST` | `/code_suggestions/enabled` |
 
-#### Duo Workflows
+#### Duo Workflow
 
 Grants the ability to resume duo workflows.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Resume | User | `POST` | `/ai/duo_workflows/workflows/:workflow_id/resume` |
+
+#### Third Party Agent Direct Access Token
+
+Grants the ability to create direct access tokens for third-party agents
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | User | `POST` | `/ai/third_party_agents/direct_access` |
 
 ### Geo resources
 
@@ -613,6 +647,14 @@ Grants the ability to create, delete, read, repair, and update Geo sites.
 
 ### Groups resources
 
+#### Activity
+
+Grants the ability to read activities.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | User | `GET` | `/user/activities` |
+
 #### Admin Member Role
 
 Grants the ability to create, delete, read, and update admin member roles.
@@ -623,15 +665,54 @@ Grants the ability to create, delete, read, and update admin member roles.
 | Delete | Instance | `DELETE` | `/admin_member_roles/:member_role_id` |
 | Read | Instance | `GET` | `/admin_member_roles` |
 
+#### Association
+
+Grants the ability to read associations.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | User | `GET` | `/users/:id/associations_count` |
+
 #### Avatar
 
-Grants the ability to read avatars.
+Grants the ability to read and update avatars.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Read | Project | `GET` | `/projects/:id/avatar` |
 | Read | Group | `GET` | `/groups/:id/avatar` |
 | Read | User | `GET` | `/avatar` |
+| Update | User | `PUT` | `/user/avatar` |
+
+#### Follower
+
+Grants the ability to read followers.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | User | `GET` | `/users/:id/followers` |
+
+#### Following
+
+Grants the ability to read followings.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | User | `GET` | `/users/:id/following` |
+
+#### GPG Key
+
+Grants the ability to create, delete, read, and revoke GPG keys.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | User | `POST` | `/user/gpg_keys` |
+| Delete | User | `DELETE` | `/user/gpg_keys/:key_id` |
+| Read | User | `GET` | `/users/:id/gpg_keys` |
+| Read | User | `GET` | `/users/:id/gpg_keys/:key_id` |
+| Read | User | `GET` | `/user/gpg_keys` |
+| Read | User | `GET` | `/user/gpg_keys/:key_id` |
+| Revoke | User | `POST` | `/user/gpg_keys/:key_id/revoke` |
 
 #### Group
 
@@ -681,16 +762,14 @@ Grants the ability to read namespaces.
 | Read | User | `GET` | `/namespaces/:id` |
 | Read | User | `GET` | `/namespaces/:id/exists` |
 
-#### SAML Identity
+#### Preference
 
-Grants the ability to delete, read, and update SAML identities.
+Grants the ability to read and update preferences.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
-| Delete | Group | `DELETE` | `/groups/:id/saml/:uid` |
-| Read | Group | `GET` | `/groups/:id/saml/identities` |
-| Read | Group | `GET` | `/groups/:id/saml/:uid` |
-| Update | Group | `PATCH` | `/groups/:id/saml/:uid` |
+| Read | User | `GET` | `/user/preferences` |
+| Update | User | `PUT` | `/user/preferences` |
 
 #### SSH Certificate
 
@@ -701,6 +780,26 @@ Grants the ability to create, delete, and read SSH certificates.
 | Create | Group | `POST` | `/groups/:id/ssh_certificates` |
 | Delete | Group | `DELETE` | `/groups/:id/ssh_certificates/:ssh_certificates_id` |
 | Read | Group | `GET` | `/groups/:id/ssh_certificates` |
+
+#### Status
+
+Grants the ability to read and update statuses.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | User | `GET` | `/users/:user_id/status` |
+| Read | User | `GET` | `/user/status` |
+| Update | User | `PATCH` | `/user/status` |
+| Update | User | `PUT` | `/user/status` |
+
+#### Support PIN
+
+Grants the ability to create and read support PINs.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | User | `POST` | `/user/support_pin` |
+| Read | User | `GET` | `/user/support_pin` |
 
 #### Template
 
@@ -722,96 +821,47 @@ Grants the ability to create, delete, merge, read, and update topics.
 | Merge | Instance | `POST` | `/topics/merge` |
 | Update | Instance | `PUT` | `/topics/:id` |
 
-#### User Activity
+### Integrations resources
 
-Grants the ability to read user activities.
+#### Webhook
 
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | User | `GET` | `/user/activities` |
-
-#### User Association
-
-Grants the ability to read user associations.
+Grants the ability to create, delete, read, trigger, and update webhooks.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
-| Read | User | `GET` | `/users/:id/associations_count` |
-
-#### User Avatar
-
-Grants the ability to update user avatars.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Update | User | `PUT` | `/user/avatar` |
-
-#### User Follower
-
-Grants the ability to read user followers.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | User | `GET` | `/users/:id/followers` |
-
-#### User Following
-
-Grants the ability to read user following.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | User | `GET` | `/users/:id/following` |
-
-#### User GPG Key
-
-Grants the ability to create, delete, read, and revoke user GPG keys.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | User | `POST` | `/user/gpg_keys` |
-| Delete | User | `DELETE` | `/user/gpg_keys/:key_id` |
-| Read | User | `GET` | `/users/:id/gpg_keys` |
-| Read | User | `GET` | `/users/:id/gpg_keys/:key_id` |
-| Read | User | `GET` | `/user/gpg_keys` |
-| Read | User | `GET` | `/user/gpg_keys/:key_id` |
-| Revoke | User | `POST` | `/user/gpg_keys/:key_id/revoke` |
-
-#### User Preference
-
-Grants the ability to read and update user preferences.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | User | `GET` | `/user/preferences` |
-| Update | User | `PUT` | `/user/preferences` |
-
-#### User Project Deploy Key
-
-Grants the ability to read user project deploy keys.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | User | `GET` | `/users/:user_id/project_deploy_keys` |
-
-#### User Status
-
-Grants the ability to read and update user statuses.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | User | `GET` | `/users/:user_id/status` |
-| Read | User | `GET` | `/user/status` |
-| Update | User | `PATCH` | `/user/status` |
-| Update | User | `PUT` | `/user/status` |
-
-#### User Support Pin
-
-Grants the ability to create and read user support pins.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | User | `POST` | `/user/support_pin` |
-| Read | User | `GET` | `/user/support_pin` |
+| Create | Project | `POST` | `/projects/:id/hooks` |
+| Create | Group | `POST` | `/groups/:id/hooks` |
+| Create | Instance | `POST` | `/hooks` |
+| Delete | Project | `DELETE` | `/projects/:id/hooks/:hook_id` |
+| Delete | Group | `DELETE` | `/groups/:id/hooks/:hook_id` |
+| Delete | Instance | `DELETE` | `/hooks/:hook_id` |
+| Read | Project | `GET` | `/projects/:id/hooks` |
+| Read | Project | `GET` | `/projects/:id/hooks/:hook_id` |
+| Read | Project | `GET` | `/projects/:id/hooks/:hook_id/events` |
+| Read | Group | `GET` | `/groups/:id/hooks` |
+| Read | Group | `GET` | `/groups/:id/hooks/:hook_id` |
+| Read | Group | `GET` | `/groups/:id/hooks/:hook_id/events` |
+| Read | Instance | `GET` | `/hooks` |
+| Read | Instance | `GET` | `/hooks/:hook_id` |
+| Trigger | Project | `POST` | `/projects/:id/hooks/:hook_id/test/:trigger` |
+| Trigger | Project | `POST` | `/projects/:id/hooks/:hook_id/events/:hook_log_id/resend` |
+| Trigger | Group | `POST` | `/groups/:id/hooks/:hook_id/test/:trigger` |
+| Trigger | Group | `POST` | `/groups/:id/hooks/:hook_id/events/:hook_log_id/resend` |
+| Update | Project | `PUT` | `/projects/:id/hooks/:hook_id/url_variables/:key` |
+| Update | Project | `PUT` | `/projects/:id/hooks/:hook_id/custom_headers/:key` |
+| Update | Project | `PUT` | `/projects/:id/hooks/:hook_id` |
+| Update | Project | `DELETE` | `/projects/:id/hooks/:hook_id/url_variables/:key` |
+| Update | Project | `DELETE` | `/projects/:id/hooks/:hook_id/custom_headers/:key` |
+| Update | Group | `PUT` | `/groups/:id/hooks/:hook_id` |
+| Update | Group | `PUT` | `/groups/:id/hooks/:hook_id/url_variables/:key` |
+| Update | Group | `PUT` | `/groups/:id/hooks/:hook_id/custom_headers/:key` |
+| Update | Group | `DELETE` | `/groups/:id/hooks/:hook_id/url_variables/:key` |
+| Update | Group | `DELETE` | `/groups/:id/hooks/:hook_id/custom_headers/:key` |
+| Update | Instance | `PUT` | `/hooks/:hook_id/url_variables/:key` |
+| Update | Instance | `PUT` | `/hooks/:hook_id/custom_headers/:key` |
+| Update | Instance | `PUT` | `/hooks/:hook_id` |
+| Update | Instance | `DELETE` | `/hooks/:hook_id/url_variables/:key` |
+| Update | Instance | `DELETE` | `/hooks/:hook_id/custom_headers/:key` |
 
 ### Monitoring resources
 
@@ -871,9 +921,14 @@ Grants the ability to read knowledge graph data.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Read | User | `GET` | `/orbit/schema` |
+| Read | User | `GET` | `/orbit/schema/dsl` |
+| Read | User | `GET` | `/orbit/schema/format` |
 | Read | User | `GET` | `/orbit/status` |
+| Read | User | `GET` | `/orbit/graph_status` |
 | Read | User | `GET` | `/orbit/tools` |
+| Read | User | `GET` | `/orbit/agent/commands` |
 | Read | User | `POST` | `/orbit/query` |
+| Read | User | `POST` | `/orbit/agent/commands/:name` |
 
 ### Packages And Registry resources
 
@@ -1046,6 +1101,7 @@ Grants the ability to create, delete, and read packages.
 | Read | Project | `GET` | `/projects/:id/packages/nuget/download/*package_name/*package_version/*package_filename` |
 | Read | Project | `GET` | `/projects/:id/packages` |
 | Read | Project | `GET` | `/projects/:id/packages/:package_id` |
+| Read | Project | `GET` | `/projects/:id/packages/:package_id/pipelines` |
 | Read | Project | `GET` | `/projects/:id/packages/pypi/files/:sha256/*file_identifier` |
 | Read | Project | `GET` | `/projects/:id/packages/pypi/simple` |
 | Read | Project | `GET` | `/projects/:id/packages/pypi/simple/*package_name` |
@@ -1087,14 +1143,6 @@ Grants the ability to create, delete, and read packages.
 | Read | Instance | `GET` | `/packages/conan/v1/users/check_credentials` |
 | Read | Instance | `GET` | `/packages/conan/v1/conans/search` |
 | Read | Instance | `GET` | `/packages/maven/*path/:file_name` |
-
-#### Package Pipeline
-
-Grants the ability to read package pipelines.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | Project | `GET` | `/projects/:id/packages/:package_id/pipelines` |
 
 #### Virtual Registry
 
@@ -1168,6 +1216,17 @@ Grants the ability to create, delete, read, and update virtual registry cleanup 
 
 ### Project Features resources
 
+#### Alias
+
+Grants the ability to create, delete, and read aliases.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Instance | `POST` | `/project_aliases` |
+| Delete | Instance | `DELETE` | `/project_aliases/:name` |
+| Read | Instance | `GET` | `/project_aliases` |
+| Read | Instance | `GET` | `/project_aliases/:name` |
+
 #### Badge
 
 Grants the ability to create, delete, read, and update badges.
@@ -1186,17 +1245,6 @@ Grants the ability to create, delete, read, and update badges.
 | Read | Group | `GET` | `/groups/:id/badges/:badge_id` |
 | Update | Project | `PUT` | `/projects/:id/badges/:badge_id` |
 | Update | Group | `PUT` | `/groups/:id/badges/:badge_id` |
-
-#### Project Alias
-
-Grants the ability to create, delete, and read project aliases.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Instance | `POST` | `/project_aliases` |
-| Delete | Instance | `DELETE` | `/project_aliases/:name` |
-| Read | Instance | `GET` | `/project_aliases` |
-| Read | Instance | `GET` | `/project_aliases/:name` |
 
 #### Release
 
@@ -1320,27 +1368,6 @@ Grants the ability to delete, read, and update custom attributes.
 | Update | Group | `PUT` | `/groups/:id/custom_attributes/:key` |
 | Update | Instance | `PUT` | `/users/:id/custom_attributes/:key` |
 
-#### Epic Label Event
-
-Grants the ability to read epic label events.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | Group | `GET` | `/groups/:id/epics/:eventable_id/resource_label_events` |
-| Read | Group | `GET` | `/groups/:id/epics/:eventable_id/resource_label_events/:event_id` |
-
-#### Feature Flag
-
-Grants the ability to create, delete, read, and update feature flags.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Project | `POST` | `/projects/:id/feature_flags` |
-| Delete | Project | `DELETE` | `/projects/:id/feature_flags/:feature_flag_name` |
-| Read | Project | `GET` | `/projects/:id/feature_flags` |
-| Read | Project | `GET` | `/projects/:id/feature_flags/:feature_flag_name` |
-| Update | Project | `PUT` | `/projects/:id/feature_flags/:feature_flag_name` |
-
 #### Feature Flag User List
 
 Grants the ability to create, delete, read, and update feature flag user lists.
@@ -1353,18 +1380,6 @@ Grants the ability to create, delete, read, and update feature flag user lists.
 | Read | Project | `GET` | `/projects/:id/feature_flags_user_lists/:iid` |
 | Update | Project | `PUT` | `/projects/:id/feature_flags_user_lists/:iid` |
 
-#### Freeze Period
-
-Grants the ability to create, delete, read, and update freeze periods.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Project | `POST` | `/projects/:id/freeze_periods` |
-| Delete | Project | `DELETE` | `/projects/:id/freeze_periods/:freeze_period_id` |
-| Read | Project | `GET` | `/projects/:id/freeze_periods` |
-| Read | Project | `GET` | `/projects/:id/freeze_periods/:freeze_period_id` |
-| Update | Project | `PUT` | `/projects/:id/freeze_periods/:freeze_period_id` |
-
 #### Internal Event
 
 Grants the ability to track internal events.
@@ -1373,15 +1388,6 @@ Grants the ability to track internal events.
 | ------ | ------ | ------ | ---- |
 | Track | Instance | `POST` | `/usage_data/track_events` |
 | Track | Instance | `POST` | `/usage_data/track_event` |
-
-#### Issue Label Event
-
-Grants the ability to read issue label events.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | Project | `GET` | `/projects/:id/issues/:eventable_id/resource_label_events` |
-| Read | Project | `GET` | `/projects/:id/issues/:eventable_id/resource_label_events/:event_id` |
 
 #### Label
 
@@ -1406,15 +1412,6 @@ Grants the ability to create, delete, promote, read, and update labels.
 | Update | Group | `PUT` | `/groups/:id/labels` |
 | Update | Group | `PUT` | `/groups/:id/labels/:name` |
 
-#### Merge Request Label Event
-
-Grants the ability to read merge request label events.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_label_events` |
-| Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_label_events/:event_id` |
-
 #### Service Ping
 
 Grants the ability to read service ping data.
@@ -1425,20 +1422,58 @@ Grants the ability to read service ping data.
 
 #### Usage Data Metric
 
-Grants the ability to increment and read usage data metrics.
+Grants the ability to read and update usage data metrics.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
-| Increment | Instance | `POST` | `/usage_data/increment_counter` |
-| Increment | Instance | `POST` | `/usage_data/increment_unique_users` |
 | Read | Instance | `GET` | `/usage_data/non_sql_metrics` |
+| Update | Instance | `POST` | `/usage_data/increment_counter` |
+| Update | Instance | `POST` | `/usage_data/increment_unique_users` |
 
 #### Work Item
 
-Grants the ability to delete, read, and write work items.
+Grants the ability to create, delete, read, and update work items such as epics and issues.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
+| Create | Project | `POST` | `/projects/:id/issues/:issue_iid/award_emoji` |
+| Create | Project | `POST` | `/projects/:id/issues/:issue_iid/notes/:note_id/award_emoji` |
+| Create | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/award_emoji` |
+| Create | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/notes/:note_id/award_emoji` |
+| Create | Project | `POST` | `/projects/:id/snippets/:snippet_id/award_emoji` |
+| Create | Project | `POST` | `/projects/:id/snippets/:snippet_id/notes/:note_id/award_emoji` |
+| Create | Project | `POST` | `/projects/:id/issues/:issue_iid/links` |
+| Create | Project | `POST` | `/projects/:id/issues` |
+| Create | Project | `POST` | `/projects/:id/issues/:issue_iid/clone` |
+| Create | Project | `POST` | `/namespaces/:id/-/work_items` |
+| Create | Project | `POST` | `/projects/:id/-/work_items` |
+| Create | Project | `POST` | `/projects/:id/boards` |
+| Create | Project | `POST` | `/projects/:id/boards/:board_id/lists` |
+| Create | Project | `POST` | `/projects/:id/issues/:noteable_id/discussions` |
+| Create | Project | `POST` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes` |
+| Create | Project | `POST` | `/projects/:id/snippets/:noteable_id/discussions` |
+| Create | Project | `POST` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes` |
+| Create | Project | `POST` | `/projects/:id/issues/:noteable_id/notes` |
+| Create | Project | `POST` | `/projects/:id/merge_requests/:noteable_id/notes` |
+| Create | Project | `POST` | `/projects/:id/snippets/:noteable_id/notes` |
+| Create | Project | `POST` | `/projects/:id/wiki_pages/:noteable_id/notes` |
+| Create | Project | `POST` | `/projects/:id/milestones` |
+| Create | Group | `POST` | `/groups/:id/epics/:epic_iid/award_emoji` |
+| Create | Group | `POST` | `/groups/:id/epics/:epic_iid/notes/:note_id/award_emoji` |
+| Create | Group | `POST` | `/namespaces/:id/-/work_items` |
+| Create | Group | `POST` | `/groups/:id/-/work_items` |
+| Create | Group | `POST` | `/groups/:id/epics/:noteable_id/discussions` |
+| Create | Group | `POST` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes` |
+| Create | Group | `POST` | `/groups/:id/boards/:board_id/lists` |
+| Create | Group | `POST` | `/groups/:id/milestones` |
+| Create | Group | `POST` | `/groups/:id/epics/:noteable_id/notes` |
+| Create | Group | `POST` | `/groups/:id/wiki_pages/:noteable_id/notes` |
+| Create | Group | `POST` | `/groups/:id/boards` |
+| Create | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/issues/:issue_id` |
+| Create | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
+| Create | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/epics` |
+| Create | Group | `POST` | `/groups/:id/(-/)epics` |
+| Create | Group | `POST` | `/groups/:id/epics/:epic_iid/related_epics` |
 | Delete | Project | `DELETE` | `/projects/:id/issues/:issue_iid/award_emoji/:award_id` |
 | Delete | Project | `DELETE` | `/projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id` |
 | Delete | Project | `DELETE` | `/projects/:id/merge_requests/:merge_request_iid/award_emoji/:award_id` |
@@ -1528,6 +1563,8 @@ Grants the ability to delete, read, and write work items.
 | Read | Project | `GET` | `/projects/:id/milestones/:milestone_id/issues` |
 | Read | Project | `GET` | `/projects/:id/milestones/:milestone_id/merge_requests` |
 | Read | Project | `GET` | `/projects/:id/milestones/:milestone_id/burndown_events` |
+| Read | Project | `GET` | `/projects/:id/issues/:eventable_id/resource_label_events` |
+| Read | Project | `GET` | `/projects/:id/issues/:eventable_id/resource_label_events/:event_id` |
 | Read | Project | `GET` | `/projects/:id/issues/:eventable_id/resource_state_events` |
 | Read | Project | `GET` | `/projects/:id/issues/:eventable_id/resource_state_events/:event_id` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_state_events` |
@@ -1564,6 +1601,8 @@ Grants the ability to delete, read, and write work items.
 | Read | Group | `GET` | `/groups/:id/epics/:noteable_id/notes/:note_id` |
 | Read | Group | `GET` | `/groups/:id/wiki_pages/:noteable_id/notes` |
 | Read | Group | `GET` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
+| Read | Group | `GET` | `/groups/:id/epics/:eventable_id/resource_label_events` |
+| Read | Group | `GET` | `/groups/:id/epics/:eventable_id/resource_label_events/:event_id` |
 | Read | Group | `GET` | `/groups/:id/epics/:eventable_id/resource_state_events` |
 | Read | Group | `GET` | `/groups/:id/epics/:eventable_id/resource_state_events/:event_id` |
 | Read | Group | `GET` | `/groups/:id/epics/:epic_iid/issues` |
@@ -1583,78 +1622,63 @@ Grants the ability to delete, read, and write work items.
 | Read | User | `GET` | `/issues_statistics` |
 | Read | User | `GET` | `/issues` |
 | Read | Instance | `GET` | `/issues/:id` |
-| Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/reset_time_estimate` |
-| Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/add_spent_time` |
-| Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/reset_spent_time` |
-| Write | Project | `POST` | `/namespaces/:id/-/work_items` |
-| Write | Project | `POST` | `/projects/:id/-/work_items` |
-| Write | Project | `POST` | `/projects/:id/boards` |
-| Write | Project | `POST` | `/projects/:id/boards/:board_id/lists` |
-| Write | Project | `POST` | `/projects/:id/issues/:noteable_id/discussions` |
-| Write | Project | `POST` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes` |
-| Write | Project | `POST` | `/projects/:id/snippets/:noteable_id/discussions` |
-| Write | Project | `POST` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes` |
-| Write | Project | `POST` | `/projects/:id/issues/:noteable_id/notes` |
-| Write | Project | `POST` | `/projects/:id/merge_requests/:noteable_id/notes` |
-| Write | Project | `POST` | `/projects/:id/snippets/:noteable_id/notes` |
-| Write | Project | `POST` | `/projects/:id/wiki_pages/:noteable_id/notes` |
-| Write | Project | `POST` | `/projects/:id/milestones` |
-| Write | Project | `POST` | `/projects/:id/milestones/:milestone_id/promote` |
-| Write | Project | `POST` | `/projects/:id/issues/:issue_iid/award_emoji` |
-| Write | Project | `POST` | `/projects/:id/issues/:issue_iid/notes/:note_id/award_emoji` |
-| Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/award_emoji` |
-| Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/notes/:note_id/award_emoji` |
-| Write | Project | `POST` | `/projects/:id/snippets/:snippet_id/award_emoji` |
-| Write | Project | `POST` | `/projects/:id/snippets/:snippet_id/notes/:note_id/award_emoji` |
-| Write | Project | `POST` | `/projects/:id/issues/:issue_iid/links` |
-| Write | Project | `POST` | `/projects/:id/issues/:issue_iid/time_estimate` |
-| Write | Project | `POST` | `/projects/:id/issues/:issue_iid/reset_time_estimate` |
-| Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/time_estimate` |
-| Write | Project | `POST` | `/projects/:id/issues/:issue_iid/clone` |
-| Write | Project | `POST` | `/projects/:id/issues/:issue_iid/move` |
-| Write | Project | `POST` | `/projects/:id/issues` |
-| Write | Project | `POST` | `/projects/:id/issues/:issue_iid/reset_spent_time` |
-| Write | Project | `POST` | `/projects/:id/issues/:issue_iid/add_spent_time` |
-| Write | Project | `PUT` | `/projects/:id/boards/:board_id` |
-| Write | Project | `PUT` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes/:note_id` |
-| Write | Project | `PUT` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id` |
-| Write | Project | `PUT` | `/projects/:id/issues/:noteable_id/notes/:note_id` |
-| Write | Project | `PUT` | `/projects/:id/issues/:issue_iid` |
-| Write | Project | `PUT` | `/projects/:id/merge_requests/:noteable_id/notes/:note_id` |
-| Write | Project | `PUT` | `/projects/:id/issues/:issue_iid/reorder` |
-| Write | Project | `PUT` | `/projects/:id/snippets/:noteable_id/notes/:note_id` |
-| Write | Project | `PUT` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes/:note_id` |
-| Write | Project | `PUT` | `/projects/:id/wiki_pages/:noteable_id/notes/:note_id` |
-| Write | Project | `PUT` | `/projects/:id/boards/:board_id/lists/:list_id` |
-| Write | Project | `PUT` | `/projects/:id/milestones/:milestone_id` |
-| Write | Group | `POST` | `/groups/:id/epics/:epic_iid/related_epics` |
-| Write | Group | `POST` | `/groups/:id/(-/)epics` |
-| Write | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/epics` |
-| Write | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
-| Write | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/issues/:issue_id` |
-| Write | Group | `POST` | `/groups/:id/boards` |
-| Write | Group | `POST` | `/groups/:id/wiki_pages/:noteable_id/notes` |
-| Write | Group | `POST` | `/groups/:id/epics/:noteable_id/notes` |
-| Write | Group | `POST` | `/groups/:id/milestones` |
-| Write | Group | `POST` | `/groups/:id/epics/:epic_iid/award_emoji` |
-| Write | Group | `POST` | `/groups/:id/epics/:epic_iid/notes/:note_id/award_emoji` |
-| Write | Group | `POST` | `/namespaces/:id/-/work_items` |
-| Write | Group | `POST` | `/groups/:id/-/work_items` |
-| Write | Group | `POST` | `/groups/:id/epics/:noteable_id/discussions` |
-| Write | Group | `POST` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes` |
-| Write | Group | `POST` | `/groups/:id/boards/:board_id/lists` |
-| Write | Group | `PUT` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes/:note_id` |
-| Write | Group | `PUT` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
-| Write | Group | `PUT` | `/groups/:id/epics/:noteable_id/notes/:note_id` |
-| Write | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/issues/:epic_issue_id` |
-| Write | Group | `PUT` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
-| Write | Group | `PUT` | `/groups/:id/milestones/:milestone_id` |
-| Write | Group | `PUT` | `/groups/:id/boards/:board_id` |
-| Write | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
-| Write | Group | `PUT` | `/groups/:id/boards/:board_id/lists/:list_id` |
-| Write | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid` |
+| Update | Project | `POST` | `/projects/:id/milestones/:milestone_id/promote` |
+| Update | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/reset_spent_time` |
+| Update | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/add_spent_time` |
+| Update | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/reset_time_estimate` |
+| Update | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/time_estimate` |
+| Update | Project | `POST` | `/projects/:id/issues/:issue_iid/move` |
+| Update | Project | `POST` | `/projects/:id/issues/:issue_iid/time_estimate` |
+| Update | Project | `POST` | `/projects/:id/issues/:issue_iid/reset_spent_time` |
+| Update | Project | `POST` | `/projects/:id/issues/:issue_iid/add_spent_time` |
+| Update | Project | `POST` | `/projects/:id/issues/:issue_iid/reset_time_estimate` |
+| Update | Project | `PATCH` | `/namespaces/:id/-/work_items/:work_item_iid` |
+| Update | Project | `PATCH` | `/projects/:id/-/work_items/:work_item_iid` |
+| Update | Project | `PUT` | `/projects/:id/milestones/:milestone_id` |
+| Update | Project | `PUT` | `/projects/:id/wiki_pages/:noteable_id/notes/:note_id` |
+| Update | Project | `PUT` | `/projects/:id/snippets/:noteable_id/notes/:note_id` |
+| Update | Project | `PUT` | `/projects/:id/merge_requests/:noteable_id/notes/:note_id` |
+| Update | Project | `PUT` | `/projects/:id/issues/:noteable_id/notes/:note_id` |
+| Update | Project | `PUT` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes/:note_id` |
+| Update | Project | `PUT` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id` |
+| Update | Project | `PUT` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes/:note_id` |
+| Update | Project | `PUT` | `/projects/:id/boards/:board_id/lists/:list_id` |
+| Update | Project | `PUT` | `/projects/:id/boards/:board_id` |
+| Update | Project | `PUT` | `/projects/:id/issues/:issue_iid` |
+| Update | Project | `PUT` | `/projects/:id/issues/:issue_iid/reorder` |
+| Update | Group | `PATCH` | `/namespaces/:id/-/work_items/:work_item_iid` |
+| Update | Group | `PATCH` | `/groups/:id/-/work_items/:work_item_iid` |
+| Update | Group | `PUT` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes/:note_id` |
+| Update | Group | `PUT` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
+| Update | Group | `PUT` | `/groups/:id/boards/:board_id` |
+| Update | Group | `PUT` | `/groups/:id/boards/:board_id/lists/:list_id` |
+| Update | Group | `PUT` | `/groups/:id/milestones/:milestone_id` |
+| Update | Group | `PUT` | `/groups/:id/epics/:noteable_id/notes/:note_id` |
+| Update | Group | `PUT` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
+| Update | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/issues/:epic_issue_id` |
+| Update | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
+| Update | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid` |
 
 ### Projects resources
+
+#### Markdown Upload
+
+Grants the ability to create, delete, and read Markdown uploads.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Project | `POST` | `/projects/:id/uploads` |
+| Create | Group | `POST` | `/groups/:id/uploads` |
+| Delete | Project | `DELETE` | `/projects/:id/uploads/:upload_id` |
+| Delete | Project | `DELETE` | `/projects/:id/uploads/:secret/:filename` |
+| Delete | Group | `DELETE` | `/groups/:id/uploads/:upload_id` |
+| Delete | Group | `DELETE` | `/groups/:id/uploads/:secret/:filename` |
+| Read | Project | `GET` | `/projects/:id/uploads` |
+| Read | Project | `GET` | `/projects/:id/uploads/:upload_id` |
+| Read | Project | `GET` | `/projects/:id/uploads/:secret/:filename` |
+| Read | Group | `GET` | `/groups/:id/uploads` |
+| Read | Group | `GET` | `/groups/:id/uploads/:upload_id` |
+| Read | Group | `GET` | `/groups/:id/uploads/:secret/:filename` |
 
 #### Page
 
@@ -1681,7 +1705,7 @@ Grants the ability to create, delete, read, update, and verify pages domains.
 
 #### Project
 
-Grants the ability to archive, create, delete, fork, read, read starred, share, transfer, and update projects.
+Grants the ability to archive, create, delete, fork, read, share, transfer, and update projects.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1707,8 +1731,8 @@ Grants the ability to archive, create, delete, fork, read, read starred, share, 
 | Read | Group | `GET` | `/groups/:id/projects` |
 | Read | User | `GET` | `/users/:user_id/projects` |
 | Read | User | `GET` | `/users/:user_id/contributed_projects` |
+| Read | User | `GET` | `/users/:user_id/starred_projects` |
 | Read | User | `GET` | `/projects` |
-| Read Starred | User | `GET` | `/users/:user_id/starred_projects` |
 | Share | Project | `POST` | `/projects/:id/share` |
 | Share | Project | `DELETE` | `/projects/:id/share/:group_id` |
 | Transfer | Project | `PUT` | `/projects/:id/transfer` |
@@ -1779,7 +1803,7 @@ Grants the ability to create, delete, protect, and read branches.
 
 #### Code
 
-Grants the ability to download, push, and read code.
+Grants the ability to download, push, and read code via Git.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1825,8 +1849,10 @@ Grants the ability to approve, create, delete, merge, read, and update merge req
 | Create | Project | `POST` | `/projects/:id/merge_requests` |
 | Create | Project | `POST` | `/projects/:id/merge_requests/:noteable_id/discussions` |
 | Create | Project | `POST` | `/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes` |
+| Create | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/blocks` |
 | Delete | Project | `DELETE` | `/projects/:id/merge_requests/:merge_request_iid` |
 | Delete | Project | `DELETE` | `/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes/:note_id` |
+| Delete | Project | `DELETE` | `/projects/:id/merge_requests/:merge_request_iid/blocks/:block_id` |
 | Merge | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds` |
 | Merge | Project | `PUT` | `/projects/:id/merge_requests/:merge_request_iid/merge` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/draft_notes` |
@@ -1844,12 +1870,19 @@ Grants the ability to approve, create, delete, merge, read, and update merge req
 | Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/merge_ref` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/closes_issues` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/related_issues` |
+| Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approvals` |
+| Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approval_state` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/versions` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/versions/:version_id` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:noteable_id/discussions` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes/:note_id` |
+| Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_label_events` |
+| Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_label_events/:event_id` |
+| Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/blocks` |
+| Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/blocks/:block_id` |
+| Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/blockees` |
 | Read | Group | `GET` | `/groups/:id/merge_requests` |
 | Read | User | `GET` | `/merge_requests` |
 | Update | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/draft_notes` |
@@ -1876,27 +1909,6 @@ Grants the ability to create, delete, read, and update merge request approval ru
 | Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approval_rules` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id` |
 | Update | Project | `PUT` | `/projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id` |
-
-#### Merge Request Approval State
-
-Grants the ability to read merge request approval states.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approvals` |
-| Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approval_state` |
-
-#### Merge Request Dependency
-
-Grants the ability to create, delete, and read merge request dependencies.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/blocks` |
-| Delete | Project | `DELETE` | `/projects/:id/merge_requests/:merge_request_iid/blocks/:block_id` |
-| Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/blocks` |
-| Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/blocks/:block_id` |
-| Read | Project | `GET` | `/projects/:id/merge_requests/:merge_request_iid/blockees` |
 
 #### Protected Branch
 
@@ -2101,6 +2113,14 @@ Grants the ability to read and update application appearance settings.
 | Read | Instance | `GET` | `/application/appearance` |
 | Update | Instance | `PUT` | `/application/appearance` |
 
+#### Counts
+
+Grants the ability to read counts.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | User | `GET` | `/user_counts` |
+
 #### Deploy Key
 
 Grants the ability to create, delete, enable, read, and update deploy keys.
@@ -2113,6 +2133,7 @@ Grants the ability to create, delete, enable, read, and update deploy keys.
 | Enable | Project | `POST` | `/projects/:id/deploy_keys/:key_id/enable` |
 | Read | Project | `GET` | `/projects/:id/deploy_keys` |
 | Read | Project | `GET` | `/projects/:id/deploy_keys/:key_id` |
+| Read | User | `GET` | `/users/:user_id/project_deploy_keys` |
 | Read | Instance | `GET` | `/deploy_keys` |
 | Update | Project | `PUT` | `/projects/:id/deploy_keys/:key_id` |
 
@@ -2132,9 +2153,20 @@ Grants the ability to create, delete, and read deploy tokens.
 | Read | Group | `GET` | `/groups/:id/deploy_tokens/:token_id` |
 | Read | Instance | `GET` | `/deploy_tokens` |
 
+#### Email
+
+Grants the ability to create, delete, and read emails.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | User | `POST` | `/user/emails` |
+| Delete | User | `DELETE` | `/user/emails/:email_id` |
+| Read | User | `GET` | `/user/emails` |
+| Read | User | `GET` | `/user/emails/:email_id` |
+
 #### Enterprise User
 
-Grants the ability to delete, disable two factor, read, and update enterprise users.
+Grants the ability to delete, disable two factor, read, read email, and update enterprise users.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2203,11 +2235,11 @@ Grants the ability to create, delete, and read LDAP group links.
 
 #### LDAP Group Sync
 
-Grants the ability to read LDAP group syncs.
+Grants the ability to run LDAP group syncs.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
-| Read | Group | `POST` | `/groups/:id/ldap_sync` |
+| Run | Group | `POST` | `/groups/:id/ldap_sync` |
 
 #### Member
 
@@ -2321,6 +2353,17 @@ Grants the ability to create, delete, read, and rotate resource access tokens.
 | Rotate | Group | `POST` | `/groups/:id/access_tokens/self/rotate` |
 | Rotate | Group | `POST` | `/groups/:id/access_tokens/:token_id/rotate` |
 
+#### SAML Group Identity
+
+Grants the ability to delete, read, and update SAML group identities.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Delete | Group | `DELETE` | `/groups/:id/saml/:uid` |
+| Read | Group | `GET` | `/groups/:id/saml/identities` |
+| Read | Group | `GET` | `/groups/:id/saml/:uid` |
+| Update | Group | `PATCH` | `/groups/:id/saml/:uid` |
+
 #### SAML Group Link
 
 Grants the ability to create, delete, and read SAML group links.
@@ -2353,10 +2396,16 @@ Grants the ability to delete, read, and update SCIM identities.
 
 #### SSH Key
 
-Grants the ability to read SSH keys.
+Grants the ability to create, delete, and read SSH keys.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
+| Create | User | `POST` | `/user/keys` |
+| Delete | User | `DELETE` | `/user/keys/:key_id` |
+| Read | User | `GET` | `/users/:user_id/keys` |
+| Read | User | `GET` | `/users/:id/keys/:key_id` |
+| Read | User | `GET` | `/user/keys` |
+| Read | User | `GET` | `/user/keys/:key_id` |
 | Read | Instance | `GET` | `/keys/:id` |
 | Read | Instance | `GET` | `/keys` |
 
@@ -2412,39 +2461,7 @@ Grants the ability to follow, read, and unfollow users.
 | Read | User | `GET` | `/user` |
 | Unfollow | User | `POST` | `/users/:id/unfollow` |
 
-#### User Counts
-
-Grants the ability to read user counts.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | User | `GET` | `/user_counts` |
-
-#### User Email
-
-Grants the ability to create, delete, and read user emails.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | User | `POST` | `/user/emails` |
-| Delete | User | `DELETE` | `/user/emails/:email_id` |
-| Read | User | `GET` | `/user/emails` |
-| Read | User | `GET` | `/user/emails/:email_id` |
-
-#### User SSH Key
-
-Grants the ability to create, delete, and read user SSH keys.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | User | `POST` | `/user/keys` |
-| Delete | User | `DELETE` | `/user/keys/:key_id` |
-| Read | User | `GET` | `/users/:user_id/keys` |
-| Read | User | `GET` | `/users/:id/keys/:key_id` |
-| Read | User | `GET` | `/user/keys` |
-| Read | User | `GET` | `/user/keys/:key_id` |
-
-### System Migration And Integration resources
+### System Migration resources
 
 #### Batched Background Migration
 
@@ -2457,51 +2474,13 @@ Grants the ability to read and run batched background migrations.
 | Run | Instance | `PUT` | `/admin/batched_background_migrations/:id/resume` |
 | Run | Instance | `PUT` | `/admin/batched_background_migrations/:id/pause` |
 
-#### Bitbucket Import
+#### Database Dictionary
 
-Grants the ability to create Bitbucket imports.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Group | `POST` | `/import/bitbucket` |
-| Create | User | `POST` | `/import/bitbucket` |
-
-#### Bitbucket Server Import
-
-Grants the ability to create Bitbucket Server imports.
+Grants the ability to read database dictionaries.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
-| Create | Instance | `POST` | `/import/bitbucket_server` |
-
-#### Bulk Import
-
-Grants the ability to cancel, create, and read bulk imports.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Cancel | Instance | `POST` | `/bulk_imports/:import_id/cancel` |
-| Create | Instance | `POST` | `/bulk_imports` |
-| Read | Instance | `GET` | `/bulk_imports` |
-| Read | Instance | `GET` | `/bulk_imports/:import_id` |
-
-#### Bulk Import Entity
-
-Grants the ability to read bulk import entities.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | Instance | `GET` | `/bulk_imports/entities` |
-| Read | Instance | `GET` | `/bulk_imports/:import_id/entities` |
-| Read | Instance | `GET` | `/bulk_imports/:import_id/entities/:entity_id` |
-
-#### Bulk Import Entity Failure
-
-Grants the ability to read bulk import entity failures.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | Instance | `GET` | `/bulk_imports/:import_id/entities/:entity_id/failures` |
+| Read | Instance | `GET` | `/databases/:database_name/dictionary/tables` |
 
 #### Database Migration
 
@@ -2511,40 +2490,54 @@ Grants the ability to mark database migrations.
 | ------ | ------ | ------ | ---- |
 | Mark | Instance | `POST` | `/admin/migrations/:timestamp/mark` |
 
-#### GitHub Gist Import
+#### Export
 
-Grants the ability to create GitHub gist imports.
+Grants the ability to create, download, and read exports.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
-| Create | User | `POST` | `/import/github/gists` |
+| Create | Project | `POST` | `/projects/:id/export` |
+| Create | Project | `POST` | `/projects/:id/export_relations` |
+| Create | Group | `POST` | `/groups/:id/export` |
+| Download | Project | `GET` | `/projects/:id/export/download` |
+| Download | Project | `GET` | `/projects/:id/export_relations/download` |
+| Download | Group | `GET` | `/groups/:id/export/download` |
+| Read | Project | `GET` | `/projects/:id/export` |
+| Read | Project | `GET` | `/projects/:id/export_relations/status` |
 
-#### GitHub Import
+#### Import
 
-Grants the ability to cancel and create GitHub imports.
+Grants the ability to cancel, create, and read imports.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Cancel | User | `POST` | `/import/github/cancel` |
+| Cancel | Instance | `POST` | `/bulk_imports/:import_id/cancel` |
+| Create | Project | `POST` | `/projects/:id/import/git` |
+| Create | Project | `POST` | `/projects/import-relation` |
+| Create | Group | `POST` | `/import/bitbucket` |
 | Create | Group | `POST` | `/import/github` |
+| Create | Group | `POST` | `/projects/import` |
+| Create | Group | `POST` | `/projects/remote-import` |
+| Create | Group | `POST` | `/projects/remote-import-s3` |
+| Create | User | `POST` | `/import/bitbucket` |
 | Create | User | `POST` | `/import/github` |
-
-#### Group Export
-
-Grants the ability to download and start group exports.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Download | Group | `GET` | `/groups/:id/export/download` |
-| Start | Group | `POST` | `/groups/:id/export` |
-
-#### Group Import
-
-Grants the ability to create group imports.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
+| Create | User | `POST` | `/import/github/gists` |
+| Create | User | `POST` | `/projects/import` |
+| Create | User | `POST` | `/projects/remote-import` |
+| Create | User | `POST` | `/projects/remote-import-s3` |
+| Create | Instance | `POST` | `/bulk_imports` |
 | Create | Instance | `POST` | `/groups/import` |
+| Create | Instance | `POST` | `/import/bitbucket_server` |
+| Create | Instance | `POST` | `/offline_imports` |
+| Read | Project | `GET` | `/projects/:id/import` |
+| Read | Project | `GET` | `/projects/:id/relation-imports` |
+| Read | Instance | `GET` | `/bulk_imports` |
+| Read | Instance | `GET` | `/bulk_imports/entities` |
+| Read | Instance | `GET` | `/bulk_imports/:import_id` |
+| Read | Instance | `GET` | `/bulk_imports/:import_id/entities` |
+| Read | Instance | `GET` | `/bulk_imports/:import_id/entities/:entity_id` |
+| Read | Instance | `GET` | `/bulk_imports/:import_id/entities/:entity_id/failures` |
 
 #### Placeholder Reassignment
 
@@ -2555,130 +2548,7 @@ Grants the ability to create and read placeholder reassignments.
 | Create | Group | `POST` | `/groups/:id/placeholder_reassignments` |
 | Read | Group | `GET` | `/groups/:id/placeholder_reassignments` |
 
-#### Project Export
-
-Grants the ability to create, download, and read project exports.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Project | `POST` | `/projects/:id/export` |
-| Download | Project | `GET` | `/projects/:id/export/download` |
-| Read | Project | `GET` | `/projects/:id/export` |
-
-#### Project Import
-
-Grants the ability to create and read project imports.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Project | `POST` | `/projects/:id/import/git` |
-| Create | Group | `POST` | `/projects/import` |
-| Create | Group | `POST` | `/projects/remote-import` |
-| Create | Group | `POST` | `/projects/remote-import-s3` |
-| Create | User | `POST` | `/projects/import` |
-| Create | User | `POST` | `/projects/remote-import` |
-| Create | User | `POST` | `/projects/remote-import-s3` |
-| Read | Project | `GET` | `/projects/:id/import` |
-
-#### Project Relation Export
-
-Grants the ability to create, download, and read project relation exports.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Project | `POST` | `/projects/:id/export_relations` |
-| Download | Project | `GET` | `/projects/:id/export_relations/download` |
-| Read | Project | `GET` | `/projects/:id/export_relations/status` |
-
-#### Project Relation Import
-
-Grants the ability to create and read project relation imports.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Project | `POST` | `/projects/import-relation` |
-| Read | Project | `GET` | `/projects/:id/relation-imports` |
-
-#### Webhook
-
-Grants the ability to create, delete, read, test, and update webhooks.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Project | `POST` | `/projects/:id/hooks` |
-| Create | Group | `POST` | `/groups/:id/hooks` |
-| Create | Instance | `POST` | `/hooks` |
-| Delete | Project | `DELETE` | `/projects/:id/hooks/:hook_id` |
-| Delete | Group | `DELETE` | `/groups/:id/hooks/:hook_id` |
-| Delete | Instance | `DELETE` | `/hooks/:hook_id` |
-| Read | Project | `GET` | `/projects/:id/hooks` |
-| Read | Project | `GET` | `/projects/:id/hooks/:hook_id` |
-| Read | Project | `GET` | `/projects/:id/hooks/:hook_id/events` |
-| Read | Group | `GET` | `/groups/:id/hooks` |
-| Read | Group | `GET` | `/groups/:id/hooks/:hook_id` |
-| Read | Group | `GET` | `/groups/:id/hooks/:hook_id/events` |
-| Read | Instance | `GET` | `/hooks` |
-| Read | Instance | `GET` | `/hooks/:hook_id` |
-| Test | Project | `POST` | `/projects/:id/hooks/:hook_id/test/:trigger` |
-| Test | Group | `POST` | `/groups/:id/hooks/:hook_id/test/:trigger` |
-| Update | Project | `PUT` | `/projects/:id/hooks/:hook_id` |
-| Update | Group | `PUT` | `/groups/:id/hooks/:hook_id` |
-| Update | Instance | `PUT` | `/hooks/:hook_id` |
-
-#### Webhook Custom Header
-
-Grants the ability to delete and update webhook custom headers.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Delete | Project | `DELETE` | `/projects/:id/hooks/:hook_id/custom_headers/:key` |
-| Delete | Group | `DELETE` | `/groups/:id/hooks/:hook_id/custom_headers/:key` |
-| Delete | Instance | `DELETE` | `/hooks/:hook_id/custom_headers/:key` |
-| Update | Project | `PUT` | `/projects/:id/hooks/:hook_id/custom_headers/:key` |
-| Update | Group | `PUT` | `/groups/:id/hooks/:hook_id/custom_headers/:key` |
-| Update | Instance | `PUT` | `/hooks/:hook_id/custom_headers/:key` |
-
-#### Webhook Event
-
-Grants the ability to resend webhook events.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Resend | Project | `POST` | `/projects/:id/hooks/:hook_id/events/:hook_log_id/resend` |
-| Resend | Group | `POST` | `/groups/:id/hooks/:hook_id/events/:hook_log_id/resend` |
-
-#### Webhook URL variable
-
-Grants the ability to delete and update webhook URL variables.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Delete | Project | `DELETE` | `/projects/:id/hooks/:hook_id/url_variables/:key` |
-| Delete | Group | `DELETE` | `/groups/:id/hooks/:hook_id/url_variables/:key` |
-| Delete | Instance | `DELETE` | `/hooks/:hook_id/url_variables/:key` |
-| Update | Project | `PUT` | `/projects/:id/hooks/:hook_id/url_variables/:key` |
-| Update | Group | `PUT` | `/groups/:id/hooks/:hook_id/url_variables/:key` |
-| Update | Instance | `PUT` | `/hooks/:hook_id/url_variables/:key` |
-
 ### Wiki resources
-
-#### Markdown Upload
-
-Grants the ability to create, delete, and read Markdown uploads.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Project | `POST` | `/projects/:id/uploads` |
-| Delete | Project | `DELETE` | `/projects/:id/uploads/:upload_id` |
-| Delete | Project | `DELETE` | `/projects/:id/uploads/:secret/:filename` |
-| Delete | Group | `DELETE` | `/groups/:id/uploads/:upload_id` |
-| Delete | Group | `DELETE` | `/groups/:id/uploads/:secret/:filename` |
-| Read | Project | `GET` | `/projects/:id/uploads` |
-| Read | Project | `GET` | `/projects/:id/uploads/:upload_id` |
-| Read | Project | `GET` | `/projects/:id/uploads/:secret/:filename` |
-| Read | Group | `GET` | `/groups/:id/uploads` |
-| Read | Group | `GET` | `/groups/:id/uploads/:upload_id` |
-| Read | Group | `GET` | `/groups/:id/uploads/:secret/:filename` |
 
 #### Wiki
 
@@ -2730,6 +2600,154 @@ Fine-grained token scope checks are not applied to these endpoints.
 | `GET` | `/topics` |
 | `GET` | `/topics/:id` |
 
+## Publicly accessible endpoints
+
+A fine-grained personal access token can access these endpoints without an
+explicit scope when the target resource is publicly visible and the relevant
+feature is enabled.
+
+| Action | Method | Path |
+| ------ | ------ | ---- |
+| Package: Read | `GET` | `/group/:id/-/packages/composer/*package_name` |
+| Package: Read | `GET` | `/group/:id/-/packages/composer/p/:sha` |
+| Package: Read | `GET` | `/group/:id/-/packages/composer/p2/*package_name` |
+| Package: Read | `GET` | `/group/:id/-/packages/composer/packages` |
+| Group: Read | `GET` | `/groups/:id` |
+| Package: Read | `GET` | `/groups/:id/-/packages/maven/*path/:file_name` |
+| Package: Read | `GET` | `/groups/:id/-/packages/npm/-/package/*package_name/dist-tags` |
+| Avatar: Read | `GET` | `/groups/:id/avatar` |
+| Badge: Read | `GET` | `/groups/:id/badges` |
+| Badge: Read | `GET` | `/groups/:id/badges/:badge_id` |
+| Badge: Read | `GET` | `/groups/:id/badges/render` |
+| Group: Read | `GET` | `/groups/:id/descendant_groups` |
+| Work Item: Read | `GET` | `/groups/:id/epics/:epic_iid/award_emoji` |
+| Work Item: Read | `GET` | `/groups/:id/epics/:epic_iid/award_emoji/:award_id` |
+| Work Item: Read | `GET` | `/groups/:id/epics/:epic_iid/notes/:note_id/award_emoji` |
+| Work Item: Read | `GET` | `/groups/:id/epics/:epic_iid/notes/:note_id/award_emoji/:award_id` |
+| Work Item: Read | `GET` | `/groups/:id/issues_statistics` |
+| Merge Request: Read | `GET` | `/groups/:id/merge_requests` |
+| Work Item: Read | `GET` | `/groups/:id/milestones/:milestone_id/issues` |
+| Work Item: Read | `GET` | `/groups/:id/milestones/:milestone_id/merge_requests` |
+| Package: Read | `GET` | `/groups/:id/packages` |
+| Project: Read | `GET` | `/groups/:id/projects` |
+| Group: Read | `GET` | `/groups/:id/projects/shared` |
+| Group: Read | `GET` | `/groups/:id/subgroups` |
+| Markdown Upload: Read | `GET` | `/groups/:id/uploads` |
+| Markdown Upload: Read | `GET` | `/groups/:id/uploads/:secret/:filename` |
+| Markdown Upload: Read | `GET` | `/groups/:id/uploads/:upload_id` |
+| Package: Read | `GET` | `/packages/npm/-/package/*package_name/dist-tags` |
+| Project: Read | `GET` | `/projects/:id` |
+| Code: Read | `GET` | `/projects/:id/(-/)search/semantic` |
+| Avatar: Read | `GET` | `/projects/:id/avatar` |
+| Badge: Read | `GET` | `/projects/:id/badges` |
+| Badge: Read | `GET` | `/projects/:id/badges/:badge_id` |
+| Badge: Read | `GET` | `/projects/:id/badges/render` |
+| Work Item: Read | `GET` | `/projects/:id/boards` |
+| Work Item: Read | `GET` | `/projects/:id/boards/:board_id` |
+| Work Item: Read | `GET` | `/projects/:id/boards/:board_id/lists` |
+| Work Item: Read | `GET` | `/projects/:id/boards/:board_id/lists/:list_id` |
+| Deployment: Read | `GET` | `/projects/:id/deployments` |
+| Deployment: Read | `GET` | `/projects/:id/deployments/:deployment_id` |
+| Deployment: Read, Merge Request: Read | `GET` | `/projects/:id/deployments/:deployment_id/merge_requests` |
+| Environment: Read | `GET` | `/projects/:id/environments` |
+| Environment: Read | `GET` | `/projects/:id/environments/:environment_id` |
+| Project: Read | `GET` | `/projects/:id/forks` |
+| Work Item: Read | `GET` | `/projects/:id/issues` |
+| Work Item: Read | `GET` | `/projects/:id/issues/:issue_iid` |
+| Work Item: Read | `GET` | `/projects/:id/issues/:issue_iid/closed_by` |
+| Work Item: Read | `GET` | `/projects/:id/issues/:issue_iid/participants` |
+| Work Item: Read | `GET` | `/projects/:id/issues/:issue_iid/related_merge_requests` |
+| Work Item: Read | `GET` | `/projects/:id/issues/:issue_iid/time_stats` |
+| Work Item: Read | `GET` | `/projects/:id/issues_statistics` |
+| Label: Read | `GET` | `/projects/:id/labels` |
+| Label: Read | `GET` | `/projects/:id/labels/:name` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid` |
+| Merge Request Approval Rule: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approval_rules` |
+| Merge Request Approval Rule: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approval_state` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approvals` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/changes` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/closes_issues` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/commits` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/context_commits` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/diffs` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/draft_notes` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/merge_ref` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/participants` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/pipelines` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/raw_diffs` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/related_issues` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/reviewers` |
+| Work Item: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/time_stats` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/versions` |
+| Merge Request: Read | `GET` | `/projects/:id/merge_requests/:merge_request_iid/versions/:version_id` |
+| Work Item: Read | `GET` | `/projects/:id/milestones` |
+| Work Item: Read | `GET` | `/projects/:id/milestones/:milestone_id` |
+| Package: Read | `GET` | `/projects/:id/packages` |
+| Package: Read | `GET` | `/projects/:id/packages/:package_id` |
+| Package: Read | `GET` | `/projects/:id/packages/:package_id/pipelines` |
+| Package: Read | `GET` | `/projects/:id/packages/composer/archives/*package_name` |
+| Package: Read | `GET` | `/projects/:id/packages/debian/pool/:distribution/:letter/:package_name/:package_version/:file_name` |
+| Package: Read | `GET` | `/projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` |
+| Package: Read | `GET` | `/projects/:id/packages/go/*module_name/@v/:module_version.info` |
+| Package: Read | `GET` | `/projects/:id/packages/go/*module_name/@v/:module_version.mod` |
+| Package: Read | `GET` | `/projects/:id/packages/go/*module_name/@v/:module_version.zip` |
+| Package: Read | `GET` | `/projects/:id/packages/go/*module_name/@v/list` |
+| Package: Read | `GET` | `/projects/:id/packages/helm/:channel/charts/:file_name.tgz` |
+| Package: Read | `GET` | `/projects/:id/packages/helm/:channel/index.yaml` |
+| Package: Read | `GET` | `/projects/:id/packages/maven/*path/:file_name` |
+| Package: Read | `GET` | `/projects/:id/packages/npm/*package_name` |
+| Package: Read | `GET` | `/projects/:id/packages/npm/*package_name/-/*file_name` |
+| Package: Read | `GET` | `/projects/:id/packages/npm/-/package/*package_name/dist-tags` |
+| Package: Read | `GET` | `/projects/:id/packages/nuget/download/*package_name/*package_version/*package_filename` |
+| Package: Read | `GET` | `/projects/:id/packages/nuget/download/*package_name/index` |
+| Package: Read | `GET` | `/projects/:id/packages/nuget/metadata/*package_name/*package_version` |
+| Package: Read | `GET` | `/projects/:id/packages/nuget/metadata/*package_name/index` |
+| Package: Read | `GET` | `/projects/:id/packages/pypi/files/:sha256/*file_identifier` |
+| Package: Read | `GET` | `/projects/:id/packages/pypi/simple` |
+| Package: Read | `GET` | `/projects/:id/packages/pypi/simple/*package_name` |
+| Pipeline: Read | `GET` | `/projects/:id/pipelines` |
+| Pipeline: Read | `GET` | `/projects/:id/pipelines/:pipeline_id` |
+| Pipeline: Read | `GET` | `/projects/:id/pipelines/latest` |
+| Release: Read | `GET` | `/projects/:id/releases` |
+| Release: Read | `GET` | `/projects/:id/releases/:tag_name` |
+| Release: Read | `GET` | `/projects/:id/releases/:tag_name/downloads/*direct_asset_path` |
+| Release: Read | `GET` | `/projects/:id/releases/permalink/latest(/)(*suffix_path)` |
+| Repository: Read | `GET` | `/projects/:id/repository/archive` |
+| Repository: Read | `GET` | `/projects/:id/repository/blobs/:sha` |
+| Repository: Read | `GET` | `/projects/:id/repository/blobs/:sha/raw` |
+| Branch: Read | `GET` | `/projects/:id/repository/branches` |
+| Branch: Read | `GET` | `/projects/:id/repository/branches/:branch` |
+| Branch: Read | `HEAD` | `/projects/:id/repository/branches/:branch` |
+| Repository: Read | `GET` | `/projects/:id/repository/changelog` |
+| Commit: Read | `GET` | `/projects/:id/repository/commits` |
+| Commit: Read | `GET` | `/projects/:id/repository/commits/:sha` |
+| Commit: Read | `GET` | `/projects/:id/repository/commits/:sha/comments` |
+| Commit: Read | `GET` | `/projects/:id/repository/commits/:sha/diff` |
+| Commit: Read | `GET` | `/projects/:id/repository/commits/:sha/merge_requests` |
+| Commit: Read | `GET` | `/projects/:id/repository/commits/:sha/refs` |
+| Commit: Read | `GET` | `/projects/:id/repository/commits/:sha/sequence` |
+| Commit: Read | `GET` | `/projects/:id/repository/commits/:sha/signature` |
+| Repository: Read | `GET` | `/projects/:id/repository/compare` |
+| Repository: Read | `GET` | `/projects/:id/repository/contributors` |
+| Repository: Read | `GET` | `/projects/:id/repository/files/:file_path` |
+| Repository: Read | `HEAD` | `/projects/:id/repository/files/:file_path` |
+| Repository: Read | `GET` | `/projects/:id/repository/files/:file_path/blame` |
+| Repository: Read | `HEAD` | `/projects/:id/repository/files/:file_path/blame` |
+| Repository: Read | `GET` | `/projects/:id/repository/files/:file_path/raw` |
+| Repository: Read | `GET` | `/projects/:id/repository/health` |
+| Repository: Read | `GET` | `/projects/:id/repository/merge_base` |
+| Repository Tag: Read | `GET` | `/projects/:id/repository/tags` |
+| Repository Tag: Read | `GET` | `/projects/:id/repository/tags/:tag_name` |
+| Repository Tag: Read | `GET` | `/projects/:id/repository/tags/:tag_name/signature` |
+| Repository: Read | `GET` | `/projects/:id/repository/tree` |
+| Project: Read | `GET` | `/projects/:id/starrers` |
+| Wiki: Read | `GET` | `/projects/:id/wikis` |
+| Wiki: Read | `GET` | `/projects/:id/wikis/:slug` |
+| Package: Read | `GET` | `/virtual_registries/packages/maven/:id/*path` |
+
 ## Unavailable endpoints
 
 The following endpoints cannot authenticate with fine-grained tokens.
@@ -2738,6 +2756,9 @@ incompatible with personal access tokens.
 
 | Method | Path | Reason |
 | ------ | ---- | ------ |
+| `POST` | `/ai/duo_workflows/agent_workflows` | AI workflows OAuth token |
+| `GET` | `/ai/duo_workflows/code_review/custom_instructions` | AI workflows OAuth token |
+| `POST` | `/ai/duo_workflows/workflows/:id/audit_events` | AI Workflows OAuth token |
 | `GET` | `/api/scim/:version/application/Groups` | SCIM token |
 | `POST` | `/api/scim/:version/application/Groups` | SCIM token |
 | `GET` | `/api/scim/:version/application/Groups/:id` | SCIM token |
@@ -2773,6 +2794,7 @@ incompatible with personal access tokens.
 | `POST` | `/groups/:id/-/packages/npm/-/npm/v1/security/advisories/bulk` | External registry redirect |
 | `POST` | `/groups/:id/-/packages/npm/-/npm/v1/security/audits/quick` | External registry redirect |
 | `POST` | `/groups/:id/placeholder_reassignments/authorize` | Workhorse pre-authorization |
+| `POST` | `/groups/:id/uploads/authorize` | Workhorse pre-authorization |
 | `POST` | `/groups/import/authorize` | Workhorse pre-authorization |
 | `GET` | `/internal/agents/agentk/agent_info` | Kubernetes agent JWT |
 | `GET` | `/internal/agents/agentw/agent_info` | Kubernetes agent JWT |
@@ -2807,8 +2829,6 @@ incompatible with personal access tokens.
 | `GET` | `/internal/gitlab_subscriptions/namespaces/:namespace_id/user_permissions/:user_id` | Subscription portal JWT |
 | `GET` | `/internal/gitlab_subscriptions/users/:id` | Subscription portal JWT |
 | `PUT` | `/internal/gitlab_subscriptions/users/:user_id/credit_card_validation` | Subscription portal JWT |
-| `POST` | `/internal/jobs/:id/x_ray/dependencies` | CI job token |
-| `POST` | `/internal/jobs/:id/x_ray/scan` | CI job token |
 | `POST` | `/internal/kubernetes/agent_configuration` | Kubernetes agent JWT |
 | `POST` | `/internal/kubernetes/agent_events` | Kubernetes agent JWT |
 | `POST` | `/internal/kubernetes/authorize_proxy_user` | Kubernetes agent JWT |
@@ -2832,6 +2852,9 @@ incompatible with personal access tokens.
 | `POST` | `/internal/observability/project/:id/write/metrics` | Workhorse verification |
 | `POST` | `/internal/observability/project/:id/write/traces` | Workhorse verification |
 | `GET` | `/internal/orbit/project/:project_id/info` | Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/merge_request_diffs/:diff_id` | Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/merge_request_diffs/:diff_id/raw_diffs` | Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/merge_requests/:merge_request_iid/raw_diffs` | Orbit internal token |
 | `GET` | `/internal/orbit/project/:project_id/repository/archive` | Orbit internal token |
 | `GET` | `/internal/orbit/project/:project_id/repository/changed_paths` | Orbit internal token |
 | `GET` | `/internal/orbit/project/:project_id/repository/commits` | Orbit internal token |

@@ -10,6 +10,7 @@ import {
   SP_HELP_URL,
 } from '../constants';
 import MrWidgetIcon from './mr_widget_icon.vue';
+import MrWidgetContainer from './mr_widget_container.vue';
 
 const trackingMixin = Tracking.mixin();
 
@@ -25,6 +26,7 @@ export default {
     GlLink,
     GlSprintf,
     MrWidgetIcon,
+    MrWidgetContainer,
   },
   mixins: [trackingMixin],
   props: {
@@ -48,37 +50,33 @@ export default {
 };
 </script>
 <template>
-  <div class="mr-widget-body mr-pipeline-suggest gl-mb-3">
-    <div class="gl-flex gl-items-center">
+  <mr-widget-container>
+    <div class="gl-flex">
       <mr-widget-icon :name="$options.SP_ICON_NAME" />
       <div>
-        <gl-sprintf
-          :message="
-            s__(`mrWidget|%{boldHeaderStart}Looks like there's no pipeline here.%{boldHeaderEnd}`)
-          "
-        >
-          <template #boldHeader="{ content }">
-            <strong>
-              {{ content }}
-            </strong>
-          </template>
-        </gl-sprintf>
-      </div>
-    </div>
-    <div class="row">
-      <div class="gl-col-12">
-        <div class="ml-6 gl-pt-5">
-          <p class="gl-mt-2">
-            <gl-sprintf :message="$options.SP_HELP_CONTENT">
-              <template #link="{ content }">
-                <gl-link data-testid="help" :href="$options.SP_HELP_URL" target="_blank"
-                  >{{ content }}
-                </gl-link>
-              </template>
-            </gl-sprintf>
-          </p>
+        <div class="gl-my-2">
+          <gl-sprintf
+            :message="
+              s__(`mrWidget|%{boldHeaderStart}Looks like there's no pipeline here.%{boldHeaderEnd}`)
+            "
+          >
+            <template #boldHeader="{ content }">
+              <strong>
+                {{ content }}
+              </strong>
+            </template>
+          </gl-sprintf>
+        </div>
+        <div>
+          <gl-sprintf :message="$options.SP_HELP_CONTENT">
+            <template #link="{ content }">
+              <gl-link data-testid="help" :href="$options.SP_HELP_URL" target="_blank"
+                >{{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
         </div>
       </div>
     </div>
-  </div>
+  </mr-widget-container>
 </template>

@@ -83,7 +83,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_manag
         expect(page).to have_link(issue.title, href: /#{issue_path(issue)}/)
       end
 
-      expect(page).to have_selector('[data-testid="work-item-drawer"]')
+      expect(page).to have_selector('[data-testid="work-item-detail-panel"]')
 
       within_testid('work-item-labels') do
         click_button 'Edit'

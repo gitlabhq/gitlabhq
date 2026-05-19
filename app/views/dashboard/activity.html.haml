@@ -5,10 +5,17 @@
 
 - page_title _("Activity")
 
-%h1.gl-sr-only= page_title
-
 = render "projects/last_push"
-= render 'dashboard/activity_head'
 
-%section.activities
-  = render 'activities'
+= render ::Layouts::IndexLayout.new(heading: _('Activity')) do |c|
+  - if Feature.enabled?(:global_time_tracking_report, :instance)
+    - c.with_actions do
+      = link_to _("Time tracking report"), timelogs_path(username: current_user.username)
+  .top-area
+    = gl_tabs_nav({ class: 'gl-border-b-0', data: { testid: 'dashboard-activity-tabs' } }) do
+      = gl_tab_link_to _("Your activity"), activity_dashboard_path, { item_active: params[:filter].nil? }
+      = gl_tab_link_to _("Your projects"), activity_dashboard_path(filter: 'projects')
+      = gl_tab_link_to _("Starred projects"), activity_dashboard_path(filter: 'starred')
+      = gl_tab_link_to _("Followed users"), activity_dashboard_path(filter: 'followed')
+  %section.activities
+    = render 'activities'

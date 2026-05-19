@@ -651,14 +651,15 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
           end
 
           context 'when work item type does not have the development widget' do
-            let(:work_item_type) { create(:work_item_type, :issue) }
+            let(:work_item_type) { build(:work_item_system_defined_type, :issue) }
             let(:noteable) { create(:work_item, project: project, work_item_type: work_item_type) }
 
             before do
               # the stub_all_work_item_widget does not work here as it not uses the get_widget method.
               # it uses the work_item.supported_quick_action_commands method that used the work_item_type.widget_classes
+              stub_all_work_item_widgets(development: false)
               widgets = work_item_type.widget_classes(project).reject { |widget| widget == WorkItems::Widgets::Development }
-              allow(noteable.work_item_type).to receive(:widget_classes).with(project).and_return(widgets)
+              allow(work_item_type).to receive(:widget_classes).with(project).and_return(widgets)
             end
 
             it 'does not create a merge request' do

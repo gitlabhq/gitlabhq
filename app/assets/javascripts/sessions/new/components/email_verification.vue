@@ -4,6 +4,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
+import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import {
   I18N_EXPLANATION,
   I18N_INPUT_LABEL,
@@ -12,6 +13,7 @@ import {
   I18N_SUBMIT_BUTTON,
   I18N_DIDNT_GET_CODE_RESEND_LINK,
   I18N_RESEND_CODE,
+  I18N_RESEND_CODE_IN,
   I18N_SKIP_FOR_NOW_BUTTON,
   I18N_EMAIL_RESEND_SUCCESS,
   I18N_GENERIC_ERROR,
@@ -37,6 +39,7 @@ export default {
     GlFormInput,
     GlButton,
     GlLink,
+    GlCountdown,
     EmailForm,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -62,6 +65,11 @@ export default {
       required: false,
       default: null,
     },
+    initialShowResendAfter: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -70,9 +78,16 @@ export default {
       submitted: false,
       verifyError: '',
       activeForm: VERIFY_TOKEN_FORM,
+      showResendAfter: this.initialShowResendAfter,
     };
   },
   computed: {
+    showResend() {
+      return new Date(this.showResendAfter) <= new Date();
+    },
+    resendAfterDateString() {
+      return this.showResendAfter ? new Date(this.showResendAfter).toString() : null;
+    },
     inputValidation() {
       return {
         state: !(this.submitted && this.invalidFeedback),
@@ -152,6 +167,7 @@ export default {
       if (response.data.status === undefined) {
         this.handleError();
       } else if (response.data.status === SUCCESS_RESPONSE) {
+        this.showResendAfter = response.data.show_resend_after ?? null;
         createAlert({
           message: I18N_EMAIL_RESEND_SUCCESS,
           variant: VARIANT_SUCCESS,
@@ -159,6 +175,9 @@ export default {
       } else if (response.data.status === FAILURE_RESPONSE) {
         createAlert({ message: response.data.message });
       }
+    },
+    onResendTimerExpired() {
+      this.showResendAfter = null;
     },
     handleError(error) {
       createAlert({
@@ -183,6 +202,7 @@ export default {
     inputLabel: I18N_INPUT_LABEL,
     submitButton: I18N_SUBMIT_BUTTON,
     didntGetCoderesendLink: I18N_DIDNT_GET_CODE_RESEND_LINK,
+    resendCodeIn: I18N_RESEND_CODE_IN,
     resendCode: I18N_RESEND_CODE,
     helpText: I18N_HELP_TEXT,
     sendToSecondaryEmailButtonText: I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT,
@@ -234,11 +254,20 @@ export default {
 
         <!-- Resend button -->
         <template #description>
-          <gl-sprintf :message="$options.i18n.didntGetCoderesendLink">
+          <gl-sprintf v-if="showResend" :message="$options.i18n.didntGetCoderesendLink">
             <template #button="{ content }">
               <gl-button variant="link" category="tertiary" @click="() => resend()">
                 {{ content }}
               </gl-button>
+            </template>
+          </gl-sprintf>
+          <gl-sprintf v-else :message="$options.i18n.resendCodeIn">
+            <template #timer>
+              <gl-countdown
+                class="gl-inline-block"
+                :end-date-string="resendAfterDateString"
+                @timer-expired="onResendTimerExpired"
+              />
             </template>
           </gl-sprintf>
         </template>

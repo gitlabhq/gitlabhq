@@ -13,7 +13,7 @@ const KEY_CUSTOM = 'custom';
 const MINUTE = 60; // minute between 0-59
 const HOUR = 24; // hour between 0-23
 const WEEKDAY_INDEX = 7; // week index Sun-Sat
-const DAY = 29; // day between 0-28
+const DAY = 28; // day between 1-28 (every month has at least 28 days)
 const getRandomCronValue = (max) => Math.floor(Math.random() * max);
 
 export default {
@@ -49,7 +49,7 @@ export default {
       randomMinute: getRandomCronValue(MINUTE),
       randomHour: getRandomCronValue(HOUR),
       randomWeekDayIndex: getRandomCronValue(WEEKDAY_INDEX),
-      randomDay: getRandomCronValue(DAY),
+      randomDay: getRandomCronValue(DAY) + 1,
       inputNameAttribute: 'schedule[cron]',
       radioValue: this.initialCronInterval ? KEY_CUSTOM : KEY_EVERY_DAY,
       cronInterval: this.initialCronInterval,

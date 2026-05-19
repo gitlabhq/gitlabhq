@@ -7,9 +7,10 @@ module Gitlab
         class Order < BasePart
           attr_reader :plan_part
 
-          def initialize(plan_part, configuration)
+          def initialize(plan_part, configuration, query_plan: nil)
             @plan_part = plan_part
             @configuration = configuration
+            @query_plan = query_plan
           end
 
           def definition

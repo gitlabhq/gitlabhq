@@ -87,16 +87,8 @@ module Tasks
           violations[:definition] << { name: permission_name, sources: policies || [] }
         end
 
-        def validate_action(permission)
-          return unless DISALLOWED_ACTIONS.has_key?(permission.action.to_sym)
-
-          violations[:action][permission.name] = permission.action.to_sym
-        end
-
-        def validate_name(permission)
-          return if PERMISSION_NAME_REGEX.match?(permission.name)
-
-          violations[:name] << permission.name
+        def permission_source_paths(permission_name)
+          [permission_source_path(permission_name), todo_source_path(permission_name)].compact
         end
 
         def validate_file(permission)
@@ -166,35 +158,6 @@ module Tasks
           out += format_error_list(:missing_resource_metadata)
           out += format_schema_errors(:resource_metadata_schema)
           out + format_error_list(:empty_resource_directory)
-        end
-
-        def format_error_list_with_source(kind)
-          return '' if violations[kind].empty?
-
-          out = "#{error_messages[kind]}\n\n"
-
-          violations[kind].each do |permission|
-            sources = [permission_source_path(permission), todo_source_path(permission)].compact
-            out += "  - #{permission} (#{sources.join(', ')})\n"
-          end
-
-          "#{out}\n"
-        end
-
-        def format_action_errors
-          return '' if violations[:action].empty?
-
-          out = "#{error_messages[:action]}\n\n"
-
-          violations[:action].each_key do |permission|
-            action = violations[:action][permission]
-            preferred = DISALLOWED_ACTIONS[action]
-            source = permission_source_path(permission)
-
-            out += "  - #{permission}: Prefer #{preferred} over #{action}. (#{source})\n"
-          end
-
-          "#{out}\n"
         end
 
         def format_definition_errors

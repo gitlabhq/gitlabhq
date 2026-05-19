@@ -1,6 +1,7 @@
 <script>
 import { GlProgressBar, GlLink, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
+import initIssuablePopovers from '~/issuable/popover';
 import { MAX_MILESTONES_TO_DISPLAY } from '../constants';
 import IssuableStats from './issuable_stats.vue';
 
@@ -44,6 +45,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    showDetails: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -118,7 +124,19 @@ export default {
           });
     },
   },
+  watch: {
+    showAllMilestones() {
+      this.$nextTick(() => this.initMilestonePopovers());
+    },
+  },
+  mounted() {
+    this.initMilestonePopovers();
+  },
   methods: {
+    initMilestonePopovers() {
+      const links = this.$el.querySelectorAll('[data-reference-type="milestone"]');
+      initIssuablePopovers(Array.from(links));
+    },
     toggleShowAll() {
       this.showAllMilestones = !this.showAllMilestones;
     },
@@ -132,60 +150,69 @@ export default {
 };
 </script>
 <template>
-  <div class="release-block-milestone-info gl-flex gl-flex-wrap gl-gap-6">
-    <div
-      v-gl-tooltip
-      class="milestone-progress-bar-container js-milestone-progress-bar-container gl-flex gl-flex-col"
-      :title="__('Closed issues')"
-    >
-      <span class="gl-mb-3">{{ percentCompleteText }}</span>
-      <span class="gl-w-full">
-        <gl-progress-bar :value="issueCounts.closed" :max="issueCounts.total" />
-      </span>
-    </div>
-    <div class="js-milestone-list-container gl-flex gl-flex-col">
-      <span class="gl-mb-2">{{ milestoneLabelText }}</span>
-      <div class="gl-flex gl-flex-wrap gl-items-end">
-        <template v-for="(milestone, index) in milestonesToDisplay">
-          <gl-link
-            :key="milestone.id"
-            v-gl-tooltip
-            :title="milestone.description"
-            :href="milestone.webUrl"
-            class="gl-mr-2"
-            data-testid="milestone-title"
-          >
-            {{ milestone.title }}
-          </gl-link>
-          <template v-if="shouldRenderBullet(index)">
-            <span :key="'bullet-' + milestone.id" class="gl-mr-2">&bull;</span>
+  <div>
+    <h3 class="gl-sr-only">
+      {{ __('Milestone information') }}
+    </h3>
+    <div class="release-block-milestone-info gl-flex gl-flex-wrap gl-gap-6">
+      <div class="js-milestone-list-container gl-mb-5 gl-flex gl-flex-col">
+        <span class="gl-mb-2">{{ milestoneLabelText }}</span>
+        <div class="gl-flex gl-flex-wrap gl-items-end">
+          <template v-for="(milestone, index) in milestonesToDisplay">
+            <gl-link
+              :key="milestone.id"
+              :href="milestone.webUrl"
+              :data-milestone="milestone.id"
+              :data-original="`%\&quot;${milestone.title}\&quot;`"
+              data-reference-type="milestone"
+              class="gfm gfm-milestone has-tooltip gl-mr-2"
+              data-testid="milestone-title"
+            >
+              {{ milestone.title }}
+            </gl-link>
+            <template v-if="shouldRenderBullet(index)">
+              <span :key="'bullet-' + milestone.id" class="gl-mr-2">&bull;</span>
+            </template>
+            <template v-if="shouldRenderShowMoreLink(index)">
+              <gl-button :key="'more-button-' + milestone.id" variant="link" @click="toggleShowAll">
+                {{ moreText }}
+              </gl-button>
+            </template>
           </template>
-          <template v-if="shouldRenderShowMoreLink(index)">
-            <gl-button :key="'more-button-' + milestone.id" variant="link" @click="toggleShowAll">
-              {{ moreText }}
-            </gl-button>
-          </template>
-        </template>
+        </div>
       </div>
+      <issuable-stats
+        v-if="showDetails"
+        :label="__('Issues')"
+        :total="issueCounts.total"
+        :closed="issueCounts.closed"
+        :opened-path="openedIssuesPath"
+        :closed-path="closedIssuesPath"
+        data-testid="issue-stats"
+      />
+      <div
+        v-if="showDetails"
+        v-gl-tooltip
+        class="gl-flex gl-min-h-9 gl-w-37 gl-flex-col"
+        :title="__('Closed issues')"
+        data-testid="milestone-progress-bar-container"
+      >
+        <span class="gl-mb-3">{{ percentCompleteText }}</span>
+        <span class="gl-w-full">
+          <gl-progress-bar :value="issueCounts.closed" :max="issueCounts.total" />
+        </span>
+      </div>
+      <issuable-stats
+        v-if="showMergeRequestStats"
+        :label="__('Merge requests')"
+        :total="mergeRequestCounts.total"
+        :merged="mergeRequestCounts.merged"
+        :closed="mergeRequestCounts.closed"
+        :opened-path="openedMergeRequestsPath"
+        :merged-path="mergedMergeRequestsPath"
+        :closed-path="closedMergeRequestsPath"
+        data-testid="merge-request-stats"
+      />
     </div>
-    <issuable-stats
-      :label="__('Issues')"
-      :total="issueCounts.total"
-      :closed="issueCounts.closed"
-      :opened-path="openedIssuesPath"
-      :closed-path="closedIssuesPath"
-      data-testid="issue-stats"
-    />
-    <issuable-stats
-      v-if="showMergeRequestStats"
-      :label="__('Merge requests')"
-      :total="mergeRequestCounts.total"
-      :merged="mergeRequestCounts.merged"
-      :closed="mergeRequestCounts.closed"
-      :opened-path="openedMergeRequestsPath"
-      :merged-path="mergedMergeRequestsPath"
-      :closed-path="closedMergeRequestsPath"
-      data-testid="merge-request-stats"
-    />
   </div>
 </template>

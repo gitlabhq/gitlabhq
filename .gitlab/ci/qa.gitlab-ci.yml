@@ -99,6 +99,7 @@ qa:metadata-lint:
     - .needs-e2e-gem-cache-lint-base
     - .qa:rules:metadata-lint
   stage: lint
+  when: on_success
   variables:
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
@@ -120,6 +121,7 @@ qa:selectors:
     - .needs-e2e-gem-cache-lint-base
     - .qa:rules:selectors
   stage: lint
+  when: on_success
   script:
     - bundle exec bin/qa Test::Sanity::Selectors
 
@@ -129,6 +131,7 @@ qa:orchestrator-lint:
     - .needs-orchestrator-gem-cache-lint-base
     - .qa:rules:gitlab-orchestrator
   stage: lint
+  when: on_success
   script:
     - bundle exec rubocop
 

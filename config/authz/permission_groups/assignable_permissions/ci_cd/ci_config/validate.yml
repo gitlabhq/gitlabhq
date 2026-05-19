@@ -1,7 +1,9 @@
 ---
 name: validate_ci_config
 description: Grants the ability to validate CI/CD configuration content
-permissions:
-  - validate_ci_config
 boundaries:
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - validate_ci_config

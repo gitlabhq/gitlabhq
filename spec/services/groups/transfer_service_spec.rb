@@ -16,8 +16,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
   end
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:new_parent_group) { create(:group, :public) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:new_parent_group, freeze: false) { create(:group, :public) }
 
   let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
   let(:transfer_service) { described_class.new(group, user) }
@@ -35,7 +35,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
   end
 
   context 'handling packages' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group) }
     let_it_be(:project) { create(:project, namespace: group) }
 
     let!(:new_group) { create(:group) }
@@ -77,7 +77,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         end
 
         context 'with namespaced packages present' do
-          let_it_be(:package) { create(:npm_package, project: project, name: "@#{project.root_namespace.path}/test") }
+          let_it_be(:package, freeze: false) { create(:npm_package, project: project, name: "@#{project.root_namespace.path}/test") }
 
           it 'does not allow transfer' do
             transfer_service.execute(new_group)
@@ -99,7 +99,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
         context 'when transferring a group into a root group' do
           let_it_be(:root_group) { create(:group) }
-          let_it_be(:group) { create(:group, parent: root_group) }
+          let_it_be(:group, freeze: false) { create(:group, parent: root_group) }
           let_it_be(:new_group) { nil }
 
           it_behaves_like 'transfer allowed'
@@ -178,7 +178,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when the user does not have the right policies' do
-        let_it_be(:group_member) { create(:group_member, :guest, group: group, user: user) }
+        let_it_be(:group_member, freeze: false) { create(:group_member, :guest, group: group, user: user) }
 
         it "returns false" do
           expect(transfer_service.execute(nil)).to be_falsy
@@ -191,9 +191,9 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when there is a group with the same path' do
-        let_it_be(:group) { create(:group, :public, :nested, path: 'not-unique') }
+        let_it_be(:group, freeze: false) { create(:group, :public, :nested, path: 'not-unique') }
 
-        before do
+        before_all do
           create(:group, path: 'not-unique')
         end
 
@@ -251,7 +251,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       it_behaves_like 'ensuring allowed transfer for a group'
 
       context 'when the new parent group is the same as the previous parent group' do
-        let_it_be(:group) { create(:group, :public, :nested, parent: new_parent_group) }
+        let_it_be(:group, freeze: false) { create(:group, :public, :nested, parent: new_parent_group) }
 
         it 'returns false' do
           expect(transfer_service.execute(new_parent_group)).to be_falsy
@@ -264,7 +264,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when the user does not have the right policies' do
-        let_it_be(:group_member) { create(:group_member, :guest, group: group, user: user) }
+        let_it_be(:group_member, freeze: false) { create(:group_member, :guest, group: group, user: user) }
 
         it "returns false" do
           expect(transfer_service.execute(new_parent_group)).to be_falsy
@@ -306,7 +306,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
       context 'when the parent group has a project with the same path' do
         let_it_be_with_reload(:group) { create(:group, :public, :nested, path: 'foo') }
-        let_it_be(:membership) { create(:group_member, :owner, group: new_parent_group, user: user) }
+        let_it_be(:membership, freeze: false) { create(:group_member, :owner, group: new_parent_group, user: user) }
         let_it_be(:project) { create(:project, path: 'foo', namespace: new_parent_group) }
 
         it 'adds an error on group' do
@@ -1141,20 +1141,23 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
   end
 
   describe '#schedule_async_transfer' do
-    let_it_be_with_reload(:group) { create(:group, :public) }
-    let_it_be(:new_parent_group) { create(:group, :public) }
-    let!(:new_parent_group_member) { create(:group_member, :owner, group: new_parent_group, user: user) }
+    let_it_be(:current_parent_group) { create(:group) }
+    let_it_be(:new_parent_group, freeze: false) { create(:group, :public) }
+
+    let_it_be_with_reload(:group) { create(:group, :public, parent: current_parent_group) }
+    let_it_be(:new_parent_group_member, freeze: false) { create(:group_member, :owner, group: new_parent_group, user: user) }
 
     subject(:schedule) { transfer_service.schedule_async_transfer(new_parent_group) }
 
-    it 'returns true and enqueues the worker' do
+    it 'returns success response and enqueues the worker' do
       expect(Namespaces::Groups::TransferWorker).to receive(:perform_async).with(
         group.id,
         new_parent_group.id,
         user.id
       )
 
-      expect(schedule).to be true
+      expect(schedule).to be_success
+      expect(schedule.message).to eq('Group transfer has been queued. You will be notified when it completes.')
     end
 
     it 'transitions the group to transfer_scheduled' do
@@ -1186,7 +1189,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
           user.id
         )
 
-        expect(schedule).to be true
+        expect(schedule).to be_success
+        expect(schedule.message).to eq('Group transfer has been queued. You will be notified when it completes.')
       end
 
       it 'stores nil transfer_target_parent_id' do
@@ -1203,10 +1207,11 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         group.update_column(:state, Group.states[:creation_in_progress])
       end
 
-      it 'returns false and does not enqueue the worker' do
+      it 'returns error response and does not enqueue the worker' do
         expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
 
-        expect(schedule).to be false
+        expect(schedule).to be_error
+        expect(schedule.message).to eq('Unable to initiate transfer. The group may already have a transfer in progress.')
       end
     end
 
@@ -1215,10 +1220,11 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         group.schedule_transfer!(transition_user: user)
       end
 
-      it 'returns false and does not enqueue the worker' do
+      it 'returns error response and does not enqueue the worker' do
         expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
 
-        expect(schedule).to be false
+        expect(schedule).to be_error
+        expect(schedule.message).to eq('Unable to initiate transfer. The group may already have a transfer in progress.')
       end
     end
   end

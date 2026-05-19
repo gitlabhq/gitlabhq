@@ -1,0 +1,10 @@
+---
+name: duo_convert_ci_use_developer_flow
+description: When enabled, the "Convert to GitLab CI/CD" button on Jenkinsfile blob views triggers the developer/v1 foundational flow instead of the legacy convert_to_gl_ci/v1 flow.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/597606
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235418
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/599754
+milestone: '19.0'
+group: group::agent foundations
+type: gitlab_com_derisk
+default_enabled: false

@@ -8,7 +8,7 @@ module API
 
     allow_access_with_scope :read_user, if: ->(request) { request.get? || request.head? }
     allow_access_with_scope :ai_workflows, if: ->(request) do
-      request.head? || request_current_user?(request)
+      request.head? || request_current_user?(request) || request_users_read?(request)
     end
 
     feature_category :user_profile,
@@ -26,6 +26,20 @@ module API
 
     def self.request_current_user?(request)
       request.get? && request.path.match?(%r{/api/v\d+/user$})
+    end
+
+    def self.request_users_read?(request)
+      return false unless request.get?
+
+      if request.path.match?(%r{/api/v\d+/users$})
+        # For the list endpoint, only allow targeted lookups by username to
+        # prevent bulk user enumeration via the ai_workflows scope.
+        request.GET['username'].present?
+      else
+        # Allow GET /api/v4/users/:id (fetch a specific user by numeric ID).
+        # Sub-resource paths (e.g. /users/:id/keys) do not match this pattern.
+        request.path.match?(%r{/api/v\d+/users/\d+$})
+      end
     end
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
@@ -203,10 +217,6 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get feature_category: :user_profile, urgency: :low do
-        # This error can be removed in/after 19.0 release.
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/549951
-        error_for_saml_provider_id_param_ee
-
         index_params = declared_params(include_missing: false)
 
         authenticated_as_admin! if index_params[:extern_uid].present? && index_params[:provider].present?
@@ -1184,7 +1194,7 @@ module API
           end
           post feature_category: :system_access do
             response = ::PersonalAccessTokens::CreateService.new(
-              current_user: current_user, target_user: target_user, organization_id: Current.organization.id, params: declared_params(include_missing: false)
+              current_user: current_user, target_user: target_user, organization_id: Current.organization.id, params: declared_params(include_missing: false).merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API)
             ).execute
 
             if response.success?
@@ -1700,7 +1710,7 @@ module API
         route_setting :authorization, permissions: :create_personal_access_token, boundary_type: :user
         post feature_category: :system_access do
           response = ::PersonalAccessTokens::CreateService.new(
-            current_user: current_user, target_user: current_user, params: declared_params(include_missing: false), organization_id: Current.organization.id
+            current_user: current_user, target_user: current_user, params: declared_params(include_missing: false).merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API), organization_id: Current.organization.id
           ).execute
 
           if response.success?

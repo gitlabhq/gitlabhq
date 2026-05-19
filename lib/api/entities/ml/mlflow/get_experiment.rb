@@ -5,7 +5,7 @@ module API
     module Ml
       module Mlflow
         class GetExperiment < Grape::Entity
-          expose :itself, using: Experiment, as: :experiment
+          expose :itself, using: ::API::Entities::Ml::Mlflow::Experiment, as: :experiment
         end
       end
     end

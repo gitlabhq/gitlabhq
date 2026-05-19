@@ -1,10 +1,13 @@
 import { GlTable, GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import ScanProfileTable from '~/security_configuration/components/scan_profiles/scan_profile_table.vue';
 import { SCAN_PROFILE_PROMO_ITEMS } from '~/security_configuration/constants';
 
 describe('ScanProfileTable', () => {
   let wrapper;
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createComponent = ({ props } = {}) => {
     wrapper = mountExtended(ScanProfileTable, {
@@ -82,6 +85,27 @@ describe('ScanProfileTable', () => {
 
     it('renders disabled preview button', () => {
       expect(findPreviewButton().props('disabled')).toBe(true);
+    });
+  });
+
+  describe('tracking', () => {
+    it('tracks view_scan_profile_list on mount', () => {
+      const { trackEventSpy } = bindInternalEventDocument(document);
+      createComponent();
+
+      expect(trackEventSpy).toHaveBeenCalledWith('view_scan_profile_list', {}, undefined);
+    });
+
+    it('tracks click_scan_profile_learn_more_link when a learn more link is clicked', () => {
+      createComponent();
+      const { triggerEvent, trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      triggerEvent(wrapper.find('[data-event-tracking]').element);
+
+      expect(trackEventSpy).toHaveBeenLastCalledWith(
+        'click_scan_profile_learn_more_link',
+        expect.any(Object),
+      );
     });
   });
 

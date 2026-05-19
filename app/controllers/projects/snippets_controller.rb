@@ -18,7 +18,7 @@ class Projects::SnippetsController < Projects::Snippets::ApplicationController
 
   def index
     @snippet_counts = ::Snippets::CountService
-      .new(current_user, project: @project)
+      .new(current_user, organization_id: Current.organization.id, project: @project)
       .execute
 
     @snippets = SnippetsFinder.new(current_user, organization_id: Current.organization.id, project: @project,

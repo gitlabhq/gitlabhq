@@ -11,6 +11,8 @@ Consult these topics for information on development processes for contributing t
 
 Must-reads:
 
+- [Cells](cells/_index.md) for understanding the Cells architecture and how to
+  write Cells-compatible code
 - [Guide on adapting existing and introducing new components](architecture.md#adapting-existing-and-introducing-new-components)
 - [Code review guidelines](code_review.md) for reviewing code and having code
   reviewed
@@ -62,8 +64,8 @@ In these cases, use the following workflow:
    - [User Experience (UX)](https://handbook.gitlab.com/handbook/product/ux/)
    - [Security](https://handbook.gitlab.com/handbook/security/)
    - [Quality](https://handbook.gitlab.com/handbook/engineering/quality/)
-     - [Engineering Productivity](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/)
-   - [Infrastructure](https://handbook.gitlab.com/handbook/engineering/infrastructure/)
+     - [Engineering Productivity](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/engineering-productivity/)
+   - [Infrastructure](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/)
 
    You can skip this step for MRs authored by EMs or Staff Engineers responsible
    for their area.

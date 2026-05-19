@@ -5,11 +5,12 @@ module Namespaces
     extend ActiveSupport::Concern
 
     included do
-      include TransitionContext
+      include ::Gitlab::TenantContainerLifecycle::Stateful::TransitionContext
       include TransitionCallbacks
       include StatePreservation
       include TransitionValidation
-      include TransitionLogging
+      include ::Gitlab::TenantContainerLifecycle::Stateful::TransitionLogging
+      include StateQuerying
 
       attribute :state, :integer, limit: 2, default: 0
 
@@ -24,19 +25,6 @@ module Namespaces
         transfer_scheduled: 7
       }, instance_methods: false
 
-      # TODO: We're overriding the scopes defined by `enum :state` in `StateQuerying`.
-      # Move with the above include statements above after BBM is finalized
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/588431 and remove the scopes in `StateQuerying`.
-      include StateQuerying
-
-      # During migration, both NULL and 0 represent ancestor_inherited in the database.
-      # Override the state reader so that NULL is treated as ancestor_inherited (value 0).
-      # TODO: Remove after NULL->0 backfill is complete https://gitlab.com/gitlab-org/gitlab/-/issues/588431
-      def state(...)
-        super || 'ancestor_inherited'
-      end
-
-      # TODO: Remove `transition ancestor_inherited:` after backfills are complete https://gitlab.com/groups/gitlab-org/-/epics/17956
       state_machine :state, initial: :ancestor_inherited do
         state :creation_in_progress
         state :maintenance
@@ -60,7 +48,8 @@ module Namespaces
 
         event :unarchive do
           transition archived: :ancestor_inherited
-          transition ancestor_inherited: :ancestor_inherited
+          transition ancestor_inherited: :ancestor_inherited,
+            unless: :remove_ancestor_inherited_transitions?
         end
 
         event :schedule_deletion do
@@ -86,7 +75,8 @@ module Namespaces
             if: :restore_to_archived_on_cancel_deletion?
           transition %i[deletion_scheduled deletion_in_progress] => :ancestor_inherited
           transition ancestor_inherited: :archived, if: :restore_to_archived_on_cancel_deletion?
-          transition ancestor_inherited: :ancestor_inherited
+          transition ancestor_inherited: :ancestor_inherited,
+            unless: :remove_ancestor_inherited_transitions?
         end
 
         event :schedule_transfer do
@@ -110,9 +100,35 @@ module Namespaces
         end
 
         after_transition :log_transition
+        after_transition to: :archived, do: :invalidate_namespace_descendants_cache
+        after_transition from: :archived, do: :invalidate_namespace_descendants_cache
 
         after_failure :update_state_metadata_on_failure
         after_failure :log_transition_failure
+      end
+
+      private
+
+      def remove_ancestor_inherited_transitions?
+        false
+      end
+
+      def stateful_detail
+        namespace_details
+      end
+
+      def invalidate_namespace_descendants_cache
+        return if is_a?(Namespaces::UserNamespace)
+
+        if is_a?(Namespaces::ProjectNamespace)
+          Namespaces::Descendants.expire_for([parent_id])
+        else
+          Namespaces::Descendants.expire_recursive_for(self)
+        end
+      end
+
+      def stateful_log_metadata
+        { message: 'Namespace state transition', namespace_id: id }
       end
     end
   end

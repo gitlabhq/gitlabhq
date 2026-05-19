@@ -93,13 +93,17 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
     context 'when result has no structured content' do
       let(:result) { {} }
 
-      it 'returns the result without processing' do
+      it 'returns a project not found error' do
         allow(tool).to receive(:process_result).and_call_original
         processed = tool.send(:process_result, result)
 
         expect(processed[:isError]).to be(true)
         expect(processed[:content]).to be_an(Array)
-        expect(processed[:content].first[:text]).to eq('Operation returned no data')
+        expect(processed[:content].first[:text]).to include(
+          'Project not found',
+          project.full_path,
+          'does not exist or you do not have access to it'
+        )
       end
     end
 
@@ -187,6 +191,60 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
     end
   end
 
+  describe '#resource_not_found?' do
+    context 'when operation data is nil and there are no errors' do
+      let(:result) { { 'data' => { 'project' => nil } } }
+
+      it 'returns true' do
+        expect(tool.send(:resource_not_found?, result)).to be(true)
+      end
+    end
+
+    context 'when operation data exists' do
+      let(:result) { { 'data' => { 'project' => { 'labels' => { 'nodes' => [] } } } } }
+
+      it 'returns false' do
+        expect(tool.send(:resource_not_found?, result)).to be(false)
+      end
+    end
+
+    context 'when there are GraphQL errors' do
+      let(:result) { { 'errors' => ['Some error'], 'data' => { 'project' => nil } } }
+
+      it 'returns false' do
+        expect(tool.send(:resource_not_found?, result)).to be(false)
+      end
+    end
+  end
+
+  describe '#resource_not_found_error' do
+    context 'when searching a project' do
+      it 'returns an error mentioning the project path' do
+        error = tool.send(:resource_not_found_error)
+
+        expect(error[:isError]).to be(true)
+        expect(error[:content].first[:text]).to eq(
+          "Project not found: the provided project path " \
+            "\"#{project.full_path}\" does not exist or you do not have access to it."
+        )
+      end
+    end
+
+    context 'when searching a group' do
+      let(:params) { { full_path: group.full_path, is_project: false, search: 'label' } }
+
+      it 'returns an error mentioning the group path' do
+        error = tool.send(:resource_not_found_error)
+
+        expect(error[:isError]).to be(true)
+        expect(error[:content].first[:text]).to eq(
+          "Group not found: the provided group path " \
+            "\"#{group.full_path}\" does not exist or you do not have access to it."
+        )
+      end
+    end
+  end
+
   describe 'integration' do
     it 'executes query with correct variables' do
       allow(GitlabSchema).to receive(:execute).and_call_original
@@ -216,11 +274,15 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
     context 'when project does not exist' do
       let(:params) { { full_path: 'non_existing_project', is_project: true, search: 'test' } }
 
-      it 'returns error' do
+      it 'returns a project not found error with the path' do
         result = tool.execute
 
         expect(result[:isError]).to be(true)
-        expect(result[:content].first[:text]).to include('Operation returned no data')
+        expect(result[:content].first[:text]).to include(
+          'Project not found',
+          'non_existing_project',
+          'does not exist or you do not have access to it'
+        )
       end
     end
 
@@ -254,14 +316,18 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
         expect(result[:structuredContent][:items].first).to include('title' => 'test')
       end
 
-      context 'when project does not exist' do
+      context 'when group does not exist' do
         let(:params) { { full_path: 'non_existing_group', is_project: false, search: 'test' } }
 
-        it 'returns error' do
+        it 'returns a group not found error with the path' do
           result = tool.execute
 
           expect(result[:isError]).to be(true)
-          expect(result[:content].first[:text]).to include('Operation returned no data')
+          expect(result[:content].first[:text]).to include(
+            'Group not found',
+            'non_existing_group',
+            'does not exist or you do not have access to it'
+          )
         end
       end
     end

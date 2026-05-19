@@ -148,6 +148,7 @@ module.exports = (path, options = {}) => {
     '^lodash$': '<rootDir>/node_modules/lodash-es/lodash.js',
     '^lodash/(.*)$': '<rootDir>/node_modules/lodash-es/$1',
     '^dexie$': '<rootDir>/node_modules/dexie/dist/dexie.min.js',
+    '^eve$': 'eve-raphael',
     ...extModuleNameMapper,
     ...vueModuleNameMappers,
   };

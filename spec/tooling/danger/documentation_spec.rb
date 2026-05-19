@@ -144,6 +144,24 @@ RSpec.describe Tooling::Danger::Documentation, feature_category: :markdown do
       it_behaves_like "doesn't add markdown"
     end
 
+    context 'when there are Korean localized doc changes' do
+      let(:docs) { ['doc-locale/ko-kr/_index.md', 'doc-locale/ko-kr/user/project.md'] }
+
+      it_behaves_like "doesn't warn"
+      it_behaves_like 'adds messages', %r{should not be edited directly}
+      it_behaves_like "doesn't add labels"
+      it_behaves_like "doesn't add markdown"
+    end
+
+    context 'when there are French localized doc changes' do
+      let(:docs) { ['doc-locale/fr-fr/_index.md', 'doc-locale/fr-fr/user/project.md'] }
+
+      it_behaves_like "doesn't warn"
+      it_behaves_like 'adds messages', %r{should not be edited directly}
+      it_behaves_like "doesn't add labels"
+      it_behaves_like "doesn't add markdown"
+    end
+
     context 'when there are docs changes requiring the tier 3 pipeline' do
       let(:docs) { ['doc/api/settings.md'] }
 

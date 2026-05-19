@@ -60,6 +60,8 @@ export const FAILED_TO_UPDATE_DOC_LINK = helpPagePath(
 export const GITLAB_COM_BASE_PATH = 'https://gitlab.com';
 
 const OAUTH_WINDOW_SIZE = 800;
+
+/* eslint-disable @gitlab/require-i18n-strings */
 export const OAUTH_WINDOW_OPTIONS = [
   'resizable=yes',
   'scrollbars=yes',
@@ -69,6 +71,7 @@ export const OAUTH_WINDOW_OPTIONS = [
   `left=${window.screen.width / 2 - OAUTH_WINDOW_SIZE / 2}`,
   `top=${window.screen.height / 2 - OAUTH_WINDOW_SIZE / 2}`,
 ].join(',');
+/* eslint-enable @gitlab/require-i18n-strings */
 
 export const OAUTH_CALLBACK_MESSAGE_TYPE = 'jiraConnectOauthCallback';
 

@@ -21,7 +21,7 @@ RSpec.describe TimelogPolicy, :models do
       let(:user) { author }
 
       context 'when user is a guest on the project' do
-        before do
+        before_all do
           project.add_guest(author)
         end
 
@@ -40,9 +40,9 @@ RSpec.describe TimelogPolicy, :models do
     end
 
     context 'when user is not the author of the timelog but maintainer of the project' do
-      let(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -50,13 +50,13 @@ RSpec.describe TimelogPolicy, :models do
     end
 
     context 'when user is not the timelog\'s author, not a maintainer but an administrator', :enable_admin_mode do
-      let(:user) { create(:user, :admin) }
+      let_it_be(:user) { create(:user, :admin) }
 
       it { expect_allowed(:delete_timelog) }
     end
 
     context 'when user is not the author of the timelog nor a maintainer of the project nor an administrator' do
-      let(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       it { expect_disallowed(:delete_timelog) }
     end

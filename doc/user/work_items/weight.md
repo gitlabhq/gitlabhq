@@ -15,7 +15,7 @@ title: Work item weight
 
 {{< history >}}
 
-- [Introduced for epics](https://gitlab.com/groups/gitlab-org/-/work_items/12273) in GitLab 18.11.
+- Work item weights for epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/12273) in GitLab 18.11.
 
 {{< /history >}}
 
@@ -26,12 +26,52 @@ to see which work items need to be prioritized.
 
 ## View the work item weight
 
-You can view the work item weight on:
+You can view the weight of a work item in the work item page itself or
+on several related boards and lists throughout the UI.
 
-- The right sidebar of each work item.
-- The [work items list](_index.md#view-all-work-items), next to a weight icon ({{< icon name="weight" >}}).
-- [Issue boards](../project/issue_board.md), next to a weight icon ({{< icon name="weight" >}}).
-- The [milestone](../project/milestones/_index.md) page, as a total sum of work item weights.
+To view the work item weight for an individual work item:
+
+1. In the top bar, select **Search or go to** and find your project or group.
+1. In the left sidebar, select **Plan** > **Work items**.
+1. Select a work item.
+1. In the right sidebar, under **Weight**, view the work item weight.
+
+To view work item weights on the **Work items** list:
+
+1. In the top bar, select **Search or go to** and find your project or group.
+1. In the left sidebar, select **Plan** > **Work items**.
+1. In the filter box, select the **Weight** ({{< icon name="weight" >}}) filter and add a value, like `1`.
+1. View work items and their weights.
+
+To view the work item weight on an issue board:
+
+1. In the top bar, select **Search or go to** and find your project or group.
+1. In the left sidebar, select **Plan** > **Issue boards**.
+1. On an individual work item, hover over **Weight** ({{< icon name="weight" >}}) to view the work item weight.
+
+To view the work item weight on the **Milestones** page:
+
+1. In the top bar, select **Search or go to** and find your project or group.
+1. In the left sidebar, select **Plan** > **Milestones**.
+1. Select a milestone.
+1. On the **Milestone** page, in the right sidebar under **Total weight**, view the total sum of work item weights.
+
+## View the work item roll up weight
+
+The work item roll up weight is the sum of all child work item weights rolled
+up to their parent.
+
+For example, if a work item has an explicit weight of seven and two child items
+with weights of four and five, the roll up weight would be nine.
+
+To view the roll up weight for a work item:
+
+1. In the top bar, select **Search or go to** and find your project or group.
+1. In the left sidebar, select **Plan** > **Work items**.
+1. Select a parent work item.
+1. Next to **Child items**, view the work item roll up **Weight** ({{< icon name="weight" >}}).
+
+On lists and boards, only the directly set weight for a work item is displayed.
 
 ## Set the work item weight
 

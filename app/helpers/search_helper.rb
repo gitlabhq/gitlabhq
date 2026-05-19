@@ -17,7 +17,7 @@ module SearchHelper
   ].freeze
 
   def search_autocomplete_opts(term, filter: nil, scope: nil)
-    return unless current_user
+    return [] unless current_user
 
     results = case filter&.to_sym
               when :search
@@ -39,7 +39,7 @@ module SearchHelper
   end
 
   def resource_results(term, scope: nil)
-    return [] if term.length < Gitlab::Search::Params::MIN_TERM_LENGTH
+    return [] if term.length < Search::Params::MIN_TERM_LENGTH
     return scope_specific_results(term, scope) if scope.present?
 
     [
@@ -180,7 +180,7 @@ module SearchHelper
   end
 
   def search_service
-    @search_service ||= ::SearchService.new(current_user, params)
+    @search_service ||= ::SearchService.new(current_user, params.merge(organization_id: Current.organization.id))
   end
 
   def search_sort_options
@@ -305,7 +305,7 @@ module SearchHelper
     if container
       types = ::WorkItems::TypesFinder
         .new(container: container)
-        .execute
+        .execute(only_available: false)
         .map do |type|
           {
             name: type.base_type.to_s,
@@ -470,11 +470,15 @@ module SearchHelper
 
   # Autocomplete results for the current user's projects
   def projects_autocomplete(term, limit = 5)
-    projects = current_user.authorized_projects.order_id_desc.search(
-      term,
-      include_namespace: true,
-      use_minimum_char_limit: false
-    ).sorted_by_stars_desc.self_and_ancestors_non_archived.limit(limit)
+    projects = if Feature.enabled?(:search_projects_autocomplete_use_search_service, current_user)
+                 search_using_search_service(current_user, 'projects', term, limit)
+               else
+                 current_user.authorized_projects.order_id_desc.search(
+                   term,
+                   include_namespace: true,
+                   use_minimum_char_limit: false
+                 ).sorted_by_stars_desc.self_and_ancestors_non_archived.limit(limit)
+               end
 
     projects.map do |p|
       {

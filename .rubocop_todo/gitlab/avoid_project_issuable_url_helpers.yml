@@ -1,0 +1,18 @@
+---
+# Cop introduced to flag project_issue_url/path and project_work_item_url/path
+# helpers that raise errors for group-level issues. Use Gitlab::UrlBuilder.build instead.
+# See: https://docs.gitlab.com/development/url_builder.html
+Gitlab/AvoidProjectIssuableUrlHelpers:
+  Exclude:
+    - 'app/controllers/projects/issues_controller.rb'
+    - 'app/controllers/projects/work_items_controller.rb'
+    - 'app/helpers/events_helper.rb'
+    - 'app/serializers/issuable_sidebar_basic_entity.rb'
+    - 'app/serializers/issue_board_entity.rb'
+    - 'app/services/error_tracking/issue_details_service.rb'
+    - 'app/views/issues/_issue.atom.builder'
+    - 'app/views/work_items/_work_items_calendar.ics.ruby'
+    - 'ee/lib/gitlab/data_builder/vulnerability.rb'
+    - 'ee/lib/gitlab/duo/developments/swe_bench_seeder.rb'
+    - 'ee/lib/gitlab/duo/developments/swe_bench_seeder/issue_manager.rb'
+    - 'lib/gitlab/slash_commands/presenters/issue_move.rb'

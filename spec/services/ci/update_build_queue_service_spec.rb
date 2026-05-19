@@ -152,7 +152,7 @@ RSpec.describe Ci::UpdateBuildQueueService, feature_category: :continuous_integr
   end
 
   describe 'runner builds tracking' do
-    let_it_be(:runner) { create(:ci_runner, :instance_type) }
+    let_it_be(:runner, freeze: false) { create(:ci_runner, :instance_type) }
 
     let(:build) { create(:ci_build, runner: runner, pipeline: pipeline) }
 
@@ -185,7 +185,7 @@ RSpec.describe Ci::UpdateBuildQueueService, feature_category: :continuous_integr
       end
 
       context 'when a project runner build can be tracked' do
-        let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+        let_it_be(:runner, freeze: false) { create(:ci_runner, :project, projects: [project]) }
 
         it 'creates a new project runner build tracking entry' do
           expect { build_id }.to change { Ci::RunningBuild.count }.from(0).to(1)
@@ -267,7 +267,7 @@ RSpec.describe Ci::UpdateBuildQueueService, feature_category: :continuous_integr
       end
 
       context 'when project runner build tracking entry exists' do
-        let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+        let_it_be(:runner, freeze: false) { create(:ci_runner, :project, projects: [project]) }
 
         before do
           create(:ci_running_build, build: build, project: project, runner: runner)
@@ -370,7 +370,7 @@ RSpec.describe Ci::UpdateBuildQueueService, feature_category: :continuous_integr
     end
 
     context 'when updating shared runners' do
-      let_it_be(:runner) { create(:ci_runner, :instance) }
+      let_it_be(:runner, freeze: false) { create(:ci_runner, :instance) }
 
       it_behaves_like 'matching build'
       it_behaves_like 'mismatching tags'

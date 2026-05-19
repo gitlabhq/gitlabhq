@@ -75,7 +75,7 @@ RSpec.describe AlertManagement::CreateAlertIssueService, feature_category: :inci
     context 'when a user is allowed to create an issue' do
       let(:can_create) { true }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -175,14 +175,14 @@ RSpec.describe AlertManagement::CreateAlertIssueService, feature_category: :inci
       end
 
       context 'when alert already has an attached issue' do
-        let!(:issue) { create(:issue, project: project) }
+        let_it_be(:issue) { create(:issue, project: project) }
 
         before do
           alert.update!(issue_id: issue.id)
         end
 
         it 'does not create yet another issue' do
-          expect { execute }.not_to change(Issue, :count)
+          expect { execute }.not_to change { Issue.count }
         end
 
         it 'responds with error' do

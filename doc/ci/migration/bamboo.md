@@ -600,7 +600,7 @@ To migrate from Bamboo:
 1. Migrate your source code repositories to GitLab:
    - Use the available [importers](../../user/import/_index.md) to automate mass imports
      from external SCM providers.
-   - [Import repositories by URL](../../user/project/import/repo_by_url.md) for individual repositories.
+   - [Import repositories by URL](../../user/import/third_party_systems/repo_by_url.md) for individual repositories.
 
 1. Set up GitLab runners with equivalent software:
    - Install the same software versions that exist on your Bamboo agents.

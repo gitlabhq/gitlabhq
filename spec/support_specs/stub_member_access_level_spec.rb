@@ -16,7 +16,7 @@ RSpec.describe StubMemberAccessLevel, feature_category: :system_access do
       it 'stubs max member access level per user' do
         stub_member_access_level(object, maintainer: maintainer, guest: guests)
 
-        # Ensure that multple calls are allowed
+        # Ensure that multiple calls are allowed
         2.times do
           expect(access_level_for(maintainer)).to eq(Gitlab::Access::MAINTAINER)
           expect(access_level_for(guests.first)).to eq(Gitlab::Access::GUEST)

@@ -175,6 +175,45 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     end
   end
 
+  describe '#tag_details' do
+    let(:path) { 'namespace/path/to/repository' }
+    let(:tag_name) { 'my-tag' }
+    let(:response) { { name: 'my-tag', created_at: '2024-01-01T00:00:00Z' } }
+
+    subject { client.tag_details(path, tag_name) }
+
+    context 'with a successful response' do
+      before do
+        stub_tag_details(path, tag_name, status_code: 200, respond_with: response)
+      end
+
+      it { is_expected.to eq(response.stringify_keys.deep_transform_values(&:to_s)) }
+    end
+
+    context 'with a non-successful response (404)' do
+      before do
+        stub_tag_details(path, tag_name, status_code: 404, respond_with: {})
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with a non-successful response (500)' do
+      before do
+        stub_tag_details(path, tag_name, status_code: 500, respond_with: {})
+      end
+
+      it 'returns nil and logs the error' do
+        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+          an_instance_of(described_class::UnsuccessfulResponseError),
+          hash_including(status_code: 500)
+        )
+
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe '#tags' do
     let(:path) { 'namespace/path/to/repository' }
     let(:page_size) { 100 }
@@ -810,159 +849,6 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     end
   end
 
-  describe '#each_sub_repositories_with_tag_page' do
-    let(:page_size) { 100 }
-    let(:project_path) { 'repo/project' }
-
-    shared_examples 'iterating through a page' do |expected_tags: true|
-      it 'iterates through one page' do
-        expect_next_instance_of(described_class) do |client|
-          expect(client).to receive(:sub_repositories_with_tag).with(project_path, page_size: page_size, last: nil).and_return(client_response)
-        end
-
-        expect { |b| described_class.each_sub_repositories_with_tag_page(path: project_path, page_size: page_size, &b) }
-          .to yield_with_args(expected_tags ? client_response_repositories : [])
-      end
-    end
-
-    context 'when no block is given' do
-      it 'raises an Argument error' do
-        expect do
-          described_class.each_sub_repositories_with_tag_page(path: project_path, page_size: page_size)
-        end.to raise_error(ArgumentError, 'block not given')
-      end
-    end
-
-    context 'when a block is given' do
-      before do
-        expect(Auth::ContainerRegistryAuthenticationService).to receive(:pull_nested_repositories_access_token).with(project_path).and_return(token)
-        stub_container_registry_config(enabled: true, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
-      end
-
-      context 'with an empty page' do
-        let(:client_response) { { pagination: {}, response_body: [] } }
-
-        it_behaves_like 'iterating through a page', expected_tags: false
-      end
-
-      context 'with one page' do
-        let(:client_response) { { pagination: {}, response_body: client_response_repositories } }
-        let(:client_response_repositories) do
-          [
-            {
-              name: "docker-alpine",
-              path: "gitlab-org/build/cng/docker-alpine",
-              created_at: "2022-06-07T12:11:13.633+00:00",
-              updated_at: "2022-06-07T14:37:49.251+00:00"
-            },
-            {
-              name: "git-base",
-              path: "gitlab-org/build/cng/git-base",
-              created_at: "2022-06-07T12:11:13.633+00:00",
-              updated_at: "2022-06-07T14:37:49.251+00:00"
-            }
-          ]
-        end
-
-        it_behaves_like 'iterating through a page'
-      end
-
-      context 'with two pages' do
-        let(:client_response1) { { pagination: { next: { uri: URI('http://localhost/next?last=latest') } }, response_body: client_response_repositories1 } }
-        let(:client_response_repositories1) do
-          [
-            {
-              name: "docker-alpine",
-              path: "gitlab-org/build/cng/docker-alpine",
-              created_at: "2022-06-07T12:11:13.633+00:00",
-              updated_at: "2022-06-07T14:37:49.251+00:00"
-            },
-            {
-              name: "git-base",
-              path: "gitlab-org/build/cng/git-base",
-              created_at: "2022-06-07T12:11:13.633+00:00",
-              updated_at: "2022-06-07T14:37:49.251+00:00"
-            }
-          ]
-        end
-
-        let(:client_response2) { { pagination: {}, response_body: client_response_repositories2 } }
-        let(:client_response_repositories2) do
-          [
-            {
-              name: "docker-alpine1",
-              path: "gitlab-org/build/cng/docker-alpine",
-              created_at: "2022-06-07T12:11:13.633+00:00",
-              updated_at: "2022-06-07T14:37:49.251+00:00"
-            },
-            {
-              name: "git-base1",
-              path: "gitlab-org/build/cng/git-base",
-              created_at: "2022-06-07T12:11:13.633+00:00",
-              updated_at: "2022-06-07T14:37:49.251+00:00"
-            }
-          ]
-        end
-
-        it 'iterates through two pages' do
-          expect_next_instance_of(described_class) do |client|
-            expect(client).to receive(:sub_repositories_with_tag).with(project_path, page_size: page_size, last: nil).and_return(client_response1)
-            expect(client).to receive(:sub_repositories_with_tag).with(project_path, page_size: page_size, last: 'latest').and_return(client_response2)
-          end
-
-          expect { |b| described_class.each_sub_repositories_with_tag_page(path: project_path, page_size: page_size, &b) }
-            .to yield_successive_args(client_response_repositories1, client_response_repositories2)
-        end
-      end
-
-      context 'when max pages is reached' do
-        let(:client_response) { { pagination: {}, response_body: [] } }
-
-        before do
-          stub_const('ContainerRegistry::GitlabApiClient::MAX_REPOSITORIES_PAGE_SIZE', 0)
-          expect_next_instance_of(described_class) do |client|
-            expect(client).to receive(:sub_repositories_with_tag).with(project_path, page_size: page_size, last: nil).and_return(client_response)
-          end
-        end
-
-        it 'raises an error' do
-          expect { described_class.each_sub_repositories_with_tag_page(path: project_path, page_size: page_size) {} } # rubocop:disable Lint/EmptyBlock
-            .to raise_error(StandardError, 'too many pages requested')
-        end
-      end
-
-      context 'without a page size set' do
-        let(:client_response) { { pagination: {}, response_body: [] } }
-
-        it 'uses a default size' do
-          expect_next_instance_of(described_class) do |client|
-            expect(client).to receive(:sub_repositories_with_tag).with(project_path, page_size: page_size, last: nil).and_return(client_response)
-          end
-
-          expect { |b| described_class.each_sub_repositories_with_tag_page(path: project_path, &b) }.to yield_with_args([])
-        end
-      end
-
-      context 'with an empty client response' do
-        let(:client_response) { {} }
-
-        it 'breaks the loop' do
-          expect_next_instance_of(described_class) do |client|
-            expect(client).to receive(:sub_repositories_with_tag).with(project_path, page_size: page_size, last: nil).and_return(client_response)
-          end
-
-          expect { |b| described_class.each_sub_repositories_with_tag_page(path: project_path, page_size: page_size, &b) }.not_to yield_control
-        end
-      end
-
-      context 'with a nil page' do
-        let(:client_response) { { pagination: {}, response_body: nil } }
-
-        it_behaves_like 'iterating through a page', expected_tags: false
-      end
-    end
-  end
-
   describe '.statistics' do
     subject { described_class.statistics }
 
@@ -1000,6 +886,14 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
   def stub_repository_details(path, sizing: nil, status_code: 200, respond_with: {})
     url = "#{registry_api_url}/gitlab/v1/repositories/#{path}/"
     url += "?size=#{sizing}" if sizing
+
+    stub_request(:get, url)
+      .with(headers: request_headers)
+      .to_return(status: status_code, body: respond_with.to_json, headers: headers_with_json_content_type)
+  end
+
+  def stub_tag_details(path, name, status_code: 200, respond_with: {})
+    url = "#{registry_api_url}/gitlab/v1/repositories/#{path}/tags/detail/#{name}/"
 
     stub_request(:get, url)
       .with(headers: request_headers)

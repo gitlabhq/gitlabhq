@@ -6,6 +6,13 @@ description: Connect and use GitLab Duo in Neovim.
 title: Install and set up the GitLab plugin for Neovim
 ---
 
+{{< details >}}
+
+- Tier: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 Prerequisites:
 
 - For both GitLab.com and GitLab Self-Managed, you have GitLab version 16.1 or later.

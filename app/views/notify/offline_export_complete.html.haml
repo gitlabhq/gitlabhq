@@ -1,0 +1,17 @@
+- header_style = 'font-size:24px; text-align:center; line-height:30px;'
+- text_style = 'font-size:16px; text-align:center; line-height:24px; margin-top: 24px;'
+
+- strong_tag_pair = tag_pair(tag.strong, :strong_open, :strong_close)
+- start_date = l(@offline_export.created_at.to_date, format: :long)
+
+- hostname = Gitlab::UrlSanitizer.sanitize(@offline_export.source_hostname.to_s)
+
+%h1{ style: header_style }
+  = s_('OfflineTransferExport|Export complete')
+
+%p{ style: text_style }
+  = safe_format(s_('OfflineTransferExport|The offline export you started on %{start_date} from %{strong_open}%{source_hostname}%{strong_close} is complete. Find the export at %{strong_open}%{export_prefix}%{strong_close} in the configured object storage bucket.'),
+    strong_tag_pair,
+    source_hostname: hostname,
+    start_date: start_date,
+    export_prefix: @configuration.export_prefix)

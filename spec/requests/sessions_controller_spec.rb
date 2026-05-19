@@ -30,12 +30,6 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
       get new_user_session_path
     end
 
-    it 'pushes passkeys feature flag to frontend' do
-      perform_request
-
-      expect(response.body).to have_pushed_frontend_feature_flags(passkeys: true)
-    end
-
     it 'pushes twoStepSignIn feature flag to frontend' do
       perform_request
 
@@ -91,24 +85,14 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
       post users_passkeys_sign_in_path, params: params
     end
 
-    context 'when :passkeys feature flag is off' do
+    it_behaves_like 'calls handle_passwordless_flow'
+
+    context 'when password authentication for web is disabled' do
       before do
-        stub_feature_flags(passkeys: false)
+        stub_application_setting(password_authentication_enabled_for_web: false)
       end
 
       it_behaves_like 'does not call handle_passwordless_flow'
-    end
-
-    context 'when :passkeys feature flag is on' do
-      it_behaves_like 'calls handle_passwordless_flow'
-
-      context 'when password authentication for web is disabled' do
-        before do
-          stub_application_setting(password_authentication_enabled_for_web: false)
-        end
-
-        it_behaves_like 'does not call handle_passwordless_flow'
-      end
     end
 
     context 'for passkey authentication', :clean_gitlab_redis_sessions do
@@ -198,6 +182,20 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
 
           expect(response).to redirect_to(root_path)
         end
+      end
+    end
+
+    context 'when on a Dedicated instance' do
+      before do
+        stub_application_setting(gitlab_dedicated_instance: true)
+        stub_application_setting(admin_mode: false)
+        allow(Group).to receive(:exists?).and_return(false)
+      end
+
+      it 'redirects to root path' do
+        sign_in_as(admin)
+
+        expect(response).to redirect_to(root_path)
       end
     end
 

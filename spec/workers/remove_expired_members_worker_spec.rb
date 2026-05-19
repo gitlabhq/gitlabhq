@@ -6,7 +6,7 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
   let(:worker) { described_class.new }
 
   describe '#perform' do
-    context 'project members' do
+    context 'with project members' do
       let_it_be(:expired_project_member) { create(:project_member, expires_at: 1.day.from_now, access_level: GroupMember::DEVELOPER) }
       let_it_be(:project_member_expiring_in_future) { create(:project_member, expires_at: 10.days.from_now, access_level: GroupMember::DEVELOPER) }
       let_it_be(:non_expiring_project_member) { create(:project_member, expires_at: nil, access_level: GroupMember::DEVELOPER) }
@@ -42,10 +42,10 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
       end
     end
 
-    context 'project bots' do
+    context 'with project bots' do
       let(:project) { create(:project) }
 
-      context 'expired project bot', :sidekiq_inline do
+      context 'when expired project bot', :sidekiq_inline do
         let_it_be(:expired_project_bot) { create(:user, :project_bot) }
 
         before do
@@ -67,7 +67,7 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
         end
       end
 
-      context 'non-expired project bot' do
+      context 'when non-expired project bot' do
         let_it_be(:other_project_bot) { create(:user, :project_bot) }
 
         before do
@@ -88,7 +88,7 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
       end
     end
 
-    context 'group members' do
+    context 'with group members' do
       let_it_be(:expired_group_member) { create(:group_member, expires_at: 1.day.from_now, access_level: GroupMember::DEVELOPER) }
       let_it_be(:group_member_expiring_in_future) { create(:group_member, expires_at: 10.days.from_now, access_level: GroupMember::DEVELOPER) }
       let_it_be(:non_expiring_group_member) { create(:group_member, expires_at: nil, access_level: GroupMember::DEVELOPER) }
@@ -179,7 +179,7 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
       end
     end
 
-    context 'pagination' do
+    context 'when paginating' do
       let_it_be(:expired_group_member) { create(:group_member, expires_at: 1.day.from_now, access_level: GroupMember::DEVELOPER) }
       let(:instance) { described_class.new }
       let(:cursor) { nil }

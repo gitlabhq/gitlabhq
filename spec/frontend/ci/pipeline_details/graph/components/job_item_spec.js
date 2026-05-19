@@ -293,7 +293,7 @@ describe('pipeline graph job item', () => {
           },
         });
 
-        await findActionVueComponent().vm.$emit('pipelineActionRequestComplete');
+        await findActionVueComponent().vm.$emit('pipeline-action-request-complete');
         await nextTick();
       });
 
@@ -539,7 +539,7 @@ describe('pipeline graph job item', () => {
           await findActionComponent().trigger('click');
           await actionBtn();
 
-          expect(wrapper.emitted().setSkipRetryModal).toBeUndefined();
+          expect(wrapper.emitted()['set-skip-retry-modal']).toBeUndefined();
           expect(localStorage.setItem).not.toHaveBeenCalled();
         },
       );
@@ -552,7 +552,7 @@ describe('pipeline graph job item', () => {
         ${'cancelling'} | ${clickOnModalCancelBtn}
         ${'confirming'} | ${clickOnModalPrimaryBtn}
       `(
-        'emits "setSkipRetryModal" and set local storage key on $actionName the modal',
+        'emits "set-skip-retry-modal" and set local storage key on $actionName the modal',
         async ({ actionBtn }) => {
           // We are passing the checkbox as a slot to the GlModal.
           // The way GlModal is mounted, we can neither click on the box
@@ -572,7 +572,7 @@ describe('pipeline graph job item', () => {
           await findActionComponent().trigger('click');
           await actionBtn();
 
-          expect(wrapper.emitted().setSkipRetryModal).toHaveLength(1);
+          expect(wrapper.emitted()['set-skip-retry-modal']).toHaveLength(1);
           expect(localStorage.setItem).toHaveBeenCalledWith('skip_retry_modal', 'true');
         },
       );

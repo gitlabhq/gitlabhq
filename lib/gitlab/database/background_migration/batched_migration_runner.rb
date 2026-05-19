@@ -129,7 +129,7 @@ module Gitlab
           next_min, next_max = next_bounds
 
           if active_migration.cursor?
-            return if (next_min <=> active_migration.max_cursor) > 0
+            return if (next_min <=> active_migration.max_cursor) >= 0
 
             next_max = active_migration.max_cursor if (next_max <=> active_migration.max_cursor) > 0
           else

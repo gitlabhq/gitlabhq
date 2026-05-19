@@ -362,7 +362,6 @@ module ApplicationSettingImplementation
         seat_control: 0,
         show_migrate_from_jenkins_banner: true,
         top_level_group_creation_enabled: true,
-        ropc_without_client_credentials: true,
         vscode_extension_marketplace_enabled: false,
         vscode_extension_marketplace_extension_host_domain: ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN,
         reindexing_minimum_index_size: 1.gigabyte,
@@ -372,6 +371,12 @@ module ApplicationSettingImplementation
         enforce_pipl_compliance: false,
         model_prompt_cache_enabled: true,
         lock_model_prompt_cache_enabled: false,
+        duo_custom_agents_enabled: true,
+        lock_duo_custom_agents_enabled: false,
+        duo_custom_flows_enabled: true,
+        lock_duo_custom_flows_enabled: false,
+        duo_external_agents_enabled: true,
+        lock_duo_external_agents_enabled: false,
         pipeline_limit_per_user: 0,
         background_operations_max_jobs: 10
       }.tap do |hsh|

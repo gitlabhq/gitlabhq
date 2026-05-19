@@ -75,6 +75,7 @@ export default class EditBlob {
     const { filePath, projectId } = this.options;
     const { ref } = editorEl.dataset;
     let blobContent = '';
+    const preEl = editorEl.querySelector('.editor-loading-content');
 
     if (filePath) {
       const { data } = await Api.getRawFile(
@@ -84,6 +85,8 @@ export default class EditBlob {
         { responseType: 'text', transformResponse: (x) => x },
       );
       blobContent = String(data);
+    } else if (preEl && preEl.textContent) {
+      blobContent = preEl.textContent;
     }
 
     this.editor = rootEditor.createInstance({

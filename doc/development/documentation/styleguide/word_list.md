@@ -1269,6 +1269,15 @@ unless we've gone through a legal review and have been told to promote the partn
 
 This guidance follows the [Use of Third-party Trademarks](https://handbook.gitlab.com/handbook/legal/policies/product-third-party-trademarks-guidelines/#dos--donts-for-use-of-third-party-trademarks-in-gitlab).
 
+## GitLab CLI
+
+Use **GitLab CLI**.
+
+After first use, you can use **CLI**. However, continue to use the full name when you
+need to distinguish it from the [GitLab Duo CLI](#gitlab-duo-cli).
+
+You can also use `glab`.
+
 ## GitLab-managed model
 
 Use **GitLab-managed model** to refer to large language models that customers access through the GitLab
@@ -1308,7 +1317,6 @@ the following are the names of GitLab Duo features:
 - GitLab Duo Code Review
 - GitLab Duo Code Review Summary
 - GitLab Duo Code Suggestions
-- GitLab Duo for the CLI
 - GitLab Duo Issue Description Generation
 - GitLab Duo Issue Discussion Summary
 - GitLab Duo Merge Commit Message Generation
@@ -1348,6 +1356,16 @@ For example:
 
 - [Blog: Unlocking AI for every GitLab Premium and Ultimate customer](https://about.gitlab.com/blog/gitlab-premium-with-duo/)
 - [Release post: Group and project controls for Premium and Ultimate with GitLab Duo](https://about.gitlab.com/releases/2025/07/17/gitlab-18-2-released/#group-and-project-controls-for-premium-and-ultimate-with-gitlab-duo)
+
+## GitLab Duo CLI
+
+Use **GitLab Duo CLI**. Do not use **Duo CLI** by itself.
+
+After first use in a section, you can use **CLI**. However, continue to use the full name when you
+need to distinguish it from the [GitLab CLI](#gitlab-cli).
+
+When referring to commands, include both `duo` and `glab duo cli` versions to cover both
+installation options. In the GitLab CLI docs, document just the `glab duo cli` version of the command.
 
 ## GitLab Duo Enterprise
 
@@ -2731,6 +2749,10 @@ In the context of:
   - Physical and must be called a **physical storage**.
 
 Gitaly storages have physical paths and virtual storages have virtual paths.
+
+## subagents
+
+Use **subagents** (no hyphen) instead of **sub-agents**.
 
 ## subgroup
 

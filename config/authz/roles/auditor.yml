@@ -2,24 +2,31 @@
 name: auditor
 description: Read-only access to all groups and projects. This is an instance-level
   user type, not a project or group membership role.
-inherits_from: []
+inherits_from:
+- public_authenticated
 project:
   permissions: []
   raw_permissions:
+  - _read_private_snippet
   - access_security_and_compliance
   - add_project_to_instance_security_dashboard
-  - public_user_access
+  - read_alert_management_alert
+  - read_any_audit_event
   - read_approvers
   - read_ascp_component
   - read_ascp_scan
   - read_ascp_security_context
+  - read_audit_event
   - read_branch_rule
   - read_build
   - read_cluster
+  - read_code_review_analytics
   - read_compliance_adherence_report
   - read_compliance_dashboard
   - read_compliance_framework
   - read_compliance_violations_report
+  - read_confidential_issues
+  - read_contribution_analytics
   - read_dependency
   - read_deployment
   - read_environment
@@ -34,11 +41,11 @@ project:
   - read_observability
   - read_on_demand_dast_scan
   - read_pages
-  - read_pipeline_subscription
-  - read_project_audit_events
+  - read_project_component_usages
   - read_project_import
   - read_project_merge_request_analytics
   - read_project_security_exclusions
+  - read_resource_access_tokens
   - read_runners
   - read_saved_replies
   - read_saved_view
@@ -54,7 +61,11 @@ project:
 group:
   permissions: []
   raw_permissions:
+  - create_vulnerability_export
   - read_add_on_purchase
+  - read_ai_domain_settings
+  - read_any_audit_event
+  - read_audit_event
   - read_billable_member
   - read_billing
   - read_cluster
@@ -63,32 +74,39 @@ group:
   - read_compliance_dashboard
   - read_compliance_framework
   - read_compliance_violations_report
+  - read_confidential_issues
   - read_container_image
+  - read_contribution_analytics
   - read_custom_dashboard
   - read_cycle_analytics
   - read_dependency
   - read_dependency_proxy
   - read_dora4_analytics
+  - read_email_enterprise_user
   - read_enterprise_user
   - read_group
   - read_group_all_available_runners
-  - read_group_audit_events
   - read_group_contribution_analytics
   - read_group_release_stats
   - read_group_repository_analytics
+  - read_group_security_dashboard
   - read_group_stage
   - read_licenses
   - read_namespace_cluster_agent_mapping
   - read_package
   - read_package_within_public_registries
+  - read_placeholder_reassignment
   - read_protected_branch
+  - read_provisioned_user
   - read_runners
   - read_saml_user
   - read_saved_replies
   - read_saved_view
   - read_security_inventory
   - read_security_orchestration_policies
+  - read_security_resource
   - read_vulnerability
+  - read_vulnerability_statistics
   - read_wiki
   - view_group_ci_cd_analytics
   - view_group_devops_adoption

@@ -25,7 +25,7 @@ describe('NewEditForm', () => {
   const defaultPropsData = {
     loading: false,
     basePath: 'http://127.0.0.1:3000/',
-    cancelPath: '/-/organizations/default/groups_and_projects?display=groups',
+    cancelPath: '/o/default/-/groups_and_projects?display=groups',
     pathMaxlength: 10,
     pathPattern: '[a-zA-Z0-9_\\.][a-zA-Z0-9_\\-\\.]{0,254}[a-zA-Z0-9_\\-]|[a-zA-Z0-9_]',
     availableVisibilityLevels: Object.values(VISIBILITY_LEVELS_STRING_TO_INTEGER),

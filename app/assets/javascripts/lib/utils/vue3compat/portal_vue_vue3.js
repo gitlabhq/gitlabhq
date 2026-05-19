@@ -1,6 +1,7 @@
 import { Teleport, h, reactive, cloneVNode } from 'vue';
 
 const portalTargetAttrs = reactive({});
+const portalTargetRegistry = reactive({});
 
 // Wormhole pattern: Portal registers content, PortalTarget renders it
 // This avoids Teleport's issues with target element lifecycle which break portal-vue
@@ -77,6 +78,18 @@ export const PortalTarget = {
       type: Boolean,
       default: false,
     },
+    multiple: {
+      type: Boolean,
+      default: false,
+    },
+    tag: {
+      type: String,
+      default: 'div',
+    },
+    transition: {
+      type: [Object, String, Function],
+      default: null,
+    },
     // In Vue 3 compat mode, class/style may not be in $attrs depending on flags
     style: {
       type: [String, Object, Array],
@@ -101,8 +114,12 @@ export const PortalTarget = {
       return wormholeContent[this.name];
     },
   },
+  mounted() {
+    portalTargetRegistry[this.name] = true;
+  },
   beforeUnmount() {
     delete portalTargetAttrs[this.name];
+    delete portalTargetRegistry[this.name];
   },
   render() {
     const content = this.portalContent;
@@ -177,7 +194,7 @@ export const Portal = {
 
 export const Wormhole = {
   hasTarget(name) {
-    return Boolean(wormholeContent[name]);
+    return Boolean(portalTargetRegistry[name]);
   },
 };
 

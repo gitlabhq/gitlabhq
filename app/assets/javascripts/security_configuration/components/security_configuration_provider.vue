@@ -51,6 +51,9 @@ export default {
       secretPushProtectionAvailable: computed(
         () => this.graphqlData?.secretPushProtectionAvailable ?? false,
       ),
+      secretPushProtectionEnforced: computed(
+        () => this.graphqlData?.secretPushProtectionEnforced ?? false,
+      ),
       secretPushProtectionEnabled: computed(
         () => this.graphqlData?.secretPushProtectionEnabled ?? false,
       ),
@@ -97,6 +100,7 @@ export default {
           helpPagePath: config.helpPagePath,
           containerScanningForRegistryEnabled: config.containerScanningForRegistryEnabled,
           secretPushProtectionAvailable: config.secretPushProtectionAvailable,
+          secretPushProtectionEnforced: config.secretPushProtectionEnforced,
           secretPushProtectionEnabled: config.secretPushProtectionEnabled,
           validityChecksAvailable: config.validityChecksAvailable,
           validityChecksEnabled: config.validityChecksEnabled,

@@ -7,6 +7,7 @@ inherits_from:
 project:
   permissions: []
   raw_permissions:
+  - _read_developer_job_artifact
   - _read_own_workspace
   - _update_own_workspace
   - access_security_and_compliance
@@ -18,8 +19,10 @@ project:
   - admin_incident_management_timeline_event
   - admin_issue_board
   - admin_merge_request
+  - admin_tag
   - admin_vulnerability_merge_request_link
   - approve_merge_request
+  - build_push_code
   - cancel_build
   - cancel_pipeline
   - create_build
@@ -27,6 +30,7 @@ project:
   - create_container_image
   - create_coverage_fuzzing_corpus
   - create_deployment
+  - create_duo_workflow_for_ci
   - create_environment
   - create_external_issue_link
   - create_feature_flag
@@ -46,9 +50,11 @@ project:
   - destroy_feature_flag
   - destroy_release
   - destroy_saved_replies
+  - duo_workflow
   - edit_on_demand_dast_scan
   - enable_continuous_vulnerability_scans
   - execute_ai_catalog_item
+  - import_issues
   - keep_job_artifacts
   - play_job
   - provide_status_check_response
@@ -63,15 +69,15 @@ project:
   - read_ascp_component
   - read_ascp_scan
   - read_ascp_security_context
+  - read_audit_event
   - read_cluster
   - read_cluster_agent
+  - read_compliance_framework
   - read_coverage_fuzzing
   - read_feature_flag
   - read_merge_request_status_check_url
   - read_on_demand_dast_scan
-  - read_pipeline_subscription
   - read_pod_logs
-  - read_project_audit_events
   - read_project_security_exclusions
   - read_resource_group
   - read_secret_push_protection_info
@@ -89,6 +95,8 @@ project:
   - resolve_note
   - retry_failed_status_checks
   - retry_job
+  - subscribe_to_upstream_pipeline
+  - trigger_ai_flow
   - trigger_amazon_q
   - unschedule_job
   - update_alert_management_alert
@@ -106,6 +114,8 @@ project:
   - update_secret_detection_validity_check_status
   - update_sentry_issue
   - update_vulnerability_flag
+  - write_model_experiments
+  - write_model_registry
   - write_observability
 group:
   permissions: []
@@ -115,26 +125,30 @@ group:
   - admin_merge_request
   - create_custom_dashboard
   - create_custom_emoji
+  - create_duo_workflow_for_ci
   - create_observability_access_request
   - create_package
   - create_saved_replies
+  - create_vulnerability_export
   - create_wiki
   - delete_custom_dashboard
   - delete_o11y_settings
   - destroy_saved_replies
+  - duo_workflow
   - read_ai_catalog_flow
   - read_ai_catalog_third_party_flow
   - read_ai_foundational_flow
+  - read_audit_event
   - read_cluster
   - read_cluster_agent
   - read_dependency
-  - read_group_all_available_runners
-  - read_group_audit_events
+  - read_group_security_dashboard
   - read_licenses
   - read_observability_portal
   - read_security_attribute
   - read_security_inventory
   - read_security_orchestration_policies
+  - read_security_resource
   - read_security_scan_profiles
   - read_vulnerability
   - read_vulnerability_statistics

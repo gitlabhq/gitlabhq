@@ -44,7 +44,6 @@ Rails/OutputSafety:
     - 'ee/app/components/namespaces/free_user_cap/usage_quota_alert_component.rb'
     - 'ee/app/controllers/ee/projects/issues_controller.rb'
     - 'ee/app/controllers/ee/repositories/lfs_api_controller.rb'
-    - 'ee/app/helpers/billing_plans_helper.rb'
     - 'ee/app/helpers/ee/application_helper.rb'
     - 'ee/app/helpers/ee/integrations_helper.rb'
     - 'ee/app/helpers/ee/labels_helper.rb'

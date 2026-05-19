@@ -1,0 +1,10 @@
+---
+name: create_github_gist_import
+description: Grants the ability to import gists from GitHub
+deprecated: true
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - create_github_gist_import

@@ -27,6 +27,7 @@ RSpec.describe EventForward::EventForwardController, feature_category: :product_
   end
 
   describe 'POST #forward' do
+    let(:editor_telemetry_header) { { 'X-GitLab-Editor-Telemetry' => '1' } }
     let(:request) { post event_forwarding_path, params: payload, as: :json }
 
     context 'when the payload is more than 10 megabytes' do
@@ -152,6 +153,138 @@ RSpec.describe EventForward::EventForwardController, feature_category: :product_
         end
 
         request
+      end
+    end
+
+    context 'when X-GitLab-Editor-Telemetry header is present' do
+      let(:request) { post event_forwarding_path, params: payload, as: :json, headers: editor_telemetry_header }
+
+      context 'when unauthenticated' do
+        it 'injects gitlab_standard context with null user identity' do
+          expect(tracker).to receive(:emit_event_payload).at_least(:once) do |event|
+            cx = Gitlab::Json.safe_parse(Base64.decode64(event['cx']))
+            standard = cx['data'].find do |c|
+              c['schema'] == Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL
+            end
+
+            expect(standard).not_to be_nil
+            expect(standard['data']['user_id']).to be_nil
+            expect(standard['data']['global_user_id']).to be_nil
+          end
+
+          request
+        end
+      end
+
+      context 'when authenticated with a personal access token' do
+        let(:user) { create(:user) }
+        let(:pat) { create(:personal_access_token, user: user) }
+        let(:request) do
+          post event_forwarding_path, params: payload, as: :json,
+            headers: editor_telemetry_header.merge('Private-Token' => pat.token)
+        end
+
+        it 'injects gitlab_standard context with user identity populated' do
+          expect(tracker).to receive(:emit_event_payload).at_least(:once) do |event|
+            cx = Gitlab::Json.safe_parse(Base64.decode64(event['cx']))
+            standard = cx['data'].find do |c|
+              c['schema'] == Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL
+            end
+
+            expect(standard['data']['user_id']).not_to be_nil
+            expect(standard['data']['global_user_id']).not_to be_nil
+          end
+
+          request
+        end
+      end
+
+      context 'when authenticated with an OAuth token' do
+        let(:user) { create(:user) }
+        let(:oauth_token) { create(:oauth_access_token, resource_owner: user) }
+        let(:request) do
+          post event_forwarding_path, params: payload, as: :json,
+            headers: editor_telemetry_header.merge('Authorization' => "Bearer #{oauth_token.plaintext_token}")
+        end
+
+        it 'injects gitlab_standard context with user identity populated' do
+          expect(tracker).to receive(:emit_event_payload).at_least(:once) do |event|
+            cx = Gitlab::Json.safe_parse(Base64.decode64(event['cx']))
+            standard = cx['data'].find do |c|
+              c['schema'] == Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL
+            end
+
+            expect(standard['data']['user_id']).not_to be_nil
+            expect(standard['data']['global_user_id']).not_to be_nil
+          end
+
+          request
+        end
+      end
+
+      context 'when event already has gitlab_standard context' do
+        let(:existing_standard_cx) do
+          Base64.strict_encode64(Gitlab::Json.dump(
+            'schema' => 'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-1',
+            'data' => [{ 'schema' => Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL, 'data' => {} }]
+          ))
+        end
+
+        let(:event_1) { { 'se_ac' => 'event_1', 'aid' => 'app_id_1', 'cx' => existing_standard_cx } }
+
+        it 'does not inject a duplicate gitlab_standard context' do
+          expect(tracker).to receive(:emit_event_payload).at_least(:once) do |event|
+            cx = Gitlab::Json.safe_parse(Base64.decode64(event['cx']))
+            standard_entries = cx['data'].select do |c|
+              c['schema'] == Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL
+            end
+
+            expect(standard_entries.count).to eq(1)
+          end
+
+          request
+        end
+      end
+
+      context 'when event cx contains invalid JSON' do
+        let(:event_1) do
+          { 'se_ac' => 'event_1', 'aid' => 'app_id_1', 'cx' => Base64.strict_encode64('not valid json {{{') }
+        end
+
+        it 'still forwards the event and returns ok' do
+          expect(tracker).to receive(:emit_event_payload).at_least(:once)
+
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when event has existing cx without gitlab_standard' do
+        let(:other_context) { { 'schema' => 'iglu:com.example/test/jsonschema/1-0-0', 'data' => { 'key' => 'value' } } }
+        let(:existing_cx) do
+          Base64.strict_encode64(Gitlab::Json.dump(
+            'schema' => 'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0',
+            'data' => [other_context]
+          ))
+        end
+
+        let(:event_1) { { 'se_ac' => 'event_1', 'aid' => 'app_id_1', 'cx' => existing_cx } }
+
+        it 'preserves existing contexts and appends gitlab_standard' do
+          payload['data'] = [event_1]
+
+          expect(tracker).to receive(:emit_event_payload).once do |event|
+            cx = Gitlab::Json.safe_parse(Base64.decode64(event['cx']))
+
+            expect(cx['data']).to include(hash_including('schema' => other_context['schema']))
+            expect(cx['data']).to include(hash_including(
+              'schema' => Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL)
+                                         )
+          end
+
+          request
+        end
       end
     end
 

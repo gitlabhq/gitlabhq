@@ -1,0 +1,124 @@
+---
+name: siphon_merge_requests
+engine: 'Null'
+engine_full: "`Null`"
+columns:
+- name: id
+  type: Int64
+- name: target_branch
+  type: String
+- name: source_branch
+  type: String
+- name: source_project_id
+  type: Nullable(Int64)
+- name: author_id
+  type: Nullable(Int64)
+- name: assignee_id
+  type: Nullable(Int64)
+- name: title
+  type: String
+- name: created_at
+  type: DateTime64(6, 'UTC')
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+- name: milestone_id
+  type: Nullable(Int64)
+- name: merge_status
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "'unchecked'"
+- name: target_project_id
+  type: Int64
+- name: iid
+  type: Int64
+- name: description
+  type: String
+- name: updated_by_id
+  type: Nullable(Int64)
+- name: merge_error
+  type: Nullable(String)
+- name: merge_params
+  type: Nullable(String)
+- name: merge_when_pipeline_succeeds
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: merge_user_id
+  type: Nullable(Int64)
+- name: merge_commit_sha
+  type: Nullable(String)
+- name: approvals_before_merge
+  type: Nullable(Int64)
+- name: rebase_commit_sha
+  type: Nullable(String)
+- name: in_progress_merge_commit_sha
+  type: Nullable(String)
+- name: time_estimate
+  type: Nullable(Int64)
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: squash
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: cached_markdown_version
+  type: Nullable(Int64)
+- name: last_edited_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: last_edited_by_id
+  type: Nullable(Int64)
+- name: merge_jid
+  type: String
+- name: discussion_locked
+  type: Nullable(Bool)
+- name: latest_merge_request_diff_id
+  type: Nullable(Int64)
+- name: allow_maintainer_to_push
+  type: Nullable(Bool)
+  default_kind: DEFAULT
+  default_expression: 'true'
+- name: state_id
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '1'
+- name: rebase_jid
+  type: Nullable(String)
+- name: squash_commit_sha
+  type: Nullable(String)
+- name: merge_ref_sha
+  type: Nullable(String)
+- name: draft
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: prepared_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: merged_commit_sha
+  type: Nullable(String)
+- name: override_requested_changes
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: head_pipeline_id
+  type: Nullable(Int64)
+- name: imported_from
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: retargeted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
+    'traversal_path', target_project_id, '0/'), '0/')
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'

@@ -124,9 +124,7 @@ export default {
         :class="{ 'gl-absolute gl-left-0 gl-top-10': isDrawer, 'gl-fixed': !isDrawer }"
         data-testid="work-item-sticky-header"
       >
-        <div
-          class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-3 gl-px-5 @xl/panel:gl-px-6"
-        >
+        <div class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-3">
           <archived-badge v-if="archived" :issuable-type="workItemType" />
           <work-item-state-badge
             v-else-if="workItemState === $options.STATE_CLOSED"

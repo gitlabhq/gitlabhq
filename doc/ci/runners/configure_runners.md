@@ -39,7 +39,7 @@ On GitLab.com, you cannot override the job timeout for GitLab hosted instance ru
 To set the maximum job timeout:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **CI/CD** > **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. To the right of the runner, you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes).
 1. Select **Save changes**.
@@ -53,7 +53,7 @@ Prerequisites:
 To set the maximum job timeout:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Build** > **Runners**.
+1. In the left sidebar, select **Build** > **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes).
 1. Select **Save changes**.
@@ -67,7 +67,7 @@ Prerequisites:
 To set the maximum job timeout:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes). If not defined, the [job timeout for the project](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) is used instead.
@@ -209,7 +209,7 @@ That new runner may then be used to obtain the values of secret variables or to 
 To reset the registration token:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. To the right of **New project runner**, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Reset registration token**.
@@ -273,7 +273,7 @@ Prerequisites:
 To automatically rotate runner authentication tokens:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Set a **Runners expiration** time for runners, leave empty for no expiration.
 1. Select **Save changes**.
@@ -297,7 +297,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **CI/CD** > **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. To the right of the runner you want to protect, select **Edit** ({{< icon name="pencil" >}}).
 1. Select the **Protected** checkbox.
 1. Select **Save changes**.
@@ -309,7 +309,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Build** > **Runners**.
+1. In the left sidebar, select **Build** > **Runners**.
 1. To the right of the runner you want to protect, select **Edit** ({{< icon name="pencil" >}}).
 1. Select the **Protected** checkbox.
 1. Select **Save changes**.
@@ -321,7 +321,7 @@ Prerequisites:
 - You must have the Owner role for the project.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. To the right of the runner you want to protect, select **Edit** ({{< icon name="pencil" >}}).
 1. Select the **Protected** checkbox.
@@ -345,7 +345,7 @@ Prerequisites:
 To control the jobs that an instance runner can run:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **CI/CD** > **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Set the runner to run tagged or untagged jobs:
    - To run tagged jobs, in the **Tags** field, enter the job tags separated with a comma. For example, `macos`, `rails`.
@@ -361,7 +361,7 @@ Prerequisites:
 To control the jobs that a group runner can run:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Build** > **Runners**.
+1. In the left sidebar, select **Build** > **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Set the runner to run tagged or untagged jobs:
    - To run tagged jobs, in the **Tags** field, enter the job tags separated with a comma. For example, `macos`, `ruby`.
@@ -377,7 +377,7 @@ Prerequisites:
 To control the jobs that a project runner can run:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Set the runner to run tagged or untagged jobs:

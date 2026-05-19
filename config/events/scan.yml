@@ -5,6 +5,9 @@ identifiers:
 - project
 - user
 product_group: security_insights
+product_categories:
+- vulnerability_management
+- dependency_management
 milestone: '14.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166618
 tiers:

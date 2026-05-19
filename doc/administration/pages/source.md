@@ -475,7 +475,7 @@ Prerequisites:
 To change this value:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Preferences**.
+1. In the left sidebar, select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Update the value for **Maximum size of pages (MB)**.
 

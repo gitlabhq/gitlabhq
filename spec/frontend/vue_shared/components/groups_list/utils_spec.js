@@ -5,6 +5,7 @@ import {
   renderDeleteSuccessToast,
   renderLeaveSuccessToast,
   renderRestoreSuccessToast,
+  renderTransferSuccessToast,
   renderUnarchiveSuccessToast,
 } from '~/vue_shared/components/groups_list/utils';
 import {
@@ -15,6 +16,7 @@ import {
   ACTION_EDIT,
   ACTION_LEAVE,
   ACTION_RESTORE,
+  ACTION_TRANSFER,
   ACTION_UNARCHIVE,
 } from '~/vue_shared/components/list_actions/constants';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -155,6 +157,26 @@ describe('availableGraphQLGroupActions', () => {
       expect(availableActions).not.toContain(ACTION_LEAVE);
     });
   });
+
+  describe('when user has transferGroup permission', () => {
+    it('includes transfer action', () => {
+      const availableActions = availableGraphQLGroupActions({
+        userPermissions: { changeGroup: true },
+      });
+
+      expect(availableActions).toContain(ACTION_TRANSFER);
+    });
+  });
+
+  describe('when user has no transferGroup permission', () => {
+    it('does not include transfer action', () => {
+      const availableActions = availableGraphQLGroupActions({
+        userPermissions: { changeGroup: false },
+      });
+
+      expect(availableActions).not.toContain(ACTION_TRANSFER);
+    });
+  });
 });
 
 describe('renderDeleteSuccessToast', () => {
@@ -207,6 +229,16 @@ describe('renderUnarchiveSuccessToast', () => {
 
     expect(toast).toHaveBeenCalledWith(
       `Group '${MOCK_GROUP.fullName}' has been successfully unarchived.`,
+    );
+  });
+});
+
+describe('renderTransferSuccessToast', () => {
+  it('calls toast correctly', () => {
+    renderTransferSuccessToast(MOCK_GROUP);
+
+    expect(toast).toHaveBeenCalledWith(
+      `Group '${MOCK_GROUP.fullName}' transfer has been scheduled. Users with the Maintainer or Owner role will be notified when it completes.`,
     );
   });
 });

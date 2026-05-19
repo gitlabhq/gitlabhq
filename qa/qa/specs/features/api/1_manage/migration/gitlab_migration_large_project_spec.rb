@@ -2,7 +2,7 @@
 
 # Lifesize project import test executed from https://gitlab.com/gitlab-org/manage/import/import-metrics
 
-# rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
+# rubocop:disable Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
   RSpec.describe "Manage", :skip_live_env, feature_category: :importers,
     only: { condition: -> { ENV["CI_PROJECT_NAME"] == "import-metrics" } },
@@ -466,4 +466,4 @@ module QA
     end
   end
 end
-# rubocop:enable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
+# rubocop:enable Layout/LineLength, RSpec/MultipleMemoizedHelpers

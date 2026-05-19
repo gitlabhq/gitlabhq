@@ -560,6 +560,15 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
         it_behaves_like 'apdex recorded', scope: 'snippet_titles', level: 'global'
 
+        it 'passes organization_id to SearchService', :with_current_organization do
+          expect(SearchService).to receive(:new).with(
+            user,
+            hash_including(organization_id: current_organization.id)
+          ).and_call_original
+
+          get api(endpoint, user), params: { scope: 'snippet_titles', search: 'awesome' }
+        end
+
         describe 'pagination' do
           before do
             create(:personal_snippet, :public, title: 'another snippet', content: 'snippet content')
@@ -639,6 +648,22 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         )
 
         get api(endpoint, user), params: { scope: 'issues', search: 'john doe' }
+      end
+
+      it 'increments the custom search sli error rate with error false if a 400 bad request occurred' do
+        results = instance_double(Gitlab::SearchResults, failed?: true, error: 'failed to parse query')
+        allow_next_instance_of(SearchService) do |service|
+          allow(service).to receive_messages(search_objects: [], search_results: results)
+        end
+
+        expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_error_rate).with(
+          error: false,
+          search_scope: 'issues',
+          search_type: 'basic',
+          search_level: 'global'
+        )
+
+        get api(endpoint, user), params: { scope: 'issues', search: 'bad query' }
       end
 
       it 'sets global search information for logging' do

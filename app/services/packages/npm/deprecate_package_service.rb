@@ -28,7 +28,7 @@ module Packages
 
             # Update package status separately for each status group
             grouped_by_status.each do |status, attrs|
-              package_ids = attrs.map { |attr| attr[:package_id] } # rubocop:disable Rails/Pluck -- attrs is a plain array, not AR relation
+              package_ids = attrs.map { |attr| attr[:package_id] }
               ::Packages::Package.id_in(package_ids).update_all(status: status)
             end
           end

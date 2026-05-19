@@ -2,6 +2,7 @@
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Use the Epic Issues API to list, link, and unlink issues with epics.
 title: Epic Issues API (deprecated)
 ---
 
@@ -253,7 +254,6 @@ DELETE /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5/issues/11"
-
 ```
 
 Example response:

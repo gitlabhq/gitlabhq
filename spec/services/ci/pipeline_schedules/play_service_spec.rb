@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::PipelineSchedules::PlayService, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   let(:service) { described_class.new(project, user) }
 
@@ -40,7 +40,7 @@ RSpec.describe Ci::PipelineSchedules::PlayService, feature_category: :continuous
       end
 
       context 'when the project is missing' do
-        let_it_be(:project) { create(:project).tap(&:delete) }
+        let_it_be(:project, freeze: false) { create(:project).tap(&:delete) }
 
         it 'does not raise an exception' do
           expect { execute_service }.not_to raise_error

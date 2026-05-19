@@ -131,7 +131,7 @@ Valid entries for `n` are integers `≥ 1`. `[1]` is optional because it is the 
 To require multiple approvals from Code Owners:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Next to the default branch, select **View details**.
 1. Turn on the toggle under **Code owner approval**.

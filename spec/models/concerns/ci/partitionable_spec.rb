@@ -176,6 +176,14 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
         expect(scope_values).to include('partition_id' => 102)
       end
     end
+
+    context 'with an array of partition IDs' do
+      let(:value) { [100, 101] }
+
+      it 'adds a partition_id filter with IN clause' do
+        expect(scope_values).to include('partition_id' => [100, 101])
+      end
+    end
   end
 
   describe '.registered_models' do

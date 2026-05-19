@@ -37,7 +37,7 @@ RSpec.describe Gitlab::ClickHouse::SiphonGenerator, feature_category: :database 
 
   describe '#generate_ch_table' do
     before do
-      allow(Time).to receive_message_chain(:current, :strftime).and_return('20230101000000')
+      allow(Time).to receive(:current).and_return(Time.utc(2023, 1, 1, 0, 0, 0))
     end
 
     it 'generates migration file with correct path' do
@@ -47,6 +47,55 @@ RSpec.describe Gitlab::ClickHouse::SiphonGenerator, feature_category: :database 
       )
 
       generator.generate_ch_table
+    end
+  end
+
+  describe '#generate_pg_pkey_ordered_migration' do
+    before do
+      allow(Time).to receive(:current).and_return(Time.utc(2023, 1, 1, 0, 0, 0))
+      allow(generator).to receive(:pg_fields_metadata).and_return([
+        { 'field_name' => 'id', 'field_type_id' => 23, 'nullable' => 'NO' }
+      ])
+    end
+
+    context 'without --with-traversal-path' do
+      it 'does not generate a migration' do
+        expect(generator).not_to receive(:template)
+
+        generator.generate_pg_pkey_ordered_migration
+      end
+    end
+
+    context 'with --with-traversal-path' do
+      let(:generator) { described_class.new([table_name], with_traversal_path: true) }
+
+      before do
+        allow(generator).to receive_messages(
+          pg_primary_keys: ['id'],
+          pg_fields_metadata: [{ 'field_name' => 'id', 'field_type_id' => 23, 'nullable' => 'NO' }]
+        )
+      end
+
+      it 'generates the pg_pkey_ordered migration one second after the main table migration' do
+        expect(generator).to receive(:template).with(
+          'siphon_pg_pkey_ordered.rb.template',
+          'db/click_house/migrate/main/20230101000001_create_siphon_test_table_pg_pkey_ordered.rb'
+        )
+
+        generator.generate_pg_pkey_ordered_migration
+      end
+    end
+
+    context 'with --with-traversal-path and --use-null-engine' do
+      let(:generator) do
+        described_class.new([table_name], with_traversal_path: true, use_null_engine: true)
+      end
+
+      it 'does not generate a migration' do
+        expect(generator).not_to receive(:template)
+
+        generator.generate_pg_pkey_ordered_migration
+      end
     end
   end
 
@@ -117,8 +166,8 @@ RSpec.describe Gitlab::ClickHouse::SiphonGenerator, feature_category: :database 
       target = content['replication_targets'].first
       expect(target['name']).to eq('clickhouse_main')
       expect(target['target']).to eq('siphon_test_table')
-      expect(target['dedup_by_table']).to eq('test_table')
       expect(target['dedup_by']).to eq(['id'])
+      expect(target).not_to have_key('dedup_by_table')
     end
 
     it 'does not include reconcile block' do
@@ -155,6 +204,17 @@ RSpec.describe Gitlab::ClickHouse::SiphonGenerator, feature_category: :database 
         reconcile = content['replication_targets'].first['reconcile']
         expect(reconcile['column']).to eq('traversal_path')
         expect(reconcile['expression_key_columns']).to eq(['project_id'])
+      end
+
+      it 'includes dedup_by_columns_lookup_table pointing at the pg_pkey_ordered table' do
+        expect(content['replication_targets'].first['dedup_by_columns_lookup_table'])
+          .to eq('siphon_test_table_pg_pkey_ordered')
+      end
+    end
+
+    context 'without hierarchy_denormalization' do
+      it 'does not include dedup_by_columns_lookup_table' do
+        expect(content['replication_targets'].first).not_to have_key('dedup_by_columns_lookup_table')
       end
     end
   end
@@ -296,18 +356,56 @@ CREATE TABLE IF NOT EXISTS siphon_project_authorizations
         arr Array(Int64),
         traversal_path String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
         _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
-        _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1)),
-        PROJECTION pg_pkey_ordered (
-          SELECT *
-          ORDER BY project_id, user_id, arr
-        )
+        _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))
       )
       ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
       PRIMARY KEY (traversal_path, project_id, user_id, arr)
-      SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild'
+      SETTINGS index_granularity = 2048
         SQL
 
         expect(table_definition).to eq(expected_definition)
+      end
+
+      describe '#pg_pkey_ordered_table_definition' do
+        it 'generates a table starting with PG primary keys, with traversal_path last' do
+          expected = <<-SQL.chomp
+CREATE TABLE IF NOT EXISTS siphon_project_authorizations_pg_pkey_ordered
+      (
+        project_id Int64 CODEC(DoubleDelta, ZSTD),
+        user_id String CODEC(ZSTD(3)),
+        arr Array(Int64),
+        traversal_path String DEFAULT '0/' CODEC(ZSTD(3)),
+        _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+        _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))
+      )
+      ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+      PRIMARY KEY (project_id, user_id, arr, traversal_path)
+      ORDER BY (project_id, user_id, arr, traversal_path)
+      SETTINGS index_granularity = 1024
+          SQL
+
+          expect(generator.send(:pg_pkey_ordered_table_definition)).to eq(expected)
+        end
+      end
+
+      describe '#pg_pkey_ordered_mv_definition' do
+        it 'syncs the primary key + siphon meta columns from the main siphon table' do
+          expected = <<-SQL.chomp
+CREATE MATERIALIZED VIEW IF NOT EXISTS siphon_project_authorizations_pg_pkey_ordered_mv
+      TO siphon_project_authorizations_pg_pkey_ordered
+      AS
+      SELECT
+        project_id,
+        user_id,
+        arr,
+        traversal_path,
+        _siphon_replicated_at,
+        _siphon_deleted
+      FROM siphon_project_authorizations
+          SQL
+
+          expect(generator.send(:pg_pkey_ordered_mv_definition)).to eq(expected)
+        end
       end
 
       context 'when the table definition is missing' do
@@ -350,9 +448,10 @@ CREATE TABLE IF NOT EXISTS siphon_project_authorizations
           allow(YAML).to receive(:safe_load_file).and_return({ "sharding_key" => { "project_id" => "projects" } })
         end
 
-        it 'does not include projection' do
-          expect(generator.send(:table_projection)).to be_nil
-          expect(generator.send(:table_definition)).not_to include('PROJECTION')
+        it 'does not generate the pg_pkey_ordered migration' do
+          expect(generator).not_to receive(:template)
+
+          generator.generate_pg_pkey_ordered_migration
         end
       end
     end

@@ -72,8 +72,6 @@ export default {
     'app/assets/javascripts/work_items/pages/create_work_item.vue',
     'app/assets/javascripts/work_items/pages/local_board/object_pools.js',
     'app/assets/javascripts/work_items/utils.js',
-    'ee/app/assets/javascripts/ai/catalog/pages/ai_catalog_agents_show.vue',
-    'ee/app/assets/javascripts/ai/catalog/pages/ai_catalog_flows_show.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/components/common/agent_flow_list_item.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/components/common/agent_flow_triggered_user.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/pages/show/components/agent_flow_info.vue',

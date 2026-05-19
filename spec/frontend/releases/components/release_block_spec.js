@@ -1,5 +1,6 @@
-import { mount } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { GlTooltipDirective } from '@gitlab/ui';
 import originalOneReleaseQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release.query.graphql.json';
 import { convertOneReleaseGraphQLResponse } from '~/releases/util';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
@@ -7,7 +8,7 @@ import * as urlUtility from '~/lib/utils/url_utility';
 import EvidenceBlock from '~/releases/components/evidence_block.vue';
 import ReleaseBlockDeployments from '~/releases/components/release_block_deployments.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
-import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
+import ReleaseBlockDetails from '~/releases/components/release_block_details.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
@@ -22,10 +23,16 @@ describe('Release block', () => {
   let deployments = [mockDeployment];
 
   const factory = async (releaseProp) => {
+    const localVue = createLocalVue();
+    localVue.directive('glTooltip', GlTooltipDirective);
+
     wrapper = mount(ReleaseBlock, {
+      localVue,
       propsData: {
         release: releaseProp,
         deployments,
+        previousReleaseSha: '',
+        comparePath: '',
       },
       provide: {
         projectPath: 'project/path',
@@ -73,8 +80,8 @@ describe('Release block', () => {
       expect(wrapper.find('.user-avatar-link').exists()).toBe(true);
     });
 
-    it('renders the footer', () => {
-      expect(wrapper.findComponent(ReleaseBlockFooter).exists()).toBe(true);
+    it('renders the details block', () => {
+      expect(wrapper.findComponent(ReleaseBlockDetails).exists()).toBe(true);
     });
   });
 

@@ -127,10 +127,17 @@ class BulkImports::Entity < ApplicationRecord
   end
 
   def pipelines
-    stage_classes = {
-      GROUP_ENTITY_SOURCE_TYPE => BulkImports::Groups::Stage,
-      PROJECT_ENTITY_SOURCE_TYPE => BulkImports::Projects::Stage
-    }
+    stage_classes = if bulk_import.offline?
+                      {
+                        GROUP_ENTITY_SOURCE_TYPE => Import::Offline::Imports::Groups::Stage,
+                        PROJECT_ENTITY_SOURCE_TYPE => Import::Offline::Imports::Projects::Stage
+                      }
+                    else
+                      {
+                        GROUP_ENTITY_SOURCE_TYPE => BulkImports::Groups::Stage,
+                        PROJECT_ENTITY_SOURCE_TYPE => BulkImports::Projects::Stage
+                      }
+                    end
 
     stage_classes[source_type].new(self).pipelines
   end

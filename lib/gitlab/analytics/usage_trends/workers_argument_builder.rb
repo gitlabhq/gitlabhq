@@ -4,7 +4,7 @@ module Gitlab
   module Analytics
     module UsageTrends
       class WorkersArgumentBuilder
-        def initialize(measurement_identifiers: [], recorded_at: Time.zone.now)
+        def initialize(measurement_identifiers: [], recorded_at: Time.zone.now.iso8601)
           @measurement_identifiers = measurement_identifiers
           @recorded_at = recorded_at
         end

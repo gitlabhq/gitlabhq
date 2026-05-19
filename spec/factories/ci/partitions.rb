@@ -21,5 +21,11 @@ FactoryBot.define do
       current_from { 1.month.ago }
       current_until { 1.week.ago }
     end
+
+    trait :archived do
+      status { 4 }
+      current_from { 3.months.ago }
+      current_until { 2.months.ago }
+    end
   end
 end

@@ -1,0 +1,11 @@
+---
+name: minimal_access
+description: User who is a member of the namespace but has not been granted any
+  role-based permissions.
+inherits_from: []
+project:
+  permissions: []
+  raw_permissions: []
+group:
+  permissions: []
+  raw_permissions: []

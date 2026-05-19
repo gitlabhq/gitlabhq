@@ -6,6 +6,7 @@ const GROUP_PATH = '/api/:version/groups/:id';
 const GROUP_RESTORE_PATH = '/api/:version/groups/:id/restore';
 const GROUP_ARCHIVE_PATH = '/api/:version/groups/:id/archive';
 const GROUP_UNARCHIVE_PATH = '/api/:version/groups/:id/unarchive';
+const GROUP_TRANSFER_PATH = '/api/:version/groups/:id/transfer';
 const GROUPS_PATH = '/api/:version/groups.json';
 const GROUP_MEMBERS_PATH = '/api/:version/groups/:id/members';
 const GROUP_MEMBER_PATH = '/api/:version/groups/:id/members/:user_id';
@@ -85,6 +86,12 @@ export const getGroupTransferLocations = (groupId, params = {}) => {
   const defaultParams = { per_page: DEFAULT_PER_PAGE };
 
   return axios.get(url, { params: { ...defaultParams, ...params } });
+};
+
+export const transferGroup = (groupId, destinationId) => {
+  const url = buildApiUrl(GROUP_TRANSFER_PATH).replace(':id', groupId);
+
+  return axios.post(url, { group_id: destinationId });
 };
 
 export const getGroupMembers = (groupId, inherited = false, params = {}) => {

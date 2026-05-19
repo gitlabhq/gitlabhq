@@ -7,8 +7,9 @@ RSpec.describe BulkImports::TreeExportService, feature_category: :importers do
   let_it_be(:export_path) { Dir.mktmpdir }
 
   let(:relation) { 'issues' }
+  let(:export) { build(:bulk_import_export, project: project, relation: relation) }
 
-  subject(:service) { described_class.new(project, export_path, relation, project.owner) }
+  subject(:service) { described_class.new(export, export_path, project.owner) }
 
   describe '#execute' do
     it 'executes export service and archives exported data' do
@@ -19,11 +20,13 @@ RSpec.describe BulkImports::TreeExportService, feature_category: :importers do
       subject.execute
     end
 
-    context 'when unsupported relation is passed' do
-      it 'raises an error' do
-        service = described_class.new(project, export_path, 'unsupported', project.owner)
+    context 'when unsupported tree relation is passed' do
+      let(:relation) { 'uploads' }
 
-        expect { service.execute }.to raise_error(BulkImports::Error, 'Unsupported relation export type')
+      it 'raises an error' do
+        service = described_class.new(export, export_path, project.owner)
+
+        expect { service.execute }.to raise_error(BulkImports::Error, 'Unsupported tree relation export type')
       end
     end
 

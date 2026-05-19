@@ -189,9 +189,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
     end
 
     def pagination_results_data(data)
-      # rubocop:disable Rails/Pluck -- doing .pluck is only valid inside model hence disabling
       data.map { |container_repository| container_repository['name'] }
-      # rubocop:enable Rails/Pluck
     end
 
     context 'when sorting by name' do
@@ -316,10 +314,12 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
         end
       end
 
-      it 'avoids N+1 database queries', :without_current_organization, :use_sql_query_cache do
+      it 'avoids N+1 database queries', :use_sql_query_cache do
         query = graphql_query_for('project', { 'fullPath' => project.full_path }, fields)
+        current_organization.organization_detail # warm up cache so control query doesn't record an additional query
 
         first_user = create(:user, developer_of: project)
+
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           post_graphql(query, current_user: first_user)
         end

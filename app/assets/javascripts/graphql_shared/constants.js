@@ -1,7 +1,9 @@
 export const MINIMUM_SEARCH_LENGTH = 3;
 
+export const TYPENAME_ACHIEVEMENT = 'Achievements::Achievement';
 export const TYPENAME_ADMIN_MEMBER_ROLE = 'AdminMemberRole';
 export const TYPENAME_AI_DUO_WORKFLOW = 'Ai::DuoWorkflows::Workflow';
+export const TYPENAME_ANALYTICS_CUSTOM_DASHBOARD = 'Analytics::CustomDashboards::Dashboard';
 export const TYPENAME_BOARD = 'Board';
 export const TYPENAME_CI_BUILD = 'Ci::Build';
 export const TYPENAME_CI_JOB_TOKEN_ACCESSIBLE_GROUP = 'CiJobTokenAccessibleGroup';

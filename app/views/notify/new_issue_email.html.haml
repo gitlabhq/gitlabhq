@@ -1,5 +1,5 @@
 %p.details
-  = html_escape(_('%{user} created an %{type}: %{issue_link}')) % { user: link_to(@issue.author_name, user_url(@issue.author)),
+  = html_escape(_('%{type} created by %{user}: %{issue_link}')) % { user: link_to(@issue.author_name, user_url(@issue.author)),
                                                                     issue_link: issue_reference_link(@issue),
                                                                     type: work_item_type_for(@issue) }
 

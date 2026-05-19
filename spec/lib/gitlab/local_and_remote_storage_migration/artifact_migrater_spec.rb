@@ -8,7 +8,15 @@ RSpec.describe Gitlab::LocalAndRemoteStorageMigration::ArtifactMigrater do
     stub_artifacts_object_storage(enabled: true)
   end
 
-  let!(:item) { create(:ci_job_artifact, :archive, file_store: start_store) }
+  context 'with Ci::JobArtifact' do
+    let!(:item) { create(:ci_job_artifact, :archive, file_store: start_store) }
 
-  it_behaves_like 'local and remote storage migration', expect_file_rename: true
+    it_behaves_like 'local and remote storage migration', expect_file_rename: true
+  end
+
+  context 'with Ci::PipelineArtifact' do
+    let!(:item) { create(:ci_pipeline_artifact, file_store: start_store) }
+
+    it_behaves_like 'local and remote storage migration'
+  end
 end

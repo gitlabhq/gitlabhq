@@ -336,7 +336,27 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def oauth
-    @oauth ||= request.env['omniauth.auth']
+    @oauth ||= begin
+      auth = request.env['omniauth.auth']
+      normalize_iam_provider!(auth)
+      auth
+    end
+  end
+
+  def normalize_iam_provider!(auth)
+    return unless auth
+
+    iam_provider = auth['provider'].to_s
+    canonical = normalize_provider(iam_provider)
+    return if canonical == iam_provider
+
+    auth['provider'] = canonical
+
+    Gitlab::AuthLogger.info(
+      message: 'IAM provider normalized',
+      iam_provider: iam_provider,
+      canonical_provider: canonical
+    )
   end
 
   def fail_login(user)

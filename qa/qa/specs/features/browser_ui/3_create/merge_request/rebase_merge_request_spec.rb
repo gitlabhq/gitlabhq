@@ -9,7 +9,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'user rebases source branch of merge request', :requires_admin, feature_flag: { name: :rebase_on_merge_automatic },
+      it 'user rebases source branch of merge request', :requires_admin,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347735', quarantine: {
           issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1228',
           type: :bug
@@ -28,17 +28,6 @@ module QA
         merge_request.visit!
 
         Page::MergeRequest::Show.perform do |mr_page|
-          unless Runtime::Feature.enabled?(:rebase_on_merge_automatic)
-            expect(mr_page).to have_content('Merge blocked: 1 check failed', wait: 20)
-            expect(mr_page).to have_content('Fast forward merge is not possible. Please rebase or use merge train.')
-            expect(mr_page).not_to have_merge_button
-            expect(merge_request.project.commits.size).to eq(2), "Expected 2 commits, got: #{merge_request.project.commits.size}"
-
-            mr_page.rebase!
-
-            mr_page.refresh
-          end
-
           expect { mr_page.has_merge_button? }.to eventually_be_truthy.within(max_duration: 60, reload_page: mr_page)
 
           mr_page.merge!

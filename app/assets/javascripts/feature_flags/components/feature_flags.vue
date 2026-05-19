@@ -9,8 +9,8 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash-es';
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
+import { useFeatureFlags } from '~/feature_flags/store/index';
 import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import { n__, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -53,7 +53,7 @@ export default {
     };
   },
   computed: {
-    ...mapState([
+    ...mapState(useFeatureFlags, [
       'featureFlags',
       'alerts',
       'count',
@@ -121,7 +121,7 @@ export default {
     this.fetchFeatureFlags();
   },
   methods: {
-    ...mapActions([
+    ...mapActions(useFeatureFlags, [
       'setFeatureFlagsOptions',
       'fetchFeatureFlags',
       'rotateInstanceId',
@@ -210,6 +210,7 @@ export default {
             <span>{{ featureFlagsLimit }}</span>
           </template>
           <template #pricingLink="{ content }">
+            <!-- eslint-disable-next-line @gitlab/vue-no-hardcoded-urls -- External promo site path, not a GitLab URL -->
             <promo-page-link path="/pricing" target="_blank">{{ content }}</promo-page-link>
           </template>
         </gl-sprintf>

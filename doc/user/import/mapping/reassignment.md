@@ -49,7 +49,7 @@ when you reassign placeholders:
 
 1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Placeholder user confirmation**, select the
    **Reassign placeholders to enterprise users without user confirmation** checkbox.
@@ -140,7 +140,7 @@ To request reassignment of contributions and memberships:
 
 1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. For each placeholder, review information in table columns **Placeholder user** and **Source**.
@@ -192,7 +192,7 @@ All other rows are skipped.
 To request reassignment of contributions and memberships by using a CSV file:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Select **Reassign with CSV**.
 1. Download the prefilled CSV template.
@@ -253,7 +253,7 @@ To keep placeholder users one at a time:
 
 1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. Find placeholder user you want to keep by reviewing **Placeholder user** and **Source** columns.
@@ -264,7 +264,7 @@ To keep placeholder users in bulk:
 
 1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Above the list, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Keep all as placeholders**.
 1. On the confirmation dialog, select **Confirm**.
@@ -273,7 +273,7 @@ To undo the operation:
 
 1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Reassigned** sub-tab, where placeholders are listed in a table.
 1. Select **Undo** in the correct row.
@@ -284,7 +284,7 @@ Before a user accepts a reassignment request, you can cancel the request:
 
 1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. Select **Cancel** in the correct row.
@@ -295,7 +295,7 @@ If a user is not acting on a reassignment request, you can prompt them again by 
 
 1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. Select **Notify** in the correct row.
@@ -306,7 +306,7 @@ To view the reassignment status of all placeholder users:
 
 1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. See the status of each placeholder user in **Reassignment status** column.

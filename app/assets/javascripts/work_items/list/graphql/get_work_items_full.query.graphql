@@ -30,6 +30,7 @@ query getWorkItemsFull(
   $types: [IssueType!]
   $updatedAfter: Time
   $updatedBefore: Time
+  $workItemTypeIds: [WorkItemsTypeID!]
   $crmOrganizationId: String
   $crmContactId: String
   $releaseTag: [String!]
@@ -73,6 +74,7 @@ query getWorkItemsFull(
       types: $types
       updatedAfter: $updatedAfter
       updatedBefore: $updatedBefore
+      workItemTypeIds: $workItemTypeIds
       crmOrganizationId: $crmOrganizationId
       crmContactId: $crmContactId
       releaseTag: $releaseTag

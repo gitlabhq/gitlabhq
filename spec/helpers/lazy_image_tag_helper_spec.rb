@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe LazyImageTagHelper do
+RSpec.describe LazyImageTagHelper, feature_category: :design_system do
   describe '#image_tag' do
     let(:image_src) { '/path/to/image.jpg' }
     let(:dark_image_src) { '/path/to/image_dark.jpg' }
 
     context 'when only source passed' do
-      let(:current_user) { create(:user) }
+      let(:current_user) { build_stubbed(:user) }
       let(:result) { image_tag(image_src) }
 
       it 'returns a lazy image tag by default' do
@@ -19,7 +19,7 @@ RSpec.describe LazyImageTagHelper do
     end
 
     context 'when lazy mode is disabled' do
-      let(:current_user) { create(:user) }
+      let(:current_user) { build_stubbed(:user) }
       let(:result) { image_tag(image_src, lazy: false) }
 
       it 'returns a normal image tag' do
@@ -30,7 +30,7 @@ RSpec.describe LazyImageTagHelper do
     end
 
     context 'when Dark Mode is enabled' do
-      let(:current_user) { create(:user, color_mode_id: 2) }
+      let(:current_user) { build_stubbed(:user, color_mode_id: 2) }
 
       context 'when auto dark enabled' do
         let(:result) { image_tag(image_src, auto_dark: true) }
@@ -64,7 +64,7 @@ RSpec.describe LazyImageTagHelper do
     end
 
     context 'when Dark Mode is disabled' do
-      let(:current_user) { create(:user, color_mode_id: 1) }
+      let(:current_user) { build_stubbed(:user, color_mode_id: 1) }
 
       context 'when auto dark enabled' do
         let(:result) { image_tag(image_src, auto_dark: true) }
@@ -98,7 +98,7 @@ RSpec.describe LazyImageTagHelper do
     end
 
     context 'when auto_dark and dark_variant are both passed' do
-      let(:current_user) { create(:user) }
+      let(:current_user) { build_stubbed(:user) }
 
       it 'does not add a dark mode class from gitlab-ui' do
         expect { image_tag('image.jpg', dark_variant: 'image_dark.jpg', auto_dark: true) }

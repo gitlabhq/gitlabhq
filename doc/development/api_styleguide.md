@@ -742,7 +742,7 @@ them to platform for further processing. It saves some back-and-forth
 from the server to the platform if we identify invalid parameters at the beginning.
 
 If you need to add a custom validator, it would be added to
-it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/api/validations/validators) directory.
+its own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/api/validations/validators) directory.
 Since we use [Grape](https://github.com/ruby-grape/grape) to add our API
 we inherit from the `Grape::Validations::Validators::Base` class in our validator class.
 Now, all you have to do is define the `validate_param!` method which takes
@@ -758,7 +758,7 @@ Grape::Validations.register_validator(<validator name as symbol>, ::API::Helpers
 ```
 
 Once you add the validator, make sure you add the `rspec`s for it into
-it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/lib/api/validations/validators) directory.
+its own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/lib/api/validations/validators) directory.
 
 ## Internal API
 

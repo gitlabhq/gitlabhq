@@ -10,6 +10,7 @@ module Atlassian
         COMMITS_LIMIT = 2000
         ISSUE_KEY_LIMIT = 500
         ASSOCIATION_LIMIT = 500
+        ISSUE_KEYS_ASSOCIATION_TYPE = :issueKeys
 
         format_with(:iso8601, &:iso8601)
 
@@ -39,7 +40,7 @@ module Atlassian
           repository_id = project.id.to_s
 
           combined_associations = service_ids_from_integration_configuration
-          combined_associations << { associationType: :issueKeys, values: keys } if keys.present?
+          combined_associations << { associationType: ISSUE_KEYS_ASSOCIATION_TYPE, values: keys } if keys.present?
 
           # Add commit as associations
           if commits.present?

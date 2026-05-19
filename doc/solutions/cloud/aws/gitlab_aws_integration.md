@@ -12,7 +12,7 @@ This content is intended for GitLab team members as well as members of the wider
 
 Unless otherwise noted, all of this content applies to both GitLab.com and GitLab Self-Managed instances.
 
-This page attempts to index the ways in which GitLab can integrate with AWS. It does so whether the integration is the result of configuring general functionality, was built in to AWS or GitLab or is provided as a solution.
+GitLab integrates with AWS through general configuration, built-in functionality in either platform, and dedicated solutions.
 
 | Text Tag                 | Configuration / Built / Solution                             | Support/Maintenance                                          |
 | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -153,7 +153,7 @@ Top-level groups on GitLab.com are also known as "Namespaces" and naming one aft
 
 ## GitLab infrastructure workloads deployed on AWS
 
-While GitLab can be deployed on a single box for up to 500 users, when it is horizontally scaled for very large user counts like 50,000 it expands into being a complex, many tiered platform that benefits from deployment to AWS. GitLab is supports and is regularly tested being backed by AWS services. GitLab is deployable to Ec2 for traditional scaling and to AWS EKS in a Cloud Native Hybrid implementation. It is called Hybrid because specific service layers cannot be placed in a container cluster due to the workload shapes that are common to Git (and common to how Git processes behave handles that workload variety).
+While GitLab can be deployed on a single box for up to 500 users, when it is horizontally scaled for very large user counts like 50,000 it expands into being a complex, many-tiered platform that benefits from deployment to AWS. GitLab is supported and is regularly tested when backed by AWS services. GitLab is deployable to EC2 for traditional scaling and to AWS EKS in a Cloud Native Hybrid implementation. It is called Hybrid because specific service layers cannot be placed in a container cluster due to the workload shapes that are common to Git (and common to how Git processes handle that workload variety).
 
 ### GitLab Instance Compute & Operations Integration
 

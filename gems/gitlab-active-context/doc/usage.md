@@ -375,7 +375,7 @@ To view all tracked references:
 ActiveContext::Queues.all_queued_items
 ```
 
-Once references are tracked, they will be executed asyncronously. See [Async Processing](how_it_works.md#async-processing).
+Once references are tracked, they will be executed asynchronously. See [Async Processing](how_it_works.md#async-processing).
 
 To execute all refs from all refs sync, run
 

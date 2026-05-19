@@ -1,0 +1,6 @@
+- data = local_assigns.fetch(:data)
+
+.observability-container
+  - view_data = data.to_h.merge(polling_endpoint: url_for(format: :json, only_path: true))
+  - view_data[:query_params] = view_data[:query_params].to_json
+  #js-observability{ data: view_data }

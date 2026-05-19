@@ -29,7 +29,7 @@ RSpec.describe Cells::Claims::BulkClaimService, feature_category: :cell do
       end
 
       let(:service) do
-        described_class.new(model: non_claimable_model, attribute: :path, records: [])
+        described_class.new(model: non_claimable_model, attribute: :path, creates: [])
       end
 
       it 'returns zero creates' do
@@ -45,66 +45,9 @@ RSpec.describe Cells::Claims::BulkClaimService, feature_category: :cell do
       end
     end
 
-    context 'when cell config is disabled' do
+    context 'when creates are empty' do
       let(:service) do
-        described_class.new(model: RedirectRoute, attribute: :path, records: RedirectRoute.none)
-      end
-
-      before do
-        stub_config_cell(enabled: false)
-      end
-
-      it 'returns zero creates' do
-        expect(service.execute).to include(created: 0, chunk_count: 0)
-      end
-    end
-
-    context 'when attribute is not configured in cells_claims_attributes' do
-      let(:service) do
-        described_class.new(model: RedirectRoute, attribute: :nonexistent_attr, records: RedirectRoute.none)
-      end
-
-      it 'returns zero creates' do
-        expect(service.execute).to include(created: 0, chunk_count: 0)
-      end
-    end
-
-    context 'when feature flag for the attribute is disabled' do
-      let(:service) do
-        described_class.new(model: RedirectRoute, attribute: :path, records: RedirectRoute.none)
-      end
-
-      before do
-        stub_feature_flags(cells_claims_routes: false)
-      end
-
-      it 'returns zero creates' do
-        expect(service.execute).to include(created: 0, chunk_count: 0)
-      end
-    end
-
-    context 'when attribute has no feature flag configured' do
-      let(:service) do
-        described_class.new(model: RedirectRoute, attribute: :path, records: RedirectRoute.none)
-      end
-
-      before do
-        original_config = RedirectRoute.cells_claims_attributes[:path]
-        allow(RedirectRoute).to receive(:cells_claims_attributes).and_return(
-          { path: original_config.merge(feature_flag: nil) }
-        )
-      end
-
-      it 'treats the attribute as enabled without checking feature flag' do
-        expect(Feature).not_to receive(:enabled?)
-
-        service.execute
-      end
-    end
-
-    context 'when records are empty' do
-      let(:service) do
-        described_class.new(model: RedirectRoute, attribute: :path, records: RedirectRoute.none)
+        described_class.new(model: RedirectRoute, attribute: :path, creates: [])
       end
 
       it 'returns zero creates' do
@@ -117,31 +60,26 @@ RSpec.describe Cells::Claims::BulkClaimService, feature_category: :cell do
       end
     end
 
-    context 'when a record has no matching claim metadata' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:redirect_route) { create(:redirect_route, source: group, path: 'old-group-path') }
+    context 'when create metadata exists' do
+      let(:create_metadata) do
+        [{
+          bucket: {
+            type: Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
+            value: 'old-group-path'
+          },
+          subject: {
+            type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
+            id: 42
+          },
+          source: {
+            type: RedirectRoute.cells_claims_source_type,
+            rails_primary_key_id: Cells::Serialization.to_bytes(1)
+          }
+        }]
+      end
 
-      let(:records) { RedirectRoute.where(id: redirect_route.id) }
       let(:service) do
-        described_class.new(model: RedirectRoute, attribute: :path, records: records)
-      end
-
-      before do
-        allow_any_instance_of(RedirectRoute).to receive(:cells_claims_metadata_for_attribute).and_return(nil) # rubocop:disable RSpec/AnyInstanceOf -- need to stub instance method on loaded records
-      end
-
-      it 'returns zero creates when all records are skipped' do
-        expect(service.execute).to include(created: 0, chunk_count: 0)
-      end
-    end
-
-    context 'when records exist' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:redirect_route) { create(:redirect_route, source: group, path: 'old-group-path') }
-
-      let(:records) { RedirectRoute.where(id: redirect_route.id) }
-      let(:service) do
-        described_class.new(model: RedirectRoute, attribute: :path, records: records)
+        described_class.new(model: RedirectRoute, attribute: :path, creates: create_metadata)
       end
 
       before do
@@ -181,16 +119,42 @@ RSpec.describe Cells::Claims::BulkClaimService, feature_category: :cell do
       end
     end
 
-    context 'when multiple records exist' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:subgroup1) { create(:group, parent: group) }
-      let_it_be(:subgroup2) { create(:group, parent: group) }
-      let_it_be(:redirect_route1) { create(:redirect_route, source: subgroup1, path: 'old-path/sub1') }
-      let_it_be(:redirect_route2) { create(:redirect_route, source: subgroup2, path: 'old-path/sub2') }
+    context 'when multiple create metadata entries exist' do
+      let(:create_metadata) do
+        [
+          {
+            bucket: {
+              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
+              value: 'old-path/sub1'
+            },
+            subject: {
+              type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
+              id: 42
+            },
+            source: {
+              type: RedirectRoute.cells_claims_source_type,
+              rails_primary_key_id: Cells::Serialization.to_bytes(1)
+            }
+          },
+          {
+            bucket: {
+              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
+              value: 'old-path/sub2'
+            },
+            subject: {
+              type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
+              id: 43
+            },
+            source: {
+              type: RedirectRoute.cells_claims_source_type,
+              rails_primary_key_id: Cells::Serialization.to_bytes(2)
+            }
+          }
+        ]
+      end
 
-      let(:records) { RedirectRoute.where(id: [redirect_route1.id, redirect_route2.id]) }
       let(:service) do
-        described_class.new(model: RedirectRoute, attribute: :path, records: records)
+        described_class.new(model: RedirectRoute, attribute: :path, creates: create_metadata)
       end
 
       before do
@@ -200,6 +164,127 @@ RSpec.describe Cells::Claims::BulkClaimService, feature_category: :cell do
       it 'creates claims for all records' do
         result = service.execute
         expect(result[:created]).to eq(2)
+      end
+    end
+
+    context 'with destroys only' do
+      let(:destroy_metadata) do
+        [{
+          bucket: {
+            type: Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
+            value: 'old-path'
+          },
+          subject: {
+            type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
+            id: 42
+          },
+          source: {
+            type: RedirectRoute.cells_claims_source_type,
+            rails_primary_key_id: Cells::Serialization.to_bytes(99)
+          }
+        }]
+      end
+
+      let(:service) do
+        described_class.new(model: RedirectRoute, attribute: :path, destroys: destroy_metadata)
+      end
+
+      before do
+        stub_commit
+      end
+
+      it 'passes destroys to commit_changes' do
+        expect(mock_claim_service).to receive(:begin_update).with(
+          hash_including(create_records: [], destroy_records: be_present)
+        ).and_return(begin_update_response)
+
+        service.execute
+      end
+
+      it 'returns the correct destroyed count' do
+        result = service.execute
+        expect(result[:created]).to eq(0)
+        expect(result[:destroyed]).to eq(1)
+        expect(result[:chunk_count]).to eq(1)
+      end
+    end
+
+    context 'with both creates and destroys' do
+      let(:create_metadata) do
+        [{
+          bucket: {
+            type: Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
+            value: 'new-path'
+          },
+          subject: {
+            type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
+            id: 42
+          },
+          source: {
+            type: RedirectRoute.cells_claims_source_type,
+            rails_primary_key_id: Cells::Serialization.to_bytes(1)
+          }
+        }]
+      end
+
+      let(:destroy_metadata) do
+        [{
+          bucket: {
+            type: Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
+            value: 'old-path'
+          },
+          subject: {
+            type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
+            id: 42
+          },
+          source: {
+            type: RedirectRoute.cells_claims_source_type,
+            rails_primary_key_id: Cells::Serialization.to_bytes(999)
+          }
+        }]
+      end
+
+      let(:service) do
+        described_class.new(
+          model: RedirectRoute,
+          attribute: :path,
+          creates: create_metadata,
+          destroys: destroy_metadata
+        )
+      end
+
+      before do
+        stub_commit
+      end
+
+      it 'passes both creates and destroys' do
+        expect(mock_claim_service).to receive(:begin_update).with(
+          hash_including(create_records: be_present, destroy_records: be_present)
+        ).and_return(begin_update_response)
+
+        service.execute
+      end
+
+      it 'returns correct counts' do
+        result = service.execute
+        expect(result[:created]).to eq(1)
+        expect(result[:destroyed]).to eq(1)
+        expect(result[:chunk_count]).to eq(1)
+      end
+    end
+
+    context 'when destroys are empty and creates are empty' do
+      let(:service) do
+        described_class.new(model: RedirectRoute, attribute: :path, creates: [], destroys: [])
+      end
+
+      it 'returns zeroes' do
+        expect(service.execute).to include(created: 0, destroyed: 0, chunk_count: 0)
+      end
+
+      it 'does not call begin_update' do
+        expect(mock_claim_service).not_to receive(:begin_update)
+        service.execute
       end
     end
   end

@@ -17,7 +17,7 @@ Limits are applicable for:
 
 ## When limits are required
 
-1. Limits are required if the absence of the limit matches severity 1 - 3 in the severity definitions for [limit-related bugs](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#limit-related-bugs).
+1. Limits are required if the absence of the limit matches severity 1 - 3 in the severity definitions for [limit-related bugs](https://handbook.gitlab.com/handbook/product-development/how-we-work/issue-triage/#limit-related-bugs).
 1. [GitLab application limits](../../administration/instance_limits.md) documentation must be updated anytime limits are added, removed, or updated.
 
 ## Additional reading
@@ -25,5 +25,5 @@ Limits are applicable for:
 - Existing [GitLab application limits](../../administration/instance_limits.md)
 - Product processes: [introducing application limits](https://handbook.gitlab.com/handbook/product/product-processes/#introducing-application-limits)
 - Development documentation: [guide for adding application limits](../application_limits.md)
-- Infrastructure guide to rate limits: [rate limit architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/rate-limiting/)
-- A guide for when, where, and how to configure rate limits: [managing rate limits](https://handbook.gitlab.com/handbook/engineering/infrastructure/rate-limiting/managing-limits/)
+- Infrastructure guide to rate limits: [rate limit architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/rate-limiting/)
+- A guide for when, where, and how to configure rate limits: [managing rate limits](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/rate-limiting/managing-limits/)

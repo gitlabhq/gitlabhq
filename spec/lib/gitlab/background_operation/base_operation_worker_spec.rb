@@ -127,6 +127,103 @@ RSpec.describe Gitlab::BackgroundOperation::BaseOperationWorker, feature_categor
     end
   end
 
+  describe '.scope_to' do
+    let(:test_table) { table(:_test_table) }
+
+    let(:job_instance) do
+      job_class.new(
+        min_cursor: [1],
+        max_cursor: [10],
+        batch_table: '_test_table',
+        batch_column: 'id',
+        sub_batch_size: 10,
+        pause_ms: 0,
+        connection: connection
+      )
+    end
+
+    before do
+      allow(job_instance).to receive(:sleep)
+
+      connection.create_table :_test_table do |t|
+        t.timestamps_with_timezone null: false
+        t.text :bar
+      end
+
+      [['value'], ['other'], ['value'], ['other']].each { |bar| test_table.create!(bar: bar.first) }
+    end
+
+    after do
+      connection.drop_table(:_test_table)
+    end
+
+    context 'with scope_to' do
+      let(:job_class) do
+        Class.new(described_class) do
+          operation_name :delete_all
+          cursor :id
+          scope_to ->(relation) { relation.where(bar: 'value') }
+
+          def perform
+            each_sub_batch do |sub_batch|
+              sub_batch.delete_all
+            end
+          end
+        end
+      end
+
+      it 'only deletes matching rows' do
+        expect { job_instance.perform }.to change { test_table.count }.from(4).to(2)
+
+        expect(test_table.pluck(:bar)).to all(eq('other'))
+      end
+    end
+
+    context 'with reset_cursor!' do
+      let(:job_class) do
+        Class.new(described_class) do
+          operation_name :delete_all
+          cursor :id
+          scope_to ->(relation) { relation.where(bar: 'value') }
+          reset_cursor!
+
+          def perform
+            each_sub_batch do |sub_batch|
+              sub_batch.delete_all
+            end
+          end
+        end
+      end
+
+      it 'resets cursor' do
+        expect(job_class).to be_reset_cursor
+      end
+    end
+
+    context 'without scope_to' do
+      let(:job_class) do
+        Class.new(described_class) do
+          operation_name :delete_all
+          cursor :id
+
+          def perform
+            each_sub_batch do |sub_batch|
+              sub_batch.delete_all
+            end
+          end
+        end
+      end
+
+      it 'deletes all rows' do
+        expect { job_instance.perform }.to change { test_table.count }.from(4).to(0)
+      end
+
+      it 'does not reset cursor by default' do
+        expect(job_class).not_to be_reset_cursor
+      end
+    end
+  end
+
   describe '#perform' do
     let(:job_class) { Class.new(described_class) }
 

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { isImageLoaded } from '../lib/utils/image_utility';
 import imageDiffHelper from './helpers/index';
 import ImageBadge from './image_badge';
@@ -8,7 +7,7 @@ export default class ImageDiff {
     this.el = el;
     this.canCreateNote = Boolean(options && options.canCreateNote);
     this.renderCommentBadge = Boolean(options && options.renderCommentBadge);
-    this.$noteContainer = $('.note-container', this.el);
+    this.noteContainer = this.el.querySelector('.note-container');
     this.imageBadges = [];
   }
 
@@ -33,9 +32,24 @@ export default class ImageDiff {
       this.imageEl.addEventListener('load', this.renderBadgesWrapper);
     }
 
-    // jquery makes the event delegation here much simpler
-    this.$noteContainer.on('click', '.js-diff-notes-toggle', imageDiffHelper.toggleCollapsed);
-    $(this.el).on('click', '.comment-indicator', imageDiffHelper.commentIndicatorOnClick);
+    if (this.noteContainer) {
+      this.noteContainer.addEventListener('click', (event) => {
+        const toggleButton = event.target.closest('.js-diff-notes-toggle');
+        if (toggleButton) {
+          imageDiffHelper.toggleCollapsed({ currentTarget: toggleButton });
+        }
+      });
+    }
+
+    this.el.addEventListener('click', (event) => {
+      const commentIndicator = event.target.closest('.comment-indicator');
+      if (commentIndicator) {
+        imageDiffHelper.commentIndicatorOnClick({
+          currentTarget: commentIndicator,
+          stopPropagation: () => event.stopPropagation(),
+        });
+      }
+    });
 
     if (this.canCreateNote) {
       this.el.addEventListener('click.imageDiff', this.imageClickedWrapper);

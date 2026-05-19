@@ -1,7 +1,9 @@
 ---
 name: delete_license
 description: Grants the ability to delete licenses
-permissions:
-  - delete_license
 boundaries:
   - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_license

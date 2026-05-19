@@ -109,11 +109,13 @@ describe('releases/util.js', () => {
           {
             author: {
               id: expect.any(String),
+              name: expect.any(String),
             },
           },
           {
             author: {
               id: expect.any(String),
+              name: expect.any(String),
             },
             evidences: [
               {
@@ -137,6 +139,7 @@ describe('releases/util.js', () => {
         data: {
           author: {
             id: expect.any(String),
+            name: expect.any(String),
           },
           evidences: [
             {

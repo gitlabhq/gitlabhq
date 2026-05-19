@@ -26,7 +26,7 @@ module IssueBuildParameters
       }).tap(&:permit!)
   end
 
-  # Overriden in EE
+  # Overridden in EE
   def issue_params
     allowed_params ||= params.permit(:issue_type, issue: issue_attributes)
     issue_params = allowed_params[:issue] || ActionController::Parameters.new(assignee_ids: "")
@@ -39,7 +39,7 @@ module IssueBuildParameters
 
   private
 
-  # Overriden on EE
+  # Overridden on EE
   def issue_attributes
     [
       :title,

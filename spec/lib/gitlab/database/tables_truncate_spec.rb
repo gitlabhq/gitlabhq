@@ -310,6 +310,80 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
     it_behaves_like 'truncating legacy tables on a database'
   end
 
+  context 'when a table removed from schema docs still has FK constraints in the database' do
+    let(:ci_db_unregistered_model) { table("_test_unregistered_ref", database: "ci") }
+    let(:tables_to_lock) do
+      [ci_db_main_item_model, ci_db_main_reference_model, ci_db_partitioned_item, ci_db_partitioned_item_detached]
+    end
+
+    before do
+      skip_if_shared_database(:ci)
+
+      ci_connection.execute(<<~SQL)
+        CREATE TABLE _test_unregistered_ref (
+          id serial NOT NULL PRIMARY KEY,
+          item_id BIGINT NOT NULL,
+          CONSTRAINT fk_test_unregistered FOREIGN KEY(item_id) REFERENCES _test_gitlab_main_items(id)
+        )
+      SQL
+
+      5.times { |i| ci_db_unregistered_model.create!(item_id: i) }
+
+      tables_to_lock.map(&:table_name).each do |tbl|
+        Gitlab::Database::LockWritesManager.new(
+          table_name: tbl,
+          connection: ci_connection,
+          database_name: 'ci',
+          with_retries: false
+        ).lock_writes
+      end
+
+      allow(logger).to receive(:info).with(any_args)
+    end
+
+    subject(:truncate_legacy_tables) do
+      described_class.new(
+        database_name: 'ci',
+        min_batch_size: min_batch_size,
+        logger: logger
+      ).execute
+    end
+
+    it 'does not raise a FK constraint error' do
+      expect { truncate_legacy_tables }.not_to raise_error
+    end
+
+    it 'truncates the unregistered table alongside the registered tables' do
+      expect { truncate_legacy_tables }.to change(ci_db_unregistered_model, :count).from(5).to(0)
+    end
+
+    context 'with a multi-hop FK chain (unregistered B -> unregistered A -> registered table)' do
+      let(:ci_db_unregistered_model_b) { table("_test_unregistered_ref_b", database: "ci") }
+
+      before do
+        ci_connection.execute(<<~SQL)
+          CREATE TABLE _test_unregistered_ref_b (
+            id serial NOT NULL PRIMARY KEY,
+            ref_id BIGINT NOT NULL,
+            CONSTRAINT fk_test_unregistered_b FOREIGN KEY(ref_id) REFERENCES _test_unregistered_ref(id)
+          )
+        SQL
+
+        5.times { |i| ci_db_unregistered_model_b.create!(ref_id: i + 1) }
+      end
+
+      it 'does not raise a FK constraint error' do
+        expect { truncate_legacy_tables }.not_to raise_error
+      end
+
+      it 'truncates all unregistered tables in the chain' do
+        expect { truncate_legacy_tables }
+          .to change(ci_db_unregistered_model, :count).from(5).to(0)
+          .and change(ci_db_unregistered_model_b, :count).from(5).to(0)
+      end
+    end
+  end
+
   context 'when running with multiple shared databases' do
     before do
       skip_if_multiple_databases_not_setup(:ci)

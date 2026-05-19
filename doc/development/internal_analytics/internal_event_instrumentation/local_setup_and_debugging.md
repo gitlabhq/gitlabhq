@@ -156,7 +156,7 @@ On GitLab.com events are sent directly to a collector operated by GitLab (snowpl
 You can configure your instance to use a custom Snowplow collector.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Snowplow**.
 1. Select **Enable Snowplow tracking** and enter your Snowplow configuration information. For example if your custom snowplow collector is available at `your-snowplow-collector.net`:
 

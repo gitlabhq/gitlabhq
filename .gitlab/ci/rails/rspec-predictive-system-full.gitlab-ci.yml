@@ -1,0 +1,84 @@
+# Full system test pipeline used for tier-2 when Duo Test Selector is not confident about predictions, or it fails.
+# Triggered by rspec:predictive:system-full:trigger in rails.gitlab-ci.yml.
+
+include:
+  - local: .gitlab/ci/rails/shared.gitlab-ci.yml
+
+default:
+  image: $DEFAULT_CI_IMAGE
+  # Default job timeout set to 90m https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/10520
+  timeout: 90m
+  interruptible: true
+
+stages:
+  - test
+  - post-test
+
+workflow:
+  name: '$PIPELINE_NAME'
+
+dont-interrupt-me:
+  stage: .pre
+  image: alpine:latest
+  interruptible: false
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ci/yaml/#interruptible."
+  rules:
+    - if: $CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"
+      when: manual
+      allow_failure: true
+
+.base-predictive-system-full:
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
+    - pipeline: $PARENT_PIPELINE_ID
+      job: setup-test-env
+    - pipeline: $PARENT_PIPELINE_ID
+      job: retrieve-tests-metadata
+    - pipeline: $PARENT_PIPELINE_ID
+      job: compile-test-assets
+    - pipeline: $PARENT_PIPELINE_ID
+      job: rspec-predictive:pipeline-generate
+  rules:
+    - when: always
+
+rspec system predictive full:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
+  extends:
+    - .rspec-base-pg17
+    - .base-predictive-system-full
+    - .rspec-system-parallel
+
+rspec-ee system predictive full:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
+  extends:
+    - .rspec-ee-base-pg17
+    - .base-predictive-system-full
+    - .rspec-ee-system-parallel
+
+rspec-predictive-system-full-artifact-collector:
+  stage: post-test
+  needs:
+    - job: rspec system predictive full
+      optional: true
+      artifacts: true
+    - job: rspec-ee system predictive full
+      optional: true
+      artifacts: true
+  rules:
+    - when: always
+  script:
+    - echo "Collecting artifacts from full system test pipeline jobs"
+  artifacts:
+    name: predictive-system-full-coverage
+    expire_in: 31d
+    paths:
+      - coverage/
+      - rspec/
+      - crystalball/
+    when: always

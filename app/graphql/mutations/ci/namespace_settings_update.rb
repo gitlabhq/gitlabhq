@@ -7,7 +7,7 @@ module Mutations
 
       include ResolvesNamespace
 
-      authorize :maintainer_access
+      authorize :update_ci_namespace_settings
 
       argument :full_path, GraphQL::Types::ID,
         required: true,

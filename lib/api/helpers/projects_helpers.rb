@@ -82,6 +82,7 @@ module API
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :squash_option, type: String, values: %w[never always default_on default_off], desc: 'Squash default for project. One of `never`, `always`, `default_on`, or `default_off`.'
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
+        optional :mr_default_title_template, type: String, limit: 100, desc: 'Template used to generate the default merge request title. Maximum 100 characters.'
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about potentially unwanted characters'
       end
 
@@ -149,7 +150,7 @@ module API
       end
 
       params :share_project_params_ee do
-        # Overriden in EE
+        # Overridden in EE
       end
 
       def self.update_params_at_least_one_of
@@ -219,6 +220,7 @@ module API
           :service_desk_enabled,
           :keep_latest_artifact,
           :mr_default_target_self,
+          :mr_default_title_template,
           :enforce_auth_checks_on_uploads,
           :releases_access_level,
           :environments_access_level,

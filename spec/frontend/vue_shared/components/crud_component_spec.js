@@ -24,6 +24,7 @@ describe('CRUD Component', () => {
   };
 
   const findTitle = () => wrapper.findByTestId('crud-title');
+  const findHeader = () => wrapper.findByTestId('crud-header');
   const findDescription = () => wrapper.findByTestId('crud-description');
   const findCount = () => wrapper.findByTestId('crud-count');
   const findIcon = () => wrapper.findComponent(GlIcon);
@@ -161,6 +162,44 @@ describe('CRUD Component', () => {
     createComponent({}, { default: '<p>Body slot</p>', pagination: '<p>Pagination slot</p>' });
 
     expect(findPagination().text()).toBe('Pagination slot');
+  });
+
+  describe('with custom classes', () => {
+    const classesArr = ['my-class1', 'my-class2'];
+    const classesObj = { 'my-class1': true, 'my-class2': true };
+    const classesStr = 'my-class1 my-class2';
+    const expectedClasses = expect.arrayContaining(['my-class1', 'my-class2']);
+
+    describe.each`
+      type           | classes
+      ${'an array'}  | ${classesArr}
+      ${'an object'} | ${classesObj}
+      ${'a string'}  | ${classesStr}
+    `('with classes as $type', ({ classes }) => {
+      it('header', () => {
+        createComponent({ headerClass: classes });
+
+        expect(findHeader().classes()).toEqual(expectedClasses);
+      });
+
+      it('title', () => {
+        createComponent({ titleClass: classes });
+
+        expect(findTitle().classes()).toEqual(expectedClasses);
+      });
+
+      it('body', () => {
+        createComponent({ bodyClass: classes });
+
+        expect(findBody().classes()).toEqual(expectedClasses);
+      });
+
+      it('footer', () => {
+        createComponent({ footerClass: classes }, { footer: '<p>Footer slot</p>' });
+
+        expect(findFooter().classes()).toEqual(expectedClasses);
+      });
+    });
   });
 
   describe('with persistCollapsedState=true', () => {

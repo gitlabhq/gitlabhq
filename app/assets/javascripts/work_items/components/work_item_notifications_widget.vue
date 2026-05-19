@@ -6,11 +6,12 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, s__ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import getWorkItemNotificationsByIdQuery from '../graphql/get_work_item_notifications_by_id.query.graphql';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
-
 import { WIDGET_TYPE_NOTIFICATIONS } from '../constants';
+import { findNotificationsWidget } from '../utils';
 
 const ICON_ON = 'notifications';
 const ICON_OFF = 'notifications-off';
@@ -29,6 +30,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     workItemId: {
       type: String,
@@ -49,16 +51,14 @@ export default {
       variables() {
         return {
           id: this.workItemId,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       skip() {
         return !this.workItemId;
       },
       update(data) {
-        return Boolean(
-          data?.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_NOTIFICATIONS)
-            ?.subscribed,
-        );
+        return Boolean(findNotificationsWidget(data?.workItem)?.subscribed);
       },
       error(error) {
         Sentry.captureException(error);
@@ -80,6 +80,12 @@ export default {
   },
   methods: {
     toggleNotifications(subscribed) {
+      const notificationWidget = {
+        type: WIDGET_TYPE_NOTIFICATIONS,
+        subscribed,
+        __typename: 'WorkItemWidgetNotifications',
+      };
+
       this.$apollo
         .mutate({
           mutation: updateWorkItemNotificationsMutation,
@@ -88,6 +94,7 @@ export default {
               id: this.workItemId,
               subscribed,
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
           optimisticResponse: {
             workItemSubscribe: {
@@ -95,13 +102,14 @@ export default {
               workItem: {
                 __typename: 'WorkItem',
                 id: this.workItemId,
-                widgets: [
-                  {
-                    type: WIDGET_TYPE_NOTIFICATIONS,
-                    subscribed,
-                    __typename: 'WorkItemWidgetNotifications',
-                  },
-                ],
+                ...(this.glFeatures?.workItemFeaturesField
+                  ? {
+                      features: {
+                        __typename: 'WorkItemFeatures',
+                        notifications: notificationWidget,
+                      },
+                    }
+                  : { widgets: [notificationWidget] }),
               },
             },
           },

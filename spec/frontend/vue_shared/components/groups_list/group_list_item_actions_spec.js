@@ -6,6 +6,7 @@ import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list/group_list_item_prevent_delete_modal.vue';
 import GroupDeleteModal from '~/groups/components/delete_modal.vue';
 import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
+import TransferModal from '~/groups/components/transfer_modal.vue';
 import {
   ACTION_ARCHIVE,
   ACTION_COPY_ID,
@@ -15,6 +16,7 @@ import {
   ACTION_LEAVE,
   ACTION_REQUEST_ACCESS,
   ACTION_RESTORE,
+  ACTION_TRANSFER,
   ACTION_UNARCHIVE,
   ACTION_WITHDRAW_ACCESS_REQUEST,
 } from '~/vue_shared/components/list_actions/constants';
@@ -27,6 +29,7 @@ import {
   renderArchiveSuccessToast,
   renderDeleteSuccessToast,
   renderRestoreSuccessToast,
+  renderTransferSuccessToast,
   renderUnarchiveSuccessToast,
 } from '~/vue_shared/components/groups_list/utils';
 import { createAlert } from '~/alert';
@@ -49,6 +52,7 @@ jest.mock('~/vue_shared/components/groups_list/utils', () => ({
   renderArchiveSuccessToast: jest.fn(),
   renderUnarchiveSuccessToast: jest.fn(),
   renderDeleteSuccessToast: jest.fn(),
+  renderTransferSuccessToast: jest.fn(),
   deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
 }));
 jest.mock('~/alert');
@@ -79,6 +83,7 @@ describe('GroupListItemActions', () => {
   const findListActions = () => wrapper.findComponent(ListActions);
   const findGroupDeleteModal = () => wrapper.findComponent(GroupDeleteModal);
   const findPreventDeleteModal = () => wrapper.findComponent(GroupListItemPreventDeleteModal);
+  const findTransferModal = () => wrapper.findComponent(TransferModal);
   const findLeaveModal = () => wrapper.findComponent(GroupListItemLeaveModal);
 
   const fireAction = async (action) => {
@@ -131,10 +136,14 @@ describe('GroupListItemActions', () => {
               class: 'js-leave-link',
             },
           },
+          [ACTION_TRANSFER]: {
+            action: expect.any(Function),
+          },
         },
         availableActions: [
           ACTION_COPY_ID,
           ACTION_EDIT,
+          ACTION_TRANSFER,
           ACTION_ARCHIVE,
           ACTION_LEAVE,
           ACTION_DELETE,
@@ -603,6 +612,49 @@ describe('GroupListItemActions', () => {
           rel: 'nofollow',
         },
       });
+    });
+  });
+
+  describe('when transfer action is available', () => {
+    describe('when transfer action is fired', () => {
+      beforeEach(async () => {
+        createComponent();
+        await fireAction(ACTION_TRANSFER);
+      });
+
+      it('shows transfer modal', () => {
+        expect(findTransferModal().props('visible')).toBe(true);
+      });
+
+      describe('when transfer modal emits success event', () => {
+        it('emits action event and shows success toast', () => {
+          findTransferModal().vm.$emit('success');
+
+          expect(wrapper.emitted('action')).toEqual([[ACTION_TRANSFER]]);
+          expect(renderTransferSuccessToast).toHaveBeenCalledWith(group);
+        });
+      });
+    });
+  });
+
+  describe('when transfer action is not available', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          group: {
+            ...group,
+            availableActions: [],
+          },
+        },
+      });
+    });
+
+    it('does not display transfer action', () => {
+      expect(findListActions().props('availableActions')).not.toContain(ACTION_TRANSFER);
+    });
+
+    it('does not display transfer modal', () => {
+      expect(findTransferModal().exists()).toBe(false);
     });
   });
 });

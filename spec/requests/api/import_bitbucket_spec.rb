@@ -17,8 +17,8 @@ RSpec.describe API::ImportBitbucket, :with_current_organization, feature_categor
       let_it_be(:group) { create(:group, developers: [user]) }
       let_it_be(:params) do
         {
-          bitbucket_username: 'foo',
-          bitbucket_app_password: 'bar',
+          bitbucket_email: 'user@example.com',
+          bitbucket_api_token: 'token123',
           repo_path: 'path/to/repo',
           target_namespace: group.full_path
         }
@@ -39,8 +39,8 @@ RSpec.describe API::ImportBitbucket, :with_current_organization, feature_categor
 
       let_it_be(:params) do
         {
-          bitbucket_username: 'foo',
-          bitbucket_app_password: 'bar',
+          bitbucket_email: 'user@example.com',
+          bitbucket_api_token: 'token123',
           repo_path: 'path/to/repo',
           target_namespace: user.namespace_path
         }
@@ -96,100 +96,26 @@ RSpec.describe API::ImportBitbucket, :with_current_organization, feature_categor
     end
 
     context 'when authenticated' do
-      context 'when using app password authentication' do
-        let(:params) do
-          {
-            bitbucket_username: 'foo',
-            bitbucket_app_password: 'bar',
-            repo_path: 'path/to/repo',
-            target_namespace: user.namespace_path
-          }
-        end
-
-        it_behaves_like 'bitbucket import endpoint'
+      let(:params) do
+        {
+          bitbucket_email: 'user@example.com',
+          bitbucket_api_token: 'token123',
+          repo_path: 'path/to/repo',
+          target_namespace: user.namespace_path
+        }
       end
 
-      context 'when using API token authentication' do
-        let(:params) do
-          {
-            bitbucket_email: 'user@example.com',
-            bitbucket_api_token: 'token123',
-            repo_path: 'path/to/repo',
-            target_namespace: user.namespace_path
-          }
-        end
+      it_behaves_like 'bitbucket import endpoint'
 
-        it_behaves_like 'bitbucket import endpoint'
-      end
-
-      context 'when both app password and API token provided' do
-        let(:both_params) do
-          {
-            bitbucket_username: 'username',
-            bitbucket_app_password: 'app_pass',
-            bitbucket_email: 'user@example.com',
-            bitbucket_api_token: 'token123',
-            repo_path: 'path/to/repo',
-            target_namespace: user.namespace_path
-          }
-        end
-
+      context 'when missing required credentials' do
         it 'returns validation error' do
-          post api('/import/bitbucket', user), params: both_params
+          post api('/import/bitbucket', user), params: {
+            repo_path: 'path/to/repo',
+            target_namespace: user.namespace_path
+          }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(response.body).to include('are mutually exclusive')
-        end
-      end
-
-      context 'when partial app password credentials provided' do
-        let(:partial_app_pass_params) do
-          {
-            bitbucket_username: 'username',
-            repo_path: 'path/to/repo',
-            target_namespace: user.namespace_path
-          }
-        end
-
-        it 'returns validation error' do
-          post api('/import/bitbucket', user), params: partial_app_pass_params
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(response.body)
-            .to include('bitbucket_username, bitbucket_app_password provide all or none of parameters')
-        end
-      end
-
-      context 'when partial API token credentials provided' do
-        let(:partial_api_token_params) do
-          {
-            bitbucket_email: 'user@example.com',
-            repo_path: 'path/to/repo',
-            target_namespace: user.namespace_path
-          }
-        end
-
-        it 'returns validation error' do
-          post api('/import/bitbucket', user), params: partial_api_token_params
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(response.body).to include('bitbucket_email, bitbucket_api_token provide all or none of parameters')
-        end
-      end
-
-      context 'when neither authentication method provided' do
-        let(:no_auth_params) do
-          {
-            repo_path: 'path/to/repo',
-            target_namespace: user.namespace_path
-          }
-        end
-
-        it 'returns validation error' do
-          post api('/import/bitbucket', user), params: no_auth_params
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(response.body).to include('at least one parameter must be provided')
+          expect(response.body).to include('bitbucket_email is missing')
         end
       end
     end

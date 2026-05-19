@@ -187,6 +187,48 @@ describe('CE IssueCardTimeInfo component', () => {
           });
         });
       });
+
+      describe('when approaching', () => {
+        it('classifies today as approaching, not overdue', () => {
+          wrapper = mountComponent({ issue: object({ dueDate: '2020-07-06' }) });
+
+          expect(findDueDateIcon().props()).toMatchObject({
+            variant: 'warning',
+            name: 'calendar-due',
+          });
+          expect(findWorkItemAttribute().props('tooltipText')).toBe('Dates (due soon)');
+        });
+
+        it('renders with warning variant and calendar-due icon when due within 6 days', () => {
+          wrapper = mountComponent({ issue: object({ dueDate: '2020-07-12' }) });
+
+          expect(findDueDateIcon().props()).toMatchObject({
+            variant: 'warning',
+            name: 'calendar-due',
+          });
+        });
+
+        it('renders with normal variant when due exactly 7 days away', () => {
+          wrapper = mountComponent({ issue: object({ dueDate: '2020-07-13' }) });
+
+          expect(findDueDateIcon().props()).toMatchObject({
+            variant: 'current',
+            name: 'calendar',
+          });
+          expect(findWorkItemAttribute().props('tooltipText')).toBe('Dates');
+        });
+
+        it('does not apply approaching state when issue is closed', () => {
+          wrapper = mountComponent({
+            issue: object({ dueDate: '2020-07-09', state: STATUS_CLOSED }),
+          });
+
+          expect(findDueDateIcon().props()).toMatchObject({
+            variant: 'current',
+            name: 'calendar',
+          });
+        });
+      });
     });
 
     describe('start date', () => {

@@ -3,6 +3,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, sprintf } from '~/locale';
 
 export default {
+  name: 'WorkItemNoteSignedOut',
   directives: {
     SafeHtml,
   },

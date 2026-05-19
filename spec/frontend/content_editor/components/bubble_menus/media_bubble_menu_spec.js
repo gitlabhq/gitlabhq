@@ -7,6 +7,7 @@ import eventHubFactory from '~/helpers/event_hub_factory';
 import waitForPromises from 'helpers/wait_for_promises';
 import Audio from '~/content_editor/extensions/audio';
 import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
+import Iframe from '~/content_editor/extensions/iframe';
 import Image from '~/content_editor/extensions/image';
 import Video from '~/content_editor/extensions/video';
 import { createTestEditor, emitEditorEvent, createTransactionWithMeta } from '../../test_utils';
@@ -25,53 +26,57 @@ const TIPTAP_IMAGE_HTML = `<p dir="auto"><img src="https://gitlab.com/favicon.pn
 
 const TIPTAP_VIDEO_HTML = `<p dir="auto"><span class="media-container video-container"><video src="https://gitlab.com/favicon.png" controls="true" data-setup="{}" data-title="gitlab favicon"></video><a href="https://gitlab.com/favicon.png" class="with-attachment-icon">gitlab favicon</a></span></p>`;
 
+const TIPTAP_IFRAME_HTML = `<p dir="auto"><span class="media-container img-container"><img class="js-render-iframe" src="https://www.youtube.com/embed/abc" data-iframe-canonical-src="https://www.youtube.com/watch?v=abc" data-title="test-video" width="560" height="315"></span></p>`;
+
 const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jest.fn() });
 
-describe.each`
-  mediaType          | mediaHTML                                      | filePath                  | mediaOutputHTML
-  ${'image'}         | ${PROJECT_WIKI_ATTACHMENT_IMAGE_HTML}          | ${'test-file.png'}        | ${TIPTAP_IMAGE_HTML}
-  ${'drawioDiagram'} | ${PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML} | ${'test-file.drawio.svg'} | ${TIPTAP_DIAGRAM_HTML}
-  ${'audio'}         | ${PROJECT_WIKI_ATTACHMENT_AUDIO_HTML}          | ${'test-file.mp3'}        | ${TIPTAP_AUDIO_HTML}
-  ${'video'}         | ${PROJECT_WIKI_ATTACHMENT_VIDEO_HTML}          | ${'test-file.mp4'}        | ${TIPTAP_VIDEO_HTML}
-`(
-  'content_editor/components/bubble_menus/media_bubble_menu ($mediaType)',
-  ({ mediaType, mediaHTML, filePath, mediaOutputHTML }) => {
-    let wrapper;
-    let tiptapEditor;
-    let contentEditor;
-    let eventHub;
+describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
+  let wrapper;
+  let tiptapEditor;
+  let contentEditor;
+  let eventHub;
 
-    const buildEditor = () => {
-      tiptapEditor = createTestEditor({ extensions: [Image, Audio, Video, DrawioDiagram] });
-      contentEditor = { resolveUrl: jest.fn() };
-      eventHub = eventHubFactory();
+  const buildEditor = () => {
+    tiptapEditor = createTestEditor({ extensions: [Image, Audio, Video, DrawioDiagram, Iframe] });
+    contentEditor = {
+      resolveUrl: jest.fn(),
+      resolveIframeSrc: jest.fn(),
     };
+    eventHub = eventHubFactory();
+  };
 
-    const buildWrapper = () => {
-      wrapper = mountExtended(MediaBubbleMenu, {
-        provide: {
-          tiptapEditor,
-          contentEditor,
-          eventHub,
-        },
-        stubs: {
-          BubbleMenu: stubComponent(BubbleMenu),
-        },
-      });
-    };
-
-    const findBubbleMenu = () => wrapper.findComponent(BubbleMenu);
-
-    const showMenu = async () => {
-      findBubbleMenu().vm.$emit('show');
-      await emitEditorEvent({
-        event: 'transaction',
+  const buildWrapper = () => {
+    wrapper = mountExtended(MediaBubbleMenu, {
+      provide: {
         tiptapEditor,
-        params: { transaction: createTransactionWithMeta() },
-      });
-      await waitForPromises();
-    };
+        contentEditor,
+        eventHub,
+      },
+      stubs: {
+        BubbleMenu: stubComponent(BubbleMenu),
+      },
+    });
+  };
 
+  const findBubbleMenu = () => wrapper.findComponent(BubbleMenu);
+
+  const showMenu = async () => {
+    findBubbleMenu().vm.$emit('show');
+    await emitEditorEvent({
+      event: 'transaction',
+      tiptapEditor,
+      params: { transaction: createTransactionWithMeta() },
+    });
+    await waitForPromises();
+  };
+
+  describe.each`
+    mediaType          | mediaHTML                                      | filePath                  | mediaOutputHTML
+    ${'image'}         | ${PROJECT_WIKI_ATTACHMENT_IMAGE_HTML}          | ${'test-file.png'}        | ${TIPTAP_IMAGE_HTML}
+    ${'drawioDiagram'} | ${PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML} | ${'test-file.drawio.svg'} | ${TIPTAP_DIAGRAM_HTML}
+    ${'audio'}         | ${PROJECT_WIKI_ATTACHMENT_AUDIO_HTML}          | ${'test-file.mp3'}        | ${TIPTAP_AUDIO_HTML}
+    ${'video'}         | ${PROJECT_WIKI_ATTACHMENT_VIDEO_HTML}          | ${'test-file.mp4'}        | ${TIPTAP_VIDEO_HTML}
+  `('$mediaType', ({ mediaType, mediaHTML, filePath, mediaOutputHTML }) => {
     const buildWrapperAndDisplayMenu = () => {
       buildWrapper();
 
@@ -242,5 +247,39 @@ describe.each`
         });
       });
     });
-  },
-);
+  });
+
+  describe('iframe', () => {
+    beforeEach(() => {
+      buildEditor();
+
+      tiptapEditor.chain().insertContent(TIPTAP_IFRAME_HTML).setNodeSelection(1).run();
+    });
+
+    it('calls resolveIframeSrc when saving an iframe edit, not resolveUrl', async () => {
+      contentEditor.resolveUrl.mockResolvedValue('https://www.youtube.com/embed/abc');
+      contentEditor.resolveIframeSrc.mockResolvedValue('https://www.youtube.com/embed/xyz');
+
+      buildWrapper();
+      await showMenu();
+
+      await wrapper.findByTestId('edit-media').vm.$emit('click');
+
+      const mediaSrcInput = wrapper.findByTestId('media-src');
+      mediaSrcInput.setValue('https://www.youtube.com/watch?v=xyz');
+
+      contentEditor.resolveUrl.mockClear();
+
+      await wrapper.findComponent(GlForm).vm.$emit('submit', createFakeEvent());
+      await waitForPromises();
+
+      expect(contentEditor.resolveIframeSrc).toHaveBeenCalledWith(
+        'https://www.youtube.com/watch?v=xyz',
+      );
+
+      const { src, canonicalSrc } = tiptapEditor.getAttributes('iframe');
+      expect(src).toBe('https://www.youtube.com/embed/xyz');
+      expect(canonicalSrc).toBe('https://www.youtube.com/watch?v=xyz');
+    });
+  });
+});

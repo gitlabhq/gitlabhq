@@ -9,6 +9,7 @@ import { createAlert } from '~/alert';
 import { getNoteFormErrorMessages } from '~/notes/utils';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
+import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
 import NoteSignedOutWidget from './note_signed_out_widget.vue';
 import NoteForm from './note_form.vue';
 import DiscussionNotes from './discussion_notes.vue';
@@ -21,6 +22,7 @@ export default {
     NoteSignedOutWidget,
     NoteForm,
     DiscussionNotes,
+    ResolveWithIssueButton,
   },
   inject: {
     store: {
@@ -95,6 +97,12 @@ export default {
     canStartReview() {
       return Boolean(this.store.addDraftToDiscussion) && !this.hasDraftReply;
     },
+    resolveWithIssuePath() {
+      return !this.discussion.resolved ? this.discussion.resolve_with_issue_path : '';
+    },
+    showResolveDiscussionToggle() {
+      return Boolean(this.toggleResolveNote) && this.resolvable && this.canResolve;
+    },
   },
   methods: {
     async toggleResolve() {
@@ -139,7 +147,7 @@ export default {
 
       this.$emit('stopReplying');
     }),
-    async saveNote(noteText) {
+    async saveNote(noteText, shouldResolve) {
       if (!noteText) {
         this.cancelReplyForm();
         return;
@@ -153,13 +161,16 @@ export default {
 
       try {
         await this.store.replyToDiscussion(this.discussion, noteText);
+        if (shouldResolve) {
+          await this.toggleResolve();
+        }
         this.$emit('stopReplying');
       } catch (e) {
         const message = getNoteFormErrorMessages(e.response)[0];
         createAlert({ message, parent: this.$el });
       }
     },
-    async saveDraft(noteText) {
+    async saveDraft(noteText, shouldResolve) {
       if (!noteText) {
         this.cancelReplyForm();
         return;
@@ -172,7 +183,7 @@ export default {
       }
 
       try {
-        await this.store.addDraftToDiscussion(this.discussion, noteText);
+        await this.store.addDraftToDiscussion(this.discussion, noteText, shouldResolve);
         this.$emit('stopReplying');
       } catch (e) {
         const message = getNoteFormErrorMessages(e.response)[0];
@@ -228,6 +239,8 @@ export default {
             :save-draft="canStartReview ? saveDraft : null"
             :has-drafts="Boolean(store.hasDrafts)"
             :request-last-note-editing="() => requestLastNoteEditing(discussion)"
+            :show-resolve-discussion-toggle="showResolveDiscussionToggle"
+            :discussion-resolved="discussion.resolved"
             autofocus
             :autosave-key="autosaveKey"
             @cancel="cancelReplyForm"
@@ -237,13 +250,20 @@ export default {
               class="gl-min-w-0 gl-flex-[9999] gl-basis-15"
               @focus="showReplyForm"
             />
-            <resolve-discussion-button
-              v-if="toggleResolveNote && resolvable && canResolve"
-              class="!gl-m-0 !gl-w-auto !gl-min-w-0 gl-flex-1 gl-basis-auto"
-              :is-resolving="isResolving"
-              :button-title="resolveButtonTitle"
-              @on-click="toggleResolve"
-            />
+            <div class="btn-group !gl-w-auto !gl-min-w-0 gl-flex-1 gl-basis-auto">
+              <resolve-discussion-button
+                v-if="toggleResolveNote && resolvable && canResolve"
+                class="!gl-m-0"
+                :is-resolving="isResolving"
+                :button-title="resolveButtonTitle"
+                @on-click="toggleResolve"
+              />
+              <resolve-with-issue-button
+                v-if="discussion.resolvable && resolveWithIssuePath"
+                :url="resolveWithIssuePath"
+                class="!gl-w-auto"
+              />
+            </div>
           </div>
         </div>
       </template>

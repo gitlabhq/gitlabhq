@@ -8,6 +8,7 @@ module Types
       graphql_name 'RepositoryBlob'
 
       present_using BlobPresenter
+      authorize_granular_token permissions: :read_repository_blob, boundary: :project, boundary_type: :project
 
       field :id, GraphQL::Types::ID, null: false,
         description: 'ID of the blob.'

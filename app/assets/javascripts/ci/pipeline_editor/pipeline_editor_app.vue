@@ -7,11 +7,9 @@ import { mergeUrlParams, queryToObject, visitUrl } from '~/lib/utils/url_utility
 import { scrollTo } from '~/lib/utils/scroll_utils';
 import { __, s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { unwrapStagesFromMutation } from '~/ci/pipeline_details/utils/unwrapping_utils';
 import ConfirmUnsavedChangesDialog from '~/vue_shared/components/confirm_unsaved_changes_dialog.vue';
 import PipelineEditorEmptyState from './components/ui/pipeline_editor_empty_state.vue';
-import PipelineEditorNewEmptyState from './components/ui/pipeline_editor_new_empty_state.vue';
 import PipelineEditorMessages from './components/ui/pipeline_editor_messages.vue';
 import {
   COMMIT_SHA_POLL_INTERVAL,
@@ -43,11 +41,10 @@ export default {
     GlLoadingIcon,
     GlModal,
     PipelineEditorEmptyState,
-    PipelineEditorNewEmptyState,
     PipelineEditorHome,
     PipelineEditorMessages,
   },
-  mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
+  mixins: [InternalEvents.mixin()],
   inject: ['ciConfigPath', 'newMergeRequestPath', 'projectFullPath', 'usesExternalConfig'],
   data() {
     return {
@@ -217,9 +214,6 @@ export default {
     },
     showEmptyState() {
       return this.showStartScreen || this.usesExternalConfig;
-    },
-    updateVisualLanguageEnabled() {
-      return this.glFeatures?.updateVisualLanguage;
     },
   },
   i18n: {
@@ -413,12 +407,7 @@ export default {
   <div class="gl-relative gl-mt-4">
     <gl-loading-icon v-if="isBlobContentLoading" size="lg" class="gl-m-3" />
     <pipeline-editor-empty-state
-      v-else-if="showEmptyState && !updateVisualLanguageEnabled"
-      @createEmptyConfigFile="setNewEmptyCiConfigFile"
-      @refetchContent="refetchContent"
-    />
-    <pipeline-editor-new-empty-state
-      v-else-if="showEmptyState && updateVisualLanguageEnabled"
+      v-else-if="showEmptyState"
       @create-empty-config-file="setNewEmptyCiConfigFile"
       @refetchContent="refetchContent"
     />

@@ -29,9 +29,12 @@ module Gitlab
             end
             strong_memoize_attr :content
 
+            def include_type
+              :component
+            end
+
             def metadata
               super.merge(
-                type: :component,
                 location: masked_location,
                 blob: masked_blob,
                 raw: nil,
@@ -101,13 +104,13 @@ module Gitlab
 
             override :expand_context_attrs
             def expand_context_attrs
-              {
+              super.merge(
                 project: component_payload.fetch(:project),
                 sha: component_payload.fetch(:sha),
                 user: context.user,
                 variables: context.variables,
                 component_data: component_yaml_context
-              }
+              )
             end
 
             override :yaml_context_attributes

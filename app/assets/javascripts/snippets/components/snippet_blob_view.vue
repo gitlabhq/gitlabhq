@@ -24,6 +24,7 @@ export default {
           ids: [this.snippet.id],
           rich: this.activeViewerType === RICH_BLOB_VIEWER,
           paths: [this.blob.path],
+          ...(this.snippet.project?.id ? { projectId: this.snippet.project.id } : {}),
         };
       },
       update(data) {

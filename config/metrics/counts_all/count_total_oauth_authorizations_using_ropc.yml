@@ -6,9 +6,11 @@ product_categories:
   - system_access
 performance_indicator_type: []
 value_type: number
-status: active
+status: removed
 milestone: '18.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191301
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231638
+milestone_removed: '19.0'
 time_frame:
   - 28d
   - 7d

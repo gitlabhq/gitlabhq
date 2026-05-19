@@ -38,7 +38,7 @@ ___
 
 - [ ] Milestone: [apply delivery milestone to issue]
 - [ ] Labels: [apply applicable platform labels (platform: GitLab.com, platform: dedicated, platform: dedicated for gov, platform: self-managed)]
-- [ ] Assignee: [<]assigne to AI PM DRI]
+- [ ] Assignee: [<]assign to AI PM DRI]
 
 ---
 

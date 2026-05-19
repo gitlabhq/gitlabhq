@@ -33,9 +33,34 @@ function initTextEditorPreference() {
   handleCheckboxChange();
 }
 
+function initOrbitSubsettings() {
+  const mainCheckbox = document.querySelector('input[type="checkbox"][name="user[orbit_enabled]"]');
+  const subsettingsContainer = document.querySelector('[data-testid="orbit-subsettings"]');
+
+  if (!mainCheckbox || !subsettingsContainer) return;
+
+  const subCheckboxes = [
+    ...subsettingsContainer.querySelectorAll('input[type="checkbox"][name^="user[orbit_"]'),
+  ];
+
+  const handleMainChange = () => {
+    if (mainCheckbox.checked) {
+      subsettingsContainer.classList.remove('gl-hidden');
+      for (const checkbox of subCheckboxes) {
+        checkbox.checked = true;
+      }
+    } else {
+      subsettingsContainer.classList.add('gl-hidden');
+    }
+  };
+
+  mainCheckbox.addEventListener('change', handleMainChange);
+}
+
 export default () => {
   initListboxInputs();
   initTextEditorPreference();
+  initOrbitSubsettings();
 
   const el = document.querySelector('#js-profile-preferences-app');
   const formEl = document.querySelector('#profile-preferences-form');

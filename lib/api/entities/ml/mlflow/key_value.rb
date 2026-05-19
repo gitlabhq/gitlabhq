@@ -5,8 +5,8 @@ module API
     module Ml
       module Mlflow
         class KeyValue < Grape::Entity
-          expose :name, as: :key
-          expose :value
+          expose :name, as: :key, documentation: { type: 'String' }
+          expose :value, documentation: { type: 'String' }
         end
       end
     end

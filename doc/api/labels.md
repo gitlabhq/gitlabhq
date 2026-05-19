@@ -224,7 +224,7 @@ DELETE /projects/:id/labels/:label_id
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
 | `id`            | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `label_id` | integer or string | yes | The ID or title of a group's label. |
+| `label_id` | integer or string | yes | The ID or title of a project's label. |
 
 ```shell
 curl --request DELETE \
@@ -246,7 +246,7 @@ PUT /projects/:id/labels/:label_id
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`      | integer or string    | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `label_id` | integer or string | yes | The ID or title of a group's label. |
+| `label_id` | integer or string | yes | The ID or title of a project's label. |
 | `new_name`      | string  | yes if `color` is not provided    | The new name of the label        |
 | `color`         | string  | yes if `new_name` is not provided | The color of the label given in 6-digit hex notation with leading '#' sign (for example, #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description`   | string  | no                                | The new description of the label |
@@ -294,7 +294,7 @@ PUT /projects/:id/labels/:label_id/promote
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`      | integer or string    | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `label_id` | integer or string | yes | The ID or title of a group's label. |
+| `label_id` | integer or string | yes | The ID or title of a project's label. |
 
 ```shell
 curl --request PUT \

@@ -6,6 +6,9 @@ import {
   SORT_LABEL_UPDATED,
 } from '~/groups_projects/constants';
 
+export const DEFAULT_ORGANIZATION_ID = 1;
+export const DEFAULT_ORGANIZATION_NAME = __('GitLab');
+
 export const RESOURCE_TYPE_GROUPS = 'groups';
 export const RESOURCE_TYPE_PROJECTS = 'projects';
 

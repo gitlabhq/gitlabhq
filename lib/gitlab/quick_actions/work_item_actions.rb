@@ -12,7 +12,7 @@ module Gitlab
           format(_("Converts item to %{type}. Widgets not supported in new type are removed."), type: target_type)
         end
         types WorkItem
-        params 'Task | Objective | Key Result | Issue'
+        params { _('"Type name"') }
         condition { type_change_allowed? }
         command :type do |type_name|
           @execution_message[:type] = update_type(type_name, :type)
@@ -93,12 +93,32 @@ module Gitlab
       private
 
       def update_type(type_name, command)
-        new_type = ::WorkItems::TypesFramework::Provider.new(quick_action_target.namespace)
-          .find_by_name(type_name.titleize)
+        new_type = find_work_item_type_by_name(type_name)
         error_message = command == :type ? validate_type(new_type) : validate_promote_to(new_type)
         return error_message if error_message.present?
 
         apply_type_commands(new_type, command)
+      end
+
+      # Resolves a work item type by user-entered name, supporting both system-defined
+      # and custom types. The `params` hint advertises a quoted form (`"Type name"`) so
+      # multi-word custom type names are passed through as a single argument; we strip
+      # those surrounding quotes here and titleize the result so that inputs like
+      # `"bug report"` or `bug report` both normalize to `Bug Report` for matching.
+      #
+      # Uses `filtered_types` (not `all` / `find_by_name`) so license- and feature-flag-
+      # gated types are excluded from resolution. Without this filter, `/type Objective`
+      # could resolve on a project with the `okrs_mvc` flag disabled, `/type Epic` could
+      # resolve without an `:epics` license, etc., letting users bypass UI-level gating.
+      # Match exact name first against the titleized input, then fall back to a
+      # case-insensitive match to tolerate types whose stored name does not match
+      # `titleize` output (e.g. acronyms like `API`).
+      def find_work_item_type_by_name(type_name)
+        name_str = type_name.to_s.strip.delete_prefix('"').delete_suffix('"')
+        return if name_str.empty?
+
+        types = ::WorkItems::TypesFramework::Provider.new(quick_action_target.namespace).filtered_types
+        types.find { |type| type.name.casecmp(name_str) == 0 }
       end
 
       def validate_type(type)
@@ -197,7 +217,9 @@ module Gitlab
       # rubocop:disable Gitlab/ModuleWithInstanceVariables -- @updates is already defined and part of
       # Gitlab::QuickActions::Dsl implementation
       def apply_type_commands(new_type, command)
-        @updates[:issue_type] = new_type.base_type
+        # `work_item_type` is the canonical param now (supports custom types).
+        # `issue_type` is intentionally not set here; the update service prefers
+        # `work_item_type` and only falls back to `issue_type` for legacy callers.
         @updates[:work_item_type] = new_type
 
         success_msg[command]

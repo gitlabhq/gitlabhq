@@ -20,7 +20,6 @@ FactoryBot.define do
       create(:jenkins_integration, project: projects[1])
 
       # slack
-      create(:slack_slash_commands_integration, project: projects[0])
       create(:integrations_slack, project: projects[1])
       create(:integrations_slack, project: projects[2])
 

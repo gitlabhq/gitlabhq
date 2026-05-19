@@ -110,7 +110,7 @@ Example response:
 Deletes a specified group SSH certificate.
 
 ```plaintext
-DELETE /groups/:id/ssh_certificate/:id
+DELETE /groups/:id/ssh_certificates/:id
 ```
 
 Parameters:

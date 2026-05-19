@@ -492,6 +492,42 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
           expect { push_access_check }.not_to raise_error
         end
       end
+
+      context 'when the project is private and the token user is not a member' do
+        let_it_be(:project) { create(:project, :private, :repository) }
+        let(:permissions) { [] }
+
+        before do
+          project.members.find_by(user_id: user.id)&.destroy!
+        end
+
+        it 'raises NotFoundError on git pull' do
+          expect { pull_access_check }.to raise_error(described_class::NotFoundError,
+            described_class.error_message(:project_not_found))
+        end
+
+        it 'raises NotFoundError on git push' do
+          expect { push_access_check }.to raise_error(described_class::NotFoundError,
+            described_class.error_message(:project_not_found))
+        end
+      end
+
+      context 'when the project is internal and the token user is not a member' do
+        let_it_be(:project) { create(:project, :internal, :repository) }
+        let(:permissions) { [] }
+
+        before do
+          project.members.find_by(user_id: user.id)&.destroy!
+        end
+
+        it 'raises ForbiddenError on git pull' do
+          expect { pull_access_check }.to raise_error(described_class::ForbiddenError)
+        end
+
+        it 'raises ForbiddenError on git push' do
+          expect { push_access_check }.to raise_error(described_class::ForbiddenError)
+        end
+      end
     end
   end
 

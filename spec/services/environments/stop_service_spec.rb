@@ -8,17 +8,18 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
   let(:service) { described_class.new(project, user) }
 
   shared_examples_for 'stopping environment' do
-    let_it_be(:project) { create(:project, :private, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
     let_it_be(:developer) { create(:user, developer_of: project) }
     let_it_be(:reporter) { create(:user, reporter_of: project) }
 
     let(:user) { developer }
 
     context 'with a deployment' do
+      let_it_be_with_refind(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be_with_refind(:review_job) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline, project: project) }
+      let_it_be_with_refind(:stop_review_job) { create(:ci_build, :with_deployment, :stop_review_app, :manual, pipeline: pipeline, project: project, user: developer) }
+
       let!(:environment) { review_job.persisted_environment }
-      let!(:pipeline) { create(:ci_pipeline, project: project) }
-      let!(:review_job) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline, project: project) }
-      let!(:stop_review_job) { create(:ci_build, :with_deployment, :stop_review_app, :manual, pipeline: pipeline, project: project, user: user) }
 
       before do
         review_job.success!
@@ -105,7 +106,7 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
   end
 
   describe '#execute_for_branch' do
-    let_it_be(:project) { create(:project, :private, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
     let_it_be(:user) { create(:user) }
 
     context 'when environment with review app exists' do
@@ -203,7 +204,7 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
     subject { service.execute_for_merge_request_pipeline(merge_request) }
 
     let_it_be_with_reload(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
-    let_it_be(:project) { merge_request.project }
+    let_it_be(:project, freeze: false) { merge_request.project }
     let_it_be(:user) { create(:user) }
 
     let(:pipeline) do
@@ -232,9 +233,9 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
       end
 
       context 'and merge request has associated created_environments' do
-        let!(:environment1) { create(:environment, project: project, merge_request: merge_request) }
-        let!(:environment2) { create(:environment, project: project, merge_request: merge_request) }
-        let!(:environment3) { create(:environment, project: project) }
+        let_it_be_with_reload(:environment1) { create(:environment, project: project, merge_request: merge_request) }
+        let_it_be_with_reload(:environment2) { create(:environment, project: project, merge_request: merge_request) }
+        let_it_be_with_reload(:environment3) { create(:environment, project: project) }
         let!(:environment3_deployment) { create(:deployment, environment: environment3, sha: pipeline.sha) }
 
         before do

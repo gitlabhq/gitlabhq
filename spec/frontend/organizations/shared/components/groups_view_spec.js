@@ -54,7 +54,7 @@ describe('GroupsView', () => {
 
   const defaultProvide = {
     newGroupPath: '/groups/new',
-    groupsPath: '/-/organizations/default/groups',
+    groupsPath: '/o/default/-/groups',
     organizationGid: 'gid://gitlab/Organizations::Organization/1',
   };
 

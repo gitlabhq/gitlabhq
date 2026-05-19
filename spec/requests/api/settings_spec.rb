@@ -231,6 +231,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             diff_max_patch_bytes: 300_000,
             diff_max_files: 2000,
             diff_max_lines: 50000,
+            diff_max_versions: 500,
+            diff_max_commits: 500_000,
             default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE,
             default_branch_protection_defaults: ::Gitlab::Access::BranchProtection.protected_after_initial_push.stringify_keys,
             local_markdown_version: 3,
@@ -332,6 +334,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['diff_max_patch_bytes']).to eq(300_000)
         expect(json_response['diff_max_files']).to eq(2000)
         expect(json_response['diff_max_lines']).to eq(50000)
+        expect(json_response['diff_max_versions']).to eq(500)
+        expect(json_response['diff_max_commits']).to eq(500_000)
         expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
         expect(json_response['default_branch_protection_defaults']).to eq(::Gitlab::Access::BranchProtection.protected_after_initial_push.stringify_keys)
         expect(json_response['local_markdown_version']).to eq(3)
@@ -395,6 +399,18 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['authn_data_retention_cleanup_enabled']).to eq(true)
         expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to eq(true)
       end
+    end
+
+    it 'does not allow zero diff_max_versions' do
+      put api("/application/settings", admin), params: { diff_max_versions: 0 }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    it 'does not allow zero diff_max_commits' do
+      put api("/application/settings", admin), params: { diff_max_commits: 0 }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it "updates valid_runner_registrars as the sole parameter" do

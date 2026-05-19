@@ -45,6 +45,8 @@ module Gitlab
           find_user_for_graphql_api_request
         when :api, :git, :rss, :ics, :blob, :download, :archive, nil
           find_user_from_any_authentication_method(request_format)
+        when :editor_extension
+          find_user_from_access_token
         else
           raise ArgumentError, "Unknown request format"
         end

@@ -274,7 +274,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     it 'populates scheduling_type of processables' do
       expect do
         pipeline.processables.populate_scheduling_type!
-      end.to change(pipeline.processables.where(scheduling_type: nil), :count).from(2).to(0)
+      end.to change { pipeline.processables.where(scheduling_type: nil).count }.from(2).to(0)
 
       expect(build_without_needs.reload.scheduling_type).to eq('stage')
       expect(build_with_needs.reload.scheduling_type).to eq('dag')

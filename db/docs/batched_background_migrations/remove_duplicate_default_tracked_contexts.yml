@@ -3,6 +3,6 @@ migration_job_name: RemoveDuplicateDefaultTrackedContexts
 description: Deletes any duplicate default tracked contexts for projects
 feature_category: vulnerability_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221673
-milestone: '18.11'
-queued_migration_version: 20260327142625
+milestone: '19.0'
+queued_migration_version: 20260417104556
 finalized_by: # version of the migration that finalized this BBM

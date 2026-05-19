@@ -37,7 +37,7 @@ If you have questions about the patch release process, please:
 - Once the backport has been merged, the commit changes will be automatically deployed to a release environment that 
 can be used for manual validation. See [after merging runbook] for details.
 
-[severity label]: https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#severity
+[severity label]: https://handbook.gitlab.com/handbook/product-development/how-we-work/issue-triage/#severity
 [patch release runbook for engineers and maintainers]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md
 [`#releases`]: https://gitlab.slack.com/archives/C0XM5UU6B
 [bug subtype]: https://handbook.gitlab.com/handbook/product/groups/product-analysis/engineering/metrics/#work-type-classification

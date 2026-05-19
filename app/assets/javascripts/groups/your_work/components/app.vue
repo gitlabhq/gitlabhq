@@ -1,5 +1,9 @@
 <script>
+import { GlButton } from '@gitlab/ui';
+import { exploreGroupsPath } from '~/lib/utils/path_helpers/explore';
+import { newGroupPath } from '~/lib/utils/path_helpers/routes';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -40,30 +44,58 @@ export default {
     clickItemAfterFilter: 'click_group_after_filter_on_your_work_groups',
   },
   name: 'YourWorkGroupsApp',
-  components: { TabsWithList },
+  components: { GlButton, IndexLayout, TabsWithList },
   props: {
     initialSort: {
       type: String,
       required: true,
     },
+    canCreateGroup: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  methods: {
+    newGroupPath,
+    exploreGroupsPath,
   },
 };
 </script>
 
 <template>
-  <tabs-with-list
-    :tabs="$options.GROUP_DASHBOARD_TABS"
-    :filtered-search-term-key="$options.FILTERED_SEARCH_TERM_KEY"
-    :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"
-    :filtered-search-recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY_GROUPS"
-    :filtered-search-input-placeholder="__('Search')"
-    :timestamp-type-map="$options.timestampTypeMap"
-    :first-tab-route-names="$options.FIRST_TAB_ROUTE_NAMES"
-    :initial-sort="initialSort"
-    :tab-counts-query="$options.tabCountsQuery"
-    :tab-counts-query-error-message="__('An error occurred loading the group counts.')"
-    :should-update-active-tab-count-from-tab-query="false"
-    :event-tracking="$options.eventTracking"
-    sort-storage-key="groups"
-  />
+  <index-layout :heading="__('Groups')">
+    <template #actions>
+      <gl-button
+        :href="exploreGroupsPath()"
+        variant="link"
+        class="gl-m-2"
+        data-testid="explore-groups-button"
+        data-event-tracking="click_explore_groups_on_your_work_groups"
+        >{{ __('Explore groups') }}</gl-button
+      >
+      <gl-button
+        v-if="canCreateGroup"
+        :href="newGroupPath()"
+        variant="confirm"
+        data-testid="new-group-button"
+        data-event-tracking="click_new_group_on_your_work_groups"
+        >{{ __('New group') }}</gl-button
+      >
+    </template>
+    <tabs-with-list
+      :tabs="$options.GROUP_DASHBOARD_TABS"
+      :filtered-search-term-key="$options.FILTERED_SEARCH_TERM_KEY"
+      :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"
+      :filtered-search-recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY_GROUPS"
+      :filtered-search-input-placeholder="__('Search')"
+      :timestamp-type-map="$options.timestampTypeMap"
+      :first-tab-route-names="$options.FIRST_TAB_ROUTE_NAMES"
+      :initial-sort="initialSort"
+      :tab-counts-query="$options.tabCountsQuery"
+      :tab-counts-query-error-message="__('An error occurred loading the group counts.')"
+      :should-update-active-tab-count-from-tab-query="false"
+      :event-tracking="$options.eventTracking"
+      sort-storage-key="groups"
+    />
+  </index-layout>
 </template>

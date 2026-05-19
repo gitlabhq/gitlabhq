@@ -6,14 +6,14 @@ description: Writing styles, markup, formatting, and other standards for GitLab 
 title: Documentation AGENTS.md
 ---
 
-The [`AGENTS.md`](../../AGENTS.md) file provides documentation instructions for GitLab Duo.
+The [`AGENTS.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/AGENTS.md) file provides documentation instructions for GitLab Duo.
 When an agent writes documentation in the `gitlab/doc` directory, it
-reads `AGENTS.md` automatically and applies the instructions to its output.
+reads the `AGENTS.md` automatically and applies the instructions to its output.
 
 Before you submit AI-generated content for review, ensure the following:
 
 - Content is accurate.
-- Common problems wth AI-generated content, like hallucinations and repetitive content, are addressed.
+- Common problems with AI-generated content, like hallucinations and repetitive content, are addressed.
 
 ## Use AGENTS.md
 
@@ -36,7 +36,7 @@ applied when contributors work on unrelated parts of the codebase.
 Before you request a review, check for the following known issues
 with AI-generated content:
 
-- Repetition: Content that restates what has already be said on the page
+- Repetition: Content that restates what has already been said on the page
   or in a linked topic.
 - Vague or unverifiable claims: Descriptions of how a feature works that
   aren't grounded in the codebase or existing documentation.

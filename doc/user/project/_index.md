@@ -97,8 +97,8 @@ To create a project from the HIPAA Audit Protocol template:
 {{< history >}}
 
 - Group selector for browsing group templates outside a group context [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590012)
-  in GitLab 18.11 [with a feature flag](../../administration/feature_flags/_index.md) named `constrain_group_project_templates`.
-  Disabled by default.
+  in GitLab 18.11 [with a feature flag](../../administration/feature_flags/_index.md) named `constrain_group_project_templates`. Disabled by default.
+- Group selector for browsing group templates outside a group context [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/586332) in GitLab 19.0. Feature flag `constrain_group_project_templates` removed.
 
 {{< /history >}}
 

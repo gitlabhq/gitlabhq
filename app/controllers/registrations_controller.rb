@@ -153,6 +153,10 @@ class RegistrationsController < Devise::RegistrationsController
 
   private
 
+  def registration_layout
+    'devise'
+  end
+
   def current_monotonic_time
     ::Gitlab::Metrics::System.monotonic_time
   end
@@ -248,6 +252,7 @@ class RegistrationsController < Devise::RegistrationsController
     flash.delete :recaptcha_error
     add_gon_variables
     set_minimum_password_length
+    @captcha_failed = true
     render action: 'new'
   end
 

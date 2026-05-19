@@ -5,14 +5,14 @@ module API
     helpers ::API::Helpers::GraphqlHelpers
     include APIGuard
 
-    allow_access_with_scope [:read_user, :ai_features], if: ->(request) { request.get? || request.head? }
+    allow_access_with_scope [:read_user, :ai_features, :ai_workflows], if: ->(request) { request.get? || request.head? }
 
     before { authenticate! }
 
     METADATA_TAGS = %w[metadata].freeze
     feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
-    METADATA_QUERY = <<~EOF
+    METADATA_QUERY = <<~GRAPHQL
       {
         metadata {
           version
@@ -26,7 +26,7 @@ module API
           enterprise
         }
       }
-    EOF
+    GRAPHQL
 
     helpers do
       def run_metadata_query

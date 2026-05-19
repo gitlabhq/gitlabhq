@@ -106,6 +106,20 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     end
   end
 
+  describe 'subgroup/project-provisioned service account restrictions' do
+    let_it_be(:service_account) { create(:user, :service_account, :can_create_group) }
+
+    subject { described_class.new(service_account, nil) }
+
+    it_behaves_like 'subgroup/project-provisioned service account restriction', :create_group
+
+    context 'when user is nil' do
+      subject { described_class.new(nil, nil) }
+
+      it { is_expected.to be_disallowed(:create_group) }
+    end
+  end
+
   describe 'custom attributes' do
     context 'regular user' do
       it { is_expected.to be_disallowed(:read_custom_attribute) }

@@ -36,7 +36,7 @@ gitGraph
 ## Configure a project's merge method
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. Select your desired **Merge method** from these options:
    - Merge commit
    - Merge commit with semi-linear history
@@ -83,7 +83,7 @@ and selecting `Merge commit` as the **Merge method** in the GitLab UI:
   ```mermaid
   %%{init: { 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
   gitGraph
-     accTitle: Diagram of of a squash merge
+     accTitle: Diagram of a squash merge
      accDescr: A Git graph showing repository and branch structure after a squash commit is added to the main branch.
      commit id:"A"
      branch feature
@@ -117,6 +117,10 @@ The squash merge graph is also equivalent to these commands:
   git checkout main
   git merge --no-ff $SOURCE_SHA
   ```
+
+If you continue working on a long-running source branch after a squash merge, subsequent
+merge requests may show previously merged commits and a warning that the source branch is behind the target branch.
+For more information, see [long-running branch behavior](../squash_and_merge.md#long-running-branch-behavior).
 
 ## Merge commit with semi-linear history
 
@@ -270,12 +274,10 @@ considered equivalent to rebasing.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183928) in GitLab 18.0 [with a feature flag](../../../../administration/feature_flags/_index.md) named `rebase_on_merge_automatic`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/524048) in GitLab 18.11.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/16803) in GitLab 19.0. Feature flag `rebase_on_merge_automatic` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 When you use the **Merge commit with semi-linear history** or **Fast-forward merge** method,
 you can turn on automatic rebase before merge.
@@ -308,7 +310,7 @@ Prerequisites:
 To turn on automatic rebase:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **Merge method** section, select **Enable automatic rebase prior to merge**.
 1. Select **Save changes**.
 

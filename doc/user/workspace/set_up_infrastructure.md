@@ -153,7 +153,7 @@ To create a token for the agent:
 
 1. Go to your group.
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Kubernetes clusters**.
+1. In the left sidebar, select **Operate** > **Kubernetes clusters**.
 1. Select **Connect a cluster**.
 1. Enter a name for your agent and save for later use. For example, `gitlab-workspaces-agentk-eks`.
 1. Select **Create and register**.
@@ -191,7 +191,7 @@ pipeline can run.
 To configure CI/CD variables:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. In the **Project variables** section, add the following required variables:
 
@@ -303,7 +303,7 @@ Next, you'll authorize the GitLab agent for Kubernetes to connect to your GitLab
 To authorize the agent:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Workspaces**.
+1. In the left sidebar, select **Settings** > **Workspaces**.
 1. In the **Group agents** section, select the **All agents** tab.
 1. From the list of available agents, find the agent with status **Blocked**, and select **Allow**.
 1. On the confirmation dialog, select **Allow agent**.

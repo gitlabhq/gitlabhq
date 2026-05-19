@@ -226,7 +226,7 @@ To create a built-in analytics dashboard:
            height: 1
      ```
 
-   The `gridAttributes` position the panel within a 12x12 dashboard grid, powered by [gridstack](https://github.com/gridstack/gridstack.js/tree/master/doc#item-options).
+   The `gridAttributes` position the panel within a 12x12 dashboard grid.
 
    `tooltip` adds a help icon next to the panel title that displays contextual help on hover, using `description` text and an optional `descriptionLink` to embed a link between the `%{linkStart}` and `%{linkEnd}` placeholders. You can also define a `tooltip` at the visualization level in `visualization.options` or dynamically using the [`setVisualizationOverrides`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard_panel.vue#L261) callback function from a data source. Note that panel-level tooltips take precedence over visualization-level tooltips.
 1. Register the dashboard by adding it to `builtin_dashboards` in [ee/app/models/analytics/dashboard.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/dashboard.rb).

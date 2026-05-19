@@ -29,6 +29,7 @@ class Todo < ApplicationRecord
   DUO_PRO_ACCESS_GRANTED = 16 # This is an EE-only feature
   DUO_ENTERPRISE_ACCESS_GRANTED = 17 # This is an EE-only feature
   DUO_CORE_ACCESS_GRANTED = 18 # This is an EE-only feature
+  DUO_WORKFLOW_INPUT_REQUIRED = 19 # This is an EE-only feature
 
   # EE Action names should be defined in EE_ACTION_NAMES in ee/app/models/ee/todo.rb
   ACTION_NAMES = {

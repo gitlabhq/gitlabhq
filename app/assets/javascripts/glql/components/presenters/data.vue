@@ -1,5 +1,6 @@
 <script>
 import { DISPLAY_TYPES } from '../../constants';
+import ColumnChartPresenter from './column_chart.vue';
 import ListPresenter from './list.vue';
 import TablePresenter from './table.vue';
 
@@ -8,6 +9,7 @@ export default {
   components: {
     TablePresenter,
     ListPresenter,
+    ColumnChartPresenter,
   },
   props: {
     displayType: {
@@ -29,6 +31,22 @@ export default {
       type: [Boolean, Number],
       default: false,
     },
+    displayConfig: {
+      required: false,
+      type: Object,
+      default: () => ({}),
+    },
+  },
+  emits: { error: null },
+  computed: {
+    isList() {
+      return (
+        this.displayType === DISPLAY_TYPES.LIST || this.displayType === DISPLAY_TYPES.ORDERED_LIST
+      );
+    },
+    listType() {
+      return this.displayType === DISPLAY_TYPES.LIST ? 'ul' : 'ol';
+    },
   },
   DISPLAY_TYPES,
 };
@@ -41,13 +59,18 @@ export default {
     :loading="loading"
   />
   <list-presenter
-    v-else-if="
-      displayType === $options.DISPLAY_TYPES.LIST ||
-      displayType === $options.DISPLAY_TYPES.ORDERED_LIST
-    "
+    v-else-if="isList"
     :data="data"
     :fields="fields"
     :loading="loading"
-    :list-type="displayType === $options.DISPLAY_TYPES.LIST ? 'ul' : 'ol'"
+    :list-type="listType"
+  />
+  <column-chart-presenter
+    v-else-if="displayType === $options.DISPLAY_TYPES.COLUMN_CHART"
+    :data="data"
+    :fields="fields"
+    :loading="loading"
+    :display-config="displayConfig"
+    @error="$emit('error', $event)"
   />
 </template>

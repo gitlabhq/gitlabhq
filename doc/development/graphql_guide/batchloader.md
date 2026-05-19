@@ -190,3 +190,44 @@ it 'executes only 1 SQL query' do
   expect(query_count).not_to exceed_query_limit(1)
 end
 ```
+
+## Avoid `Arel::Nodes::LeadingJoin` errors when building queries
+
+When you build queries through an association proxy combined with `includes()`,
+Rails injects `Arel::Nodes::LeadingJoin` nodes into `joins_values`.
+These nodes contaminate the relation and cause an `ActiveRecord::ConfigurationError`
+when ActiveRecord's preloader later tries to walk the join tree.
+This issue occurs in Rails 7.2.3, and might also affect earlier versions.
+
+### Problematic pattern
+
+Building a query through an association proxy before applying `includes()`:
+
+```ruby
+children = work_item.work_item_children.where.not(work_item_type_id: epic_type_id)
+keyset_order.apply_cursor_conditions(children.includes(:parent_link)).reorder(keyset_order)
+```
+
+`work_item.work_item_children` is a `has_many :through` association proxy.
+When ActiveRecord builds its scope, it injects `Arel::Nodes::LeadingJoin` nodes into `joins_values`.
+Those nodes then contaminate the relation returned by `includes()`.
+When the preloader later processes a `has_many :through` association on that relation,
+it raises `ActiveRecord::ConfigurationError: Arel::Nodes::LeadingJoin is not supported for visitor_for`.
+
+### Solution
+
+Build the query at the class level instead of through an association proxy:
+
+```ruby
+epic_type_id = ::WorkItems::TypesFramework::Provider.new(work_item.namespace).find_by_base_type(:epic).id
+keyset_order = ::WorkItem.work_item_children_keyset_order_config
+
+keyset_order.apply_cursor_conditions(
+  WorkItem.joins(:parent_link).where.not(work_item_type_id: epic_type_id)
+).reorder(keyset_order)
+```
+
+Using `joins(:parent_link)` on the class (not on an association proxy) avoids introducing
+`Arel::Nodes::LeadingJoin` nodes. The query remains compatible with ActiveRecord's preloader.
+
+For more information, see [merge request 231854](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231854).

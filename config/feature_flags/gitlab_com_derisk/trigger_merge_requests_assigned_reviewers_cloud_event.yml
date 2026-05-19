@@ -1,0 +1,10 @@
+---
+name: trigger_merge_requests_assigned_reviewers_cloud_event
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/593564
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233443
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595528
+milestone: '19.0'
+group: group::ai coding
+type: gitlab_com_derisk
+default_enabled: false

@@ -56,9 +56,9 @@ FactoryBot.define do
     end
 
     trait :archived do
-      after(:create) do |namespace|
-        namespace.namespace_settings.update!(archived: true)
-      end
+      namespace_settings { association(:namespace_settings, archived: true) }
+
+      after(:create, &:archive!)
     end
   end
 end

@@ -42,7 +42,7 @@ The ability to provide other licenses is tracked in [epic 10861](https://gitlab.
 To enable License scanning of CycloneDX files:
 
 - Using the dependency scanning template
-  - Turn on [dependency scanning](../../application_security/dependency_scanning/_index.md#turn-on-dependency-scanning)
+  - Turn on [dependency scanning](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md#turn-on-dependency-scanning)
       and ensure that its prerequisites are met.
   - On GitLab Self-Managed, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the **Admin** area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
 - Or use the [CI/CD component](../../../ci/components/_index.md) for applicable package registries.
@@ -195,7 +195,7 @@ License scanning is supported for the following languages and package managers:
 1. Go standard libraries such as `stdlib` are not supported and will appear with an `unknown` license. Support for these is tracked in [issue 480305](https://gitlab.com/gitlab-org/gitlab/-/issues/480305).
 
 The supported files and versions are the ones supported by
-[dependency scanning](../../application_security/dependency_scanning/_index.md#supported-languages-and-package-managers).
+[dependency scanning](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md#supported-languages-and-files).
 
 ## Data sources
 
@@ -268,7 +268,7 @@ Choose which license information source to use when both are available.
 To configure the preferred source of license information for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. In the **License information source** section, select either:
    - **SBOM** (default) - Uses license information from CycloneDX reports.
      - The scanner reads license information from reports located in the project at `/gl-sbom-*.cdx.json`.
@@ -339,7 +339,7 @@ To remove the unneeded data:
 ### Vulnerability scanning produces no results for a CycloneDX SBOM
 
 If your CycloneDX file is scanned for licenses but vulnerability scanning produces no results, see
-[Vulnerability scanning produces no results for custom or merged CycloneDX SBOMs](../../application_security/dependency_scanning/troubleshooting_dependency_scanning.md#vulnerability-scanning-produces-no-results-for-custom-or-merged-cyclonedx-sboms).
+[Vulnerability scanning produces no results for custom or merged CycloneDX SBOMs](../../application_security/dependency_scanning/legacy_dependency_scanning/troubleshooting_dependency_scanning.md#vulnerability-scanning-produces-no-results-for-custom-or-merged-cyclonedx-sboms).
 
 ### Dependency licenses are unknown
 

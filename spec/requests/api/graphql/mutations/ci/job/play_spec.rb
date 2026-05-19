@@ -56,6 +56,12 @@ RSpec.describe 'JobPlay', feature_category: :continuous_integration do
   context 'with a build' do
     let_it_be(:job) { create(:ci_build, :playable, pipeline: pipeline, name: 'build') }
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :play_job do
+      let(:boundary_object) { project }
+      let(:mutation) { graphql_mutation(:job_play, { id: job.to_global_id.to_s }, 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     include_examples 'playing a job'
 
     context 'when given variables' do

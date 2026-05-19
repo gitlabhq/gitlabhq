@@ -44,7 +44,7 @@
         .block.milestone{ data: { testid: 'sidebar-milestones' } }
           .js-sidebar-milestone-widget-root{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
 
-      - if is_merge_request && Feature.enabled?(:mr_related_work_items, @project, type: :wip)
+      - if is_merge_request
         .block.related-work-items{ data: { testid: 'related-work-items-container' } }
           .js-sidebar-related-work-items-root
 

@@ -42,11 +42,11 @@ module GitLab
 
       def display_success_message
         super
-        $stdout.puts "\e[32mcreated\e[0m #{dictionary_file_path}"
+        puts "\e[32mcreated\e[0m #{dictionary_file_path}"
       end
 
       def display_additional_info
-        $stdout.puts "\n=> Please consult the documentation for Advanced Search Migrations: #{documentation_reference}"
+        puts "\n=> Please consult the documentation for Advanced Search Migrations: #{documentation_reference}"
       end
 
       def file_path

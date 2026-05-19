@@ -27,7 +27,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::Identity::Passthrough, :request_store,
           expect { |b| middleware.call(worker, job, queue, nil, &b) }.to yield_control
 
           expect(::Gitlab::Auth::Identity::COMPOSITE_IDENTITY_SIDEKIQ_ARG).to eq 'sqci'
-          expect(job['sqci']).to eq([primary_user.id, scoped_user.id])
+          expect(job['sqci']).to eq([primary_user.id, scoped_user.id, :authentication])
         end
 
         context 'when worker has skip_composite_identity_passthrough!' do
@@ -80,7 +80,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::Identity::Passthrough, :request_store,
           it 'adds composite identity to job payload' do
             expect { |b| middleware.call('NonExistentWorkerClass', job, queue, nil, &b) }.to yield_control
 
-            expect(job['sqci']).to eq([primary_user.id, scoped_user.id])
+            expect(job['sqci']).to eq([primary_user.id, scoped_user.id, :authentication])
           end
         end
       end

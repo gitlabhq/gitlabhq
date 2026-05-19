@@ -1,0 +1,3 @@
+---
+name: delete_secrets_manager_enrollment
+description: Grants the ability to unenroll a namespace from the Secrets Manager.

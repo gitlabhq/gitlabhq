@@ -22,9 +22,6 @@ Issues:
 - Support custom workflows through templates, labels, epics, and boards.
 - Integrate with external tools like Zoom, Jira, and email services.
 
-For more information about issues, see the
-[always start a discussion with an issue](https://about.gitlab.com/blog/start-with-an-issue/) blog post.
-
 Issues are always associated with a specific project. If you have multiple
 projects in a group, you can view all of the projects' issues at once.
 

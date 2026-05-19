@@ -10,7 +10,6 @@ module API
 
     before do
       authenticate!
-      forbidden! unless can?(current_user, :owner_access, user_group)
     end
 
     feature_category :importers
@@ -27,6 +26,8 @@ module API
       end
       route_setting :authorization, permissions: :read_placeholder_reassignment, boundary_type: :group
       get ':id/placeholder_reassignments' do
+        authorize! :read_placeholder_reassignment, user_group
+
         csv_response = Import::SourceUsers::GenerateCsvService.new(user_group, current_user: current_user).execute
 
         if csv_response.success?
@@ -49,6 +50,8 @@ module API
       end
       route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
       post ':id/placeholder_reassignments/authorize' do
+        authorize! :create_placeholder_reassignment, user_group
+
         require_gitlab_workhorse!
 
         status 200
@@ -72,6 +75,8 @@ module API
       end
       route_setting :authorization, permissions: :create_placeholder_reassignment, boundary_type: :group
       post ':id/placeholder_reassignments' do
+        authorize! :create_placeholder_reassignment, user_group
+
         require_gitlab_workhorse!
 
         unless csv_upload_params[:file].original_filename.ends_with?('.csv')

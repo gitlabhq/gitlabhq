@@ -1,0 +1,5 @@
+---
+event: ProjectAuthorizations::AuthorizationsAddedEvent
+description: Published after project authorization rows are inserted for one or more
+  users. Multiple changes may be batched into a single event group.
+feature_category: permissions

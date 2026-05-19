@@ -2,43 +2,43 @@
 
 require 'spec_helper'
 
+class MarginaliaTestController < ApplicationController
+  skip_before_action :authenticate_user!, :check_two_factor_requirement
+
+  def first_user
+    User.first
+    render body: nil
+  end
+
+  def first_ci_pipeline
+    Ci::Pipeline.first
+    render body: nil
+  end
+
+  private
+
+  [:auth_user, :current_user, :signed_in?].each do |method|
+    define_method(method) {}
+  end
+end
+
+class MarginaliaTestJob
+  include Sidekiq::Worker
+
+  def perform
+    Gitlab::ApplicationContext.with_context(caller_id: self.class.name) do
+      User.first
+    end
+  end
+end
+
+class MarginaliaTestMailer < ApplicationMailer
+  def first_user
+    User.first
+  end
+end
+
 RSpec.describe 'Marginalia spec' do
-  class MarginaliaTestController < ApplicationController
-    skip_before_action :authenticate_user!, :check_two_factor_requirement
-
-    def first_user
-      User.first
-      render body: nil
-    end
-
-    def first_ci_pipeline
-      Ci::Pipeline.first
-      render body: nil
-    end
-
-    private
-
-    [:auth_user, :current_user, :signed_in?].each do |method|
-      define_method(method) {}
-    end
-  end
-
-  class MarginaliaTestJob
-    include Sidekiq::Worker
-
-    def perform
-      Gitlab::ApplicationContext.with_context(caller_id: self.class.name) do
-        User.first
-      end
-    end
-  end
-
-  class MarginaliaTestMailer < ApplicationMailer
-    def first_user
-      User.first
-    end
-  end
-
   describe 'For rails web requests' do
     let(:correlation_id) { SecureRandom.uuid }
     let(:recorded) { ActiveRecord::QueryRecorder.new { make_request(correlation_id, :first_user) } }

@@ -10,7 +10,6 @@ module Gitlab
           @hosts = hosts.shuffle
           @index = 0
           @mutex = Mutex.new
-          @hosts_gauge = Gitlab::Metrics.gauge(:db_load_balancing_hosts, 'Current number of load balancing hosts')
 
           set_metrics!
         end
@@ -80,7 +79,7 @@ module Gitlab
         end
 
         def set_metrics!
-          @hosts_gauge.set({}, @hosts.length)
+          ::Gitlab::Database::LoadBalancing::Callbacks.metrics_host_gauge({}, @hosts.length)
         end
       end
     end

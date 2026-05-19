@@ -1,10 +1,30 @@
-query workItemErrorTracking($fullPath: ID!, $iid: String!) {
+query workItemErrorTracking($fullPath: ID!, $iid: String!, $useWorkItemFeatures: Boolean = false) {
   namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id
-      widgets {
+      widgets @skip(if: $useWorkItemFeatures) {
         ... on WorkItemWidgetErrorTracking {
+          type
+          identifier
+          stackTrace {
+            nodes {
+              absolutePath
+              columnNumber
+              context {
+                line
+                lineNumber
+              }
+              filename
+              function
+              lineNumber
+            }
+          }
+          status
+        }
+      }
+      features @include(if: $useWorkItemFeatures) {
+        errorTracking {
           type
           identifier
           stackTrace {

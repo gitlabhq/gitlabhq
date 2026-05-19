@@ -126,7 +126,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
       it 'defers the job' do
         expect(TestConcurrencyLimitWorker).not_to receive(:work)
         expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance).to receive(:deferred_log).and_call_original
-        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:add_to_queue!)
+        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .to receive(:add_to_queue!)
+          .with(hash_including('deferred' => true, 'deferred_by' => :concurrency_limit), anything)
 
         TestConcurrencyLimitWorker.perform_async('foo')
       end
@@ -210,7 +212,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
         it 'defers the job' do
           expect(TestConcurrencyLimitWorker).not_to receive(:work)
           expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance).to receive(:deferred_log).and_call_original
-          expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:add_to_queue!)
+          expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+            .to receive(:add_to_queue!)
+            .with(hash_including('deferred' => true, 'deferred_by' => :concurrency_limit), anything)
 
           TestConcurrencyLimitWorker.perform_async('foo')
         end

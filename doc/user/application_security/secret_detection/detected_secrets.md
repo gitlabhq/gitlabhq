@@ -74,8 +74,7 @@ If you want to add a new secret detection rule, you can [propose new detection r
 | Brevo API token                                   | Sendinblue API token                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
 | Brevo SMTP token                                  | Sendinblue SMTP token                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
 | Canada Digital Service Notify API Key             | CDSCanadaNotifyAPIKey                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
-| CircleCI access token                             | CircleCI access tokens                        | {{< yes >}} | {{< no >}} | {{< no >}} |
-| CircleCI Personal Access Token                    | CircleCIPersonalAccessToken                   | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| CircleCI access token                             | CircleCI access tokens                        | {{< yes >}} | {{< no >}} | {{< yes >}} |
 | Clojars deploy token                              | Clojars API token                             | {{< yes >}} | {{< no >}} | {{< no >}} |
 | Contentful delivery API token                     | Contentful delivery API token                 | {{< yes >}} | {{< no >}} | {{< no >}} |
 | Contentful personal access token                  | ContentfulPersonalAccessToken                 | {{< yes >}} | {{< no >}} | {{< yes >}} |

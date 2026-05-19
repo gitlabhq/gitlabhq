@@ -9,8 +9,6 @@ module Emails
 
       @token = token
       @expires_in_minutes = Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES
-      @password_link = edit_user_settings_password_url
-      @two_fa_link = help_page_url('user/profile/account/two_factor_authentication.md')
 
       headers = {
         to: email,

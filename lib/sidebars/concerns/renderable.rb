@@ -4,7 +4,7 @@ module Sidebars
   module Concerns
     module Renderable
       # This method will control whether the menu or menu_item
-      # should be rendered. It will be overriden by specific
+      # should be rendered. It will be overridden by specific
       # classes.
       def render?
         true

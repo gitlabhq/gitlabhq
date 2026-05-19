@@ -86,6 +86,20 @@ module Gitlab
         true
       end
 
+      def preallocate_iids!
+        max_iids = {}
+
+        # On retries, skip API calls for resources whose IIDs have
+        # already been allocated to avoid unnecessary rate-limit consumption.
+        collect_issue_iids(max_iids)
+        collect_merge_request_iids(max_iids)
+        collect_milestone_iids(max_iids)
+
+        return if max_iids.empty?
+
+        Gitlab::Import::IidPreallocator.new(project, max_iids).execute
+      end
+
       private
 
       def credentials
@@ -101,6 +115,58 @@ module Gitlab
           message: 'The remote data could not be fully imported.',
           errors: errors
         }.to_json)
+      end
+
+      def collect_issue_iids(max_iids)
+        return if iid_allocated?(:issues)
+
+        max_issue_number = fetch_max_issue_number
+        max_iids[:issues] = max_issue_number if max_issue_number
+      end
+
+      def collect_merge_request_iids(max_iids)
+        return if iid_allocated?(:merge_requests)
+
+        max_pr_number = fetch_max_pull_request_number
+        max_iids[:merge_requests] = max_pr_number if max_pr_number
+      end
+
+      def collect_milestone_iids(max_iids)
+        return if iid_allocated?(:milestones)
+
+        max_milestone_id = fetch_max_milestone_id
+        max_iids[:project_milestones] = max_milestone_id if max_milestone_id
+      end
+
+      def iid_allocated?(usage)
+        # Issue IIDs are scoped to the project namespace, not the project itself.
+        # Other resources (merge requests, milestones) are scoped to the project.
+        scope = usage == :issues ? { namespace: project.project_namespace } : { project: project }
+
+        InternalId.exists?(**scope, usage: usage) # rubocop: disable CodeReuse/ActiveRecord -- lightweight existence check
+      end
+
+      def fetch_max_issue_number
+        # The issues endpoint returns both issues and PRs (shared number space).
+        # Sorting by created descending with per_page 1 gives us the highest number.
+        issues = client.issues(repo, state: 'all', sort: 'created', direction: 'desc', per_page: 1)
+        issues.first&.to_h&.dig(:number)
+      end
+
+      def fetch_max_pull_request_number
+        prs = client.pull_requests(repo, state: 'all', sort: 'created', direction: 'desc', per_page: 1)
+        prs.first&.to_h&.dig(:number)
+      end
+
+      # Gitea uses the milestone :id field as the IID (see MilestoneFormatter#number).
+      # The Gitea milestones API does not support sorting by ID, and sorting by
+      # created_at is unreliable (some instances return unsorted results),
+      # so we fetch all milestones and compute the max client-side.
+      def fetch_max_milestone_id
+        milestones = client.milestones(repo, state: 'all', per_page: 100)
+        return if milestones.blank?
+
+        milestones.filter_map { |milestone| milestone.to_h[:id] }.max
       end
 
       def import_labels
@@ -167,7 +233,7 @@ module Gitlab
 
               merge_request = gh_pull_request.create!
 
-              # Gitea doesn't return PR in the Issue API endpoint, so labels must be assigned at this stage
+              # Gitea returns PRs in the Issue API endpoint but without labels, so labels must be assigned at this stage
               apply_labels(merge_request, raw) if project.gitea_import?
             rescue StandardError => e
               errors << {

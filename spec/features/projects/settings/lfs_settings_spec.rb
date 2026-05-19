@@ -22,7 +22,7 @@ RSpec.describe 'Projects > Settings > LFS settings', feature_category: :source_c
         visit edit_project_path(project)
 
         expect(page).to have_content('Git Large File Storage')
-        expect(page).to have_selector('input[name="project[lfs_enabled]"] + button', visible: true)
+        expect(page).to have_selector('input[name="project[lfs_enabled]"] + button', visible: :visible)
       end
     end
   end

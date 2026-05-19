@@ -39,9 +39,9 @@ jest.mock('@gitlab/ui/src/components/base/tooltip/tooltip.vue', () => ({
 jest.mock('@gitlab/ui/src/components/base/popover/popover.vue', () => ({
   props: {
     cssClasses: {
-      type: Array,
+      type: [Array, String, Object],
       required: false,
-      default: () => [],
+      default: '',
     },
     ...Object.fromEntries(
       [

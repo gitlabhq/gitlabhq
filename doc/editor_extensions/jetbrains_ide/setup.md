@@ -71,6 +71,7 @@ Prerequisites:
 - For agents, you have [foundational agents turned on](../../user/duo_agent_platform/agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off)
   and [custom agents enabled](../../user/duo_agent_platform/agents/custom.md#enable-an-agent), as
   needed.
+- Your project is in a [group namespace](../../user/namespace/_index.md).
 - You have a [default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment)
   set or have a project open that has GitLab Duo access.
 
@@ -81,6 +82,9 @@ To enable GitLab Duo features:
 1. Restart your IDE, if prompted.
 
 For GitLab Duo Code Suggestions, [review the additional prerequisites and setup steps](../../user/project/repository/code_suggestions/set_up.md#prerequisites).
+
+To approve Agentic Chat tools once per session instead of individually,
+see [tool approvals](../../user/gitlab_duo_chat/agentic_chat.md#tool-approvals).
 
 ## Install alpha versions of the plugin
 

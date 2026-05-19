@@ -20,8 +20,14 @@ RSpec.describe Gitlab::Usage::ServicePing::InstrumentedPayload do
       }
     end
 
+    let(:metric_values) { described_class.new(metrics_key_paths, :with_value).build }
+
     it 'builds the service ping payload for the metrics key_paths' do
-      expect(described_class.new(metrics_key_paths, :with_value).build).to eq(expected_payload)
+      expect(metric_values).to eq(expected_payload)
+    end
+
+    it 'records meta data' do
+      expect(metric_values[:counts][:boards].duration).to be_present
     end
   end
 

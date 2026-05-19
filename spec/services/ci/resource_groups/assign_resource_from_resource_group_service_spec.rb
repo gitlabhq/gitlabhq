@@ -37,13 +37,6 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
         subject
       end
 
-      it 'uses retry_lock without a wrapping transaction' do
-        expect(Gitlab::OptimisticLocking).to receive(:retry_lock).and_call_original
-        expect(Gitlab::OptimisticLocking).not_to receive(:retry_lock_with_transaction)
-
-        subject
-      end
-
       it_behaves_like 'internal event tracking' do
         let(:event) { 'job_enqueued_by_resource_group' }
         let(:category) { described_class.name }

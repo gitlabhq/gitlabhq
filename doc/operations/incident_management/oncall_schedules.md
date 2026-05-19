@@ -34,7 +34,7 @@ Prerequisites:
 To create an on-call schedule:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Monitor** > **On-call Schedules**.
+1. In the left sidebar, select **Monitor** > **On-call Schedules**.
 1. Select **Add a schedule**.
 1. Enter the schedule's name and description and select a time zone.
 1. Select **Add schedule**.
@@ -49,7 +49,7 @@ create [rotations](#rotations) for your schedule.
 To update a schedule:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Monitor** > **On-call Schedules**.
+1. In the left sidebar, select **Monitor** > **On-call Schedules**.
 1. Select **Edit schedule** ({{< icon name="pencil" >}}).
 1. Edit the information.
 1. Select **Save changes**.
@@ -62,7 +62,7 @@ interval (if one is set) to the corresponding times in the new time zone.
 To delete a schedule:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Monitor** > **On-call Schedules**.
+1. In the left sidebar, select **Monitor** > **On-call Schedules**.
 1. Select **Delete escalation policy** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete schedule**.
 
@@ -73,7 +73,7 @@ Add rotations to an existing schedule to put your team members on-call.
 To create a rotation:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Monitor** > **On-call Schedules**.
+1. In the left sidebar, select **Monitor** > **On-call Schedules**.
 1. Select the **Add a rotation** link.
 1. Enter the following information:
 
@@ -91,7 +91,7 @@ To create a rotation:
 To edit a rotation:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Monitor** > **On-call Schedules**.
+1. In the left sidebar, select **Monitor** > **On-call Schedules**.
 1. In the **Rotations** section, select **Edit rotation** ({{< icon name="pencil" >}}).
 1. Edit the information.
 1. Select **Save changes**.
@@ -101,7 +101,7 @@ To edit a rotation:
 To delete a rotation:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Monitor** > **On-call Schedules**.
+1. In the left sidebar, select **Monitor** > **On-call Schedules**.
 1. In the **Rotations** section, select **Delete rotation** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete rotation**.
 

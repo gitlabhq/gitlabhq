@@ -2038,7 +2038,8 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     end
 
     context 'when unsupported widget input is sent' do
-      let_it_be(:work_item) { create(:work_item, :issue, project: project) }
+      let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
+      let_it_be(:work_item) { create(:work_item, work_item_type: issue_type, project: project) }
 
       let(:input) do
         {
@@ -2049,11 +2050,11 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       before do
         # the stub_all_work_item_widget does not work here as it not uses the get_widget method.
         # it uses the work_item.supported_quick_action_commands method that used the work_item_type.widget_classes
-        widgets = work_item.work_item_type.widget_classes(project).reject do |widget|
+        widgets = issue_type.widget_classes(project).reject do |widget|
           widget == WorkItems::Widgets::Assignees
         end
 
-        allow(work_item.work_item_type).to receive(:widget_classes).with(project).and_return(widgets)
+        allow(issue_type).to receive(:widget_classes).with(project).and_return(widgets)
       end
 
       it_behaves_like 'a mutation that returns top-level errors',

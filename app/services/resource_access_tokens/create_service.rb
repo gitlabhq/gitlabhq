@@ -133,7 +133,8 @@ module ResourceAccessTokens
         impersonation: false,
         scopes: params[:scopes] || default_scopes,
         expires_at: pat_expiration,
-        description: params[:description]
+        description: params[:description],
+        creation_source: params[:creation_source]
       }
     end
 

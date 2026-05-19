@@ -45,12 +45,12 @@ your cluster's level.
 **Project-level clusters**:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Kubernetes clusters**.
+1. In the left sidebar, select **Operate** > **Kubernetes clusters**.
 
 **Group-level clusters**:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Operate** > **Kubernetes clusters**.
+1. In the left sidebar, select **Operate** > **Kubernetes clusters**.
 
 **Instance-level clusters**:
 
@@ -59,7 +59,7 @@ Prerequisites:
 - Administrator access.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Kubernetes**.
+1. In the left sidebar, select **Kubernetes**.
 
 ## Security implications for clusters connected with certificates
 

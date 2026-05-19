@@ -238,6 +238,54 @@ RSpec.describe Gitlab::Git::Finders::BranchesFinder, feature_category: :source_c
         expect(branches.count).to eq(2)
       end
     end
+
+    context 'with page parameter' do
+      let(:params) { { per_page: 5, page: 2 } }
+
+      it 'fetches per_page * page records to support offset pagination' do
+        expect(branches.count).to eq(10)
+      end
+    end
+
+    context 'with page parameter and include_commits' do
+      let(:include_commits) { true }
+      let(:params) { { per_page: 5, page: 2 } }
+
+      it 'only hydrates commits for the target page branches' do
+        results = finder.execute
+
+        # First 5 branches (page 1) should not have commits loaded
+        results[0, 5].each do |branch|
+          expect(branch.dereferenced_target).to be_nil
+        end
+
+        # Last 5 branches (page 2, the target page) should have commits
+        results[5, 5].each do |branch|
+          expect(branch.dereferenced_target).to be_present
+        end
+      end
+    end
+
+    context 'with page 1' do
+      let(:params) { { per_page: 5, page: 1 } }
+
+      it 'fetches per_page records' do
+        expect(branches.count).to eq(5)
+      end
+    end
+
+    context 'with page_token and page' do
+      it 'ignores page and uses per_page as-is when page_token is present' do
+        first_finder = described_class.new(repository, { per_page: 2 })
+        first_finder.execute
+
+        finder_with_both = described_class.new(repository,
+          { per_page: 2, page: 3, page_token: first_finder.next_cursor })
+        result = finder_with_both.execute
+
+        expect(result.count).to eq(2)
+      end
+    end
   end
 
   describe '#next_cursor' do

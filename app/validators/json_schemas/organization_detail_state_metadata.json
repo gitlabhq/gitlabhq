@@ -32,6 +32,16 @@
     },
     "deletion_scheduled_by_user_id": {
       "type": "number"
+    },
+    "confirmed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "confirmed_by_user_id": {
+      "type": "number"
     }
   },
   "additionalProperties": false

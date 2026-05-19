@@ -226,8 +226,8 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     it_behaves_like 'support bot'
 
     context 'with confidential issues' do
-      let(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
-      let(:confidential_issue_no_assignee) { create(:issue, :confidential, project: project) }
+      let_it_be_with_reload(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
+      let_it_be_with_reload(:confidential_issue_no_assignee) { create(:issue, :confidential, project: project) }
 
       it 'does not allow non-members to read confidential issues' do
         expect(permissions(non_member, confidential_issue)).to be_disallowed(
@@ -605,8 +605,8 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
 
     context 'with confidential issues' do
-      let(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
-      let(:confidential_issue_no_assignee) { create(:issue, :confidential, project: project) }
+      let_it_be(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
+      let_it_be(:confidential_issue_no_assignee) { create(:issue, :confidential, project: project) }
 
       it 'does not allow guests to read confidential issues' do
         expect(permissions(guest, confidential_issue)).to be_disallowed(
@@ -685,9 +685,9 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
 
     context 'with a hidden issue' do
-      let(:user) { create(:user) }
-      let(:banned_user) { create(:user, :banned) }
-      let(:hidden_issue) { create(:issue, project: project, author: banned_user) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:banned_user) { create(:user, :banned) }
+      let_it_be(:hidden_issue) { create(:issue, project: project, author: banned_user) }
 
       it 'does not allow non-admin user to read the issue' do
         expect(permissions(user, hidden_issue)).not_to be_allowed(:read_issue)
@@ -761,10 +761,10 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     let_it_be(:group_reporter) { create(:user, reporter_of: [private_group, public_group]) }
 
     context 'with public group' do
-      let(:work_item) { create(:issue, :group_level, namespace: public_group) }
-      let(:confidential_work_item) { create(:issue, :group_level, confidential: true, namespace: public_group) }
-      let(:authored_work_item) { create(:issue, :group_level, namespace: public_group, author: group_guest_author) }
-      let(:authored_confidential_work_item) { create(:issue, :group_level, confidential: true, namespace: public_group, author: group_guest_author) }
+      let_it_be(:work_item) { create(:issue, :group_level, namespace: public_group) }
+      let_it_be(:confidential_work_item) { create(:issue, :group_level, confidential: true, namespace: public_group) }
+      let_it_be(:authored_work_item) { create(:issue, :group_level, namespace: public_group, author: group_guest_author) }
+      let_it_be(:authored_confidential_work_item) { create(:issue, :group_level, confidential: true, namespace: public_group, author: group_guest_author) }
       let(:not_persisted_work_item) { build(:issue, :group_level, namespace: public_group) }
 
       # only checking abilities without group level work items license, because in FOSS there is no license available
@@ -772,10 +772,10 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
 
     context 'with private group' do
-      let(:work_item) { create(:issue, :group_level, namespace: private_group) }
-      let(:confidential_work_item) { create(:issue, :group_level, confidential: true, namespace: private_group) }
-      let(:authored_work_item) { create(:issue, :group_level, namespace: private_group, author: group_guest_author) }
-      let(:authored_confidential_work_item) { create(:issue, :group_level, confidential: true, namespace: private_group, author: group_guest_author) }
+      let_it_be(:work_item) { create(:issue, :group_level, namespace: private_group) }
+      let_it_be(:confidential_work_item) { create(:issue, :group_level, confidential: true, namespace: private_group) }
+      let_it_be(:authored_work_item) { create(:issue, :group_level, namespace: private_group, author: group_guest_author) }
+      let_it_be(:authored_confidential_work_item) { create(:issue, :group_level, confidential: true, namespace: private_group, author: group_guest_author) }
       let(:not_persisted_work_item) { build(:issue, :group_level, namespace: private_group) }
 
       # only checking abilities without group level work items license, because in FOSS there is no license available
@@ -785,9 +785,9 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
   # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   context 'with external authorization enabled' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :public) }
-    let(:issue) { create(:issue, project: project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:issue) { create(:issue, project: project) }
     let(:policies) { described_class.new(user, issue) }
 
     before do
@@ -939,10 +939,11 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
   describe 'set_issue_metadata rule for new issues' do
     context 'when user has set_new_issue_metadata permission' do
-      let(:project) { create(:project, :private) }
+      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:persisted_issue) { create(:issue, project: project) }
       let(:new_issue) { build(:issue, project: project) }
 
-      before do
+      before_all do
         project.add_guest(guest)
       end
 
@@ -952,15 +953,14 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       end
 
       it 'does not allow guest to set metadata on persisted issues without higher permissions' do
-        persisted_issue = create(:issue, project: project)
         expect(permissions(guest, persisted_issue)).to be_disallowed(:set_issue_metadata)
       end
     end
 
     context 'when user does not have set_new_issue_metadata permission' do
-      let(:project) { create(:project, :private) }
+      let_it_be(:project) { create(:project, :private) }
       let(:new_issue) { build(:issue, project: project) }
-      let(:non_member) { create(:user) }
+      let_it_be(:non_member) { create(:user) }
 
       it 'does not allow non-member to set metadata on new issues' do
         expect(permissions(non_member, new_issue)).to be_disallowed(:set_issue_metadata)

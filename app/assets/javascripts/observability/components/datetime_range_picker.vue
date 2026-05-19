@@ -5,6 +5,7 @@ import { formattedTimeFromDate, addTimeToDate } from '../utils';
 const DEFAULT_TIME = '00:00:00';
 
 export default {
+  name: 'DatetimeRangePicker',
   components: {
     GlDaterangePicker,
     GlFormInput,

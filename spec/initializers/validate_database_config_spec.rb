@@ -36,7 +36,7 @@ RSpec.describe 'validate database config' do
 
   context 'when config/database.yml is valid' do
     let(:database_yml) do
-      <<-EOS
+      <<-YAML
         production:
           main:
             adapter: postgresql
@@ -45,7 +45,7 @@ RSpec.describe 'validate database config' do
             username: git
             password: "secure password"
             host: localhost
-      EOS
+      YAML
     end
 
     it 'validates configuration without errors and warnings' do
@@ -56,7 +56,7 @@ RSpec.describe 'validate database config' do
   context 'when config/database.yml is invalid' do
     context 'uses unknown connection name' do
       let(:database_yml) do
-        <<-EOS
+        <<-YAML
           production:
             main:
               adapter: postgresql
@@ -73,7 +73,7 @@ RSpec.describe 'validate database config' do
               username: git
               password: "secure password"
               host: localhost
-        EOS
+        YAML
       end
 
       it 'raises exception' do
@@ -85,7 +85,7 @@ RSpec.describe 'validate database config' do
 
     context 'uses replica configuration' do
       let(:database_yml) do
-        <<-EOS
+        <<-YAML
           production:
             main:
               adapter: postgresql
@@ -95,7 +95,7 @@ RSpec.describe 'validate database config' do
               password: "secure password"
               host: localhost
               replica: true
-        EOS
+        YAML
       end
 
       it 'raises exception' do
@@ -107,7 +107,7 @@ RSpec.describe 'validate database config' do
 
     context 'main is not a first entry' do
       let(:database_yml) do
-        <<-EOS
+        <<-YAML
           production:
             ci:
               adapter: postgresql
@@ -126,7 +126,7 @@ RSpec.describe 'validate database config' do
               password: "secure password"
               host: localhost
               replica: true
-        EOS
+        YAML
       end
 
       it 'raises exception' do

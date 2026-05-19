@@ -7,6 +7,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Organization ##{n}" }
     path { name.parameterize }
     visibility_level { Organizations::Organization::PUBLIC }
+    state { :active }
 
     # The default organization ID is for specs that specifically target the default organization.
     # Most specs should just create a normal organization.
@@ -31,6 +32,18 @@ FactoryBot.define do
 
     trait :private do
       visibility_level { Organizations::Organization::PRIVATE }
+    end
+
+    trait :isolated do
+      isolated_record { association(:organization_isolation, :isolated) }
+    end
+
+    trait :unconfirmed do
+      state { :unconfirmed }
+    end
+
+    trait :confirmed do
+      state { :confirmed }
     end
   end
 end

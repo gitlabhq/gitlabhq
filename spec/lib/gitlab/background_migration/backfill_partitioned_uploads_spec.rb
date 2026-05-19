@@ -39,6 +39,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
   let(:design_management_actions) { table(:design_management_designs_versions) }
   let(:bulk_import_exports) { table(:bulk_import_exports) }
   let(:bulk_imports_export_uploads) { table(:bulk_import_export_uploads) }
+  let(:issue_work_item_type_id) { table(:work_item_types).create!(id: 1, name: 'Issue').id }
 
   let(:connection) { ApplicationRecord.connection }
 
@@ -581,7 +582,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
 
   def create_issuable_metric_image
     namespace = create_namespace
-    issue_work_item_type_id = table(:work_item_types).find_by(name: 'Issue').id
     issue = table(:issues).create!(
       namespace_id: namespace.id,
       lock_version: 1,

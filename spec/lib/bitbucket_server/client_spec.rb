@@ -31,31 +31,35 @@ RSpec.describe BitbucketServer::Client, feature_category: :importers do
   end
 
   describe '#last_pull_request' do
-    let(:path) { "/projects/#{project}/repos/#{repo_slug}/pull-requests?state=ALL&orderBy=NEWEST" }
+    let(:path) { "/projects/#{project}/repos/#{repo_slug}/pull-requests?state=ALL&order=NEWEST" }
 
-    it 'requests a collection with limit 1' do
+    it 'requests a collection with the default page length' do
       expect(BitbucketServer::Paginator).to receive(:new)
-        .with(anything, path, :pull_request, page_offset: 0, limit: 1)
+        .with(anything, path, :pull_request, page_offset: 0, limit: BitbucketServer::Paginator::PAGE_LENGTH)
         .and_return(instance_double(BitbucketServer::Paginator))
 
       collection = instance_double(BitbucketServer::Collection)
       allow(BitbucketServer::Collection).to receive(:new).and_return(collection)
-      allow(collection).to receive(:first)
+      allow(collection).to receive(:max_by).and_return(nil)
 
       subject.last_pull_request(project, repo_slug)
     end
 
-    it 'returns the first pull request from the collection' do
-      pull_request = instance_double(BitbucketServer::Representation::PullRequest)
-      collection = instance_double(BitbucketServer::Collection, first: pull_request)
+    it 'returns the pull request with the highest iid' do
+      pr_1 = instance_double(BitbucketServer::Representation::PullRequest, iid: 100)
+      pr_2 = instance_double(BitbucketServer::Representation::PullRequest, iid: 102)
+      pr_3 = instance_double(BitbucketServer::Representation::PullRequest, iid: 101)
+      collection = instance_double(BitbucketServer::Collection)
+      allow(collection).to receive(:max_by).and_yield(pr_1).and_yield(pr_2).and_yield(pr_3).and_return(pr_2)
 
       allow(BitbucketServer::Collection).to receive(:new).and_return(collection)
 
-      expect(subject.last_pull_request(project, repo_slug)).to eq(pull_request)
+      expect(subject.last_pull_request(project, repo_slug)).to eq(pr_2)
     end
 
     it 'returns nil when there are no pull requests' do
-      collection = instance_double(BitbucketServer::Collection, first: nil)
+      collection = instance_double(BitbucketServer::Collection)
+      allow(collection).to receive(:max_by).and_return(nil)
 
       allow(BitbucketServer::Collection).to receive(:new).and_return(collection)
 

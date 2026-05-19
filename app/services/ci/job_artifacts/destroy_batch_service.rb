@@ -62,17 +62,17 @@ module Ci
 
       private
 
-      # Overriden in EE
+      # Overridden in EE
       # :nocov:
       def destroy_around_hook(artifacts)
         yield
       end
       # :nocov:
 
-      # Overriden in EE
+      # Overridden in EE
       def destroy_related_records(artifacts); end
 
-      # Overriden in EE
+      # Overridden in EE
       def after_batch_destroy_hook(artifacts); end
 
       # using ! here since this can't be called inside a transaction

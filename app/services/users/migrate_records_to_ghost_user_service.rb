@@ -61,11 +61,7 @@ module Users
       user.destroy_dependent_associations_in_batches(exclude: [:snippets])
       user.nullify_dependent_associations_in_batches
 
-      # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
-      user_data = user.destroy
-      user.namespace.destroy
-
-      user_data
+      user.destroy
     end
 
     def delete_snippets

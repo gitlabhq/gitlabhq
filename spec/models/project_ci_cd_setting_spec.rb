@@ -10,6 +10,13 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
 
     subject { described_class.new(project: project) }
 
+    it 'validates max_pipelines_per_merge_train is at least 1 or nil' do
+      expect(subject).to validate_numericality_of(:max_pipelines_per_merge_train)
+        .only_integer
+        .is_greater_than_or_equal_to(1)
+        .allow_nil
+    end
+
     it 'validates default_git_depth is between 0 and 1000 or nil' do
       expect(subject).to validate_numericality_of(:default_git_depth)
         .only_integer
@@ -201,6 +208,28 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
       project.ci_cd_settings.update!(display_pipeline_variables: true)
 
       expect(project.ci_cd_settings.display_pipeline_variables).to be(true)
+    end
+  end
+
+  describe '#pipeline_override_role_privileged?' do
+    let(:project) { build(:project) }
+    let(:setting) { project.ci_cd_settings }
+
+    subject { setting.pipeline_override_role_privileged? }
+
+    before do
+      setting.pipeline_variables_minimum_override_role = role
+    end
+
+    where(:role, :expected) do
+      :owner          | true
+      :no_one_allowed | true
+      :maintainer     | false
+      :developer      | false
+    end
+
+    with_them do
+      it { is_expected.to eq(expected) }
     end
   end
 

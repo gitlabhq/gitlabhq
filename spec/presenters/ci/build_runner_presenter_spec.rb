@@ -354,91 +354,6 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
         is_expected.to contain_exactly("+#{pipeline.sha}:#{pipeline.persistent_ref.path}")
       end
     end
-
-    context 'when runner_refspec_use_sha_instead_of_persistent_ref is disabled' do
-      before do
-        stub_feature_flags(runner_refspec_use_sha_instead_of_persistent_ref: false)
-      end
-
-      it 'returns the correct refspecs' do
-        is_expected.to contain_exactly(
-          "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}",
-          "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
-        )
-      end
-
-      context 'when ref is tag' do
-        let(:build) { create(:ci_build, :tag) }
-
-        it 'returns the correct refspecs' do
-          is_expected.to contain_exactly(
-            "+refs/tags/#{build.ref}:refs/tags/#{build.ref}",
-            "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
-          )
-        end
-
-        context 'when GIT_DEPTH is zero' do
-          before do
-            create_or_replace_pipeline_variables(build.pipeline, { key: 'GIT_DEPTH', value: 0 })
-          end
-
-          it 'returns the correct refspecs' do
-            is_expected.to contain_exactly(
-              '+refs/tags/*:refs/tags/*',
-              '+refs/heads/*:refs/remotes/origin/*',
-              "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
-            )
-          end
-        end
-      end
-
-      context 'when pipeline is detached merge request pipeline' do
-        let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-        let(:pipeline) { merge_request.all_pipelines.first }
-        let(:build) { create(:ci_build, ref: pipeline.ref, pipeline: pipeline) }
-
-        it 'returns the correct refspecs' do
-          is_expected
-            .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
-        end
-
-        context 'when GIT_DEPTH is zero' do
-          before do
-            create_or_replace_pipeline_variables(build.pipeline, { key: 'GIT_DEPTH', value: 0 })
-          end
-
-          it 'returns the correct refspecs' do
-            is_expected.to contain_exactly(
-              "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
-              '+refs/heads/*:refs/remotes/origin/*',
-              '+refs/tags/*:refs/tags/*'
-            )
-          end
-        end
-
-        context 'when pipeline is legacy detached merge request pipeline' do
-          let(:merge_request) { create(:merge_request, :with_legacy_detached_merge_request_pipeline) }
-
-          it 'returns the correct refspecs' do
-            is_expected.to contain_exactly(
-              "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
-              "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}"
-            )
-          end
-        end
-      end
-
-      context 'when pipeline is a workload pipeline' do
-        let_it_be(:workload_ref) { 'refs/workloads/abc123' }
-        let(:build) { create(:ci_build, ref: workload_ref, tag: false) }
-
-        it 'returns the correct refspecs' do
-          is_expected.to contain_exactly(
-            "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
-          )
-        end
-      end
-    end
   end
 
   describe '#runner_inputs' do
@@ -573,6 +488,72 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
           { key: 'B', value: 'refB-value-$D', public: false, masked: false },
           { key: 'A', value: 'refA-refB-value-$D', public: false, masked: false }
         ]
+      end
+    end
+  end
+
+  describe '#suspend_options' do
+    subject(:suspend_options) { presenter.suspend_options }
+
+    context 'when no suspend options are set' do
+      let(:build) { build_stubbed(:ci_build) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when suspend_on_success is set' do
+      let(:build) { build_stubbed(:ci_build, options: { suspend_options: { suspend_on_success: true } }) }
+
+      it 'returns suspend options' do
+        expect(suspend_options).to eq(
+          suspend_on_success: true,
+          suspend_on_failure: false
+        )
+      end
+    end
+
+    context 'when suspend_on_failure is set' do
+      let(:build) { build_stubbed(:ci_build, options: { suspend_options: { suspend_on_failure: true } }) }
+
+      it 'returns suspend options' do
+        expect(suspend_options).to eq(
+          suspend_on_success: false,
+          suspend_on_failure: true
+        )
+      end
+    end
+
+    context 'when environment_key is set' do
+      let(:build) do
+        build_stubbed(:ci_build, options: { suspend_options: { environment_key: 'runner-1/executor-specific-data' } })
+      end
+
+      it 'returns suspend options with environment_key' do
+        expect(suspend_options).to eq(
+          suspend_on_success: false,
+          suspend_on_failure: false,
+          environment_key: 'runner-1/executor-specific-data'
+        )
+      end
+    end
+
+    context 'when all options are set' do
+      let(:build) do
+        build_stubbed(:ci_build, options: {
+          suspend_options: {
+            suspend_on_success: true,
+            suspend_on_failure: true,
+            environment_key: 'runner-1/executor-specific-data'
+          }
+        })
+      end
+
+      it 'returns all suspend options' do
+        expect(suspend_options).to eq(
+          suspend_on_success: true,
+          suspend_on_failure: true,
+          environment_key: 'runner-1/executor-specific-data'
+        )
       end
     end
   end

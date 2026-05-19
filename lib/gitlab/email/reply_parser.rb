@@ -7,6 +7,10 @@ module Gitlab
       attr_accessor :message, :allow_only_quotes
 
       def initialize(message, trim_reply: true, append_reply: false, allow_only_quotes: false)
+        if trim_reply && allow_only_quotes
+          raise ArgumentError, "Cannot use `allow_only_quotes: true` with `trim_reply: true`"
+        end
+
         @message = message
         @trim_reply = trim_reply
         @append_reply = append_reply

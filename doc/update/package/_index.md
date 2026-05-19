@@ -69,15 +69,15 @@ either:
 
 ### Upgrade with the official repositories (recommended)
 
-All GitLab packages are posted to the GitLab [package server](https://packages.gitlab.com/gitlab/).
+All GitLab packages are posted to the GitLab [package server](https://packages.gitlab.com/ui/browse/gitlab).
 
-| Repository                                                                             | Description |
-|:---------------------------------------------------------------------------------------|:------------|
-| [`gitlab/gitlab-ce`](https://packages.gitlab.com/gitlab/gitlab-ce)                     | Stripped down package that contains only the Community Edition features. |
-| [`gitlab/gitlab-ee`](https://packages.gitlab.com/gitlab/gitlab-ee)                     | Full GitLab package that contains all the Community Edition and Enterprise Edition features. |
-| [`gitlab/nightly-builds`](https://packages.gitlab.com/gitlab/nightly-builds)           | Nightly builds. |
-| [`gitlab/nightly-fips-builds`](https://packages.gitlab.com/gitlab/nightly-fips-builds) | Nightly FIPS-compliant builds. |
-| [`gitlab/gitlab-fips`](https://packages.gitlab.com/gitlab/gitlab-fips)                 | FIPS-compliant builds. |
+| Repository                                                                                       | Description |
+|:-------------------------------------------------------------------------------------------------|:------------|
+| [`gitlab/gitlab-ce`](https://packages.gitlab.com/ui/browse/gitlab/gitlab-ce)                     | Stripped down package that contains only the Community Edition features. |
+| [`gitlab/gitlab-ee`](https://packages.gitlab.com/ui/browse/gitlab/gitlab-ee)                     | Full GitLab package that contains all the Community Edition and Enterprise Edition features. |
+| [`gitlab/nightly-builds`](https://packages.gitlab.com/ui/browse/gitlab/nightly-builds)           | Nightly builds. |
+| [`gitlab/nightly-fips-builds`](https://packages.gitlab.com/ui/browse/gitlab/nightly-fips-builds) | Nightly FIPS-compliant builds. |
+| [`gitlab/gitlab-fips`](https://packages.gitlab.com/ui/browse/gitlab/gitlab-fips)                 | FIPS-compliant builds. |
 
 By default, Linux distribution package managers install the latest available version of a package. You can't upgrade directly to the
 latest major version of GitLab if your [upgrade path](../upgrade_paths.md) requires multiple stops. If your upgrade

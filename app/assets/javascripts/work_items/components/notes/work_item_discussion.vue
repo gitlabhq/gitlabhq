@@ -11,6 +11,7 @@ import WorkItemNoteReplying from '~/work_items/components/notes/work_item_note_r
 import WorkItemAddNote from './work_item_add_note.vue';
 
 export default {
+  name: 'WorkItemDiscussion',
   components: {
     TimelineEntryItem,
     WorkItemNote,

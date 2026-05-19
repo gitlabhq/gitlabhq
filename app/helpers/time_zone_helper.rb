@@ -41,7 +41,7 @@ module TimeZoneHelper
     timezone_data(format: format)
       .group_by { |entry| entry[:identifier] }
       .map do |_identifier, entries|
-        names = entries.map { |entry| entry[:name] }.sort.join(', ') # rubocop:disable Rails/Pluck -- Not a ActiveRecord object
+        names = entries.map { |entry| entry[:name] }.sort.join(', ')
         entries.first.merge({ name: names })
       end
   end

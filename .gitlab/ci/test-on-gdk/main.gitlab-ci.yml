@@ -64,6 +64,7 @@ include:
     QA_GITLAB_URL: http://gdk.test:3000
     QA_RUN_IN_PARALLEL: "true"
     QA_PARALLEL_PROCESSES: 4
+    QA_PARALLEL_BROWSER_STAGGER_SECONDS: "5"
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
     GIT_STRATEGY: "none"
   after_script:
@@ -123,7 +124,7 @@ gdk-instance-secrets-manager:
     QA_SCENARIO: Test::Integration::SecretsManager
     QA_RSPEC_TAGS: --tag secrets_manager
     WITH_SECRETS_MANAGER: "true"
-    QA_FEATURE_FLAGS: "secrets_manager=enabled"
+    QA_FEATURE_FLAGS: "secrets_manager=enabled,group_secrets_manager=enabled,secrets_manager_namespace_enrollment=enabled,secrets_manager_instance_enrollment=enabled"
   rules:
     - when: on_success
 

@@ -10,7 +10,7 @@ module Ci
       def execute
         Gitlab::AppLogger.info "#{self.class}: Cleaning canceling, timed-out builds"
 
-        drop(canceling_timed_out_builds, failure_reason: :stuck_or_timeout_failure)
+        drop(canceling_timed_out_builds, failure_reason: :no_updates_canceling)
       end
 
       private

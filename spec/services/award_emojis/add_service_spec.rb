@@ -26,7 +26,7 @@ RSpec.describe AwardEmojis::AddService, feature_category: :team_planning do
     end
 
     context 'when user is authorized' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 

@@ -57,7 +57,7 @@ export const fileMapper = (projectBlobPath, file) => {
   return {
     icon: 'doc-code',
     text: file,
-    href: encodeSaferUrl(joinPaths(projectBlobPath, file)),
+    href: joinPaths(projectBlobPath, encodeSaferUrl(file)),
     extraAttrs: {
       'data-track-action': TRACKING_CLICK_COMMAND_PALETTE_ITEM,
       'data-track-label': 'file',

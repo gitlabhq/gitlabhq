@@ -115,7 +115,8 @@ module Types
     field :merge_request, Types::MergeRequestType,
       null: true,
       description: 'Find a merge request.' do
-      argument :id, ::Types::GlobalIDType[::MergeRequest], required: true, description: 'Global ID of the merge request.'
+      argument :id, ::Types::GlobalIDType[::MergeRequest], required: true,
+        description: 'Global ID of the merge request.'
     end
     field :metadata, Types::AppConfig::InstanceMetadataType,
       null: true,
@@ -160,7 +161,8 @@ module Types
         permissions: :read_organization, boundary: :instance, boundary_type: :instance
       )
     field :package,
-      description: 'Find a package. This field can only be resolved for one query in any single request. Returns `null` if a package has no `default` status.',
+      description: 'Find a package. This field can only be resolved for one query in any single request. ' \
+        'Returns `null` if a package has no `default` status.',
       resolver: Resolvers::PackageDetailsResolver
     field :project, Types::ProjectType,
       null: true,
@@ -190,9 +192,15 @@ module Types
         ]
       )
     field :runner_platforms, resolver: Resolvers::Ci::RunnerPlatformsResolver,
-      deprecated: { reason: 'No longer used, use gitlab-runner documentation to learn about supported platforms', milestone: '15.9' }
+      deprecated: {
+        reason: 'No longer used, use gitlab-runner documentation to learn about supported platforms',
+        milestone: '15.9'
+      }
     field :runner_setup, resolver: Resolvers::Ci::RunnerSetupResolver,
-      deprecated: { reason: 'No longer used, use gitlab-runner documentation to learn about runner registration commands', milestone: '15.9' }
+      deprecated: {
+        reason: 'No longer used, use gitlab-runner documentation to learn about runner registration commands',
+        milestone: '15.9'
+      }
     field :runners, Types::Ci::RunnerType.connection_type,
       null: true,
       resolver: Resolvers::Ci::RunnersResolver,
@@ -295,7 +303,9 @@ module Types
       null: false,
       deprecated: { reason: 'Replaced with metadata.featureFlags', milestone: '17.4' },
       description: 'Check if a feature flag is enabled. ' \
-        'External API consumers should read the [feature flag guidance for external API consumers](https://docs.gitlab.com/development/feature_flags/#do-not-use-feature-flags-in-external-api-consumers) before using this field.',
+        'External API consumers should read the [feature flag guidance for external API consumers]' \
+        '(https://docs.gitlab.com/development/feature_flags/#do-not-use-feature-flags-in-external-api-consumers) ' \
+        'before using this field.',
       resolver: Resolvers::FeatureFlagResolver
 
     field :access_token_permissions,

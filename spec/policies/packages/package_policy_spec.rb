@@ -10,7 +10,7 @@ RSpec.describe Packages::PackagePolicy do
   subject(:policy) { described_class.new(user, package) }
 
   context 'when the user is part of the project' do
-    before do
+    before_all do
       project.add_reporter(user)
     end
 

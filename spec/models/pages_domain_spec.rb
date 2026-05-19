@@ -21,8 +21,8 @@ RSpec.describe PagesDomain, feature_category: :pages do
   end
 
   describe '.verified' do
-    let!(:verified) { create(:pages_domain) }
-    let!(:unverified) { create(:pages_domain, :unverified) }
+    let_it_be(:verified) { create(:pages_domain) }
+    let_it_be(:unverified) { create(:pages_domain, :unverified) }
 
     it 'finds verified' do
       expect(described_class.verified).to match_array(verified)
@@ -399,13 +399,13 @@ RSpec.describe PagesDomain, feature_category: :pages do
     subject { domain.user_provided_key }
 
     context 'when certificate is provided by user' do
-      let(:domain) { create(:pages_domain) }
+      let(:domain) { build(:pages_domain) }
 
       it { is_expected.to eq domain.key }
     end
 
     context 'when certificate is provided by gitlab' do
-      let(:domain) { create(:pages_domain, :letsencrypt) }
+      let(:domain) { build(:pages_domain, :letsencrypt) }
 
       it { is_expected.to be_nil }
     end
@@ -415,20 +415,20 @@ RSpec.describe PagesDomain, feature_category: :pages do
     subject { domain.user_provided_certificate }
 
     context 'when certificate is provided by user' do
-      let(:domain) { create(:pages_domain) }
+      let(:domain) { build(:pages_domain) }
 
       it { is_expected.to eq domain.certificate }
     end
 
     context 'when certificate is provided by gitlab' do
-      let(:domain) { create(:pages_domain, :letsencrypt) }
+      let(:domain) { build(:pages_domain, :letsencrypt) }
 
       it { is_expected.to be_nil }
     end
   end
 
   shared_examples 'certificate setter' do |attribute, setter_name, old_certificate_source, new_certificate_source|
-    let(:domain) { create(:pages_domain, certificate_source: old_certificate_source) }
+    let_it_be_with_reload(:domain) { create(:pages_domain, certificate_source: old_certificate_source) }
 
     let(:old_value) { domain.public_send(attribute) }
 
@@ -485,7 +485,7 @@ RSpec.describe PagesDomain, feature_category: :pages do
 
   describe '#save' do
     context 'when we failed to obtain ssl certificate' do
-      let(:domain) { create(:pages_domain, auto_ssl_enabled: true, auto_ssl_failed: true) }
+      let_it_be_with_reload(:domain) { create(:pages_domain, auto_ssl_enabled: true, auto_ssl_failed: true) }
 
       it 'clears failure if auto ssl is disabled' do
         expect { domain.update!(auto_ssl_enabled: false) }.to change { domain.auto_ssl_failed }.from(true).to(false)
@@ -542,21 +542,21 @@ RSpec.describe PagesDomain, feature_category: :pages do
   describe '.need_auto_ssl_renewal' do
     subject { described_class.need_auto_ssl_renewal }
 
-    let!(:domain_with_user_provided_certificate) { create(:pages_domain) }
-    let!(:domain_with_expired_user_provided_certificate) do
+    let_it_be(:domain_with_user_provided_certificate) { create(:pages_domain) }
+    let_it_be(:domain_with_expired_user_provided_certificate) do
       create(:pages_domain, :with_expired_certificate)
     end
 
-    let!(:domain_with_user_provided_certificate_and_auto_ssl) do
+    let_it_be(:domain_with_user_provided_certificate_and_auto_ssl) do
       create(:pages_domain, auto_ssl_enabled: true)
     end
 
-    let!(:domain_with_gitlab_provided_certificate) { create(:pages_domain, :letsencrypt) }
-    let!(:domain_with_expired_gitlab_provided_certificate) do
+    let_it_be(:domain_with_gitlab_provided_certificate) { create(:pages_domain, :letsencrypt) }
+    let_it_be(:domain_with_expired_gitlab_provided_certificate) do
       create(:pages_domain, :letsencrypt, :with_expired_certificate)
     end
 
-    let!(:domain_with_failed_auto_ssl) do
+    let_it_be(:domain_with_failed_auto_ssl) do
       create(:pages_domain, auto_ssl_enabled: true, auto_ssl_failed: true)
     end
 

@@ -3,5 +3,6 @@ fragment Organization on Organization {
   name
   descriptionHtml
   avatarUrl
-  webUrl
+  webPath
+  rootPath
 }

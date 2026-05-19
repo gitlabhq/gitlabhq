@@ -28,10 +28,14 @@ import {
   mockBlockedByOpenAndClosedLinkedItems,
   workItemByIidResponseFactory,
   workItemBlockedByLinkedItemsResponse,
+  workItemBlockedByLinkedItemsResponseWithFeatures,
   workItemNoBlockedByLinkedItemsResponse,
+  workItemNoBlockedByLinkedItemsResponseWithFeatures,
   workItemsClosedAndOpenLinkedItemsResponse,
   mockOpenChildrenCount,
+  mockOpenChildrenCountWithFeatures,
   mockNoOpenChildrenCount,
+  mockNoOpenChildrenCountWithFeatures,
 } from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/work_items/graphql/cache_utils', () => ({
@@ -70,6 +74,7 @@ describe('Work Item State toggle button component', () => {
     hasComment = false,
     disabled = false,
     parentId = null,
+    provide = {},
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemStateToggle, {
       apolloProvider: createMockApollo([
@@ -89,6 +94,7 @@ describe('Work Item State toggle button component', () => {
         disabled,
         parentId,
       },
+      provide,
     });
   };
 
@@ -296,6 +302,62 @@ describe('Work Item State toggle button component', () => {
     });
 
     it('has body text', () => {
+      expect(findOpenChildrenModal().text()).toContain(
+        'This Epic has open child items. If you close this Epic, they will remain open.',
+      );
+    });
+  });
+
+  describe('when workItemFeaturesField feature flag is enabled', () => {
+    const provide = { glFeatures: { workItemFeaturesField: true } };
+
+    it('passes useWorkItemFeatures as true to the linked items query', async () => {
+      const workItemLinkedItemsHandler = jest
+        .fn()
+        .mockResolvedValue(workItemNoBlockedByLinkedItemsResponseWithFeatures);
+      createComponent({ workItemLinkedItemsHandler, provide });
+      await waitForPromises();
+
+      expect(workItemLinkedItemsHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ useWorkItemFeatures: true }),
+      );
+    });
+
+    it('passes useWorkItemFeatures as true to the open child count query', async () => {
+      const workItemOpenChildCountHandler = jest
+        .fn()
+        .mockResolvedValue(mockNoOpenChildrenCountWithFeatures);
+      createComponent({ workItemOpenChildCountHandler, provide });
+      await waitForPromises();
+
+      expect(workItemOpenChildCountHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ useWorkItemFeatures: true }),
+      );
+    });
+
+    it('renders blocked-by modal when blockers are sourced from features.linkedItems', async () => {
+      const blockers = mockBlockedByLinkedItem.linkedItems.nodes;
+      createComponent({
+        workItemLinkedItemsHandler: jest
+          .fn()
+          .mockResolvedValue(workItemBlockedByLinkedItemsResponseWithFeatures),
+        provide,
+      });
+      await waitForPromises();
+
+      expect(findBlockedByModal().findAllComponents(GlLink)).toHaveLength(blockers.length);
+    });
+
+    it('triggers open-children modal when counts are sourced from features.hierarchy', async () => {
+      createComponent({
+        workItemOpenChildCountHandler: jest
+          .fn()
+          .mockResolvedValue(mockOpenChildrenCountWithFeatures),
+        workItemType: WORK_ITEM_TYPE_NAME_EPIC,
+        provide,
+      });
+      await waitForPromises();
+
       expect(findOpenChildrenModal().text()).toContain(
         'This Epic has open child items. If you close this Epic, they will remain open.',
       );

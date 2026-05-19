@@ -60,17 +60,6 @@ RSpec.describe Ci::HasVariable, feature_category: :continuous_integration do
     it 'stores a salt for value' do
       expect(subject.encrypted_value_salt).not_to be_nil
     end
-
-    it 'fails to decrypt if iv is incorrect',
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4915' do
-      # attr_encrypted expects the IV to be 16 bytes and base64-encoded
-      # Use a fixed corrupted IV to ensure deterministic test behavior
-      subject.encrypted_value_iv = ['0' * 16].pack('m')
-      subject.instance_variable_set(:@value, nil)
-
-      expect { subject.value }
-        .to raise_error(OpenSSL::Cipher::CipherError, 'bad decrypt')
-    end
   end
 
   describe '#to_hash_variable' do

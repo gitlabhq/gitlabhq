@@ -50,7 +50,6 @@ The `docs-lint markdown` job fails if any of these `lint-doc.sh` tests fail:
 - Files in the `doc/` directory must not be executable.
 - [Filenames and directories must](../site_architecture/folder_structure.md#work-with-directories-and-files):
   - Use `_index.md` instead of `README.md`
-  - Use underscores instead of dashes.
   - Be lowercase.
 - Image filenames must [specify the version they were added in](../styleguide/_index.md#image-requirements).
 - Mermaid charts must render without errors.
@@ -105,7 +104,7 @@ for all translated content.
 
 | Project | English Dir | Translation Dir | Linting Jobs |
 | ----- | ----- | ----- | ----- |
-| GitLab | [`/doc`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc-locale) | `docs-i18n-lint markdown` <br/> `docs-i18n-lint japanese-vale` |
+| GitLab | [`/doc`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc-locale) | `docs-i18n-lint markdown` <br/> `docs-i18n-lint japanese-vale` <br/> `docs-i18n-lint korean-vale` <br/> `docs-i18n-lint french-vale` |
 | GitLab Runner | [`/docs`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs) | [`/docs-locale`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs-locale?ref_type=heads) | `docs:lint i18n markdown` |
 | Linux package | [`/doc`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc-locale) | `docs-lint-i18n markdown` <br/> `docs-lint-i18n content` |
 | Charts | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc-locale) | `check_docs_i18n_content` <br/> `check_docs_i18n_markdown` |
@@ -135,6 +134,46 @@ The job uses environment variables to configure the universal script:
 variables:
   LANGUAGE_CODE: "ja-jp"
   LANGUAGE_NAME: "Japanese"
+```
+
+#### Korean language support
+
+The `docs-i18n-lint korean-vale` job runs Korean-specific Vale linting:
+
+- Script: [`scripts/i18n_lint_language_vale.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/i18n_lint_language_vale.sh)
+- Configuration: `doc-locale/ko-kr/.vale.ini`
+- Vale filter: `locale_rules`
+- Triggers: Only runs when these files change:
+  - `doc-locale/ko-kr/**/*.md` - Korean documentation files
+  - `doc-locale/ko-kr/.vale.ini` - Korean Vale configuration
+  - `scripts/i18n_lint_language_vale.sh` - Universal language linting script
+
+The job uses environment variables to configure the universal script:
+
+```yaml
+variables:
+  LANGUAGE_CODE: "ko-kr"
+  LANGUAGE_NAME: "Korean"
+```
+
+#### French language support
+
+The `docs-i18n-lint french-vale` job runs French-specific Vale linting:
+
+- Script: [`scripts/i18n_lint_language_vale.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/i18n_lint_language_vale.sh)
+- Configuration: `doc-locale/fr-fr/.vale.ini`
+- Vale filter: `locale_rules`
+- Triggers: Only runs when these files change:
+  - `doc-locale/fr-fr/**/*.md` - French documentation files
+  - `doc-locale/fr-fr/.vale.ini` - French Vale configuration
+  - `scripts/i18n_lint_language_vale.sh` - Universal language linting script
+
+The job uses environment variables to configure the universal script:
+
+```yaml
+variables:
+  LANGUAGE_CODE: "fr-fr"
+  LANGUAGE_NAME: "French"
 ```
 
 #### Adding new languages

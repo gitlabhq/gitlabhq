@@ -1,8 +1,10 @@
 ---
 name: protect_tag
 description: Grants the ability to protect tags
+boundaries:
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - create_protected_tag
   - delete_protected_tag
-boundaries:
-  - project

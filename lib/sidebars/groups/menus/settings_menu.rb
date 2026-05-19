@@ -9,6 +9,7 @@ module Sidebars
           return unless can?(context.current_user, :admin_group, context.group)
 
           add_item(general_menu_item)
+          add_item(service_accounts_menu_item)
           add_item(integrations_menu_item)
           add_item(access_tokens_menu_item)
           add_item(repository_menu_item)
@@ -107,6 +108,21 @@ module Sidebars
             active_routes: { path: 'usage_quotas#root' },
             item_id: :usage_quotas
           )
+        end
+
+        def service_accounts_menu_item
+          return ::Sidebars::NilMenuItem.new(item_id: :service_accounts) unless service_accounts_available?
+
+          ::Sidebars::MenuItem.new(
+            title: _('Service accounts'),
+            link: group_settings_service_accounts_path(context.group),
+            active_routes: { controller: :service_accounts },
+            item_id: :service_accounts
+          )
+        end
+
+        def service_accounts_available?
+          can?(context.current_user, :read_service_account, context.group)
         end
 
         def packages_and_registries_menu_item

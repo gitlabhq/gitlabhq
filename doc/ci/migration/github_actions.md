@@ -15,6 +15,9 @@ title: Migrate from GitHub Actions
 If you're migrating from GitHub Actions to GitLab CI/CD, you are able to create CI/CD
 pipelines that replicate and enhance your GitHub Action workflows.
 
+You can do this by hand, or you can use your agent of choice with the
+[GitHub Actions to GitLab CI/CD agent skill](https://about.gitlab.com/github-actions-to-gitlab-ci/)
+
 ## Key Similarities and Differences
 
 GitHub Actions and GitLab CI/CD are both used to generate pipelines to automate building, testing,
@@ -685,9 +688,9 @@ Before doing any migration work, you should first:
 1. Migrate Projects from GitHub to GitLab:
    - (Recommended) You can use the [GitHub Importer](../../user/project/import/github.md)
      to automate mass imports from external SCM providers.
-   - You can [import repositories by URL](../../user/project/import/repo_by_url.md).
+   - You can [import repositories by URL](../../user/import/third_party_systems/repo_by_url.md).
 1. Create a `.gitlab-ci.yml` in each project.
-1. Migrate GitHub Actions jobs to GitLab CI/CD jobs and configure them to show results directly in merge requests.
+1. Migrate GitHub Actions jobs to GitLab CI/CD jobs and configure them to show results directly in merge requests. This can be automated using the [provided Agent Skill](https://gitlab.com/gitlab-org/ci-cd/github-actions-to-gitlab-ci). 
 1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/_index.md),
    [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create

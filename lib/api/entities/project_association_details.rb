@@ -3,12 +3,12 @@
 module API
   module Entities
     class ProjectAssociationDetails < Entities::ProjectIdentity
-      expose :access_levels do
-        expose :project_access_level do |project, options|
+      expose :access_levels, documentation: { type: 'Hash' } do
+        expose :project_access_level, documentation: { type: 'Integer', example: 50 } do |project, options|
           project.member(options[:current_user])&.access_level
         end
 
-        expose :group_access_level do |project, options|
+        expose :group_access_level, documentation: { type: 'Integer', example: 50 } do |project, options|
           project.group.highest_group_member(options[:current_user])&.access_level if project.group
         end
       end

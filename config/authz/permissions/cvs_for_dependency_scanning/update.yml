@@ -1,0 +1,3 @@
+---
+name: update_cvs_for_dependency_scanning
+description: Grants the ability to enable or disable continuous vulnerability scanning for dependency scanning

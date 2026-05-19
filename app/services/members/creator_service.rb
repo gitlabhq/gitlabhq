@@ -106,7 +106,8 @@ module Members
         {
           current_user: args[:current_user],
           expires_at: args[:expires_at],
-          ldap: args[:ldap]
+          ldap: args[:ldap],
+          skip_authorization: args[:skip_authorization]
         }
       end
 
@@ -198,7 +199,7 @@ module Members
 
       assign_member_attributes
 
-      return add_not_valid_org_error unless same_org?
+      return add_not_valid_org_error if source.organization&.isolated? && !same_org?
 
       commit_changes
     end
@@ -270,7 +271,7 @@ module Members
     end
 
     def skip_authorization?
-      !current_user
+      args[:skip_authorization] || !current_user
     end
 
     def add_commit_error

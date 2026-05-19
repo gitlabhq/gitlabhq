@@ -1,1 +1,0 @@
-export { withGitLabAPIAccess } from './preview';

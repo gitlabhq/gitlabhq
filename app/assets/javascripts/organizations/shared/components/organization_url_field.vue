@@ -1,7 +1,6 @@
 <script>
 import { GlFormInputGroup, GlFormInput, GlInputGroupText, GlTruncate } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { joinPaths } from '~/lib/utils/url_utility';
 
 export default {
   name: 'OrganizationUrlField',
@@ -15,7 +14,7 @@ export default {
     pathPlaceholder: s__('Organization|my-organization'),
   },
   formId: 'new-organization-form',
-  inject: ['organizationsPath', 'rootUrl'],
+  inject: ['organizationsUrl'],
   props: {
     id: {
       type: String,
@@ -30,11 +29,6 @@ export default {
       required: true,
     },
   },
-  computed: {
-    baseUrl() {
-      return joinPaths(this.rootUrl, this.organizationsPath, '/');
-    },
-  },
 };
 </script>
 
@@ -42,7 +36,7 @@ export default {
   <gl-form-input-group class="gl-md-form-input-xl form-control gl-border-0 gl-p-0">
     <template #prepend>
       <gl-input-group-text class="organization-root-path">
-        <gl-truncate :text="baseUrl" position="middle" />
+        <gl-truncate :text="organizationsUrl" position="middle" />
       </gl-input-group-text>
     </template>
     <gl-form-input

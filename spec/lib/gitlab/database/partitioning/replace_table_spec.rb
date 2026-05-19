@@ -215,6 +215,51 @@ RSpec.describe Gitlab::Database::Partitioning::ReplaceTable, '#perform', feature
     end
   end
 
+  context 'when the sequence is not owned by the column' do
+    let(:primary_key_columns) { %w[id created_at] }
+
+    let(:original_table) { '_test_original_table_unowned_seq' }
+    let(:replacement_table) { '_test_replacement_table_unowned_seq' }
+    let(:archived_table) { '_test_archived_table_unowned_seq' }
+
+    let(:original_sequence) { "#{original_table}_id_seq" }
+
+    before do
+      connection.execute(<<~SQL)
+        CREATE TABLE #{original_table} (
+          id serial NOT NULL,
+          original_column text NOT NULL,
+          created_at timestamptz NOT NULL,
+          PRIMARY KEY (id, created_at));
+
+        ALTER SEQUENCE #{original_sequence} OWNED BY NONE;
+
+        CREATE TABLE #{replacement_table} (
+          id int NOT NULL,
+          replacement_column text NOT NULL,
+          created_at timestamptz NOT NULL,
+          PRIMARY KEY (id, created_at))
+          PARTITION BY RANGE (created_at);
+      SQL
+    end
+
+    it 'falls back to information_schema.columns and transfers the sequence' do
+      expect(sequence_owned_by(original_table, 'id')).to be_nil
+      expect(default_expression_for(original_table, 'id')).to eq("nextval('#{original_sequence}'::regclass)")
+
+      expect_table_to_be_replaced(
+        original_table: original_table,
+        replacement_table: replacement_table,
+        archived_table: archived_table
+      ) { replace_table }
+
+      expect(sequence_owned_by(original_table, 'id')).to eq(original_sequence)
+      expect(default_expression_for(original_table, 'id')).to eq("nextval('#{original_sequence}'::regclass)")
+      expect(sequence_owned_by(archived_table, 'id')).to be_nil
+      expect(default_expression_for(archived_table, 'id')).to be_nil
+    end
+  end
+
   context 'with a composite primary key without a sequence' do
     let(:primary_key_columns) { %w[foreign_id relative_order] }
 

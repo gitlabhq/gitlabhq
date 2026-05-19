@@ -1,0 +1,12 @@
+---
+api_type:
+attr: mcp_server_settings
+clusterwide: false
+column: mcp_server_settings
+db_type: jsonb
+default: "'{}'::jsonb"
+description: MCP Server settings
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

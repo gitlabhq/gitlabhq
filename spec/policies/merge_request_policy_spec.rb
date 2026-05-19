@@ -127,7 +127,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         context 'and the user is a bot' do
           let(:user) { bot }
 
-          it do
+          it 'allows resetting merge request approvals' do
             expect_allowed(:reset_merge_request_approvals)
           end
         end
@@ -201,7 +201,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
       context 'for a bot' do
         let(:user) { bot }
 
-        it do
+        it 'disallows resetting merge request approvals' do
           expect_disallowed(:reset_merge_request_approvals)
         end
       end
@@ -236,7 +236,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
       context 'for a bot' do
         let(:user) { bot }
 
-        it do
+        it 'allows resetting merge request approvals' do
           expect_allowed(:reset_merge_request_approvals)
         end
       end
@@ -346,11 +346,11 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
       context 'when the user is the merge request author' do
         let(:user) { author }
 
-        it do
+        it 'allows approving the merge request' do
           expect_allowed(:approve_merge_request)
         end
 
-        it do
+        it 'disallows resetting merge request approvals' do
           expect_disallowed(:reset_merge_request_approvals)
         end
       end
@@ -358,11 +358,11 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
       context 'for a bot' do
         let(:user) { bot }
 
-        it do
+        it 'allows approving the merge request' do
           expect_allowed(:approve_merge_request)
         end
 
-        it do
+        it 'allows resetting merge request approvals' do
           expect_allowed(:reset_merge_request_approvals)
         end
       end
@@ -415,7 +415,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         describe 'for a bot' do
           let(:user) { bot }
 
-          it do
+          it 'allows resetting merge request approvals' do
             expect_allowed(:reset_merge_request_approvals)
           end
         end
@@ -454,7 +454,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
       describe 'for a bot' do
         let(:user) { bot }
 
-        it do
+        it 'allows resetting merge request approvals' do
           expect_allowed(:reset_merge_request_approvals)
         end
       end
@@ -483,22 +483,22 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         group.add_guest(bot)
       end
 
-      it do
+      it 'allows approving the merge request' do
         expect_allowed(:approve_merge_request)
       end
 
-      it do
+      it 'disallows resetting merge request approvals' do
         expect_disallowed(:reset_merge_request_approvals)
       end
 
       context 'and the user is a bot' do
         let(:user) { bot }
 
-        it do
+        it 'allows approving the merge request' do
           expect_allowed(:approve_merge_request)
         end
 
-        it do
+        it 'allows resetting merge request approvals' do
           expect_allowed(:reset_merge_request_approvals)
         end
       end
@@ -512,22 +512,22 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
       let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
       let(:user) { non_team_member }
 
-      it do
+      it 'disallows approving the merge request' do
         expect_disallowed(:approve_merge_request)
       end
 
-      it do
+      it 'disallows resetting merge request approvals' do
         expect_disallowed(:reset_merge_request_approvals)
       end
 
       context 'and the user is a bot' do
         let(:user) { bot }
 
-        it do
+        it 'disallows approving the merge request' do
           expect_disallowed(:approve_merge_request)
         end
 
-        it do
+        it 'disallows resetting merge request approvals' do
           expect_disallowed(:reset_merge_request_approvals)
         end
       end
@@ -576,7 +576,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     context 'when merge request is public' do
       let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
-      it do
+      it 'disallows creating todos and updating subscriptions' do
         expect_disallowed(:create_todo, :update_subscription)
       end
     end

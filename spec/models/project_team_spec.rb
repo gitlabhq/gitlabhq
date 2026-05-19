@@ -5,16 +5,16 @@ require "spec_helper"
 RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
   include ProjectForksHelper
 
-  let(:maintainer) { create(:user) }
-  let(:reporter) { create(:user) }
-  let(:planner) { create(:user) }
-  let(:guest) { create(:user) }
-  let(:nonmember) { create(:user) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:planner) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:nonmember) { create(:user) }
 
   context 'personal project' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
-    before do
+    before_all do
       project.add_maintainer(maintainer)
       project.add_planner(planner)
       project.add_reporter(reporter)
@@ -45,10 +45,10 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
   end
 
   context 'group project' do
-    let(:group) { create(:group) }
-    let!(:project) { create(:project, group: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
 
-    before do
+    before_all do
       group.add_maintainer(maintainer)
       group.add_reporter(reporter)
       group.add_planner(planner)
@@ -88,7 +88,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
 
   describe 'owner methods' do
     context 'personal project' do
-      let(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
       let(:owner) { project.first_owner }
 
       specify { expect(project.team.owners).to contain_exactly(owner) }
@@ -96,13 +96,13 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     end
 
     context 'group project' do
-      let(:group) { create(:group) }
-      let(:project) { create(:project, group: group) }
-      let(:user1) { create(:user) }
-      let(:user2) { create(:user) }
-      let(:user3) { create(:user) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+      let_it_be(:user1) { create(:user) }
+      let_it_be(:user2) { create(:user) }
+      let_it_be(:user3) { create(:user) }
 
-      before do
+      before_all do
         group.add_owner(user1)
         group.add_owner(user2)
         group.add_developer(user3)
@@ -165,7 +165,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
 
     context 'group project' do
       let(:group) { create(:group) }
-      let!(:project) { create(:project, group: group) }
+      let(:project) { create(:project, group: group) }
 
       it 'returns project members' do
         group_member = create(:group_member, group: group)
@@ -226,7 +226,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     end
 
     context 'when importer is an owner in target project' do
-      before do
+      before_all do
         target_project.add_owner(current_user)
       end
 
@@ -244,13 +244,10 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
 
   describe '#find_member' do
     context 'personal project' do
-      let(:project) do
-        create(:project, :public)
-      end
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:requester) { create(:user) }
 
-      let(:requester) { create(:user) }
-
-      before do
+      before_all do
         project.add_maintainer(maintainer)
         project.add_reporter(reporter)
         project.add_planner(planner)
@@ -267,11 +264,11 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     end
 
     context 'group project' do
-      let(:group) { create(:group) }
-      let(:project) { create(:project, group: group) }
-      let(:requester) { create(:user) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+      let_it_be(:requester) { create(:user) }
 
-      before do
+      before_all do
         group.add_maintainer(maintainer)
         group.add_reporter(reporter)
         group.add_planner(planner)
@@ -311,17 +308,18 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
       expect(project.team.reporter?(user)).to be(true)
     end
 
-    it 'can pass through immediately_sync_authorizations' do
+    it 'can pass through immediately_sync_authorizations and skip_authorization' do
       expect(::Members::Projects::CreatorService)
         .to receive(:add_member)
         .with(
           project, user, :reporter,
           current_user: anything,
           expires_at: nil,
-          immediately_sync_authorizations: true
+          immediately_sync_authorizations: true,
+          skip_authorization: true
         )
 
-      project.add_member(user, :reporter, immediately_sync_authorizations: true)
+      project.add_member(user, :reporter, immediately_sync_authorizations: true, skip_authorization: true)
     end
   end
 
@@ -386,10 +384,10 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
   end
 
   describe '#contributor?' do
-    let(:project) { create(:project, :public, :repository) }
-
     context 'when user is a member of project' do
-      before do
+      let_it_be(:project) { create(:project, :public, :repository) }
+
+      before_all do
         project.add_maintainer(maintainer)
         project.add_reporter(reporter)
         project.add_planner(planner)
@@ -403,6 +401,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     end
 
     context 'when user has at least one merge request merged into default_branch' do
+      let(:project) { create(:project, :public, :repository) }
       let(:contributor) { create(:user) }
       let(:user_without_access) { create(:user) }
       let(:first_fork_project) { fork_project(project, contributor, repository: true) }
@@ -417,15 +416,13 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
   end
 
   describe '#max_member_access' do
-    let(:requester) { create(:user) }
+    let_it_be(:requester) { create(:user) }
 
     context 'personal project' do
-      let(:project) do
-        create(:project, :public)
-      end
+      let_it_be_with_refind(:project) { create(:project, :public) }
 
       context 'when project is not shared with group' do
-        before do
+        before_all do
           project.add_maintainer(maintainer)
           project.add_reporter(reporter)
           project.add_planner(planner)
@@ -442,15 +439,16 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
       end
 
       context 'when project is shared with group' do
-        before do
-          group = create(:group)
+        let_it_be(:shared_group) { create(:group) }
+
+        before_all do
           project.project_group_links.create!(
-            group: group,
+            group: shared_group,
             group_access: Gitlab::Access::DEVELOPER)
 
-          group.add_maintainer(maintainer)
-          group.add_reporter(reporter)
-          group.add_planner(planner)
+          shared_group.add_maintainer(maintainer)
+          shared_group.add_reporter(reporter)
+          shared_group.add_planner(planner)
         end
 
         it { expect(project.team.max_member_access(maintainer.id)).to eq(Gitlab::Access::DEVELOPER) }
@@ -472,12 +470,10 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     end
 
     context 'group project' do
-      let(:group) { create(:group) }
-      let!(:project) do
-        create(:project, group: group)
-      end
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
 
-      before do
+      before_all do
         group.add_maintainer(maintainer)
         group.add_reporter(reporter)
         group.add_planner(planner)
@@ -511,22 +507,16 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
   end
 
   describe '#member?' do
-    let(:group) { create(:group) }
-    let(:developer) { create(:user) }
-    let(:maintainer) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:developer) { create(:user) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:group_project) { create(:project, namespace: group) }
+    let_it_be(:members_project) { create(:project) }
+    let_it_be(:shared_project) { create(:project) }
 
-    let(:personal_project) do
-      create(:project, namespace: developer.namespace)
-    end
+    let(:personal_project) { create(:project, namespace: developer.namespace) }
 
-    let(:group_project) do
-      create(:project, namespace: group)
-    end
-
-    let(:members_project) { create(:project) }
-    let(:shared_project) { create(:project) }
-
-    before do
+    before_all do
       group.add_maintainer(maintainer)
       group.add_developer(developer)
 
@@ -628,22 +618,21 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
   end
 
   shared_examples 'max member access for users' do
-    let(:project) { create(:project) }
-    let(:group) { create(:group) }
-    let(:second_group) { create(:group) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:second_group) { create(:group) }
 
-    let(:maintainer) { create(:user) }
-    let(:reporter) { create(:user) }
-    let(:planner) { create(:user) }
-    let(:guest) { create(:user) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:reporter) { create(:user) }
+    let_it_be(:planner) { create(:user) }
+    let_it_be(:guest) { create(:user) }
 
-    let(:promoted_guest) { create(:user) }
+    let_it_be(:promoted_guest) { create(:user) }
 
-    let(:group_developer) { create(:user) }
-    let(:second_developer) { create(:user) }
+    let_it_be(:group_developer) { create(:user) }
+    let_it_be(:second_developer) { create(:user) }
 
-    let(:user_without_access) { create(:user) }
-    let(:second_user_without_access) { create(:user) }
+    let_it_be(:user_without_access) { create(:user) }
 
     let(:users) do
       [
@@ -665,7 +654,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
       }
     end
 
-    before do
+    before_all do
       project.add_maintainer(maintainer)
       project.add_reporter(reporter)
       project.add_planner(planner)

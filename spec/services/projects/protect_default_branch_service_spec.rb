@@ -256,9 +256,11 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
   end
 
   describe '#protected_branch_exists?' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group) }
     let_it_be_with_reload(:project) { create(:project, :repository, group: group) }
-    let_it_be(:protected_branch) { create(:protected_branch, project: nil, group: group, name: project.default_branch) }
+    let_it_be(:protected_branch, freeze: false) do
+      create(:protected_branch, project: nil, group: group, name: project.default_branch)
+    end
 
     it 'return true' do
       expect(service.protected_branch_exists?).to eq(true)

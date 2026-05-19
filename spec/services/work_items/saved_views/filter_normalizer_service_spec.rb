@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe WorkItems::SavedViews::FilterNormalizerService, feature_category: :portfolio_management do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
-  let_it_be(:project) { create(:project, group: subgroup) }
+  let_it_be(:project, freeze: false) { create(:project, group: subgroup) }
   let_it_be(:current_user) { create(:user, developer_of: [group, project]) }
 
   let_it_be(:user1) { create(:user, username: 'alice') }
@@ -263,7 +263,7 @@ RSpec.describe WorkItems::SavedViews::FilterNormalizerService, feature_category:
     end
 
     context 'with release tag' do
-      let_it_be(:release) { create(:release, project: project, tag: 'v1.0.0') }
+      let_it_be(:release, freeze: false) { create(:release, project: project, tag: 'v1.0.0') }
       let(:filter_data) { { release_tag: ['v1.0.0'] } }
 
       it 'converts release tags to release IDs' do

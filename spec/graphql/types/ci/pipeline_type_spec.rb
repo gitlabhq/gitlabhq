@@ -125,10 +125,75 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
     end
   end
 
+  describe 'type' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository) }
+
+    let(:query) do
+      %(
+        {
+          project(fullPath: "#{project.full_path}") {
+            pipeline(iid: "#{pipeline.iid}") {
+              type
+            }
+          }
+        }
+      )
+    end
+
+    let(:pipeline_type) do
+      GitlabSchema.execute(query, context: { current_user: user })
+                  .as_json
+                  .dig('data', 'project', 'pipeline', 'type')
+    end
+
+    before_all do
+      project.add_developer(user)
+    end
+
+    context 'when pipeline is a branch pipeline' do
+      let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
+
+      it 'returns branch' do
+        expect(pipeline_type).to eq('branch')
+      end
+    end
+
+    context 'when pipeline is a tag pipeline' do
+      let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, :tag, project: project) }
+
+      it 'returns tag' do
+        expect(pipeline_type).to eq('tag')
+      end
+    end
+
+    context 'when pipeline is a merge request pipeline' do
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be(:pipeline, freeze: false) do
+        create(:ci_pipeline, :detached_merge_request_pipeline, merge_request: merge_request)
+      end
+
+      it 'returns merge_request' do
+        expect(pipeline_type).to eq('merge_request')
+      end
+    end
+
+    context 'when pipeline is a merged result pipeline' do
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be(:pipeline, freeze: false) do
+        create(:ci_pipeline, :merged_result_pipeline, merge_request: merge_request)
+      end
+
+      it 'returns merged_result' do
+        expect(pipeline_type).to eq('merged_result')
+      end
+    end
+  end
+
   describe 'manual_variables' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
 
     let(:query) do
       %(
@@ -187,7 +252,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
   describe 'failed_jobs_count' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
     let(:query) do
       %(
         {
@@ -248,7 +313,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
   describe 'retryable' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
 
     let(:query) do
       %(
@@ -356,7 +421,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository, public_builds: false) }
     let_it_be(:schedule) { create(:ci_pipeline_schedule, project: project) }
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project, pipeline_schedule: schedule) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project, pipeline_schedule: schedule) }
 
     let(:query) do
       %(
@@ -400,7 +465,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
     end
 
     context 'when the pipeline was not triggered by a schedule' do
-      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
       let(:user_access_level) { :developer }
 
       it 'returns nil' do
@@ -412,7 +477,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
   describe 'stuck' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
 
     let(:query) do
       %(

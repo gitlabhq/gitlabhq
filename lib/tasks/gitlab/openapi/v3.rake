@@ -28,8 +28,7 @@ namespace :gitlab do
         end
 
         generator = Gitlab::GrapeOpenapi::Generator.new(
-          api_classes: API::Base.descendants,
-          entity_classes: Grape::Entity.descendants
+          api_classes: API::Base.descendants
         )
 
         File.write(
@@ -43,8 +42,7 @@ namespace :gitlab do
       desc 'GitLab | OpenAPI | Check if OpenAPI v3 doc is up to date'
       task check_docs: [:environment, :enable_feature_flags] do
         generator = Gitlab::GrapeOpenapi::Generator.new(
-          api_classes: API::Base.descendants,
-          entity_classes: Grape::Entity.descendants
+          api_classes: API::Base.descendants
         )
 
         current_doc = Digest::SHA512.hexdigest(File.read("doc/api/openapi/openapi_v3.yaml"))

@@ -1,0 +1,9 @@
+---
+name: read_alias
+description: Grants the ability to read aliases for accessing projects by alternative names
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_project_alias

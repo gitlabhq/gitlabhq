@@ -33,6 +33,10 @@ module MergeRequests
         raise NotImplementedError
       end
 
+      def cache_ttl
+        6.hours
+      end
+
       private
 
       def success(**args)

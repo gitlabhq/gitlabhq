@@ -1,4 +1,0 @@
----
-Cop/IgnoredColumns:
-  Exclude:
-    - 'spec/lib/gitlab/database/partitioning/sliding_list_strategy_spec.rb'

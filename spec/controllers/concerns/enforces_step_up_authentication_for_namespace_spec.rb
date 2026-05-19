@@ -21,7 +21,7 @@ RSpec.describe EnforcesStepUpAuthenticationForNamespace, feature_category: :syst
     end
   end
 
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:user) { create(:user, owner_of: group) }
 
   subject do

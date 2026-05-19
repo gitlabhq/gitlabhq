@@ -12,7 +12,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
   shared_examples 'package without revisions returns not found' do |resource: 'Revision'|
     let_it_be(:package) { create(:conan_package, project: project, without_revisions: true) }
 
-    it_behaves_like 'returning response status with message', status: :not_found,
+    it_behaves_like 'conan structured error response', status: :not_found,
       message: "404 #{resource} Not Found"
   end
 
@@ -68,7 +68,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       # This is a non-existent revision
       let(:recipe_revision) { 'da39a3ee5e6b4b0d3255bfef95601890afd80709' }
 
-      it_behaves_like 'returning response status with message', status: :not_found,
+      it_behaves_like 'conan structured error response', status: :not_found,
         message: not_found_err
     end
 
@@ -76,7 +76,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       # This is a non-existent revision
       let(:recipe_path) { 'test/9.0.0/namespace1+project-1/stable' }
 
-      it_behaves_like 'returning response status with message', status: :not_found, message: '404 Package Not Found'
+      it_behaves_like 'conan structured error response', status: :not_found, message: '404 Package Not Found'
     end
 
     context 'when the limit is reached' do
@@ -94,12 +94,9 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
   end
 
   shared_examples 'returns 404 when resource does not exist' do
-    it 'returns 404' do
-      request
-
-      expect(response).to have_gitlab_http_status(:not_found)
-      expect(json_response['message']).to eq('404 Revision Not Found')
-    end
+    it_behaves_like 'conan structured error response',
+      status: :not_found,
+      message: '404 Revision Not Found'
   end
 
   shared_examples 'returns empty package revisions list when resource does not exist' do
@@ -409,12 +406,8 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
           stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
         end
 
-        it 'returns 404' do
-          request
-
-          expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['message']).to eq('404 Revision Not Found')
-        end
+        it_behaves_like 'conan structured error response', status: :not_found,
+          message: '404 Revision Not Found'
       end
     end
 
@@ -450,7 +443,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'conan FIPS mode'
     it_behaves_like 'rejects invalid recipe'
     it_behaves_like 'project not found by project id'
-    it_behaves_like 'returning response status with message', status: :forbidden,
+    it_behaves_like 'conan structured error response', status: :forbidden,
       message: '403 Forbidden'
 
     context 'with delete permissions' do
@@ -470,13 +463,84 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
         expect(package.package_files.where(id: revision_package_files_ids)).to all(be_pending_destruction)
       end
 
+      context 'with package protection rules' do
+        let_it_be(:protection_rule) do
+          create(:package_protection_rule,
+            :conan,
+            project: project,
+            package_name_pattern: package.name,
+            minimum_access_level_for_delete: Gitlab::Access::OWNER)
+        end
+
+        it_behaves_like 'conan structured error response',
+          status: :forbidden,
+          message: '403 Forbidden - Package is deletion protected.'
+
+        it { expect { request }.not_to change { package.conan_recipe_revisions.count } }
+
+        context 'when user has sufficient permissions' do
+          let_it_be(:owner_pat) { create(:personal_access_token, user: create(:user, owner_of: [project])) }
+          let(:jwt) { build_jwt(owner_pat) }
+
+          it_behaves_like 'returning response status', :ok
+          it { expect { request }.to change { package.conan_recipe_revisions.count }.by(-1) }
+        end
+
+        context 'when feature flag :packages_protected_packages_delete is disabled' do
+          before do
+            stub_feature_flags(packages_protected_packages_delete: false)
+          end
+
+          it_behaves_like 'returning response status', :ok
+          it { expect { request }.to change { package.conan_recipe_revisions.count }.by(-1) }
+        end
+      end
+
       context 'with only one revision' do
         let_it_be_with_reload(:package) { create(:conan_package, project: project) }
         let_it_be(:recipe_revision) { package.conan_recipe_revisions.first.revision }
 
         it_behaves_like 'triggers an internal event', event: 'delete_package_from_registry'
         it_behaves_like 'returning response status', :ok
-        it { expect { request }.to change { ::Packages::Package.pending_destruction.count }.by(1) }
+        it { expect { request }.to change { ::Packages::Conan::Package.pending_destruction.count }.by(1) }
+
+        context 'with package protection rules' do
+          shared_examples 'deleting conan package' do
+            it 'marks the package for destruction' do
+              expect { request }.to change { ::Packages::Conan::Package.pending_destruction.size }.by(1)
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+
+          let_it_be(:protection_rule) do
+            create(:package_protection_rule,
+              :conan,
+              project: project,
+              package_name_pattern: package.name,
+              minimum_access_level_for_delete: Gitlab::Access::OWNER)
+          end
+
+          it_behaves_like 'conan structured error response',
+            status: :forbidden,
+            message: 'Package is deletion protected.'
+
+          it { expect { request }.not_to change { ::Packages::Conan::Package.pending_destruction.size } }
+
+          context 'when user has sufficient permissions' do
+            let_it_be(:owner_pat) { create(:personal_access_token, user: create(:user, owner_of: [project])) }
+            let(:jwt) { build_jwt(owner_pat) }
+
+            it_behaves_like 'deleting conan package'
+          end
+
+          context 'when feature flag :packages_protected_packages_delete is disabled' do
+            before do
+              stub_feature_flags(packages_protected_packages_delete: false)
+            end
+
+            it_behaves_like 'deleting conan package'
+          end
+        end
       end
 
       context 'when the number of files to delete is greater than the maximum allowed' do
@@ -484,7 +548,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
           stub_const("#{described_class}::MAX_FILES_COUNT", 1)
         end
 
-        it_behaves_like 'returning response status with message', status: :unprocessable_entity,
+        it_behaves_like 'conan structured error response', status: :unprocessable_entity,
           message: "Cannot delete more than 1 files"
       end
     end
@@ -781,7 +845,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'conan FIPS mode'
     it_behaves_like 'rejects invalid recipe'
     it_behaves_like 'project not found by project id'
-    it_behaves_like 'returning response status with message', status: :forbidden,
+    it_behaves_like 'conan structured error response', status: :forbidden,
       message: '403 Forbidden'
 
     context 'with delete permissions' do
@@ -821,12 +885,44 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
         end
       end
 
+      context 'with package protection rules' do
+        let_it_be(:protection_rule) do
+          create(:package_protection_rule,
+            :conan,
+            project: project,
+            package_name_pattern: package.name,
+            minimum_access_level_for_delete: Gitlab::Access::OWNER)
+        end
+
+        it_behaves_like 'conan structured error response',
+          status: :forbidden,
+          message: '403 Forbidden - Package is deletion protected.'
+
+        it { expect { request }.not_to change { package.conan_package_revisions.count } }
+
+        context 'when user has sufficient permissions' do
+          let_it_be(:owner_pat) { create(:personal_access_token, user: create(:user, owner_of: [project])) }
+          let(:jwt) { build_jwt(owner_pat) }
+
+          it_behaves_like 'returning response status', :ok
+          it { expect { request }.to change { package.conan_package_revisions.count }.by(-1) }
+        end
+
+        context 'when feature flag :packages_protected_packages_delete is disabled' do
+          before do
+            stub_feature_flags(packages_protected_packages_delete: false)
+          end
+
+          it_behaves_like 'returning response status', :ok
+        end
+      end
+
       context 'when the number of files to delete is greater than the maximum allowed' do
         before do
           stub_const("#{described_class}::MAX_FILES_COUNT", 1)
         end
 
-        it_behaves_like 'returning response status with message', status: :unprocessable_entity,
+        it_behaves_like 'conan structured error response', status: :unprocessable_entity,
           message: 'Cannot delete more than 1 files'
       end
     end

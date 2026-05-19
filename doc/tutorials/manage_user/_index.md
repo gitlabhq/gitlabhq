@@ -1,6 +1,6 @@
 ---
-stage: none
-group: Tutorials
+stage: Tenant Scale
+group: Organizations
 info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: 'Tutorial: Set up your organization'
 description: Setup, configuration, onboarding, and organization structure.
@@ -125,7 +125,7 @@ You will now manually create the users for your organization. These users are te
 users. To create the first test user, Alex Smith:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Users**.
+1. In the left sidebar, select **Overview** > **Users**.
 1. Select **New user**.
 1. Complete the required fields:
    - **Name**: `Alex Smith`

@@ -7,7 +7,7 @@ RSpec.describe WorkItems::DataSync::Handlers::CopyDataHandler, feature_category:
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:target_namespace) { project.project_namespace }
-  let_it_be(:target_work_item_type) { create(:work_item_type) }
+  let(:target_work_item_type) { build(:work_item_system_defined_type) }
   let_it_be(:current_user) { create(:user) }
 
   let(:params) { { operation: :move, data_sync_params: { some_param: "some data" } } }

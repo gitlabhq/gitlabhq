@@ -19,7 +19,7 @@ RSpec.describe Clusters::Agents::DeleteExpiredEventsWorker, feature_category: :d
       subject
     end
 
-    context 'agent no longer exists' do
+    context 'when agent no longer exists' do
       let(:agent_id) { -1 }
 
       it 'completes without raising an error' do

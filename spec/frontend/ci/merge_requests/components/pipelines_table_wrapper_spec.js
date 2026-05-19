@@ -9,7 +9,7 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import { createAlert } from '~/alert';
 import Api from '~/api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
+import { setupQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import { DEFAULT_MANUAL_ACTIONS_LIMIT } from '~/ci/constants';
 import PipelinesTableWrapper from '~/ci/merge_requests/components/pipelines_table_wrapper.vue';
@@ -20,6 +20,7 @@ import getSinglePipeline from '~/ci/pipelines_page/graphql/queries/get_single_pi
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
 import mrPipelineStatusesUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/mr_pipeline_statuses_updated.subscription.graphql';
+import getPipelinesDownstream from '~/ci/merge_requests/graphql/queries/get_pipelines_downstream.query.graphql';
 import getPipelineCreationRequests from '~/ci/merge_requests/graphql/queries/get_pipeline_creation_requests.query.graphql';
 import pipelineCreationRequestsUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
 import {
@@ -31,7 +32,10 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import {
   generateMRPipelinesResponse,
   generateMockPipeline,
+  generateMockDownstreamPipeline,
+  generateMockDownstreamSkeleton,
   generateSinglePipelineResponse,
+  generateMockDownstreamResponse,
   mockPipelineUpdateResponseEmpty,
   mockPipelineUpdateResponse,
   generatePipelineCreationRequestsResponse,
@@ -52,6 +56,7 @@ const $toast = {
 let wrapper;
 let mergeRequestPipelinesRequest;
 let getSinglePipelineRequest;
+let getPipelinesDownstreamRequest;
 let cancelPipelineMutationRequest;
 let retryPipelineMutationRequest;
 let subscriptionHandler;
@@ -92,6 +97,7 @@ const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) =>
   const handlers = [
     [getMergeRequestsPipelines, mergeRequestPipelinesRequest],
     [getSinglePipeline, getSinglePipelineRequest],
+    [getPipelinesDownstream, getPipelinesDownstreamRequest],
     [cancelPipelineMutation, cancelPipelineMutationRequest],
     [retryPipelineMutation, retryPipelineMutationRequest],
     [mrPipelineStatusesUpdatedSubscription, subscriptionHandler],
@@ -151,6 +157,9 @@ beforeEach(() => {
   getSinglePipelineRequest.mockResolvedValue(
     generateSinglePipelineResponse(generateMockPipeline({ id: '1' })),
   );
+
+  getPipelinesDownstreamRequest = jest.fn();
+  getPipelinesDownstreamRequest.mockResolvedValue(generateMockDownstreamResponse());
 
   cancelPipelineMutationRequest = jest.fn();
   cancelPipelineMutationRequest.mockResolvedValue({ data: { pipelineCancel: { errors: [] } } });
@@ -279,7 +288,7 @@ describe('PipelinesTableWrapper component', () => {
     it('toggles polling by tab visibility', async () => {
       await createComponent();
 
-      expect(toggleQueryPollingByVisibility).toHaveBeenCalledWith(expect.anything(), 60000);
+      expect(setupQueryPollingByVisibility).toHaveBeenCalledWith(expect.anything(), 60000);
     });
 
     it('polls every 60 seconds', async () => {
@@ -689,6 +698,54 @@ describe('PipelinesTableWrapper component', () => {
         });
       });
     });
+
+    describe('clears downstream data on page change', () => {
+      const fullDownstream = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
+
+      beforeEach(() => {
+        getPipelinesDownstreamRequest.mockResolvedValue(
+          generateMockDownstreamResponse([{ pipelineId: '1', downstreamNodes: [fullDownstream] }]),
+        );
+      });
+
+      it('clears downstream data when navigating to next page', async () => {
+        await createComponent();
+        await waitForPromises();
+
+        const pipelinesBeforeNav = findPipelinesList().props('pipelines');
+        expect(pipelinesBeforeNav[0].downstream?.nodes).toHaveLength(1);
+
+        getPipelinesDownstreamRequest.mockResolvedValue(generateMockDownstreamResponse());
+
+        findPagination().vm.$emit('next');
+        await waitForPromises();
+
+        const pipelinesAfterNav = findPipelinesList().props('pipelines');
+        expect(pipelinesAfterNav[0].downstream?.nodes).toHaveLength(0);
+      });
+
+      it('clears downstream data when navigating to previous page', async () => {
+        const responseWithPreviousPage = createResponseWithPageInfo({
+          hasNextPage: false,
+          hasPreviousPage: true,
+        });
+        mergeRequestPipelinesRequest.mockResolvedValue(responseWithPreviousPage);
+
+        await createComponent();
+        await waitForPromises();
+
+        const pipelinesBeforeNav = findPipelinesList().props('pipelines');
+        expect(pipelinesBeforeNav[0].downstream?.nodes).toHaveLength(1);
+
+        getPipelinesDownstreamRequest.mockResolvedValue(generateMockDownstreamResponse());
+
+        findPagination().vm.$emit('prev');
+        await waitForPromises();
+
+        const pipelinesAfterNav = findPipelinesList().props('pipelines');
+        expect(pipelinesAfterNav[0].downstream?.nodes).toHaveLength(0);
+      });
+    });
   });
 
   describe('subscription', () => {
@@ -792,9 +849,23 @@ describe('PipelinesTableWrapper component', () => {
         await waitForPromises();
 
         const updatedPipeline = findPipelinesList().props('pipelines')[0];
-        const updatedStageStatuses = updatedPipeline.stages.nodes.map((s) => s.detailedStatus.name);
+        const updatedStages = updatedPipeline.stages.nodes;
 
-        expect(updatedStageStatuses).toEqual(['RUNNING', 'CREATED', 'CREATED']);
+        expect(updatedStages.map((s) => s.detailedStatus.name)).toEqual([
+          'RUNNING',
+          'CREATED',
+          'CREATED',
+        ]);
+        expect(updatedStages.map((s) => s.detailedStatus.icon)).toEqual([
+          'status_running',
+          'status_created',
+          'status_created',
+        ]);
+        expect(updatedStages.map((s) => s.detailedStatus.tooltip)).toEqual([
+          'running',
+          'created',
+          'created',
+        ]);
       });
 
       it('skips subscription when there are no pipelines', async () => {
@@ -803,6 +874,146 @@ describe('PipelinesTableWrapper component', () => {
         await createComponent();
 
         expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('downstream pipeline fetching', () => {
+      it('fetches full downstream data lazily after initial query', async () => {
+        await createComponent();
+
+        expect(getPipelinesDownstreamRequest).toHaveBeenCalledTimes(1);
+        expect(getPipelinesDownstreamRequest).toHaveBeenCalledWith(
+          expect.objectContaining({
+            fullPath: defaultProvide.targetProjectFullPath,
+            mergeRequestIid: String(defaultProvide.mergeRequestId),
+          }),
+        );
+      });
+
+      it('does not duplicate bulk fetch when already in flight', async () => {
+        await createComponent();
+
+        expect(getPipelinesDownstreamRequest).toHaveBeenCalledTimes(1);
+      });
+
+      it('fetches downstream for a single pipeline after job action', async () => {
+        await createComponent();
+        await waitForPromises();
+
+        getPipelinesDownstreamRequest.mockClear();
+
+        const pipelines = findPipelinesList().props('pipelines');
+        getSinglePipelineRequest.mockResolvedValue(
+          generateSinglePipelineResponse(
+            generateMockPipeline({ id: String(pipelines[0].id), status: 'RUNNING' }),
+          ),
+        );
+        findPipelinesList().vm.$emit('job-action-executed', pipelines[0]);
+        await waitForPromises();
+
+        expect(getPipelinesDownstreamRequest).toHaveBeenCalledWith(
+          expect.objectContaining({
+            ids: [pipelines[0].graphqlId],
+          }),
+        );
+      });
+
+      it('merges full downstream data with existing skeleton data', async () => {
+        const fullDownstream = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
+        getPipelinesDownstreamRequest.mockResolvedValue(
+          generateMockDownstreamResponse([{ pipelineId: '1', downstreamNodes: [fullDownstream] }]),
+        );
+
+        await createComponent();
+        await waitForPromises();
+
+        const pipelines = findPipelinesList().props('pipelines');
+        const downstreamNode = pipelines[0].downstream?.nodes?.find(
+          (n) => n.id === 'gid://gitlab/Ci::Pipeline/100',
+        );
+
+        expect(downstreamNode.iid).toBe('100');
+        expect(downstreamNode.name).toBe('child-pipeline-100');
+        expect(downstreamNode.project.fullPath).toBe('root/child-project');
+      });
+
+      it('keeps running→success subscription status when backfill data arrives with older status', async () => {
+        const response = generateMRPipelinesResponse({ count: 1 });
+        response.data.project.mergeRequest.pipelines.nodes[0].downstream = {
+          nodes: [generateMockDownstreamSkeleton({ id: '100', status: 'SUCCESS' })],
+          __typename: 'PipelineConnection',
+        };
+        mergeRequestPipelinesRequest.mockResolvedValue(response);
+
+        getPipelinesDownstreamRequest.mockResolvedValue(
+          generateMockDownstreamResponse([
+            {
+              pipelineId: '1',
+              downstreamNodes: [generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' })],
+            },
+          ]),
+        );
+
+        await createComponent();
+        await waitForPromises();
+
+        const pipelines = findPipelinesList().props('pipelines');
+        const downstreamNode = pipelines[0].downstream?.nodes?.find(
+          (n) => n.id === 'gid://gitlab/Ci::Pipeline/100',
+        );
+
+        expect(downstreamNode.detailedStatus.name).toBe('SUCCESS');
+        expect(downstreamNode.name).toBe('child-pipeline-100');
+        expect(downstreamNode.project.fullPath).toBe('root/child-project');
+      });
+
+      it('reflects updated skeleton status even after backfill stored older data', async () => {
+        const staleDownstream = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
+        getPipelinesDownstreamRequest.mockResolvedValue(
+          generateMockDownstreamResponse([{ pipelineId: '1', downstreamNodes: [staleDownstream] }]),
+        );
+
+        await createComponent();
+        await waitForPromises();
+
+        // Backfill has stored RUNNING in downstreamData, skeleton also has RUNNING
+        let pipelines = findPipelinesList().props('pipelines');
+        let downstreamNode = pipelines[0].downstream?.nodes?.find(
+          (n) => n.id === 'gid://gitlab/Ci::Pipeline/100',
+        );
+        expect(downstreamNode.detailedStatus.name).toBe('RUNNING');
+
+        // Simulate poll returning updated skeleton with SUCCESS
+        const updatedResponse = generateMRPipelinesResponse({ count: 1 });
+        updatedResponse.data.project.mergeRequest.pipelines.nodes[0].downstream = {
+          nodes: [generateMockDownstreamSkeleton({ id: '100', status: 'SUCCESS' })],
+          __typename: 'PipelineConnection',
+        };
+        mergeRequestPipelinesRequest.mockResolvedValue(updatedResponse);
+
+        // Trigger poll
+        jest.advanceTimersByTime(60000);
+        await waitForPromises();
+
+        pipelines = findPipelinesList().props('pipelines');
+        downstreamNode = pipelines[0].downstream?.nodes?.find(
+          (n) => n.id === 'gid://gitlab/Ci::Pipeline/100',
+        );
+
+        // Skeleton SUCCESS should win over stale backfill RUNNING
+        expect(downstreamNode.detailedStatus.name).toBe('SUCCESS');
+        // Backfill-enriched fields should still be present
+        expect(downstreamNode.name).toBe('child-pipeline-100');
+        expect(downstreamNode.project.fullPath).toBe('root/child-project');
+      });
+
+      it('skips downstream merge when fetch returns empty nodes', async () => {
+        getPipelinesDownstreamRequest.mockResolvedValue(generateMockDownstreamResponse());
+        await createComponent();
+        await waitForPromises();
+
+        const pipelines = findPipelinesList().props('pipelines');
+        expect(pipelines[0].downstream.nodes).toEqual([]);
       });
     });
   });

@@ -8,7 +8,7 @@ FactoryBot.define do
     author { project.creator }
     updated_by { author }
     relative_position { RelativePositioning::START_POSITION }
-    association :work_item_type
+    association :work_item_type, factory: :work_item_system_defined_type
 
     trait :with_work_item_description do
       after(:create) do |issue|
@@ -91,40 +91,16 @@ FactoryBot.define do
       association :author, factory: :user
     end
 
-    trait :issue do
-      association :work_item_type, :issue
-    end
-
-    trait :requirement do
-      association :work_item_type, :requirement
-    end
-
     trait :task do
-      association :work_item_type, :task
-    end
-
-    trait :objective do
-      association :work_item_type, :objective
-    end
-
-    trait :key_result do
-      association :work_item_type, :key_result
+      association :work_item_type, :task, factory: :work_item_system_defined_type
     end
 
     trait :incident do
-      association :work_item_type, :incident
-    end
-
-    trait :test_case do
-      association :work_item_type, :test_case
-    end
-
-    trait :epic do
-      association :work_item_type, :epic
+      association :work_item_type, :incident, factory: :work_item_system_defined_type
     end
 
     trait :ticket do
-      association :work_item_type, :ticket
+      association :work_item_type, :ticket, factory: :work_item_system_defined_type
     end
 
     trait :service_desk do
@@ -132,7 +108,7 @@ FactoryBot.define do
     end
 
     factory :incident do
-      association :work_item_type, :incident
+      association :work_item_type, :incident, factory: :work_item_system_defined_type
 
       # An escalation status record is created for all incidents
       # in app code. This is a trait to avoid creating escalation

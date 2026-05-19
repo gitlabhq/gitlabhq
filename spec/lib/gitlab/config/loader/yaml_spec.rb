@@ -285,4 +285,54 @@ RSpec.describe Gitlab::Config::Loader::Yaml, feature_category: :pipeline_composi
       end
     end
   end
+
+  describe 'Psych::SyntaxError normalization for HTML content' do
+    let(:html_content) do
+      <<~HTML
+        <!-- BEGIN app/views/layouts/devise.html.haml -->
+        <!DOCTYPE html>
+        <html lang="en">
+        <head><title>Sign in</title></head>
+        <body>
+        <form action="/users/sign_in" method="post">
+        <label for="user_login">Username: or email</label>
+        </form>
+        </body>
+        </html>
+      HTML
+    end
+
+    context 'when content is HTML' do
+      let(:yml) { html_content }
+
+      it 'raises FormatError with a normalized message' do
+        expect { loader }.to raise_error(
+          Gitlab::Config::Loader::FormatError,
+          'Invalid configuration format'
+        )
+      end
+
+      context 'when filename is provided' do
+        let(:loader) { described_class.new(html_content, filename: 'templates/ci-template.yml') }
+
+        it 'raises FormatError with filename in the normalized message' do
+          expect { loader }.to raise_error(
+            Gitlab::Config::Loader::FormatError,
+            '(templates/ci-template.yml): Invalid configuration format'
+          )
+        end
+      end
+    end
+
+    context 'when content is invalid YAML but not HTML' do
+      let(:yml) { 'invalid: yaml: syntax' }
+
+      it 'raises FormatError with the original Psych error message' do
+        expect { loader }.to raise_error(
+          Gitlab::Config::Loader::FormatError,
+          /mapping values are not allowed in this context/
+        )
+      end
+    end
+  end
 end

@@ -44,6 +44,18 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::PathConverter do
       it 'excludes the path entirely' do
         expect(paths).to be_empty
       end
+
+      it 'does not register a request body schema for hidden POST routes' do
+        paths
+
+        expect(request_body_registry.schemas).to be_empty
+      end
+
+      it 'does not register response entity schemas for hidden routes' do
+        paths
+
+        expect(schema_registry.schemas).to be_empty
+      end
     end
 
     context 'with identical paths differing only by parameter name' do

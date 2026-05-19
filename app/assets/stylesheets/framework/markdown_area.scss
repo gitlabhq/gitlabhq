@@ -1,3 +1,16 @@
+// stylelint-disable-next-line gitlab/no-js-class
+.js-highlight {
+  display: inline-block;
+  color: var(--find-and-replace-match-text-color);
+  background-color: var(--find-and-replace-match-background-color);
+}
+
+// stylelint-disable-next-line gitlab/no-js-class
+.js-highlight-active {
+  color: var(--find-and-replace-match-active-text-color);
+  background-color: var(--find-and-replace-match-active-background-color);
+}
+
 .div-dropzone-wrapper {
   .div-dropzone {
     position: relative;

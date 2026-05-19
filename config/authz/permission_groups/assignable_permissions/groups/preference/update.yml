@@ -1,0 +1,9 @@
+---
+name: update_preference
+description: Grants the ability to update preferences
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - update_user_preference

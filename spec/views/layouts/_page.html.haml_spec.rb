@@ -36,6 +36,42 @@ RSpec.describe 'layouts/_page', feature_category: :geo_replication do
     end
   end
 
+  describe '@force_show_panel_header' do
+    before do
+      stub_feature_flags(page_breadcrumbs_in_top_bar: true)
+    end
+
+    context 'when @force_show_panel_header is not set' do
+      it 'applies without-breadcrumbs to the panel header' do
+        render
+
+        expect(rendered).to have_css('.panel-header-inner.without-breadcrumbs')
+      end
+    end
+
+    context 'when @force_show_panel_header is true' do
+      before do
+        assign(:force_show_panel_header, true)
+      end
+
+      it 'does not apply without-breadcrumbs to the panel header' do
+        render
+
+        expect(rendered).not_to have_css('.panel-header-inner.without-breadcrumbs')
+      end
+    end
+  end
+
+  describe 'static_panel_actions content_for' do
+    it 'yields :static_panel_actions content into the actions area' do
+      view.content_for(:static_panel_actions) { tag.button { 'Test action' } }
+
+      render
+
+      expect(rendered).to have_button('Test action')
+    end
+  end
+
   describe '_broadcast' do
     context 'when broadcast messages are hidden' do
       before do

@@ -17,6 +17,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input'],
   data() {
     return {
       page: 1,

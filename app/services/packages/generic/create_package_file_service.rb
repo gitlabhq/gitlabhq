@@ -3,15 +3,28 @@
 module Packages
   module Generic
     class CreatePackageFileService < BaseService
+      MAX_RETRIES = 1
+
       def execute
-        ::Packages::Package.transaction do
-          package_file = create_package_file(find_or_create_package)
-          ServiceResponse.success(payload: { package_file: package_file })
+        retries = 0
+        begin
+          ::Packages::Package.transaction do
+            package_file = create_package_file(find_or_create_package)
+            ServiceResponse.success(payload: { package_file: package_file })
+          end
+        rescue ::Packages::DuplicatePackageError => e
+          ServiceResponse.error(message: e.message, reason: :package_file_already_exists)
+        rescue ::Packages::PackageProtectedError
+          ::Packages::CreatePackageService::ERROR_RESPONSE_PACKAGE_PROTECTED
+        rescue ::ActiveRecord::RecordNotUnique => e
+          retry if (retries += 1) == MAX_RETRIES
+
+          ServiceResponse.error(message: e.message, reason: :package_already_exists)
+        rescue ::ActiveRecord::RecordInvalid => invalid
+          retry if invalid.record&.errors&.of_kind?(:name, :taken) && (retries += 1) == MAX_RETRIES
+
+          ServiceResponse.error(message: invalid.message, reason: :invalid_parameter)
         end
-      rescue ::Packages::DuplicatePackageError => e
-        ServiceResponse.error(message: e.message, reason: :package_file_already_exists)
-      rescue ::Packages::PackageProtectedError
-        ::Packages::CreatePackageService::ERROR_RESPONSE_PACKAGE_PROTECTED
       end
 
       private

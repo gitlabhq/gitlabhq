@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'DateOption',
   props: {
     option: {
       type: Object,

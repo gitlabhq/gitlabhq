@@ -52,6 +52,40 @@ RSpec.describe Gitlab::Redis::Wrapper do
     end
   end
 
+  describe '.version' do
+    let(:redis_double) { instance_double(Redis) }
+
+    before do
+      allow(described_class).to receive(:with).and_yield(redis_double)
+    end
+
+    context 'when connected to Redis' do
+      before do
+        allow(redis_double).to receive(:info).and_return(
+          'redis_version' => '7.2.4'
+        )
+      end
+
+      it 'returns redis_version' do
+        expect(described_class.version).to eq('7.2.4')
+      end
+    end
+
+    context 'when connected to Valkey' do
+      before do
+        allow(redis_double).to receive(:info).and_return(
+          'redis_version' => '7.2.4',
+          'valkey_version' => '7.2.11',
+          'server_name' => 'valkey'
+        )
+      end
+
+      it 'returns valkey_version' do
+        expect(described_class.version).to eq('7.2.11')
+      end
+    end
+  end
+
   describe '#params' do
     let(:wrapper) { described_class.new }
 

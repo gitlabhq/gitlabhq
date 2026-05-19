@@ -71,11 +71,13 @@ module API
       end
       params do
         requires :name, type: String, desc: 'The name of the protected tag', documentation: { example: 'release-1-0' }
+        # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
         optional :create_access_level,
           type: Integer,
           values: ProtectedTag::CreateAccessLevel.allowed_access_levels,
           desc: 'Access levels allowed to create (defaults: `40`, maintainer access level)',
           documentation: { example: 30 }
+        # rubocop:enable API/AccessLevelStringType
         use :optional_params
       end
       route_setting :authorization, permissions: :create_protected_tag, boundary_type: :project

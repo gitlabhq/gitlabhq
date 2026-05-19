@@ -78,6 +78,20 @@ query getMergeRequestPipelines(
           hasManualActions
           hasScheduledActions
           failedJobsCount
+          downstream(first: 3) {
+            nodes {
+              id
+              detailedStatus {
+                id
+                icon
+                name
+              }
+              sourceJob {
+                id
+                retried
+              }
+            }
+          }
         }
         pageInfo {
           ...PageInfo

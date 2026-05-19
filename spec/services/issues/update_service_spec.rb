@@ -217,7 +217,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
 
         it 'updates issue milestone when passing `milestone` param' do
           expect { update_issue({ milestone_id: milestone.id }) }
-            .to change(issue, :milestone).to(milestone).from(nil)
+            .to change { issue.milestone }.to(milestone).from(nil)
         end
 
         it "triggers 'issuableMilestoneUpdated'" do
@@ -365,7 +365,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
           it 'creates system note about issue type' do
             update_issue(issue_type: 'incident')
 
-            note = find_note('changed type from issue to incident')
+            note = find_note('changed type to **Incident**')
 
             expect(note).not_to eq(nil)
           end
@@ -395,7 +395,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
 
           it 'changed from an incident to an issue type' do
             expect { update_issue(issue_type: 'issue') }
-              .to change(issue, :issue_type).from('incident').to('issue')
+              .to change { issue.issue_type }.from('incident').to('issue')
               .and(change { issue.work_item_type.base_type }.from('incident').to('issue'))
           end
 
@@ -422,8 +422,67 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
             let(:user) { guest }
 
             it 'does nothing to the labels' do
-              expect { update_issue(issue_type: 'issue') }.not_to change(issue.labels, :count)
+              expect { update_issue(issue_type: 'issue') }.not_to change { issue.labels.count }
               expect(issue.reload.labels).to eq([])
+            end
+          end
+        end
+
+        context 'when passing the new work_item_type param' do
+          let(:incident_type) { build(:work_item_system_defined_type, :incident) }
+          let(:task_type) { build(:work_item_system_defined_type, :task) }
+          let(:issue_type) { build(:work_item_system_defined_type, :issue) }
+
+          it 'changes the work item type using the provided type object' do
+            expect { update_issue(work_item_type: incident_type) }
+              .to change { issue.reload.work_item_type_id }.to(incident_type.id)
+
+            expect(issue.work_item_type.base_type).to eq('incident')
+          end
+
+          it 'creates a system note about the type change' do
+            update_issue(work_item_type: incident_type)
+
+            expect(find_note('changed type to **Incident**')).not_to be_nil
+          end
+
+          it 'creates an escalation status when changing to incident' do
+            expect { update_issue(work_item_type: incident_type) }
+              .to change { issue.reload.incident_management_issuable_escalation_status }
+              .from(nil)
+              .to(a_kind_of(IncidentManagement::IssuableEscalationStatus))
+          end
+
+          context 'when both work_item_type and issue_type are passed' do
+            it 'prefers work_item_type over issue_type' do
+              # `issue_type: 'task'` would resolve to the task type via the legacy lookup,
+              # but `work_item_type: incident_type` must win.
+              expect { update_issue(work_item_type: incident_type, issue_type: 'task') }
+                .to change { issue.reload.work_item_type_id }.to(incident_type.id)
+
+              expect(issue.work_item_type.base_type).to eq('incident')
+            end
+          end
+
+          context 'when work_item_type matches the current type' do
+            it 'does not change the work item type' do
+              expect { update_issue(work_item_type: issue_type) }
+                .not_to change { issue.reload.work_item_type_id }
+            end
+
+            it 'does not create a system note about the type change' do
+              update_issue(work_item_type: issue_type)
+
+              expect(find_note('changed type to')).to be_nil
+            end
+          end
+
+          context 'when user does not have permission for the new type' do
+            let(:user) { guest }
+
+            it 'does not change the work item type' do
+              expect { update_issue(work_item_type: task_type) }
+                .not_to change { issue.reload.work_item_type_id }
             end
           end
         end
@@ -504,7 +563,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
 
           it 'closes the issue' do
             expect { update_issue(opts) }
-              .to change(issue, :state).from('opened').to('closed')
+              .to change { issue.state }.from('opened').to('closed')
           end
 
           it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
@@ -521,7 +580,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
 
           it 'reopens the issue' do
             expect { update_issue(opts) }
-              .to change(issue, :state).from('closed').to('opened')
+              .to change { issue.state }.from('closed').to('opened')
           end
 
           it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
@@ -727,9 +786,9 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
       it 'creates system note about confidentiality change' do
         update_issue(confidential: true)
 
-        note = find_note('made the issue confidential')
+        note = find_note('made the item confidential')
 
-        expect(note.note).to eq 'made the issue confidential'
+        expect(note.note).to eq 'made the item confidential'
       end
 
       it 'executes confidential issue hooks' do
@@ -1407,7 +1466,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
           expect(project).not_to receive(:execute_hooks)
           expect(project).not_to receive(:execute_integrations)
 
-          expect { update_issue(opts) }.not_to change(IssuableSeverity, :count)
+          expect { update_issue(opts) }.not_to change { IssuableSeverity.count }
         end
       end
 
@@ -1418,7 +1477,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
           it_behaves_like 'updates the severity', 'low'
 
           it 'creates a new record' do
-            expect { update_issue(opts) }.to change(IssuableSeverity, :count).by(1)
+            expect { update_issue(opts) }.to change { IssuableSeverity.count }.by(1)
           end
 
           context 'with unsupported severity value' do
@@ -1459,8 +1518,14 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
 
           it_behaves_like 'updates the severity', 'low'
 
+          context 'when using a quick action' do
+            let(:opts) { { description: "some description\n/severity low" } }
+
+            it_behaves_like 'updates the severity', 'low'
+          end
+
           it 'does not create a new record' do
-            expect { update_issue(opts) }.not_to change(IssuableSeverity, :count)
+            expect { update_issue(opts) }.not_to change { IssuableSeverity.count }
           end
 
           context 'with unsupported severity value' do
@@ -1549,7 +1614,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
 
         context 'without an escalation status record' do
           it 'creates a new record' do
-            expect { update_issue(opts) }.to change(::IncidentManagement::IssuableEscalationStatus, :count).by(1)
+            expect { update_issue(opts) }.to change { ::IncidentManagement::IssuableEscalationStatus.count }.by(1)
           end
 
           it_behaves_like 'updates the escalation status record', :acknowledged

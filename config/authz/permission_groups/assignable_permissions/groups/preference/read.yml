@@ -1,0 +1,9 @@
+---
+name: read_preference
+description: Grants the ability to read preferences
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_user_preference

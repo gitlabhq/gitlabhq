@@ -29,6 +29,12 @@ RSpec.describe RuboCop::Cop::QA::AmbiguousPageObjectName do
         end
       RUBY
     end
+
+    it "does not register an offense for a numblock" do
+      expect_no_offenses(<<-RUBY)
+        Page::Layout::Bar.perform { _1.do_something }
+      RUBY
+    end
   end
 
   context 'outside of a QA file' do

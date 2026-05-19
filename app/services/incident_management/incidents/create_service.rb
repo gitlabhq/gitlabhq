@@ -3,8 +3,6 @@
 module IncidentManagement
   module Incidents
     class CreateService < ::BaseProjectService
-      ISSUE_TYPE = 'incident'
-
       def initialize(project, current_user, title:, description:, severity: IssuableSeverity::DEFAULT, alert: nil)
         super(project: project, current_user: current_user)
 
@@ -21,7 +19,7 @@ module IncidentManagement
           params: {
             title: title,
             description: description,
-            issue_type: ISSUE_TYPE,
+            work_item_type: incident_work_item_type,
             severity: severity,
             alert_management_alerts: [alert].compact
           },
@@ -38,6 +36,10 @@ module IncidentManagement
       private
 
       attr_reader :title, :description, :severity, :alert
+
+      def incident_work_item_type
+        ::WorkItems::TypesFramework::Provider.new(project).find_by_base_type(:incident)
+      end
 
       def error(message, issue = nil)
         ServiceResponse.error(payload: { issue: issue }, message: message)

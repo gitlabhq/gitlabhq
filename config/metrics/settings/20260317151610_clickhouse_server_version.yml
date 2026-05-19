@@ -1,7 +1,7 @@
 ---
 key_path: settings.clickhouse_server_version
 description: ClickHouse server version
-product_group: database_frameworks
+product_group: platform_insights
 product_categories:
 - database
 value_type: string

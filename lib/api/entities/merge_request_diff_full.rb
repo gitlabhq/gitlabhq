@@ -3,11 +3,11 @@
 module API
   module Entities
     class MergeRequestDiffFull < MergeRequestDiff
-      expose :commits, using: Entities::Commit do |diff, _|
+      expose :commits, using: ::API::Entities::Commit, documentation: { is_array: true } do |diff, _|
         diff.commits(load_from_gitaly: true)
       end
 
-      expose :diffs, using: Entities::Diff do |compare, _|
+      expose :diffs, using: ::API::Entities::Diff, documentation: { is_array: true } do |compare, _|
         compare.raw_diffs(limits: false).to_a
       end
     end

@@ -1,0 +1,7 @@
+---
+name: _read_maintainer_job_artifact
+description: Private permission that gates read access to job artifacts with
+  maintainer-level accessibility. The job artifact and build policies combine
+  this permission with the artifact's accessibility setting to enable the
+  public read_job_artifacts permission. Must not be checked directly at
+  enforcement points.

@@ -5,9 +5,7 @@ export const GREETING_MESSAGES = [
   s__('Homepage|Happy coding!'),
   s__('Homepage|Ready to build something great?'),
   s__('Homepage|Ready to ship?'),
-  s__("Homepage|Let's get started"),
   s__('Homepage|Great to have you here'),
-  s__('Homepage|What will you create today?'),
   s__('Homepage|Welcome!'),
   s__('Homepage|Hello!'),
   s__('Homepage|Nice to see you'),
@@ -19,7 +17,6 @@ export const GREETING_MESSAGES = [
   s__('Homepage|Onwards!'),
   s__('Homepage|What are you working on today?'),
   s__('Homepage|Ship something awesome'),
-  s__('Homepage|A new day for new merge requests'),
   s__('Homepage|Ready when you are'),
   s__("Homepage|Let's get things done"),
   s__('Homepage|Ready, set, go'),
@@ -46,18 +43,17 @@ export const GREETING_MESSAGES = [
   s__('Homepage|Rebasing: still not fun'),
   s__('Homepage|Git happens'),
   s__('Homepage|It works on my machine'),
-  s__('Homepage|Warning: high productivity detected'),
   s__("Homepage|It's not a bug, it's a feature"),
 ];
 
-export const DAY_NAMES = [
-  __('Sunday'),
-  __('Monday'),
-  __('Tuesday'),
-  __('Wednesday'),
-  __('Thursday'),
-  __('Friday'),
-  __('Saturday'),
+export const HAPPY_DAY_GREETINGS = [
+  s__('Homepage|Happy Sunday!'),
+  s__('Homepage|Happy Monday!'),
+  s__('Homepage|Happy Tuesday!'),
+  s__('Homepage|Happy Wednesday!'),
+  s__('Homepage|Happy Thursday!'),
+  s__('Homepage|Happy Friday!'),
+  s__('Homepage|Happy Saturday!'),
 ];
 
 export const MORNING_GREETINGS = [
@@ -65,6 +61,9 @@ export const MORNING_GREETINGS = [
   s__('Homepage|Rise and ship!'),
   s__('Homepage|Fresh start, fresh code'),
   s__('Homepage|Coffee and GitLab'),
+  s__("Homepage|Let's get started"),
+  s__('Homepage|What will you create today?'),
+  s__('Homepage|A new day for new merge requests'),
 ];
 
 export const AFTERNOON_GREETINGS = [

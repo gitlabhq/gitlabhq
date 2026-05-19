@@ -1,0 +1,6 @@
+---
+event: Repositories::ProtectedBranchCreatedEvent
+description: Published after a new branch protection rule is persisted. Fires for
+  both project-level and group-level protected branches; the parent_type payload field
+  distinguishes them.
+feature_category: source_code_management

@@ -43,19 +43,14 @@ module Groups
 
       group.chat_team&.remove_mattermost_team(current_user)
 
-      user_ids_for_project_authorizations_refresh = obtain_user_ids_for_project_authorizations_refresh
+      refresh_authorizations = prepare_authorization_refresh
 
       destroy_associated_users
       ::Import::BulkImports::RemoveExportUploadsService.new(group).execute
 
       group.destroy
 
-      if user_ids_for_project_authorizations_refresh.present?
-        UserProjectAccessChangedService
-          .new(user_ids_for_project_authorizations_refresh)
-          .execute
-      end
-
+      refresh_authorizations&.call
       publish_event
 
       group
@@ -95,6 +90,20 @@ module Groups
       end
     end
 
+    def prepare_authorization_refresh
+      if Feature.enabled?(:group_destroy_update_project_authorizations_per_project, group.root_ancestor)
+        project_ids = obtain_project_ids_for_authorization_refresh
+        return if project_ids.blank?
+
+        -> { AuthorizedProjectUpdate::ProjectAccessChangedService.new(project_ids.to_a).execute }
+      else
+        user_ids = obtain_user_ids_for_project_authorizations_refresh
+        return if user_ids.blank?
+
+        -> { UserProjectAccessChangedService.new(user_ids).execute }
+      end
+    end
+
     def any_groups_shared_with_this_group?
       group.shared_group_links.any?
     end
@@ -122,6 +131,36 @@ module Groups
 
       group.users_ids_of_direct_members
     end
+
+    # Destroying a group automatically destroys all project authorizations
+    # directly associated with the group and its descendants. However, project
+    # authorizations for projects accessible through project and group sharing
+    # are not cleaned up automatically. Without a manual refresh, members of
+    # the group would retain stale access to:
+    # - projects under groups the group was invited to (via group_group_links)
+    # - projects directly shared with the group (via project_group_links)
+    #
+    # We collect affected project IDs before destroying the group (while the share
+    # links still exist), then trigger per-project recalculation after the destroy.
+    # This is O(K projects) rather than O(N users), matching the pattern used by
+    # Groups::TransferService and Projects::GroupLinks::DestroyService.
+    #
+    # rubocop:disable CodeReuse/ActiveRecord -- Specific use-case
+    def obtain_project_ids_for_authorization_refresh
+      project_ids = Set.new
+
+      group.shared_group_links.each_batch(of: 50, column: :shared_group_id) do |batch|
+        descendant_ids = Namespace.where(id: batch.pluck(:shared_group_id)).self_and_descendant_ids
+        project_ids.merge(Project.where(namespace_id: descendant_ids).pluck(:id))
+      end
+
+      group.project_group_links.each_batch(of: 50, column: :project_id) do |batch|
+        project_ids.merge(batch.pluck(:project_id))
+      end
+
+      project_ids
+    end
+    # rubocop:enable CodeReuse/ActiveRecord
 
     def destroy_associated_users
       current_user_id = current_user.id

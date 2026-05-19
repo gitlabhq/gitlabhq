@@ -28,7 +28,7 @@ Prerequisites:
 To configure the call timeouts:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Preferences**.
+1. In the left sidebar, select **Settings** > **Preferences**.
 1. Expand the **Gitaly timeouts** section.
 1. Set each timeout as required.
 
@@ -41,6 +41,8 @@ Different call timeouts are available for different Gitaly operations.
 | Default | 55 seconds | Timeout for most Gitaly calls (not enforced for `git` `fetch` and `push` operations, or Sidekiq jobs). For example, checking if a repository exists on disk. Makes sure that Gitaly calls made in a web request cannot exceed the entire request timeout. It should be shorter than the [worker timeout](../operations/puma.md#change-the-worker-timeout) that can be configured for [Puma](../../install/requirements.md#puma). If a Gitaly call timeout exceeds the worker timeout, the remaining time from the worker timeout is used to avoid having to terminate the worker. |
 | Fast    | 10 seconds | Timeout for fast Gitaly operations used in requests, sometimes multiple times. For example, checking if a repository exists on disk. If fast operations exceed this threshold, there may be a problem with a storage shard. Failing fast can help maintain the stability of the GitLab instance. |
 | Medium  | 30 seconds | Timeout for Gitaly operations that should be fast (possibly in requests) but preferably not used multiple times in a request. For example, loading blobs. Timeout that should be set between Default and Fast. |
+
+By default, the **Default** timeout cannot be set higher than `57` seconds. For more information, see [Unable to raise Gitaly default timeout above 57 seconds](#unable-to-raise-gitaly-default-timeout-above-57-seconds).
 
 ## Configure the negotiation timeouts
 
@@ -115,7 +117,7 @@ Workhorse, and GitLab Shell retry request in an exponential backoff fashion.
 
 Two parameters can be configured:
 
-- `max_attempts`: Maximum number of retry attempts between 1 and 5.
+- `max_attempts`: Maximum number of retry attempts between 2 and 5.
 - `max_backoff`: Maximum amount of time before the client stops retrying. Value must be a duration string, such as
   `1.4s` or `10s`.
 
@@ -176,3 +178,67 @@ global:
 {{< /tab >}}
 
 {{< /tabs >}}
+
+## Troubleshooting
+
+When working with Gitaly timeouts, you might encounter the following issues.
+
+### Unable to raise Gitaly default timeout above 57 seconds
+
+> [!warning]
+> Raise these values only when needed. A higher worker timeout means slow or stuck requests hold a Puma worker longer,
+> reducing instance capacity. Common reasons to raise the Gitaly **Default** timeout include very large repositories on
+> slow storage, expensive diff or compare views, or degraded Gitaly Cluster nodes. For background work such as imports,
+> mirrors, or housekeeping, prefer offloading to Sidekiq, which is not bound by this cap.
+
+By default, the [**Default** timeout](#available-call-timeouts) cannot be raised above `57` seconds.
+Attempting to set the timeout higher produces the validation error:
+
+```plaintext
+Gitaly timeout default must be less than or equal to 57
+```
+
+This limit is imposed by three interacting timeouts:
+
+- `puma['worker_timeout']`: Per-worker Puma timeout. Default is `60` seconds. For more information,
+  see [change the worker timeout](../operations/puma.md#change-the-worker-timeout).
+- `gitlab_rails['max_request_duration_seconds']`#GitLab application setting that limits the Gitaly
+  **Default** timeout. Defaults is `(worker_timeout * 0.95).ceil` = `57` seconds. This setting must be
+  strictly less than `puma['worker_timeout']`.
+- `GITLAB_RAILS_RACK_TIMEOUT`: `Rack::Timeout` middleware `service_timeout`. Default is `60` seconds.
+  This timeout is independent of the other two and it terminates the request at this value regardless
+  of how the others are configured.
+
+To raise the Gitaly **Default** timeout above 57 seconds, all three values must be raised together. For
+example, to allow a Gitaly **Default** timeout of `110` seconds:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   puma['worker_timeout'] = 120
+   gitlab_rails['max_request_duration_seconds'] = 114
+   gitlab_rails['env'] = {
+     'GITLAB_RAILS_RACK_TIMEOUT' => 120
+   }
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Preferences**.
+1. Expand **Gitaly timeouts**.
+1. Set **Default timeout** to the new desired value (up to `max_request_duration_seconds`).
+
+   Leaving a small headroom is recommended. The built-in default uses a 5% gap
+   (`max_request_duration_seconds = (worker_timeout * 0.95).ceil`), so the Rails request deadline trips before Puma
+   reaches its worker timeout.
+
+   `GITLAB_RAILS_RACK_TIMEOUT` does **not** raise the Gitaly cap on its own.
+   `Settings.gitlab.max_request_duration_seconds` is what the application settings validator consults, and that is set
+   by `gitlab_rails['max_request_duration_seconds']`. However, leaving `GITLAB_RAILS_RACK_TIMEOUT` at its default of
+   `60` causes the Rack middleware to terminate any request longer than 60 seconds, including long Gitaly calls, before
+   they can complete.

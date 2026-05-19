@@ -37,7 +37,7 @@ module Issues
       return if issue.relative_position.nil?
       return if NO_REBALANCING_NEEDED.cover?(issue.relative_position)
 
-      Issues::RebalancingWorker.perform_async(nil, *issue.project.self_or_root_group_ids)
+      Issues::RebalancingWorker.perform_async(nil, nil, issue.namespace.work_item_positioning_root.id)
     end
 
     def execute_hooks(issue, action = 'open', old_associations: {})
@@ -60,19 +60,12 @@ module Issues
       { container: value }
     end
 
-    def find_work_item_type_id(issue_type)
-      work_item_type = work_item_type_provider.find_by_base_type(issue_type)
-      work_item_type ||= work_item_type_provider.default_issue_type
-
-      work_item_type.id
-    end
-
     def filter_params(issue)
       super
 
       params.delete(:issue_type) unless create_issue_type_allowed?(issue, params[:issue_type])
 
-      if params[:work_item_type].present? && !create_issue_type_allowed?(project, params[:work_item_type].base_type)
+      if params[:work_item_type].present? && !create_issue_type_allowed?(issue, params[:work_item_type].base_type)
         params.delete(:work_item_type)
       end
 

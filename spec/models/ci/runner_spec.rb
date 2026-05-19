@@ -125,7 +125,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         let(:tag_name) { 'new-tag' }
 
         it 'creates a tag' do
-          expect { runner.save! }.to change(Ci::Tag, :count).by(1)
+          expect { runner.save! }.to change { Ci::Tag.count }.by(1)
         end
 
         it 'creates an association to the tag' do
@@ -141,7 +141,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         end
 
         it 'does not create a tag' do
-          expect { runner.save! }.not_to change(Ci::Tag, :count)
+          expect { runner.save! }.not_to change { Ci::Tag.count }
         end
 
         it 'creates an association to the tag' do
@@ -333,14 +333,14 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       end
     end
 
-    describe '#no_allowed_plan_ids' do
+    describe '#no_allowed_plan_name_uids' do
       let_it_be(:default_plan) { create(:default_plan) }
 
       context 'when runner is instance type' do
         let(:runner) { build(:ci_runner, :instance) }
 
         it 'allows assign allowed_plans' do
-          runner.allowed_plan_ids = [default_plan.id]
+          runner.allowed_plan_name_uids = [Plan::PLAN_NAME_UID_LIST[:default]]
 
           expect(runner).to be_valid
         end
@@ -349,8 +349,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       context 'when runner is not an instance type' do
         let(:runner) { build(:ci_runner, :group, groups: [group]) }
 
-        it 'allows assign allowed_plans' do
-          runner.allowed_plan_ids = [default_plan.id]
+        it 'does not allow assign allowed_plans' do
+          runner.allowed_plan_name_uids = [Plan::PLAN_NAME_UID_LIST[:default]]
 
           expect(runner).not_to be_valid
           expect(runner.errors.full_messages).to include('Runner cannot have allowed plans assigned')
@@ -1372,19 +1372,26 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       end
     end
 
-    context 'deduplicates on allowed_plan_ids' do
+    context 'deduplicates on allowed_plan_name_uids' do
       let_it_be(:default_plan) { create(:default_plan) }
 
       before do
-        create_list(:ci_runner, 2, allowed_plan_ids: [default_plan.id])
-        create_list(:ci_runner, 2, allowed_plan_ids: [])
+        create_list(
+          :ci_runner, 2,
+          allowed_plan_name_uids: [Plan::PLAN_NAME_UID_LIST[:default]]
+        )
+
+        create_list(
+          :ci_runner, 2,
+          allowed_plan_name_uids: []
+        )
       end
 
       it 'creates two matchers' do
         expect(matchers.size).to eq(2)
 
-        expect(matchers.map(&:allowed_plan_ids)).to match_array(
-          [[default_plan.id], []]
+        expect(matchers.map(&:allowed_plan_name_uids)).to match_array(
+          [[Plan::PLAN_NAME_UID_LIST[:default]], []]
         )
       end
     end
@@ -1404,7 +1411,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
   describe '#runner_matcher' do
     let(:runner) do
-      build_stubbed(:ci_runner, tag_list: %w[tag1 tag2], allowed_plan_ids: [1, 2])
+      build_stubbed(:ci_runner, tag_list: %w[tag1 tag2], allowed_plan_name_uids: [1, 2])
     end
 
     subject(:matcher) { runner.runner_matcher }
@@ -1423,7 +1430,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     it { expect(matcher.tag_list).to match_array(runner.tag_list) }
 
-    it { expect(matcher.allowed_plan_ids).to match_array(runner.allowed_plan_ids) }
+    it { expect(matcher.allowed_plan_name_uids).to match_array(runner.allowed_plan_name_uids) }
   end
 
   describe '#uncached_contacted_at' do
@@ -2559,31 +2566,37 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       end
     end
 
-    describe '.with_executing_builds' do
-      subject(:scope) { described_class.with_executing_builds }
+    describe '.ids_with_running_builds' do
+      subject(:result) { described_class.ids_with_running_builds(ids) }
 
-      let_it_be(:runners_by_status) do
-        Ci::HasStatus::AVAILABLE_STATUSES.index_with { |_status| create(:ci_runner) }
+      let_it_be(:runner_with_running_build) do
+        create(:ci_runner).tap do |runner|
+          create(:ci_build, :picked, runner: runner)
+        end
       end
 
-      let_it_be(:busy_runners) do
-        Ci::HasStatus::EXECUTING_STATUSES.map { |status| runners_by_status[status] }
+      let_it_be(:runner_without_running_build) do
+        create(:ci_runner).tap do |runner|
+          create(:ci_build, :canceling, runner: runner)
+        end
       end
 
-      context 'with no builds running' do
+      context 'when ids include a runner with a running build' do
+        let(:ids) { [runner_with_running_build.id, runner_without_running_build.id] }
+
+        it { is_expected.to contain_exactly(runner_with_running_build.id) }
+      end
+
+      context 'when ids include only runners without running builds' do
+        let(:ids) { [runner_without_running_build.id] }
+
         it { is_expected.to be_empty }
       end
 
-      context 'with builds' do
-        before_all do
-          pipeline = create(:ci_pipeline, :running)
+      context 'when ids is empty' do
+        let(:ids) { [] }
 
-          Ci::HasStatus::AVAILABLE_STATUSES.each do |status|
-            create(:ci_build, status, runner: runners_by_status[status], pipeline: pipeline)
-          end
-        end
-
-        it { is_expected.to match_array(busy_runners) }
+        it { is_expected.to be_empty }
       end
     end
 

@@ -50,6 +50,7 @@ class Admin::PlanLimitsController < Admin::ApplicationController
         dotenv_size
         dotenv_variables
         pipeline_hierarchy_size
+        max_pipelines_per_merge_train
       ])
   end
 end

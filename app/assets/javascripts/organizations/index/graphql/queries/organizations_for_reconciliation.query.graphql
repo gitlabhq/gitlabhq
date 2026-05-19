@@ -1,0 +1,21 @@
+# @feature_category: organization
+
+query organizationsForReconciliation {
+  organizations {
+    nodes {
+      id
+      name
+      avatarUrl
+      groups(topLevelOnly: true, ownedOnly: true) {
+        nodes {
+          id
+          fullName
+          groupMembersCount
+          projectsCount
+          descendantGroupsCount
+          visibility
+        }
+      }
+    }
+  }
+}

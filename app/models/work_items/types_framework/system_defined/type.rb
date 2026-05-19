@@ -64,10 +64,6 @@ module WorkItems
             name_sorting_asc(where(id: ids))
           end
 
-          def by_base_type_ordered_by_name(types)
-            name_sorting_asc(by_type(types))
-          end
-
           def with_widget_definition(widget_type)
             all.select do |type|
               ::WorkItems::TypesFramework::SystemDefined::WidgetDefinition
@@ -97,6 +93,23 @@ module WorkItems
           ::Gitlab::GlobalId.build(self, model_name: 'WorkItems::Type', id: id)
         end
         alias_method :to_gid, :to_global_id
+
+        # The id used to persist a reference to this type (e.g. in join tables
+        # like work_item_type_custom_fields). For system-defined types this is
+        # simply the type id. Custom types override this to return the
+        # converted_from_system_defined_type_identifier when applicable, which
+        # keeps persisted references consistent with how work items store
+        # work_item_type_id.
+        def persistable_id
+          id
+        end
+
+        # The system-defined type id to use for cross-cutting lookups that
+        # only know about system-defined ids (e.g. HierarchyRestriction).
+        # Custom types override this to return their delegation_source id.
+        def system_defined_type_id
+          id
+        end
 
         def widget_definitions
           WorkItems::TypesFramework::SystemDefined::WidgetDefinition.where(work_item_type_id: id)
@@ -132,30 +145,31 @@ module WorkItems
           widget_classes(resource_parent).include?(::WorkItems::Widgets::TimeTracking)
         end
 
-        def allowed_child_types_by_name
+        def allowed_child_types_by_name(resource_parent: nil)
           child_type_ids = WorkItems::TypesFramework::SystemDefined::HierarchyRestriction
             .where(parent_type_id: id)
             .map(&:child_type_id)
 
-          self.class.by_ids_ordered_by_name(child_type_ids)
+          types_provider(resource_parent).by_ids_ordered_by_name(child_type_ids)
         end
 
-        def allowed_parent_types_by_name
+        def allowed_parent_types_by_name(resource_parent: nil)
           parent_type_ids = WorkItems::TypesFramework::SystemDefined::HierarchyRestriction
             .where(child_type_id: id)
             .map(&:parent_type_id)
 
-          self.class.by_ids_ordered_by_name(parent_type_ids)
+          types_provider(resource_parent).by_ids_ordered_by_name(parent_type_ids)
         end
 
         def supported_conversion_types(resource_parent, user)
           type_names = supported_conversion_base_types(resource_parent, user) - [base_type]
 
-          self.class.by_base_type_ordered_by_name(type_names)
+          types_provider(resource_parent).by_base_types_ordered_by_name(type_names)
+            .select { |type| type.enabled && !type.archived? }
         end
 
         def allowed_child_types(authorize: false, resource_parent: nil)
-          types = allowed_child_types_by_name
+          types = allowed_child_types_by_name(resource_parent: resource_parent)
 
           return types unless authorize
 
@@ -163,23 +177,23 @@ module WorkItems
         end
 
         def allowed_parent_types(authorize: false, resource_parent: nil)
-          types = allowed_parent_types_by_name
+          types = allowed_parent_types_by_name(resource_parent: resource_parent)
 
           return types unless authorize
 
           authorized_types(types, resource_parent, licenses_for_parent)
         end
 
-        def descendant_types
+        def descendant_types(resource_parent: nil)
           descendant_types = []
-          next_level_child_types = allowed_child_types.to_a
+          next_level_child_types = allowed_child_types(resource_parent: resource_parent).to_a
 
           loop do
             descendant_types += next_level_child_types
 
             # We remove types that we've already seen to avoid circular dependencies
             next_level_child_types = next_level_child_types.flat_map do |type|
-              type.allowed_child_types.to_a
+              type.allowed_child_types(resource_parent: resource_parent).to_a
             end - descendant_types
 
             break if next_level_child_types.empty?
@@ -187,7 +201,6 @@ module WorkItems
 
           descendant_types.uniq
         end
-        strong_memoize_attr :descendant_types
 
         def configuration_class
           WorkItems::TypesFramework::SystemDefined::Definitions.const_get(base_type.camelize, false)
@@ -266,15 +279,13 @@ module WorkItems
           configuration_class.try(:allowed_child_types) || []
         end
 
-        def filterable_list_view?(resource_parent)
-          resource_parent = resource_parent.project if resource_parent.is_a?(Namespaces::ProjectNamespace)
-          value = configuration_class.try(:filterable_list_view?, resource_parent)
+        def filterable_list_view?
+          value = configuration_class.try(:filterable_list_view?)
           value.nil? || value
         end
 
-        def filterable_board_view?(resource_parent)
-          resource_parent = resource_parent.project if resource_parent.is_a?(Namespaces::ProjectNamespace)
-          configuration_class.try(:filterable_board_view?, resource_parent) || false
+        def filterable_board_view?
+          configuration_class.try(:filterable_board_view?) || false
         end
 
         def disabled_workflow_type?
@@ -303,6 +314,10 @@ module WorkItems
         # overridden in EE to check for EE-specific restrictions
         def authorized_types(types, _resource_parent, _relation)
           types
+        end
+
+        def types_provider(resource_parent)
+          ::WorkItems::TypesFramework::Provider.new(resource_parent)
         end
       end
     end

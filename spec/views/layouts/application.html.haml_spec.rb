@@ -14,7 +14,7 @@ RSpec.describe 'layouts/application' do
     it_behaves_like 'a layout which reflects the application theme setting'
     it_behaves_like 'a layout which reflects the preferred language'
 
-    context 'body data elements for pageview context' do
+    describe 'body data elements for pageview context' do
       let(:body_data) do
         {
           body_data_page: 'projects:issues:show',

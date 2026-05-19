@@ -3,6 +3,12 @@
     "ContainerProtectionAccessLevel",
     "ContainerProtectionTagRule"
   ],
+  "AiCatalogCustomAndFoundationalItem": [
+    "AiCatalogAgent",
+    "AiCatalogFlow",
+    "AiCatalogThirdPartyFlow",
+    "AiFoundationalChatAgent"
+  ],
   "AiCatalogItem": [
     "AiCatalogAgent",
     "AiCatalogFlow",
@@ -67,6 +73,10 @@
     "Issue",
     "MergeRequest",
     "WorkItemWidgetCurrentUserTodos"
+  ],
+  "CustomDashboardInterface": [
+    "CustomDashboard",
+    "CustomSystemDashboard"
   ],
   "CustomRoleInterface": [
     "AdminMemberRole",
@@ -231,6 +241,7 @@
   ],
   "PolicyAttributesUnion": [
     "ApprovalPolicyAttributesType",
+    "DependencyFirewallPolicyAttributesType",
     "PipelineExecutionPolicyAttributesType",
     "PipelineExecutionScheduledPolicyAttributesType",
     "ScanExecutionPolicyAttributesType",
@@ -249,6 +260,8 @@
   "Registrable": [
     "AbuseReportUploadRegistry",
     "AchievementUploadRegistry",
+    "AiVectorizableFileUploadRegistry",
+    "BulkImportExportUploadUploadRegistry",
     "CiSecureFileRegistry",
     "ContainerRepositoryRegistry",
     "DependencyProxyBlobRegistry",
@@ -257,6 +270,7 @@
     "DesignManagementRepositoryRegistry",
     "GroupUploadRegistry",
     "GroupWikiRepositoryRegistry",
+    "ImportExportUploadUploadRegistry",
     "JobArtifactRegistry",
     "LfsObjectRegistry",
     "MergeRequestDiffRegistry",
@@ -265,13 +279,16 @@
     "PackagesNugetSymbolRegistry",
     "PagesDeploymentRegistry",
     "PipelineArtifactRegistry",
+    "ProjectImportExportRelationExportUploadUploadRegistry",
     "ProjectRepositoryRegistry",
     "ProjectUploadRegistry",
     "ProjectWikiRepositoryRegistry",
     "SnippetRepositoryRegistry",
     "TerraformStateVersionRegistry",
     "UploadRegistry",
-    "UserUploadRegistry"
+    "UserUploadRegistry",
+    "VulnerabilityArchiveExportUploadRegistry",
+    "VulnerabilityExportUploadRegistry"
   ],
   "RegistryInterface": [
     "ContainerRegistry",
@@ -323,6 +340,7 @@
     "CountableVulnerability",
     "CurrentUser",
     "Design",
+    "DuoWorkflow",
     "Epic",
     "EpicIssue",
     "Group",
@@ -395,6 +413,7 @@
     "WorkItemTextFieldValue"
   ],
   "WorkItemWidget": [
+    "WorkItemWidgetAgentPlan",
     "WorkItemWidgetAiSession",
     "WorkItemWidgetAssignees",
     "WorkItemWidgetAwardEmoji",

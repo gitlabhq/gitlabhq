@@ -96,7 +96,7 @@ module Gitlab
           rescue StandardError => error
             # Any exceptions that might occur should be reported to
             # Sentry, instead of silently terminating this thread.
-            Gitlab::ErrorTracking.track_exception(error)
+            ::Gitlab::Database::LoadBalancing::Callbacks.track_exception(error)
 
             Gitlab::Database::LoadBalancing::Logger.error(
               event: :service_discovery_failure,

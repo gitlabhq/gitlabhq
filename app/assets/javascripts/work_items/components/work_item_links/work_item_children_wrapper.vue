@@ -11,6 +11,7 @@ import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { optimisticUserPermissions, WIDGET_TYPE_HIERARCHY } from 'ee_else_ce/work_items/constants';
 import { findHierarchyWidget, findHierarchyWidgetChildren, getItems } from '../../utils';
@@ -26,6 +27,7 @@ export default {
   components: {
     WorkItemLinkChild,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['getWorkItemTypeConfiguration'],
   props: {
     fullPath: {
@@ -237,6 +239,7 @@ export default {
           variables: {
             fullPath: this.fullPath,
             iid,
+            useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
           },
           update(data) {
             return data.namespace?.workItem;

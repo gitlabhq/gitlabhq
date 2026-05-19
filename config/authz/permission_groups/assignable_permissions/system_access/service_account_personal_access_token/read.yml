@@ -3,5 +3,7 @@ name: read_service_account_personal_access_token
 description: Grants the ability to read personal access tokens of service accounts
 boundaries:
   - group
+available_for:
+  - granular_access_token
 permissions:
   - read_service_account_personal_access_token

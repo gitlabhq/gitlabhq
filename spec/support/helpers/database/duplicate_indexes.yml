@@ -1,7 +1,5 @@
 ---
 approval_merge_request_rules:
-  scan_finding_approval_mr_rule_index_mr_id_and_created_at:
-  - scan_finding_approval_mr_rule_index_merge_request_id
   index_approval_rule_name_for_sectional_code_owners_rule_type:
   - index_approval_rules_code_owners_rule_type
 ci_job_artifact_states:
@@ -159,6 +157,9 @@ pages_deployment_states:
 project_feature_usages:
   project_feature_usages_pkey:
     - index_project_feature_usages_on_project_id
+sbom_occurrence_refs:
+  index_sbom_occurrence_refs_on_project_id:
+    - tmp_idx_sbom_occurrence_refs_on_project_id_id
 status_page_settings:
   status_page_settings_pkey:
     - index_status_page_settings_on_project_id
@@ -174,9 +175,6 @@ user_statuses:
 vulnerability_finding_risk_scores:
   vulnerability_finding_risk_scores_pkey:
     - index_vulnerability_risk_scores_on_vulnerability_finding
-vulnerability_finding_links:
-  finding_link_name_url_idx:
-    - finding_link_occurrence_id_name_url_idx
 vulnerability_partial_scans:
   vulnerability_partial_scans_pkey:
     - index_vulnerability_partial_scans_on_scan_id

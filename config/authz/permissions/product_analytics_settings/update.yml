@@ -1,0 +1,5 @@
+---
+name: update_product_analytics_settings
+description: Grants the ability to update the project's product analytics settings.
+  Product analytics tracks how users interact with an app, and these settings
+  configure where the project sends and queries that data.

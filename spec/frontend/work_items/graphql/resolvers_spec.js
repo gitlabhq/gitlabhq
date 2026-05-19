@@ -41,7 +41,7 @@ describe('work items graphql resolvers', () => {
     const query = async (widgetName = null) => {
       const queryResult = await mockApolloClient.query({
         query: workItemByIidQuery,
-        variables: { fullPath: fullPathWithId, iid },
+        variables: { fullPath: fullPathWithId, iid, useWorkItemFeatures: false },
       });
 
       if (widgetName == null) return queryResult.data.namespace.workItem;
@@ -71,14 +71,14 @@ describe('work items graphql resolvers', () => {
 
       mockApollo.clients.defaultClient.cache.writeQuery({
         query: workItemByIidQuery,
-        variables: { fullPath: fullPathWithId, iid },
-        data: createWorkItemQueryResponse().data,
+        variables: { fullPath: fullPathWithId, iid, useWorkItemFeatures: true },
+        data: createWorkItemQueryResponseWithFeatures().data,
       });
 
       mockApollo.clients.defaultClient.cache.writeQuery({
         query: workItemByIidQuery,
-        variables: { fullPath: fullPathWithId, iid, useWorkItemFeatures: true },
-        data: createWorkItemQueryResponseWithFeatures().data,
+        variables: { fullPath: fullPathWithId, iid, useWorkItemFeatures: false },
+        data: createWorkItemQueryResponse().data,
       });
       mockApolloClient = mockApollo.clients.defaultClient;
     });

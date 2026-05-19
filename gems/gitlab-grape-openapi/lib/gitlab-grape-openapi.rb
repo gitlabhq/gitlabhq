@@ -10,6 +10,8 @@ require_relative "gitlab/grape_openapi/tag_registry"
 # Concerns
 require_relative "gitlab/grape_openapi/concerns/serializable"
 require_relative "gitlab/grape_openapi/concerns/limit_resolver"
+require_relative "gitlab/grape_openapi/concerns/fail_fast_annotatable"
+require_relative "gitlab/grape_openapi/concerns/regex_converter"
 
 # Serializers
 require_relative "gitlab/grape_openapi/serializers/time"

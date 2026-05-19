@@ -500,7 +500,7 @@ table.code {
         }
       }
 
-      &:not(.js-unfold-bottom) a {
+      &:not(.js-unfold-bottom) a { // stylelint-disable-line gitlab/no-js-class
         position: relative;
 
         &::before {

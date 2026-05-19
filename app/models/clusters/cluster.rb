@@ -40,7 +40,7 @@ module Clusters
 
     has_one :agent_migration, class_name: 'Clusters::AgentMigration', inverse_of: :cluster
 
-    def self.has_one_cluster_application(name) # rubocop:disable Naming/PredicateName
+    def self.has_one_cluster_application(name) # rubocop:disable Naming/PredicatePrefix
       application = APPLICATIONS[name.to_s]
       has_one application.association_name, class_name: application.to_s, inverse_of: :cluster
     end

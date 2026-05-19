@@ -64,6 +64,13 @@ WithAlerts.args = {
   description: 'This is a page description',
 };
 
+export const Loading = Template.bind({});
+Loading.args = {
+  heading: 'Page Title',
+  description: 'This is a page description',
+  loading: true,
+};
+
 export const PageHeadingSrOnly = Template.bind({});
 PageHeadingSrOnly.args = {
   heading: 'Page Title present for screen readers but not visible to sighted users',
@@ -72,13 +79,16 @@ PageHeadingSrOnly.args = {
 
 export default {
   component: IndexLayout,
-  title: 'vue_shared/index_layout',
+  title: 'vue_shared/layouts/index_layout',
   argTypes: {
     heading: {
       control: 'text',
     },
     description: {
       control: 'text',
+    },
+    loading: {
+      control: 'boolean',
     },
     pageHeadingSrOnly: {
       control: 'boolean',

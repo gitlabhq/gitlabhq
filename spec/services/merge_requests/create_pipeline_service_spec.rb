@@ -410,7 +410,8 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
   describe '#execute_async' do
     it 'queues a merge request pipeline creation and triggers GraphQL subscriptions' do
       expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async).with(
-        project.id, user.id, merge_request.id, { 'pipeline_creation_request' => anything }
+        project.id, user.id, merge_request.id,
+        hash_including('pipeline_creation_request' => anything)
       )
       expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(merge_request)
       expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated).with(merge_request)
@@ -420,6 +421,31 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
       expect(
         Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(merge_request)
       ).to be_truthy
+    end
+
+    context 'when defer_mr_pipeline_creation_request_completion is enabled' do
+      it 'includes defer_request_completion in worker params' do
+        expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async).with(
+          project.id, user.id, merge_request.id,
+          hash_including('defer_request_completion' => true)
+        )
+
+        service.execute_async(merge_request)
+      end
+    end
+
+    context 'when defer_mr_pipeline_creation_request_completion is disabled' do
+      before do
+        stub_feature_flags(defer_mr_pipeline_creation_request_completion: false)
+      end
+
+      it 'does not include defer_request_completion in worker params' do
+        expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async) do |_proj_id, _user_id, _mr_id, params|
+          expect(params).not_to have_key('defer_request_completion')
+        end
+
+        service.execute_async(merge_request)
+      end
     end
   end
 
@@ -498,6 +524,25 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
     let(:request) { ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request) }
     let(:service) { described_class.new(project: project, current_user: user, params: params) }
     let(:params) { { pipeline_creation_request: request } }
+
+    context 'when defer_request_completion is true' do
+      let(:params) { { pipeline_creation_request: request, defer_request_completion: true } }
+
+      it 'returns an error response' do
+        response = service.send(:cannot_create_pipeline_error, 'test reason')
+
+        expect(response).to be_error
+        expect(response.message).to eq('Cannot create a pipeline for this merge request: test reason.')
+      end
+
+      it 'does NOT mark the pipeline creation request as failed' do
+        service.send(:cannot_create_pipeline_error, 'test reason')
+
+        request_data = ::Ci::PipelineCreation::Requests.hget(params[:pipeline_creation_request])
+        expect(request_data['status']).to eq(::Ci::PipelineCreation::Requests::IN_PROGRESS)
+        expect(request_data['error']).to be_nil
+      end
+    end
 
     context 'when called with retriable: true' do
       it 'returns an error response' do

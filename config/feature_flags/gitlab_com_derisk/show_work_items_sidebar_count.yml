@@ -1,0 +1,10 @@
+---
+name: show_work_items_sidebar_count
+description: Enables the open work items count pill on the project / group sidebar, and exposes openWorkItemsCount in GraphQL.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/593599
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229916
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595864
+milestone: '19.0'
+group: group::product planning
+type: gitlab_com_derisk
+default_enabled: false

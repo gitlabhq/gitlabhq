@@ -39,7 +39,12 @@ See the [sharding guidelines](sharding/_index.md).
 
 ## Using `Current.organization`
 
-The application maps incoming requests to an organization through `Current.organization`. This context is automatically set in the request layer and should be used to ensure data is properly scoped to the current organization.
+Ensure that `Current.organization` is set correctly at the request layer.
+For the cases where this is not set automatically, follow the steps below.
+
+Once `Current.organization` is set, the ActiveRecord extension
+(`gitlab-database-data_isolation`) will use this
+context to conditionally scope queries to that organization.
 
 ### Where `Current.organization` is available
 
@@ -78,7 +83,9 @@ end
 
 ### Scoping queries to organizations
 
-There will be a ActiveRecord extension that will provide Organization Scoping.
+There will be a ActiveRecord extension (`gitlab-database-data_isolation`)
+that will provide Organization Scoping, dependent on the isolation state of the
+organization.
 
 ## Organization routing
 

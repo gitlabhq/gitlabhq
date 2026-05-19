@@ -1,0 +1,56 @@
+# Accessibility Journey Configuration: Planning Work
+# Stage: Plan
+# Groups: Project Management
+
+stage: plan
+journey_name: planning_work
+feature_category: team_planning
+description: 'Golden user journey for creating and organizing work using issues and boards in GitLab'
+
+feature_test_hints:
+  - boards
+  - work_items
+
+e2e_test_files:
+  # Issue creation
+  - path: qa/qa/specs/features/browser_ui/2_plan/issue/create_issue_spec.rb
+    description: Core flow for creating an issue via UI
+    focus_area: Issue creation
+    has_ui: true
+
+  - path: qa/qa/specs/features/browser_ui/2_plan/issue/custom_issue_template_spec.rb
+    description: Creates issues from templates
+    focus_area: Issue creation
+    has_ui: true
+
+  # Issue discussions & management
+  - path: qa/qa/specs/features/browser_ui/2_plan/issue/comment_issue_spec.rb
+    description: Adds comments to an issue
+    focus_area: Issue discussions & management
+    has_ui: true
+
+  - path: qa/qa/specs/features/browser_ui/2_plan/issue/collapse_comments_in_discussions_spec.rb
+    description: Collapses/expands replies in issue discussions
+    focus_area: Issue discussions & management
+    has_ui: true
+
+  - path: qa/qa/specs/features/browser_ui/2_plan/issue/filter_issue_comments_spec.rb
+    description: Filters comments and activities in an issue
+    focus_area: Issue discussions & management
+    has_ui: true
+
+  - path: qa/qa/specs/features/browser_ui/2_plan/issue/real_time_assignee_spec.rb
+    description: Real-time assignee updates via websockets
+    focus_area: Issue discussions & management
+    has_ui: true
+
+  - path: qa/qa/specs/features/browser_ui/2_plan/issue/related_issues_spec.rb
+    description: Relate/unrelate issues
+    focus_area: Issue discussions & management
+    has_ui: true
+
+  # Issue boards
+  - path: qa/qa/specs/features/browser_ui/2_plan/issue_boards/focus_mode_spec.rb
+    description: Toggles focus mode on issue boards
+    focus_area: Issue boards
+    has_ui: true

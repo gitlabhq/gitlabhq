@@ -372,7 +372,7 @@ export default {
               <gl-icon
                 class="gl-dropdown-item-check-icon"
                 :class="{ invisible: !isCurrentStatusFilter(status) }"
-                name="mobile-issue-close"
+                name="check"
               />
               {{ label }}
             </span>
@@ -389,7 +389,7 @@ export default {
               <gl-icon
                 class="gl-dropdown-item-check-icon"
                 :class="{ invisible: !isCurrentSortField(field) }"
-                name="mobile-issue-close"
+                name="check"
               />
               {{ label }}
             </span>

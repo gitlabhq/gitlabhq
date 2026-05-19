@@ -48,7 +48,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'exists:' do
       let(:config) do
-        <<-EOY
+        <<-YAML
         regular-job:
           script: 'echo Hello, World!'
 
@@ -69,7 +69,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
               - README.md
               when: delayed
               start_in: 4 hours
-        EOY
+        YAML
       end
 
       let(:regular_job) { pipeline.builds.find_by(name: 'regular-job') }
@@ -163,7 +163,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           }
         end
 
-        let_it_be(:project) do
+        let_it_be(:project, freeze: false) do
           create(:project, :custom_repo, files: project_files)
         end
 
@@ -244,7 +244,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           }
         end
 
-        let_it_be(:project) do
+        let_it_be(:project, freeze: false) do
           create(:project, :custom_repo, files: project_files)
         end
 
@@ -259,7 +259,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'with allow_failure and exit_codes', :aggregate_failures do
       let(:config) do
-        <<-EOY
+        <<-YAML
           job-1:
             script: exit 42
             allow_failure:
@@ -283,7 +283,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
             rules:
               - if: $CI_COMMIT_REF_NAME == "master"
                 when: manual
-        EOY
+        YAML
       end
 
       it 'creates a pipeline' do
@@ -309,7 +309,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     context 'if:' do
       context 'variables:' do
         let(:config) do
-          <<-EOY
+          <<-YAML
           variables:
             VAR4: workflow var 4
             VAR5: workflow var 5
@@ -355,7 +355,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
                 variables:
                   VAR7: overridden var 7
               - when: on_success
-          EOY
+          YAML
         end
 
         let(:job1) { pipeline.builds.find_by(name: 'job1') }
@@ -407,7 +407,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
         context 'using calculated workflow var in job rules' do
           let(:config) do
-            <<-EOY
+            <<-YAML
             variables:
               VAR1: workflow var 4
 
@@ -425,7 +425,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
                   variables:
                     VAR1: overridden var 1
                 - when: on_success
-            EOY
+            YAML
           end
 
           let(:job) { pipeline.builds.find_by(name: 'job') }
@@ -442,7 +442,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
       context 'with CI_ENVIRONMENT_* predefined variables' do
         let(:config) do
-          <<-EOY
+          <<-YAML
           deploy:
             script: "deploy"
             environment:
@@ -462,7 +462,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
             rules:
               - if: $CI_ENVIRONMENT_NAME =~ /^review\// && $CI_ENVIRONMENT_ACTION == "stop" && $CI_ENVIRONMENT_TIER == "development" && $CI_ENVIRONMENT_URL == "https://gitlab.com"
                 when: manual
-          EOY
+          YAML
         end
 
         it 'assigns correct attributes to the jobs' do
@@ -482,7 +482,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
       context 'with simple if: clauses' do
         let(:config) do
-          <<-EOY
+          <<-YAML
             regular-job:
               script: 'echo Hello, World!'
 
@@ -512,7 +512,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
               rules:
                 - if: $CI_COMMIT_REF_NAME
                   when: never
-          EOY
+          YAML
         end
 
         context 'with matches' do
@@ -551,14 +551,14 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
       context 'with complex if: clauses' do
         let(:config) do
-          <<-EOY
+          <<-YAML
             regular-job:
               script: 'echo Hello, World!'
               rules:
                 - if: $VAR == 'present' && $OTHER || $CI_COMMIT_REF_NAME
                   when: manual
                   allow_failure: true
-          EOY
+          YAML
         end
 
         it 'matches the first rule' do
@@ -571,7 +571,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
       context 'with needs:' do
         let(:config) do
-          <<-EOY
+          <<-YAML
             job1:
               script: ls
 
@@ -597,7 +597,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
                   needs: [job2]
                 - when: on_success
                   needs: [job3]
-          EOY
+          YAML
         end
 
         let(:job1) { pipeline.builds.find_by(name: 'job1') }
@@ -639,7 +639,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'changes:' do
       let(:config) do
-        <<-EOY
+        <<-YAML
           regular-job:
             script: 'echo Hello, World!'
 
@@ -679,7 +679,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
             rules:
               - changes:
                   paths: [README.md]
-        EOY
+        YAML
       end
 
       context 'and matches' do
@@ -741,7 +741,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       context 'with paths and compare_to' do
-        let_it_be(:project) { create(:project, :empty_repo) }
+        let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
         let_it_be(:user)    { project.first_owner }
 
         let(:initialization_params) { base_initialization_params.merge(before: nil) }
@@ -764,7 +764,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
         context 'for jobs rules' do
           let(:config) do
-            <<-EOY
+            <<-YAML
             job1:
               script: exit 0
               rules:
@@ -774,7 +774,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
             job2:
               script: exit 0
-            EOY
+            YAML
           end
 
           context 'when there is no such compare_to ref' do
@@ -808,7 +808,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
           context 'for jobs rules with variables' do
             let(:config) do
-              <<-EOY
+              <<-YAML
               variables:
                 VALID_BRANCH_NAME: feature_1
                 FEATURE_BRANCH_NAME_PREFIX: feature_
@@ -826,7 +826,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
               job2:
                 script: exit 0
-              EOY
+              YAML
             end
 
             context 'when there is no such compare_to ref' do
@@ -907,7 +907,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
         context 'for workflow rules' do
           let(:config) do
-            <<-EOY
+            <<-YAML
             workflow:
               rules:
                 - changes:
@@ -916,7 +916,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
             job1:
               script: exit 0
-            EOY
+            YAML
           end
 
           let(:compare_to) { 'feature_1' }
@@ -942,7 +942,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'mixed if: and changes: rules' do
       let(:config) do
-        <<-EOY
+        <<-YAML
           regular-job:
             script: 'echo Hello, World!'
 
@@ -968,7 +968,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
               - if: $CI_COMMIT_REF_NAME == "master"
                 when: delayed
                 start_in: 1 hour
-        EOY
+        YAML
       end
 
       context 'and changes: matches before if' do
@@ -1025,7 +1025,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'mixed if: and changes: clauses' do
       let(:config) do
-        <<-EOY
+        <<-YAML
           regular-job:
             script: 'echo Hello, World!'
 
@@ -1039,7 +1039,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
               - if: $CI_COMMIT_REF_NAME =~ /master/
                 changes: [app.rb]
                 when: manual
-        EOY
+        YAML
       end
 
       context 'with if matches and changes matches' do
@@ -1083,7 +1083,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'complex if: allow_failure usages' do
       let(:config) do
-        <<-EOY
+        <<-YAML
           job-1:
             script: "exit 1"
             allow_failure: true
@@ -1123,7 +1123,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
               - if: $CI_COMMIT_REF_NAME =~ /nonexistant-branch/
                 allow_failure: false
               - allow_failure: true
-        EOY
+        YAML
       end
 
       it 'creates a pipeline' do
@@ -1141,7 +1141,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'complex if: allow_failure & when usages' do
       let(:config) do
-        <<-EOY
+        <<-YAML
           job-1:
             script: "exit 1"
             rules:
@@ -1194,7 +1194,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
                 when: manual
               - when: :on_failure
                 allow_failure: true
-        EOY
+        YAML
       end
 
       it 'creates a pipeline' do
@@ -1231,7 +1231,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
       context 'with 2 jobs' do
         let(:config) do
-          <<-EOY
+          <<-YAML
           stages:
             - test
             - deploy
@@ -1246,7 +1246,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
               - echo 'running DEPLOY stage'
             rules:
               - if: $CI_DEPLOY_FREEZE == null
-          EOY
+          YAML
         end
 
         context 'when outside freeze period' do
@@ -1270,7 +1270,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
       context 'with 1 job' do
         let(:config) do
-          <<-EOY
+          <<-YAML
           stages:
             - deploy
 
@@ -1280,7 +1280,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
               - echo 'running DEPLOY stage'
             rules:
               - if: $CI_DEPLOY_FREEZE == null
-          EOY
+          YAML
         end
 
         context 'when outside freeze period' do
@@ -1305,7 +1305,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'with when:manual' do
       let(:config) do
-        <<-EOY
+        <<-YAML
         job-with-rules:
           script: 'echo hey'
           rules:
@@ -1332,7 +1332,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
         job-without-rules:
           script: 'echo this is a job with NO rules'
-        EOY
+        YAML
       end
 
       let(:job_with_rules) { find_job('job-with-rules') }
@@ -1380,7 +1380,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'with a single regex-matching if: clause' do
       let(:config) do
-        <<-EOY
+        <<-YAML
           workflow:
             rules:
               - if: $CI_COMMIT_REF_NAME =~ /master/
@@ -1390,7 +1390,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
           regular-job:
             script: 'echo Hello, World!'
-        EOY
+        YAML
       end
 
       context 'matching the first rule in the list' do
@@ -1430,7 +1430,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'when root variables are used' do
       let(:config) do
-        <<-EOY
+        <<-YAML
           variables:
             VARIABLE: value
 
@@ -1440,7 +1440,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
           regular-job:
             script: 'echo Hello, World!'
-        EOY
+        YAML
       end
 
       context 'matching the first rule in the list' do
@@ -1453,7 +1453,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'with a multiple regex-matching if: clause' do
       let(:config) do
-        <<-EOY
+        <<-YAML
           workflow:
             rules:
               - if: $CI_COMMIT_REF_NAME =~ /master/
@@ -1463,7 +1463,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
           regular-job:
             script: 'echo Hello, World!'
-        EOY
+        YAML
       end
 
       context 'with partial match' do
@@ -1487,7 +1487,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'with job rules' do
       let(:config) do
-        <<-EOY
+        <<-YAML
           workflow:
             rules:
               - if: $CI_COMMIT_REF_NAME =~ /master/
@@ -1498,7 +1498,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
             rules:
               - if: $CI_COMMIT_REF_NAME =~ /wip/
               - if: $CI_COMMIT_REF_NAME =~ /feature/
-        EOY
+        YAML
       end
 
       context 'where workflow passes and the job fails' do
@@ -1540,14 +1540,14 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'with persisted variables' do
       let(:config) do
-        <<-EOY
+        <<-YAML
           workflow:
             rules:
               - if: $CI_COMMIT_REF_NAME == "master"
 
           regular-job:
             script: 'echo Hello, World!'
-        EOY
+        YAML
       end
 
       context 'with matches' do
@@ -1571,14 +1571,14 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       let(:initialization_params) { base_initialization_params.merge(variables_attributes: variables_attributes) }
 
       let(:config) do
-        <<-EOY
+        <<-YAML
           workflow:
             rules:
               - if: $SOME_VARIABLE
 
           regular-job:
             script: 'echo Hello, World!'
-        EOY
+        YAML
       end
 
       context 'with matches' do
@@ -1610,14 +1610,14 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       let(:config) do
-        <<-EOY
+        <<-YAML
           workflow:
             rules:
               - if: $SOME_VARIABLE
 
           regular-job:
             script: 'echo Hello, World!'
-        EOY
+        YAML
       end
 
       context 'with matches' do
@@ -1632,7 +1632,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
         context 'when a job requires the same variable' do
           let(:config) do
-            <<-EOY
+            <<-YAML
               workflow:
                 rules:
                   - if: $SOME_VARIABLE
@@ -1651,7 +1651,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
               test2:
                 stage: test
                 script: 'echo test2'
-            EOY
+            YAML
           end
 
           it 'creates a pipeline' do
@@ -1671,7 +1671,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
         context 'when a job requires the same variable' do
           let(:config) do
-            <<-EOY
+            <<-YAML
               workflow:
                 rules:
                   - if: $SOME_VARIABLE
@@ -1690,7 +1690,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
               test2:
                 stage: test
                 script: 'echo test2'
-            EOY
+            YAML
           end
 
           it 'does not create a pipeline', :aggregate_failures do
@@ -1733,14 +1733,14 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
       context 'changes is an array' do
         let(:config) do
-          <<-EOY
+          <<-YAML
             workflow:
               rules:
                 - changes: [file1.md]
 
             job:
               script: exit 0
-          EOY
+          YAML
         end
 
         it_behaves_like 'comparing file changes with workflow rules'
@@ -1748,7 +1748,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
       context 'changes:paths is an array' do
         let(:config) do
-          <<-EOY
+          <<-YAML
             workflow:
               rules:
                 - changes:
@@ -1756,7 +1756,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
             job:
               script: exit 0
-          EOY
+          YAML
         end
 
         it_behaves_like 'comparing file changes with workflow rules'
@@ -1777,7 +1777,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       let(:config) do
-        <<-EOY
+        <<-YAML
           workflow:
             name: '$PIPELINE_NAME $SOME_VARIABLE'
             rules:
@@ -1791,7 +1791,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           job:
             stage: test
             script: echo 'hello'
-        EOY
+        YAML
       end
 
       it 'substitutes variables in pipeline name' do

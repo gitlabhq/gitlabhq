@@ -9,7 +9,8 @@ module Types
 
     field :current_user_todos, Types::TodoType.connection_type,
       description: 'To-do items for the current user.',
-      null: false do
+      null: false,
+      scopes: [:api, :read_api, :ai_workflows] do
       argument :state, Types::TodoStateEnum,
         description: 'State of the to-do items.',
         required: false

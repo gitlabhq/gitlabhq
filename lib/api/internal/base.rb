@@ -317,7 +317,7 @@ module API
           end
 
           result = ::PersonalAccessTokens::CreateService.new(
-            current_user: user, target_user: user, organization_id: Current.organization.id, params: { name: params[:name], scopes: params[:scopes], expires_at: expires_at }
+            current_user: user, target_user: user, organization_id: Current.organization.id, params: { name: params[:name], scopes: params[:scopes], expires_at: expires_at, creation_source: PersonalAccessToken::CREATION_SOURCE_API }
           ).execute
 
           unless result.status == :success

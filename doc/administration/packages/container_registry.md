@@ -398,7 +398,7 @@ In GitLab, tokens for the container registry expire every five minutes.
 To increase the token duration:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Container Registry**.
 1. For the **Authorization token duration (minutes)**, update the value.
 1. Select **Save changes**.
@@ -1407,7 +1407,7 @@ The time required to perform garbage collection is proportional to the container
 Consider the following example, where you first build the image:
 
 ```shell
-# This builds a image with content of sha256:<111111...>
+# This builds an image with content of sha256:<111111...>
 docker build -t <my.registry.com>/<my.group>/<my.project>:latest .
 docker push <my.registry.com>/<my.group>/<my.project>:latest
 ```

@@ -98,15 +98,25 @@ export default {
       // > https://gitlab.com/gitlab-org/gitlab/-/issues/214010
       const commitListElement = this.projectCommitsEl.querySelector('#commits-list');
 
-      // To mimick effect of "filter by commit message"
+      // To mimic effect of "filter by commit message"
       commitListElement.style.opacity = 0.5;
       commitListElement.style.transition = 'opacity 200ms';
 
+      const currentParams = queryToObject(window.location.search);
+      const urlParams = new URLSearchParams();
+
+      if (currentParams.committed_after)
+        urlParams.set('committed_after', currentParams.committed_after);
+      if (currentParams.committed_before)
+        urlParams.set('committed_before', currentParams.committed_before);
+
       if (!user) {
-        return visitUrl(this.commitsPath);
+        const qs = urlParams.toString();
+        return visitUrl(qs ? `${this.commitsPath}?${qs}` : this.commitsPath);
       }
 
-      return visitUrl(`${this.commitsPath}?author=${user}`);
+      urlParams.set('author', user);
+      return visitUrl(`${this.commitsPath}?${urlParams.toString()}`);
     },
     searchAuthors: debounce(async function debouncedSearch() {
       this.searching = true;

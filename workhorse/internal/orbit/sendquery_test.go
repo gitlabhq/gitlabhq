@@ -15,6 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 
 	gkgpb "gitlab.com/gitlab-org/orbit/knowledge-graph/clients/gkgpb"
 
@@ -403,21 +404,21 @@ func TestBuildQueryResponse(t *testing.T) {
 		require.Equal(t, `"not valid json"`, string(resp.Result))
 	})
 
-	t.Run("LLM format returns formatted text as JSON string", func(t *testing.T) {
+	t.Run("LLM format does not populate Result; goon body is written separately", func(t *testing.T) {
 		result := &gkgpb.ExecuteQueryResult{
 			Content: &gkgpb.ExecuteQueryResult_FormattedText{
-				FormattedText: "compact text output",
+				FormattedText: "@header\nnodes:1\n@nodes\nUser(1):username=alice\n",
 			},
 			Metadata: &gkgpb.QueryMetadata{
-				QueryType: "search",
+				QueryType: "traversal",
 				RowCount:  3,
 			},
 		}
 
 		resp := buildQueryResponse(result, gkgpb.ResponseFormat_RESPONSE_FORMAT_LLM)
-		require.Equal(t, "search", resp.QueryType)
+		require.Equal(t, "traversal", resp.QueryType)
 		require.Equal(t, int32(3), resp.RowCount)
-		require.Equal(t, `"compact text output"`, string(resp.Result))
+		require.Empty(t, resp.Result, "LLM format must leave Result nil; raw goon is emitted by writeLLMResultResponse")
 	})
 
 	t.Run("nil metadata produces zero-value fields", func(t *testing.T) {
@@ -430,5 +431,173 @@ func TestBuildQueryResponse(t *testing.T) {
 		resp := buildQueryResponse(result, gkgpb.ResponseFormat_RESPONSE_FORMAT_RAW)
 		require.Empty(t, resp.QueryType)
 		require.Equal(t, int32(0), resp.RowCount)
+		require.Nil(t, resp.RawQueryStrings, "nil metadata must leave RawQueryStrings nil so it is omitted from JSON")
 	})
+
+	t.Run("nil RawQueryStrings is dropped from RAW envelope JSON", func(t *testing.T) {
+		result := &gkgpb.ExecuteQueryResult{
+			Content: &gkgpb.ExecuteQueryResult_ResultJson{
+				ResultJson: `{}`,
+			},
+			Metadata: &gkgpb.QueryMetadata{
+				QueryType: "traversal",
+				RowCount:  0,
+			},
+		}
+
+		resp := buildQueryResponse(result, gkgpb.ResponseFormat_RESPONSE_FORMAT_RAW)
+		body, err := json.Marshal(resp)
+		require.NoError(t, err)
+		require.NotContains(t, string(body), "raw_query_strings",
+			"omitempty must drop raw_query_strings when nil; got %s", string(body))
+	})
+}
+
+func TestWriteLLMResultResponse(t *testing.T) {
+	const goonBody = "@header\nquery_type:traversal\ngoon_version:1.0.0\nnodes:1\n@nodes\nUser(1):username=alice\n"
+
+	t.Run("non-MCP writes raw goon as text/plain with no envelope", func(t *testing.T) {
+		result := &gkgpb.ExecuteQueryResult{
+			Content: &gkgpb.ExecuteQueryResult_FormattedText{FormattedText: goonBody},
+			Metadata: &gkgpb.QueryMetadata{
+				QueryType: "traversal",
+				RowCount:  1,
+			},
+		}
+		recorder := httptest.NewRecorder()
+		req := httptest.NewRequest(http.MethodPost, "/api/v4/orbit/query?response_format=llm", nil)
+
+		writeLLMResultResponse(recorder, req, result, nil)
+
+		require.Equal(t, http.StatusOK, recorder.Code)
+		require.Equal(t, "text/plain; charset=utf-8", recorder.Header().Get("Content-Type"))
+		require.Equal(t, goonBody, recorder.Body.String(),
+			"raw goon body must be written verbatim with no JSON envelope")
+	})
+
+	t.Run("MCP wraps raw goon in JSON-RPC text content", func(t *testing.T) {
+		result := &gkgpb.ExecuteQueryResult{
+			Content: &gkgpb.ExecuteQueryResult_FormattedText{FormattedText: goonBody},
+		}
+		recorder := httptest.NewRecorder()
+		req := httptest.NewRequest(http.MethodPost, "/api/v4/orbit/query", nil)
+
+		writeLLMResultResponse(recorder, req, result, "req-1")
+
+		require.Equal(t, http.StatusOK, recorder.Code)
+		require.Equal(t, "application/json", recorder.Header().Get("Content-Type"))
+		var resp mcpResponse
+		require.NoError(t, json.Unmarshal(recorder.Body.Bytes(), &resp))
+		require.Equal(t, "2.0", resp.JSONRPC)
+		require.Equal(t, "req-1", resp.ID)
+		tr, ok := resp.Result.(map[string]any)
+		require.True(t, ok, "MCP Result must decode as object")
+		content, ok := tr["content"].([]any)
+		require.True(t, ok)
+		require.Len(t, content, 1)
+		first := content[0].(map[string]any)
+		require.Equal(t, "text", first["type"])
+		require.Equal(t, goonBody, first["text"],
+			"MCP text content must be the raw goon body, not a JSON-encoded envelope")
+	})
+}
+
+func TestBuildOutgoingContext(t *testing.T) {
+	t.Run("empty headers map returns context without metadata", func(t *testing.T) {
+		ctx := buildOutgoingContext(context.Background(), GkgServer{})
+		md, ok := metadata.FromOutgoingContext(ctx)
+		require.False(t, ok, "expected no outgoing metadata")
+		require.Empty(t, md)
+	})
+
+	t.Run("authorization header is forwarded verbatim", func(t *testing.T) {
+		ctx := buildOutgoingContext(context.Background(), GkgServer{
+			Headers: map[string]string{"authorization": "Bearer my-token"},
+		})
+		md, ok := metadata.FromOutgoingContext(ctx)
+		require.True(t, ok)
+		require.Equal(t, []string{"Bearer my-token"}, md.Get("authorization"))
+	})
+
+	t.Run("verbose logging headers are forwarded", func(t *testing.T) {
+		server := GkgServer{
+			Headers: map[string]string{
+				"x-gitlab-enabled-feature-flags":            "gkg_verbose_logs",
+				"x-gitlab-enabled-instance-verbose-ai-logs": "true",
+			},
+		}
+		ctx := buildOutgoingContext(context.Background(), server)
+		md, ok := metadata.FromOutgoingContext(ctx)
+		require.True(t, ok)
+		require.Equal(t, []string{"gkg_verbose_logs"}, md.Get("x-gitlab-enabled-feature-flags"))
+		require.Equal(t, []string{"true"}, md.Get("x-gitlab-enabled-instance-verbose-ai-logs"))
+	})
+
+	t.Run("authorization and verbose logging headers are both forwarded", func(t *testing.T) {
+		server := GkgServer{
+			Headers: map[string]string{
+				"authorization":                  "Bearer my-token",
+				"x-gitlab-enabled-feature-flags": "gkg_verbose_logs",
+			},
+		}
+		ctx := buildOutgoingContext(context.Background(), server)
+		md, ok := metadata.FromOutgoingContext(ctx)
+		require.True(t, ok)
+		require.Equal(t, []string{"Bearer my-token"}, md.Get("authorization"))
+		require.Equal(t, []string{"gkg_verbose_logs"}, md.Get("x-gitlab-enabled-feature-flags"))
+	})
+
+	t.Run("nil headers map returns context without metadata", func(t *testing.T) {
+		ctx := buildOutgoingContext(context.Background(), GkgServer{Headers: nil})
+		md, ok := metadata.FromOutgoingContext(ctx)
+		require.False(t, ok, "expected no outgoing metadata")
+		require.Empty(t, md)
+	})
+}
+
+func TestInjectHeaders(t *testing.T) {
+	const testAddress = "test-headers:50051"
+
+	var capturedMD metadata.MD
+
+	lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[gkgpb.ExecuteQueryMessage, gkgpb.ExecuteQueryMessage]) error {
+		capturedMD, _ = metadata.FromIncomingContext(stream.Context())
+
+		if _, err := stream.Recv(); err != nil {
+			return err
+		}
+		return stream.Send(&gkgpb.ExecuteQueryMessage{
+			Content: &gkgpb.ExecuteQueryMessage_Result{
+				Result: &gkgpb.ExecuteQueryResult{
+					Content: &gkgpb.ExecuteQueryResult_ResultJson{
+						ResultJson: `{}`,
+					},
+				},
+			},
+		})
+	})
+	injectTestClient(t, lis, testAddress)
+
+	myAPI := newTestAPI(t, "http://unused.test")
+	sq := NewSendQuery(myAPI, "test-version")
+
+	sendData := buildSendData(t, sendQueryParams{
+		GkgServer: GkgServer{
+			Address: testAddress,
+			Headers: map[string]string{
+				"x-gitlab-enabled-feature-flags":            "gkg_verbose_logs",
+				"x-gitlab-enabled-instance-verbose-ai-logs": "true",
+			},
+		},
+		Query:  `{"match":{}}`,
+		Format: "raw",
+	})
+
+	recorder := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodPost, "/api/v4/orbit/query", nil)
+	sq.Inject(recorder, req, sendData)
+
+	require.Equal(t, http.StatusOK, recorder.Code)
+	require.Equal(t, []string{"gkg_verbose_logs"}, capturedMD.Get("x-gitlab-enabled-feature-flags"))
+	require.Equal(t, []string{"true"}, capturedMD.Get("x-gitlab-enabled-instance-verbose-ai-logs"))
 }

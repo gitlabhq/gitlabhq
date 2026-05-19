@@ -2,7 +2,7 @@
 data_category: optional
 key_path: database.pg_system_id
 description: TBD
-product_group: self_managed
+product_group: database_architecture
 product_categories:
 - database
 value_type: number

@@ -102,12 +102,10 @@ RSpec.describe 'Clusterable > Show page', feature_category: :deployment_manageme
 
   shared_examples 'migration tab' do
     describe 'migration tab' do
-      before do
+      it 'shows the migration form when no agent exists' do
         visit cluster_path
         click_link 'Migrate'
-      end
 
-      it 'shows the migration form when no agent exists' do
         expect(page).to have_content('Migrate to GitLab Agent for Kubernetes')
         expect(page).to have_selector('.js-vue-project-select')
         expect(page).to have_field('Agent name')
@@ -115,6 +113,9 @@ RSpec.describe 'Clusterable > Show page', feature_category: :deployment_manageme
       end
 
       it 'shows the issue URL field and button as disabled when no agent exists' do
+        visit cluster_path
+        click_link 'Migrate'
+
         expect(page).to have_button('Save migration issue', disabled: true)
         expect(page).to have_field('Migration issue URL', disabled: true)
       end
@@ -204,6 +205,9 @@ RSpec.describe 'Clusterable > Show page', feature_category: :deployment_manageme
 
       describe 'creating an agent', :js do
         it 'creates agent successfully' do
+          visit cluster_path
+          click_link 'Migrate'
+
           within_testid('cluster-migration-form') do
             select_from_project_select
             fill_in 'Agent name', with: 'test-agent'

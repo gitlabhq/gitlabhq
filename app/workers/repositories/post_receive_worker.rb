@@ -105,6 +105,8 @@ module Repositories
     end
 
     def expire_branch_cache(repository)
+      return if repository.repo_type.project? && Feature.enabled?(:ref_cache_with_rebuild_queue, @project)
+
       unless Feature.enabled?(:post_receive_sync_refresh_cache, @project)
         repository.expire_branches_cache
         return
@@ -131,6 +133,8 @@ module Repositories
     end
 
     def expire_tag_cache(repository)
+      return if repository.repo_type.project? && Feature.enabled?(:ref_cache_with_rebuild_queue, @project)
+
       unless Feature.enabled?(:post_receive_sync_refresh_cache, @project)
         repository.expire_caches_for_tags
         return

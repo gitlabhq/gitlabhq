@@ -164,262 +164,230 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
     end
   end
 
-  context 'when passkeys flag is off' do
-    before do
-      stub_feature_flags(passkeys: false)
+  describe 'GET new' do
+    def go
+      get new_profile_passkey_path
     end
 
-    describe 'GET new' do
-      before do
-        get new_profile_passkey_path
+    it_behaves_like 'prepares the .setup_passkey_registration_page' do
+      def bad
+        go
       end
-
-      it_behaves_like 'page is not found'
     end
 
-    describe 'POST create' do
-      before do
-        post profile_passkeys_path
-      end
-
-      it_behaves_like 'page is not found'
-    end
-
-    describe 'DELETE destroy' do
-      before do
-        delete profile_passkey_path(1)
-      end
-
-      it_behaves_like 'page is not found'
-    end
+    it_behaves_like 'successfully loads the page'
+    it_behaves_like 'tracks a passkey interval event'
+    it_behaves_like 'when passkey authentication is not allowed'
   end
 
-  context 'when passkeys flag is on' do
-    describe 'GET new' do
-      def go
-        get new_profile_passkey_path
-      end
+  describe 'POST create', :clean_gitlab_redis_sessions do
+    let(:client) { WebAuthn::FakeClient.new('http://localhost', encoding: :base64) } # Matches config.encoding
+    let(:credential) { create_credential(client: client, rp_id: request.host) }
 
-      it_behaves_like 'prepares the .setup_passkey_registration_page' do
-        def bad
-          go
-        end
-      end
-
-      it_behaves_like 'successfully loads the page'
-      it_behaves_like 'tracks a passkey interval event'
-      it_behaves_like 'when passkey authentication is not allowed'
+    let(:params) do
+      { device_registration: { name: '1Password', device_response: device_response }, current_password: 'fake' }
     end
 
-    describe 'POST create', :clean_gitlab_redis_sessions do
-      let(:client) { WebAuthn::FakeClient.new('http://localhost', encoding: :base64) } # Matches config.encoding
-      let(:credential) { create_credential(client: client, rp_id: request.host) }
+    let(:params_with_password) do
+      { device_registration: { name: 'LastPass', device_response: device_response }, current_password: user.password }
+    end
 
-      let(:params) do
-        { device_registration: { name: '1Password', device_response: device_response }, current_password: 'fake' }
+    let(:challenge) do
+      WebAuthn::Credential.options_for_create(
+        user: {
+          id: user.webauthn_xid,
+          name: user.username,
+          display_name: user.name
+        },
+        exclude: user.get_all_webauthn_credential_ids,
+        authenticator_selection: {
+          user_verification: 'required',
+          resident_key: 'required'
+        },
+        rp: { name: 'GitLab' },
+        extensions: { credProps: true }
+      ).challenge
+    end
+
+    let(:device_response) do
+      client.create( # rubocop:disable Rails/SaveBang -- .create is a FakeClient method
+        challenge: challenge,
+        extensions: { "credProps" => { "rk" => true } },
+        user_verified: true
+      ).to_json
+    end
+
+    before do
+      stub_session(session_data: { challenge: challenge })
+    end
+
+    def bad
+      post profile_passkeys_path, params: params
+    end
+
+    def go
+      post profile_passkeys_path, params: params_with_password
+    end
+
+    it_behaves_like 'user must enter a valid current password'
+    it_behaves_like 'when passkey authentication is not allowed'
+
+    context 'when wrong password is entered' do
+      it 'shows an error message' do
+        bad
+
+        expect(assigns[:webauthn_error]).to eq(error_message)
       end
 
-      let(:params_with_password) do
-        { device_registration: { name: 'LastPass', device_response: device_response }, current_password: user.password }
-      end
+      it_behaves_like 'prepares the .setup_passkey_registration_page'
+    end
 
-      let(:challenge) do
-        WebAuthn::Credential.options_for_create(
-          user: {
-            id: user.webauthn_xid,
-            name: user.username,
-            display_name: user.name
-          },
-          exclude: user.get_all_webauthn_credential_ids,
-          authenticator_selection: {
-            user_verification: 'required',
-            resident_key: 'required'
-          },
-          rp: { name: 'GitLab' },
-          extensions: { credProps: true }
-        ).challenge
-      end
+    context "when valid password is given" do
+      context "when registration succeeds" do
+        it "registers and redirects back to the 2FA profile page" do
+          count = user.passkeys.count
 
-      let(:device_response) do
-        client.create( # rubocop:disable Rails/SaveBang -- .create is a FakeClient method
-          challenge: challenge,
-          extensions: { "credProps" => { "rk" => true } },
-          user_verified: true
-        ).to_json
-      end
+          go
 
-      before do
-        stub_session(session_data: { challenge: challenge })
-      end
-
-      def bad
-        post profile_passkeys_path, params: params
-      end
-
-      def go
-        post profile_passkeys_path, params: params_with_password
-      end
-
-      it_behaves_like 'user must enter a valid current password'
-      it_behaves_like 'when passkey authentication is not allowed'
-
-      context 'when wrong password is entered' do
-        it 'shows an error message' do
-          bad
-
-          expect(assigns[:webauthn_error]).to eq(error_message)
+          expect(user.passkeys.count).to be(count + 1)
+          expect(response).to redirect_to(profile_two_factor_auth_path)
+          expect(flash[:success]).to match(
+            # rubocop:disable Layout/LineLength -- A regex rule spanning multiple lines not practicle
+            /Passkey added successfully! Next time you sign in, select the sign-in with passkey option. For additional account security, enable two-factor authentication below./
+            # rubocop:enable Layout/LineLength
+          )
         end
 
-        it_behaves_like 'prepares the .setup_passkey_registration_page'
-      end
+        context 'when the user has two_factor_enabled' do
+          before do
+            allow(user).to receive(:two_factor_enabled?).and_return(true)
+          end
 
-      context "when valid password is given" do
-        context "when registration succeeds" do
-          it "registers and redirects back to the 2FA profile page" do
-            count = user.passkeys.count
-
+          it "shows passkey as 2FA method message" do
             go
 
-            expect(user.passkeys.count).to be(count + 1)
-            expect(response).to redirect_to(profile_two_factor_auth_path)
             expect(flash[:success]).to match(
               # rubocop:disable Layout/LineLength -- A regex rule spanning multiple lines not practicle
-              /Passkey added successfully! Next time you sign in, select the sign-in with passkey option. For additional account security, enable two-factor authentication below./
+              /Passkey added successfully! Next time you sign in, select the sign-in with passkey option. Passkey is now your default 2FA method./
               # rubocop:enable Layout/LineLength
             )
           end
+        end
 
-          context 'when the user has two_factor_enabled' do
-            before do
-              allow(user).to receive(:two_factor_enabled?).and_return(true)
-            end
-
-            it "shows passkey as 2FA method message" do
-              go
-
-              expect(flash[:success]).to match(
-                # rubocop:disable Layout/LineLength -- A regex rule spanning multiple lines not practicle
-                /Passkey added successfully! Next time you sign in, select the sign-in with passkey option. Passkey is now your default 2FA method./
-                # rubocop:enable Layout/LineLength
+        context 'with an interval event' do
+          before do
+            allow_next_instance_of(Authn::Passkey::RegisterService) do |instance|
+              allow(instance).to receive(:execute).and_return(
+                ServiceResponse.success(message: _('Passkey successfully registered.'), payload: user)
               )
             end
           end
 
-          context 'with an interval event' do
-            before do
-              allow_next_instance_of(Authn::Passkey::RegisterService) do |instance|
-                allow(instance).to receive(:execute).and_return(
-                  ServiceResponse.success(message: _('Passkey successfully registered.'), payload: user)
-                )
-              end
-            end
+          it_behaves_like 'tracks a passkey interval event'
+        end
+      end
 
-            it_behaves_like 'tracks a passkey interval event'
+      context 'when registration fails' do
+        context "with a service error" do
+          let(:device_response) { 'bad response' }
+
+          it "renders an alert" do
+            go
+
+            expect { response }.not_to change { user.passkeys.count }
+            expect(response).to render_template(:new)
+            expect(flash[:alert]).to be_present
           end
         end
 
-        context 'when registration fails' do
-          context "with a service error" do
-            let(:device_response) { 'bad response' }
-
-            it "renders an alert" do
-              go
-
-              expect { response }.not_to change { user.passkeys.count }
-              expect(response).to render_template(:new)
-              expect(flash[:alert]).to be_present
+        context 'with an interval event' do
+          before do
+            allow_next_instance_of(Authn::Passkey::RegisterService) do |instance|
+              allow(instance).to receive(:execute).and_return(
+                ServiceResponse.error(message: _('Passkey registration failed.'))
+              )
             end
           end
 
-          context 'with an interval event' do
-            before do
-              allow_next_instance_of(Authn::Passkey::RegisterService) do |instance|
-                allow(instance).to receive(:execute).and_return(
-                  ServiceResponse.error(message: _('Passkey registration failed.'))
-                )
-              end
-            end
-
-            it_behaves_like 'tracks a passkey interval event'
-          end
+          it_behaves_like 'tracks a passkey interval event'
         end
       end
     end
+  end
 
-    describe 'DELETE destroy' do
-      let_it_be_with_reload(:user) do
-        create(:user, :with_passkey, :with_namespace)
+  describe 'DELETE destroy' do
+    let_it_be_with_reload(:user) do
+      create(:user, :with_passkey, :with_namespace)
+    end
+
+    let(:passkey) { user.passkeys.first }
+    let(:current_password) { user.password }
+
+    def go
+      delete profile_passkey_path(passkey), params: { current_password: current_password }
+    end
+
+    def bad
+      delete profile_passkey_path(passkey), params: { current_password: 'wrong' }
+    end
+
+    it_behaves_like 'user must enter a valid current password'
+
+    context 'when wrong password is entered' do
+      it 'redirects back to the 2FA profile page with an alert' do
+        bad
+
+        expect(response).to redirect_to(profile_two_factor_auth_path)
+        expect(flash[:alert]).to eq(error_message[:message])
       end
+    end
 
-      let(:passkey) { user.passkeys.first }
-      let(:current_password) { user.password }
+    context "when a valid password is given" do
+      context 'when authentication succeeds' do
+        it 'destroys the passkey' do
+          expect { go }.to change { user.passkeys.count }.by(-1)
+        end
 
-      def go
-        delete profile_passkey_path(passkey), params: { current_password: current_password }
-      end
+        it 'invalidates all but the current_user ActiveSession' do
+          expect_next_instance_of(described_class) do |instance|
+            expect(instance).to receive(:destroy_all_but_current_user_session!)
+          end
 
-      def bad
-        delete profile_passkey_path(passkey), params: { current_password: 'wrong' }
-      end
+          go
+        end
 
-      it_behaves_like 'user must enter a valid current password'
-
-      context 'when wrong password is entered' do
-        it 'redirects back to the 2FA profile page with an alert' do
-          bad
+        it "redirects back to the 2FA profile page with a backend service notice" do
+          go
 
           expect(response).to redirect_to(profile_two_factor_auth_path)
-          expect(flash[:alert]).to eq(error_message[:message])
+          expect(flash[:notice]).to match(
+            /Passkey has been deleted!/
+          )
         end
       end
 
-      context "when a valid password is given" do
-        context 'when authentication succeeds' do
-          it 'destroys the passkey' do
-            expect { go }.to change { user.passkeys.count }.by(-1)
+      context 'when deletion fails' do
+        context 'with an unauthorized user' do
+          before do
+            allow(Ability).to receive(:allowed?).and_call_original
+            allow(Ability).to receive(:allowed?)
+              .with(user, :disable_passkey, user)
+              .and_return(false)
           end
 
-          it 'invalidates all but the current_user ActiveSession' do
-            expect_next_instance_of(described_class) do |instance|
-              expect(instance).to receive(:destroy_all_but_current_user_session!)
-            end
-
-            go
-          end
-
-          it "redirects back to the 2FA profile page with a backend service notice" do
+          it "redirects back to the 2FA profile page with a backend service alert" do
             go
 
             expect(response).to redirect_to(profile_two_factor_auth_path)
-            expect(flash[:notice]).to match(
-              /Passkey has been deleted!/
-            )
+            expect(flash[:alert]).to match(/You are not authorized to perform this action/)
           end
-        end
 
-        context 'when deletion fails' do
-          context 'with an unauthorized user' do
-            before do
-              allow(Ability).to receive(:allowed?).and_call_original
-              allow(Ability).to receive(:allowed?)
-                .with(user, :disable_passkey, user)
-                .and_return(false)
-            end
+          it 'does not destroy the passkey' do
+            count = user.passkeys.count
 
-            it "redirects back to the 2FA profile page with a backend service alert" do
-              go
+            go
 
-              expect(response).to redirect_to(profile_two_factor_auth_path)
-              expect(flash[:alert]).to match(/You are not authorized to perform this action/)
-            end
-
-            it 'does not destroy the passkey' do
-              count = user.passkeys.count
-
-              go
-
-              expect(user.passkeys.count).to eq(count)
-            end
+            expect(user.passkeys.count).to eq(count)
           end
         end
       end

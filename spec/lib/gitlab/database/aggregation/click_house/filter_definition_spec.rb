@@ -11,7 +11,6 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::FilterDefinition, feat
     let(:engine_definition) do
       Gitlab::Database::Aggregation::ClickHouse::Engine.build do
         self.table_name = 'agent_platform_sessions'
-        self.table_primary_key = %w[namespace_path user_id session_id flow_type]
 
         metrics do
           count
@@ -44,6 +43,12 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::FilterDefinition, feat
         expect(query_plan).not_to be_valid
         expect(query_plan.errors.to_a).to include('Values maximum size of 1 exceeded for filter `session_id`')
       end
+    end
+  end
+
+  describe '#metric?' do
+    it 'is false' do
+      expect(described_class.new(:foo, :bar)).not_to be_metric
     end
   end
 end

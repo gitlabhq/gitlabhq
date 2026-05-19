@@ -7,20 +7,10 @@ import DraggableList from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
-
 import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
-
-import { SUPPORT_BOT_USERNAME } from '~/issues/show/utils/issuable_data';
-
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
 import addLinkedItemsMutation from '../../graphql/add_linked_items.mutation.graphql';
-
-import {
-  RELATIONSHIP_TYPE_ENUM,
-  WORK_ITEM_TYPE_NAME_INCIDENT,
-  WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_NAME_TICKET,
-} from '../../constants';
+import { RELATIONSHIP_TYPE_ENUM } from '../../constants';
 
 export default {
   RELATIONSHIP_TYPE_ENUM,
@@ -28,6 +18,7 @@ export default {
     WorkItemLinkChildContents,
     DraggableList,
   },
+  inject: ['workItemTypesConfiguration'],
   props: {
     parentWorkItemId: {
       type: String,
@@ -211,34 +202,20 @@ export default {
       }
     },
     handleLinkedItemClick(event, linkedItem) {
-      if (this.isLegacyItem(linkedItem)) {
+      const type = this.workItemTypesConfiguration.find(
+        ({ id }) => id === linkedItem.workItem.workItemType.id,
+      );
+
+      if (type.useIssueView) {
         visitUrl(linkedItem.workItem.webUrl);
-      } else {
-        this.$emit('showModal', { event, child: linkedItem.workItem });
-        this.$nextTick(() => {
-          this.lastActiveElement = event.target;
-          scrollToElement(this.lastActiveElement, { offset: -80, behavior: 'auto' });
-        });
+        return;
       }
-    },
-    isLegacyItem(linkedItem) {
-      return (
-        this.isIncident(linkedItem) ||
-        this.isTicket(linkedItem) ||
-        this.isServiceDeskIssue(linkedItem)
-      );
-    },
-    isIncident(linkedItem) {
-      return linkedItem?.workItem?.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT;
-    },
-    isTicket(linkedItem) {
-      return linkedItem?.workItem?.workItemType?.name === WORK_ITEM_TYPE_NAME_TICKET;
-    },
-    isServiceDeskIssue(linkedItem) {
-      return (
-        linkedItem?.workItem?.workItemType?.name === WORK_ITEM_TYPE_NAME_ISSUE &&
-        linkedItem?.workItem?.author?.username === SUPPORT_BOT_USERNAME
-      );
+
+      this.$emit('showModal', { event, child: linkedItem.workItem });
+      this.$nextTick(() => {
+        this.lastActiveElement = event.target;
+        scrollToElement(this.lastActiveElement, { offset: -80, behavior: 'auto' });
+      });
     },
   },
 };

@@ -1,3 +1,0 @@
----
-name: delete_namespace_ban
-description: Grants the ability to remove a namespace ban, lifting the ban on the affected user.

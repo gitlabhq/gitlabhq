@@ -41,7 +41,7 @@ export default {
       :entity-id="getIdFromGraphQLId(organization.id)"
       :entity-name="organization.name"
       :label="organization.name"
-      :label-link="organization.webUrl"
+      :label-link="organization.webPath"
       shape="rect"
     >
       <gl-truncate-text

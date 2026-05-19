@@ -104,14 +104,15 @@ module API
             job = job_from_token
 
             forbidden! unless job
-          rescue ::Ci::AuthJobFinder::DeletedProjectError
+          rescue ::Ci::AuthJobFinder::DeletedProjectError => e
+            log_job_auth_failure(e.job, 'project_deleted')
             forbidden!('Project has been deleted!')
-          rescue ::Ci::AuthJobFinder::ErasedJobError
+          rescue ::Ci::AuthJobFinder::ErasedJobError => e
+            log_job_auth_failure(e.job, 'job_erased')
             forbidden!('Job has been erased!')
-          rescue ::Ci::AuthJobFinder::NotRunningJobError
-            # Pass current_job solely to load actual status of the job.
-            # AuthJobFinder currently returns no details.
-            job_forbidden!(current_job, 'Job is not processing on runner')
+          rescue ::Ci::AuthJobFinder::NotRunningJobError => e
+            log_job_auth_failure(e.job, 'job_not_running')
+            job_forbidden!(e.job, 'Job is not processing on runner')
           rescue ::Ci::AuthJobFinder::ExpiredJobTokenError => e
             if fail_on_expired_token
               dropped = \
@@ -121,13 +122,9 @@ module API
                   false
                 end
 
-              if dropped
-                log_job_dropped_due_to_expired_token(e.job)
-              else
-                log_job_forbidden_due_to_expired_token(e.job)
-              end
+              log_job_auth_failure(e.job, dropped ? 'job_dropped_token_expired' : 'job_token_expired')
             else
-              log_job_forbidden_due_to_expired_token(e.job)
+              log_job_auth_failure(e.job, 'job_token_expired')
             end
 
             job_forbidden!(e.job, 'Job token has expired')
@@ -187,14 +184,16 @@ module API
         end
 
         def job_from_token
-          # Uses the Ci::AuthJobFinder, which we want to use
-          # as the sole centralized job token authentication service.
-          #
-          # If the token does not link to the URL-specified job,
-          # return a generic auth error with no build details.
-
           return unless current_job
-          return unless current_job == ::Ci::AuthJobFinder.new(token: job_token).execute!
+
+          found_job = ::Ci::AuthJobFinder.new(token: job_token).execute!
+
+          return unless found_job
+
+          unless current_job == found_job
+            log_job_auth_failure(found_job, 'job_token_mismatch')
+            return
+          end
 
           current_job
         end
@@ -247,7 +246,7 @@ module API
           return if ::Current.organization_assigned
           return if runner.nil? || runner.instance_type?
 
-          ::Current.organization = ::Organizations::Organization.find_by_id(runner.organization_id)
+          ::Current.organization = ::Organizations::Organization.find_by_id_with_isolation(runner.organization_id)
         end
         # rubocop:enable Gitlab/AvoidCurrentOrganization
 
@@ -267,23 +266,15 @@ module API
           strong_memoize(:metrics) { ::Gitlab::Ci::Runner::Metrics.new }
         end
 
-        def log_job_forbidden_due_to_expired_token(job)
+        def log_job_auth_failure(job, reason)
           Gitlab::AppLogger.info({
             class: self.class.name,
             job_id: job.id,
+            job_status: job.status,
             job_user_id: job.user_id,
             job_project_id: job.project_id,
-            message: "Job forbidden due to expired JWT"
-          }.merge(Gitlab::ApplicationContext.current))
-        end
-
-        def log_job_dropped_due_to_expired_token(job)
-          Gitlab::AppLogger.info({
-            class: self.class.name,
-            job_id: job.id,
-            job_user_id: job.user_id,
-            job_project_id: job.project_id,
-            message: "Job failed due to expired JWT"
+            auth_fail_reason: reason,
+            message: "Job auth error"
           }.merge(Gitlab::ApplicationContext.current))
         end
       end

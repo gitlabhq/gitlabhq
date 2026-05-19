@@ -1,6 +1,15 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlModal, GlFormInput, GlDatepicker, GlFormTextarea, GlLink } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlFormGroup,
+  GlModal,
+  GlFormInput,
+  GlDatepicker,
+  GlFormTextarea,
+  GlFormCharacterCount,
+  GlLink,
+} from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -10,8 +19,9 @@ import { newDate } from '~/lib/utils/datetime_utility';
 import CreateTimelogForm from '~/sidebar/components/time_tracking/create_timelog_form.vue';
 import createTimelogMutation from '~/sidebar/queries/create_timelog.mutation.graphql';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
-import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import { updateWorkItemMutationResponse } from 'jest/work_items/mock_data';
+import { SUMMARY_MAX_LENGTH } from '~/sidebar/components/time_tracking/constants';
+import updateWorkItemTimeTrackingMutation from '~/work_items/graphql/update_work_item_time_tracking.mutation.graphql';
+import { updateWorkItemTimeTrackingMutationResponse } from 'jest/work_items/mock_data';
 
 import {
   WORK_ITEM_TYPE_NAME_EPIC,
@@ -61,7 +71,9 @@ const resolvedMutationWithErrorsMock = jest.fn().mockResolvedValue({
 const rejectedMutationMock = jest.fn().mockRejectedValue();
 const modalCloseMock = jest.fn();
 
-const updateWorkItemMutationHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
+const updateWorkItemTimeTrackingMutationHandler = jest
+  .fn()
+  .mockResolvedValue(updateWorkItemTimeTrackingMutationResponse);
 
 describe('Create Timelog Form', () => {
   Vue.use(VueApollo);
@@ -78,6 +90,7 @@ describe('Create Timelog Form', () => {
   const findGlFormInput = () => wrapper.findComponent(GlFormInput);
   const findGlDatepicker = () => wrapper.findComponent(GlDatepicker);
   const findGlFormTextarea = () => wrapper.findComponent(GlFormTextarea);
+  const findGlFormCharacterCount = () => wrapper.findComponent(GlFormCharacterCount);
 
   const submitForm = () => findForm().trigger('submit');
 
@@ -96,9 +109,10 @@ describe('Create Timelog Form', () => {
       },
       apolloProvider: createMockApollo([
         [createTimelogMutation, mutationResolverMock],
-        [updateWorkItemMutation, updateWorkItemMutationHandler],
+        [updateWorkItemTimeTrackingMutation, updateWorkItemTimeTrackingMutationHandler],
       ]),
       stubs: {
+        GlFormGroup,
         GlModal: stubComponent(GlModal, {
           methods: { close: modalCloseMock },
         }),
@@ -279,6 +293,65 @@ describe('Create Timelog Form', () => {
     });
   });
 
+  describe('summary character count', () => {
+    it('renders the character count component', () => {
+      mountComponent();
+
+      expect(findGlFormCharacterCount().exists()).toBe(true);
+    });
+
+    it('passes the correct limit to the character count component', () => {
+      mountComponent();
+
+      expect(findGlFormCharacterCount().props('limit')).toBe(SUMMARY_MAX_LENGTH);
+    });
+
+    it('passes the current summary value to the character count component', async () => {
+      mountComponent();
+
+      const summary = 'Test summary';
+      await findGlFormTextarea().vm.$emit('input', summary);
+
+      expect(findGlFormCharacterCount().props('value')).toBe(summary);
+    });
+
+    it('enforces the maxlength on the summary textarea', () => {
+      mountComponent();
+
+      expect(findGlFormTextarea().attributes('maxlength')).toBe(String(SUMMARY_MAX_LENGTH));
+    });
+  });
+
+  describe('form state preservation on error', () => {
+    it('preserves the summary value when the mutation returns an error', async () => {
+      const summary = 'My time entry summary';
+
+      mountComponent({}, resolvedMutationWithErrorsMock);
+      await findGlFormInput().vm.$emit('input', '2d');
+      await findGlFormTextarea().vm.$emit('input', summary);
+
+      submitForm();
+
+      await waitForPromises();
+
+      expect(findGlFormTextarea().props('value')).toBe(summary);
+    });
+
+    it('preserves the summary value when the mutation is rejected', async () => {
+      const summary = 'My time entry summary';
+
+      mountComponent();
+      await findGlFormInput().vm.$emit('input', '2d');
+      await findGlFormTextarea().vm.$emit('input', summary);
+
+      submitForm();
+
+      await waitForPromises();
+
+      expect(findGlFormTextarea().props('value')).toBe(summary);
+    });
+  });
+
   describe('when type is coming from legacy issues type', () => {
     it.each`
       type                  | typeDescription
@@ -337,7 +410,7 @@ describe('Create Timelog Form', () => {
       submitForm();
       await waitForPromises();
 
-      expect(updateWorkItemMutationHandler).toHaveBeenCalledWith({
+      expect(updateWorkItemTimeTrackingMutationHandler).toHaveBeenCalledWith({
         input: {
           id: 'gid://gitlab/WorkItem/1',
           timeTrackingWidget: {
@@ -358,7 +431,7 @@ describe('Create Timelog Form', () => {
       submitForm();
       await waitForPromises();
 
-      expect(updateWorkItemMutationHandler).toHaveBeenCalledWith({
+      expect(updateWorkItemTimeTrackingMutationHandler).toHaveBeenCalledWith({
         input: {
           id: 'gid://gitlab/WorkItem/1',
           timeTrackingWidget: {
@@ -370,6 +443,31 @@ describe('Create Timelog Form', () => {
           },
         },
         useWorkItemFeatures: false,
+      });
+    });
+
+    it('passes useWorkItemFeatures as true to mutation when workItemFeaturesField feature flag is enabled', async () => {
+      mountComponent({
+        props: { workItemId: 'gid://gitlab/WorkItem/1', workItemType: 'Task' },
+        providedProps: { issuableType: null, glFeatures: { workItemFeaturesField: true } },
+      });
+
+      findGlFormInput().vm.$emit('input', '2d');
+      submitForm();
+      await waitForPromises();
+
+      expect(updateWorkItemTimeTrackingMutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          timeTrackingWidget: {
+            timelog: {
+              spentAt: null,
+              summary: '',
+              timeSpent: '2d',
+            },
+          },
+        },
+        useWorkItemFeatures: true,
       });
     });
   });

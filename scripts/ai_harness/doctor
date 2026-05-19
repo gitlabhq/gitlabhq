@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# Keep in sync: if you add new require_relative paths that pull in code from
+# new directories, update .ai-harness-patterns in
+# .gitlab/ci/rules.gitlab-ci.yml so the CI job triggers on those paths.
 require_relative '../../tooling/ai_harness/doctor/main'
 
 exit AiHarness::Doctor::Main.main

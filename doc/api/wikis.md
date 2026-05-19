@@ -52,7 +52,8 @@ Example response:
     "slug" : "development",
     "title" : "development",
     "encoding": "UTF-8"
-  },{
+  },
+  {
     "content" : "*  [Deploy](deploy)\n*  [Development](development)",
     "format" : "markdown",
     "slug" : "home",

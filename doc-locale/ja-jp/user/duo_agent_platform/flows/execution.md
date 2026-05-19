@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: フロー実行を設定する
 ---
 
@@ -16,38 +16,63 @@ title: フロー実行を設定する
 - GitLab UIから実行されるフローは、CI/CDを使用します。
 - IDEで実行されるフローは、ローカルで実行されます。
 
-CI/CDを使用してフローを実行する環境を設定できます。[独自のRunnerを使用する](#configure-runners)こともできます。
+フローがCI/CD経由で実行される環境を設定できます。また、[独自のRunnerを使用する](#configure-runners) 、および[ジョブで変数を指定する](execution_variables.md)こともできます。
 
 ## フローのセキュリティ {#flow-security}
 
 フローがGitLab CI/CDで実行される場合:
 
-- アクセスを制限するために、[コンポジットID](../composite_identity.md)を使用します。
-- それらが自由に使用できるツールは、フローの目的に固有のものです。これらのツールには、マージリクエストの作成、または実行環境でのローカルShellコマンドの実行が含まれます。
+- アクセスを制限するために、フローは[複合アイデンティティ](../composite_identity.md)を使用します。
+- それらは一時的な[ワークロードパイプライン](../../../ci/pipelines/pipeline_types.md#workload-pipeline)を作成し、フローが完了すると削除されます。
+- フローが使用できるツールは、フローの目的に応じて制限されます。これらのツールには、マージリクエストの作成、実行環境でのローカルShellコマンドの実行などが含まれます。
 
-デフォルトでは、Runner環境はGitLabインスタンスへのネットワークアクセスのみを許可しますが、[これを変更できます](#change-the-default-docker-image)。この分離された環境は、Shellコマンドの実行による意図しない結果から保護します。
+デフォルトでは、フローはGitLabインスタンスにのみネットワークアクセスできます。ネットワークアクセスルールに関する詳細は、[ネットワークポリシーを設定する方法](../environment_sandbox.md#configure-a-network-policy)を参照してください。この分離された環境により、Shellコマンドの実行による意図しない結果から保護されます。
 
-GitLab UIでフローが自律的に実行されないようにするために、[フローの実行をオフにする](../../gitlab_duo/turn_on_off.md)ことができます。
+GitLab UIでフローが自律的に実行されるのを防ぐため、[フローの実行をオフ](foundational_flows/_index.md#turn-foundational-flows-on-or-off)にすることができます。
 
-## CI/CDの実行を設定する {#configure-cicd-execution}
+## Executorアーキテクチャ {#executor-architecture}
 
-プロジェクトでエージェントの設定ファイルを作成することにより、CI/CDでフローがどのように実行されるかをカスタマイズできます。
+フローがCI/CDで実行されると、Runnerは次のように動作します:
+
+1. `@gitlab/duo-cli`パッケージをnpmレジストリからダウンロードします。
+1. GitLab Duo CLIを実行します。これはWebSocketを使用してGitLab Duoワークフローサービスに接続します。
+1. AIモデルの指示に従ってツール（ファイル操作、Gitコマンド）を実行します。
+
+ExecutorのバージョンはGitLabによって管理され、定期的なリリースの一部として更新されます。
 
 > [!note]
-> このシナリオでは、事前定義されたCI/CD変数は使用できません。
+> `@gitlab/duo-cli` npmパッケージは、スタンドアロンCLIの使用においては「実験的」と表示されます。フロー内で使用される場合、関連する機能はフローと同じサポートレベルでカバーされます。
 
-### 設定ファイルを作成する {#create-the-configuration-file}
+## CI/CD実行を設定する {#configure-cicd-execution}
 
-1. プロジェクトのリポジトリで、`.gitlab/duo/`フォルダーが存在しない場合は作成します。
-1. フォルダーに、`agent-config.yml`という名前の設定ファイルを作成します。
-1. 目的の設定オプションを追加します（以下のセクションを参照）。
-1. ファイルをコミットして、mainブランチにプッシュします。
+プロジェクト内にエージェント設定ファイルを作成することで、CI/CDにおけるフローの実行方法をカスタマイズできます。
+
+> [!note]
+> このシナリオでは、事前定義されたCI/CD変数は使用できません。[利用可能な変数のリスト](execution_variables.md#available-variables)を参照してください。
+
+## 設定ファイルを作成する {#create-the-configuration-file}
+
+1. プロジェクトのリポジトリに`.gitlab/duo/`フォルダーが存在しない場合は作成します。
+1. そのフォルダー内に、`agent-config.yml`という名前の設定ファイルを作成します。
+1. 必要な設定オプションを追加します（以下のセクションを参照してください）。
+1. ファイルをデフォルトブランチにコミットしてプッシュします。
 
 プロジェクトのCI/CDでフローが実行されると、設定が適用されます。
 
 ### デフォルトのDockerイメージを変更する {#change-the-default-docker-image}
 
-デフォルトでは、CI/CDで実行されるすべてのフローは、GitLabが提供する標準のDockerイメージを使用します。このDockerイメージには、[Anthropic Sandbox Runtime（`srt`）](https://github.com/anthropic-experimental/sandbox-runtime)を使用することにより、ネットワーク保護が自動的に含まれています。このイメージは、GitLabインスタンスへのアクセスのみを許可するように設定されています。ただし、Dockerイメージを変更して、独自のイメージを代わりに指定できます。独自のイメージは、特定の依存関係またはツールを必要とする複雑なプロジェクトに役立ちます。これを行うと、エージェントはセッションに関連付けられているGitLab Runnerから到達可能な任意のドメインに到達できるようになります。
+デフォルトでは、CI/CDで実行されるすべてのフローは、GitLabが提供する標準のDockerイメージを使用します。このDockerイメージには、[Anthropic Sandbox Runtime（`srt`）](https://github.com/anthropic-experimental/sandbox-runtime)を使用したネットワーク保護が自動的に含まれています。Dockerイメージを変更し、独自のものを指定できます。独自のイメージは、特定の依存関係やツールを必要とする複雑なプロジェクトに役立ちます。これを行う場合で、引き続きネットワーク保護を使用したい場合は、お好みのバージョンの`srt`をDockerイメージに追加してください:
+
+```Docker
+# Install srt sandboxing with cache clearing and verification
+ARG SANDBOX_RUNTIME_VERSION=0.0.20
+RUN npm cache clean --force && \
+    npm install -g @anthropic-ai/sandbox-runtime@${SANDBOX_RUNTIME_VERSION} && \
+    test -s "$(npm root -g)/@anthropic-ai/sandbox-runtime/package.json" && \
+    srt --version
+```
+
+SRTおよびカスタムイメージへのインストール方法の詳細については、[リモート実行環境サンドボックス](../environment_sandbox.md)を参照してください。
 
 デフォルトのDockerイメージを変更するには、次の内容を`agent-config.yml`ファイルに追加します:
 
@@ -69,16 +94,24 @@ image: node:20-alpine
 
 #### カスタムイメージの要件 {#custom-image-requirements}
 
-カスタムDockerイメージを使用する場合は、エージェントが正しく機能するために、次のコマンドが使用可能であることを確認してください:
+カスタムDockerイメージを使用する場合は、エージェントが正しく機能するために、次のコマンドが利用可能であることを確認してください:
 
 - `git`
-- `npm`
+- `npm`と互換性のあるNode.jsバージョンを持つ`@gitlab/duo-cli`。詳細については、[GitLab Duo CLIの前提条件](../../gitlab_duo_cli/_index.md#install)を参照してください。
 
-ほとんどのベースイメージには、デフォルトでこれらのコマンドが含まれています。ただし、最小限のイメージ（`alpine`バリアントなど）では、明示的にインストールする必要がある場合があります。必要な場合は、[セットアップスクリプトの設定](#configure-setup-scripts)で不足しているコマンドをインストールできます。
+ほとんどのベースイメージには、デフォルトでこれらのコマンドが含まれています。ただし、最小構成イメージ（`alpine`バリアントなど）では、明示的にインストールする必要がある場合があります。必要に応じて、[セットアップスクリプトの設定](#configure-setup-scripts)で不足しているコマンドをインストールできます。
 
-さらに、フローの実行中にエージェントが行うツールの呼び出しによっては、他の一般的なユーティリティが必要になる場合があります。
+> [!note]
+> GitLab 18.9および以前では、カスタムイメージ内のより新しい`git`のバージョンでフローが失敗する可能性があるという[既知のイシュー (587996)](https://gitlab.com/gitlab-org/gitlab/-/work_items/587996)があります。このイシューは、`@gitlab/duo-cli`バージョン8.71.0で解決されました。
+>
+> `@gitlab/duo-cli`バージョン8.71.0または以前をご利用の場合、新しいGitバージョンでフローが失敗するのを避けるために、以下のいずれかの方法を実行できます:
+>
+> - カスタムイメージでGitバージョン`2.43.7`または以前のものを使用します
+> - `@gitlab/duo-cli`バージョン8.71.0を使用します。
 
-たとえば、alpineベースのイメージを使用する場合:
+さらに、フローの実行中にエージェントが行うツール呼び出しの内容によっては、その他の一般的なユーティリティが必要になる場合があります。
+
+たとえば、Alpineベースのイメージを使用する場合:
 
 ```yaml
 image: python:3.11-alpine
@@ -86,9 +119,12 @@ setup_script:
   - apk add --update git nodejs npm
 ```
 
+> [!note]
+> カスタムDockerイメージを使用する場合、[環境サンドボックス](../environment_sandbox.md)は、Anthropic Sandbox Runtime (SRT) がカスタムイメージに含まれている場合にのみ適用されます。SRTが含まれていない場合、フローはRunnerから到達可能な任意のドメインと完全なファイルシステムにアクセスできます。カスタムイメージでネットワーク分離が必要な場合は、[イメージにSRTをインストール](../environment_sandbox.md#install-anthropic-sandbox-runtime-srt-on-a-custom-image)し、[ネットワークポリシーを設定](../environment_sandbox.md#configure-a-network-policy)するか、Runner上でネットワークレベルの制御（例: ファイアウォールルールやネットワークポリシー）を設定してください。カスタムイメージに`@gitlab-org/duo-cli` npmパッケージを含める場合、フローの起動時にnpmダウンロード手順がスキップされ、ジョブの起動時間が約15～20秒短縮されます。
+
 ### セットアップスクリプトを設定する {#configure-setup-scripts}
 
-フローの実行前に実行されるセットアップスクリプトを定義できます。これは、依存関係のインストール、環境の設定、または必要な初期化の実行に役立ちます。
+フローの実行前に実行されるセットアップスクリプトを定義できます。これは、依存関係のインストール、環境の設定、必要な初期化を行う場合に役立ちます。
 
 セットアップスクリプトを追加するには、次の内容を`agent-config.yml`ファイルに追加します:
 
@@ -99,17 +135,20 @@ setup_script:
   - echo "Setup complete"
 ```
 
-これらのコマンド:
+これらのコマンドは:
 
-- メインのワークフローコマンドの前に実行します。
-- 指定された順序で実行します。
-- 単一のコマンドまたは配列コマンドにすることができます。
+- メインのワークフローコマンドの前に実行されます。
+- 指定された順序で実行されます。
+- 単一のコマンドまたはコマンド配列として指定できます。
 
-### キャッシングを設定する {#configure-caching}
+> [!note]
+> `setup_script`のユーザーコンテキストはDockerイメージによって異なります。デフォルトのGitLabイメージは`root`として実行されます。カスタムイメージは、イメージの`USER`ディレクティブで定義されたユーザーとして実行されます。お使いの`setup_script`がrootアクセスを必要とする場合（例えばシステムパッケージをインストールするため）、カスタムイメージがそれに応じて設定されていることを確認してください。
 
-キャッシュを設定すると、実行間でファイルとディレクトリを保持することにより、後続のフロー実行を高速化できます。キャッシュは、`node_modules`やPython仮想環境などの依存関係フォルダーに役立ちます。
+### キャッシュを設定する {#configure-caching}
 
-#### 基本的なキャッシュの設定 {#basic-cache-configuration}
+キャッシュを設定すると、実行間でファイルやディレクトリを保持することで、後続のフロー実行を高速化できます。キャッシュは、`node_modules`などの依存関係フォルダーや、Python仮想環境に役立ちます。
+
+#### 基本的なキャッシュ設定 {#basic-cache-configuration}
 
 特定のパスをキャッシュするには、次の内容を`agent-config.yml`ファイルに追加します:
 
@@ -120,9 +159,9 @@ cache:
     - .npm/
 ```
 
-#### キーによるキャッシュ {#cache-with-keys}
+#### キーを使用したキャッシュ {#cache-with-keys}
 
-キャッシュキーを使用して、さまざまなシナリオに対してさまざまなキャッシュを作成できます。キャッシュキーは、キャッシュがプロジェクトの状態に基づいていることを保証するのに役立ちます。
+キャッシュキーを使用すると、異なるシナリオに応じてさまざまなキャッシュを作成できます。キャッシュキーは、キャッシュがプロジェクトの状態に基づいていることを保証するのに役立ちます。
 
 ##### 文字列キーを使用する {#use-a-string-key}
 
@@ -136,7 +175,7 @@ cache:
 
 ##### ファイルシステムベースのキャッシュキーを使用する {#use-file-based-cache-keys}
 
-ファイルの内容（ロックファイルなど）に基づいて動的なキャッシュキーを作成します。これらのファイルが変更されると、新しいキャッシュが作成されます。これにより、指定されたファイルのSHAチェックサムが生成されます:
+ファイルの内容（ロックファイルなど）に基づいて動的なキャッシュキーを作成します。これらのファイルが変更されると、新しいキャッシュが作成されます。これにより、指定されたファイルからSHAチェックサムが生成されます:
 
 ```yaml
 cache:
@@ -148,9 +187,9 @@ cache:
     - node_modules/
 ```
 
-##### ファイルベースのキーでプレフィックスを使用する {#use-a-prefix-with-file-based-keys}
+##### ファイルベースのキーとプレフィックスを組み合わせる {#use-a-prefix-with-file-based-keys}
 
-キャッシュキーファイルに対してコンピューティングされたSHAとプレフィックスを組み合わせます:
+キャッシュキーのファイルから計算されたSHAと、プレフィックスを組み合わせます:
 
 ```yaml
 cache:
@@ -168,12 +207,12 @@ cache:
 #### キャッシュの制限事項 {#cache-limitations}
 
 - キャッシュキーの生成には、最大2つのファイルを指定できます。3つ以上のファイルが指定されている場合は、最初の2つのみが使用されます。
-- キャッシュの`paths`フィールドは必須です。パスのないキャッシュ設定は効果がありません。
-- キャッシュキーは、`prefix`フィールドのCI/CD変数をサポートします。
+- キャッシュの`paths`フィールドは必須です。パスが指定されていないキャッシュ設定は効果がありません。
+- キャッシュキーの`prefix`フィールドではCI/CD変数をサポートしています。
 
-### 設定例の完了 {#complete-configuration-example}
+### すべてのオプションを使用した設定例 {#complete-configuration-example}
 
-使用可能なすべてのオプションを使用する`agent-config.yml`ファイルの例を次に示します:
+利用可能なすべてのオプションを使用した`agent-config.yml`ファイルの例を示します:
 
 ```yaml
 # Custom Docker image
@@ -195,34 +234,63 @@ cache:
   paths:
     - .cache/pip
     - venv/
+
+# Network configuration
+network_policy:
+  include_recommended_allowed: true
+  allow_all_unix_sockets: true
+  allowed_domains:
+    - my-own-site.com
+  denied_domains:
+    - malicious.com
 ```
 
 この設定では:
 
 - Python 3.11をベースイメージとして使用します。
-- フローを実行する前に、ビルドツールとPythonの依存関係をインストールします。
-- Pipと仮想環境ディレクトリをキャッシュします。
+- フローの実行前に、ビルドツールおよびPythonの依存関係をインストールします。
+- pipおよび仮想環境のディレクトリをキャッシュします。
 - `requirements.txt`または`Pipfile.lock`が変更されたときに、`python-deps`のプレフィックスを使用して新しいキャッシュを作成します。
 
 ## Runnerを設定する {#configure-runners}
 
-CI/CDを使用するフローは、Runnerで実行されます。これらのRunnerは、以下を行う必要があります:
+CI/CDを使用するフローは、Runnerで実行されます。これらのRunnerは、次の条件を満たす必要があります:
 
-- Dockerイメージをサポートする[executor](https://docs.gitlab.com/runner/executors/)を使用します。たとえば、`docker`、`docker-autoscaler`、`kubernetes`などです。`shell`executorはサポートされていません。
-- `gitlab--duo`タグがあるため、Runnerは正しいジョブを選択できます。
-- インスタンスRunnerであるか、トップレベルグループに割り当てられます。フローは、サブグループまたはプロジェクト用に設定されたRunnerを使用できません。GitLabセルフマネージドでは、`duo_runner_restrictions` FFを無効にすることで、この制限を無効にできます。
+- Dockerイメージをサポートする[executor](https://docs.gitlab.com/runner/executors/)を使用していること。たとえば、`docker`、`docker-autoscaler`、`kubernetes`などが該当します。`shell` executorはサポートされていません。
+- Runnerが適切なジョブを選択できるように、`gitlab--duo`タグが存在すること。
+- インスタンスRunnerであるか、トップレベルグループに割り当てられていること。フローでは、サブグループまたはプロジェクト用に設定されたRunnerは使用できません。GitLab Self-Managedでは、`duo_runner_restrictions` FFを無効にすることで、この制限を無効にできます。
 
-さらに、GitLabセルフマネージドのRunner:
+さらに、GitLab Self-ManagedのRunnerでは次の条件があります:
 
-- GitLabインスタンス用に設定されたGitLab Duoワークフローサービスへのネットワークトラフィックを許可する必要があります。カスタムモデルを使用していない場合、このトラフィックはポート`443`の`duo-workflow-svc.runway.gitlab.net`に送信されます。
-- `registry.gitlab.com`からデフォルトのイメージをダウンロードできるか、[指定したDockerイメージ](#change-the-default-docker-image)にアクセスできる必要があります。
-- フローの内容によっては、[特権](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers)が必要になる場合があります。たとえば、Dockerイメージをビルドするフローには、特権Runnerが必要です。
+- GitLabインスタンス用に設定されたGitLab Duo Agent Platformサービスへのネットワークトラフィックを許可する必要があります。
+  - GitLab Duo Agent Platformサービスには[AIゲートウェイ](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)が付属しています。ご自身でAIゲートウェイをホストし、Agent PlatformのローカルURLを設定しない場合、エージェント型機能は`duo-workflow-svc.runway.gitlab.net`のポート`443`にトラフィックをルーティングします。
+- `registry.gitlab.com`からデフォルトのイメージをダウンロードできること、または[指定したDockerイメージ](#change-the-default-docker-image)にアクセスできること。
+
+証明書チェーンに自己署名証明書を含むGitLabインスタンスの場合、GitLab Duo CLIには[追加の設定](../../gitlab_duo_cli/_index.md#custom-ssl-certificates)が必要です。
+
+> [!note]
+> RunnerのGitLab Duo Agent Platformサービスへの接続は、GitLabインスタンスを介してルーティングされます。Runnerは`duo-workflow-svc.runway.gitlab.net`に直接接続しません。`duo-workflow-svc.runway.gitlab.net`のポート`443`に関するファイアウォール要件は、GitLabインスタンスに適用され、Runnerには適用されません。お使いのRunnerのネットワーク設定は、GitLabインスタンスへの送信HTTPSトラフィックを許可する必要があります。
 
 GitLab.comでは、フローは以下を使用できます:
 
-- [ホストされたRunner](../../../ci/runners/hosted_runners/_index.md)、GitLabが提供します。
+- GitLabが提供する[ホストRunner](../../../ci/runners/hosted_runners/_index.md)。
 
-Runnerで実行されるフローは、ネットワークとファイルシステムの分離を提供するランタイムサンドボックスで保護できます。サンドボックスのメリットを享受するには、以下を実行する必要があります:
+> [!note]
+> トップレベルグループで[IPアドレス制限](../../group/access_and_permissions.md#restrict-group-access-by-ip-address)が有効になっている場合、ホストされたRunnerはフローに使用できません。ホストされたRunnerは、クラウドプロバイダーのプールからの動的IPアドレスを使用するため、グループのIP許可リストに追加できません。代わりに、トップレベルグループレベルで`gitlab--duo`タグを使用して独自のグループRunnerを設定し、そのIPアドレスがグループの許可リストに含まれていることを確認してください。
 
-1. [特権](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers)モードを有効にするには、[Runnerの設定](https://docs.gitlab.com/runner/configuration/advanced-configuration/)で`privileged = true`を設定します。
-1. GitLab Duo Agent Platformのデフォルトのベースイメージ[イメージ](#change-the-default-docker-image)を使用します。
+Runnerで実行されるフローは、ネットワークとファイルシステムの分離を実現するランタイムサンドボックスによって保護できます。サンドボックスのメリットを享受するには、次の条件を満たす必要があります:
+
+1. [Runnerの設定](https://docs.gitlab.com/runner/configuration/advanced-configuration/)で`privileged = true`を指定し、[特権](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers)モードを有効にすること。
+1. 以下のいずれかを使用します。
+   - GitLab Duo Agent PlatformのデフォルトDockerベースイメージ
+   - A [SRTがインストールされたカスタムイメージ](../environment_sandbox.md#install-anthropic-sandbox-runtime-srt-on-a-custom-image)
+
+### Runnerの特権モード {#runner-privileged-mode}
+
+[環境サンドボックス](../environment_sandbox.md)保護を使用する場合、特権モードが必要です。これは、デフォルトのGitLabが提供するイメージ、またはSRTがインストールされたカスタムイメージを使用する場合に適用されます。SRTなしでカスタムDockerイメージを使用する場合、サンドボックスは適用できないため、特権モードは必要ありません。
+
+| 設定 | 特権モードが必要です | サンドボックスが有効 |
+|---------------|------------------------|----------------|
+| デフォルトイメージ | はい | はい |
+| [SRTがインストールされたカスタムイメージ](../environment_sandbox.md#install-anthropic-sandbox-runtime-srt-on-a-custom-image) | はい | はい |
+| SRTなしのカスタムイメージ | いいえ | いいえ |

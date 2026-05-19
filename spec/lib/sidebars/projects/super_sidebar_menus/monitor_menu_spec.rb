@@ -16,8 +16,11 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::MonitorMenu, feature_categ
     expect(items.map(&:class).uniq).to eq([Sidebars::NilMenuItem])
     expect(items.map(&:item_id)).to eq([
       :tracing,
+      :traces_explorer,
       :metrics,
+      :metrics_explorer,
       :logs,
+      :logs_explorer,
       :error_tracking,
       :alert_management,
       :incidents,

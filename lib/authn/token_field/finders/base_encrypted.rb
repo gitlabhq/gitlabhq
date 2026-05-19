@@ -4,7 +4,7 @@ module Authn
   module TokenField
     module Finders
       class BaseEncrypted
-        def initialize(strategy, token, unscoped)
+        def initialize(strategy, token, unscoped, options = {})
           unless strategy.is_a?(::Authn::TokenField::Encrypted)
             raise ArgumentError,
               'Please provide an encrypted strategy.'
@@ -13,6 +13,7 @@ module Authn
           @strategy = strategy
           @token = token
           @unscoped = unscoped
+          @options = options
         end
 
         def execute
@@ -21,7 +22,7 @@ module Authn
 
         protected
 
-        attr_reader :strategy, :token, :unscoped
+        attr_reader :strategy, :token, :unscoped, :options
 
         delegate :encrypted_field, to: :strategy
 

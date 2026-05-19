@@ -21,9 +21,8 @@ module QA
         # @param [Hash] release
         # @return [Hash]
         def comparable_release(release)
-          release&.except(:_links)&.merge(
+          release&.except(:_links, :author)&.merge(
             {
-              author: release[:author].except(:web_url),
               commit: release[:commit].except(:web_url),
               commit_path: release[:commit_path].split("/-/").last,
               tag_path: release[:tag_path].split("/-/").last,
@@ -52,11 +51,7 @@ module QA
 
         it(
           'successfully imports project release',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360243',
-          quarantine: {
-            type: :investigating,
-            issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24012"
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360243'
         ) do
           expect_project_import_finished_successfully
 

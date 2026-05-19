@@ -2,7 +2,7 @@
 
 exports[`SidebarTodo template renders component container element with proper data attributes 1`] = `
 <gl-button-stub
-  aria-label="Mark as done"
+  aria-label="Mark to-do items done"
   buttontextclasses=""
   category="primary"
   class="gl-float-right issuable-header-btn"
@@ -24,7 +24,7 @@ exports[`SidebarTodo template renders component container element with proper da
   <span
     class="issuable-todo-inner"
   >
-    Mark as done
+    Mark to-do items done
   </span>
 </gl-button-stub>
 `;

@@ -11,7 +11,7 @@ RSpec.describe Ci::BuildCancelService, feature_category: :continuous_integration
     subject(:execute) { described_class.new(build, user).execute }
 
     context 'when user is authorized to cancel the build' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -60,7 +60,7 @@ RSpec.describe Ci::BuildCancelService, feature_category: :continuous_integration
           end
 
           context 'as a maintainer on the project' do
-            before do
+            before_all do
               project.add_maintainer(user)
             end
 

@@ -83,7 +83,9 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
         end
       end
 
-      it { is_expected.to be_falsy }
+      it 'raises HTTPTimeoutError' do
+        expect { valid? }.to raise_error(Gitlab::Ci::Config::External::Context::HTTPTimeoutError)
+      end
     end
 
     context 'when is not a yaml file' do
@@ -142,8 +144,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
         end
       end
 
-      it 'is falsy' do
-        expect(content).to be_falsy
+      it 'raises HTTPTimeoutError' do
+        expect { content }.to raise_error(Gitlab::Ci::Config::External::Context::HTTPTimeoutError)
       end
     end
 
@@ -262,7 +264,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
       end
 
       context 'when retryable errors fail after all retries' do
-        [SocketError, Timeout::Error, Gitlab::HTTP::Error].each do |error_class|
+        [SocketError, Gitlab::HTTP::Error].each do |error_class|
           context "when #{error_class.name} occurs on all attempts" do
             before do
               allow_next_instance_of(HTTParty::Request) do |instance|
@@ -271,6 +273,29 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
             end
 
             it_behaves_like 'fails after retrying with exponential backoff'
+          end
+        end
+
+        context 'when Timeout::Error occurs on all attempts' do
+          before do
+            allow_next_instance_of(HTTParty::Request) do |instance|
+              allow(instance).to receive(:perform).and_raise(Timeout::Error)
+            end
+            allow(remote_file).to receive(:sleep)
+          end
+
+          it 'raises HTTPTimeoutError' do
+            expect { content }.to raise_error(
+              Gitlab::Ci::Config::External::Context::HTTPTimeoutError,
+              "Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` " \
+                "could not be fetched after 3 attempts because of a timeout error!"
+            )
+          end
+
+          it 'waits between retries with exponential backoff' do
+            expect { content }.to raise_error(Gitlab::Ci::Config::External::Context::HTTPTimeoutError)
+            expect(remote_file).to have_received(:sleep).with(1).once
+            expect(remote_file).to have_received(:sleep).with(2).once
           end
         end
 
@@ -372,8 +397,11 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
         stub_full_request(location).to_timeout
       end
 
-      it 'returns error message about a timeout' do
-        expect(subject).to eq('Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` could not be fetched after 3 attempts because of a timeout error!')
+      it 'raises HTTPTimeoutError' do
+        expect { subject }.to raise_error(
+          Gitlab::Ci::Config::External::Context::HTTPTimeoutError,
+          'Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` could not be fetched after 3 attempts because of a timeout error!'
+        )
       end
     end
 
@@ -439,8 +467,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
 
     subject { remote_file.send(:expand_context_attrs) }
 
-    it 'drops all parameters' do
-      is_expected.to be_empty
+    it 'includes parent_file' do
+      is_expected.to eq({ parent_file: remote_file })
     end
   end
 
@@ -554,32 +582,36 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
     end
 
     context 'when HTTP request times out' do
-      it 'returns nil content' do
-        expect(content).to be_nil
-      end
-
-      it 'adds timeout error message' do
-        content
-        expect(remote_file.errors).to include(
+      it 'raises HTTPTimeoutError' do
+        expect { content }.to raise_error(
+          Gitlab::Ci::Config::External::Context::HTTPTimeoutError,
           "Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` " \
             "could not be fetched after 3 attempts because of a timeout error!"
         )
       end
 
-      it 'logs the timeout' do
-        expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-          hash_including(
-            class: 'Gitlab::Ci::Config::External::File::Remote',
-            message: 'CI config HTTP request timed out',
-            project_id: project.id,
-            extra: hash_including(
-              open_timeout_s: 1,
-              read_timeout_s: 1
-            )
-          )
-        ).exactly(3).times
+      context 'when ci_config_http_timeout feature flag is enabled' do
+        before do
+          stub_feature_flags(ci_config_http_timeout: true)
+        end
 
-        content
+        it 'logs the timeout' do
+          allow(Gitlab::AppJsonLogger).to receive(:warn).and_call_original
+
+          expect { content }.to raise_error(Gitlab::Ci::Config::External::Context::HTTPTimeoutError)
+
+          expect(Gitlab::AppJsonLogger).to have_received(:warn).with(
+            hash_including(
+              class: 'Gitlab::Ci::Config::External::File::Remote',
+              message: 'CI config HTTP request timed out',
+              project_id: project.id,
+              extra: hash_including(
+                open_timeout_s: 1,
+                read_timeout_s: 1
+              )
+            )
+          ).once
+        end
       end
     end
 
@@ -588,16 +620,30 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
         stub_feature_flags(ci_config_http_timeout: false)
       end
 
-      it 'does not log the timeout' do
-        expect(Gitlab::AppJsonLogger).not_to receive(:warn).with(
-          hash_including(message: 'CI config HTTP request timed out')
-        )
+      it 'still logs the timeout' do
+        allow(Gitlab::AppJsonLogger).to receive(:warn).and_call_original
 
-        content
+        expect { content }.to raise_error(Gitlab::Ci::Config::External::Context::HTTPTimeoutError)
+
+        expect(Gitlab::AppJsonLogger).to have_received(:warn).with(
+          hash_including(
+            class: 'Gitlab::Ci::Config::External::File::Remote',
+            message: 'CI config HTTP request timed out',
+            project_id: project.id,
+            extra: hash_including(
+              open_timeout_s: nil,
+              read_timeout_s: nil
+            )
+          )
+        ).once
       end
 
-      it 'still returns nil content due to timeout' do
-        expect(content).to be_nil
+      it 'raises HTTPTimeoutError' do
+        expect { content }.to raise_error(
+          Gitlab::Ci::Config::External::Context::HTTPTimeoutError,
+          "Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` " \
+            "could not be fetched after 3 attempts because of a timeout error!"
+        )
       end
     end
   end
@@ -657,90 +703,69 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
       stub_full_request(location).to_return(body: remote_file_content)
     end
 
-    context 'when feature flag is disabled' do
+    context 'with cache: true' do
       let(:cache_value) { true }
 
-      before do
-        stub_feature_flags(ci_cache_remote_includes: false)
-      end
+      it 'caches content with default TTL and returns cached content on subsequent calls' do
+        expect(Rails.cache).to receive(:fetch)
+          .with("ci-remote-include::#{location}", expires_in: 1.hour)
+          .twice
+          .and_call_original
 
-      it 'does not cache the content' do
-        expect(Rails.cache).not_to receive(:fetch)
+        remote_file.preload_content
+        first_content = remote_file.content
+
+        remote_file.clear_memoization(:content)
+        stub_full_request(location).to_return(body: 'different content')
+
+        remote_file.preload_content
+        second_content = remote_file.content
+
+        expect(second_content).to eq(first_content)
+      end
+    end
+
+    context 'with cache duration string' do
+      let(:cache_value) { '30 minutes' }
+
+      it 'caches the content with parsed TTL' do
+        expect(Rails.cache).to receive(:fetch)
+          .with("ci-remote-include::#{location}", expires_in: 30.minutes)
+          .and_call_original
 
         remote_file.preload_content
         expect(remote_file.content).to eq(remote_file_content)
       end
     end
 
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(ci_cache_remote_includes: true)
+    context 'with cache and integrity check' do
+      let(:cache_value) { true }
+      let(:integrity_hash) { "sha256-#{Base64.strict_encode64(Digest::SHA256.digest('wrong content'))}" }
+      let(:params) { { remote: location, cache: cache_value, integrity: integrity_hash } }
+
+      it 'fails validation even with cached content' do
+        remote_file.preload_content
+        remote_file.content
+
+        expect(remote_file).not_to be_valid
+        expect(remote_file.errors).to include(/failed integrity check/)
       end
+    end
 
-      context 'with cache: true' do
-        let(:cache_value) { true }
+    context 'when context has no project' do
+      let(:cache_value) { true }
+      let(:context_params) { { project: nil, sha: '12345', user: nil } }
 
-        it 'caches content with default TTL and returns cached content on subsequent calls' do
-          expect(Rails.cache).to receive(:fetch)
-            .with("ci-remote-include::#{location}", expires_in: 1.hour)
-            .twice
-            .and_call_original
-
-          remote_file.preload_content
-          first_content = remote_file.content
-
-          remote_file.clear_memoization(:content)
-          stub_full_request(location).to_return(body: 'different content')
-
-          remote_file.preload_content
-          second_content = remote_file.content
-
-          expect(second_content).to eq(first_content)
-        end
-      end
-
-      context 'with cache duration string' do
-        let(:cache_value) { '30 minutes' }
-
-        it 'caches the content with parsed TTL' do
-          expect(Rails.cache).to receive(:fetch)
-            .with("ci-remote-include::#{location}", expires_in: 30.minutes)
-            .and_call_original
-
-          remote_file.preload_content
-          expect(remote_file.content).to eq(remote_file_content)
-        end
-      end
-
-      context 'with cache and integrity check' do
-        let(:cache_value) { true }
-        let(:integrity_hash) { "sha256-#{Base64.strict_encode64(Digest::SHA256.digest('wrong content'))}" }
-        let(:params) { { remote: location, cache: cache_value, integrity: integrity_hash } }
-
-        it 'fails validation even with cached content' do
-          remote_file.preload_content
-          remote_file.content
-
-          expect(remote_file).not_to be_valid
-          expect(remote_file.errors).to include(/failed integrity check/)
-        end
-      end
-
-      context 'when context has no project' do
-        let(:cache_value) { true }
-        let(:context_params) { { project: nil, sha: '12345', user: nil } }
-
-        it 'logs cache access without project_id' do
-          expect(Gitlab::AppJsonLogger).to receive(:info).with(
-            hash_including(
-              message: 'CI remote include cache access',
-              project_id: nil
-            )
+      it 'logs cache access without project_id' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          hash_including(
+            message: 'CI remote include cache access',
+            project_id: nil
           )
+        )
 
-          remote_file.preload_content
-          remote_file.content
-        end
+        remote_file.preload_content
+        remote_file.content
       end
     end
   end

@@ -297,22 +297,51 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
   end
 
   describe '.sidekiq_restore!' do
-    context 'when job has primary and scoped identity stored' do
+    context 'when job has primary, scoped identity, and context stored' do
+      context 'with permission_check context' do
+        let(:job) { { 'jid' => 123, 'sqci' => [primary_user.id, scoped_user.id, 'permission_check'] } }
+
+        it 'links primary user with scoped user using the stored context' do
+          identity = described_class.sidekiq_restore!(job)
+
+          expect(identity).to be_linked
+          expect(identity.primary_user).to eq(primary_user)
+          expect(identity.scoped_user).to eq(scoped_user)
+          expect(identity.link_context).to eq(:permission_check)
+        end
+      end
+
+      context 'with authentication context' do
+        let(:job) { { 'jid' => 123, 'sqci' => [primary_user.id, scoped_user.id, 'authentication'] } }
+
+        it 'links primary user with scoped user using the stored context' do
+          identity = described_class.sidekiq_restore!(job)
+
+          expect(identity).to be_linked
+          expect(identity.primary_user).to eq(primary_user)
+          expect(identity.scoped_user).to eq(scoped_user)
+          expect(identity.link_context).to eq(:authentication)
+        end
+      end
+    end
+
+    context 'when job has primary and scoped identity stored without context (legacy)' do
       let(:job) { { 'jid' => 123, 'sqci' => [primary_user.id, scoped_user.id] } }
 
-      it 'finds and links primary user with scoped user' do
+      it 'links primary user with scoped user defaulting to authentication context' do
         identity = described_class.sidekiq_restore!(job)
 
         expect(identity).to be_linked
         expect(identity.primary_user).to eq(primary_user)
         expect(identity.scoped_user).to eq(scoped_user)
+        expect(identity.link_context).to eq(:authentication)
       end
     end
 
     context 'when linked identity in job is an unexpected value' do
       let(:job) { { 'jid' => 123, 'sqci' => [primary_user.id] } }
 
-      it 'finds and links primary user with scoped user' do
+      it 'raises an error' do
         expect { described_class.sidekiq_restore!(job) }
           .to raise_error(described_class::IdentityError)
       end
@@ -325,14 +354,14 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
     subject(:identity) { described_class.new(primary_user) }
 
     before do
-      identity.link!(scoped_user)
+      identity.link!(scoped_user, context: :authentication)
     end
 
-    it 'sets a job attribute' do
+    it 'stores primary user id, scoped user id, and link context in the job' do
       described_class.new(primary_user).sidekiq_link!(job)
 
       expect(job[described_class::COMPOSITE_IDENTITY_SIDEKIQ_ARG])
-        .to match_array([primary_user.id, scoped_user.id])
+        .to eq([primary_user.id, scoped_user.id, :authentication])
     end
   end
 

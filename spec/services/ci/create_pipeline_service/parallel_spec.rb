@@ -16,11 +16,11 @@ RSpec.describe Ci::CreatePipelineService,
   context 'job:parallel' do
     context 'numeric' do
       let(:config) do
-        <<-EOY
+        <<-YAML
         job:
           script: "echo job"
           parallel: 3
-        EOY
+        YAML
       end
 
       it 'creates the pipeline' do
@@ -36,7 +36,7 @@ RSpec.describe Ci::CreatePipelineService,
 
     context 'matrix' do
       let(:config) do
-        <<-EOY
+        <<-YAML
         job:
           script: "echo job"
           parallel:
@@ -45,7 +45,7 @@ RSpec.describe Ci::CreatePipelineService,
                 STACK: [monitoring, app]
               - PROVIDER: [gcp, vultr]
                 STACK: [data]
-        EOY
+        YAML
       end
 
       it 'creates the pipeline' do
@@ -70,7 +70,7 @@ RSpec.describe Ci::CreatePipelineService,
 
       context 'when a bridge is using parallel:matrix' do
         let(:config) do
-          <<-EOY
+          <<-YAML
           job:
             stage: test
             script: "echo job"
@@ -85,7 +85,7 @@ RSpec.describe Ci::CreatePipelineService,
                   STACK: [monitoring, app]
                 - PROVIDER: [gcp, vultr]
                   STACK: [data]
-          EOY
+          YAML
         end
 
         it 'creates the pipeline' do
@@ -111,7 +111,7 @@ RSpec.describe Ci::CreatePipelineService,
 
       context 'with matrix expressions in needs:parallel:matrix' do
         let(:config) do
-          <<-EOY
+          <<-YAML
           .parallel-strat:
             parallel:
               matrix:
@@ -129,7 +129,7 @@ RSpec.describe Ci::CreatePipelineService,
                 parallel:
                   matrix:
                     - TARGET: $[[ matrix.TARGET ]]
-          EOY
+          YAML
         end
 
         it 'creates pipeline with correct job dependencies' do
@@ -165,7 +165,7 @@ RSpec.describe Ci::CreatePipelineService,
 
         context 'with multi-dimensional matrix' do
           let(:config) do
-            <<-EOY
+            <<-YAML
             .matrix_config: &matrix_config
               parallel:
                 matrix:
@@ -187,7 +187,7 @@ RSpec.describe Ci::CreatePipelineService,
                       - OS: $[[ matrix.OS ]]
                         ARCH: $[[ matrix.ARCH ]]
               <<: *matrix_config
-            EOY
+            YAML
           end
 
           it 'creates correct dependencies for multi-dimensional matrix' do
@@ -221,7 +221,7 @@ RSpec.describe Ci::CreatePipelineService,
 
         context 'with mixed expressions and literal values' do
           let(:config) do
-            <<-EOY
+            <<-YAML
             build:
               script: echo "Building $OS-$ENV"
               parallel:
@@ -241,7 +241,7 @@ RSpec.describe Ci::CreatePipelineService,
                     matrix:
                       - OS: $[[ matrix.OS ]]
                         ENV: "prod"
-            EOY
+            YAML
           end
 
           it 'handles mixed matrix expressions and literal values' do

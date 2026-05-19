@@ -27,7 +27,9 @@
     "custom_webhook_template",
     "resource_access_token_events",
     "resource_deploy_token_events",
-    "branch_filter_strategy"
+    "branch_filter_strategy",
+    "token_present",
+    "signing_token_present"
   ],
   "optional": [
     "url_variables",
@@ -185,6 +187,12 @@
     },
     "branch_filter_strategy": {
       "type": "string"
+    },
+    "token_present": {
+      "type": "boolean"
+    },
+    "signing_token_present": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

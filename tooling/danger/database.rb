@@ -52,6 +52,14 @@ module Tooling
           Tooling::Danger::PreventIndexCreationSuggestion.new(filename, context: self).suggest
         end
       end
+
+      def check_prevent_column_addition_disabled(file_names)
+        migrations = file_names.select { |f| f.match?(MIGRATION_MATCHER) }
+
+        migrations.each do |filename|
+          Tooling::Danger::PreventColumnAdditionSuggestion.new(filename, context: self).suggest
+        end
+      end
     end
   end
 end

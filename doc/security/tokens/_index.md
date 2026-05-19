@@ -25,8 +25,7 @@ To keep your tokens secure:
   - If separate processes require different scopes (for example, `read` and `write`), consider using separate tokens for each scope.
     If one token leaks, it provides less access than a single token with a wide scope like full API access.
 - When creating a token:
-  - Choose a name that describes the token. For example, `GITLAB_API_TOKEN-application1` or `GITLAB_READ_API_TOKEN-application2`.
-  - Avoid generic names like `GITLAB_API_TOKEN`, `API_TOKEN` or `default`.
+  - Choose a name following the [Token naming guidance](#token-naming-guidance) below.
   - Consider setting a token that expires when your task is complete.
     For example, if you need to perform a one-time import, set the token to expire after a few hours.
   - Add a description that provides further context including any relevant URLs.
@@ -47,6 +46,73 @@ Do not:
 - Include tokens when pasting code, console commands, or log outputs into an issue, MR description, comment, or any other free text inputs.
 - Log credentials in the console logs or artifacts. Consider [protecting](../../ci/variables/_index.md#protect-a-cicd-variable) and
   [masking](../../ci/variables/_index.md#mask-a-cicd-variable) your credentials.
+
+### Token naming guidance
+
+A clear, consistent naming convention for access tokens helps you:
+
+- Quickly identify a token's purpose and owner when auditing active tokens.
+- Determine whether a token is still needed before rotating or revoking it.
+- Reduce the risk of accidentally revoking a token that another process depends on.
+
+#### Recommended naming format
+
+Use a name that answers three questions: **who** created the token, **what** it is used for, and **where** it is used.
+
+A practical format is:
+
+```plaintext
+<purpose>-<context>-<environment>
+```
+
+For example:
+
+| Token name | Purpose |
+| --- | --- |
+| `ci-deploy-gitlab-production` | CI/CD deployment job for the GitLab project in production |
+| `api-read-reporting-dashboard` | Read-only API access for a reporting dashboard |
+| `automation-sync-vulnmapper-staging` | Automation script syncing data in staging |
+| `personal-local-dev-jsmith` | Personal token for local development by a specific user |
+
+#### Naming guidelines
+
+- **Be specific.** Avoid generic names like `test`, `mytoken`, `token1`, `GITLAB_API_TOKEN`, `API_TOKEN` or `default`.
+  These make it impossible to identify a token's purpose during an audit.
+- **Include the consuming system or tool.** If a token is used by a specific application,
+  script, or integration, include its name. For example: `terraform-state-backend` or
+  `grafana-metrics-reader`.
+- **Include the environment.** Where applicable, indicate whether the token targets
+  `production`, `staging`, or `development`. This prevents accidental use of a
+  production token in a lower environment.
+- **Avoid embedding sensitive information.** Do not include usernames, email addresses,
+  or any other personally identifiable information (PII) in token names, as token names
+  are visible in audit logs and the UI.
+- **Use lowercase and hyphens.** Consistent casing and separators make names easier to
+  read and search. For example, prefer `ci-deploy-production` over `CI_Deploy_Production`.
+- **Use the description field for additional context.** The token description field
+  (available in GitLab 17.7 and later) is a good place to add detail that does not fit
+  in the name, such as a link to the issue that requested the token or the team that
+  owns it.
+
+#### Tokens used in automation
+
+For tokens used in CI/CD pipelines, scripts, or other automated processes:
+
+- Prefix the name with the system or pipeline name. For example: `ci-`, `terraform-`, or `k8s-`.
+- Include the project or group the token operates on. For example:
+  `ci-deploy-my-project-production`.
+- Consider using [project access tokens](../../user/project/settings/project_access_tokens.md) or
+  [group access tokens](../../user/group/settings/group_access_tokens.md) instead of personal access
+  tokens for automation, as they are not tied to an individual user account.
+
+#### Tokens used for personal development
+
+For tokens used in local development or personal tooling:
+
+- Include your username or identifier so the token can be traced back to you during an audit.
+  For example: `local-dev-jsmith` or `vscode-gitlab-jsmith`.
+- Create separate tokens for separate tools or purposes rather than reusing a single
+  broad-scoped token.
 
 ### Tokens in CI/CD
 
@@ -304,7 +370,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Under **Feed token**, select the **Disable feed token** checkbox, then select **Save changes**.
 

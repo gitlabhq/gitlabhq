@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Analytics::UsageTrends::CountJobTriggerWorker, feature_category: :devops_reports do
   it_behaves_like 'an idempotent worker'
 
-  context 'triggers a job for each measurement identifiers' do
+  context 'when triggering a job for each measurement identifier' do
     let(:expected_count) { Analytics::UsageTrends::Measurement.identifier_query_mapping.keys.size }
 
     it 'triggers CounterJobWorker jobs' do

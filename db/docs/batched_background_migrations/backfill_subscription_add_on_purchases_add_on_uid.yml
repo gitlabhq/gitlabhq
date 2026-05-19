@@ -1,7 +1,9 @@
 ---
 migration_job_name: BackfillSubscriptionAddOnPurchasesAddOnUid
-description: Backfill subscription_add_on_uid column in subscription_add_on_purchases table from associated add-on name enum values
+description: Backfill subscription_add_on_uid column in subscription_add_on_purchases
+  table from associated add-on name enum values
 feature_category: plan_provisioning
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226161
 milestone: '18.11'
 queued_migration_version: 20260305202643
+finalized_by: '20260421235107'

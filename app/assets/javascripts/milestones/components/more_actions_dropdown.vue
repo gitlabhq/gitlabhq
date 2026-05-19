@@ -228,7 +228,7 @@ export default {
       :milestone-title="title"
       :promote-url="promoteUrl"
       :group-name="groupName"
-      @promotionModalVisible="setPromoteModalVisibility"
+      @promotion-modal-visible="setPromoteModalVisibility"
     />
 
     <delete-milestone-modal
@@ -237,7 +237,7 @@ export default {
       :merge-request-count="mergeRequestCount"
       :milestone-title="title"
       :milestone-url="milestoneUrl"
-      @deleteModalVisible="setDeleteModalVisibility"
+      @delete-modal-visible="setDeleteModalVisibility"
     />
   </gl-disclosure-dropdown>
 </template>

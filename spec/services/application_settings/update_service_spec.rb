@@ -115,7 +115,7 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
       let(:params) { attribute }
 
       it 'increments cache' do
-        expect { subject.execute }.to change(application_settings, :local_markdown_version).by(1)
+        expect { subject.execute }.to change { application_settings.local_markdown_version }.by(1)
       end
     end
 
@@ -129,7 +129,7 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
       let(:params) { { asset_proxy_enabled: true, local_markdown_version: 12 } }
 
       it 'does not increment' do
-        expect { subject.execute }.to change(application_settings, :local_markdown_version).to(12)
+        expect { subject.execute }.to change { application_settings.local_markdown_version }.to(12)
       end
     end
 
@@ -139,7 +139,7 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
       it 'does not increment' do
         described_class.new(application_settings, admin, params).execute
 
-        expect { described_class.new(application_settings, admin, params).execute }.not_to change(application_settings, :local_markdown_version)
+        expect { described_class.new(application_settings, admin, params).execute }.not_to change { application_settings.local_markdown_version }
       end
     end
   end
@@ -207,11 +207,11 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
 
         if previous_performance_bar_allowed_group_id != expected_performance_bar_allowed_group_id
           expect { subject.execute }
-            .to change(application_settings, :performance_bar_allowed_group_id)
+            .to change { application_settings.performance_bar_allowed_group_id }
             .from(previous_performance_bar_allowed_group_id).to(expected_performance_bar_allowed_group_id)
         else
           expect { subject.execute }
-            .not_to change(application_settings, :performance_bar_allowed_group_id)
+            .not_to change { application_settings.performance_bar_allowed_group_id }
         end
       end
 
@@ -233,7 +233,7 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
 
       it 'does not change the performance bar settings' do
         expect { subject.execute }
-          .not_to change(application_settings, :performance_bar_allowed_group_id)
+          .not_to change { application_settings.performance_bar_allowed_group_id }
       end
     end
 
@@ -243,7 +243,7 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
 
       it 'implicitly defaults to true' do
         expect { subject.execute }
-          .to change(application_settings, :performance_bar_allowed_group_id)
+          .to change { application_settings.performance_bar_allowed_group_id }
           .from(nil).to(group.id)
       end
     end

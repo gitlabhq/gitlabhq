@@ -103,7 +103,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_RSPEC_MIGRATION: 'true',
         ENABLE_RSPEC_BACKGROUND_MIGRATION: 'true',
         ENABLE_RSPEC_FRONTEND_FIXTURE: 'true',
-        ENABLE_BUILD_QA_IMAGE: 'true',
         ENABLE_COMPILE_PRODUCTION_ASSETS: 'true',
         ENABLE_COMPILE_STORYBOOK: 'true',
         ENABLE_COMPILE_TEST_ASSETS: 'true',
@@ -190,7 +189,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
           :ENABLE_RSPEC_UNIT,
           :ENABLE_RSPEC_INTEGRATION,
           :ENABLE_RSPEC_SYSTEM,
-          :ENABLE_BUILD_QA_IMAGE,
           :ENABLE_COMPILE_PRODUCTION_ASSETS
         )
       end
@@ -218,7 +216,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_RSPEC_MIGRATION=true
         ENABLE_RSPEC_BACKGROUND_MIGRATION=true
         ENABLE_RSPEC_FRONTEND_FIXTURE=true
-        ENABLE_BUILD_QA_IMAGE=true
         ENABLE_COMPILE_PRODUCTION_ASSETS=true
         ENABLE_COMPILE_STORYBOOK=true
         ENABLE_COMPILE_TEST_ASSETS=true

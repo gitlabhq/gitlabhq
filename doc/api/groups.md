@@ -20,9 +20,9 @@ Endpoint responses might vary based on the [permissions](../user/permissions.md)
 ## Retrieve a group
 
 Retrieve details of a group. This endpoint can be accessed without authentication
-if the group is publicly accessible. In case the user that requests is an administrator
-if the group is publicly accessible. With authentication, it returns the `runners_token` and `enabled_git_access_protocol`
-for the group too, if the user is an administrator or has the Owner role.
+if the group is publicly accessible. If the requesting user is an administrator,
+additional information is returned. With authentication, it returns the `runners_token`
+and `enabled_git_access_protocol` for the group if the user is an administrator or has the Owner role.
 
 ```plaintext
 GET /groups/:id

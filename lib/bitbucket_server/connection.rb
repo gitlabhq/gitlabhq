@@ -22,7 +22,22 @@ module BitbucketServer
 
     attr_reader :api_version, :base_uri, :username, :token
 
-    ConnectionError = Class.new(StandardError)
+    class ConnectionError < StandardError
+      RETRYABLE_HTTP_STATUS_CODES = [408, 429].freeze
+
+      attr_reader :http_status_code
+
+      def initialize(message = nil, http_status_code: nil)
+        super(message)
+        @http_status_code = http_status_code
+      end
+
+      def retryable?
+        return true unless http_status_code
+
+        RETRYABLE_HTTP_STATUS_CODES.include?(http_status_code) || http_status_code.in?(500..599)
+      end
+    end
 
     def initialize(options = {})
       @api_version = options.fetch(:api_version, DEFAULT_API_VERSION)
@@ -85,7 +100,7 @@ module BitbucketServer
       message = "Error #{response.code}"
       message += ": #{details}" if details
 
-      raise ConnectionError, message
+      raise ConnectionError.new(message, http_status_code: response.code)
     rescue JSON::NestingError
       raise
     rescue JSON::ParserError

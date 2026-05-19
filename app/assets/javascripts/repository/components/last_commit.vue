@@ -10,7 +10,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
+import { setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import pipelineStatusUpdatedSubscription from '../subscriptions/pipeline_status_updated.subscription.graphql';
 import getRefMixin from '../mixins/get_ref';
 import { getRefType } from '../utils/ref_type';
@@ -161,9 +161,13 @@ export default {
   mounted() {
     eventHub.$on(FORK_UPDATED_EVENT, this.refetchLastCommit);
 
-    toggleQueryPollingByVisibility(this.$apollo.queries.commit, POLL_INTERVAL);
+    this.pollingVisibilityCleanup = setupQueryPollingByVisibility(
+      this.$apollo.queries.commit,
+      POLL_INTERVAL,
+    );
   },
   beforeDestroy() {
+    this.pollingVisibilityCleanup?.();
     eventHub.$off(FORK_UPDATED_EVENT, this.refetchLastCommit);
     if (this.pipelineSubscription?.unsubscribe) {
       this.pipelineSubscription.unsubscribe();

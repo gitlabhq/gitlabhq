@@ -70,6 +70,7 @@ export default {
       required: false,
     },
   },
+  emits: ['alert-error', 'toggle-sidebar'],
   data() {
     return {
       isDropdownShowing: false,

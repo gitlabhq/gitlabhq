@@ -78,7 +78,7 @@
         = s_('ProjectsNew|Initialize repository with a README')
       - c.with_help_text do
         - if disable_init_with_readme
-          = s_('ProjectsNew|Your role does not allow pushing to the default branch of new projects in this namespace.')
+          = s_('ProjectsNew|You cannot push the initial commit because the default branch is protected. Contact an Owner or administrator for help.')
         - else
           = s_('ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.')
 

@@ -1,0 +1,10 @@
+---
+name: group_uploads_api
+description: Enables the API endpoints for uploading files to groups
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462207
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230537
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/598826
+milestone: '19.0'
+group: group::project management
+type: gitlab_com_derisk
+default_enabled: false

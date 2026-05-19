@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, feature_category: :organization do
-  let_it_be(:old_organization) { create(:organization) }
+  let_it_be(:old_organization, freeze: false) { create(:organization) }
   let_it_be(:new_organization) { create(:organization) }
   let_it_be_with_refind(:group) { create(:group, organization: old_organization) }
 
@@ -528,10 +528,13 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
       end
 
       context 'for notes on personal snippets' do
-        let_it_be(:personal_snippet) { create(:personal_snippet, author: user1, organization: old_organization) }
+        let_it_be(:personal_snippet, freeze: false) do
+          create(:personal_snippet, author: user1, organization: old_organization)
+        end
+
         let_it_be(:other_user) { create(:user, organization: create(:organization)) }
 
-        let_it_be(:note_by_owner) do
+        let_it_be(:note_by_owner, freeze: false) do
           create(:note_on_personal_snippet, noteable: personal_snippet, author: user1, organization: old_organization)
         end
 
@@ -682,7 +685,8 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
               'ProjectSnippet',
               'Snippet',
               'ImportFailure',
-              'Clusters::Cluster'
+              'Clusters::Cluster',
+              'AntiAbuse::Event'
             ]
           end
 

@@ -3,5 +3,7 @@ name: create_personal_access_token
 description: Grants the ability to create user personal access tokens
 boundaries:
   - user
+available_for:
+  - granular_access_token
 permissions:
   - create_personal_access_token

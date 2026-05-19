@@ -337,4 +337,19 @@ sudo gitlab-ctl registry-database import --step-three
 
 {{< /tabs >}}
 
-After that command exists successfully, registry metadata is now fully imported to the database.
+After that command exits successfully, registry metadata is now fully imported to the database.
+
+## After import
+
+Large registries can have hundreds of thousands or even millions of blobs queued
+for garbage collection review after an import. This is expected, and at default
+worker intervals it takes time to process.
+
+For guidance on what to expect and how to speed up processing, see:
+
+- [Post import](container_registry_metadata_database.md#post-import) for an overview of
+  expected behavior after completing an import.
+- [Check the health of online garbage collection](container_registry_metadata_database.md#check-the-health-of-online-garbage-collection)
+  to monitor the garbage collection review queues.
+- [Adjust the garbage collector worker interval](container_registry_metadata_database.md#adjust-the-garbage-collector-worker-interval)
+  to temporarily speed up processing for large backlogs.

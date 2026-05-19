@@ -49,7 +49,7 @@ due to a Git push event, and can help troubleshoot logic issues, including incor
 `rules` and `needs` job dependencies:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Pipeline editor**.
+1. In the left sidebar, select **Build** > **Pipeline editor**.
 1. Select the **Validate** tab.
 1. Optional. Select a different branch to use for the simulated push event by using
    the **Pipeline run source** dropdown list.

@@ -30,6 +30,7 @@ RSpec.shared_context 'with claiming tools' do
     instance.class.cells_claims_attributes.filter_map do |attribute, config|
       value = only[attribute]
       next unless only.empty? || value
+      next unless instance.__send__(:cells_claims_attribute_claimable?, config)
 
       claims_records_attribute_for(instance, attribute, config, value)
     end
@@ -93,9 +94,12 @@ RSpec.shared_context 'with claiming tools' do
   end
 
   def expect_commit_update(success: true)
-    mock = expect(claim_service).to receive(:commit_update).with(lease_uuid, deadline: deadline)
-
-    mock.and_raise(fake_error.new) unless success
+    if success
+      expect(claim_service).to receive(:commit_update).with(lease_uuid, deadline: deadline)
+    else
+      allow(claim_service).to receive(:commit_update).with(lease_uuid, deadline: deadline)
+        .and_raise(GRPC::Unavailable.new("service unavailable"))
+    end
   end
 
   def expect_rollback_update
@@ -172,11 +176,11 @@ RSpec.shared_examples 'creating new claims' do
     end
 
     context 'when commit_update fails' do
-      it 'saves subject but leaves the outstanding lease' do
+      it 'saves subject but leaves the outstanding lease for recovery' do
         expect_begin_update(:save)
         expect_commit_update(success: false)
 
-        expect { subject.save }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+        expect(subject.save).to be(true)
         expect(subject.class.count).to eq(1)
         expect(Cells::OutstandingLease.count).to eq(1)
       end
@@ -226,11 +230,12 @@ RSpec.shared_examples 'deleting existing claims' do
     end
 
     context 'when commit_update fails' do
-      it 'deletes record but leaves the outstanding lease' do
+      it 'deletes record but leaves the outstanding lease for recovery' do
         expect_begin_update(:destroy)
         expect_commit_update(success: false)
 
-        expect { subject.destroy }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+        subject.destroy!
+        expect(subject.destroyed?).to be(true)
         expect(subject.class.count).to eq(0)
         expect(Cells::OutstandingLease.count).to eq(1)
       end
@@ -294,11 +299,11 @@ RSpec.shared_examples 'updating existing claims' do
     end
 
     context 'when commit_update fails' do
-      it 'updates attributes but leaves the outstanding lease' do
+      it 'updates attributes but leaves the outstanding lease for recovery' do
         expect_begin_update(:save)
         expect_commit_update(success: false)
 
-        expect { subject.update(transform_attributes) }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+        expect(subject.update(transform_attributes)).to be(true)
 
         subject.reload
         transform_attributes.each do |key, value|

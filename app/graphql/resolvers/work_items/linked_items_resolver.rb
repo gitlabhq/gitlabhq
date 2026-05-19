@@ -34,7 +34,7 @@ module Resolvers
         batch_key = "linked_items_level_#{nesting_level}"
 
         BatchLoader::GraphQL.for(work_item.id).batch(key: batch_key, cache: false) do |item_ids, loader, _args|
-          preloads = [:author, :work_item_type, { project: [:route, { namespace: :route }] }]
+          preloads = [:author, { project: [:route, { namespace: :route }] }]
           linked_items = apply_lookahead(WorkItem.linked_items_for(item_ids, preload: preloads, link_type: link_type))
           grouped_by_source = linked_items_grouped_by_source(linked_items, item_ids)
 

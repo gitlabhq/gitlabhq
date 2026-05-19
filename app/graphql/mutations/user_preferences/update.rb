@@ -61,6 +61,12 @@ module Mutations
         required: false,
         experiment: { milestone: '18.1' }
 
+      argument :orbit_settings,
+        type: GraphQL::Types::JSON,
+        description: 'Orbit agent settings, e.g.: "{ enabled: false }".',
+        required: false,
+        experiment: { milestone: '19.0' }
+
       argument :wiki_use_auto_commit_message,
         GraphQL::Types::Boolean,
         required: false,
@@ -86,6 +92,11 @@ module Mutations
           existing_settings = user_preferences.work_items_display_settings
           attributes[:work_items_display_settings] =
             existing_settings.merge(attributes[:work_items_display_settings])
+        end
+
+        if attributes[:orbit_settings].present?
+          existing_orbit = user_preferences.orbit_settings
+          attributes[:orbit_settings] = existing_orbit.merge(attributes[:orbit_settings])
         end
 
         user_preferences.update(attributes)

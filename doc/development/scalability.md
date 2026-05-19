@@ -47,6 +47,11 @@ what they can access.
 Users with administrator access can access all projects and even impersonate
 users.
 
+On GitLab.com, the [Cells architecture](cells/_index.md) provides physical
+multi-tenancy with each cell hosting a subset of organizations. GitLab Self-Managed
+and GitLab Dedicated run as a single cell. An organization is by nature isolated
+to a cell; all organization data resides on the cell that hosts that organization.
+
 #### Sharding and partitioning
 
 The database is not divided up in any way; currently all data lives in
@@ -93,6 +98,16 @@ layers like GraphQL might mitigate that) and it requires true
 parallelism to run efficiently (that is, a scatter-gather model to collect,
 then zip up data records), which is a challenge in itself in Ruby based
 systems.
+
+##### Cells sharding key approach
+
+The [Cells architecture](#multi-tenancy) introduces a sharding key approach
+to attribute database rows to a single organization. All new database tables that
+store customer data must define a sharding key that links rows to an organization.
+Non-customer data must be marked as cell-local, meaning the data never leaves the cell.
+
+For guidance on choosing and implementing sharding keys, see
+[Sharding keys](organization/sharding/_index.md).
 
 #### Database size
 

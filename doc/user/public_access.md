@@ -81,7 +81,7 @@ Prerequisites:
 - You must have the Owner role for a project.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. From the **Project visibility** dropdown list, select an option.
    The visibility setting for a project must be at least as restrictive
@@ -97,7 +97,7 @@ Prerequisites:
 - You must have the Maintainer or Owner role for the project.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. To enable or disable a feature, turn on or turn off the feature toggle.
 1. Select **Save changes**.
@@ -114,7 +114,7 @@ Prerequisites:
   to private if a project or subgroup in that group is public.
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Naming, description, visibility**.
 1. For **Visibility level**, select an option.
    The visibility setting for a project must be at least as restrictive

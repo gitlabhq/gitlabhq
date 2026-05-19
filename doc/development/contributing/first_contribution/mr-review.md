@@ -9,7 +9,7 @@ Now you're ready to push changes from the community fork to the main GitLab repo
 
 [View an interactive demo of this step](https://gitlab.navattic.com/tu5n0haw).
 
-1. Go to [the community fork on GitLab.com](https://gitlab.com/gitlab-community/gitlab).
+1. Go to [the community fork on GitLab.com](https://gitlab.com/gitlab-community/gitlab-org/gitlab).
    You should see a message like this one:
 
    ![A banner prompting the user to create a merge request in response to recently pushed changes](img/mr_button_v15_11.png)

@@ -36,4 +36,35 @@ describe('BlobForkSuggestion', () => {
 
     expect(suggestionSection.classList.contains('hidden')).toEqual(true);
   });
+
+  it('accepts a NodeList of inputs and updates every entry', () => {
+    const container = document.createElement('div');
+    container.innerHTML = `
+      <div class="suggestion-section"></div>
+      <div class="suggestion-section"></div>
+    `;
+    const suggestionSections = container.querySelectorAll('.suggestion-section');
+
+    const subject = new BlobForkSuggestion({ suggestionSections }).init();
+    subject.hideSuggestionSection();
+
+    suggestionSections.forEach((el) => {
+      expect(el.classList.contains('hidden')).toBe(true);
+    });
+
+    subject.destroy();
+  });
+
+  it('accepts an Array of inputs and updates every entry', () => {
+    const suggestionSections = [document.createElement('div'), document.createElement('div')];
+
+    const subject = new BlobForkSuggestion({ suggestionSections }).init();
+    subject.hideSuggestionSection();
+
+    suggestionSections.forEach((el) => {
+      expect(el.classList.contains('hidden')).toBe(true);
+    });
+
+    subject.destroy();
+  });
 });

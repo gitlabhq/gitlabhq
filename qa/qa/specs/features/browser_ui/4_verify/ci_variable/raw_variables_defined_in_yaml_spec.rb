@@ -7,6 +7,7 @@ module QA
       let(:pipeline_job_name) { 'rspec' }
       let(:project) { create(:project, name: 'project-with-raw-variable-pipeline') }
       let!(:runner) { create(:project_runner, project: project, name: executor, tags: [executor]) }
+      let!(:runner_online) { runner.wait_until_online }
 
       let!(:commit_ci_file) do
         create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [

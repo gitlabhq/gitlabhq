@@ -5,7 +5,7 @@ module API
     module Ml
       module Mlflow
         class NewExperiment < Grape::Entity
-          expose :experiment_id
+          expose :experiment_id, documentation: { type: 'String', example: '1' }
 
           private
 

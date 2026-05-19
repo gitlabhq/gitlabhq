@@ -2,6 +2,7 @@
 stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Command-line interface tool that brings the GitLab Duo Agent Platform to your terminal.
 title: GitLab Duo CLI (`duo`)
 ---
 
@@ -27,6 +28,9 @@ title: GitLab Duo CLI (`duo`)
 - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.68.0) model selection option and environment variable in GitLab Duo CLI 8.68.0, during the GitLab 18.10 release.
 - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.76.0) model selection slash command in GitLab Duo CLI 8.76.0, during the GitLab 18.10 release.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/19716) from experiment to beta in GitLab 18.11.
+- Environment variable and option to enable user-level Agent Skills [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.83.0) in GitLab Duo CLI 8.83.0 as an [experiment](../../policy/development_stages_support.md#experiment), during the GitLab 19.0 release.
+- Approve tool for session option [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2129) in GitLab 19.0.
+  - Introduced in [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.80.0) 8.80.0.
 
 {{< /history >}}
 
@@ -269,6 +273,23 @@ The following slash commands are available:
 | `/new`       | Start a new chat session.                           |
 | `/sessions`  | Browse, search, and switch sessions.                |
 
+#### Tool approvals
+
+When GitLab Duo needs to use a tool, it prompts you to approve before it begins. For example, when
+it needs to read a file or run a command.
+
+Your options are:
+
+- **Approve**: GitLab Duo can use the tool once.
+- **Approve for session**: GitLab Duo can use the tool with these arguments for the remainder of the
+  session. Different arguments require additional approval.
+- **Deny**: GitLab Duo cannot use the tool.
+
+> [!note]
+> To use the **Approve for session** option, your administrator must turn it on for your group or
+> instance.
+> For more information, see [tool approvals](../gitlab_duo_chat/agentic_chat.md#tool-approvals).
+
 ### Headless mode
 
 > [!caution]
@@ -438,6 +459,7 @@ The GitLab Duo CLI supports these options:
   `duo run --help`.
 - `--log-level <level>`: Set the logging level (`debug`, `info`, `warn`, `error`).
 - `-v`, `--version`: Display version information.
+- `--enable-global-skills`: (Experimental) Enable [user-level Agent Skills](../duo_agent_platform/customize/agent_skills.md#create-user-level-skills).
 - `--model <model>`: Select the AI model to use for the session.
 
 Additional options for headless mode:
@@ -490,6 +512,7 @@ You can configure the GitLab Duo CLI using environment variables:
 - `DUO_WORKFLOW_GIT_HTTP_USER`: Git HTTP authentication username.
 - `GITLAB_BASE_URL` or `GITLAB_URL`: GitLab instance URL.
 - `GITLAB_DUO_MODEL`: AI model to use for the session.
+- `GITLAB_ENABLE_GLOBAL_SKILLS`: (Experimental) Enable [user-level Agent Skills](../duo_agent_platform/customize/agent_skills.md#create-user-level-skills).
 - `GITLAB_OAUTH_TOKEN` or `GITLAB_TOKEN`: Authentication token.
 - `LOG_LEVEL`: Logging level.
 

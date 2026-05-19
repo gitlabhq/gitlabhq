@@ -10,9 +10,11 @@ module ResourceEvents
     end
 
     def execute(added_labels: [], removed_labels: [])
+      actor = Gitlab::Auth::Identity.resolve_composite_identity_actor(user)
+
       label_hash = {
         resource_column(resource) => resource.id,
-        user_id: user.id,
+        user_id: actor.id,
         namespace_id: Gitlab::Issuable::NamespaceGetter.new(resource).namespace_id,
         created_at: resource.system_note_timestamp
       }

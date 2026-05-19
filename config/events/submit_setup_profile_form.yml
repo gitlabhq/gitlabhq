@@ -1,0 +1,19 @@
+---
+description: Admin submits the Set up your profile form
+internal_events: true
+status: active
+action: submit_setup_profile_form
+identifiers:
+  - user
+additional_properties:
+  label:
+    description: Outcome of the form submission ('success' or 'failure')
+product_group: acquisition
+product_categories:
+  - onboarding
+milestone: '19.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234659
+tiers:
+  - free
+  - premium
+  - ultimate

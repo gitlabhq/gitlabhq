@@ -61,6 +61,11 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
     color: '#1f75cb',
     position: 0,
   };
+  const exampleType = {
+    id: 'gid://gitlab/WorkItems::Type/2',
+    name: 'Task',
+    iconName: 'issue-type-task',
+  };
 
   const exampleCommand = {
     name: 'due',
@@ -183,6 +188,7 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
       ${'reference'} | ${'milestone'}     | ${expiredMilestone}          | ${'expired'} | ${'<span><strong class="!gl-text-default">Expired</strong> Milestone</span> <span>(expired)</span>'}
       ${'reference'} | ${'iteration'}     | ${exampleIteration}          | ${'Maiore'}  | ${'<strong class="!gl-text-default">Maiore</strong>s'}
       ${'reference'} | ${'status'}        | ${exampleStatus}             | ${'In'}      | ${'<strong class="!gl-text-default">In</strong> progress'}
+      ${'reference'} | ${'type'}          | ${exampleType}               | ${'Ta'}      | ${'<strong class="!gl-text-default">Ta</strong>sk'}
       ${'reference'} | ${'command'}       | ${exampleCommand}            | ${'due'}     | ${'<strong class="!gl-text-default">due</strong>'}
       ${'reference'} | ${'command'}       | ${exampleCommand}            | ${'due'}     | ${'Set <strong class="!gl-text-default">due</strong> date'}
       ${'reference'} | ${'label'}         | ${exampleLabel1}             | ${'c'}       | ${'<strong class="!gl-text-default">C</strong>reate'}
@@ -251,6 +257,7 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
       ${'reference'} | ${'milestone'}     | ${'%'}               | ${exampleMilestone2}    | ${`%Milestone with spaces`}                     | ${{ originalText: '%"Milestone with spaces"' }}
       ${'reference'} | ${'iteration'}     | ${'*iteration:'}     | ${exampleIteration}     | ${`Maiores atque. Nov 15, 2024 - Dec 12, 2024`} | ${{ originalText: '*iteration:2478987' }}
       ${'reference'} | ${'status'}        | ${'"'}               | ${exampleStatus}        | ${`"In progress"`}                              | ${{ originalText: '"In progress"' }}
+      ${'reference'} | ${'type'}          | ${'"'}               | ${exampleType}          | ${`"Task"`}                                     | ${{ originalText: '"Task"' }}
       ${'reference'} | ${'command'}       | ${'/'}               | ${exampleCommand}       | ${'/due'}                                       | ${{}}
       ${'reference'} | ${'epic'}          | ${'&'}               | ${exampleEpic}          | ${`gitlab-org&8884`}                            | ${{}}
       ${'reference'} | ${'label'}         | ${'~'}               | ${exampleLabel1}        | ${`Create`}                                     | ${{}}
@@ -637,6 +644,34 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
           />
           <span>
             In progress
+          </span>
+        </span>
+      `);
+    });
+  });
+
+  describe('rendering type references', () => {
+    it('displays type name with an icon', () => {
+      buildWrapper({
+        propsData: {
+          char: '"',
+          nodeProps: {
+            referenceType: 'type',
+          },
+          items: [exampleType],
+        },
+      });
+
+      expect(wrapper.find('span').html()).toMatchInlineSnapshot(`
+        <span>
+          <gl-icon-stub
+            class="gl-mr-2"
+            name="issue-type-task"
+            size="12"
+            variant="current"
+          />
+          <span>
+            Task
           </span>
         </span>
       `);

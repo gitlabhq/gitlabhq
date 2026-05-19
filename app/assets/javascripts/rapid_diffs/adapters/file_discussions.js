@@ -1,6 +1,7 @@
 import Vue, { watch } from 'vue';
 import { MOUNTED } from '~/rapid_diffs/adapter_events';
 import DiffFileDiscussions from '~/rapid_diffs/app/discussions/diff_file_discussions.vue';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 
 function provideAppData(appData) {
   return {
@@ -19,6 +20,7 @@ function mountFileDiscussionsApp({ container, oldPath, newPath, appData, store }
   container.appendChild(mountTarget);
   const instance = new Vue({
     el: mountTarget,
+    apolloProvider,
     name: 'DiffFileDiscussionsRoot',
     provide() {
       return {
@@ -28,6 +30,7 @@ function mountFileDiscussionsApp({ container, oldPath, newPath, appData, store }
         noteableType: appData.noteableType,
         filePaths: { oldPath, newPath },
         linkedFileData: appData.linkedFileData,
+        newCommentTemplatePaths: appData.newCommentTemplatePaths || [],
       };
     },
     render(h) {

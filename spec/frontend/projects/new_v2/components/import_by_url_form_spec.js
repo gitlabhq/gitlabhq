@@ -33,7 +33,7 @@ describe('Import Project by URL Form', () => {
   };
 
   const createComponent = (options = {}) => {
-    const { provide = {}, glFeatures = {}, mountFn = shallowMountExtended } = options;
+    const { provide = {}, mountFn = shallowMountExtended } = options;
 
     wrapper = mountFn(ImportByUrlForm, {
       provide: {
@@ -41,10 +41,6 @@ describe('Import Project by URL Form', () => {
         newProjectPath: mockNewProjectPath,
         newProjectFormPath: mockNewProjectFormPath,
         hasRepositoryMirrorsFeature: false,
-        glFeatures: {
-          importByUrlNewPage: false,
-          ...glFeatures,
-        },
         ...provide,
       },
       propsData: defaultProps,
@@ -66,7 +62,7 @@ describe('Import Project by URL Form', () => {
     mockAxios.restore();
   });
 
-  const findNextButton = () => wrapper.findByTestId('import-project-by-url-next-button');
+  const findImportButton = () => wrapper.findByTestId('import-project-by-url-button');
   const findBackButton = () => wrapper.findByTestId('import-project-by-url-back-button');
   const findUrlInput = () => wrapper.findByTestId('repository-url');
   const findUrlInputWrapper = () => wrapper.findByTestId('repository-url-form-group');
@@ -101,7 +97,7 @@ describe('Import Project by URL Form', () => {
     it('includes multi-step form template with correct props', () => {
       const template = findMultiStepTemplate();
       expect(template.props('title')).toBe('Import repository by URL');
-      expect(template.props('currentStep')).toBe(3);
+      expect(template.props('currentStep')).toBe(null);
     });
 
     it('includes shared fields and passes namespace', () => {
@@ -110,12 +106,15 @@ describe('Import Project by URL Form', () => {
       expect(sharedFields.props('namespace').id).toEqual(defaultProps.namespace.id);
     });
 
-    it('renders the option to move to Next Step', () => {
-      expect(findNextButton().text()).toBe('Next step');
+    it('renders "Create project" button as disabled', () => {
+      expect(findImportButton().text()).toBe('Create project');
+      expect(findImportButton().attributes('type')).toBe('submit');
+      expect(findImportButton().props('disabled')).toBe(true);
     });
 
-    it('renders the next button as disabled when feature flag is off', () => {
-      expect(findNextButton().props('disabled')).toBe(true);
+    it('navigates to `new project` page when back button is clicked', () => {
+      findBackButton().vm.$emit('click');
+      expect(visitUrl).toHaveBeenCalledWith(mockNewProjectPath);
     });
 
     describe('mirror repository functionality', () => {
@@ -130,45 +129,23 @@ describe('Import Project by URL Form', () => {
     });
   });
 
-  describe('when importByUrlNewPage feature flag is enabled', () => {
-    beforeEach(() => {
-      createComponent({ glFeatures: { importByUrlNewPage: true } });
-    });
-
-    it('sets currentStep to null', () => {
-      const template = findMultiStepTemplate();
-      expect(template.props('currentStep')).toBe(null);
-    });
-
-    it('renders "Create project" button instead of "Next step"', () => {
-      const nextButton = findNextButton();
-      expect(nextButton.text()).toBe('Create project');
-      expect(nextButton.attributes('type')).toBe('submit');
-    });
-
-    it('navigates to `new project` page when back button is clicked', () => {
-      findBackButton().vm.$emit('click');
-      expect(visitUrl).toHaveBeenCalledWith(mockNewProjectPath);
-    });
-  });
-
-  describe('url validation on blur', () => {
-    const mockUrl = 'nothing to see';
+  describe('url validation', () => {
+    const badUrl = 'nothing to see';
 
     beforeEach(() => {
       createComponent({ mountFn: mountExtended });
     });
 
-    it('validates the input when url is invalid', async () => {
+    it('validates the input on blur when url is invalid', async () => {
       expect(findUrlInputWrapper().classes()).not.toContain('is-invalid');
-      findUrlInput().vm.$emit('input', mockUrl);
+      findUrlInput().vm.$emit('input', badUrl);
       await nextTick();
       await findUrlInput().trigger('blur');
       await nextTick();
       expect(findUrlInputWrapper().classes()).toContain('is-invalid');
     });
 
-    it('does not validate when nothing is typed', async () => {
+    it('does not validate on blur when nothing is typed', async () => {
       findUrlInput().vm.$emit('input', '');
       await nextTick();
       await findUrlInput().trigger('blur');
@@ -177,7 +154,7 @@ describe('Import Project by URL Form', () => {
     });
 
     it('resets the invalid feedback when user refocuses and types', async () => {
-      findUrlInput().vm.$emit('input', mockUrl);
+      findUrlInput().vm.$emit('input', badUrl);
       await nextTick();
       await findUrlInput().trigger('blur');
       await nextTick();
@@ -187,16 +164,29 @@ describe('Import Project by URL Form', () => {
       await nextTick();
       expect(findUrlInputWrapper().classes()).not.toContain('is-invalid');
     });
+
+    it('enables the `create project` button when a reasonable git URL is entered', async () => {
+      findUrlInput().vm.$emit('input', badUrl);
+      await nextTick();
+      await findUrlInput().trigger('blur');
+      await nextTick();
+      expect(findImportButton().props('disabled')).toBe(true);
+
+      await findUrlInput().vm.$emit('input', 'https://foo.com/bar.git');
+      await findUrlInput().trigger('blur');
+      await nextTick();
+      expect(findImportButton().props('disabled')).toBe(false);
+    });
   });
 
   describe('"Check connection" functionality', () => {
-    const mockUrl = 'https://example.com/repo.git';
+    const badUrl = 'https://example.com/repo.git';
     const mockUsername = 'mockuser';
     const mockPassword = 'mockpass';
 
     beforeEach(() => {
       createComponent();
-      findUrlInput().vm.$emit('input', mockUrl);
+      findUrlInput().vm.$emit('input', badUrl);
       findUsernameInput().vm.$emit('input', mockUsername);
       findPasswordInput().vm.$emit('input', mockPassword);
     });
@@ -241,7 +231,7 @@ describe('Import Project by URL Form', () => {
       it('sends correct request', () => {
         expect(mockAxios.history.post[0].data).toBe(
           JSON.stringify({
-            url: mockUrl,
+            url: badUrl,
             user: mockUsername,
             password: mockPassword,
           }),
@@ -279,11 +269,6 @@ describe('Import Project by URL Form', () => {
       findSharedFields().vm.$emit('onSelectNamespace', newNamespace);
 
       expect(wrapper.emitted('onSelectNamespace')).toEqual([[newNamespace]]);
-    });
-
-    it(`"back" event when the back button is clicked`, () => {
-      findBackButton().vm.$emit('click');
-      expect(wrapper.emitted('back')).toHaveLength(1);
     });
   });
 });

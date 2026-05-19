@@ -106,7 +106,7 @@ IDEでのChatの使用方法は、使用するIDEによって異なります。
 
 コード提案を使用するには、以下の手順に従います:
 
-1. [サポートされているIDE](../../duo_agent_platform/code_suggestions/supported_extensions.md#supported-editor-extensions)でGitプロジェクトを開きます。
+1. [サポートされているIDE](../../project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions)でGitプロジェクトを開きます。
 1. [`git remote add`](../../../topics/git/commands.md#git-remote-add)を使用して、ローカルリポジトリのリモートとしてプロジェクトを追加します。
 1. 隠し`.git/`フォルダーを含むプロジェクトディレクトリを、IDEワークスペースまたはプロジェクトに追加します。
 1. コードを作成します。入力すると、提案が表示されます。コード提案は、カーソルの位置に応じてコードスニペットを提示するか、現在の行を補完します。

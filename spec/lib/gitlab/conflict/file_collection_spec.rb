@@ -112,13 +112,13 @@ RSpec.describe Gitlab::Conflict::FileCollection do
 
   describe '#default_commit_message' do
     it 'matches the format of the git CLI commit message' do
-      expect(file_collection.default_commit_message).to eq(<<EOM.chomp)
+      expect(file_collection.default_commit_message).to eq(<<TEXT.chomp)
 Merge branch 'conflict-start' into 'conflict-resolvable'
 
 # Conflicts:
 #   files/ruby/popen.rb
 #   files/ruby/regex.rb
-EOM
+TEXT
     end
   end
 end

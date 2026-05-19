@@ -36,10 +36,10 @@ The following table lists the default model for each GitLab Duo feature.
 | Merge Commit Message Generation | Claude Sonnet 4 Vertex|
 | Merge Request Summary | Claude Sonnet 4 Vertex |
 | Code Review Summary | Claude Sonnet 4 Vertex |
-| Code Review | Claude Sonnet 4.6 Vertex |
+| Code Review | Claude Sonnet 4 Vertex |
 | **Other GitLab Duo features** | |
-| Vulnerability Explanation | Claude Sonnet 4.5 Vertex |
-| Vulnerability Resolution | Claude Sonnet 4.5 |
+| Vulnerability Explanation | Claude Sonnet 4.6 Vertex |
+| Vulnerability Resolution | Claude Sonnet 4.6 Vertex |
 | Discussion Summary | Claude Sonnet 4.5 Vertex |
 | GitLab Duo for CLI | Claude Haiku 4.5 |
 
@@ -78,6 +78,8 @@ The following tables list the models you can select for each feature.
 | Claude Sonnet 4 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.6 | {{< no >}} | {{< no >}} | {{< no >}} | {{< yes >}} |
+| Claude Sonnet 4.6 Vertex | {{< no >}} | {{< no >}} | {{< no >}} | {{< yes >}} |
 
 ### Other GitLab Duo features
 
@@ -120,7 +122,7 @@ Prerequisites:
 To select a model for a feature:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **GitLab Duo**.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. Select **Configure features**.
 1. For the feature you want to configure, select a model from the dropdown list.
 1. Optional. To apply the model to all features in the section, select **Apply to all**.
@@ -137,11 +139,9 @@ If you have selected a specific model for a GitLab Duo AI-native feature, and th
 
 ### No default GitLab Duo namespace
 
-When using a GitLab Duo feature with a selected model, you might get an error that states that you have not selected a default GitLab Duo namespace. For example, on:
+When using a GitLab Duo feature with a selected model, you might get an error that indicates that you need to set a default GitLab Duo namespace.
 
-- GitLab Duo Code Suggestions, you might get `Error 422: I'm sorry, you have not selected a default GitLab Duo namespace. Please go to GitLab and in user Preferences - Behavior, select a default namespace for GitLab Duo.`
-- GitLab Duo Chat, you might get `Error G3002: I'm sorry, you have not selected a default GitLab Duo namespace. Please go to GitLab and in user Preferences - Behavior, select a default namespace for GitLab Duo.`
-
-This issue occurs when you belong to multiple GitLab Duo namespaces, but have not chosen one as your default namespace.
+This issue occurs when you belong to multiple GitLab Duo namespaces or work on a project locally
+that does not have a GitLab remote configured.
 
 To resolve this, [set a default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).

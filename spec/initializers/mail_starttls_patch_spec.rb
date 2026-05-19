@@ -18,7 +18,7 @@ RSpec.describe 'Mail STARTTLS patch', feature_category: :shared do
   end
 
   # As long as this monkey patch exists and overrides the constructor
-  # we should test that the defaults of Mail::SMTP are not overriden.
+  # we should test that the defaults of Mail::SMTP are not overridden.
   #
   # @see issue https://gitlab.com/gitlab-org/gitlab/-/issues/423268
   # @see incident https://gitlab.com/gitlab-com/gl-infra/production/-/issues/16223

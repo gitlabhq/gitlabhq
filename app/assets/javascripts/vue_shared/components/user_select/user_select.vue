@@ -255,7 +255,7 @@ export default {
   },
 
   watch: {
-    // We need to add this watcher to track the moment when user is alredy typing
+    // We need to add this watcher to track the moment when user is already typing
     // but query is still not started due to debounce
     search(newVal) {
       if (newVal) {

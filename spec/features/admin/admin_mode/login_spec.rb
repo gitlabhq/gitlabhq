@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category: :system_access do
+RSpec.describe 'Admin mode login', :with_current_organization, feature_category: :system_access do
   include TermsHelper
   include UserLoginHelper
   include LdapHelpers
@@ -19,11 +19,6 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
       expect(page).to have_current_path root_path, ignore_query: true
     end
 
-    def expect_admin_sign_in_waiting_for_code(user)
-      enable_admin_mode!(user, use_ui: true)
-      expect(page).to have_content(_('Enter verification code'))
-    end
-
     def expect_admin_sign_in_success
       expect(page).to have_content(_('Admin mode is active.'))
       expect(page).to have_current_path admin_root_path, ignore_query: true
@@ -31,52 +26,44 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
 
     def expect_admin_sign_in_fail
       expect(page).to have_content(_('Invalid two-factor code.'))
-      expect(page).to have_current_path admin_session_path, ignore_query: true
     end
 
     context 'with valid username/password' do
       let(:user) { create(:admin, :two_factor) }
 
       context 'using one-time code' do
-        it 'blocks login if we reuse the same code immediately' do
-          gitlab_sign_in(user, remember: true)
-          repeated_otp = user.current_otp
-          expect_main_sign_in_success(repeated_otp)
-          expect_admin_sign_in_waiting_for_code(user)
+        before do
+          submit_sign_in_form_for(user, remember: true) # This test checks that even when the user is remembered for sign-in, the user still needs to sign in for Admin mode.
+          expect_main_sign_in_success(user.current_otp)
+          enter_admin_mode(user, with_2fa: true)
+        end
 
+        it 'blocks login if we reuse the same code immediately', :freeze_time do
+          repeated_otp = user.current_otp # the OTP is the same because of the :freeze_time
           enter_code(repeated_otp)
           expect_admin_sign_in_fail
         end
 
         context 'not re-using codes' do
-          before do
-            gitlab_sign_in(user, remember: true)
-            expect_main_sign_in_success(user.current_otp)
-            expect_admin_sign_in_waiting_for_code(user)
-          end
-
           it 'allows login with valid code' do
-            # Cannot reuse the TOTP
+            # TOTP has already been used for GitLab sign-in, wait 30 seconds for a new one
             travel_to(30.seconds.from_now) do
               enter_code(user.current_otp)
               expect_admin_sign_in_success
             end
           end
 
-          it 'blocks login with invalid code' do
-            # Cannot reuse the TOTP
-            travel_to(30.seconds.from_now) do
-              enter_code('foo')
-              expect_admin_sign_in_fail
-            end
+          it 'fails with invalid code' do
+            enter_code('foo')
+            expect_admin_sign_in_fail
           end
 
-          it 'allows login with invalid code, then valid code' do
-            # Cannot reuse the TOTP
-            travel_to(30.seconds.from_now) do
-              enter_code('foo')
-              expect_admin_sign_in_fail
+          it 'fails with invalid code, then succeeds with valid code' do
+            enter_code('foo')
+            expect_admin_sign_in_fail
 
+            # TOTP has already been used for GitLab sign-in, wait 30 seconds for a new one
+            travel_to(30.seconds.from_now) do
               enter_code(user.current_otp)
               expect_admin_sign_in_success
             end
@@ -140,23 +127,27 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
               )
           end
 
-          it 'signs user in without prompting for second factor' do
+          before do
             sign_in_using_saml!
             expect(page).to have_no_content(_('Enter verification code'))
-
             gitlab_enable_admin_mode_sign_in_via('saml', user, 'my-uid', saml_response: mock_saml_response)
+          end
+
+          it 'signs user in without prompting for second factor' do
             expect(page).to have_no_content(_('Enter verification code'))
             expect_admin_sign_in_success
           end
         end
 
         context 'when two factor authentication is required' do
-          it 'shows 2FA prompt after omniauth login' do
+          before do
             sign_in_using_saml!
             expect_main_sign_in_success(user.current_otp)
             expect_admin_sign_in_waiting_for_code_saml!(user)
+          end
 
-            # Cannot reuse the TOTP
+          it 'shows 2FA prompt after omniauth login' do
+            # TOTP has already been used for GitLab sign-in, wait 30 seconds for a new one
             travel_to(30.seconds.from_now) do
               enter_code(user.current_otp)
               expect_admin_sign_in_success
@@ -197,12 +188,14 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
         end
 
         context 'when two factor authentication is required' do
-          it 'shows 2FA prompt after ldap login' do
+          before do
             sign_in_using_ldap!(user, provider_label)
             expect_main_sign_in_success(user.current_otp)
             expect_admin_sign_in_waiting_for_code_ldap!(user)
+          end
 
-            # Cannot reuse the TOTP
+          it 'shows 2FA prompt after ldap login' do
+            # TOTP has already been used for GitLab sign-in, wait 30 seconds for a new one
             travel_to(30.seconds.from_now) do
               enter_code(user.current_otp)
               expect_admin_sign_in_success

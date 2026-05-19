@@ -81,7 +81,10 @@ describe('TimeTrackingReport component', () => {
     });
 
     it('calls correct query', () => {
-      expect(successIssueQueryHandler).toHaveBeenCalledWith({ id: 'gid://gitlab/Issue/1' });
+      expect(successIssueQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/Issue/1',
+        useWorkItemFeatures: false,
+      });
     });
 
     it('renders correct results', () => {
@@ -116,7 +119,10 @@ describe('TimeTrackingReport component', () => {
     });
 
     it('calls correct query', () => {
-      expect(successMrQueryHandler).toHaveBeenCalledWith({ id: 'gid://gitlab/MergeRequest/1' });
+      expect(successMrQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/MergeRequest/1',
+        useWorkItemFeatures: false,
+      });
     });
 
     it('renders correct results', async () => {

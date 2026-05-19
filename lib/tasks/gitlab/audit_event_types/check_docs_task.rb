@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative 'docs_helper'
+require_relative 'compile_docs_task'
+
 module Tasks
   module Gitlab
     module AuditEventTypes
@@ -13,7 +16,7 @@ module Tasks
         def run
           doc = File.read(@audit_event_types_doc_file)
 
-          if doc == @event_type_erb_template.result
+          if doc == @event_type_erb_template.result(CompileDocsTask.template_binding)
             puts "Audit event types documentation is up to date."
           else
             error_message = "Audit event types documentation is outdated! Please update it by running " \

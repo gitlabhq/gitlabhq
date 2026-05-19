@@ -46,6 +46,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['web_hook_calls']).to eq(Plan.default.actual_limits.web_hook_calls)
           expect(json_response['web_hook_calls_mid']).to eq(Plan.default.actual_limits.web_hook_calls_mid)
           expect(json_response['web_hook_calls_low']).to eq(Plan.default.actual_limits.web_hook_calls_low)
+          expect(json_response['max_pipelines_per_merge_train']).to eq(Plan.default.actual_limits.max_pipelines_per_merge_train)
         end
       end
 
@@ -80,6 +81,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['web_hook_calls']).to eq(Plan.default.actual_limits.web_hook_calls)
           expect(json_response['web_hook_calls_mid']).to eq(Plan.default.actual_limits.web_hook_calls_mid)
           expect(json_response['web_hook_calls_low']).to eq(Plan.default.actual_limits.web_hook_calls_low)
+          expect(json_response['max_pipelines_per_merge_train']).to eq(Plan.default.actual_limits.max_pipelines_per_merge_train)
         end
       end
 
@@ -140,7 +142,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             pipeline_hierarchy_size: 250,
             web_hook_calls: 300,
             web_hook_calls_mid: 200,
-            web_hook_calls_low: 100
+            web_hook_calls_low: 100,
+            max_pipelines_per_merge_train: 10
           }
 
           expect(json_response).to be_an Hash
@@ -174,6 +177,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['web_hook_calls']).to eq(300)
           expect(json_response['web_hook_calls_mid']).to eq(200)
           expect(json_response['web_hook_calls_low']).to eq(100)
+          expect(json_response['max_pipelines_per_merge_train']).to eq(10)
         end
 
         it 'updates single plan limits', :aggregate_failures do
@@ -225,7 +229,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             pipeline_hierarchy_size: 'r',
             web_hook_calls: 's',
             web_hook_calls_mid: 't',
-            web_hook_calls_low: 'u'
+            web_hook_calls_low: 'u',
+            max_pipelines_per_merge_train: 'x'
           }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -254,7 +259,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             'pipeline_hierarchy_size is invalid',
             'web_hook_calls is invalid',
             'web_hook_calls_mid is invalid',
-            'web_hook_calls_low is invalid'
+            'web_hook_calls_low is invalid',
+            'max_pipelines_per_merge_train is invalid'
           )
         end
       end

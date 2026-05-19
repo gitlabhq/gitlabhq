@@ -30,6 +30,18 @@ module API
         optional :regex, type: String, desc: 'Return list of branches matching the regex'
         optional :sort, type: String, desc: 'Return list of branches sorted by the given field', values: %w[name_asc updated_asc updated_desc]
       end
+
+      def build_branches_finder(repository, params)
+        if params[:regex].present? || Feature.disabled?(:use_new_branches_finder_api, user_project)
+          BranchesFinder.new(repository, params)
+        else
+          Gitlab::Git::Finders::BranchesFinder.new(
+            repository.raw_repository,
+            params,
+            include_commits: true
+          )
+        end
+      end
     end
 
     params do
@@ -57,7 +69,7 @@ module API
         cache_action([user_project, :branches, current_user, declared_params], expires_in: 30.seconds) do
           repository = user_project.repository
 
-          branches_finder = BranchesFinder.new(repository, declared_params(include_missing: false))
+          branches_finder = build_branches_finder(repository, declared_params(include_missing: false))
           branches = Gitlab::Pagination::GitalyKeysetPager.new(self, user_project).paginate(branches_finder)
 
           merged_branch_names = repository.merged_branch_names(branches.map(&:name))

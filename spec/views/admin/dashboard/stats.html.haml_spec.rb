@@ -7,6 +7,7 @@ RSpec.describe 'admin/dashboard/stats', feature_category: :seat_cost_management 
     build(:users_statistics, without_groups_and_projects: 10,
       with_highest_role_planner: 5,
       with_highest_role_reporter: 15,
+      with_highest_role_security_manager: 3,
       with_highest_role_developer: 25,
       with_highest_role_maintainer: 20,
       with_highest_role_owner: 3,
@@ -33,6 +34,9 @@ RSpec.describe 'admin/dashboard/stats', feature_category: :seat_cost_management 
     expect(rendered).to have_content('Users with highest role Reporter')
     expect(rendered).to have_content('15')
 
+    expect(rendered).to have_content('Users with highest role Security Manager')
+    expect(rendered).to have_content('3')
+
     expect(rendered).to have_content('Users with highest role Developer')
     expect(rendered).to have_content('25')
 
@@ -52,6 +56,6 @@ RSpec.describe 'admin/dashboard/stats', feature_category: :seat_cost_management 
   end
 
   it 'renders a table with the correct structure' do
-    expect(rendered).to have_content('Total users (active users + blocked users) 120')
+    expect(rendered).to have_content('Total users (active users + blocked users) 123')
   end
 end

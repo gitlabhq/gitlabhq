@@ -192,27 +192,11 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         end
       end
 
-      context 'when graceful_gitaly_degradation is enabled' do
-        before do
-          stub_feature_flags(graceful_gitaly_degradation: true)
-        end
+      it 'returns 503 and sets gitaly_unavailable' do
+        go(id: commit_sha)
 
-        it 'returns 503 and sets gitaly_unavailable' do
-          go(id: commit_sha)
-
-          expect(response).to have_gitlab_http_status(:service_unavailable)
-          expect(assigns(:gitaly_unavailable)).to be true
-        end
-      end
-
-      context 'when graceful_gitaly_degradation is disabled' do
-        before do
-          stub_feature_flags(graceful_gitaly_degradation: false)
-        end
-
-        it 'raises the error' do
-          expect { go(id: commit_sha) }.to raise_error(GRPC::Unavailable)
-        end
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+        expect(assigns(:gitaly_unavailable)).to be true
       end
     end
   end

@@ -144,6 +144,18 @@ describe('Merge request utils', () => {
       });
     });
 
+    it('passes commitId from discussion when provided', () => {
+      const result = buildLineDiscussionData({
+        discussion: { ...discussion, commitId: 'abc123' },
+        noteBody: 'test comment',
+        noteableData,
+        viewConfig,
+        diffRefs,
+      });
+
+      expect(result.data.note.commit_id).toBe('abc123');
+    });
+
     it('sets ignore_whitespace_change to true when whitespace is hidden', () => {
       const result = buildLineDiscussionData({
         discussion,
@@ -232,18 +244,26 @@ describe('Merge request utils', () => {
   describe('buildDraftReplyData', () => {
     const diffRefs = { head_sha: 'head222' };
 
-    it('builds the correct payload', () => {
-      const result = buildDraftReplyData({
-        discussion: { reply_id: 'reply-1' },
-        noteText: 'draft reply',
-        diffRefs,
-      });
+    it.each`
+      resolveDiscussion | expectedResolve
+      ${undefined}      | ${false}
+      ${true}           | ${true}
+    `(
+      'sets resolve_discussion=$expectedResolve when resolveDiscussion=$resolveDiscussion',
+      ({ resolveDiscussion, expectedResolve }) => {
+        const result = buildDraftReplyData({
+          discussion: { reply_id: 'reply-1' },
+          noteText: 'draft reply',
+          diffRefs,
+          resolveDiscussion,
+        });
 
-      expect(result).toEqual({
-        in_reply_to_discussion_id: 'reply-1',
-        draft_note: { note: 'draft reply' },
-        merge_request_diff_head_sha: 'head222',
-      });
-    });
+        expect(result).toEqual({
+          in_reply_to_discussion_id: 'reply-1',
+          draft_note: { note: 'draft reply', resolve_discussion: expectedResolve },
+          merge_request_diff_head_sha: 'head222',
+        });
+      },
+    );
   });
 });

@@ -30,7 +30,7 @@ module Mutations
         update_result = ::WorkItems::UpdateService.new(
           container: work_item.project,
           current_user: current_user,
-          params: { work_item_type: work_item_type, issue_type: work_item_type.base_type },
+          params: { work_item_type: work_item_type },
           perform_spam_check: true
         ).execute(work_item)
 

@@ -20,11 +20,13 @@ module Groups
     end
 
     def schedule_async_transfer(new_parent_group)
+      @new_parent_group = new_parent_group
+      ensure_allowed_transfer
+
       group.state_metadata[:transfer_target_parent_id] = new_parent_group&.id
 
       unless group.schedule_transfer(transition_user: current_user)
-        @error = s_('TransferGroup|Unable to initiate transfer. The group may already have a transfer in progress.')
-        return false
+        raise TransferError, s_('TransferGroup|Unable to initiate transfer. The group may already have a transfer in progress.')
       end
 
       Namespaces::Groups::TransferWorker.perform_async(
@@ -33,7 +35,16 @@ module Groups
         current_user.id
       )
 
-      true
+      ServiceResponse.success(
+        message: s_("TransferGroup|Group transfer has been queued. You will be notified when it completes.")
+      )
+    rescue TransferError => e
+      @group.errors.clear
+      @error = e.message
+
+      log_group_transfer_error(@group, @new_parent_group, e.message)
+
+      ServiceResponse.error(message: e.message)
     end
 
     def execute(new_parent_group)

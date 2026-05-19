@@ -66,13 +66,17 @@ module Gitlab
       # Determines whether code should be pushed for a given change.
       # By default, we do not push code if the MR already has approvals (to avoid resetting them)
       # unless push_when_approved is enabled. We also skip pushing if someone else has added commits.
+      # By default, we push code if the MR has conflicts to resolve them, unless push_when_conflict
+      # is disabled.
       #
       # Keeps can override this method to implement custom push logic.
       #
       # @param [Gitlab::Housekeeper::Change] change The change object
       # @param [Boolean] push_when_approved Global flag to allow pushing even when approved
+      # @param [Boolean] push_when_conflict Global flag to allow pushing when MR has conflicts (default: true)
       # @return [Boolean] Whether to push code
-      def should_push_code?(change, push_when_approved)
+      def should_push_code?(change, push_when_approved, push_when_conflict: true)
+        return true if change.has_conflicts && push_when_conflict
         return false if change.already_approved? && !push_when_approved
 
         change.update_required?(:code)

@@ -60,6 +60,12 @@ module Gitlab
       rescue ActiveRecord::RecordInvalid => e
         # We do not raise exception to prevent job retry
         track_exception(project, e)
+      rescue BitbucketServer::Connection::ConnectionError => e
+        raise if e.retryable?
+
+        # Non-retryable API errors (404, 410, etc.) are logged and skipped
+        # to avoid pointless Sidekiq retries
+        track_exception(project, e)
       rescue StandardError => e
         track_and_raise_exception(project, e)
       end

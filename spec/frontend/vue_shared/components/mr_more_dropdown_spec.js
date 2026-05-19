@@ -50,7 +50,7 @@ describe('MR More actions sidebar', () => {
       expect(findEditMergeRequestOption().exists()).toBe(true);
     });
 
-    it('should not have the ready and draft option when the the MR is open and `canUpdateMergeRequest` is false', () => {
+    it('should not have the ready and draft option when the MR is open and `canUpdateMergeRequest` is false', () => {
       createComponent({
         open: true,
         canUpdateMergeRequest: false,
@@ -59,7 +59,7 @@ describe('MR More actions sidebar', () => {
       expect(findMarkAsReadyAndDraftOption().exists()).toBe(false);
     });
 
-    it('should have the ready and draft option when the the MR is open and `canUpdateMergeRequest` is true', () => {
+    it('should have the ready and draft option when the MR is open and `canUpdateMergeRequest` is true', () => {
       createComponent({
         open: true,
         canUpdateMergeRequest: true,
@@ -68,7 +68,7 @@ describe('MR More actions sidebar', () => {
       expect(findMarkAsReadyAndDraftOption().exists()).toBe(true);
     });
 
-    it('should have the reopen option when the the MR is closed and `canUpdateMergeRequest` is true', () => {
+    it('should have the reopen option when the MR is closed and `canUpdateMergeRequest` is true', () => {
       createComponent({
         open: false,
         canUpdateMergeRequest: true,
@@ -77,7 +77,7 @@ describe('MR More actions sidebar', () => {
       expect(findReopenMergeRequestOption().exists()).toBe(true);
     });
 
-    it('should not have the reopen option when the the MR is closed and `canUpdateMergeRequest` is false', () => {
+    it('should not have the reopen option when the MR is closed and `canUpdateMergeRequest` is false', () => {
       createComponent({
         open: false,
         canUpdateMergeRequest: false,

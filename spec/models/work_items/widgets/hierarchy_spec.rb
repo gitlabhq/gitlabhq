@@ -172,41 +172,37 @@ RSpec.describe WorkItems::Widgets::Hierarchy, feature_category: :team_planning d
   end
 
   describe '#depth_limit_reached_by_type' do
-    let_it_be(:work_item) { create(:work_item, :epic) }
+    let_it_be(:work_item) { create(:work_item, :issue) }
     let_it_be(:hierarchy) { described_class.new(work_item) }
-    let_it_be(:descendant_type1) { create(:work_item_type, :epic) }
-    let_it_be(:descendant_type2) { create(:work_item_type, :issue) }
-
-    before do
-      allow(work_item.work_item_type).to receive(:descendant_types).and_return([descendant_type1, descendant_type2])
-    end
 
     it 'returns an array of hashes with work_item_type and depth_limit_reached' do
-      allow(work_item).to receive(:max_depth_reached?).with(descendant_type1).and_return(true)
-      allow(work_item).to receive(:max_depth_reached?).with(descendant_type2).and_return(false)
+      descendant_types = work_item.work_item_type.descendant_types(resource_parent: work_item.resource_parent)
 
       result = hierarchy.depth_limit_reached_by_type
 
-      expect(result).to contain_exactly(
-        { work_item_type: descendant_type1, depth_limit_reached: true },
-        { work_item_type: descendant_type2, depth_limit_reached: false }
-      )
+      expect(result.size).to eq(descendant_types.size)
+      result.each do |item|
+        expect(item).to have_key(:work_item_type)
+        expect(item).to have_key(:depth_limit_reached)
+        expect(item[:depth_limit_reached]).to be_in([true, false])
+      end
     end
 
     it 'calls max_depth_reached? for each descendant type' do
-      expect(work_item).to receive(:max_depth_reached?).with(descendant_type1).once
-      expect(work_item).to receive(:max_depth_reached?).with(descendant_type2).once
+      descendant_types = work_item.work_item_type.descendant_types(resource_parent: work_item.resource_parent)
+      descendant_types.each do |type|
+        expect(work_item).to receive(:max_depth_reached?).with(type).once.and_return(false)
+      end
 
       hierarchy.depth_limit_reached_by_type
     end
 
     context 'when there are no descendant types' do
-      before do
-        allow(work_item.work_item_type).to receive(:descendant_types).and_return([])
-      end
+      let_it_be(:work_item_without_children) { create(:work_item, :task) }
+      let_it_be(:hierarchy_without_children) { described_class.new(work_item_without_children) }
 
       it 'returns an empty array' do
-        result = hierarchy.depth_limit_reached_by_type
+        result = hierarchy_without_children.depth_limit_reached_by_type
 
         expect(result).to eq([])
       end

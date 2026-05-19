@@ -181,7 +181,6 @@ References should be parsable even inside _<%= merge_request.to_reference %>_ em
 
 #### UserReferenceFilter
 
-- All: @all (ignored when the feature flag `disable_all_mention` is enabled)
 - User: <%= user.to_reference %>
 - Group: <%= group.to_reference %>
 - Ignores invalid: <%= User.reference_prefix %>fake_user

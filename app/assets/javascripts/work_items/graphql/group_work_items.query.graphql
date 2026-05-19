@@ -2,7 +2,6 @@
 query groupWorkItems(
   $searchTerm: String
   $fullPath: ID!
-  $types: [IssueType!]
   $in: [IssuableSearchableField!]
   $includeAncestors: Boolean = false
   $includeDescendants: Boolean = false
@@ -16,7 +15,6 @@ query groupWorkItems(
     id
     workItems(
       search: $searchTerm
-      types: $types
       state: opened
       in: $in
       includeAncestors: $includeAncestors
@@ -65,7 +63,6 @@ query groupWorkItems(
     }
     workItemsByIid: workItems(
       iid: $iid
-      types: $types
       includeAncestors: $includeAncestors
       includeDescendants: $includeDescendants
       workItemTypeIds: $workItemTypeIds

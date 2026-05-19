@@ -887,10 +887,14 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'awarded a new achievement' do
-    let(:user) { build(:user) }
-    let(:achievement) { build(:achievement) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:achievement) { create(:achievement, namespace: group) }
+    let_it_be(:user_achievement) do
+      create(:user_achievement, user: user, achievement: achievement, show_on_profile: false)
+    end
 
-    subject { Notify.new_achievement_email(user, achievement) }
+    subject { Notify.new_achievement_email(user, achievement, user_achievement) }
 
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
@@ -904,12 +908,16 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       is_expected.to have_subject("#{achievement.namespace.full_path} awarded you the #{achievement.name} achievement")
     end
 
-    it 'includes a link to the profile page' do
+    it 'includes a link to the awarding group' do
       is_expected.to have_body_text(group_url(achievement.namespace))
     end
 
-    it 'includes a link to the awarding group' do
-      is_expected.to have_body_text(user_url(user))
+    it 'includes an accept link' do
+      is_expected.to have_body_text(%r{awarded_achievements/.*/accept})
+    end
+
+    it 'includes the ignore message' do
+      is_expected.to have_body_text('simply ignore this email')
     end
   end
 end

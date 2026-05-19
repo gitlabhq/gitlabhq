@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
 import { ISSUE_PATH_ID_SEPARATOR } from '../constants';
 
 export default {
+  name: 'ObservabilityRelatedIssues',
   components: {
     RelatedIssuesBlock,
   },

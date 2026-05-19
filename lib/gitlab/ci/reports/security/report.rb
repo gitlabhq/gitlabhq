@@ -5,6 +5,8 @@ module Gitlab
     module Reports
       module Security
         class Report
+          include Gitlab::Utils::StrongMemoize
+
           attr_reader :created_at, :type, :findings, :identifiers, :scanners
           attr_accessor :pipeline, :scanned_resources, :errors,
             :analyzer, :version, :schema_validation_status, :warnings,
@@ -82,8 +84,13 @@ module Gitlab
           def has_signatures?
             findings.any?(&:has_signatures?)
           end
+
+          # Overridden in EE
+          def tracked_context; end
         end
       end
     end
   end
 end
+
+Gitlab::Ci::Reports::Security::Report.prepend_mod

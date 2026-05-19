@@ -7,6 +7,7 @@ export const JOBS_ROUTE_NAME = 'jobs';
 export const CRON_JOBS_ROUTE_NAME = 'cronJobs';
 export const SERVICES_ROUTE_NAME = 'services';
 
+/* eslint-disable @gitlab/no-hardcoded-urls -- Vue Router route path definitions, not GitLab URLs */
 export const PODS_ROUTE_PATH = '/pods';
 export const DEPLOYMENTS_ROUTE_PATH = '/deployments';
 export const STATEFUL_SETS_ROUTE_PATH = '/statefulsets';
@@ -15,3 +16,4 @@ export const DAEMON_SETS_ROUTE_PATH = '/daemonsets';
 export const JOBS_ROUTE_PATH = '/jobs';
 export const CRON_JOBS_ROUTE_PATH = '/cronjobs';
 export const SERVICES_ROUTE_PATH = '/services';
+/* eslint-enable @gitlab/no-hardcoded-urls */

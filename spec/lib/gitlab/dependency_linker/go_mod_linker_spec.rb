@@ -90,5 +90,26 @@ RSpec.describe Gitlab::DependencyLinker::GoModLinker do
       expect(subject).to include(link('gopkg.in/yaml.v2', 'https://pkg.go.dev/gopkg.in/yaml.v2@v2.2.8'))
       expect(subject).to include(link('honnef.co/go/tools', 'https://pkg.go.dev/honnef.co/go/tools@v0.0.1-2019.2.3'))
     end
+
+    context 'when the module path contains ~' do
+      let(:file_content) do
+        <<~CONTENT
+          module example.com/foo
+
+          go 1.21
+
+          require git.sr.ht/~timofurrer/ugh v1.2.3
+        CONTENT
+      end
+
+      it 'links modules with ~ in the path' do
+        expect(subject).to include(
+          link(
+            'git.sr.ht/~timofurrer/ugh',
+            'https://pkg.go.dev/git.sr.ht/~timofurrer/ugh@v1.2.3'
+          )
+        )
+      end
+    end
   end
 end

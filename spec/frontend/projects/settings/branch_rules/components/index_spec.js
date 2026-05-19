@@ -41,6 +41,7 @@ import {
   deleteBranchRuleMockResponse,
   branchProtectionsMockResponse,
   branchProtectionsNoPushAccessMockResponse,
+  branchProtectionsNullProtectionMockResponse,
   squashOptionMockResponse,
   predefinedBranchRulesMockResponse,
   matchingBranchesCount,
@@ -862,6 +863,25 @@ describe('View branch rules', () => {
 
     it('shows empty state', () => {
       expect(findNoDataTitle().text()).toBe('No data to display');
+    });
+  });
+
+  describe('When branch rule has null branchProtection', () => {
+    beforeEach(async () => {
+      await createComponent({
+        branchRulesQueryHandler: jest
+          .fn()
+          .mockResolvedValue(branchProtectionsNullProtectionMockResponse),
+      });
+    });
+
+    it('renders the page without crashing', () => {
+      expect(findSettingsSection().exists()).toBe(true);
+    });
+
+    it('passes false for isGroupLevel to protection components', () => {
+      expect(findAllowedToMerge().props('isGroupLevel')).toBe(false);
+      expect(findAllowedToPush().props('isGroupLevel')).toBe(false);
     });
   });
 });

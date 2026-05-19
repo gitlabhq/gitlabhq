@@ -18,6 +18,15 @@ Work items include the types:
 > [!note]
 > Querying epics is available only on the Premium and Ultimate tier.
 
+## Allowed scopes
+
+| Scope     | Description                                      |
+| --------- | ------------------------------------------------ |
+| `project` | Query work items in a specific project.          |
+| `group`   | Query work items across all projects in a group, including subgroups. |
+
+For more information, see [scopes](_index.md#scopes).
+
 ## Query fields
 
 | Field                                                          | Name (and alias)                             | Operators                  | Types              |
@@ -31,7 +40,6 @@ Work items include the types:
 | [Custom field](#workitem-custom-field)                         | `customField("Field name")`                  | `=`                        | All                |
 | [Due date](#workitem-due-date)                                 | `due`, `dueDate`                             | `=`, `>`, `<`, `>=`, `<=`  | All                |
 | [Epic](#workitem-epic)                                         | `epic`                                       | `=`, `!=`                  | All except Epic    |
-| [Group](#workitem-group)                                       | `group`                                      | `=`                        | All                |
 | [Health status](#workitem-health-status)                       | `health`, `healthStatus`                     | `=`, `!=`                  | All                |
 | [ID](#workitem-identifier)                                     | `id`                                         | `=`, `in`                  | All                |
 | [Include subgroups](#workitem-include-subgroups)               | `includeSubgroups`                           | `=`, `!=`                  | All                |
@@ -40,7 +48,6 @@ Work items include the types:
 | [Milestone](#workitem-milestone)                               | `milestone`                                  | `=`, `in`, `!=`            | All                |
 | [My reaction emoji](#workitem-my-reaction-emoji)               | `myReaction`, `myReactionEmoji`              | `=`, `!=`                  | All                |
 | [Parent](#workitem-parent)                                     | `parent`                                     | `=`, `!=`                  | All except Epic    |
-| [Project](#workitem-project)                                   | `project`                                    | `=`                        | All except Epic    |
 | [State](#workitem-state)                                       | `state`                                      | `=`                        | All                |
 | [Status](#workitem-status)                                     | `status`                                     | `=`                        | All except Epic    |
 | [Subscribed](#workitem-subscribed)                             | `subscribed`                                 | `=`, `!=`                  | All                |
@@ -236,22 +243,6 @@ Work items include the types:
 - `String` (containing an epic reference like `&123`)
 - `Epic` (for example, `&123`, `gitlab-org&123`)
 
-### Group {#workitem-group}
-
-**Description**: Query work items in all projects in a given group.
-
-**Allowed value types**: `String`
-
-**Notes**:
-
-- Only one group can be queried at a time.
-- The `group` cannot be used together with the `project` field.
-- If omitted when using inside an embedded view in a group object (like an epic), `group` is assumed to
-  be the current group.
-- Using the `group` field queries all objects in that group, all its subgroups, and child projects.
-- By default, work items are searched in all descendant projects across all subgroups.
-  To query only the direct child projects of the group, set the [`includeSubgroups` field](#workitem-include-subgroups) to `false`.
-
 ### Health status {#workitem-health-status}
 
 {{< details >}}
@@ -307,7 +298,7 @@ Work items include the types:
 
 **Notes**:
 
-- This field can only be used with the `group` field.
+- This field can only be used with a `group` scope.
 - The value of this field defaults to `false`.
 
 ### Iteration {#workitem-iteration}
@@ -409,18 +400,6 @@ Work items include the types:
 - `WorkItem` (for example, `#123`, `gitlab-org/gitlab#123`)
 - `Epic` (for example, `&123`, `gitlab-org&123`)
 
-### Project {#workitem-project}
-
-**Description**: Query work items, except epics, in a particular project.
-
-**Allowed value types**: `String`
-
-**Notes**:
-
-- Only one project can be queried at a time.
-- The `project` field cannot be used together with the `group` field.
-- If omitted when using inside an embedded view, `project` is assumed to be the current project.
-
 ### State {#workitem-state}
 
 {{< history >}}
@@ -520,9 +499,8 @@ Work items include the types:
 - Field `iteration` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-haskell/-/issues/74) in GitLab 17.6.
 - Field `lastComment` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512154) in GitLab 17.11.
 - Support for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
-- Fields `status` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197407) in GitLab 18.2.
+- Field `status` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197407) in GitLab 18.2.
 - Fields `health` and `type` in epics [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
-- Field `subscribed` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/223) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -531,6 +509,7 @@ Work items include the types:
 | Assignees        | `assignee`, `assignees`               | All             | Display users assigned to the object |
 | Author           | `author`                              | All             | Display the author of the object |
 | Closed at        | `closed`, `closedAt`                  | All             | Display time since the object was closed |
+| Color            | `color`                               | Epic only       | Display the color swatch associated with the epic |
 | Confidential     | `confidential`                        | All             | Display `Yes` or `No` indicating whether the object is confidential |
 | Created at       | `created`, `createdAt`                | All             | Display time since the object was created |
 | Description      | `description`                         | All             | Display the description of the object |
@@ -542,11 +521,16 @@ Work items include the types:
 | Labels           | `label`, `labels`                     | All             | Display labels. Can accept parameters to filter specific labels, for example `labels("workflow::*", "backend")` |
 | Last comment     | `lastComment`                         | All             | Display the last comment made on the object |
 | Milestone        | `milestone`                           | All             | Display the milestone associated with the object |
+| Parent           | `parent`                              | All             | Display a link to the parent work item or epic |
+| Progress         | `progress`                            | Objective and Key Result only | Display the progress percentage (0–100) of the work item |
+| Project          | `project`                             | All except Epic | Display the project the work item belongs to |
 | Start date       | `start`, `startDate`                  | Epic only       | Display the start date of the epic |
 | State            | `state`                               | All             | Display a badge indicating the state. Values are `Open` or `Closed` |
 | Status           | `status`                              | All except Epic | Display a badge indicating the status. For example, "To do" or "Complete". Available in the Premium and Ultimate tiers |
-| Subscribed       | `subscribed`                          | All             | Display `Yes` or `No` indicating whether the current user is subscribed |
+| Task completion status | `taskCompletionStatus`          | All             | Display task completion as a fraction (completed/total) |
+| Time estimate    | `timeEstimate`                        | All             | Display the estimated time for the work item |
 | Title            | `title`                               | All             | Display the title of the object |
+| Total time spent | `totalTimeSpent`                      | All             | Display the total time spent on the work item |
 | Type             | `type`                                | All             | Display the work item type, for example `Issue`, `Task`, or `Objective` |
 | Updated at       | `updated`, `updatedAt`                | All             | Display time since the object was last updated |
 | Weight           | `weight`                              | All except Epic | Display the weight. Available in the Premium and Ultimate tiers |
@@ -573,7 +557,7 @@ Work items include the types:
 | Updated at    | `updated`, `updatedAt`   | All             | Sort by last updated date                       |
 | Weight        | `weight`                 | All except Epic | Sort by weight                                  |
 
-**Examples**:
+## Examples
 
 - List all issues in the `gitlab-org/gitlab` project sorted by title:
 

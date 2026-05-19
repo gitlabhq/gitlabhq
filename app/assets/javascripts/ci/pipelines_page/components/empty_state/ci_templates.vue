@@ -6,6 +6,7 @@ import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import Tracking from '~/tracking';
 
 export default {
+  name: 'CiTemplates',
   components: {
     GlAvatar,
     GlButton,

@@ -70,6 +70,34 @@ When you use GitLab Duo Code Review, the following data is sent to the large lan
 
 To specify content to exclude, see [exclude context from Code Review](context.md#exclude-context-from-code-review).
 
+#### Behavior on large merge requests
+
+GitLab Duo Code Review sends the merge request diffs and the original contents of changed files
+to the model. The combined prompt is subject to the [selected model's](model_selection.md) context window.
+
+For large merge requests, GitLab Duo Code Review uses a fallback to improve the chance of a
+successful review:
+
+1. The initial request includes the merge request diffs and the original file contents.
+1. If that request fails, GitLab Duo Code Review automatically retries without the original file
+   contents.
+1. If the retry also fails, GitLab Duo Code Review returns a generic error message.
+
+The retry without file contents reduces prompt size, but also reduces the context the model has when
+reviewing your changes. Comments might be less specific than a review that includes the original
+file contents.
+
+The AI Gateway request timeout for GitLab Duo Code Review is 120 seconds. Reviews that do not complete
+in this window also surface as generic errors.
+
+To reduce the risk of failed reviews on large merge requests:
+
+- Split large merge requests into smaller ones.
+- [Exclude context](context.md#exclude-context-from-code-review) for files that are not relevant to
+  the review.
+- Ask a Maintainer or Owner to [select a different model](model_selection.md#select-a-model-for-a-feature)
+  for Code Review.
+
 ## Interact with GitLab Duo in reviews
 
 You can mention `@GitLabDuo` in comments to interact with GitLab Duo on your merge request. You can
@@ -110,7 +138,7 @@ Prerequisites:
 To enable `@GitLabDuo` to automatically review merge requests:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
 
@@ -133,7 +161,7 @@ Prerequisites:
 To enable automatic reviews for groups:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Merge requests** section.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
@@ -141,11 +169,32 @@ To enable automatic reviews for groups:
 To enable automatic reviews for all projects:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
 
 Settings cascade from application to group to project. More specific settings override broader ones.
+
+## Troubleshooting
+
+### Review fails on a large merge request
+
+GitLab Duo Code Review might fail to post a review on merge requests with many large changed files.
+Common causes include:
+
+- The combined size of diffs and original file contents exceeds the model's context window.
+- The AI Gateway request takes longer than 120 seconds.
+
+For details on the retry and timeout behavior, see
+[behavior on large merge requests](#behavior-on-large-merge-requests).
+
+To work around the failure:
+
+- Split the merge request into smaller merge requests.
+- [Exclude context](context.md#exclude-context-from-code-review) for files that are not relevant to
+  the review.
+
+For more information, see [issue 596794](https://gitlab.com/gitlab-org/gitlab/-/work_items/596794).
 
 ## Related topics
 

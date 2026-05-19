@@ -1,0 +1,7 @@
+---
+event: Security::ReportsIngestedEvent
+description: Published after a pipeline's security reports have been stored, signalling
+  that downstream consumers (such as scan result policy evaluation) can run against
+  the ingested findings.
+feature_category: security_policy_management
+ee_only: true

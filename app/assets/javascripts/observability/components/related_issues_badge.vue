@@ -3,6 +3,7 @@ import { GlButton, GlBadge, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 
 export default {
+  name: 'RelatedIssuesBadge',
   components: {
     GlButton,
     GlBadge,

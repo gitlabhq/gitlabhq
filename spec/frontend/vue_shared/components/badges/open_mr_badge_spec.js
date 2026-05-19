@@ -121,7 +121,20 @@ describe('OpenMrBadge', () => {
           'Failed to fetch merge request count. See exception details for more information.',
           mockError,
         );
-        expect(Sentry.captureException).toHaveBeenCalledWith(mockError);
+        expect(Sentry.captureException).toHaveBeenCalledWith(mockError, {
+          tags: { feature_category: 'source_code_management' },
+        });
+      });
+
+      it('does not report stale tab createdAfter errors to Sentry', async () => {
+        const mockError = new Error(
+          'createdAfter must be within the last 30 days to filter by blobPath',
+        );
+        createComponent({}, jest.fn().mockRejectedValueOnce(mockError));
+        await waitForPromises();
+
+        expect(logError).toHaveBeenCalled();
+        expect(Sentry.captureException).not.toHaveBeenCalled();
       });
     });
 
@@ -157,7 +170,25 @@ describe('OpenMrBadge', () => {
           'Failed to fetch merge requests. See exception details for more information.',
           mockError,
         );
-        expect(Sentry.captureException).toHaveBeenCalledWith(mockError);
+        expect(Sentry.captureException).toHaveBeenCalledWith(mockError, {
+          tags: { feature_category: 'source_code_management' },
+        });
+      });
+
+      it('does not report stale tab createdAfter errors to Sentry', async () => {
+        const mockError = new Error(
+          'createdAfter must be within the last 30 days to filter by blobPath',
+        );
+        const errorResolver = jest.fn().mockRejectedValue(mockError);
+
+        createComponent({}, openMRQueryResult, errorResolver);
+        await waitForPromises();
+
+        findDropdown().vm.$emit('shown');
+        await waitForPromises();
+
+        expect(logError).toHaveBeenCalled();
+        expect(Sentry.captureException).not.toHaveBeenCalled();
       });
     });
   });

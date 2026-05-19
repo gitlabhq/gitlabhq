@@ -18,23 +18,13 @@ subscription mrPipelineStatusUpdated($pipelineId: CiPipelineID!) {
     downstream {
       nodes {
         id
-        iid
-        name
-        path
         detailedStatus {
-          ...CiIcon
-          name
-          tooltip
-          label
-        }
-        project {
           id
-          fullPath
+          icon
           name
         }
         sourceJob {
           id
-          name
           retried
         }
       }

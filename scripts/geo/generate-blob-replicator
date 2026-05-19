@@ -106,6 +106,10 @@ module Geo
       @replicable_name_camel ||= replicable_name.split('_').map(&:capitalize).join
     end
 
+    def table_name_camel
+      @table_name_camel ||= table_name.split('_').map(&:capitalize).join
+    end
+
     def replicable_name_human
       @replicable_name_human ||= replicable_name.split('_').map(&:capitalize).join(' ')
     end
@@ -189,6 +193,13 @@ module Geo
 
     def next_timestamp
       @next_timestamp ||= (Time.now.utc + 1).strftime('%Y%m%d%H%M%S')
+    end
+
+    # Timestamp for the partition unique index migration. Must be lower than
+    # the state migration timestamp (next_timestamp) so the index exists
+    # before the state table's foreign key references it.
+    def partition_unique_index_timestamp
+      @partition_unique_index_timestamp ||= (Time.now.utc - 1).strftime('%Y%m%d%H%M%S')
     end
 
     def additional_timestamps(count)
@@ -335,6 +346,7 @@ module Geo
       generate_replication_feature_flag
       generate_force_primary_checksumming_feature_flag
       generate_geo_migration
+      generate_partition_unique_index_migration if upload_partition
       generate_state_migration
       generate_sharding_key_trigger_migration
       generate_geo_db_dictionary
@@ -705,6 +717,20 @@ module Geo
       upload_partition ? "::Geo::#{replicable_name_camel}" : "::#{model_class}"
     end
 
+    # Upload partition tables only have a `created_at` column (no `updated_at`),
+    # so upload-partition registries override `model_updated_last` to avoid
+    # `oldest_unsynced_time` raising PG::UndefinedColumn on `MIN(updated_at)`.
+    def model_updated_last_override
+      return '' unless upload_partition
+
+      <<-RUBY
+
+    def self.model_updated_last
+      :created_at
+    end
+      RUBY
+    end
+
     def generate_registry_model
       write_file("ee/app/models/geo/#{replicable_name}_registry.rb", <<~RUBY)
         # frozen_string_literal: true
@@ -723,6 +749,7 @@ module Geo
             def self.model_foreign_key
               :#{foreign_key_name}
             end
+            #{model_updated_last_override}
           end
         end
       RUBY
@@ -995,6 +1022,42 @@ module Geo
       RUBY
     end
 
+    # -- Partition unique index migration (upload partitions only) --
+
+    def generate_partition_unique_index_migration
+      migration_class = "AddUniqueIndexOn#{table_name_camel}Id"
+      glob_suffix = "add_unique_index_on_#{table_name}_id.rb"
+      existing = find_existing_migration('db/migrate', glob_suffix)
+
+      if existing
+        puts "  [SKIP]   #{existing} (already exists)"
+        return
+      end
+
+      file_path = "db/migrate/#{partition_unique_index_timestamp}_add_unique_index_on_#{table_name}_id.rb"
+
+      write_file(file_path, <<~RUBY)
+        # frozen_string_literal: true
+
+        class #{migration_class} < Gitlab::Database::Migration[#{MIGRATION_VERSION}]
+          disable_ddl_transaction!
+
+          milestone '#{milestone}'
+
+          PARTITION_TABLE_NAME = :#{table_name}
+          PARTITION_INDEX_NAME = :idx_#{table_name}_on_id
+
+          def up
+            add_concurrent_index PARTITION_TABLE_NAME, :id, unique: true, name: PARTITION_INDEX_NAME, allow_partition: true
+          end
+
+          def down
+            execute "DROP INDEX CONCURRENTLY IF EXISTS \#{PARTITION_INDEX_NAME}"
+          end
+        end
+      RUBY
+    end
+
     # -- Main DB state migration --
 
     def state_foreign_key_options
@@ -1024,7 +1087,7 @@ module Geo
       # partition tables have composite PKs. Instead, we add the FK separately.
       if upload_partition
         fk_in_create_table = ''
-        fk_after_create = "add_concurrent_foreign_key :#{state_table_name}, :uploads, column: :#{foreign_key_name}, on_delete: :cascade"
+        fk_after_create = "add_concurrent_foreign_key :#{state_table_name}, :#{table_name}, column: :#{foreign_key_name}, on_delete: :cascade"
       else
         fk_in_create_table = ",\n                foreign_key: #{state_foreign_key_options}"
         fk_after_create = ''
@@ -1681,7 +1744,8 @@ module Geo
         "#{p}_verified_count",
         "#{p}_verification_failed_count",
         "#{p}_synced_in_percentage",
-        "#{p}_verified_in_percentage"
+        "#{p}_verified_in_percentage",
+        "#{p}_oldest_unsynced_time"
       ]
     end
 
@@ -1692,6 +1756,14 @@ module Geo
                 "integer",
                 "null"
               ]
+            }
+      JSON
+    end
+
+    def int_property(name)
+      <<~JSON.chomp
+            "#{name}": {
+              "type": "integer"
             }
       JSON
     end
@@ -1719,7 +1791,8 @@ module Geo
         nullable_int_property("#{p}_verified_count"),
         nullable_int_property("#{p}_verification_failed_count"),
         string_property("#{p}_synced_in_percentage"),
-        string_property("#{p}_verified_in_percentage")
+        string_property("#{p}_verified_in_percentage"),
+        int_property("#{p}_oldest_unsynced_time")
       ]
 
       properties.join(",\n")
@@ -1780,7 +1853,8 @@ module Geo
         ["#{p}_verified_count", 'null'],
         ["#{p}_verification_failed_count", 'null'],
         ["#{p}_synced_in_percentage", '"0.00%"'],
-        ["#{p}_verified_in_percentage", '"0.00%"']
+        ["#{p}_verified_in_percentage", '"0.00%"'],
+        ["#{p}_oldest_unsynced_time", 'null']
       ]
 
       fields.map { |name, val| "#{indent}\"#{name}\": #{val}" }.join(",\n") + ","
@@ -1836,7 +1910,8 @@ module Geo
         metric_row("geo_#{p}_registry",                m, "Number of #{h} in the registry"),
         metric_row("geo_#{p}_verification_total",      m, "Number of #{h} to attempt to verify on secondary"),
         metric_row("geo_#{p}_verified",                m, "Number of #{h} successfully verified on secondary"),
-        metric_row("geo_#{p}_verification_failed",     m, "Number of #{h} that failed verification on secondary")
+        metric_row("geo_#{p}_verification_failed",     m, "Number of #{h} that failed verification on secondary"),
+        metric_row("geo_#{p}_oldest_unsynced_time",    m, "Timestamp of the oldest unsynced #{h} on secondary")
       ]
 
       rows.join("\n")

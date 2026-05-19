@@ -87,7 +87,7 @@ to GitLab so that it can pick up jobs from the project pipeline.
 To create a project runner:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand the **Runners** section.
 1. Select **Create project runner**.
 1. In the **Tags** section, select the **Run untagged** checkbox. [Tags](../../ci/runners/configure_runners.md#control-jobs-that-a-runner-can-run) specify which jobs
@@ -132,7 +132,7 @@ Here's what your `config.toml` should look like after you register and start the
 Next, trigger a pipeline in your project so you can view your runner execute a job.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Pipelines**.
+1. In the left sidebar, select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. Select a job to view the job log. The output should look similar to this example, which shows
    your runner successfully executing the job:

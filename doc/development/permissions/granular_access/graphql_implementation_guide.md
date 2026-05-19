@@ -232,9 +232,8 @@ The `boundary_object` must match the `boundary_type`:
 In Rails console, create a granular PAT for a user:
 
 ```ruby
-# Enable feature flags
+# Enable feature flag
 Feature.enable(:granular_personal_access_tokens)
-Feature.enable(:granular_personal_access_tokens_for_graphql)
 
 user = User.human.first
 

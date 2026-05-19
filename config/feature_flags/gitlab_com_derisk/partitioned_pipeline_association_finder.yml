@@ -1,0 +1,10 @@
+---
+name: partitioned_pipeline_association_finder
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/599815
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236152
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600225
+milestone: '19.1'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

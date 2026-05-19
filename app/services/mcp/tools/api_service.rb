@@ -8,7 +8,7 @@ module Mcp
       override :set_cred
       def set_cred(current_user: nil, access_token: nil)
         @access_token = access_token
-        _ = current_user # current_user is not used in ApiService
+        _ = current_user
       end
 
       def execute(request: nil, params: nil)
@@ -56,19 +56,27 @@ module Mcp
             'Content-Type' => 'application/json',
             'Authorization' => "Bearer #{oauth_token}"
           }
-        }.tap { |opts| opts[:verify] = false if Gitlab.dev_or_test_env? } # NOTE: MCP requires HTTPS for GDK
+        }.tap { |opts| opts[:verify] = false if Gitlab.dev_or_test_env? }
       end
 
       def handle_response(response)
-        parsed_response = Gitlab::Json.parse(response.body)
+        parsed_response = Gitlab::Json.safe_parse(response.body)
 
         if response.success?
-          ::Mcp::Tools::Response.success(format_response_content(parsed_response), parsed_response)
+          return ::Mcp::Tools::Response.error('Invalid JSON response', nil) if parsed_response.nil?
+
+          ::Mcp::Tools::Response.success(
+            format_response_content(parsed_response),
+            parsed_response
+          )
         else
-          message = parsed_response['message'] || "HTTP #{response.code}"
-          ::Mcp::Tools::Response.error(message, parsed_response)
+          message = parsed_response&.[]('message') || "HTTP #{response.code}"
+
+          error_payload = parsed_response.nil? ? nil : parsed_response
+
+          ::Mcp::Tools::Response.error(message, error_payload)
         end
-      rescue JSON::ParserError => e
+      rescue JSON::ParserError, Gitlab::Json::ParserError => e
         ::Mcp::Tools::Response.error('Invalid JSON response', { message: e.message })
       end
     end

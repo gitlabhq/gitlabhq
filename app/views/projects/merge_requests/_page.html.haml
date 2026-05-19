@@ -28,7 +28,7 @@
       .merge-request-sticky-header.gl-border-b
         = render "projects/merge_requests/mr_box"
         .merge-request-tabs-container.gl-flex.gl-justify-between.gl-relative.gl-gap-2{ class: "#{'is-merge-request' if !fluid_layout} #{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'}" }
-          %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-border-0
+          %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-border-0.gl-w-full
             = render "projects/merge_requests/tabs/tab", class: "notes-tab", testid: "notes-tab" do
               = tab_link_for @merge_request, :show, force_link: @commit.present? do
                 = _("Overview")
@@ -53,7 +53,7 @@
                 = render Pajamas::BadgeComponent.new do
                   %span.js-changes-tab-count{ data: { gid: @merge_request.to_gid.to_s } }= tab_count_display(@merge_request, @diffs_count)
           .merge-request-tabs-actions.gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3
-            - if Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip)
+            - if Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :beta)
               #js-rapid-diffs-toggle
                 .js-rapid-diffs-toggle-mount
             #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s, can_resolve_discussion: @merge_request.resolvable_discussions.first&.can_resolve?(current_user).to_s } }

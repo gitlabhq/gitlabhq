@@ -369,6 +369,7 @@ describe('Tracking', () => {
         <input data-track-action="click_input3" data-track-experiment="example" value="1" />
         <input data-track-action="event_with_extra" data-track-extra='{ "foo": "bar" }' />
         <input data-track-action="event_with_invalid_extra" data-track-extra="invalid_json" />
+        <input data-track-action="click_input_after_typing" data-track-label="button" value="test" />
       `);
     });
 
@@ -377,7 +378,7 @@ describe('Tracking', () => {
 
       expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'click_input1', {
         label: TEST_LABEL,
-        value: '0',
+        value: 0,
       });
     });
 
@@ -391,7 +392,7 @@ describe('Tracking', () => {
       document.querySelector(`[data-track-action="click_input2"]`).click();
 
       expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'click_input2', {
-        value: '0',
+        value: 0,
       });
 
       expect(snowplowSpy).toHaveBeenCalledWith('trackStructEvent', {
@@ -416,7 +417,7 @@ describe('Tracking', () => {
       checkbox.click(); // checking
 
       expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'toggle_checkbox', {
-        value: '1',
+        value: 1,
       });
     });
 
@@ -449,7 +450,7 @@ describe('Tracking', () => {
       document.querySelector(`[data-track-action="click_input3"]`).click();
 
       expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'click_input3', {
-        value: '1',
+        value: 1,
         context: { schema: TRACKING_CONTEXT_SCHEMA, data: mockExperimentData },
       });
     });
@@ -466,6 +467,15 @@ describe('Tracking', () => {
       document.querySelector(`[data-track-action="event_with_invalid_extra"]`).click();
 
       expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'event_with_invalid_extra', {});
+    });
+
+    it('handles input values with text values', () => {
+      document.querySelector(`[data-track-action="click_input_after_typing"]`).click();
+
+      expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'click_input_after_typing', {
+        label: TEST_LABEL,
+        value: undefined,
+      });
     });
   });
 
@@ -493,7 +503,7 @@ describe('Tracking', () => {
           'render',
           {
             label: 'label1',
-            value: '1',
+            value: 1,
             property: '_property_',
           },
         ],
@@ -502,7 +512,7 @@ describe('Tracking', () => {
           'render',
           {
             label: 'label2',
-            value: '1',
+            value: 1,
           },
         ],
       ]);

@@ -1,0 +1,9 @@
+---
+name: create_freeze_period
+description: Grants the ability to create freeze periods
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_freeze_period

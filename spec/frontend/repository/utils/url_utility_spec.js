@@ -1,6 +1,27 @@
-import { generateHistoryUrl, encodeRepositoryPath } from '~/repository/utils/url_utility';
+import {
+  generateHistoryUrl,
+  encodeRepositoryPath,
+  extractFirstPathSegment,
+} from '~/repository/utils/url_utility';
 
 describe('Repository URL utilities', () => {
+  describe('extractFirstPathSegment', () => {
+    it.each`
+      description                | path                            | expected
+      ${'simple ref'}            | ${'/master'}                    | ${'master'}
+      ${'encoded ref'}           | ${'/feature%2Fbranch'}          | ${'feature%2Fbranch'}
+      ${'ref with file path'}    | ${'/master/app/models/user.rb'} | ${'master'}
+      ${'double encoded ref'}    | ${'/release%252F1.0.0'}         | ${'release%252F1.0.0'}
+      ${'ref without leading /'} | ${'master'}                     | ${'master'}
+      ${'ref with trailing /'}   | ${'/master/'}                   | ${'master'}
+      ${'empty path'}            | ${'/'}                          | ${null}
+      ${'only slashes'}          | ${'//'}                         | ${null}
+      ${'empty string'}          | ${''}                           | ${null}
+    `('returns $expected for $description', ({ path, expected }) => {
+      expect(extractFirstPathSegment(path)).toBe(expected);
+    });
+  });
+
   describe('encodeRepositoryPath', () => {
     it('returns empty string for empty input', () => {
       expect(encodeRepositoryPath('')).toBe('');
@@ -123,6 +144,17 @@ describe('Repository URL utilities', () => {
       const result = generateHistoryUrl(historyLink, path, refType);
 
       expect(result.pathname).toBe('/-/commits/path/to/file.js');
+      expect(result.searchParams.get('ref_type')).toBe('branch');
+    });
+
+    it('returns URL without trailing slash when path is root (/)', () => {
+      const historyLink = '/-/commits';
+      const path = '/';
+      const refType = 'branch';
+
+      const result = generateHistoryUrl(historyLink, path, refType);
+
+      expect(result.pathname).toBe('/-/commits');
       expect(result.searchParams.get('ref_type')).toBe('branch');
     });
   });

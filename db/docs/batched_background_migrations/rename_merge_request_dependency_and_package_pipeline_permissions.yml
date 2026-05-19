@@ -1,0 +1,8 @@
+---
+migration_job_name: RenameMergeRequestDependencyAndPackagePipelinePermissions
+description: Renames deprecated read/create/delete_merge_request_dependency and read_package_pipeline assignable permissions to read/create/delete_merge_request and read_package.
+feature_category: permissions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235234
+milestone: '19.0'
+queued_migration_version: 20260420120000
+finalized_by:

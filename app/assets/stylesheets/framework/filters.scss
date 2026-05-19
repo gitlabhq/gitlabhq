@@ -311,11 +311,15 @@
   }
 }
 
+.issues-details-filters,
+.epics-details-filters {
+  @apply gl-px-[--container-padding-x];
+}
+
 @include gl-container-width-down(md, panel) {
   .issues-details-filters,
   .epics-details-filters {
-    padding-top: $gl-padding-8;
-    padding-bottom: $gl-padding-8;
+    @apply gl-py-3;
     @apply gl-bg-default;
   }
 

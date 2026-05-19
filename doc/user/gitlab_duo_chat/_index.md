@@ -2,13 +2,14 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Use GitLab Duo Chat to ask questions about your code, get help with GitLab, and complete tasks in the GitLab UI or your IDE.
 title: GitLab Duo Non-Agentic Chat
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
+- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -31,8 +32,13 @@ title: GitLab Duo Non-Agentic Chat
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
 - [Updated default LLM](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541) to Claude Sonnet 4.5 in GitLab 18.6.
+- Access to GitLab Duo Non-Agentic Chat removed for GitLab Duo Core customers on May 21, 2026 as part of GitLab 19.0, with a feature flag named `no_duo_classic_for_duo_core_users`. Enabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The removal of access for GitLab Duo Core customers is controlled by a feature flag.
+> For more information, see the history.
 
 GitLab Duo Chat is an AI assistant that accelerates development with
 contextual, conversational AI. This non-agentic Chat:
@@ -46,7 +52,20 @@ contextual, conversational AI. This non-agentic Chat:
 <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
 <!-- Video published on 2024-04-18 -->
 
-Learn about the new [GitLab Duo Agentic Chat](agentic_chat.md).
+Learn about [GitLab Duo Agentic Chat](agentic_chat.md).
+
+## Access for GitLab Duo Core users
+
+From May 21, 2026, GitLab Duo Core users on all GitLab versions do not have access to
+GitLab Duo Non-Agentic Chat.
+
+Instead, you can either:
+
+- Use [GitLab Duo Agentic Chat](agentic_chat.md) as part of the GitLab Duo Agent Platform.
+
+  If you used Non-Agentic Chat with the Web IDE or Eclipse, you must use a
+  different IDE.
+- Purchase GitLab Duo Pro or Enterprise.
 
 ## Supported editor extensions
 

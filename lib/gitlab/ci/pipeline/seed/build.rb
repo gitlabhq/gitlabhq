@@ -74,6 +74,7 @@ module Gitlab
               .deep_merge(inputs_attributes)
               .deep_merge(runner_tags)
               .deep_merge(scoped_user_id_attribute)
+              .deep_merge(suspend_options_attributes)
               .then { |attrs| add_execution_config(attrs) }
               .except(:stage)
           end
@@ -224,6 +225,12 @@ module Gitlab
             {
               options: { inputs: @inputs }
             }
+          end
+
+          def suspend_options_attributes
+            return {} unless @context.suspend_options.present?
+
+            { options: { suspend_options: @context.suspend_options } }
           end
 
           def calculate_yaml_variables!

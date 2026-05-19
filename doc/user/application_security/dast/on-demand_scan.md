@@ -44,7 +44,7 @@ An on-demand scan can be run in active or passive mode:
 To view on-demand scans:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Secure** > **On-demand scans**.
+1. In the left sidebar, select **Secure** > **On-demand scans**.
 
 On-demand scans are grouped by their status. The scan library contains all available on-demand
 scans.
@@ -60,7 +60,7 @@ Prerequisites:
 To run an existing on-demand scan:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **On-demand scans**.
+1. In the left sidebar, select **Secure** > **On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the scan's row, select **Run scan**.
 
@@ -83,7 +83,7 @@ Create an on-demand scan to:
 To create an on-demand DAST scan:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Secure** > **On-demand scans**.
+1. In the left sidebar, select **Secure** > **On-demand scans**.
 1. Select **New scan**.
 1. Complete the **Scan name** and **Description** fields.
 1. In the **Branch** dropdown list, select the desired branch.
@@ -115,7 +115,7 @@ Prerequisites:
 To view details of an on-demand scan:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **On-demand scans**.
+1. In the left sidebar, select **Secure** > **On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Edit**.
 
@@ -128,7 +128,7 @@ Prerequisites:
 To edit an on-demand scan:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **On-demand scans**.
+1. In the left sidebar, select **Secure** > **On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Edit**.
 1. Edit the saved scan's details.
@@ -139,7 +139,7 @@ To edit an on-demand scan:
 To delete an on-demand scan:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **On-demand scans**.
+1. In the left sidebar, select **Secure** > **On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Delete**.
 1. On the confirmation dialog, select **Delete**.

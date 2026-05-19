@@ -15,8 +15,8 @@ description: Store your container registry's data in a database to manage multip
 
 {{< history >}}
 
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) as a [beta feature](../../policy/development_stages_support.md) in GitLab 16.4.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
+- Prefer mode for new Linux package and self-compiled installations [introduced](https://gitlab.com/gitlab-org/container-registry/-/merge_requests/2849) in GitLab 19.0. Enabled by default.
 
 {{< /history >}}
 
@@ -95,6 +95,7 @@ Prerequisites:
   to speed up the process.
 - Back up [your container registry data](../backup_restore/backup_gitlab.md#container-registry)
   if possible.
+- Configure container registry [notifications](container_registry.md#configure-container-registry-notifications).
 
 ### Enable the database for new installations
 
@@ -129,7 +130,7 @@ You do not need to do the following in preparation before importing:
 > to continuous online garbage collection, by default deleting any untagged and unreferenced manifests
 > and layers that remain for longer than 24 hours.
 
-#### How to choose the right import method
+### Choose the right import method
 
 If you regularly run [offline garbage collection](container_registry.md#container-registry-garbage-collection),
 use the [one-step import](container_registry_metadata_database_one_step_import.md) method.
@@ -144,7 +145,7 @@ external database connection before proceeding with a migration path.
 
 For more information, see [Using an external database](#using-an-external-database).
 
-#### Restore interrupted imports
+### Restore interrupted imports
 
 {{< history >}}
 
@@ -172,19 +173,27 @@ For example:
 
 For more information about valid duration units, see [Go duration strings](https://pkg.go.dev/time#ParseDuration).
 
-#### Post import
+### Post import
 
-It may take approximately 48 hours post import to see your registry storage
-decrease. This is a normal and expected part of online garbage collection, as this
-delay ensures that online garbage collection does not interfere with image pushes.
-Check out the [monitor online garbage collection](#online-garbage-collection-monitoring) section
-to see how to monitor the progress and health of the online garbage collector.
+After completing a large import, hundreds of thousands or even millions of blobs can be queued for garbage collection review. This is normal.
+
+Because tagged images are imported before dangling blobs are inventoried, the garbage collector initially reviews blobs that are still referenced by tagged images. Garbage collection removes these blobs from the queue, but does not delete them from storage.
+
+Storage decreases only after the garbage collector reaches the dangling blobs. Registry storage might take 48 hours or more to decrease after a post-import, because the garbage collector delays review to avoid interference with image blobs.
+
+To monitor and manage the post-import garbage collection backlog:
+
+- [Check the health of online garbage collection](#check-the-health-of-online-garbage-collection)
+  to see the size and status of the review queues.
+- [Adjust the garbage collector worker interval](#adjust-the-garbage-collector-worker-interval)
+  to temporarily speed up processing for large backlogs.
 
 ## Prefer mode
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9411) in GitLab 18.7.
+- [Enabled by default](https://gitlab.com/gitlab-org/container-registry/-/merge_requests/2849) for new Linux package and self-compiled installations in GitLab 19.0.
 
 {{< /history >}}
 
@@ -234,6 +243,55 @@ database after a fallback. To move from filesystem to database mode after a
 fallback, complete the standard [metadata import](#enable-the-database-for-existing-registries)
 and restart the registry.
 
+### Default configuration
+
+{{< history >}}
+
+- Default metadata database mode [changed to `prefer`](https://gitlab.com/gitlab-org/container-registry/-/merge_requests/2849) in GitLab 19.0 for new Linux package and self-compiled installations.
+
+{{< /history >}}
+
+In GitLab 19.0 and later, the metadata database is enabled by default in prefer mode for new installations:
+
+- Linux package (Omnibus) installations: `registry['database']['enabled']` defaults to `"prefer"` when the setting is not specified in `/etc/gitlab/gitlab.rb`. For more information, see [issue 9396](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9396).
+- Self-compiled installations: `database.enabled` defaults to `"prefer"` when the setting is not specified in the registry configuration file.
+
+After upgrading, check which backend the registry uses. For the procedure, see [Verify which metadata backend is active](#verify-which-metadata-backend-is-active).
+
+#### New installations
+
+On a new GitLab 19.0 or later installation, the registry starts in prefer mode. If a reachable metadata database is configured, the registry uses it. Without a reachable database, the registry fails to start.
+
+To keep a new installation on filesystem metadata, set the database mode to `"false"` before the first registry start:
+
+- For Linux package (Omnibus) installations, in `/etc/gitlab/gitlab.rb`:
+
+  ```ruby
+  registry['database']['enabled'] = "false"
+  ```
+
+- For self-compiled installations, in `/home/git/gitlab/config/gitlab.yml`:
+
+  ```yaml
+  registry:
+    database:
+      enabled: false
+  ```
+
+#### Existing installations
+
+Upgrading an existing installation to GitLab 19.0 or later preserves the current `registry['database']['enabled']` setting. The upgrade does not migrate metadata or switch the active backend.
+
+An existing prefer-mode installation with filesystem metadata continues to use filesystem metadata after the upgrade. To switch to the database, complete a [metadata import](#enable-the-database-for-existing-registries).
+
+#### Metadata database backups
+
+When the registry uses the metadata database, include the registry database in your backups. For the procedure, see [Backup with metadata database](#backup-with-metadata-database).
+
+A prefer-mode installation with existing filesystem metadata stays in fallback across restarts. During fallback, the registry does not read from or write to the metadata database. You do not need to back up the metadata database until fallback ends.
+
+To end fallback, complete a [metadata import](#enable-the-database-for-existing-registries) and restart the registry. After the restart, the registry uses the metadata database. Include it in your backup routine.
+
 ### Verify which metadata backend is active
 
 To verify which metadata backend your registry is using,
@@ -244,7 +302,7 @@ use one of the following methods.
 1. Send a request to the registry `/v2/` endpoint:
 
    ```shell
-   curl --silent --head "https://registry.example.com/v2/" | grep --ignore-case gitlabcontainer-registry-database-enabled
+   curl --silent --head "https://registry.example.com/v2/" | grep --ignore-case gitlab-container-registry-database-enabled
    ```
 
 1. Inspect the
@@ -479,10 +537,19 @@ Tasks with >10 review attempts - may indicate persistent issues.
 
 {{< tab title="GitLab 18.9 and earlier" >}}
 
-The following queries return tasks that were retried more than 10 times,
-or were eligible for review for longer than 24 hours. The online garbage collector should
-pick up an item for review within 24 hours with few failed attempts. If any rows are returned,
-investigate the health of your online garbage collector.
+### Connect to the GitLab container registry metadata database
+
+Use the following command to connect to the registry metadata database:
+
+```shell
+gitlab-psql -d registry
+```
+
+### Queries to determine status of online garbage collection tasks
+
+The following queries return tasks that were retried more than 10 times, or were eligible for review for longer than 24 hours.
+The online garbage collector should pick up an item for review within 24 hours with few failed attempts.
+If any rows are returned, investigate the health of your online garbage collector.
 
 For manifests:
 
@@ -720,7 +787,7 @@ to back up and restore the registry database independently.
 
 {{< /history >}}
 
-For Helm chart (Kubernetes) deployments, configure the toolbox pod with 
+For Helm chart (Kubernetes) deployments, configure the toolbox pod with
 dedicated database credentials for backup and restore operations.
 Two separate PostgreSQL users are required:
 
@@ -746,7 +813,7 @@ kubectl create secret generic my-registry-db-password-secret \
 
 #### Configure registry database credentials
 
-Add the required YAML to your Helm `values.yaml` to configure backup and restore users. Refer to the following table for configuration setting definitions. 
+Add the required YAML to your Helm `values.yaml` to configure backup and restore users. Refer to the following table for configuration setting definitions.
 
 | Setting | Default | Description |
 |---|---|---|

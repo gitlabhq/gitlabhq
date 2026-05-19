@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Vue from 'vue';
 import { debounce } from 'lodash-es';
 import actionCable from '~/actioncable_consumer';
@@ -511,7 +510,9 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
         confidentialWidget.setConfidentiality();
       }
 
-      $('.js-gfm-input').trigger('clear-commands-cache.atwho');
+      document
+        .querySelectorAll('.js-gfm-input')
+        .forEach((input) => input.dispatchEvent(new CustomEvent('clear-commands-cache')));
 
       createAlert({
         message: messages || __('Commands applied'),
@@ -530,7 +531,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       return res;
     }
 
-    const votesBlock = $('.js-awards-block').eq(0);
+    const votesBlock = document.querySelector('.js-awards-block');
 
     return loadAwardsHandler()
       .then((awardsHandler) => {

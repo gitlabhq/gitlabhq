@@ -16,6 +16,19 @@ RSpec.describe 'PipelineDestroy', feature_category: :pipeline_composition do
     graphql_mutation(:pipeline_destroy, variables, 'errors')
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_pipeline do
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(
+        :pipeline_destroy,
+        { id: pipeline.to_global_id.to_s },
+        'errors'
+      )
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'returns an error if the user is not allowed to destroy the pipeline' do
     post_graphql_mutation(mutation, current_user: create(:user))
 

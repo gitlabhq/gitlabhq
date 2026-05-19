@@ -1,3 +1,8 @@
+# Routes that are missing granular token authorization (`authorization permissions: [...]` or `skip_granular_token_authorization`).
+# One entry per route, in the form `METHOD /path`.
+#
+# These routes should have authorization added over time.
+# Do not add new entries to this file -- instead, add authorization for new routes.
 * /*path
 DELETE /admin/knowledge_graph/namespaces/:id
 DELETE /admin/token
@@ -54,8 +59,6 @@ GET /analytics/group_activity/merge_requests_count
 GET /analytics/group_activity/new_members_count
 GET /application/settings
 GET /application/statistics
-GET /audit_events
-GET /audit_events/:id
 GET /broadcast_messages
 GET /broadcast_messages/:id
 GET /dependency_list_exports/:export_id
@@ -76,9 +79,6 @@ GET /groups/:id/manage/ssh_keys
 GET /ldap/:provider/groups
 GET /ldap/groups
 GET /mcp
-GET /namespaces
-GET /namespaces/:id
-GET /namespaces/:id/exists
 GET /namespaces/:id/subscription_add_on_purchase/:add_on_name
 GET /namespaces/storage/limit_exclusions
 GET /offline_exports
@@ -160,7 +160,6 @@ GET /users/:user_id/memberships
 GET /vscode/settings_sync(/:settings_context_hash)/v1/manifest
 GET /vscode/settings_sync(/:settings_context_hash)/v1/resource/:resource_name
 GET /vscode/settings_sync(/:settings_context_hash)/v1/resource/:resource_name/:id
-GET /vulnerabilities/:id
 GET /vulnerabilities/:id/issue_links
 GET /web_commits/public_key
 PATCH /ai/duo_workflows/workflows/:id
@@ -210,7 +209,6 @@ POST /projects/:id/alert_management_alerts/:alert_iid/metric_images
 POST /projects/:id/approval_settings/rules
 POST /projects/:id/error_tracking/client_keys
 POST /projects/:id/integrations/mattermost_slash_commands/trigger
-POST /projects/:id/integrations/slack_slash_commands/trigger
 POST /projects/:id/issues/:issue_iid/metric_images
 POST /projects/:id/issues/:subscribable_id/subscribe
 POST /projects/:id/issues/:subscribable_id/unsubscribe
@@ -234,7 +232,6 @@ POST /projects/:id/service_accounts
 POST /projects/:id/service_accounts/:user_id/personal_access_tokens
 POST /projects/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate
 POST /projects/:id/services/mattermost_slash_commands/trigger
-POST /projects/:id/services/slack_slash_commands/trigger
 POST /projects/:id/snippets
 POST /projects/:id/statuses/:sha
 POST /projects/:project_id/product_analytics/request/dry-run
@@ -266,11 +263,7 @@ POST /users/:user_id/impersonation_tokens
 POST /users/:user_id/keys
 POST /users/:user_id/personal_access_tokens
 POST /vscode/settings_sync(/:settings_context_hash)/v1/resource/:resource_name
-POST /vulnerabilities/:id/confirm
-POST /vulnerabilities/:id/dismiss
 POST /vulnerabilities/:id/issue_links
-POST /vulnerabilities/:id/resolve
-POST /vulnerabilities/:id/revert
 POST /vulnerabilities/:vulnerability_id/flags/ai_detection
 PUT /admin/active_context/code/enabled_namespaces
 PUT /admin/active_context/collections/:id
@@ -328,7 +321,6 @@ PUT /groups/:id/integrations/pumble
 PUT /groups/:id/integrations/pushover
 PUT /groups/:id/integrations/redmine
 PUT /groups/:id/integrations/slack
-PUT /groups/:id/integrations/slack-slash-commands
 PUT /groups/:id/integrations/squash-tm
 PUT /groups/:id/integrations/teamcity
 PUT /groups/:id/integrations/telegram
@@ -385,7 +377,6 @@ PUT /projects/:id/integrations/pumble
 PUT /projects/:id/integrations/pushover
 PUT /projects/:id/integrations/redmine
 PUT /projects/:id/integrations/slack
-PUT /projects/:id/integrations/slack-slash-commands
 PUT /projects/:id/integrations/squash-tm
 PUT /projects/:id/integrations/teamcity
 PUT /projects/:id/integrations/telegram
@@ -439,7 +430,6 @@ PUT /projects/:id/services/pumble
 PUT /projects/:id/services/pushover
 PUT /projects/:id/services/redmine
 PUT /projects/:id/services/slack
-PUT /projects/:id/services/slack-slash-commands
 PUT /projects/:id/services/squash-tm
 PUT /projects/:id/services/teamcity
 PUT /projects/:id/services/telegram

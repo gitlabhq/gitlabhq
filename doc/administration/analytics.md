@@ -31,5 +31,5 @@ Prerequisites:
 To enable ClickHouse:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. In the **Analytics** section, select the **Enable ClickHouse** checkbox.

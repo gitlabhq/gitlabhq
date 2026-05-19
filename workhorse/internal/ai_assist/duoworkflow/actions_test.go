@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -431,6 +432,127 @@ func TestRunHttpActionHandler_Execute_ContextCancelled(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, result)
 		require.NotEmpty(t, result.GetActionResponse().GetHttpResponse().Error)
+	})
+}
+
+func TestRunHttpActionHandler_Execute_Timeout(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	// slowBackend simulates a backend that blocks until the request context is done,
+	// then panics with http.ErrAbortHandler — the same behavior as httputil.ReverseProxy
+	// when the upstream connection is interrupted by a context cancellation or deadline.
+	slowBackend := http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+		<-r.Context().Done()
+		panic(http.ErrAbortHandler)
+	})
+
+	makeAction := func() *pb.Action {
+		return &pb.Action{
+			RequestID: "req-timeout",
+			Action: &pb.Action_RunHTTPRequest{
+				RunHTTPRequest: &pb.RunHTTPRequest{
+					Method: "GET",
+					Path:   "/api/test",
+				},
+			},
+		}
+	}
+
+	t.Run("returns errRequestTimedOut when shouldTimeoutHTTPRequests is true and deadline is exceeded", func(t *testing.T) {
+		serverURL, err := url.Parse("http://localhost:0")
+		require.NoError(t, err)
+
+		originalReq := httptest.NewRequest("GET", "/ws", nil)
+		originalReq.RemoteAddr = testRemoteAddr
+
+		handler := &runHTTPActionHandler{
+			rails: &api.API{
+				Client: &http.Client{},
+				URL:    serverURL,
+			},
+			backend:                   slowBackend,
+			action:                    makeAction(),
+			token:                     "test-token",
+			originalReq:               originalReq,
+			shouldTimeoutHTTPRequests: true,
+		}
+
+		// Use an already-expired deadline context so the timeout fires immediately
+		// without waiting for the full httpRequestTimeout duration.
+		ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(-time.Second))
+		defer cancel()
+
+		result, err := handler.Execute(ctx)
+
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		require.Equal(t, errRequestTimedOut.Error(), result.GetActionResponse().GetHttpResponse().Error)
+	})
+
+	t.Run("does not apply timeout when shouldTimeoutHTTPRequests is false", func(t *testing.T) {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, `{"status": "ok"}`)
+		}))
+		defer server.Close()
+
+		serverURL, err := url.Parse(server.URL)
+		require.NoError(t, err)
+
+		originalReq := httptest.NewRequest("GET", "/ws", nil)
+		originalReq.RemoteAddr = testRemoteAddr
+
+		handler := &runHTTPActionHandler{
+			rails: &api.API{
+				Client: server.Client(),
+				URL:    serverURL,
+			},
+			backend:                   createBackendHandler(server.Client()),
+			action:                    makeAction(),
+			token:                     "test-token",
+			originalReq:               originalReq,
+			shouldTimeoutHTTPRequests: false,
+		}
+
+		result, err := handler.Execute(context.Background())
+
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		require.Empty(t, result.GetActionResponse().GetHttpResponse().Error)
+		require.Equal(t, int32(http.StatusOK), result.GetActionResponse().GetHttpResponse().StatusCode)
+	})
+
+	t.Run("succeeds when shouldTimeoutHTTPRequests is true and request completes within timeout", func(t *testing.T) {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, `{"status": "ok"}`)
+		}))
+		defer server.Close()
+
+		serverURL, err := url.Parse(server.URL)
+		require.NoError(t, err)
+
+		originalReq := httptest.NewRequest("GET", "/ws", nil)
+		originalReq.RemoteAddr = testRemoteAddr
+
+		handler := &runHTTPActionHandler{
+			rails: &api.API{
+				Client: server.Client(),
+				URL:    serverURL,
+			},
+			backend:                   createBackendHandler(server.Client()),
+			action:                    makeAction(),
+			token:                     "test-token",
+			originalReq:               originalReq,
+			shouldTimeoutHTTPRequests: true,
+		}
+
+		result, err := handler.Execute(context.Background())
+
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		require.Empty(t, result.GetActionResponse().GetHttpResponse().Error)
+		require.Equal(t, int32(http.StatusOK), result.GetActionResponse().GetHttpResponse().StatusCode)
 	})
 }
 

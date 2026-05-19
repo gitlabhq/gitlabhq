@@ -27,4 +27,5 @@
 
     We will provide best-effort security maintenance for our forked NGINX Ingress chart and builds until
     the full removal. To ensure a smooth transition, we recommend planning your migration to the provided
-    Gateway API solution or an externally managed Ingress controller.
+    Gateway API solution or an externally managed Ingress controller. For step-by-step instructions, see the
+    [Envoy Gateway migration guide](https://docs.gitlab.com/charts/installation/migration/envoy_gateway_migration/).

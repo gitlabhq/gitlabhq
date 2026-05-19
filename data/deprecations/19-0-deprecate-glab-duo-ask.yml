@@ -1,0 +1,17 @@
+- title: "The `glab duo ask` command"
+  announcement_milestone: "19.0"
+  removal_milestone: "19.3"
+  breaking_change: true
+  reporter: phikai
+  stage: create
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/597732
+  impact: low
+  scope: instance
+  resolution_role: Developer
+  manual_task: true
+  body: |
+    The `glab duo ask` command in the GitLab CLI is deprecated in GitLab 19.0
+    and will be removed in GitLab 19.3. The command generates Git commands from
+    natural language descriptions.
+
+    Use [`glab duo cli`](https://docs.gitlab.com/cli/duo/cli/) instead for AI-powered assistance in the CLI.

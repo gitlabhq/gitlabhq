@@ -47,9 +47,7 @@ export const mockCommit = {
       },
     ],
   },
-  tag: {
-    name: 'V1.2.3',
-  },
+  tags: ['V1.2.3'],
 };
 
 const mockCommitSecond = {
@@ -95,9 +93,7 @@ const mockCommitSecond = {
       },
     ],
   },
-  tag: {
-    name: 'very long tag to test out layout is doing okay',
-  },
+  tags: ['very long tag to test out layout is doing okay'],
 };
 
 const mockCommitThird = {
@@ -130,6 +126,7 @@ const mockCommitThird = {
     __typename: 'PipelineConnection',
     edges: [],
   },
+  tags: [],
 };
 
 // Flat array of commits as returned by GraphQL

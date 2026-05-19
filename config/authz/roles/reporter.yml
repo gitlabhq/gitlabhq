@@ -7,7 +7,9 @@ inherits_from:
 project:
   permissions: []
   raw_permissions:
+  - _admin_authored_snippet
   - _delete_shared_saved_view
+  - _read_external_build
   - _update_incident_work_item
   - _update_protected_job
   - _update_shared_saved_view
@@ -25,6 +27,7 @@ project:
   - create_epic
   - create_incident
   - create_iteration
+  - create_merge_request_in
   - create_project_secrets
   - create_requirement
   - create_requirement_test_report
@@ -39,13 +42,16 @@ project:
   - download_code
   - download_wiki_code
   - export_requirements
+  - fork_project
   - import_requirements
+  - import_work_items
   - mark_note_as_internal
   - metrics_dashboard
   - move_design
   - read_build
   - read_ci_cd_analytics
   - read_code
+  - read_code_review_analytics
   - read_commit_status
   - read_compliance_framework
   - read_confidential_issues
@@ -61,13 +67,13 @@ project:
   - read_external_status_check_response
   - read_freeze_period
   - read_google_cloud_artifact_registry
-  - read_grafana
   - read_harbor_registry
   - read_incident_management_escalation_policy
   - read_incident_management_oncall_schedule
   - read_internal_note
   - read_issuable_resource_link
   - read_licenses
+  - read_manual_variables
   - read_merge_request
   - read_observability
   - read_package
@@ -116,6 +122,7 @@ group:
   - create_timelog
   - delete_secret
   - download_wiki_code
+  - manage_devops_adoption_namespaces
   - mark_note_as_internal
   - read_ci_cd_analytics
   - read_confidential_epic
@@ -140,9 +147,11 @@ group:
   - read_secret
   - read_timelog_category
   - reopen_issue
+  - rollover_issues
   - update_epic
   - update_issue
   - update_secret
   - view_group_ci_cd_analytics
+  - view_group_devops_adoption
   - view_productivity_analytics
   - view_type_of_work_charts

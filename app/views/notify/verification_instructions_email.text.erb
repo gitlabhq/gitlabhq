@@ -4,5 +4,5 @@
 
 <%= @token %>
 
-<%= s_('IdentityVerification|If you have not recently tried to sign into GitLab, we recommend changing your password (%{password_link}) and setting up Two-Factor Authentication (%{two_fa_link}) to keep your account safe.') % { password_link: @password_link, two_fa_link: @two_fa_link } %>
+<%= s_('IdentityVerification|If you have not recently tried to sign into GitLab, we recommend changing your password and setting up Two-Factor Authentication to keep your account safe.') %>
 <%= s_('IdentityVerification|Your verification code expires after %{expires_in_minutes} minutes.') % { expires_in_minutes: @expires_in_minutes } %>

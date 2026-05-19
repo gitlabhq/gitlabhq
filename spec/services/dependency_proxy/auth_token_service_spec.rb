@@ -5,8 +5,8 @@ RSpec.describe DependencyProxy::AuthTokenService, feature_category: :virtual_reg
   include DependencyProxyHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
-  let_it_be(:group_access_token) { create(:personal_access_token, user: user) }
+  let_it_be(:personal_access_token, freeze: false) { create(:personal_access_token, user: user) }
+  let_it_be(:group_access_token, freeze: false) { create(:personal_access_token, user: user) }
   let_it_be(:deploy_token) { create(:deploy_token) }
 
   shared_examples 'handling token errors' do

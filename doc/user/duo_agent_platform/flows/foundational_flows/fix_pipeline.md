@@ -7,7 +7,7 @@ title: Fix CI/CD Pipeline Flow
 
 {{< details >}}
 
-- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
+- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -57,7 +57,7 @@ To fix the CI/CD pipeline in a merge request:
    - Select the **Overview** tab and under the failing pipeline, select **Fix pipeline with Duo**.
    - Select the **Pipelines** tab and in the rightmost column, select **Fix pipeline with Duo** ({{< icon name="tanuki-ai" >}}).
 
-1. To monitor progress, select **Automate** > **Sessions**.
+1. To monitor progress, select **AI** > **Sessions**.
 
 When the session is complete, a comment shows a link to a merge request that contains the fix,
 or a comment describes possible next steps.
@@ -69,7 +69,7 @@ To fix a CI/CD pipeline that is not associated with a merge request:
 1. Select **Build** > **Pipelines**.
 1. Select your failing pipeline.
 1. In the upper-right corner, select **Fix pipeline with Duo**.
-1. To monitor progress, select **Automate** > **Sessions**.
+1. To monitor progress, select **AI** > **Sessions**.
 
 ## What the flow analyzes
 
@@ -79,3 +79,17 @@ The Fix CI/CD Pipeline Flow examines:
 - Merge request changes: Changes that could have caused the failure.
 - The current repository contents: For identifying syntax, linting, or import errors.
 - Script errors: Command failures, missing executables, or permission issues.
+
+## Flow log processing
+
+The Fix CI/CD Pipeline Flow has a known issue related to log processing.
+
+The AI gateway processes only the last 150 KiB of job logs. If your job produces extensive output, the flow might not capture relevant failure information that appears earlier in the log.
+
+To work around this issue, try the following:
+
+- Reduce verbose output by removing debug logging and progress indicators.
+- Redirect non-critical output using shell redirection (`> /dev/null`).
+- Add a summary step at the end of your script that echoes key error messages.
+- Use `after_script` to output diagnostic information after the main script completes.
+- Split verbose jobs into smaller, focused jobs with more concise logs.

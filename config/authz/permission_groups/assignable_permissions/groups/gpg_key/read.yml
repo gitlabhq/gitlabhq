@@ -1,0 +1,9 @@
+---
+name: read_gpg_key
+description: Grants the ability to read GPG keys
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_user_gpg_key

@@ -9,6 +9,7 @@ class Deployment < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include FastDestroyAll
   include EachBatch
+  include FromUnion # used in Environment#last_finished_deployment
 
   StatusUpdateError = Class.new(StandardError)
   StatusSyncError = Class.new(StandardError)

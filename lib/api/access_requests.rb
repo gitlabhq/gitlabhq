@@ -74,8 +74,10 @@ module API
         end
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the access requester'
+          # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
           optional :access_level, type: Integer, desc: 'A valid access level (defaults: `30`, the Developer role)',
             default: 30
+          # rubocop:enable API/AccessLevelStringType
         end
         # rubocop: disable CodeReuse/ActiveRecord
         route_setting :authorization, permissions: :approve_access_request, boundary_type: source_type.to_sym

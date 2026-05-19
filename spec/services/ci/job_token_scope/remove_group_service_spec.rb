@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::JobTokenScope::RemoveGroupService, feature_category: :continuous_integration do
   let(:service) { described_class.new(project, current_user) }
 
-  let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
+  let_it_be(:project, freeze: false) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
   let_it_be(:target_group) { create(:group, :private) }
   let_it_be(:current_user) { create(:user) }
 

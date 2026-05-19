@@ -37,7 +37,7 @@ and [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110).
 
 ## Prerequisites
 
-- Access to the GitLab-operated [AI Gateway](../../administration/gitlab_duo/gateway.md).
+- Access to the [GitLab AI Gateway](../../administration/gitlab_duo/gateway.md).
 - These features turned on:
   - For GitLab.com, experiment features for your top-level group.
   - For GitLab Self-Managed, GitLab Duo experiment and beta features for the instance.
@@ -56,7 +56,7 @@ If your GitLab instance uses Elasticsearch or OpenSearch for advanced search,
 you can enable semantic code search by connecting to the same cluster:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Semantic search**.
 1. Select **Connect to the advanced search cluster**.
 
@@ -154,6 +154,35 @@ Connection options:
 | `password`       | string  | No       | None    | PostgreSQL password. |
 | `connect_timeout`| integer | No       | `5`     | Connection timeout in seconds. |
 | `pool_size`      | integer | No       | `5`     | Connection pool size. |
+
+## Check semantic code search status
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/596795) in GitLab 19.0.
+
+{{< /history >}}
+
+Prerequisites:
+
+- Administrator access.
+
+To check the status of semantic code search, including indexing status,
+vector store connection details, repository statistics,
+and embedding queue sizes, run this Rake task:
+
+```shell
+sudo gitlab-rake gitlab:semantic_search:code:info
+```
+
+To monitor status continuously, provide a watch interval in seconds:
+
+```shell
+sudo gitlab-rake "gitlab:semantic_search:code:info[5]"
+```
+
+This task refreshes the output at the specified interval.
+To stop the task, press <kbd>Control</kbd>+<kbd>C</kbd>.
 
 ## Use semantic code search
 

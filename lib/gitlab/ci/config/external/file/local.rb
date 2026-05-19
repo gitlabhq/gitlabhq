@@ -21,9 +21,12 @@ module Gitlab
               strong_memoize(:content) { fetch_local_content }
             end
 
+            def include_type
+              :local
+            end
+
             def metadata
               super.merge(
-                type: :local,
                 location: masked_location,
                 blob: masked_blob,
                 raw: masked_raw,
@@ -80,14 +83,14 @@ module Gitlab
 
             override :expand_context_attrs
             def expand_context_attrs
-              {
+              super.merge(
                 project: context.project,
                 sha: context.sha,
                 user: context.user,
                 parent_pipeline: context.parent_pipeline,
                 variables: context.variables,
                 component_data: context.component_data
-              }
+              )
             end
 
             def masked_blob

@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe "User interacts with deploy keys", :js, feature_category: :continuous_delivery do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:user) { project.first_owner }
 
   before do
@@ -13,19 +14,15 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
   shared_examples 'attaches a key' do
     it 'attaches key' do
       visit(project_deploy_keys_path(project))
-      wait_for_requests
 
       page.within('.deploy-keys') do
         click_link(scope)
+        expect(page).to have_content(deploy_key.title)
 
         click_button('Enable')
-
-        expect(page).not_to have_selector('.gl-spinner')
-        expect(page).to have_current_path(project_settings_repository_path(project), ignore_query: true)
+        expect(page).not_to have_content(deploy_key.title)
 
         click_link('Enabled deploy keys')
-        wait_for_requests
-
         expect(page).to have_content(deploy_key.title)
       end
     end
@@ -41,7 +38,6 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
 
       it 'shows deploy keys' do
         visit(project_deploy_keys_path(project))
-        wait_for_requests
 
         page.within('.deploy-keys') do
           expect(page).to have_content(deploy_key.title)
@@ -57,7 +53,6 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
 
       it 'shows pagination' do
         visit(project_deploy_keys_path(project))
-        wait_for_requests
 
         page.within('.deploy-keys') do
           expect(page).to have_testid("gl-pagination-next")
@@ -77,7 +72,6 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
 
       it 'shows deploy keys' do
         visit(project_deploy_keys_path(project))
-        wait_for_requests
 
         page.within('.deploy-keys') do
           click_link('Privately accessible deploy keys')
@@ -92,7 +86,6 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
 
       it 'shows public deploy keys' do
         visit(project_deploy_keys_path(project))
-        wait_for_requests
 
         page.within('.deploy-keys') do
           click_link('Publicly accessible deploy keys')
@@ -106,7 +99,6 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
   context 'adding deploy keys' do
     before do
       visit(project_deploy_keys_path(project))
-      wait_for_requests
     end
 
     it 'adds new key' do

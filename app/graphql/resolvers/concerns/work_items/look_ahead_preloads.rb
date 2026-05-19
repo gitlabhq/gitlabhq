@@ -23,8 +23,7 @@ module WorkItems
         [:user_permissions, :update_work_item] => :assignees,
         web_url: { namespace: :route, project: [:project_namespace, {
           namespace: [:route, :namespace_settings_with_ancestors_inherited_settings]
-        }] },
-        work_item_type: :work_item_type
+        }] }
       }.merge!(widget_preloads)
        .merge!(feature_preloads)
     end
@@ -74,7 +73,6 @@ module WorkItems
           project: [:project_feature, :group]
         },
         :author,
-        :work_item_type,
         :namespace,
         *super
       ]

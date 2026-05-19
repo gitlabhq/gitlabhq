@@ -14,7 +14,8 @@ module Issues
     private
 
     def update(issue, attrs)
-      ::Issues::UpdateService.new(container: project, current_user: current_user, params: attrs).execute(issue)
+      ::Issues::UpdateService.new(container: issue.resource_parent, current_user: current_user,
+        params: attrs).execute(issue)
     rescue ActiveRecord::RecordNotFound
       false
     end

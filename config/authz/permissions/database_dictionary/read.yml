@@ -1,0 +1,3 @@
+---
+name: read_database_dictionary
+description: Grants the ability to read database dictionary tables

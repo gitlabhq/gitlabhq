@@ -29,7 +29,7 @@ Prerequisites:
 To enable Service Desk in your project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Turn on the **Activate Service Desk** toggle.
 1. Optional. Complete the fields.
@@ -175,7 +175,7 @@ Prerequisites:
 To use a custom description template with Service Desk:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. From the dropdown list **Template to append to all Service Desk issues**, search or select your template.
 
@@ -198,7 +198,7 @@ this name in the `From` header. The default display name is `GitLab Support Bot`
 To edit the custom email display name:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Below **Email display name**, enter a new name.
 1. Select **Save changes**.
@@ -225,7 +225,7 @@ Prerequisites:
 To disable this setting:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Clear the **New tickets are confidential by default** checkbox.
 1. Select **Save changes**.
@@ -253,7 +253,7 @@ Prerequisites:
 To enable this setting:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Select the **Reopen issues on a new note from an external participant** checkbox.
 1. Select **Save changes**.
@@ -322,7 +322,7 @@ Configure and verify a custom email address when you want to send Service Desk e
 > address causes `Incorrect forwarding target` verification failures.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk** and find the **Configure a custom email address** section.
 1. Copy the email address from the **Service Desk email address to forward emails to** field.
    This is the `incoming+...` address that you must use as the forwarding target.
@@ -421,7 +421,7 @@ After the custom email address has been verified, administrators can enable or d
 To **enable** the custom email address:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Turn on the **Enable custom email** toggle.
    Service Desk emails to external participants are sent using the SMTP credentials.
@@ -429,7 +429,7 @@ To **enable** the custom email address:
 To **disable** the custom email address:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Turn off the **Enable custom email** toggle.
    Because you set up email forwarding, emails to your custom email address continue to be processed and
@@ -488,7 +488,7 @@ The following steps require moving between GitLab and Google Workspace.
 In GitLab:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**
+1. In the left sidebar, select **Settings** > **General**
 1. Expand **Service Desk**.
 1. Note the email address below **Service Desk email address to forward emails to**.
 
@@ -523,7 +523,7 @@ to use with Service Desk.
 In GitLab:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**
+1. In the left sidebar, select **Settings** > **General**
 1. Expand **Service Desk** and find the custom email settings.
 1. Complete the fields:
    - **Custom email address**: Your custom email address.
@@ -628,7 +628,7 @@ The following steps require moving between GitLab and Microsoft 365 admin center
 In GitLab:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**
+1. In the left sidebar, select **Settings** > **General**
 1. Expand **Service Desk**.
 1. Note the email address below **Service Desk email address to forward emails to** without the
    sub-address part.
@@ -661,7 +661,7 @@ to use with Service Desk.
 In GitLab:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**
+1. In the left sidebar, select **Settings** > **General**
 1. Expand **Service Desk** and find the custom email settings.
 1. Complete the fields:
    - **Custom email address**: Your custom email address.
@@ -1151,7 +1151,7 @@ Prerequisites:
 - You must have configured a [Service Desk alias email](#configure-service-desk-alias-email).
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Below **Email address suffix**, enter the suffix to use.
 1. Select **Save changes**.

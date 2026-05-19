@@ -185,7 +185,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
       end
 
       it 'creates the application' do
-        create_params = attributes_for(:application, trusted: false, confidential: false, scopes: ['api'])
+        create_params = attributes_for(:application, trusted: false, confidential: false, scopes: ['api'], organization: current_organization)
 
         expect do
           post :create, params: { group_id: group, authn_oauth_application: create_params }
@@ -218,7 +218,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
 
       context 'when the params are for a confidential application' do
         it 'creates a confidential application' do
-          create_params = attributes_for(:application, confidential: true, scopes: ['read_user'])
+          create_params = attributes_for(:application, confidential: true, scopes: ['read_user'], organization: current_organization)
 
           expect do
             post :create, params: { group_id: group, authn_oauth_application: create_params }
@@ -234,7 +234,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
 
       context 'when scopes are not present' do
         it 'renders the application form on errors' do
-          create_params = attributes_for(:application, trusted: true, confidential: false)
+          create_params = attributes_for(:application, trusted: true, confidential: false, organization: current_organization)
 
           expect do
             post :create, params: { group_id: group, authn_oauth_application: create_params }
@@ -255,7 +255,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
         end
 
         it 'creates the application' do
-          create_params = attributes_for(:application, trusted: false, confidential: false, scopes: ['api'])
+          create_params = attributes_for(:application, trusted: false, confidential: false, scopes: ['api'], organization: current_organization)
 
           expect do
             post :create, params: { group_id: group, authn_oauth_application: create_params }
@@ -295,7 +295,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
           end
 
           it 'creates the application' do
-            create_params = attributes_for(:application, trusted: false, confidential: false, scopes: ['api'])
+            create_params = attributes_for(:application, trusted: false, confidential: false, scopes: ['api'], organization: current_organization)
 
             expect do
               post :create, params: { group_id: group, authn_oauth_application: create_params }

@@ -1,0 +1,6 @@
+---
+event: Repositories::KeepAroundRefsCreatedEvent
+description: Published when keep-around refs are written to a repository to prevent
+  commits from being garbage collected. Fires only when at least one non-nil SHA is
+  provided (typically during pipeline creation). Wrapped in Sidekiq::Worker.skipping_transaction_check.
+feature_category: source_code_management

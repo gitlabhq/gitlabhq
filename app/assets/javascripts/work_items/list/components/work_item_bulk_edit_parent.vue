@@ -5,13 +5,12 @@ import { createAlert } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, s__ } from '~/locale';
 import { isValidURL } from '~/lib/utils/url_utility';
-import { BULK_EDIT_NO_VALUE, NAME_TO_ENUM_MAP } from '~/work_items/constants';
+import { BULK_EDIT_NO_VALUE } from '~/work_items/constants';
 import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '~/work_items/graphql/work_items_by_references.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import { isReference, findHierarchyWidgetDefinition } from '~/work_items/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'WorkItemBulkEditParent',
@@ -19,7 +18,6 @@ export default {
     GlCollapsibleListbox,
     GlFormGroup,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['workItemTypesConfiguration'],
   props: {
     fullPath: {
@@ -75,13 +73,7 @@ export default {
           in: this.searchTerm ? 'TITLE' : undefined,
           includeAncestors: true,
           includeDescendants: this.shouldSearchAcrossGroups,
-          ...(this.glFeatures.workItemConfigurableTypes
-            ? {
-                workItemTypeIds: this.selectedItemParentTypes.map((type) => type.id),
-              }
-            : {
-                types: this.selectedItemParentTypes.map((type) => NAME_TO_ENUM_MAP[type.name]),
-              }),
+          workItemTypeIds: this.selectedItemParentTypes.map((type) => type.id),
         };
       },
       skip() {

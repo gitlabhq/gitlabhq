@@ -26,11 +26,7 @@ RSpec.describe "User rebases a merge request", :js, feature_category: :code_revi
     end
   end
 
-  context 'when the ff is off' do
-    before do
-      stub_feature_flags(rebase_on_merge_automatic: false)
-    end
-
+  context 'when automatic rebase is off' do
     context "when merge is regular" do
       let(:project) { create(:project, :public, :repository, merge_requests_rebase_enabled: true) }
 

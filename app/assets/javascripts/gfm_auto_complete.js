@@ -15,7 +15,8 @@ import {
   currentReviewers,
   appliedLabels,
   linkedItems,
-} from '~/graphql_shared/issuable_client';
+  supportedConversionTypes,
+} from '~/graphql_shared/issuable_client_state';
 import { ISSUABLE_EPIC } from '~/work_items/constants';
 import { InternalEvents } from '~/tracking';
 import {
@@ -23,6 +24,8 @@ import {
   recordFrequentCommandUsage,
 } from '~/editor/quick_action_suggestions';
 import { isCurrentViewWorkItem } from '~/work_items/utils';
+import { userIsDisabled } from '~/ai/agents_utils';
+import { FLOW_TRIGGER_EVENTS } from '~/vue_shared/constants';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { newDate } from './lib/utils/datetime_utility';
@@ -39,6 +42,7 @@ const LABELS_ALIAS = 'labels';
 const SNIPPETS_ALIAS = 'snippets';
 const CONTACTS_ALIAS = 'contacts';
 const WIKIS_ALIAS = 'wikis';
+const QUOTED_COMPLETIONS_ALIAS = 'quotedCompletions';
 
 const CADENCE_REFERENCE_PREFIX = '[cadence:';
 const ITERATION_REFERENCE_PREFIX = '*iteration:';
@@ -154,7 +158,7 @@ export function membersBeforeSave(members) {
       icon: avatarIcon,
       availability: member?.availability,
       compositeIdentityEnforced: member?.composite_identity_enforced,
-      disabled: member?.disabled,
+      disabled: userIsDisabled(member, FLOW_TRIGGER_EVENTS.MENTION),
     };
   });
 }
@@ -212,6 +216,13 @@ export const defaultAutocompleteConfig = {
   contacts: true,
   wikis: true,
   statuses: true,
+  types: true,
+};
+
+const quotedCompletions = {};
+
+export const setupQuotedCompletion = (command, handler) => {
+  quotedCompletions[command] = handler;
 };
 
 class GfmAutoComplete {
@@ -263,6 +274,7 @@ class GfmAutoComplete {
     if (this.enableMap.snippets) this.setupSnippets($input);
     if (this.enableMap.contacts) this.setupContacts($input);
     if (this.enableMap.wikis) this.setupWikis($input);
+    if (this.enableMap.types) this.setupQuotedCompletions($input);
 
     $input.filter('[data-supports-quick-actions="true"]').atwho({
       at: '/',
@@ -1202,6 +1214,106 @@ class GfmAutoComplete {
     showAndHideHelper($input, CONTACTS_ALIAS);
   }
 
+  setupQuotedCompletions($input) {
+    const instance = this;
+    let command = '';
+
+    $input.atwho({
+      at: '"',
+      alias: QUOTED_COMPLETIONS_ALIAS,
+      alwaysHighlightFirst: true,
+      searchKey: 'search',
+      limit: 100,
+      displayTpl(value) {
+        if (GfmAutoComplete.isLoading(value)) {
+          return GfmAutoComplete.Loading.template;
+        }
+        const handler = quotedCompletions[command];
+        if (handler && typeof handler.templateFunction === 'function') {
+          return handler.templateFunction(value);
+        }
+        return GfmAutoComplete.Loading.template;
+      },
+      data: GfmAutoComplete.defaultLoadingData,
+      // eslint-disable-next-line no-template-curly-in-string
+      insertTpl: '${atwho-at}${name}${atwho-at}',
+      skipSpecialCharacterTest: true,
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        beforeSave(items) {
+          const handler = quotedCompletions[command];
+          if (handler && typeof handler.beforeSave === 'function') {
+            return handler.beforeSave(items);
+          }
+          return items;
+        },
+        matcher(flag, subtext) {
+          const subtextNodes = subtext.split(/\n+/g).pop().split(GfmAutoComplete.regexSubtext);
+          const registeredCommands = Object.keys(quotedCompletions).filter(
+            (cmd) => instance.enableMap[quotedCompletions[cmd].enableMapKey],
+          );
+
+          command = subtextNodes.find((node) => registeredCommands.includes(node)) || '';
+
+          const cachedItems = instance.cachedData[flag]?.[command];
+          if (cachedItems?.length) {
+            if (!subtext.includes(flag)) {
+              return null;
+            }
+
+            const lastCandidate = subtext.split(flag).pop().toLowerCase();
+            if (cachedItems.find((item) => item.name?.toLowerCase().startsWith(lastCandidate))) {
+              return lastCandidate;
+            }
+          }
+
+          const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
+          return match && match.length ? match[1] : null;
+        },
+        filter() {
+          const handler = quotedCompletions[command];
+          if (!handler || !instance.enableMap[handler.enableMapKey]) {
+            return [];
+          }
+
+          const { $inputor } = this;
+          const wrapper = $inputor.get(0).closest('.js-gfm-wrapper');
+          const { workItemFullPath, workItemTypeId, workItemId, workItemIid } =
+            wrapper?.dataset || {};
+
+          const items = handler.getItems({
+            $inputor,
+            workItemFullPath,
+            workItemTypeId,
+            workItemId,
+            workItemIid,
+          });
+
+          if (instance.cachedData[this.at] == null) {
+            instance.cachedData[this.at] = {};
+          }
+          instance.cachedData[this.at][command] = items;
+
+          return items;
+        },
+        sorter(query, items) {
+          this.setting.highlightFirst = this.setting.alwaysHighlightFirst;
+          if (GfmAutoComplete.isLoading(items)) {
+            this.setting.highlightFirst = false;
+            return items;
+          }
+
+          if (query.trim()) {
+            return fuzzaldrinPlus.filter(items, query, { key: 'name' });
+          }
+
+          return items;
+        },
+      },
+    });
+    showAndHideHelper($input, QUOTED_COMPLETIONS_ALIAS);
+  }
+
   getDefaultCallbacks() {
     const self = this;
 
@@ -1411,6 +1523,40 @@ class GfmAutoComplete {
     return regexp.exec(targetSubtext);
   }
 }
+
+setupQuotedCompletion('/type', {
+  enableMapKey: 'types',
+  templateFunction({ id, name, iconName }) {
+    const icon = spriteIcon(iconName, 's12 gl-mr-2 gl-fill-current');
+    return `<li data-id="${id}">${icon}<span>${escape(name)}</span></li>`;
+  },
+  beforeSave(items) {
+    return items.map((m) => {
+      if (m.name == null) {
+        return m;
+      }
+      return {
+        id: m.id,
+        name: m.name,
+        search: `${m.id} ${m.name}`,
+      };
+    });
+  },
+  getItems({ workItemFullPath, workItemTypeId }) {
+    const supportedConversionTypesForNamespace = supportedConversionTypes()[workItemFullPath];
+    let conversionTypes = [];
+    if (
+      supportedConversionTypesForNamespace &&
+      Object.keys(supportedConversionTypesForNamespace).length > 0
+    ) {
+      conversionTypes = supportedConversionTypesForNamespace[workItemTypeId] || [];
+    }
+
+    return conversionTypes;
+  },
+});
+
+GfmAutoComplete.quotedCompletions = quotedCompletions;
 
 GfmAutoComplete.regexSubtext = /\s+/g;
 

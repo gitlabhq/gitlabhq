@@ -1,15 +1,15 @@
 <script>
 import produce from 'immer';
-import Vue from 'vue';
 import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
+import { observable } from '~/lib/utils/observable';
 import { Tracking } from '../../constants';
 import { confidentialityQueries } from '../../queries/constants';
 import SidebarEditableItem from '../sidebar_editable_item.vue';
 import SidebarConfidentialityContent from './sidebar_confidentiality_content.vue';
 import SidebarConfidentialityForm from './sidebar_confidentiality_form.vue';
 
-export const confidentialWidget = Vue.observable({
+export const confidentialWidget = observable('sidebar_confidential_widget', {
   setConfidentiality: null,
 });
 

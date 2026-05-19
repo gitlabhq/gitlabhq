@@ -10,6 +10,8 @@ export default {
   components: {
     MergeChecksMessage,
     ActionButtons,
+    ResolveWithDuoButton: () =>
+      import('ee_component/merge_conflicts/components/resolve_with_duo_button.vue'),
   },
   mixins: [mergeRequestQueryVariablesMixin],
   apollo: {
@@ -73,7 +75,16 @@ export default {
 <template>
   <merge-checks-message :check="check">
     <template #failed>
-      <action-buttons v-if="!isLoading" :tertiary-buttons="tertiaryActionsButtons" />
+      <div v-if="!isLoading" class="gl-flex gl-items-start">
+        <action-buttons :tertiary-buttons="tertiaryActionsButtons" />
+        <resolve-with-duo-button
+          :mr="mr"
+          category="tertiary"
+          variant="confirm"
+          size="small"
+          class="gl-ml-3"
+        />
+      </div>
     </template>
   </merge-checks-message>
 </template>

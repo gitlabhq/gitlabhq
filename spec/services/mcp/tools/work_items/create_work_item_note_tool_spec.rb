@@ -6,7 +6,9 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemNoteTool, feature_category: 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:work_item) { create(:work_item, :issue, project: project, iid: 42) }
-  let_it_be(:discussion) { create(:discussion_note_on_issue, project: project, noteable: work_item).discussion }
+  let_it_be(:discussion, freeze: false) do
+    create(:discussion_note_on_issue, project: project, noteable: work_item).discussion
+  end
 
   let(:params) { { project_id: project.id.to_s, work_item_iid: work_item.iid, body: 'Test comment' } }
   let(:tool) { described_class.new(current_user: user, params: params) }

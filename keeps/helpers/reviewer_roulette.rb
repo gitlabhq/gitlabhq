@@ -26,8 +26,12 @@ module Keeps
       def random_reviewer(reviewers, identifiers)
         # Use the change identifiers as a stable way to pick the same reviewer. Otherwise, we'd assign a new reviewer
         # every time we re-ran housekeeper.
-        seed = identifiers.empty? ? Random.new_seed : Digest::SHA256.hexdigest(identifiers.join).to_i(16)
-        reviewers.sample(random: Random.new(seed))
+        return reviewers.sample if identifiers.empty?
+
+        reviewers.min_by do |reviewer|
+          username = reviewer.dig(:user, :username)
+          Digest::SHA256.hexdigest("#{identifiers.join}:#{username}")
+        end
       end
 
       def available_reviewers_for_role(role)

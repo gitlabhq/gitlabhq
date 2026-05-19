@@ -138,4 +138,16 @@ RSpec.describe RuboCop::Cop::Gitlab::StrongMemoizeAttr do
       RUBY
     end
   end
+
+  context 'with numbered block parameters' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def memoized_method
+            [1].map { _1 }
+          end
+        end
+      RUBY
+    end
+  end
 end

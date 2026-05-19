@@ -35,7 +35,7 @@ Customize CI/CD settings, including Auto DevOps, instance runners, and job artif
 To access these settings:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 
 ### Configure Auto DevOps for all projects
@@ -75,7 +75,7 @@ To add instance runner details:
 To view the rendered details:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 
 ![A project's runner settings shows a message about instance runner guidelines.](img/continuous_integration_instance_runner_details_v17_6.png)
@@ -129,7 +129,7 @@ To change the maximum artifact size for an instance:
 To change the maximum artifact size for a group or project:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Change the value of **Maximum artifacts size** (in MB).
 1. Select **Save changes**.
@@ -288,7 +288,7 @@ Set the maximum number of tag or branch pipelines that can be triggered by a sin
 For more information about this limit, see [number of pipelines per Git push](../instance_limits.md#number-of-pipelines-per-git-push).
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Change the value of **Pipeline limit per Git push**.
 1. Select **Save changes**.
@@ -368,6 +368,7 @@ You can configure the following CI/CD limits:
 - Maximum number of runners created or active in a group during the past seven days
 - Maximum number of runners created or active in a project during the past seven days
 - Maximum number of downstream pipelines in a pipeline's hierarchy tree
+- Maximum parallel pipelines per merge train
 <!-- vale gitlab_base.CurrentStatus = YES -->
 
 For more information on what these limits control, see [CI/CD limits](../instance_limits.md#cicd-limits).
@@ -384,7 +385,7 @@ Configure NuGet package validation, Helm package limits, package file size limit
 To access these settings:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Package registry**.
 
 ### Skip NuGet package metadata URL validation
@@ -448,8 +449,8 @@ By default, GitLab forwards package requests to their respective public registri
 To turn off package forwarding:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Groups**.
-1. In the left sidebar, select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Overview** > **Groups** and find your group.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Package registry**.
 1. Clear either of the following checkboxes:
    - **Forward npm package requests**
@@ -465,7 +466,7 @@ Configure runner version management and registration settings.
 To access these settings:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 
 ### Control runner version management
@@ -524,7 +525,7 @@ Prerequisites:
 To restrict runner registration for a specific group:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Groups** and find your group.
+1. In the left sidebar, select **Overview** > **Groups** and find your group.
 1. Select **Edit**.
 1. Under **Runner Registration**, clear the **New group runners can be registered** checkbox.
 1. Select **Save changes**.
@@ -536,7 +537,7 @@ Control how CI/CD job tokens can access your projects.
 To access these settings:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 
 ### Enforce job token allowlist
@@ -569,7 +570,7 @@ Control how CI/CD job logs are stored and processed.
 To access these settings:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Job logs**.
 
 ### Configure incremental logging
@@ -594,7 +595,7 @@ Prerequisites:
 To turn on incremental logging for all projects:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand the **Job logs** section.
 1. Under **Incremental logging configuration**, select the **Turn on incremental logging** checkbox.
 1. Select **Save changes**.
@@ -619,7 +620,7 @@ Control which projects can publish components to the [CI/CD Catalog](../../ci/co
 To access these settings:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Catalog**.
 
 ### Restrict CI/CD Catalog publishing
@@ -642,7 +643,7 @@ You can define entries in the allowlist with:
 To configure the CI/CD Catalog publishing allowlist:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Catalog**.
 1. In the **CI/CD Catalog publishing allowlist** text area, enter one path pattern per line.
 1. Select **Save changes**.

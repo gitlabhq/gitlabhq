@@ -1,0 +1,10 @@
+---
+name: merge_request_resolve_all_user_todos
+description:
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/19899
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229010
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/597635
+milestone: '18.11'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

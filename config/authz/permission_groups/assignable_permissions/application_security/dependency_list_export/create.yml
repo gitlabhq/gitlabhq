@@ -4,5 +4,7 @@ description: Grants the ability to create dependency list exports
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
 permissions:
   - create_dependency_list_export

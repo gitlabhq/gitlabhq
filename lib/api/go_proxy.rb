@@ -135,6 +135,10 @@ module API
         get ':module_version.zip', requirements: MODULE_VERSION_REQUIREMENTS do
           ver = find_version
 
+          track_package_event(
+            'pull_package', :golang, project: project, namespace: project.namespace, user: current_user
+          )
+
           content_type 'application/zip'
           env['api.format'] = :binary
           header['Content-Disposition'] =

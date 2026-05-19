@@ -14,7 +14,9 @@
     "url_variables",
     "custom_webhook_template",
     "custom_headers",
-    "branch_filter_strategy"
+    "branch_filter_strategy",
+    "token_present",
+    "signing_token_present"
   ],
   "properties": {
     "id": {
@@ -114,6 +116,12 @@
     },
     "branch_filter_strategy": {
       "type": "string"
+    },
+    "token_present": {
+      "type": "boolean"
+    },
+    "signing_token_present": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

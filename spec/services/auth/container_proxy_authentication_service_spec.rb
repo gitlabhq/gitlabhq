@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :virtual_registry do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   let(:params) { {} }
   let(:authentication_abilities) { [] }
@@ -129,7 +129,7 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
     end
 
     context 'with a group access token' do
-      let_it_be(:user) { create(:user, :project_bot) }
+      let_it_be(:user, freeze: false) { create(:user, :project_bot) }
       let_it_be(:group) { create(:group) }
       let_it_be_with_reload(:token) { create(:personal_access_token, user: user) }
 
@@ -167,7 +167,7 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
 
       context 'with a composite identity service account user', :request_store do
         let_it_be(:scoped_user) { create(:user) }
-        let_it_be(:user) { create(:user, :service_account, composite_identity_enforced: true) }
+        let_it_be(:user, freeze: false) { create(:user, :service_account, composite_identity_enforced: true) }
 
         before do
           ::Gitlab::Auth::Identity.link_from_scoped_user(user, scoped_user)
@@ -181,7 +181,7 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
       end
 
       context 'with a composite identity service account where identity is not linked' do
-        let_it_be(:user) { create(:user, :service_account, composite_identity_enforced: true) }
+        let_it_be(:user, freeze: false) { create(:user, :service_account, composite_identity_enforced: true) }
 
         it 'does not include scoped_user_id in the token' do
           decoded_token = decode(result[:token])

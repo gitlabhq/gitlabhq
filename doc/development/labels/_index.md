@@ -80,7 +80,7 @@ Group labels specify which [groups](https://handbook.gitlab.com/handbook/company
 
 It's highly recommended to add a group label, as it's used by our triage
 automation to
-[infer the correct stage label](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/#auto-labelling-of-issues-and-merge-requests).
+[infer the correct stage label](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/triage-operations/#auto-labelling-of-issues-and-merge-requests).
 
 ### Naming and color convention
 
@@ -115,7 +115,7 @@ another company, such as Portfolio Management, for example.
 
 It's highly recommended to add a category label, as it's used by our triage
 automation to
-[infer the correct group and stage labels](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/#auto-labelling-of-issues).
+[infer the correct group and stage labels](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/triage-operations/#auto-labelling-of-issues).
 
 If you are an expert in a particular area, it makes it easier to find issues to
 work on. You can also subscribe to those labels to receive an email each time an
@@ -147,7 +147,7 @@ features are listed within parentheses to facilitate finding responsible PMs by 
 
 It's highly recommended to add a feature label if no category label applies, as
 it's used by our triage automation to
-[infer the correct group and stage labels](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/#auto-labelling-of-issues).
+[infer the correct group and stage labels](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/triage-operations/#auto-labelling-of-issues).
 
 If you are an expert in a particular area, it makes it easier to find issues to
 work on. You can also subscribe to those labels to receive an email each time an
@@ -265,7 +265,7 @@ We have the following priority labels:
 - `~"priority::3"`
 - `~"priority::4"`
 
-Refer to the issue triage [priority label](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#priority) section in our handbook to see how it's used.
+Refer to the issue triage [priority label](https://handbook.gitlab.com/handbook/product-development/how-we-work/issue-triage/#priority) section in our handbook to see how it's used.
 
 ## Severity labels
 
@@ -276,7 +276,7 @@ We have the following severity labels:
 - `~"severity::3"`
 - `~"severity::4"`
 
-Refer to the issue triage [severity label](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#severity) section in our handbook to see how it's used.
+Refer to the issue triage [severity label](https://handbook.gitlab.com/handbook/product-development/how-we-work/issue-triage/#severity) section in our handbook to see how it's used.
 
 ## Label for community contributors
 

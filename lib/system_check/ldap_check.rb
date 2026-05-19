@@ -14,7 +14,7 @@ module SystemCheck
 
         check_ldap(limit)
       else
-        $stdout.puts 'LDAP is disabled in config/gitlab.yml'
+        say 'LDAP is disabled in config/gitlab.yml'
       end
     end
 
@@ -24,26 +24,26 @@ module SystemCheck
       servers = Gitlab::Auth::Ldap::Config.providers
 
       servers.each do |server|
-        $stdout.puts "Server: #{server}"
+        say "Server: #{server}"
 
         begin
           Gitlab::Auth::Ldap::Adapter.open(server) do |adapter|
             check_ldap_auth(adapter)
 
-            $stdout.puts "LDAP users with access to your GitLab server (only showing the first #{limit} results)"
+            say "LDAP users with access to your GitLab server (only showing the first #{limit} results)"
 
             users = adapter.users(adapter.config.uid, '*', limit)
 
             if should_sanitize?
-              $stdout.puts "\tUser output sanitized. Found #{users.length} users of #{limit} limit."
+              say "\tUser output sanitized. Found #{users.length} users of #{limit} limit."
             else
               users.each do |user|
-                $stdout.puts "\tDN: #{user.dn}\t #{adapter.config.uid}: #{user.uid}"
+                say "\tDN: #{user.dn}\t #{adapter.config.uid}: #{user.uid}"
               end
             end
           end
         rescue Errno::ECONNREFUSED => e
-          $stdout.puts Rainbow("Could not connect to the LDAP server: #{e.message}").red
+          say Rainbow("Could not connect to the LDAP server: #{e.message}").red
         end
       end
     end
@@ -59,7 +59,7 @@ module SystemCheck
                   Rainbow('Anonymous. No `bind_dn` or `password` configured').yellow
                 end
 
-      $stdout.puts "LDAP authentication... #{message}"
+      say "LDAP authentication... #{message}"
     end
   end
 end

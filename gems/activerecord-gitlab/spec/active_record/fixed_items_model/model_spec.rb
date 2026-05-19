@@ -129,6 +129,34 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
       end
     end
 
+    describe '.find_by!' do
+      it 'returns the first item matching the conditions' do
+        item = TestStaticModel.find_by!(category: :a)
+        expect(item.id).to eq(1)
+      end
+
+      it 'raises RecordNotFound when no items match' do
+        expect do
+          TestStaticModel.find_by!(category: :c)
+        end.to raise_error(ActiveRecord::FixedItemsModel::RecordNotFound,
+          "Couldn't find TestStaticModel with {:category=>:c}")
+      end
+
+      it 'raises RecordNotFound with all conditions in the message' do
+        expect do
+          TestStaticModel.find_by!(category: :a, name: 'Item 2')
+        end.to raise_error(ActiveRecord::FixedItemsModel::RecordNotFound,
+          "Couldn't find TestStaticModel with {:category=>:a, :name=>\"Item 2\"}")
+      end
+
+      it 'raises error for invalid attribute' do
+        expect do
+          TestStaticModel.find_by!(invalid_column: 1)
+        end.to raise_error(ActiveRecord::FixedItemsModel::UnknownAttribute,
+          "Unknown attribute 'invalid_column' for TestStaticModel")
+      end
+    end
+
     describe '.find_each' do
       it 'yields all records' do
         expect { |blk| TestStaticModel.find_each(&blk) }

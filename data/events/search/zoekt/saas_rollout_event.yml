@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::SaasRolloutEvent
+description: Published periodically on GitLab.com to drive the SaaS rollout of Zoekt
+  exact code search to enabled namespaces.
+feature_category: global_search
+ee_only: true

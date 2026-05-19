@@ -28,13 +28,17 @@ class ProjectCacheWorker
 
     return unless project
 
-    update_statistics(project, statistics) if refresh_statistics
+    skip_writes_if_replica(project) do
+      update_statistics(project, statistics) if refresh_statistics
+    end
 
     return unless project.repository.exists?
 
     project.repository.refresh_method_caches(files.map(&:to_sym))
 
-    project.cleanup
+    skip_writes_if_replica(project) do
+      project.cleanup
+    end
   end
 
   # NOTE: triggering both an immediate update and one in 15 minutes if we

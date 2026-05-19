@@ -58,20 +58,9 @@ module Backup
     end
 
     def provider_attributes
-      if aws_provider?
-        default_attributes.merge(aws_attributes)
-      else
-        default_attributes
-      end
-    end
+      return aws_attributes if aws_provider?
 
-    def default_attributes
-      # Google bucket-only policies prevent setting an ACL. In any case, by default,
-      # all objects are set to the default ACL, which is project-private:
-      # https://cloud.google.com/storage/docs/json_api/v1/defaultObjectAccessControls
-      return {} if google_provider?
-
-      { public: false }
+      {}
     end
 
     def aws_attributes
@@ -130,10 +119,6 @@ module Backup
         encryption_key: Gitlab.config.backup.upload.encryption_key,
         encryption: Gitlab.config.backup.upload.encryption
       }
-    end
-
-    def google_provider?
-      object_storage_config.google?
     end
 
     def aws_provider?

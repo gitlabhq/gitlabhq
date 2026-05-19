@@ -3,7 +3,7 @@
 module API
   module Entities
     class WebHookLog < Grape::Entity
-      expose :id, documentation: { type: 'String', example: 1 }
+      expose :id, documentation: { type: 'Integer', example: 1 }
       expose :url, documentation: { type: 'String', example: 'https://example.com' }
       expose :trigger, documentation: { type: 'String', example: 'push_hooks' }
       expose :request_headers, documentation: { type: 'Hash', example: { 'Content-Type' => 'application/json' } }

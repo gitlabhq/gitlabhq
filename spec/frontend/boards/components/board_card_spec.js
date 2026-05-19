@@ -5,12 +5,12 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mockWorkItemTypesConfigurationBoardsResponse } from 'jest/work_items/mock_data';
 import BoardCard from '~/boards/components/board_card.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import activeBoardItemQuery from '~/boards/graphql/client/active_board_item.query.graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
-import { SUPPORT_BOT_USERNAME } from '~/issues/show/utils/issuable_data';
-import { WORK_ITEM_TYPE_ENUM_ISSUE, WORK_ITEM_TYPE_ENUM_TICKET } from '~/work_items/constants';
+import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 import { mockLabelList, mockIssue, DEFAULT_COLOR } from '../mock_data';
 
 jest.mock('~/lib/utils/url_utility');
@@ -23,9 +23,16 @@ describe('Board card', () => {
   Vue.use(VueApollo);
 
   const mockSetActiveBoardItemResolver = jest.fn();
-  const { apolloProvider: mockApollo } = createControlledMockApollo([], {
-    Mutation: { setActiveBoardItem: mockSetActiveBoardItemResolver },
-  });
+  const defaultWorkItemTypesConfigurationHandler = jest
+    .fn()
+    .mockResolvedValue(mockWorkItemTypesConfigurationBoardsResponse);
+
+  const { apolloProvider: mockApollo, resolveQuery } = createControlledMockApollo(
+    [[workItemTypesConfigurationQuery, defaultWorkItemTypesConfigurationHandler]],
+    {
+      Mutation: { setActiveBoardItem: mockSetActiveBoardItemResolver },
+    },
+  );
 
   // this particular mount component needs to be used after the root beforeEach because it depends on list being initialized
   const mountComponent = ({
@@ -63,6 +70,7 @@ describe('Board card', () => {
       },
       provide: {
         groupId: null,
+        fullPath: 'full-path',
         rootPath: '/',
         scopedLabelsAvailable: false,
         isIssueBoard: true,
@@ -87,7 +95,7 @@ describe('Board card', () => {
   });
 
   describe('accessible label for outer link', () => {
-    it('adds the issue id to link title correctly', () => {
+    it('adds the issue id to link title correctly', async () => {
       mountComponent({
         item: {
           ...mockIssue,
@@ -95,6 +103,7 @@ describe('Board card', () => {
           title: 'Accessible label test',
         },
       });
+      await resolveQuery(workItemTypesConfigurationQuery);
       const accessibleLinkLabel = findBoardCardButton().attributes()['aria-label'];
 
       expect(accessibleLinkLabel).toEqual('Issue number 1: Accessible label test');
@@ -199,32 +208,23 @@ describe('Board card', () => {
     mountComponent({
       item: {
         ...mockIssue,
-        type: 'INCIDENT',
+        workItemType: { id: 'gid://gitlab/WorkItems::Type/2', name: 'Incident' },
       },
     });
-
+    await resolveQuery(workItemTypesConfigurationQuery);
     await selectCard();
 
     expect(visitUrl).toHaveBeenCalledWith(mockIssue.webUrl);
   });
 
   it('should redirect to the legacy issue page on card click when item is ticket', async () => {
-    mountComponent({ item: { ...mockIssue, type: WORK_ITEM_TYPE_ENUM_TICKET } });
-
-    await selectCard();
-
-    expect(visitUrl).toHaveBeenCalledWith(mockIssue.webUrl);
-  });
-
-  it('should redirect to the legacy issue page on card click when item is service desk issue', async () => {
     mountComponent({
       item: {
         ...mockIssue,
-        author: { id: '1', username: SUPPORT_BOT_USERNAME },
-        type: WORK_ITEM_TYPE_ENUM_ISSUE,
+        workItemType: { id: 'gid://gitlab/WorkItems::Type/9', name: 'Ticket' },
       },
     });
-
+    await resolveQuery(workItemTypesConfigurationQuery);
     await selectCard();
 
     expect(visitUrl).toHaveBeenCalledWith(mockIssue.webUrl);

@@ -1,0 +1,5 @@
+---
+event: WorkItems::WorkItemClosedEvent
+description: Published when a work item (issue or epic work item) is closed.
+feature_category: team_planning
+ee_only: true

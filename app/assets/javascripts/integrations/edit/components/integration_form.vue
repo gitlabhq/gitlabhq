@@ -1,7 +1,6 @@
 <script>
 import { GlAlert, GlForm } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapActions, mapGetters } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
@@ -17,6 +16,7 @@ import {
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
 import { testIntegrationSettings } from '../api';
+import { useIntegrationForm } from '../store';
 import ActiveCheckbox from './active_checkbox.vue';
 import DynamicField from './dynamic_field.vue';
 import OverrideDropdown from './override_dropdown.vue';
@@ -54,8 +54,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['currentKey', 'propsSource']),
-    ...mapState(['defaultState', 'customState', 'override']),
+    ...mapState(useIntegrationForm, [
+      'currentKey',
+      'propsSource',
+      'defaultState',
+      'customState',
+      'override',
+    ]),
     isEditable() {
       return this.propsSource.editable;
     },
@@ -98,7 +103,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setOverride', 'requestJiraIssueTypes']),
+    ...mapActions(useIntegrationForm, ['setOverride', 'requestJiraIssueTypes']),
     form() {
       return this.$refs.integrationForm.$el;
     },

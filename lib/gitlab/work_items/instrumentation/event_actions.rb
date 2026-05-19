@@ -7,7 +7,7 @@ module Gitlab
         def self.link_event(link, work_item, action)
           return unless [:add, :remove].include?(action)
 
-          # rubocop:disable Gitlab/NoCodeCoverageComment -- false positive as link_type is restriced to blocks/relates_to by model
+          # rubocop:disable Gitlab/NoCodeCoverageComment -- false positive as link_type is restricted to blocks/relates_to by model
           # :nocov:
           base_event = if link.link_type == 'relates_to'
                          'RELATED_ITEM'

@@ -18,6 +18,9 @@ module Groups
         Feature.enabled?(:work_item_features_field, current_user))
       push_frontend_feature_flag(:duo_quick_action_work_item_list, current_user)
       push_frontend_feature_flag(:vue3_migrate_work_items, current_user)
+      push_frontend_feature_flag(:work_item_rest_api_frontend_users, current_user)
+      push_frontend_feature_flag(:work_item_rest_api, current_user)
+      push_frontend_feature_flag(:work_item_list_display_settings_drawer, current_user)
     end
 
     before_action :handle_new_work_item_path, only: [:show]
@@ -28,9 +31,7 @@ module Groups
     prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
     prepend_before_action(only: [:rss]) { authenticate_sessionless_user!(:rss) }
 
-    def index
-      dismiss_work_items_badge
-    end
+    def index; end
 
     def show
       not_found unless group.supports_work_items?
@@ -72,14 +73,6 @@ module Groups
 
     def show_params
       params.permit(:iid)
-    end
-
-    def dismiss_work_items_badge
-      return unless current_user
-
-      ::Users::DismissCalloutService.new(
-        container: nil, current_user: current_user, params: { feature_name: :work_items_nav_badge }
-      ).execute
     end
   end
 end

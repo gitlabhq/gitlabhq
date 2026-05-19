@@ -21,11 +21,18 @@ module API
         SystemHook
       end
 
+      def webhook_signing_token_actor
+        :instance
+      end
+
       params :hook_parameters do
         optional :name, type: String, desc: 'Name of the hook'
         optional :description, type: String, desc: 'Description of the hook'
         optional :token, type: String,
           desc: "Secret token to validate received payloads; this isn't returned in the response"
+        optional :signing_token, type: String,
+          desc: "HMAC signing token used to compute the webhook-signature header. " \
+            "Must be in whsec_<base64> format encoding a 32-byte key. Not returned in the response"
         optional :push_events, type: Boolean, desc: 'When true, the hook fires on push events'
         optional :tag_push_events, type: Boolean, desc: 'When true, the hook fires on new tags being pushed'
         optional :merge_requests_events, type: Boolean, desc: 'Trigger hook on merge requests events'
@@ -34,6 +41,7 @@ module API
         optional :push_events_branch_filter, type: String, desc: "Trigger hook on specified branch only"
         optional :branch_filter_strategy, type: String, values: WebHook.branch_filter_strategies.keys,
           desc: "Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`"
+        optional :custom_webhook_template, type: String, desc: "Custom template for the request payload"
         use :url_variables
         use :custom_headers
       end

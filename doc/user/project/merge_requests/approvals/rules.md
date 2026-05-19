@@ -48,7 +48,7 @@ Prerequisites:
 To add a merge request approval rule:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section, select
    **Add approval rule**.
 1. In the right sidebar, complete the fields:
@@ -83,7 +83,7 @@ Prerequisites:
 To edit a merge request approval rule:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section, next to the rule you want to edit, select **Edit**.
 1. In the right sidebar, edit the fields:
    - In **Approvals required**, a value of `0` makes
@@ -103,7 +103,7 @@ Prerequisites:
 To delete a merge request approval rule:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, next to the rule you want to delete, select the trash can ({{< icon name="remove" >}}).
 1. Select **Remove approvers**.
 
@@ -114,7 +114,7 @@ To enforce multiple approval rules on a merge request, add multiple default appr
 When an [eligible approver](#eligible-approvers) approves a merge request, it
 reduces the number of approvals left (the **Approvals** column) for all rules that the approver belongs to:
 
-![Merge request approvals widget](img/mr_approvals_widget_v16_0.png)
+![The approvals widget displaying Code Owners rules with eligible approvers, requirements, and approval status.](img/mr_approvals_widget_v16_0.png)
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see the [multiple approvers](https://www.youtube.com/watch?v=8JQJ5821FrA) video.
@@ -219,7 +219,7 @@ To enable approval permissions for these users without granting them push access
 1. [Share the project with your group](../../members/sharing_projects_groups.md#invite-a-group-to-a-project),
    with the Reporter, Developer, Maintainer, or Owner role.
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section:
    - For a new rule, select **Add approval rule** and target the protected branch.
    - For an existing rule, select **Edit** and target the protected branch.
@@ -251,7 +251,7 @@ complete, the security approval rules are checked to determine if the security a
 In case the scanners in the pipeline identify an issue and security approvals are required, a bot comment is generated
 on the merge request to indicate which steps are needed to proceed.
 
-![Security Approvals](img/security_approvals_v15_0.png)
+![The Security Approvals section displaying a policy rule that requires one approval when a scanner finds vulnerabilities.](img/security_approvals_v15_0.png)
 
 These policies are both created and edited in the [security policy editor](../../../application_security/policies/_index.md#policy-editor).
 
@@ -294,7 +294,7 @@ If you add [code owners](../../codeowners/_index.md) to your repository, the own
 become eligible approvers in the project. To enable this merge request approval rule:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section, locate the **All eligible users** rule.
 1. In the **Approvals required** column, enter the number of approvals required.
 

@@ -130,7 +130,7 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
   describe '#last_pull_request' do
     let(:url) { "#{root_url}/repositories/#{repo}/pullrequests?pagelen=1&sort=-created_on&state=ALL" }
 
-    it 'requests one pull request' do
+    it 'requests one pull request and returns a representation' do
       stub_request(:get, url).to_return(
         status: 200,
         headers: headers,
@@ -142,6 +142,7 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
       expect(WebMock).to have_requested(:get, url)
       expect(result).to be_a(Bitbucket::Representation::PullRequest)
       expect(result.iid).to eq(42)
+      expect(result.title).to eq('Last PR')
     end
 
     it 'returns nil when there are no pull requests' do

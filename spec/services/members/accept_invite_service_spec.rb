@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Members::AcceptInviteService, feature_category: :user_management do
-  let_it_be(:user) { create(:user, email: 'user1@example.com') }
+  let_it_be(:user, freeze: false) { create(:user, email: 'user1@example.com') }
   let_it_be(:error) { 'The invitation could not be accepted.' }
 
   let(:member) { create(:project_member, :invited, invite_email: user.email) }

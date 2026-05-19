@@ -18,8 +18,12 @@
         }
 
 = render RapidDiffs::AppComponent.new(@presenter, extra_app_data:) do |c|
-  - if user_permissions[:can_create_note]
-    - c.with_before_diffs_list do
+  - if preparing?
+    - c.with_empty_state do
+      = render RapidDiffs::EmptyStateComponent.new(message: _('Building your merge request… This page will update when the build is complete.'))
+  - c.with_before_diffs_list do
+    %div{ data: { commit_widget: true } }
+    - if user_permissions[:can_create_note]
       %button.rd-new-discussion-toggle{ 'aria-label': s_('RapidDiffs|Add comment'), data: { new_discussion_toggle: true, click: 'newDiscussion', testid: 'new_discussion_toggle' }, hidden: true }
         = helpers.sprite_icon('comment', size: 12)
   - c.with_diffs_list do

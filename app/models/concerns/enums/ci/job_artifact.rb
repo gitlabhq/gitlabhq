@@ -50,7 +50,8 @@ module Enums
         cyclonedx: 'gl-sbom.cdx.json',
         annotations: 'gl-annotations.json',
         repository_xray: 'gl-repository-xray.json',
-        sarif: 'gl-sarif-report.sarif'
+        sarif: 'gl-sarif-report.sarif',
+        environment_key: 'environment_key.txt'
       }.freeze
 
       INTERNAL_TYPES = {
@@ -97,7 +98,8 @@ module Enums
         requirements_v2: :raw,
         coverage_fuzzing: :raw,
         api_fuzzing: :raw,
-        sarif: :raw
+        sarif: :raw,
+        environment_key: :raw
       }.freeze
 
       DOWNLOADABLE_TYPES = %w[
@@ -193,7 +195,8 @@ module Enums
           repository_xray: 31, ## EE-specific
           jacoco: 32,
           scip: 33, # SCIP data for code navigation
-          sarif: 34 ## EE-specific
+          sarif: 34, ## EE-specific
+          environment_key: 35
         }
       end
 

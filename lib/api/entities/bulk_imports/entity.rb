@@ -22,11 +22,11 @@ module API
         expose :project_id, documentation: { type: 'Integer', example: 1 }
         expose :created_at, documentation: { type: 'DateTime', example: '2012-05-28T04:42:42-07:00' }
         expose :updated_at, documentation: { type: 'DateTime', example: '2012-05-28T04:42:42-07:00' }
-        expose :failures, using: EntityFailure, documentation: { is_array: true }
+        expose :failures, using: ::API::Entities::BulkImports::EntityFailure, documentation: { is_array: true }
         expose :migrate_projects, documentation: { type: 'Boolean', example: true }
         expose :migrate_memberships, documentation: { type: 'Boolean', example: true }
         expose :has_failures, documentation: { type: 'Boolean', example: false }
-        expose :checksums, as: :stats, documentation: { type: 'object' }
+        expose :checksums, as: :stats, documentation: { type: 'Hash' }
       end
     end
   end

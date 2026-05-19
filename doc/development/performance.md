@@ -31,7 +31,6 @@ This document describes various guidelines to ensure good and consistent perform
 - Monitoring & Overview:
   - [GitLab performance monitoring](../administration/monitoring/performance/_index.md)
   - [Development department performance indicators](https://handbook.gitlab.com/handbook/engineering/development/performance-indicators/)
-  - [Service measurement](service_measurement.md)
 - GitLab Self-Managed administration and customer-focused:
   - [File system performance benchmarking](../administration/operations/filesystem_benchmarking.md)
   - [Sidekiq performance troubleshooting](../administration/sidekiq/sidekiq_troubleshooting.md)
@@ -73,7 +72,6 @@ GitLab provides built-in tools to help improve performance and availability:
 - [GitLab Performance Monitoring](../administration/monitoring/performance/_index.md).
 - [QueryRecorder](database/query_recorder.md) for preventing `N+1` regressions.
 - [Chaos endpoints](chaos_endpoints.md) for testing failure scenarios. Intended mainly for testing availability.
-- [Service measurement](service_measurement.md) for measuring and logging service execution.
 
 GitLab team members can use [GitLab.com's performance monitoring systems](https://handbook.gitlab.com/handbook/engineering/monitoring/) located at
 [`dashboards.gitlab.net`](https://dashboards.gitlab.net), this requires you to sign in using your
@@ -424,7 +422,6 @@ There are two ways of measuring your own code:
 
 1. Review `api_json.log`, `development_json.log`, `sidekiq.log` that includes memory allocation counters.
 1. Use `Gitlab::Memory::Instrumentation.with_memory_allocations` for a given code block and log it.
-1. Use [Measuring module](service_measurement.md)
 
 ```json
 {"time":"2021-02-15T11:20:40.821Z","severity":"INFO","duration_s":0.27412,"db_duration_s":0.05755,"view_duration_s":0.21657,"status":201,"method":"POST","path":"/api/v4/projects/user/1","mem_objects":86705,"mem_bytes":4277179,"mem_mallocs":22693,"correlation_id":"...}

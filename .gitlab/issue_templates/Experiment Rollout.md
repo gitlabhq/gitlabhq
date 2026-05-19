@@ -134,7 +134,7 @@ In this rollout issue, ensure the scoped `experiment::` label is kept accurate.
 - [ ] Enable on GitLab.com by running chatops command in `#production` (`/chatops gitlab run feature set <feature-flag-name> true`)
 - [ ] Cross post chatops Slack command to `#support_gitlab-com` ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/development/feature_flags/controls/#where-to-run-commands)) and in your team channel
 - [ ] Announce on the issue that the flag has been enabled
-- [ ] Remove experiment code and feature flag and add changelog entry - a separate [cleanup issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Experiment%20Successful%20Cleanup) might be required
+- [ ] Remove experiment code and feature flag and add changelog entry - a separate [cleanup issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Experiment%20Successful%20Cleanup) might be required
 - [ ] After the flag removal is deployed, [clean up the feature flag](https://docs.gitlab.com/development/feature_flags/controls/#cleaning-up) by running chatops command in `#production` channel
 - [ ] Assign to the product manager to update the [knowledge base](https://about.gitlab.com/direction/growth/#growth-insights-knowledge-base) (if applicable)
 

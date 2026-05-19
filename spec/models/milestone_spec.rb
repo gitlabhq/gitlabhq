@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Milestone, feature_category: :team_planning do
+RSpec.describe Milestone, feature_category: :team_planning, factory_default: :keep do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:project) { create_default(:project, :public) }
   let_it_be(:group) { create(:group) }
   let_it_be(:issue) { create(:issue, project: project) }
 
@@ -811,7 +811,8 @@ RSpec.describe Milestone, feature_category: :team_planning do
   end
 
   describe '#check_for_spam?' do
-    let_it_be(:milestone) { build_stubbed(:milestone, project: project) }
+    let(:spam_project) { create(:project, :public) }
+    let(:milestone) { build_stubbed(:milestone, project: spam_project) }
 
     subject { milestone.check_for_spam? }
 

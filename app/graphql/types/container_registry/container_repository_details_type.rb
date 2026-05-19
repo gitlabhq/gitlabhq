@@ -17,6 +17,14 @@ module Types
         resolver: Resolvers::ContainerRepositoryTagsResolver,
         connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
 
+      field :tag_details, Types::ContainerRegistry::ContainerRepositoryTagDetailsType,
+        null: true,
+        description: 'Details for a specific tag in the container repository.' do
+        argument :name, GraphQL::Types::String,
+          required: true,
+          description: 'Name of the tag.'
+      end
+
       field :manifest, GraphQL::Types::String,
         null: true,
         description: 'An image manifest from the container repository.' do
@@ -52,6 +60,10 @@ module Types
           manifest = object.image_manifest(reference)
           manifest.as_json if manifest
         end
+      end
+
+      def tag_details(name:)
+        handling_errors { object.tag_details(name:) }
       end
 
       private

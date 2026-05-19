@@ -73,7 +73,7 @@ RSpec.describe 'Merge request > User resolves outdated diff discussions',
 
     it 'does not show that for active discussions' do
       within(".discussion[data-discussion-id='#{current_discussion.id}']") do
-        expect(page).to have_css('.discussion-body', visible: true)
+        expect(page).to have_css('.discussion-body', visible: :visible)
         expect(page).not_to have_content('Automatically resolved')
       end
     end

@@ -18,11 +18,16 @@ describe('PersonalAccessTokensTable', () => {
     tokens = mockTokens,
     loading = false,
     mountFn = shallowMountExtended,
+    provide = {},
   } = {}) => {
     wrapper = mountFn(PersonalAccessTokensTable, {
       propsData: {
         tokens,
         loading,
+      },
+      provide: {
+        granularTokensEnforced: false,
+        ...provide,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -163,13 +168,6 @@ describe('PersonalAccessTokensTable', () => {
       expect(findActionDropdowns()).toHaveLength(2);
     });
 
-    it('shows duplicate for granular tokens and rotate/revoke for active tokens', () => {
-      // mockTokens[0] is granular and active: view details + duplicate + rotate + revoke
-      expect(findActionItems(0)).toHaveLength(4);
-      // mockTokens[1] is non-granular and inactive: view details only
-      expect(findActionItems(1)).toHaveLength(1);
-    });
-
     it('configures dropdown with correct props', () => {
       expect(findActionDropdowns().at(0).props()).toMatchObject({
         category: 'tertiary',
@@ -182,28 +180,106 @@ describe('PersonalAccessTokensTable', () => {
     });
 
     describe('action items', () => {
-      it('includes view details action', () => {
-        expect(findActionItems(0).at(0).text()).toBe('View details');
-        expect(findActionItems(1).at(0).text()).toBe('View details');
+      const activeGranularToken = { ...mockTokens[0], granular: true, active: true };
+      const inactiveNonGranularToken = { ...mockTokens[1], granular: false, active: false };
+
+      beforeEach(() => {
+        createComponent({
+          mountFn: mountExtended,
+          tokens: [activeGranularToken, inactiveNonGranularToken],
+        });
       });
 
-      it('includes duplicate action for granular token', () => {
-        expect(findActionItems(0).at(1).text()).toBe('Duplicate');
+      describe('when the token is granular', () => {
+        describe('when the token is active', () => {
+          it('shows view details, duplicate, rotate and revoke actions', () => {
+            createComponent({
+              mountFn: mountExtended,
+              tokens: [{ ...mockTokens[0], granular: true, active: true }],
+            });
+
+            expect(findActionItems(0)).toHaveLength(4);
+            expect(findActionItems(0).at(0).text()).toBe('View details');
+            expect(findActionItems(0).at(1).text()).toBe('Duplicate');
+            expect(findActionItems(0).at(2).text()).toBe('Rotate');
+            expect(findActionItems(0).at(3).text()).toBe('Revoke');
+            expect(findActionItems(0).at(3).props('variant')).toBe('danger');
+          });
+        });
+
+        describe('when the token is inactive', () => {
+          it('shows view details, duplicate actions', () => {
+            createComponent({
+              mountFn: mountExtended,
+              tokens: [{ ...mockTokens[0], granular: true, active: false }],
+            });
+
+            expect(findActionItems(0)).toHaveLength(2);
+            expect(findActionItems(0).at(0).text()).toBe('View details');
+            expect(findActionItems(0).at(1).text()).toBe('Duplicate');
+          });
+        });
       });
 
-      it('does not include duplicate action for non-granular token', () => {
-        // mockTokens[1] is non-granular, only has View details
-        expect(findActionItems(1).at(0).text()).toBe('View details');
-        expect(findActionItems(1)).toHaveLength(1);
+      describe('when the token is not granular', () => {
+        describe('when the token is active', () => {
+          it('shows view details, rotate and revoke actions', () => {
+            createComponent({
+              mountFn: mountExtended,
+              tokens: [{ ...mockTokens[1], granular: false, active: true }],
+            });
+
+            expect(findActionItems(0)).toHaveLength(3);
+            expect(findActionItems(0).at(0).text()).toBe('View details');
+            expect(findActionItems(0).at(1).text()).toBe('Rotate');
+            expect(findActionItems(0).at(2).text()).toBe('Revoke');
+            expect(findActionItems(0).at(2).props('variant')).toBe('danger');
+          });
+        });
+
+        describe('when the token is inactive', () => {
+          it('shows view details action', () => {
+            createComponent({
+              mountFn: mountExtended,
+              tokens: [{ ...mockTokens[1], granular: false, active: false }],
+            });
+
+            expect(findActionItems(0)).toHaveLength(1);
+            expect(findActionItems(0).at(0).text()).toBe('View details');
+          });
+        });
       });
 
-      it('includes rotate action', () => {
-        expect(findActionItems(0).at(2).text()).toBe('Rotate');
-      });
+      describe('when granular tokens are enforced', () => {
+        describe('when the token is granular and active', () => {
+          it('shows rotate button', () => {
+            createComponent({
+              mountFn: mountExtended,
+              tokens: [{ ...mockTokens[0], granular: true, active: true }],
+              provide: { granularTokensEnforced: true },
+            });
 
-      it('includes revoke action', () => {
-        expect(findActionItems(0).at(3).text()).toBe('Revoke');
-        expect(findActionItems(0).at(3).props('variant')).toBe('danger');
+            expect(findActionItems(0)).toHaveLength(4);
+            expect(findActionItems(0).at(0).text()).toBe('View details');
+            expect(findActionItems(0).at(1).text()).toBe('Duplicate');
+            expect(findActionItems(0).at(2).text()).toBe('Rotate');
+            expect(findActionItems(0).at(3).text()).toBe('Revoke');
+          });
+        });
+
+        describe('when the token is not granular and active', () => {
+          it('does not show rotate button', () => {
+            createComponent({
+              mountFn: mountExtended,
+              tokens: [{ ...mockTokens[1], granular: false, active: true }],
+              provide: { granularTokensEnforced: true },
+            });
+
+            expect(findActionItems(0)).toHaveLength(2);
+            expect(findActionItems(0).at(0).text()).toBe('View details');
+            expect(findActionItems(0).at(1).text()).toBe('Revoke');
+          });
+        });
       });
 
       it('emits `select` event when view details is clicked', () => {

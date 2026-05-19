@@ -90,7 +90,14 @@ module Gitlab
         return :multiple_signatures if signatures.size > 1
         return :unknown_key unless key
         return :unverified_key unless key.verified?
-        return :unverified unless signatures.first&.valid?
+
+        sig = signatures.first
+        unless sig&.valid?
+          return :revoked_key if sig&.revoked_key?
+          return :expired_key if sig&.expired_key?
+
+          return :unverified
+        end
 
         if key.verified_and_belongs_to_email?(email)
           :verified

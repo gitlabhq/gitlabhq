@@ -319,7 +319,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
         diff_note = create(:diff_note_on_merge_request, project: project, noteable: merge_request)
 
         expect { create(:diff_note_on_merge_request, noteable: merge_request, in_reply_to: diff_note) }
-          .not_to change(NoteDiffFile, :count)
+          .not_to change { NoteDiffFile.count }
       end
     end
 
@@ -333,7 +333,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
 
       it 'does not create diff note file if it is a reply' do
         expect { create(:diff_note_on_commit, in_reply_to: diff_note) }
-          .not_to change(NoteDiffFile, :count)
+          .not_to change { NoteDiffFile.count }
       end
     end
   end

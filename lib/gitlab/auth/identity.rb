@@ -55,14 +55,16 @@ module Gitlab
       end
 
       def self.sidekiq_restore!(job)
-        ids = Array(job[COMPOSITE_IDENTITY_SIDEKIQ_ARG])
+        args = Array(job[COMPOSITE_IDENTITY_SIDEKIQ_ARG])
 
-        return if ids.empty?
-        raise IdentityError, 'unexpected number of identities in Sidekiq job' unless ids.size == 2
+        return if args.empty?
+        raise IdentityError, 'unexpected number of identities in Sidekiq job' unless args.size.in?([2, 3])
+
+        context = args[2]&.to_sym || :authentication
 
         ::Gitlab::Auth::Identity
-          .new(::User.find(ids.first))
-          .link!(::User.find(ids.second), context: :authentication)
+          .new(::User.find(args.first))
+          .link!(::User.find(args.second), context: context)
       end
 
       def self.currently_linked
@@ -126,7 +128,7 @@ module Gitlab
       end
 
       def sidekiq_link!(job)
-        job[COMPOSITE_IDENTITY_SIDEKIQ_ARG] = [primary_user_id, scoped_user_id]
+        job[COMPOSITE_IDENTITY_SIDEKIQ_ARG] = [primary_user_id, scoped_user_id, link_context]
       end
 
       def link!(scope_user, context: :authentication)

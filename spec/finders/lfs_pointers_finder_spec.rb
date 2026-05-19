@@ -6,7 +6,7 @@ RSpec.describe LfsPointersFinder do
   subject(:finder) { described_class.new(repository, path) }
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository }
+  let_it_be(:repository, freeze: false) { project.repository }
 
   let(:path) { nil }
 

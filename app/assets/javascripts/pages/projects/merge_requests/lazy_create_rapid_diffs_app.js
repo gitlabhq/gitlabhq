@@ -2,10 +2,11 @@ import { getCookie } from '~/lib/utils/common_utils';
 import { RAPID_DIFFS_COOKIE_NAME } from '~/rapid_diffs/constants';
 
 function isRapidDiffsEnabled() {
+  const searchParams = new URLSearchParams(window.location.search);
   return (
     window.gon?.features?.rapidDiffsOnMrShow &&
-    (new URLSearchParams(window.location.search).get('rapid_diffs') === 'true' ||
-      getCookie(RAPID_DIFFS_COOKIE_NAME) === 'true')
+    searchParams.get('rapid_diffs_disabled') !== 'true' &&
+    (searchParams.get('rapid_diffs') === 'true' || getCookie(RAPID_DIFFS_COOKIE_NAME) === 'true')
   );
 }
 

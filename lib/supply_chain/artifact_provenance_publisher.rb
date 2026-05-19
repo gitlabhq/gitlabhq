@@ -2,8 +2,8 @@
 
 module SupplyChain
   class ArtifactProvenancePublisher < ProvenancePublisher
-    def should_publish?
-      ::SupplyChain.publish_artifact_provenance?(@build)
+    def self.should_publish?(build)
+      ::SupplyChain.publish_artifact_provenance?(build)
     end
 
     def publish
@@ -17,17 +17,12 @@ module SupplyChain
         next if successful_attestation?(hash)
 
         attestation, success = attest_artifact(artifact_path, hash)
-        attestations << attestation
+        attestations << attestation if attestation
 
         all_successful = false unless success
       end
 
-      if all_successful
-        return ServiceResponse.success(message: "Attestations persisted",
-          payload: { attestations: attestations })
-      end
-
-      ServiceResponse.error(message: "Attestation failure", payload: { attestations: attestations })
+      [attestations, all_successful]
     end
 
     private
@@ -43,9 +38,9 @@ module SupplyChain
       rescue StandardError => e
         log(message: "Attestation failure", path: artifact_path, hash: hash, blob_name: blob_name)
 
-        attestation = persist_attestation!(status: :error, subject_digest: hash)
-
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, project_id: @build.project.id)
+
+        attestation = persist_error_attestation(subject_digest: hash)
 
         [attestation, false]
       end

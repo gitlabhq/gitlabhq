@@ -11,12 +11,17 @@ RSpec.describe DeployTokens::TokensFinder do
   let_it_be(:project)    { create(:project, creator_id: user.id) }
   let_it_be(:group)      { create(:group) }
 
-  let!(:project_deploy_token) { create(:deploy_token, projects: [project]) }
-  let!(:revoked_project_deploy_token) { create(:deploy_token, projects: [project], revoked: true) }
-  let!(:expired_project_deploy_token) { create(:deploy_token, projects: [project], expires_at: '1988-01-11T04:33:04-0600') }
-  let!(:group_deploy_token) { create(:deploy_token, :group, groups: [group]) }
-  let!(:revoked_group_deploy_token) { create(:deploy_token, :group, groups: [group], revoked: true) }
-  let!(:expired_group_deploy_token) { create(:deploy_token, :group, groups: [group], expires_at: '1988-01-11T04:33:04-0600') }
+  let_it_be(:project_deploy_token) { create(:deploy_token, projects: [project]) }
+  let_it_be(:revoked_project_deploy_token) { create(:deploy_token, projects: [project], revoked: true) }
+  let_it_be(:expired_project_deploy_token) do
+    create(:deploy_token, projects: [project], expires_at: '1988-01-11T04:33:04-0600')
+  end
+
+  let_it_be(:group_deploy_token) { create(:deploy_token, :group, groups: [group]) }
+  let_it_be(:revoked_group_deploy_token) { create(:deploy_token, :group, groups: [group], revoked: true) }
+  let_it_be(:expired_group_deploy_token) do
+    create(:deploy_token, :group, groups: [group], expires_at: '1988-01-11T04:33:04-0600')
+  end
 
   describe "#execute" do
     let(:params) { {} }

@@ -84,8 +84,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       'activity'
     elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
       'wiki'
-    elsif can?(current_user, :read_issue, project)
-      'projects/issues'
     else
       'activity'
     end
@@ -508,7 +506,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def cicd_missing?
-    current_user && can_current_user_push_code? && !project.has_ci? && cicd_enabled?
+    current_user && can_current_user_push_code? && !project.has_ci_config_file? && cicd_enabled?
   end
 
   def can_instantiate_cluster?
@@ -526,8 +524,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       'files'
     elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
       'wiki'
-    elsif can?(current_user, :read_issue, project)
-      'projects/issues'
     else
       'activity'
     end

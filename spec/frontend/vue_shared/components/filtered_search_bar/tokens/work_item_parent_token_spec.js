@@ -136,7 +136,11 @@ describe('WorkItemParentToken', () => {
             in: 'TITLE',
             includeDescendants: false,
             includeAncestors: true,
-            types: ['EPIC', 'OBJECTIVE', 'ISSUE'],
+            workItemTypeIds: [
+              'gid://gitlab/WorkItems::Type/8',
+              'gid://gitlab/WorkItems::Type/6',
+              'gid://gitlab/WorkItems::Type/1',
+            ],
             isProject: true,
           });
         });
@@ -189,7 +193,11 @@ describe('WorkItemParentToken', () => {
             in: undefined,
             includeDescendants: false,
             includeAncestors: true,
-            types: ['EPIC', 'OBJECTIVE', 'ISSUE'],
+            workItemTypeIds: [
+              'gid://gitlab/WorkItems::Type/8',
+              'gid://gitlab/WorkItems::Type/6',
+              'gid://gitlab/WorkItems::Type/1',
+            ],
             isProject: true,
           });
         });
@@ -215,7 +223,11 @@ describe('WorkItemParentToken', () => {
             in: undefined,
             includeDescendants: true,
             includeAncestors: true,
-            types: ['EPIC', 'OBJECTIVE', 'ISSUE'],
+            workItemTypeIds: [
+              'gid://gitlab/WorkItems::Type/8',
+              'gid://gitlab/WorkItems::Type/6',
+              'gid://gitlab/WorkItems::Type/1',
+            ],
             isProject: false,
           });
         });
@@ -238,7 +250,11 @@ describe('WorkItemParentToken', () => {
             in: 'TITLE',
             includeDescendants: false,
             includeAncestors: true,
-            types: ['EPIC', 'OBJECTIVE', 'ISSUE'],
+            workItemTypeIds: [
+              'gid://gitlab/WorkItems::Type/8',
+              'gid://gitlab/WorkItems::Type/6',
+              'gid://gitlab/WorkItems::Type/1',
+            ],
             isProject: true,
           });
         });
@@ -261,7 +277,11 @@ describe('WorkItemParentToken', () => {
             in: undefined,
             includeDescendants: false,
             includeAncestors: true,
-            types: ['EPIC', 'OBJECTIVE', 'ISSUE'],
+            workItemTypeIds: [
+              'gid://gitlab/WorkItems::Type/8',
+              'gid://gitlab/WorkItems::Type/6',
+              'gid://gitlab/WorkItems::Type/1',
+            ],
             isProject: true,
             ids: [convertToGraphQLId(TYPENAME_WORK_ITEM, searchTerm)],
           });

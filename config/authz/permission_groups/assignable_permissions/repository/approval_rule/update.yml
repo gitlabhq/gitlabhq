@@ -4,5 +4,7 @@ description: Grants the ability to update approval rules
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
 permissions:
   - update_approval_rule

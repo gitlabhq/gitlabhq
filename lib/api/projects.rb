@@ -181,7 +181,7 @@ module API
         optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
         optional :with_programming_language, type: String, desc: 'Limit to repositories which use the given programming language'
-        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
         optional :id_after, type: Integer, desc: 'Limit results to projects with IDs greater than the specified ID'
         optional :id_before, type: Integer, desc: 'Limit results to projects with IDs less than the specified ID'
         optional :last_activity_after, type: DateTime, desc: 'Limit results to projects with last_activity after specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
@@ -264,6 +264,27 @@ module API
       def add_import_params(params)
         params[:import_type] = 'git' if params[:import_url].present?
         params
+      end
+
+      def enqueue_async_transfer(project, namespace)
+        service = ::Projects::TransferService.new(project, current_user)
+        result = service.schedule_async_transfer(namespace)
+
+        if result.success?
+          present_project project, with: Entities::Project, current_user: current_user
+        else
+          render_api_error!(result.message, 400)
+        end
+      end
+
+      def execute_sync_transfer(project, namespace)
+        result = ::Projects::TransferService.new(project, current_user).execute(namespace)
+
+        if result
+          present_project project, with: Entities::Project, current_user: current_user
+        else
+          render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
+        end
       end
     end
 
@@ -642,12 +663,19 @@ module API
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 
-        if result[:status] == :success
+        case result[:status]
+        when :success
           present_project user_project, with: Entities::Project,
             user_can_admin_project: can?(current_user, :admin_project, user_project),
             current_user: current_user
-        elsif result[:status] == :api_error
+        when :api_error
           render_api_error!(result[:message], 400)
+        when :error
+          if user_project.errors.empty?
+            render_api_error!(result[:message], :unprocessable_entity)
+          else
+            render_validation_error!(user_project)
+          end
         else
           render_validation_error!(user_project)
         end
@@ -977,8 +1005,10 @@ module API
           desc: 'Include shared groups'
         optional :shared_visible_only, type: Boolean, default: false,
           desc: 'Limit to shared groups user has access to'
+        # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
         optional :shared_min_access_level, type: Integer, values: Gitlab::Access.all_values,
           desc: 'Limit returned shared groups by minimum access level to the project'
+        # rubocop:enable API/AccessLevelStringType
         use :pagination
       end
       route_setting :authorization, permissions: :read_ancestor_group, boundary_type: :project
@@ -997,7 +1027,7 @@ module API
       params do
         optional :relation, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: %w[direct inherited], desc: 'Filter by group relation'
         optional :search, type: String, desc: 'Search for a specific group'
-        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
 
         use :pagination
         use :with_custom_attributes
@@ -1080,12 +1110,11 @@ module API
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/546376')
 
         namespace = find_namespace!(params[:namespace])
-        result = ::Projects::TransferService.new(user_project, current_user).execute(namespace)
 
-        if result
-          present_project user_project, with: Entities::Project, current_user: current_user
+        if Feature.enabled?(:groups_and_projects_async_transfer, user_project.root_ancestor)
+          enqueue_async_transfer(user_project, namespace)
         else
-          render_api_error!("Failed to transfer project #{user_project.errors.messages}", 400)
+          execute_sync_transfer(user_project, namespace)
         end
       end
 

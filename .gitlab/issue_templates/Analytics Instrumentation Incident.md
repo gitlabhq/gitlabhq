@@ -21,7 +21,7 @@ Please include Teams, Users, Automations, Processes -->
 
 ## Additional information
 
-<!-- Please fill out any additonal information that may help with resolution -->
+<!-- Please fill out any additional information that may help with resolution -->
 
 
 ## Checklist

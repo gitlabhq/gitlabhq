@@ -22,7 +22,7 @@ This table lists the default model for each feature in the Agent Platform.
 | Feature | Model |
 |-------|--------------|
 | GitLab Duo Agentic Chat | Claude Sonnet 4.6 Vertex |
-| Code Review Flow | Claude Sonnet 4.6 Vertex |
+| Code Review Flow | Claude Sonnet 4 Vertex |
 | All other agents | Claude Sonnet 4.5 Vertex |
 
 ## Supported models
@@ -30,22 +30,29 @@ This table lists the default model for each feature in the Agent Platform.
 This table lists the models you can select for features
 in the Agent Platform.
 
-| Model | GitLab Duo Agentic Chat | All other agents |
-|-------|--------------|------------------|
-| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4.5 Vertex | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4.6 | {{< yes >}} | {{< yes >}} |
-| Claude Haiku 4.5 | {{< yes >}} | {{< yes >}} |
-| Claude Opus 4.5 | {{< yes >}} | {{< yes >}} |
-| Claude Opus 4.6 | {{< yes >}} | {{< yes >}} |
-| GPT-5 | {{< yes >}} | {{< yes >}} |
-| GPT-5 Codex | {{< yes >}} | {{< yes >}} |
-| GPT-5.2 Codex | {{< yes >}} | {{< yes >}} |
-| GPT-5.3 Codex | {{< yes >}} | {{< yes >}} |
-| GPT-5 Mini | {{< yes >}} | {{< yes >}} |
-| GPT-5.2 | {{< yes >}} | {{< yes >}} |
+| Model                | GitLab Duo Agentic Chat | All other agents |
+|----------------------|-------------------------|------------------|
+| Claude Sonnet 4      | {{< yes >}}             | {{< yes >}}      |
+| Claude Sonnet 4.5    | {{< yes >}}             | {{< yes >}}      |
+| Claude Sonnet 4.6    | {{< yes >}}             | {{< yes >}}      |
+| Claude Haiku 4.5     | {{< yes >}}             | {{< yes >}}      |
+| Claude Opus 4.5      | {{< yes >}}             | {{< yes >}}      |
+| Claude Opus 4.6      | {{< yes >}}             | {{< yes >}}      |
+| Claude Opus 4.7      | {{< yes >}}             | {{< yes >}}      |
+| GPT-5                | {{< yes >}}             | {{< yes >}}      |
+| GPT-5.1              | {{< yes >}}             | {{< yes >}}      |
+| GPT-5.2              | {{< yes >}}             | {{< yes >}}      |
+| GPT-5.5 <sup>1</sup> | {{< yes >}}             | {{< yes >}}      |
+| GPT-5 Codex          | {{< yes >}}             | {{< yes >}}      |
+| GPT-5.2 Codex        | {{< yes >}}             | {{< yes >}}      |
+| GPT-5.3 Codex        | {{< yes >}}             | {{< yes >}}      |
+| GPT-5 Mini           | {{< yes >}}             | {{< yes >}}      |
+| GPT-5.4 Mini         | {{< yes >}}             | {{< yes >}}      |
+| GPT-5.4 Nano         | {{< yes >}}             | {{< yes >}}      |
+
+**Footnotes**:
+
+1. This model is subject to [limited vendor-side data retention](../gitlab_duo/data_usage.md#data-retention).
 
 ## Select a model for a feature
 
@@ -80,7 +87,7 @@ Prerequisites:
 To select a model for a feature:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **GitLab Duo**.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. Select **Configure features**.
 1. Go to the **GitLab Duo Agent Platform** section.
 1. Select a model from the dropdown list.
@@ -88,7 +95,7 @@ To select a model for a feature:
 
 In the IDE, model selection for GitLab Duo Agentic Chat is applied only when the connection type is set to WebSocket.
 
-To specify a model for the GitLab Duo CLI, see [select a model](../../user/gitlab_duo_cli/_index.md#select-a-model).
+To specify a model for the GitLab Duo CLI, see [select a model](../gitlab_duo_cli/_index.md#select-a-model).
 
 ## Troubleshooting
 
@@ -102,11 +109,9 @@ If you have selected a specific model for a GitLab Duo AI-native feature, and th
 
 ### No default GitLab Duo namespace
 
-When using a GitLab Duo feature with a selected model, you might get an error that states that you have not selected a default GitLab Duo namespace. For example, on:
+When using a GitLab Duo feature with a selected model, you might get an error that indicates that you need to set a default GitLab Duo namespace.
 
-- GitLab Duo Code Suggestions, you might get `Error 422: I'm sorry, you have not selected a default GitLab Duo namespace. Please go to GitLab and in user Preferences - Behavior, select a default namespace for GitLab Duo.`
-- GitLab Duo Chat, you might get `Error G3002: I'm sorry, you have not selected a default GitLab Duo namespace. Please go to GitLab and in user Preferences - Behavior, select a default namespace for GitLab Duo.`
-
-This issue occurs when you belong to multiple GitLab Duo namespaces, but have not chosen one as your default namespace.
+This issue occurs when you belong to multiple GitLab Duo namespaces or work on a project locally
+that does not have a GitLab remote configured.
 
 To resolve this, [set a default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).

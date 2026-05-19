@@ -11,19 +11,19 @@ RSpec.describe Issues::RebalancingWorker, feature_category: :team_planning do
     shared_examples 'running the worker' do
       it 'runs an instance of Issues::RelativePositionRebalancingService' do
         service = double(execute: nil)
-        service_param = arguments.second.present? ? kind_of(Project.id_in([project]).class) : kind_of(group&.all_projects.class)
+        expected_namespace = arguments.second.present? ? project.project_namespace : group
 
-        expect(Issues::RelativePositionRebalancingService).to receive(:new).with(service_param).and_return(service)
+        expect(Issues::RelativePositionRebalancingService).to receive(:new).with(expected_namespace).and_return(service)
 
         described_class.new.perform(*arguments)
       end
 
       it 'anticipates there being too many concurent rebalances' do
         service = double
-        service_param = arguments.second.present? ? kind_of(Project.id_in([project]).class) : kind_of(group&.all_projects.class)
+        expected_namespace = arguments.second.present? ? project.project_namespace : group
 
         allow(service).to receive(:execute).and_raise(Issues::RelativePositionRebalancingService::TooManyConcurrentRebalances)
-        expect(Issues::RelativePositionRebalancingService).to receive(:new).with(service_param).and_return(service)
+        expect(Issues::RelativePositionRebalancingService).to receive(:new).with(expected_namespace).and_return(service)
         expect(Gitlab::ErrorTracking).to receive(:log_exception).with(Issues::RelativePositionRebalancingService::TooManyConcurrentRebalances, include(project_id: arguments.second, root_namespace_id: arguments.third))
 
         described_class.new.perform(*arguments)

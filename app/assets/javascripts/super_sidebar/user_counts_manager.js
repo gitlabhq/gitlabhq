@@ -1,8 +1,8 @@
-import Vue from 'vue';
+import { observable } from '~/lib/utils/observable';
 import { getUserCounts } from '~/api/user_api';
 import { getStorageValue, saveStorageValue } from '~/lib/utils/local_storage';
 
-export const userCounts = Vue.observable({
+export const userCounts = observable('super_sidebar_user_counts', {
   last_update: 0,
   // The following fields are part of
   // https://docs.gitlab.com/ee/api/users.html#user-counts

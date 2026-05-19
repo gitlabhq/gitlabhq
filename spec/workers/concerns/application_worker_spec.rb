@@ -164,6 +164,22 @@ RSpec.describe ApplicationWorker, feature_category: :sidekiq do
     end
   end
 
+  describe '#skip_writes_if_replica' do
+    it 'yields the block by default' do
+      block_called = false
+
+      instance.skip_writes_if_replica(:any_object) { block_called = true }
+
+      expect(block_called).to be true
+    end
+  end
+
+  describe '#skip_writes_if_replica?' do
+    it 'returns false by default' do
+      expect(instance.skip_writes_if_replica?(:any_object)).to be false
+    end
+  end
+
   describe '.queue_namespace' do
     before do
       allow(router).to receive(:route).and_return('foo_bar_dummy', 'some_namespace:foo_bar_dummy')
@@ -264,14 +280,14 @@ RSpec.describe ApplicationWorker, feature_category: :sidekiq do
     end
   end
 
-  context 'different kinds of push_bulk' do
-    shared_context 'set safe limit beyond the number of jobs to be enqueued' do
+  context 'with different kinds of push_bulk' do
+    shared_context 'when setting safe limit beyond the number of jobs to be enqueued' do
       before do
         stub_const("#{described_class}::SAFE_PUSH_BULK_LIMIT", args.count + 1)
       end
     end
 
-    shared_context 'set safe limit below the number of jobs to be enqueued' do
+    shared_context 'when setting safe limit below the number of jobs to be enqueued' do
       before do
         stub_const("#{described_class}::SAFE_PUSH_BULK_LIMIT", 2)
       end
@@ -361,9 +377,9 @@ RSpec.describe ApplicationWorker, feature_category: :sidekiq do
         worker.bulk_perform_async(args)
       end
 
-      context 'push_bulk in safe limit batches' do
+      context 'when push_bulk in safe limit batches' do
         context 'when the number of jobs to be enqueued does not exceed the safe limit' do
-          include_context 'set safe limit beyond the number of jobs to be enqueued'
+          include_context 'when setting safe limit beyond the number of jobs to be enqueued'
 
           it_behaves_like 'enqueues jobs in one go'
           it_behaves_like 'logs bulk insertions'
@@ -372,7 +388,7 @@ RSpec.describe ApplicationWorker, feature_category: :sidekiq do
         end
 
         context 'when the number of jobs to be enqueued exceeds safe limit' do
-          include_context 'set safe limit below the number of jobs to be enqueued'
+          include_context 'when setting safe limit below the number of jobs to be enqueued'
 
           it_behaves_like 'enqueues the jobs in a batched fashion, with each batch enqueing jobs as per the set safe limit'
           it_behaves_like 'returns job_id of all enqueued jobs'
@@ -409,9 +425,9 @@ RSpec.describe ApplicationWorker, feature_category: :sidekiq do
           end
         end
 
-        context 'push_bulk in safe limit batches' do
+        context 'when push_bulk in safe limit batches' do
           context 'when the number of jobs to be enqueued does not exceed the safe limit' do
-            include_context 'set safe limit beyond the number of jobs to be enqueued'
+            include_context 'when setting safe limit beyond the number of jobs to be enqueued'
 
             it_behaves_like 'enqueues jobs in one go'
             it_behaves_like 'returns job_id of all enqueued jobs'
@@ -419,7 +435,7 @@ RSpec.describe ApplicationWorker, feature_category: :sidekiq do
           end
 
           context 'when the number of jobs to be enqueued exceeds safe limit' do
-            include_context 'set safe limit below the number of jobs to be enqueued'
+            include_context 'when setting safe limit below the number of jobs to be enqueued'
 
             it_behaves_like 'enqueues the jobs in a batched fashion, with each batch enqueing jobs as per the set safe limit'
             it_behaves_like 'returns job_id of all enqueued jobs'
@@ -488,9 +504,9 @@ RSpec.describe ApplicationWorker, feature_category: :sidekiq do
           end
         end
 
-        context 'push_bulk in safe limit batches' do
+        context 'when push_bulk in safe limit batches' do
           context 'when the number of jobs to be enqueued does not exceed the safe limit' do
-            include_context 'set safe limit beyond the number of jobs to be enqueued'
+            include_context 'when setting safe limit beyond the number of jobs to be enqueued'
 
             it_behaves_like 'enqueues jobs in one go'
             it_behaves_like 'returns job_id of all enqueued jobs'
@@ -498,7 +514,7 @@ RSpec.describe ApplicationWorker, feature_category: :sidekiq do
           end
 
           context 'when the number of jobs to be enqueued exceeds safe limit' do
-            include_context 'set safe limit below the number of jobs to be enqueued'
+            include_context 'when setting safe limit below the number of jobs to be enqueued'
 
             it_behaves_like 'enqueues the jobs in a batched fashion, with each batch enqueing jobs as per the set safe limit'
             it_behaves_like 'returns job_id of all enqueued jobs'

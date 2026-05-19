@@ -69,5 +69,19 @@ RSpec.describe Gitlab::Graphql::Authz::SkipRules, feature_category: :permissions
         it { is_expected.to be false }
       end
     end
+
+    context 'with edge wrapper fields' do
+      context 'when owner is an edge type' do
+        let(:owner) { Types::BaseEdge }
+
+        it { is_expected.to be true }
+      end
+
+      context 'when owner is a base edge type' do
+        let(:owner) { GraphQL::Types::Relay::BaseEdge }
+
+        it { is_expected.to be true }
+      end
+    end
   end
 end

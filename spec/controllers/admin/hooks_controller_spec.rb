@@ -66,6 +66,24 @@ RSpec.describe Admin::HooksController, feature_category: :webhooks do
     end
 
     it_behaves_like 'disabled on GitLab.com'
+
+    context 'with custom_webhook_template and custom_headers' do
+      let_it_be(:hook_params) do
+        {
+          url: 'http://example.com',
+          custom_webhook_template: '{"event": "test"}',
+          custom_headers: [{ key: 'X-Custom-Header', value: 'secret-value' }]
+        }
+      end
+
+      it 'saves custom_webhook_template and custom_headers' do
+        post_create
+
+        hook = SystemHook.first
+        expect(hook.custom_webhook_template).to eq('{"event": "test"}')
+        expect(hook.custom_headers).to eq({ 'X-Custom-Header' => 'secret-value' })
+      end
+    end
   end
 
   describe 'POST #update' do
@@ -102,6 +120,44 @@ RSpec.describe Admin::HooksController, feature_category: :webhooks do
       end
     end
 
+    context 'with signing_token', :aggregate_failures do
+      let(:valid_signing_token) { "whsec_#{Base64.strict_encode64('a' * 32)}" }
+
+      context 'when webhook_signing_token feature flag is enabled' do
+        before do
+          stub_feature_flags(webhook_signing_token: true)
+        end
+
+        it 'sets the signing token' do
+          put :update, params: { id: hook.id, hook: { url: 'http://example.com', signing_token: valid_signing_token } }
+
+          expect(hook.reload.signing_token).to eq(valid_signing_token)
+        end
+
+        context 'when signing_token is the secret mask' do
+          let_it_be(:hook) { create(:system_hook, :signing_token) }
+
+          it 'does not change the signing token' do
+            expect do
+              put :update, params: { id: hook.id, hook: { signing_token: WebHook::SECRET_MASK, url: 'http://example.com' } }
+            end.not_to change { hook.reload.signing_token }
+          end
+        end
+      end
+
+      context 'when webhook_signing_token feature flag is disabled' do
+        before do
+          stub_feature_flags(webhook_signing_token: false)
+        end
+
+        it 'ignores the signing token param' do
+          put :update, params: { id: hook.id, hook: { url: 'http://example.com', signing_token: valid_signing_token } }
+
+          expect(hook.reload.signing_token).to be_nil
+        end
+      end
+    end
+
     it 'sets all parameters' do
       hook.update!(url_variables: { 'foo' => 'bar', 'baz' => 'woo' })
 
@@ -115,6 +171,23 @@ RSpec.describe Admin::HooksController, feature_category: :webhooks do
       expect(hook).to have_attributes(
         url_variables: { 'token' => 'some secret value', 'bar' => 'qux' }
       )
+    end
+
+    context 'with custom_webhook_template and custom_headers' do
+      let(:hook_params) do
+        {
+          custom_webhook_template: '{"event": "updated"}',
+          custom_headers: [{ key: 'X-Custom-Header', value: 'new-secret' }]
+        }
+      end
+
+      it 'updates custom_webhook_template and custom_headers' do
+        put_update
+
+        hook.reload
+        expect(hook.custom_webhook_template).to eq('{"event": "updated"}')
+        expect(hook.custom_headers).to eq({ 'X-Custom-Header' => 'new-secret' })
+      end
     end
 
     it_behaves_like 'disabled on GitLab.com'

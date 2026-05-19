@@ -6,12 +6,12 @@ RSpec.describe Resolvers::GroupReleasesResolver, feature_category: :release_orch
   include GraphqlHelpers
 
   let_it_be(:today) { Time.now }
-  let_it_be(:yesterday) { today - 1.day }
-  let_it_be(:tomorrow) { today + 1.day }
+  let_it_be(:yesterday, freeze: false) { today - 1.day }
+  let_it_be(:tomorrow, freeze: false) { today + 1.day }
 
   let_it_be(:group) { create(:group, :private) }
-  let_it_be(:project) { create(:project, :private, namespace: group) }
-  let_it_be(:release_v1) do
+  let_it_be(:project, freeze: false) { create(:project, :private, namespace: group) }
+  let_it_be(:release_v1, freeze: false) do
     create(:release, project: project, tag: 'v1.0.0', released_at: yesterday, created_at: tomorrow)
   end
 

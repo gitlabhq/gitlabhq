@@ -347,7 +347,7 @@ describe('InstallAgentModal', () => {
 
     it('renders an instruction to enable the KAS', () => {
       expect(findModal().text()).toContain(
-        "Your instance doesn't have the GitLab Agent Server (KAS) set up. Ask a GitLab Administrator to install it.",
+        "Your instance doesn't have the GitLab Relay (KAS) set up. Ask a GitLab Administrator to install it.",
       );
     });
 

@@ -548,4 +548,103 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
       end
     end
   end
+
+  describe '#manifests=' do
+    include_context 'container registry client stubs'
+
+    context 'when called with nil' do
+      it 'leaves manifests nil' do
+        tag.manifests = nil
+
+        expect(tag.manifests).to be_nil
+      end
+    end
+
+    context 'with valid references' do
+      before do
+        tag.manifests = [standard_linux_amd64_ref, standard_windows_amd64_ref]
+      end
+
+      it 'builds ImageManifest objects with correct attributes' do
+        expect(tag.manifests.length).to eq(2)
+        expect(tag.manifests.first).to be_a(ContainerRegistry::ImageManifest)
+        expect(tag.manifests.first).to have_attributes(
+          digest: 'sha256:11111111',
+          media_type: 'application/vnd.oci.image.manifest.v1+json',
+          size: 100
+        )
+        expect(tag.manifests.first.platform).to have_attributes(
+          os: 'linux',
+          architecture: 'amd64'
+        )
+        expect(tag.manifests.second).to have_attributes(
+          digest: 'sha256:33333333',
+          size: 300
+        )
+        expect(tag.manifests.second.platform).to have_attributes(
+          os: 'windows',
+          os_version: '10.0.20348.4529',
+          architecture: 'amd64'
+        )
+      end
+
+      it 'sets the tag back-reference on each Manifest' do
+        expect(tag.manifests.first.tag).to eq(tag)
+        expect(tag.manifests.second.tag).to eq(tag)
+      end
+    end
+
+    context 'when references include an unknown architecture entry' do
+      before do
+        tag.manifests = [standard_linux_amd64_ref, standard_unknown_arch_ref]
+      end
+
+      it 'filters out entries where architecture is "unknown"' do
+        expect(tag.manifests.length).to eq(1)
+        expect(tag.manifests.first.digest).to eq('sha256:11111111')
+      end
+    end
+
+    context 'when references include an entry with no platform' do
+      before do
+        tag.manifests = [standard_linux_amd64_ref, standard_no_platform_ref]
+      end
+
+      it 'includes one entry with nil platform' do
+        expect(tag.manifests.length).to eq(1)
+        expect(tag.manifests.first.digest).to eq('sha256:11111111')
+      end
+    end
+  end
+
+  describe '#platform=' do
+    context 'when called with nil' do
+      it 'leaves platform nil' do
+        tag.platform = nil
+
+        expect(tag.platform).to be_nil
+      end
+    end
+
+    context 'with a platform hash' do
+      before do
+        tag.platform = {
+          'architecture' => 'arm64',
+          'os' => 'linux',
+          'os_version' => '10.0',
+          'variant' => 'v8'
+        }
+      end
+
+      it 'builds an ImagePlatform with correct attributes' do
+        expect(tag.platform).to be_a(ContainerRegistry::ImagePlatform)
+        expect(tag.platform).to have_attributes(
+          architecture: 'arm64',
+          os: 'linux',
+          os_version: '10.0',
+          variant: 'v8'
+        )
+      end
+    end
+  end
 end

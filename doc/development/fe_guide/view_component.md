@@ -161,13 +161,16 @@ For example:
 
 ```ruby
 = render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_sast]',
-  checkbox_options: { data: { testid: 'initialize-with-sast-checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' } }) do |c|
+  checkbox_options: { data: { testid: 'initialize-with-sast-checkbox' } }) do |c|
   - c.with_label do
     = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
   - c.with_help_text do
     = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
-    = link_to _('Learn more.'), help_page_path('user/application_security/sast/_index.md'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
+    = link_to _('Learn more.'), help_page_path('user/application_security/sast/_index.md'), target: '_blank', rel: 'noopener noreferrer'
 ```
+
+> [!note]
+> Legacy tracking parameters (`track_action`, `track_label`, and `track_property`) are deprecated. For more information, see the [migration guide](../internal_analytics/internal_event_instrumentation/migration.md).
 
 For the full list of options, see its
 [source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/checkbox_tag_component.rb).
@@ -261,8 +264,7 @@ A layout that establishes spacing between heading, alerts, and content areas. It
 = render ::Layouts::IndexLayout.new(heading: _('Page title'), description: _('Page description')) do |c|
   - c.with_alerts do
     = render Pajamas::AlertComponent.new(title: 'Alert message')
-  - c.with_content do
-    = render 'items_table'
+  = render 'items_table'
 ```
 
 The component supports the following slots:
@@ -274,6 +276,39 @@ The component supports the following slots:
 
 For the full list of options, see its
 [source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/layouts/index_layout.rb).
+
+For Vue usage and a full guide including the dynamic panel and panel actions,
+see [Page layouts and panels](page_layouts.md).
+
+#### Detail layout
+
+A layout that establishes spacing between heading, alerts, and content areas. It provides a consistent structure for detail pages with optional page heading, alerts, sidebar, and main content sections.
+
+**Example**:
+
+```ruby
+= render ::Layouts::DetailLayout.new(heading: _('Page title'), description: _('Page description')) do |c|
+  - c.with_alerts do
+    = render Pajamas::AlertComponent.new(title: 'Alert message')
+  - c.with_sidebar do
+    = render 'sidebar'
+
+  = render 'items_table'
+```
+
+The component supports the following slots:
+
+- `heading`: Custom heading markup (uses `PageHeadingComponent` internally)
+- `description`: Custom description content (uses `PageHeadingComponent` internally)
+- `alerts`: Page alerts container (takes no space when empty)
+- `sidebar`: Page sidebar
+- `content`: Page content
+
+For the full list of options, see its
+[source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/layouts/detail_layout.rb).
+
+For Vue usage and a full guide including the dynamic panel and panel actions,
+see [Page layouts and panels](page_layouts.md).
 
 #### CRUD component
 

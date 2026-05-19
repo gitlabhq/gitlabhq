@@ -2,6 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Turn off GitLab Duo features for instances, groups, and projects.
 title: Control GitLab Duo availability
 ---
 
@@ -68,12 +69,12 @@ GitLab Duo availability changes for all subgroups and projects.
 
 Prerequisites:
 
-- The Owner or Maintainer role for the project.
+- The Maintainer or Owner role for the project.
 
 To change GitLab Duo availability for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **GitLab Duo** toggle on or off.
 1. Select **Save changes**.
@@ -114,12 +115,12 @@ GitLab Duo availability changes for all subgroups and projects.
 
 Prerequisites:
 
-- The Owner or Maintainer role for the project.
+- The Maintainer or Owner role for the project.
 
 To change GitLab Duo availability for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **GitLab Duo** toggle on or off.
 1. Select **Save changes**.
@@ -159,7 +160,7 @@ To change GitLab Duo Core availability for a top-level group:
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability**, select an option.
-1. Under **GitLab Duo Core**, select or clear the **Turn on GitLab Duo Agent Platform access** checkbox.
+1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
 1. Select **Save changes**.
@@ -178,7 +179,7 @@ To change GitLab Duo Core availability for an instance:
 1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability**, select an option.
-1. Under **GitLab Duo Core**, select or clear the **Turn on GitLab Duo Agent Platform access** checkbox.
+1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
 1. Select **Save changes**.
@@ -197,7 +198,7 @@ Prerequisites:
 To turn on GitLab Duo experiment and beta features for a top-level group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **GitLab Duo**.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Feature preview**, select **Turn on experiment and beta GitLab Duo features**.
 1. Select **Save changes**.
@@ -221,7 +222,7 @@ Prerequisites:
 To turn on GitLab Duo experiment and beta features for an instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **GitLab Duo**.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. Expand **Change configuration**.
 1. Under **Feature preview**, select **Use experiment and beta GitLab Duo features**.
 1. Select **Save changes**.
@@ -239,7 +240,7 @@ Prerequisites:
 To turn on GitLab Duo experiment and beta features for an instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **GitLab Duo**.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. Expand **Change configuration**.
 1. Under **Feature preview**, select **Use experiment and beta GitLab Duo features**.
 1. Select **Save changes**.

@@ -33,6 +33,7 @@ module BulkImports
           )
 
           ::BulkImports::FinishProjectImportWorker.perform_async(entity.project_id) if entity.project?
+          schedule_group_work_item_placement if entity.group?
         end
 
         private
@@ -45,6 +46,14 @@ module BulkImports
 
         def all_other_trackers_failed?
           trackers.where.not(relation: self.class.name).all? { |tracker| tracker.failed? } # rubocop: disable CodeReuse/ActiveRecord
+        end
+
+        def schedule_group_work_item_placement
+          return unless entity.group
+
+          ::Issues::PlacementWorker.perform_async(
+            { 'namespace_id' => entity.group.work_item_positioning_root.id }
+          )
         end
       end
     end

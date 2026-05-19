@@ -82,7 +82,7 @@ Prerequisites:
 To fix this issue:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. Select the **Allow requests to the local network from webhooks and integrations** and **Allow requests to the local network from system hooks** checkboxes.
 1. Select **Save changes**.

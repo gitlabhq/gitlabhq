@@ -44,12 +44,11 @@ describe('drawio/drawio_editor', () => {
     expect(drawioIFrameReceivedMessages).toHaveLength(messageNumber);
     expect(JSON.parse(drawioIFrameReceivedMessages[messageNumber - 1].data)).toEqual(expectation);
   };
-  const postMessageToParentWindow = (data) => {
-    const event = new Event('message');
-
-    Object.setPrototypeOf(event, {
+  const postMessageToParentWindow = (data, { origin = DRAWIO_EDITOR_ORIGIN } = {}) => {
+    const event = new MessageEvent('message', {
       source: findDrawioIframe().contentWindow,
       data: JSON.stringify(data),
+      origin,
     });
 
     window.dispatchEvent(event);
@@ -482,6 +481,29 @@ describe('drawio/drawio_editor', () => {
       postMessageToParentWindow({ event: 'exit' });
 
       expect(findDrawioIframe()).toBe(null);
+    });
+  });
+
+  describe('when parent window receives a message with a mismatched origin', () => {
+    beforeEach(() => {
+      launchDrawioEditor({ editorFacade });
+    });
+
+    it('ignores the message even if the source matches the drawio iframe', () => {
+      expect(findDrawioIframe()).not.toBe(null);
+
+      postMessageToParentWindow({ event: 'exit' }, { origin: 'https://evil.example.com' });
+
+      expect(findDrawioIframe()).not.toBe(null);
+    });
+
+    it('does not act on forged export events', () => {
+      postMessageToParentWindow(
+        { event: 'export', data: testEncodedSvg },
+        { origin: 'https://evil.example.com' },
+      );
+
+      expect(editorFacade.uploadDiagram).not.toHaveBeenCalled();
     });
   });
 });

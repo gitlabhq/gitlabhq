@@ -70,8 +70,7 @@ module RuboCop
       end
 
       def module_range(node)
-        module_node, _ = *node
-        range_between(node.loc.keyword.begin_pos, module_node.source_range.end_pos)
+        range_between(node.loc.keyword.begin_pos, node.identifier.source_range.end_pos)
       end
     end
   end

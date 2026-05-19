@@ -23,7 +23,7 @@ RSpec.describe WorkItems::UpdateNamespaceTraversalIdsService, feature_category: 
       include ExclusiveLeaseHelpers
 
       let(:lease_key) { "work_items:#{namespace.id}:update_namespace_traversal_ids" }
-      let_it_be(:namespace) { create(:group) }
+      let_it_be(:namespace, freeze: false) { create(:group) }
       let_it_be(:new_parent) { create(:group) }
       let_it_be(:work_item) { create(:work_item, :group_level, namespace: namespace) }
 
@@ -45,8 +45,8 @@ RSpec.describe WorkItems::UpdateNamespaceTraversalIdsService, feature_category: 
     end
 
     context 'when namespace is a group' do
-      let_it_be(:group_namespace) { create(:group, parent: old_parent) }
-      let_it_be(:other_namespace) { create(:group, parent: old_parent) }
+      let_it_be(:group_namespace, freeze: false) { create(:group, parent: old_parent) }
+      let_it_be(:other_namespace, freeze: false) { create(:group, parent: old_parent) }
 
       let_it_be(:group_issue1) { create(:work_item, :group_level, namespace: group_namespace) }
       let_it_be(:group_issue2) { create(:work_item, :group_level, namespace: group_namespace) }
@@ -70,7 +70,7 @@ RSpec.describe WorkItems::UpdateNamespaceTraversalIdsService, feature_category: 
     end
 
     context 'when namespace is a project' do
-      let_it_be(:project_namespace) { create(:project_namespace, parent: old_parent) }
+      let_it_be(:project_namespace, freeze: false) { create(:project_namespace, parent: old_parent) }
       let_it_be(:project_issue1) { create(:work_item, project: project_namespace.project) }
       let_it_be(:project_issue2) { create(:work_item, project: project_namespace.project) }
 

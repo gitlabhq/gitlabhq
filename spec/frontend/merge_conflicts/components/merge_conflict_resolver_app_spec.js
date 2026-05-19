@@ -1,27 +1,28 @@
 import { GlSprintf } from '@gitlab/ui';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { shallowMountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import InlineConflictLines from '~/merge_conflicts/components/inline_conflict_lines.vue';
 import ParallelConflictLines from '~/merge_conflicts/components/parallel_conflict_lines.vue';
 import component from '~/merge_conflicts/merge_conflict_resolver_app.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { createStore } from '~/merge_conflicts/store';
+import { useMergeConflicts } from '~/merge_conflicts/store';
 import { decorateFiles } from '~/merge_conflicts/utils';
 import { conflictsMock } from '../mock_data';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('Merge Conflict Resolver App', () => {
   let wrapper;
+  let pinia;
   let store;
 
   const decoratedMockFiles = decorateFiles(conflictsMock);
 
   const mountComponent = () => {
     wrapper = shallowMountExtended(component, {
-      store,
+      pinia,
       stubs: { GlSprintf },
       provide() {
         return {
@@ -34,9 +35,10 @@ describe('Merge Conflict Resolver App', () => {
   };
 
   beforeEach(() => {
-    store = createStore();
-    store.commit('SET_LOADING_STATE', false);
-    store.dispatch('setConflictsData', conflictsMock);
+    pinia = createTestingPinia({ stubActions: false });
+    store = useMergeConflicts();
+    store.isLoading = false;
+    store.setConflictsData(conflictsMock);
   });
 
   const findLoadingSpinner = () => wrapper.findByTestId('loading-spinner');
@@ -62,7 +64,7 @@ describe('Merge Conflict Resolver App', () => {
   });
 
   it('shows a loading spinner while loading', () => {
-    store.commit('SET_LOADING_STATE', true);
+    store.isLoading = true;
     mountComponent();
 
     expect(findLoadingSpinner().exists()).toBe(true);

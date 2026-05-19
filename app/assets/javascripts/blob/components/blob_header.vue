@@ -3,7 +3,7 @@ import DefaultActions from 'jh_else_ce/blob/components/blob_header_default_actio
 import BlameHeader from './blame_header.vue';
 import BlobFilepath from './blob_header_filepath.vue';
 import ViewerSwitcher from './blob_header_viewer_switcher.vue';
-import { SIMPLE_BLOB_VIEWER, BLAME_VIEWER } from './constants';
+import { RICH_BLOB_VIEWER, SIMPLE_BLOB_VIEWER, BLAME_VIEWER } from './constants';
 import TableOfContents from './table_contents.vue';
 
 export default {
@@ -93,6 +93,7 @@ export default {
       this.$emit('copy');
     },
   },
+  RICH_BLOB_VIEWER,
 };
 </script>
 <template>
@@ -112,8 +113,9 @@ export default {
       </blob-filepath>
     </div>
 
-    <div class="file-actions gl-flex gl-flex-wrap gl-items-center gl-gap-3">
+    <div class="file-actions gl-ml-auto gl-flex gl-flex-wrap gl-items-center gl-gap-3">
       <blame-header v-if="showBlameInfo" />
+      <table-of-contents v-if="activeViewerType === $options.RICH_BLOB_VIEWER" class="gl-pr-2" />
       <viewer-switcher
         v-if="!hideViewerSwitcher"
         v-model="viewer"
@@ -121,7 +123,6 @@ export default {
         :show-viewer-toggles="Boolean(blob.simpleViewer && blob.richViewer)"
         v-on="$listeners"
       />
-      <table-of-contents class="gl-pr-2" />
       <slot name="ee-duo-workflow-action" data-test-id="ee-duo-workflow-action"></slot>
 
       <slot name="actions"></slot>

@@ -30,7 +30,8 @@ module Observability
       'infrastructure-monitoring' => 'Observability|Infrastructure monitoring',
       'messaging-queues' => 'Observability|Messaging queues',
       'api-monitoring' => 'Observability|API monitoring',
-      'settings' => 'Observability|Notification channels'
+      'settings' => 'Observability|Notification channels',
+      'settings/api-keys' => 'Observability|API keys'
     }.freeze
 
     PATHS = %w[
@@ -73,6 +74,7 @@ module Observability
       api-monitoring
       api-monitoring/explorer
       settings/channels
+      settings/api-keys
     ].freeze
 
     ALLOWED_QUERY_PARAMS = %w[
@@ -127,8 +129,7 @@ module Observability
       apiMonitoringParams
     ].freeze
 
-    QUERY_STRING_MAX_BYTES = 4096
-    PARAM_VALUE_MAX_BYTES  = 1024
+    QUERY_STRING_MAX_BYTES = 10_000
 
     # Pre-compiled regexes - one per PATHS template pattern.
     # A template segment starting with `:` matches any non-empty, non-slash token.
@@ -167,16 +168,23 @@ module Observability
     end
 
     def title
-      first_segment = @path.to_s.split('/').first.to_s
-      SEGMENT_TITLES.fetch(first_segment, 'Observability')
+      path_str = @path.to_s
+      SEGMENT_TITLES.fetch(path_str) do
+        first_segment = path_str.split('/').first.to_s
+        SEGMENT_TITLES.fetch(first_segment, 'Observability')
+      end
     end
 
     def auth_tokens
       return {} unless observability_setting
 
-      with_reactive_cache do |data|
+      result = with_reactive_cache do |data|
         data
-      end || {}
+      end
+
+      return { 'status' => 'loading' } if result.nil?
+
+      result
     end
 
     def url_with_path

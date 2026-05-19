@@ -35,6 +35,7 @@ The number of service accounts you can create depends on your subscription and o
     This includes all service accounts regardless of how they are provisioned (instance, group, or project level).
 
 You can also interact with service accounts through the [users API](users.md).
+To manage SSH keys for service accounts, use the [user SSH and GPG keys API](user_keys.md).
 
 ## Instance service accounts
 
@@ -583,10 +584,10 @@ Project service accounts are owned by a specific project and are available only 
 
 Prerequisites:
 
-- On GitLab.com, you must have the Owner or Maintainer role for the project.
+- On GitLab.com, you must have the Maintainer or Owner role for the project.
 - On GitLab Self-Managed or GitLab Dedicated, you must either:
   - Be an administrator for the instance.
-  - Have the Owner or Maintainer role in a project.
+  - Have the Maintainer or Owner role in a project.
 
 ### List all project service accounts
 

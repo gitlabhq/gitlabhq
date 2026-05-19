@@ -324,6 +324,7 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
       end
 
       expect(described_class).to receive(:deferred).and_return(setter)
+      expect(setter).to receive(:set).and_return(setter)
       expect(setter).to receive(:perform_in).with(described_class::DEFER_ON_HEALTH_DELAY, batch.id)
 
       described_class.perform_async(batch.id)

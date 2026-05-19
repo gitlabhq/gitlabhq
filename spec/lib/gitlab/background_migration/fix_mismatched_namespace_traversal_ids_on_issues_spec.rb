@@ -24,7 +24,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixMismatchedNamespaceTraversalIdsOn
     }
   end
 
-  let(:issue_type) { work_item_types.find_by!(base_type: 0) }
+  let(:issue_type_id) { 1 }
   let!(:organization) { organizations.create!(name: 'organization', path: 'organization') }
 
   let!(:user) do
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixMismatchedNamespaceTraversalIdsOn
       title: 'Issue',
       description: 'Some description',
       namespace_id: namespace_id,
-      work_item_type_id: issue_type.id,
+      work_item_type_id: issue_type_id,
       author_id: user.id
     )
   end

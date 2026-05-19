@@ -171,7 +171,7 @@ module CacheMarkdownField
     true
   end
 
-  # Overriden on objects that needs to filter
+  # Overridden on objects that needs to filter
   # mentioned users that cannot read them, for example,
   # guest users that are referenced on a confidential note.
   def mentioned_filtered_user_ids_for(refs)
@@ -214,6 +214,11 @@ module CacheMarkdownField
     # a corresponding _html field. Any custom rendering options may be provided
     # as a context.
     def cache_markdown_field(markdown_field, context = {})
+      if context[:storage] == :external && !(self < Gitlab::MarkdownCache::ExternalStorage::Extension)
+        prepend Gitlab::MarkdownCache::ExternalStorage::Extension
+        return cache_markdown_field(markdown_field, context)
+      end
+
       cached_markdown_fields[markdown_field] = context
 
       html_field = cached_markdown_fields.html_field(markdown_field)

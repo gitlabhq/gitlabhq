@@ -59,6 +59,7 @@ export const handleIssuablePopoverMount = ({
   apolloProvider,
   namespacePath,
   title,
+  titleHtml,
   iid,
   milestone,
   iteration,
@@ -85,6 +86,7 @@ export const handleIssuablePopoverMount = ({
           milestoneId: milestone,
           iterationId: iteration,
           cachedTitle: title || innerText,
+          cachedTitleHtml: titleHtml,
           show: true,
         },
         apolloProvider,
@@ -109,6 +111,7 @@ export default (elements, issuablePopoverMount = handleIssuablePopoverMount) => 
         el.dataset;
       let { namespacePath } = el.dataset;
       const title = el.dataset.mrTitle || el.title;
+      const { titleHtml } = el.dataset;
       const { innerText } = el;
       namespacePath = namespacePath || groupPath || projectPath;
       const isIssuable = Boolean(namespacePath && title && iid);
@@ -126,6 +129,7 @@ export default (elements, issuablePopoverMount = handleIssuablePopoverMount) => 
               apolloProvider,
               namespacePath,
               title,
+              titleHtml,
               iid,
               milestone,
               iteration,

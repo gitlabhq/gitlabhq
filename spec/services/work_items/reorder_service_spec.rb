@@ -50,5 +50,31 @@ RSpec.describe WorkItems::ReorderService, feature_category: :team_planning do
         end
       end
     end
+
+    context 'when reordering a work item with no project (group-level)' do
+      let_it_be_with_reload(:group_item) do
+        create(:work_item, :group_level, namespace: group, relative_position: 100)
+      end
+
+      let(:work_item) { group_item }
+      let(:params) { { move_before_id: item1.id } }
+
+      before_all do
+        group.add_developer(user)
+      end
+
+      before do
+        allow(user).to receive(:can?).and_call_original
+        allow(user).to receive(:can?).with(:update_work_item, work_item).and_return(true)
+      end
+
+      it 'passes the work item resource_parent (namespace) as container to UpdateService' do
+        expect(::WorkItems::UpdateService).to receive(:new).with(
+          hash_including(container: work_item.resource_parent)
+        ).and_call_original
+
+        service_result
+      end
+    end
   end
 end

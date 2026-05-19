@@ -43,6 +43,18 @@ module Import
         after_transition any => [:finished, :failed] do |export|
           export.run_after_commit { export.schedule_configuration_purge }
         end
+
+        after_transition any => :finished do |export|
+          export.run_after_commit do
+            Notify.offline_export_complete(export.user_id, export.id).deliver_later
+          end
+        end
+
+        after_transition any => :failed do |export|
+          export.run_after_commit do
+            Notify.offline_export_failed(export.user_id, export.id).deliver_later
+          end
+        end
       end
 
       def self.all_human_statuses

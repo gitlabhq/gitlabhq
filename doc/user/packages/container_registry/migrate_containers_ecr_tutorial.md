@@ -63,7 +63,7 @@ In AWS IAM, create a new policy and user with read-only access to ECR:
 Configure the required AWS credentials as variables in your GitLab project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and add:
    - `AWS_ACCOUNT_ID`: Your AWS account number.

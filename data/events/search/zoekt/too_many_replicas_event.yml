@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::TooManyReplicasEvent
+description: Published when more Zoekt replicas exist for a namespace than the configured
+  replica count, so the subscribed worker can prune the excess replicas.
+feature_category: global_search
+ee_only: true

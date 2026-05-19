@@ -32,7 +32,7 @@ RSpec.describe UserGroupNotificationSettingsFinder, feature_category: :team_plan
 
         let_it_be(:groups) { [group_a, group_b] }
 
-        before do
+        before_all do
           create(:notification_setting, user: user, source: ancestor_a, level: 'participating', notification_email: email.email)
           create(:notification_setting, user: user, source: ancestor_b, level: 'participating', notification_email: email.email)
         end
@@ -59,7 +59,7 @@ RSpec.describe UserGroupNotificationSettingsFinder, feature_category: :team_plan
 
         let_it_be(:groups) { [group] }
 
-        before do
+        before_all do
           create(:notification_setting, user: user, source: grand_ancestor, level: 'participating', notification_email: grand_email.email)
           create(:notification_setting, user: user, source: ancestor, level: 'global', notification_email: ancestor_email.email)
         end
@@ -77,7 +77,7 @@ RSpec.describe UserGroupNotificationSettingsFinder, feature_category: :team_plan
         let_it_be(:ancestor_email) { create(:email, :confirmed, email: 'ancestor@example.com', user: user) }
         let_it_be(:groups) { [group] }
 
-        before do
+        before_all do
           group.add_reporter(user)
           # Adding the user creates a NotificationSetting, so we remove it here
           user.notification_settings.where(source: group).delete_all

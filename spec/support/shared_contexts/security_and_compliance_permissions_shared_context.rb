@@ -4,7 +4,7 @@ RSpec.shared_context '"Security and compliance" permissions' do
   let(:project_instance) { an_instance_of(Project) }
   let(:user_instance) { an_instance_of(User) }
   let(:before_request_defined) { false }
-  let(:valid_request) {}
+  let(:valid_request) { nil }
 
   def self.before_request(&block)
     return unless block

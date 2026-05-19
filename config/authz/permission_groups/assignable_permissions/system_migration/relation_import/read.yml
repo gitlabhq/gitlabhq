@@ -1,0 +1,10 @@
+---
+name: read_relation_import
+description: Grants the ability to read relation imports
+deprecated: true
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_project_relation_import

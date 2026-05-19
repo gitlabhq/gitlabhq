@@ -7,6 +7,8 @@ identifiers:
   - user
   - namespace
 product_group: composition_analysis
+product_categories:
+- software_composition_analysis
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150952
 tiers:

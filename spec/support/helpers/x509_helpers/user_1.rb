@@ -346,11 +346,15 @@ module X509Helpers
     end
 
     def certificate_issuer
-      'CN=Siemens Issuing CA EE Auth 2016,OU=Siemens Trust Center,serialNumber=ZZZZZZA2,O=Siemens,L=Muenchen,ST=Bayern,C=DE' # rubocop:disable convention:Layout/LineLength -- Keep single line for clarity
+      # rubocop:disable Layout/LineLength -- Keep single line for clarity
+      'CN=Siemens Issuing CA EE Auth 2016,OU=Siemens Trust Center,serialNumber=ZZZZZZA2,O=Siemens,L=Muenchen,ST=Bayern,C=DE'
+      # rubocop:enable Layout/LineLength
     end
 
     def tag_certificate_issuer
-      'CN=Siemens Issuing CA Medium Strength Authentication 2016,OU=Siemens Trust Center,serialNumber=ZZZZZZA6,O=Siemens,L=Muenchen,ST=Bayern,C=DE' # rubocop:disable convention:Layout/LineLength -- Keep single line for clarity
+      # rubocop:disable Layout/LineLength -- Keep single line for clarity
+      'CN=Siemens Issuing CA Medium Strength Authentication 2016,OU=Siemens Trust Center,serialNumber=ZZZZZZA6,O=Siemens,L=Muenchen,ST=Bayern,C=DE'
+      # rubocop:enable Layout/LineLength
     end
 
     def certificate_subject

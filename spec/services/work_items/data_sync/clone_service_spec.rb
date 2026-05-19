@@ -121,11 +121,26 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
         create(:work_item, :ticket, project: project, author: support_bot, service_desk_reply_to: 'user@example.com')
       end
 
-      it 'preserves the external author' do
-        new_work_item = service.execute[:work_item]
+      context 'when service desk is enabled on target project' do
+        before do
+          allow(ServiceDesk).to receive(:enabled?).and_return(true)
+        end
 
-        expect(new_work_item.service_desk_reply_to).to eq('user@example.com')
-        expect(new_work_item.external_author).to eq('user@example.com')
+        it 'preserves the external author' do
+          new_work_item = service.execute[:work_item]
+
+          expect(new_work_item.service_desk_reply_to).to eq('user@example.com')
+          expect(new_work_item.external_author).to eq('user@example.com')
+        end
+      end
+
+      context 'when service desk is not enabled on target project' do
+        it 'returns error' do
+          result = service.execute
+
+          expect(result[:status]).to eq(:error)
+          expect(result[:message]).to contain_exactly(/could not be found or is not accessible/)
+        end
       end
     end
   end

@@ -62,8 +62,8 @@ module GitLab
       end
 
       def display_success_message
-        $stdout.puts "\e[32mcreated\e[0m #{file_path}"
-        $stdout.puts "\e[32mcreated\e[0m #{spec_file_path}"
+        puts "\e[32mcreated\e[0m #{file_path}"
+        puts "\e[32mcreated\e[0m #{spec_file_path}"
       end
 
       def display_additional_info; end
@@ -73,7 +73,7 @@ module GitLab
       end
 
       def read_url(description)
-        $stdout.puts "\n>> #{description} (enter to skip):"
+        puts "\n>> #{description} (enter to skip):"
 
         loop do
           url = Readline.readline('?> ', false)&.strip
@@ -90,7 +90,7 @@ module GitLab
       end
 
       def read_variable(name, description, optional: false)
-        $stdout.puts "\n>> #{description}:"
+        puts "\n>> #{description}:"
 
         loop do
           variable = Readline.readline('?> ', false)&.strip

@@ -698,13 +698,20 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe '#groups_list_with_filtered_search_app_data' do
     let_it_be(:endpoint) { '/groups' }
+    let_it_be(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(user).to receive(:can_create_group?).and_return(true)
+    end
 
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.groups_list_with_filtered_search_app_data(endpoint))).to eq(
         {
           'endpoint' => endpoint,
           'initial_sort' => 'created_desc',
-          'base_path' => '/dashboard/groups'
+          'base_path' => '/dashboard/groups',
+          'can_create_group' => true
         }
       )
     end

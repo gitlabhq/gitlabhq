@@ -21,9 +21,7 @@ title: Gitaly on Kubernetes
 
 {{< /history >}}
 
-> [!disclaimer]
-
-Running Gitaly on Kubernetes has availability trade-offs, so consider these trade-offs when planing a production environment and set expectations accordingly.
+Running Gitaly on Kubernetes has availability trade-offs, so consider these trade-offs when planning a production environment and set expectations accordingly.
 This document describes and provides guidance on how to minimize, and plan for existing limitations.
 
 Gitaly on Kubernetes has been evaluated by the Gitaly team and determined to be a safe
@@ -103,7 +101,7 @@ To enable this field, perform the following steps on the nodes where Gitaly will
 
 ### Address pod disruption
 
-A pod can rotate for many reasons. Understanding and planing the service lifecycle helps minimize disruption.
+A pod can rotate for many reasons. Understanding and planning the service lifecycle helps minimize disruption.
 
 For example, with Gitaly, a Kubernetes `StatefulSet` rotates on `spec.template` object changes, which can happen during Helm Chart upgrades (labels, or image tag) or pod resource requests or limits updates.
 

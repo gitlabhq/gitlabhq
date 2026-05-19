@@ -202,7 +202,7 @@ Parameters:
 | `resource_label_event_id` | integer        | yes      | The ID of a label event |
 
 ```shell
-curl --request POST \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/11/resource_label_events/107"
 ```

@@ -5363,41 +5363,6 @@ paths:
       tags:
       - integrations
       operationId: putApiV4GroupsIdIntegrationsMattermostSlashCommands
-  "/api/v4/groups/{id}/integrations/slack-slash-commands":
-    put:
-      summary: Create/Edit Slack Slash Commands integration
-      description: Set Slack Slash Commands integration.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      - name: putApiV4GroupsIdIntegrationsSlackSlashCommands
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/putApiV4GroupsIdIntegrationsSlackSlashCommands"
-      responses:
-        '200':
-          description: Create/Edit Slack Slash Commands integration
-          schema:
-            "$ref": "#/definitions/API_Entities_IntegrationBasic"
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not found
-        '422':
-          description: Unprocessable entity
-      tags:
-      - integrations
-      operationId: putApiV4GroupsIdIntegrationsSlackSlashCommands
   "/api/v4/groups/{id}/integrations/packagist":
     put:
       summary: Create/Edit Packagist integration
@@ -6312,7 +6277,6 @@ paths:
         - linear
         - matrix
         - mattermost-slash-commands
-        - slack-slash-commands
         - packagist
         - phorge
         - pipelines-email
@@ -6393,7 +6357,6 @@ paths:
         - linear
         - matrix
         - mattermost-slash-commands
-        - slack-slash-commands
         - packagist
         - phorge
         - pipelines-email
@@ -7163,7 +7126,60 @@ paths:
       tags:
       - groups
       operationId: getApiV4GroupsIdIssuesStatistics
+  "/api/v4/groups/{id}/uploads/authorize":
+    post:
+      summary: Workhorse authorize the file upload
+      description: This feature was introduced in GitLab 19.0
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '200':
+          description: Workhorse authorize the file upload
+        '404':
+          description: Not found
+      tags:
+      - groups
+      operationId: postApiV4GroupsIdUploadsAuthorize
   "/api/v4/groups/{id}/uploads":
+    post:
+      summary: Upload a file to a group
+      description: Uploads a file to the specified group. Returns a markdown-formatted
+        link to the file.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      - name: postApiV4GroupsIdUploads
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4GroupsIdUploads"
+      responses:
+        '201':
+          description: Upload a file to a group
+          schema:
+            "$ref": "#/definitions/API_Entities_GroupUpload"
+        '400':
+          description: Bad request
+        '404':
+          description: Not found
+      tags:
+      - groups
+      operationId: postApiV4GroupsIdUploads
     get:
       description: Get the list of uploads of a group
       produces:
@@ -7263,7 +7279,7 @@ paths:
       operationId: deleteApiV4GroupsIdUploadsUploadId
   "/api/v4/groups/{id}/uploads/{secret}/{filename}":
     get:
-      description: Download a single project upload by secret and filename
+      description: Download a single group upload by secret and filename
       produces:
       - application/json
       parameters:
@@ -7284,7 +7300,7 @@ paths:
         required: true
       responses:
         '200':
-          description: Download a single project upload by secret and filename
+          description: Download a single group upload by secret and filename
           schema:
             type: file
         '403':
@@ -7366,8 +7382,9 @@ paths:
       operationId: getApiV4GroupsIdPackagesMaven*pathFileName
   "/api/v4/groups/{id}/members":
     get:
-      description: Gets a list of group or project members viewable by the authenticated
-        user.
+      description: |-
+        Gets a list of group or project members viewable by the authenticated user,
+                  excluding those with inherited membership from ancestor groups.
       produces:
       - application/json
       parameters:
@@ -7425,8 +7442,9 @@ paths:
         example: 20
       responses:
         '200':
-          description: Gets a list of group or project members viewable by the authenticated
-            user.
+          description: |-
+            Gets a list of group or project members viewable by the authenticated user,
+                      excluding those with inherited membership from ancestor groups.
           schema:
             type: array
             items:
@@ -7461,8 +7479,9 @@ paths:
       operationId: postApiV4GroupsIdMembers
   "/api/v4/groups/{id}/members/all":
     get:
-      description: Gets a list of group or project members viewable by the authenticated
-        user, including those who gained membership through ancestor group.
+      description: |-
+        Gets a list of group or project members viewable by the authenticated user,
+                  including those with inherited membership from ancestor groups.
       produces:
       - application/json
       parameters:
@@ -7515,8 +7534,9 @@ paths:
         example: 20
       responses:
         '200':
-          description: Gets a list of group or project members viewable by the authenticated
-            user, including those who gained membership through ancestor group.
+          description: |-
+            Gets a list of group or project members viewable by the authenticated user,
+                      including those with inherited membership from ancestor groups.
           schema:
             type: array
             items:
@@ -8183,12 +8203,19 @@ paths:
         example: title,description
       - in: query
         name: wip
-        description: Filter merge requests against their `wip` status. `yes` to return
-          only draft merge requests, `no` to return non-draft merge requests.
+        description: Deprecated. Use `draft` instead. Filter merge requests against
+          their `wip` status. `yes` to return only draft merge requests, `no` to return
+          non-draft merge requests.
         type: string
         enum:
         - 'yes'
         - 'no'
+        required: false
+      - in: query
+        name: draft
+        description: Filter merge requests against their `draft` status. `true` to
+          return only draft merge requests, `false` to return non-draft merge requests.
+        type: boolean
         required: false
       - in: query
         name: not[author_id]
@@ -8280,15 +8307,6 @@ paths:
         type: string
         required: false
         example: '2019-03-15T08:00:00Z'
-      - in: query
-        name: approved
-        description: Filters merge requests by their `approved` status. `yes` returns
-          only approved merge requests. `no` returns only non-approved merge requests.
-        type: string
-        enum:
-        - 'yes'
-        - 'no'
-        required: false
       - in: query
         name: merge_user_id
         description: Returns merge requests which have been merged by the user with
@@ -8612,7 +8630,7 @@ paths:
         example: k813f89485474661234z7109cve5709eFFFFFFFF
       - in: query
         name: same_file_name
-        description: The symbol file name
+        description: The symbol file name. Must match the 'file_name' parameter
         type: string
         required: true
       responses:
@@ -11481,6 +11499,23 @@ paths:
         format: int32
         required: true
         example: 88
+      - in: query
+        name: byte_offset
+        description: Byte offset to start reading from
+        type: integer
+        format: int32
+        minimum: 0
+        required: false
+        example: 0
+      - in: query
+        name: byte_limit
+        description: Maximum number of bytes to return
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 512000
+        required: false
+        example: 51200
       - in: path
         name: id
         type: integer
@@ -18420,12 +18455,19 @@ paths:
         example: title,description
       - in: query
         name: wip
-        description: Filter merge requests against their `wip` status. `yes` to return
-          only draft merge requests, `no` to return non-draft merge requests.
+        description: Deprecated. Use `draft` instead. Filter merge requests against
+          their `wip` status. `yes` to return only draft merge requests, `no` to return
+          non-draft merge requests.
         type: string
         enum:
         - 'yes'
         - 'no'
+        required: false
+      - in: query
+        name: draft
+        description: Filter merge requests against their `draft` status. `true` to
+          return only draft merge requests, `false` to return non-draft merge requests.
+        type: boolean
         required: false
       - in: query
         name: not[author_id]
@@ -18517,15 +18559,6 @@ paths:
         type: string
         required: false
         example: '2019-03-15T08:00:00Z'
-      - in: query
-        name: approved
-        description: Filters merge requests by their `approved` status. `yes` returns
-          only approved merge requests. `no` returns only non-approved merge requests.
-        type: string
-        enum:
-        - 'yes'
-        - 'no'
-        required: false
       - in: query
         name: merge_user_id
         description: Returns merge requests which have been merged by the user with
@@ -21458,41 +21491,6 @@ paths:
       tags:
       - integrations
       operationId: putApiV4ProjectsIdServicesMattermostSlashCommands
-  "/api/v4/projects/{id}/services/slack-slash-commands":
-    put:
-      summary: Create/Edit Slack Slash Commands integration
-      description: Set Slack Slash Commands integration.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      - name: putApiV4ProjectsIdServicesSlackSlashCommands
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/putApiV4ProjectsIdServicesSlackSlashCommands"
-      responses:
-        '200':
-          description: Create/Edit Slack Slash Commands integration
-          schema:
-            "$ref": "#/definitions/API_Entities_IntegrationBasic"
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not found
-        '422':
-          description: Unprocessable entity
-      tags:
-      - integrations
-      operationId: putApiV4ProjectsIdServicesSlackSlashCommands
   "/api/v4/projects/{id}/services/packagist":
     put:
       summary: Create/Edit Packagist integration
@@ -22407,7 +22405,6 @@ paths:
         - linear
         - matrix
         - mattermost-slash-commands
-        - slack-slash-commands
         - packagist
         - phorge
         - pipelines-email
@@ -22488,7 +22485,6 @@ paths:
         - linear
         - matrix
         - mattermost-slash-commands
-        - slack-slash-commands
         - packagist
         - phorge
         - pipelines-email
@@ -22563,35 +22559,6 @@ paths:
       tags:
       - integrations
       operationId: postApiV4ProjectsIdServicesMattermostSlashCommandsTrigger
-  "/api/v4/projects/{id}/services/slack_slash_commands/trigger":
-    post:
-      summary: Trigger a slash command for slack-slash-commands
-      description: Added in GitLab 8.13
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID or URL-encoded path of the project
-        type: string
-        required: true
-      - name: postApiV4ProjectsIdServicesSlackSlashCommandsTrigger
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4ProjectsIdServicesSlackSlashCommandsTrigger"
-      responses:
-        '201':
-          description: Trigger a slash command for slack-slash-commands
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not found
-      tags:
-      - integrations
-      operationId: postApiV4ProjectsIdServicesSlackSlashCommandsTrigger
   "/api/v4/projects/{id}/integrations":
     get:
       summary: List all active integrations
@@ -23528,41 +23495,6 @@ paths:
       tags:
       - integrations
       operationId: putApiV4ProjectsIdIntegrationsMattermostSlashCommands
-  "/api/v4/projects/{id}/integrations/slack-slash-commands":
-    put:
-      summary: Create/Edit Slack Slash Commands integration
-      description: Set Slack Slash Commands integration.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      - name: putApiV4ProjectsIdIntegrationsSlackSlashCommands
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/putApiV4ProjectsIdIntegrationsSlackSlashCommands"
-      responses:
-        '200':
-          description: Create/Edit Slack Slash Commands integration
-          schema:
-            "$ref": "#/definitions/API_Entities_IntegrationBasic"
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not found
-        '422':
-          description: Unprocessable entity
-      tags:
-      - integrations
-      operationId: putApiV4ProjectsIdIntegrationsSlackSlashCommands
   "/api/v4/projects/{id}/integrations/packagist":
     put:
       summary: Create/Edit Packagist integration
@@ -24477,7 +24409,6 @@ paths:
         - linear
         - matrix
         - mattermost-slash-commands
-        - slack-slash-commands
         - packagist
         - phorge
         - pipelines-email
@@ -24558,7 +24489,6 @@ paths:
         - linear
         - matrix
         - mattermost-slash-commands
-        - slack-slash-commands
         - packagist
         - phorge
         - pipelines-email
@@ -24633,35 +24563,6 @@ paths:
       tags:
       - integrations
       operationId: postApiV4ProjectsIdIntegrationsMattermostSlashCommandsTrigger
-  "/api/v4/projects/{id}/integrations/slack_slash_commands/trigger":
-    post:
-      summary: Trigger a slash command for slack-slash-commands
-      description: Added in GitLab 8.13
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID or URL-encoded path of the project
-        type: string
-        required: true
-      - name: postApiV4ProjectsIdIntegrationsSlackSlashCommandsTrigger
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4ProjectsIdIntegrationsSlackSlashCommandsTrigger"
-      responses:
-        '201':
-          description: Trigger a slash command for slack-slash-commands
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not found
-      tags:
-      - integrations
-      operationId: postApiV4ProjectsIdIntegrationsSlackSlashCommandsTrigger
   "/api/v4/projects/{id}/invitations":
     post:
       summary: Invite non-members by email address to a group or project.
@@ -26560,8 +26461,9 @@ paths:
       operationId: putApiV4ProjectsIdPackagesMaven*pathFileNameAuthorize
   "/api/v4/projects/{id}/members":
     get:
-      description: Gets a list of group or project members viewable by the authenticated
-        user.
+      description: |-
+        Gets a list of group or project members viewable by the authenticated user,
+                  excluding those with inherited membership from ancestor groups.
       produces:
       - application/json
       parameters:
@@ -26619,8 +26521,9 @@ paths:
         example: 20
       responses:
         '200':
-          description: Gets a list of group or project members viewable by the authenticated
-            user.
+          description: |-
+            Gets a list of group or project members viewable by the authenticated user,
+                      excluding those with inherited membership from ancestor groups.
           schema:
             type: array
             items:
@@ -26655,8 +26558,9 @@ paths:
       operationId: postApiV4ProjectsIdMembers
   "/api/v4/projects/{id}/members/all":
     get:
-      description: Gets a list of group or project members viewable by the authenticated
-        user, including those who gained membership through ancestor group.
+      description: |-
+        Gets a list of group or project members viewable by the authenticated user,
+                  including those with inherited membership from ancestor groups.
       produces:
       - application/json
       parameters:
@@ -26709,8 +26613,9 @@ paths:
         example: 20
       responses:
         '200':
-          description: Gets a list of group or project members viewable by the authenticated
-            user, including those who gained membership through ancestor group.
+          description: |-
+            Gets a list of group or project members viewable by the authenticated user,
+                      including those with inherited membership from ancestor groups.
           schema:
             type: array
             items:
@@ -27245,12 +27150,19 @@ paths:
         example: title,description
       - in: query
         name: wip
-        description: Filter merge requests against their `wip` status. `yes` to return
-          only draft merge requests, `no` to return non-draft merge requests.
+        description: Deprecated. Use `draft` instead. Filter merge requests against
+          their `wip` status. `yes` to return only draft merge requests, `no` to return
+          non-draft merge requests.
         type: string
         enum:
         - 'yes'
         - 'no'
+        required: false
+      - in: query
+        name: draft
+        description: Filter merge requests against their `draft` status. `true` to
+          return only draft merge requests, `false` to return non-draft merge requests.
+        type: boolean
         required: false
       - in: query
         name: not[author_id]
@@ -27342,15 +27254,6 @@ paths:
         type: string
         required: false
         example: '2019-03-15T08:00:00Z'
-      - in: query
-        name: approved
-        description: Filters merge requests by their `approved` status. `yes` returns
-          only approved merge requests. `no` returns only non-approved merge requests.
-        type: string
-        enum:
-        - 'yes'
-        - 'no'
-        required: false
       - in: query
         name: merge_user_id
         description: Returns merge requests which have been merged by the user with
@@ -28770,7 +28673,7 @@ paths:
   "/api/v4/projects/{id}/packages/npm/{package_name}":
     put:
       summary: Create or deprecate NPM package
-      description: Create was introduced in GitLab 11.8 & deprecate suppport was added
+      description: Create was introduced in GitLab 11.8 & deprecate support was added
         in 16.0
       produces:
       - application/json
@@ -28894,7 +28797,7 @@ paths:
         example: k813f89485474661234z7109cve5709eFFFFFFFF
       - in: query
         name: same_file_name
-        description: The symbol file name
+        description: The symbol file name. Must match the 'file_name' parameter
         type: string
         required: true
       responses:
@@ -32225,6 +32128,12 @@ paths:
         type: boolean
         required: false
       - in: formData
+        name: override_params[mr_default_title_template]
+        description: Template used to generate the default merge request title. Maximum
+          100 characters.
+        type: string
+        required: false
+      - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
         description: Blocks merge requests from merging unless all status checks have
           passed
@@ -32991,6 +32900,12 @@ paths:
         name: override_params[mr_default_target_self]
         description: Merge requests of this forked project targets itself by default
         type: boolean
+        required: false
+      - in: formData
+        name: override_params[mr_default_title_template]
+        description: Template used to generate the default merge request title. Maximum
+          100 characters.
+        type: string
         required: false
       - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
@@ -33799,6 +33714,12 @@ paths:
         name: override_params[mr_default_target_self]
         description: Merge requests of this forked project targets itself by default
         type: boolean
+        required: false
+      - in: formData
+        name: override_params[mr_default_title_template]
+        description: Template used to generate the default merge request title. Maximum
+          100 characters.
+        type: string
         required: false
       - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
@@ -37214,8 +37135,8 @@ paths:
     delete:
       summary: Delete a release
       description: Delete a release. Deleting a release doesn't delete the associated
-        tag. Maintainer level access to the project is required to delete a release.
-        This feature was introduced in GitLab 11.7.
+        tag. Requires at least the Developer role for the project. This feature was
+        introduced in GitLab 11.7.
       produces:
       - application/json
       parameters:
@@ -40518,7 +40439,7 @@ paths:
         items:
           type: boolean
       responses:
-        '200':
+        '201':
           description: Start a new GitLab Migration
           schema:
             "$ref": "#/definitions/API_Entities_BulkImport"
@@ -43303,6 +43224,49 @@ paths:
       tags:
       - container_registry
       operationId: getApiV4RegistryRepositoriesId
+  "/api/v4/databases/{database_name}/dictionary/tables":
+    get:
+      summary: List dictionary tables
+      description: Returns database dictionary tables filtered by database and optional
+        table size
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: database_name
+        description: The database name
+        type: string
+        enum:
+        - main
+        - ci
+        - sec
+        - embedding
+        - geo
+        required: true
+      - in: query
+        name: table_size
+        description: Filter by table size classification
+        type: string
+        enum:
+        - small
+        - medium
+        - large
+        - over_limit
+        required: false
+      responses:
+        '200':
+          description: List dictionary tables
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_Dictionary_Table"
+        '401':
+          description: 401 Unauthorized
+        '403':
+          description: 403 Forbidden
+      tags:
+      - database_dictionary
+      operationId: getApiV4DatabasesDatabaseNameDictionaryTables
   "/api/v4/events":
     get:
       summary: List currently authenticated user's events
@@ -45135,12 +45099,19 @@ paths:
         example: title,description
       - in: query
         name: wip
-        description: Filter merge requests against their `wip` status. `yes` to return
-          only draft merge requests, `no` to return non-draft merge requests.
+        description: Deprecated. Use `draft` instead. Filter merge requests against
+          their `wip` status. `yes` to return only draft merge requests, `no` to return
+          non-draft merge requests.
         type: string
         enum:
         - 'yes'
         - 'no'
+        required: false
+      - in: query
+        name: draft
+        description: Filter merge requests against their `draft` status. `true` to
+          return only draft merge requests, `false` to return non-draft merge requests.
+        type: boolean
         required: false
       - in: query
         name: not[author_id]
@@ -45232,15 +45203,6 @@ paths:
         type: string
         required: false
         example: '2019-03-15T08:00:00Z'
-      - in: query
-        name: approved
-        description: Filters merge requests by their `approved` status. `yes` returns
-          only approved merge requests. `no` returns only non-approved merge requests.
-        type: string
-        enum:
-        - 'yes'
-        - 'no'
-        required: false
       - in: query
         name: merge_user_id
         description: Returns merge requests which have been merged by the user with
@@ -45657,6 +45619,38 @@ paths:
       tags:
       - offline_transfers
       operationId: getApiV4OfflineExportsId
+  "/api/v4/offline_imports":
+    post:
+      summary: Start a new offline transfer import
+      description: Initiates a new offline transfer import from object storage
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: postApiV4OfflineImports
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4OfflineImports"
+      responses:
+        '201':
+          description: Start a new offline transfer import
+          schema:
+            "$ref": "#/definitions/API_Entities_BulkImport"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '422':
+          description: Unprocessable entity
+        '429':
+          description: Too many requests
+      tags:
+      - offline_transfers
+      operationId: postApiV4OfflineImports
   "/api/v4/organizations":
     post:
       summary: Create an organization
@@ -46013,8 +46007,9 @@ paths:
       operationId: postApiV4PersonalAccessTokensIdRotate
   "/api/v4/search":
     get:
-      summary: Search on GitLab
-      description: This feature was introduced in GitLab 10.5.
+      summary: Search an instance
+      description: Searches for a term across the entire GitLab instance. The response
+        depends on the requested scope.
       produces:
       - application/json
       parameters:
@@ -46119,7 +46114,7 @@ paths:
         example: 20
       responses:
         '200':
-          description: Search on GitLab
+          description: Search an instance
       tags:
       - search
       operationId: getApiV4Search
@@ -48313,11 +48308,15 @@ definitions:
         type: boolean
       archive_project:
         type: boolean
+      admin_ai_catalog_item_consumer:
+        type: boolean
       remove_project:
         type: boolean
       remove_group:
         type: boolean
       manage_security_policy_link:
+        type: boolean
+      admin_ai_catalog_item:
         type: boolean
       admin_compliance_framework:
         type: boolean
@@ -48338,8 +48337,6 @@ definitions:
       admin_protected_branch:
         type: boolean
       admin_protected_environments:
-        type: boolean
-      manage_protected_tags:
         type: boolean
       admin_push_rules:
         type: boolean
@@ -48392,9 +48389,11 @@ definitions:
     - apply_security_scan_profiles
     - admin_merge_request
     - archive_project
+    - admin_ai_catalog_item_consumer
     - remove_project
     - remove_group
     - manage_security_policy_link
+    - admin_ai_catalog_item
     - admin_compliance_framework
     - admin_cicd_variables
     - manage_deploy_tokens
@@ -48405,7 +48404,6 @@ definitions:
     - manage_project_access_tokens
     - admin_protected_branch
     - admin_protected_environments
-    - manage_protected_tags
     - admin_push_rules
     - admin_runners
     - admin_security_attributes
@@ -48490,18 +48488,26 @@ definitions:
     properties:
       name:
         type: string
+        example: Pipeline Status
       link_url:
         type: string
+        example: https://example.gitlab.com
       image_url:
         type: string
+        example: https://example.gitlab.com
       rendered_link_url:
         type: string
+        example: https://example.gitlab.com
       rendered_image_url:
         type: string
+        example: https://example.gitlab.com
       id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       kind:
         type: string
+        example: project
     required:
     - name
     - link_url
@@ -48516,14 +48522,19 @@ definitions:
     properties:
       name:
         type: string
+        example: Pipeline Status
       link_url:
         type: string
+        example: https://example.gitlab.com
       image_url:
         type: string
+        example: https://example.gitlab.com
       rendered_link_url:
         type: string
+        example: https://example.gitlab.com
       rendered_image_url:
         type: string
+        example: https://example.gitlab.com
     required:
     - name
     - link_url
@@ -48577,8 +48588,10 @@ definitions:
         format: int32
       web_url:
         type: string
+        example: http://gitlab.example.com/groups/diaspora
       name:
         type: string
+        example: Diaspora
       path:
         type: string
       description:
@@ -48708,6 +48721,10 @@ definitions:
         type: string
       duo_namespace_access_rules:
         type: string
+      built_in_project_templates_enabled:
+        type: boolean
+      lock_built_in_project_templates_enabled:
+        type: boolean
     required:
     - id
     - web_url
@@ -49039,9 +49056,23 @@ definitions:
       duo_foundational_flows_availability:
         type: boolean
         description: Enable GitLab foundational Duo flows for this group
-      tool_approval_for_session_availability:
+      duo_custom_agents_availability:
         type: boolean
-        description: Enable tool approval for session for this group
+        description: Enable GitLab Duo custom agents for this group
+      duo_custom_flows_availability:
+        type: boolean
+        description: Enable GitLab Duo custom flows for this group
+      duo_external_agents_availability:
+        type: boolean
+        description: Enable GitLab Duo external agents for this group
+      tool_approval_for_session_availability:
+        type: string
+        description: Tool approval for session availability. One of `default_on`,
+          `default_off` or `never_on`
+        enum:
+        - default_on
+        - default_off
+        - never_on
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request
@@ -49079,6 +49110,10 @@ definitions:
           ai_usage_data_collection_enabled:
             type: boolean
             description: Enable AI usage data collection for this namespace
+          ai_catalog_restricted_to_group_hierarchy:
+            type: boolean
+            description: Restrict the AI Catalog to items within this top-level group
+              hierarchy
           foundational_agents_default_enabled:
             type: boolean
             description: Whether new foundational agents are enabled by default
@@ -49090,6 +49125,17 @@ definitions:
             - no_checks
             - log_only
             - interrupt
+          include_recommended_allowed:
+            type: boolean
+            description: Whether to include recommended domains in the network access
+              allowlist
+          allow_all_unix_sockets:
+            type: boolean
+            description: Whether to allow all Unix sockets for network access
+          allow_project_extension:
+            type: boolean
+            description: Whether to allow projects to extend the network access domain
+              allowlist
           minimum_access_level_execute:
             type: integer
             format: int32
@@ -49316,9 +49362,23 @@ definitions:
       duo_foundational_flows_availability:
         type: boolean
         description: Enable GitLab foundational Duo flows for this group
-      tool_approval_for_session_availability:
+      duo_custom_agents_availability:
         type: boolean
-        description: Enable tool approval for session for this group
+        description: Enable GitLab Duo custom agents for this group
+      duo_custom_flows_availability:
+        type: boolean
+        description: Enable GitLab Duo custom flows for this group
+      duo_external_agents_availability:
+        type: boolean
+        description: Enable GitLab Duo external agents for this group
+      tool_approval_for_session_availability:
+        type: string
+        description: Tool approval for session availability. One of `default_on`,
+          `default_off` or `never_on`
+        enum:
+        - default_on
+        - default_off
+        - never_on
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request
@@ -49356,6 +49416,10 @@ definitions:
           ai_usage_data_collection_enabled:
             type: boolean
             description: Enable AI usage data collection for this namespace
+          ai_catalog_restricted_to_group_hierarchy:
+            type: boolean
+            description: Restrict the AI Catalog to items within this top-level group
+              hierarchy
           foundational_agents_default_enabled:
             type: boolean
             description: Whether new foundational agents are enabled by default
@@ -49367,6 +49431,17 @@ definitions:
             - no_checks
             - log_only
             - interrupt
+          include_recommended_allowed:
+            type: boolean
+            description: Whether to include recommended domains in the network access
+              allowlist
+          allow_all_unix_sockets:
+            type: boolean
+            description: Whether to allow all Unix sockets for network access
+          allow_project_extension:
+            type: boolean
+            description: Whether to allow projects to extend the network access domain
+              allowlist
           minimum_access_level_execute:
             type: integer
             format: int32
@@ -49498,6 +49573,11 @@ definitions:
         description: References of enabled foundational flows
         items:
           type: string
+      duo_template_project_id:
+        type: integer
+        format: int32
+        description: The ID of a project to use as the Duo Code Review custom instructions
+          template for this group
       allow_personal_snippets:
         type: boolean
         description: Allow creation of personal snippets for enterprise users of this
@@ -49531,6 +49611,12 @@ definitions:
                 type: string
           required:
           - features
+      built_in_project_templates_enabled:
+        type: boolean
+        description: Enable built-in project templates for project creation
+      lock_built_in_project_templates_enabled:
+        type: boolean
+        description: Enforce the built-in project templates setting for all subgroups
     description: Update a group. Available only for users who can administrate groups.
   API_Entities_GroupDetail:
     type: object
@@ -49540,8 +49626,10 @@ definitions:
         format: int32
       web_url:
         type: string
+        example: http://gitlab.example.com/groups/diaspora
       name:
         type: string
+        example: Diaspora
       path:
         type: string
       description:
@@ -49671,14 +49759,22 @@ definitions:
         type: string
       duo_namespace_access_rules:
         type: string
+      built_in_project_templates_enabled:
+        type: boolean
+      lock_built_in_project_templates_enabled:
+        type: boolean
       shared_with_groups:
-        type: string
+        type: array
+        items:
+          type: object
       runners_token:
         type: string
+        example: b8bc4a7a29eb76ea83cf79e4908c2b
       enabled_git_access_protocol:
         type: string
+        example: ssh
       prevent_sharing_groups_outside_hierarchy:
-        type: string
+        type: boolean
       step_up_auth_required_oauth_provider:
         type: string
         description: OAuth provider required for step-up authentication.
@@ -49794,12 +49890,14 @@ definitions:
         type: array
         items:
           type: string
-        example: tag
+        example:
+        - tag
       topics:
         type: array
         items:
           type: string
-        example: topic
+        example:
+        - topic
       ssh_url_to_repo:
         type: string
         example: git@gitlab.example.com:gitlab/gitlab.git
@@ -49883,8 +49981,12 @@ definitions:
         - cluster_agents
       marked_for_deletion_at:
         type: string
+        format: date-time
+        example: '2020-05-07T04:27:17.016Z'
       marked_for_deletion_on:
         type: string
+        format: date-time
+        example: '2020-05-07T04:27:17.016Z'
       packages_enabled:
         type: boolean
       empty_repo:
@@ -50083,7 +50185,7 @@ definitions:
       shared_with_groups:
         type: array
         items:
-          type: string
+          type: object
       only_allow_merge_if_pipeline_succeeds:
         type: boolean
       allow_merge_on_skipped_pipeline:
@@ -50111,6 +50213,9 @@ definitions:
         type: string
         example: "%(title)"
       squash_commit_template:
+        type: string
+        example: "%(source_branch)"
+      mr_default_title_template:
         type: string
         example: "%(source_branch)"
       issue_branch_template:
@@ -50162,6 +50267,8 @@ definitions:
       merge_trains_enabled:
         type: string
       merge_trains_skip_train_allowed:
+        type: string
+      max_pipelines_per_merge_train:
         type: string
       only_allow_merge_if_all_status_checks_passed:
         type: string
@@ -50273,6 +50380,7 @@ definitions:
     - suggestion_commit_message
     - merge_commit_template
     - squash_commit_template
+    - mr_default_title_template
     - issue_branch_template
     - warn_about_potentially_unwanted_characters
     - autoclose_referenced_issues
@@ -50376,12 +50484,14 @@ definitions:
         type: array
         items:
           type: string
-        example: tag
+        example:
+        - tag
       topics:
         type: array
         items:
           type: string
-        example: topic
+        example:
+        - topic
       ssh_url_to_repo:
         type: string
         example: git@gitlab.example.com:gitlab/gitlab.git
@@ -50472,27 +50582,49 @@ definitions:
     type: object
     properties:
       commit_count:
-        type: string
+        type: integer
+        format: int32
+        example: 37
       storage_size:
-        type: string
+        type: integer
+        format: int32
+        example: 1038090
       repository_size:
-        type: string
+        type: integer
+        format: int32
+        example: 1038090
       wiki_size:
-        type: string
+        type: integer
+        format: int32
+        example: 0
       lfs_objects_size:
-        type: string
+        type: integer
+        format: int32
+        example: 0
       job_artifacts_size:
-        type: string
+        type: integer
+        format: int32
+        example: 0
       pipeline_artifacts_size:
-        type: string
+        type: integer
+        format: int32
+        example: 0
       packages_size:
-        type: string
+        type: integer
+        format: int32
+        example: 0
       snippets_size:
-        type: string
+        type: integer
+        format: int32
+        example: 0
       uploads_size:
-        type: string
+        type: integer
+        format: int32
+        example: 0
       container_registry_size:
-        type: string
+        type: integer
+        format: int32
+        example: 0
     required:
     - commit_count
     - storage_size
@@ -50559,19 +50691,23 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       author_id:
-        type: string
+        type: integer
+        format: int32
       entity_id:
-        type: string
+        type: integer
+        format: int32
       entity_type:
         type: string
       event_name:
         type: string
       details:
-        type: string
+        type: object
       created_at:
         type: string
+        format: date-time
     required:
     - id
     - author_id
@@ -50695,7 +50831,7 @@ definitions:
         type: boolean
       private_profile:
         type: boolean
-        example: 'null'
+        example: false
       commit_email:
         type: string
       preferred_language:
@@ -51148,8 +51284,10 @@ definitions:
         format: int32
       web_url:
         type: string
+        example: http://gitlab.example.com/groups/diaspora
       name:
         type: string
+        example: Diaspora
     required:
     - id
     - web_url
@@ -51414,12 +51552,14 @@ definitions:
         type: array
         items:
           type: string
-        example: main
+        example:
+        - main
       architectures:
         type: array
         items:
           type: string
-        example: amd64
+        example:
+        - amd64
     required:
     - id
     - codename
@@ -51812,8 +51952,7 @@ definitions:
         type: string
         example: Jenkins CI
       slug:
-        type: integer
-        format: int32
+        type: string
         example: jenkins
       created_at:
         type: string
@@ -52651,13 +52790,14 @@ definitions:
       jira_auth_type:
         type: integer
         format: int32
-        description: The authentication method to use with Jira. Use `0` for Basic
-          Authentication, and `1` for Jira personal access token. Defaults to `0`.
+        description: The authentication method to use with Jira. Use `0` for basic
+          authentication, `1` for Jira personal access token, and `2` for Jira Cloud
+          service accounts. Defaults to `0`.
       username:
         type: string
         description: The email or username to use with Jira. Use an email for Jira
           Cloud, and a username for Jira Data Center and Jira Server. Required when
-          using Basic Authentication (`jira_auth_type` is `0`).
+          using basic authentication (`jira_auth_type` is `0`).
       password:
         type: string
         description: The Jira API token, password, or personal access token to use
@@ -52855,19 +52995,6 @@ definitions:
     required:
     - token
     description: Create/Edit Mattermost Slash Commands integration
-  putApiV4GroupsIdIntegrationsSlackSlashCommands:
-    type: object
-    properties:
-      token:
-        type: string
-        description: The Slack token.
-      use_inherited_settings:
-        type: boolean
-        description: Indicates whether to inherit the default settings. Defaults to
-          `false`.
-    required:
-    - token
-    description: Create/Edit Slack Slash Commands integration
   putApiV4GroupsIdIntegrationsPackagist:
     type: object
     properties:
@@ -52937,6 +53064,9 @@ definitions:
         description: Branches to send notifications for. Valid options are `all`,
           `default`, `protected`, and `default_and_protected`. The default value is
           `default`.
+      notify_child_pipelines:
+        type: boolean
+        description: Send notifications for child pipelines.
       pipeline_events:
         type: boolean
         description: Trigger event when a pipeline status changes.
@@ -53822,8 +53952,7 @@ definitions:
         type: string
         example: Jenkins CI
       slug:
-        type: integer
-        format: int32
+        type: string
         example: jenkins
       created_at:
         type: string
@@ -54030,7 +54159,8 @@ definitions:
         type: array
         items:
           type: string
-        example: bug
+        example:
+        - bug
       milestone:
         "$ref": "#/definitions/API_Entities_Milestone"
       assignees:
@@ -54079,26 +54209,37 @@ definitions:
       task_completion_status:
         "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       weight:
-        type: string
+        type: integer
+        format: int32
+        example: 5
       blocking_issues_count:
-        type: string
+        type: integer
+        format: int32
+        example: 2
       has_tasks:
-        type: string
+        type: boolean
+        example: true
       task_status:
         type: string
+        example: 2 of 4 tasks completed
       _links:
         type: object
         properties:
           self:
             type: string
+            example: http://example.com/api/v4/projects/1/issues/2
           notes:
             type: string
+            example: http://example.com/api/v4/projects/1/issues/2/notes
           award_emoji:
             type: string
+            example: http://example.com/api/v4/projects/1/issues/2/award_emoji
           project:
             type: string
+            example: http://example.com/api/v4/projects/1
           closed_as_duplicate_of:
             type: string
+            example: http://example.com/api/v4/projects/1/issues/75
         required:
         - self
         - notes
@@ -54111,16 +54252,21 @@ definitions:
         type: string
         description: One of ["UNKNOWN", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
       subscribed:
-        type: string
+        type: boolean
+        example: false
       moved_to_id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       imported:
-        type: string
+        type: boolean
+        example: false
       imported_from:
         type: string
         example: github
       service_desk_reply_to:
         type: string
+        example: user@example.com
       epic_iid:
         type: string
       epic:
@@ -54292,29 +54438,50 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       iid:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       sequence:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       group_id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       title:
         type: string
+        example: Iteration I
       description:
         type: string
+        example: Iteration description
       state:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       created_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       updated_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       start_date:
         type: string
+        format: date
+        example: '2022-01-01'
       due_date:
         type: string
+        format: date
+        example: '2022-01-31'
       web_url:
         type: string
+        example: https://gitlab.example.com/groups/gitlab-org/-/iterations/1
     required:
     - id
     - iid
@@ -54328,17 +54495,59 @@ definitions:
     - start_date
     - due_date
     - web_url
+  postApiV4GroupsIdUploads:
+    type: object
+    properties:
+      file:
+        type: file
+        description: The file to upload
+    required:
+    - file
+    description: Upload a file to a group
+  API_Entities_GroupUpload:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        description: The ID of the file
+      alt:
+        type: string
+        description: The name of the file
+      url:
+        type: string
+        description: The URL to access the file
+      full_path:
+        type: string
+        description: The full path to the file
+      markdown:
+        type: string
+        description: A markdown-formatted link to the file.
+    required:
+    - id
+    - alt
+    - url
+    - full_path
+    - markdown
+    description: API_Entities_GroupUpload model
   API_Entities_MarkdownUploadAdmin:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       size:
-        type: string
+        type: integer
+        format: int32
+        example: 1024
       filename:
         type: string
+        example: image.png
       created_at:
         type: string
+        format: date-time
+        example: '2012-06-28T10:52:04Z'
       uploaded_by:
         "$ref": "#/definitions/API_Entities_UserSafe"
     required:
@@ -54500,10 +54709,14 @@ definitions:
         "$ref": "#/definitions/API_Entities_UserBasic"
       merged_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       closed_by:
         "$ref": "#/definitions/API_Entities_UserBasic"
       closed_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       title_html:
         type: string
       description_html:
@@ -54536,7 +54749,9 @@ definitions:
         type: integer
         format: int32
       labels:
-        type: string
+        type: array
+        items:
+          type: string
       draft:
         type: boolean
       imported:
@@ -54552,48 +54767,61 @@ definitions:
         type: boolean
       merge_status:
         type: string
+        example: unchecked
       detailed_merge_status:
         type: string
+        example: mergeable
       merge_after:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       sha:
         type: string
+        example: 1234abcd
       merge_commit_sha:
         type: string
+        example: 1234abcd
       squash_commit_sha:
         type: string
+        example: 1234abcd
       discussion_locked:
-        type: string
+        type: boolean
       should_remove_source_branch:
-        type: string
+        type: boolean
       force_remove_source_branch:
-        type: string
+        type: boolean
       prepared_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       allow_collaboration:
-        type: string
+        type: boolean
       allow_maintainer_to_push:
-        type: string
+        type: boolean
       reference:
         type: string
+        example: "!1"
       references:
         "$ref": "#/definitions/API_Entities_IssuableReferences"
       web_url:
         type: string
+        example: https://gitlab.example.com/my-group/my-project/-/merge_requests/1
       time_stats:
         "$ref": "#/definitions/API_Entities_IssuableTimeStats"
       squash:
-        type: string
+        type: boolean
       squash_on_merge:
-        type: string
+        type: boolean
       task_completion_status:
         "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       has_conflicts:
-        type: string
+        type: boolean
       blocking_discussions_resolved:
-        type: string
+        type: boolean
       approvals_before_merge:
-        type: string
+        type: integer
+        format: int32
+        example: 2
     required:
     - id
     - iid
@@ -54652,7 +54880,8 @@ definitions:
     properties:
       dist_tags:
         type: object
-        example: '{ "latest":"1.0.1" }'
+        example:
+          latest: 1.0.1
     required:
     - dist_tags
     description: API_Entities_NpmPackageTag model
@@ -54673,17 +54902,17 @@ definitions:
         example: my_package
       versions:
         type: object
-        example: |-
-          {
-                           "1.0.0": {
-                             "name": "my_package",
-                             "version": "1.0.0",
-                             "dist": { "shasum": "12345", "tarball": "https://..." }
-                           }
-                         }
+        example:
+          1.0.0:
+            name: my_package
+            version: 1.0.0
+            dist:
+              shasum: '12345'
+              tarball: https://...
       dist-tags:
         type: object
-        example: '{ "latest":"1.0.1" }'
+        example:
+          latest: 1.0.1
     required:
     - name
     - versions
@@ -54699,9 +54928,10 @@ definitions:
         type: array
         items:
           type: object
-        example: '{ "@id": "https://gitlab.com/api/v4/projects/1/packages/nuget/query",
-          "@type": "SearchQueryService", "comment": "Filter and search for packages
-          by keyword."}'
+        example:
+        - "@id": https://gitlab.com/api/v4/projects/1/packages/nuget/query
+          "@type": SearchQueryService
+          comment: Filter and search for packages by keyword.
     required:
     - version
     - resources
@@ -55040,7 +55270,8 @@ definitions:
         type: array
         items:
           type: string
-        example: 2a4b78934375d7f53875269ffd4f45fd83a84ebe
+        example:
+        - 2a4b78934375d7f53875269ffd4f45fd83a84ebe
       title:
         type: string
         example: Initial commit
@@ -55069,11 +55300,14 @@ definitions:
         example: '2012-05-28T04:42:42-07:00'
       trailers:
         type: object
-        example: '{ "Merged-By": "Jane Doe janedoe@gitlab.com" }'
+        example:
+          Merged-By: Jane Doe janedoe@gitlab.com
       extended_trailers:
         type: object
-        example: '{ "Signed-off-by": ["John Doe <johndoe@gitlab.com>", "Jane Doe <janedoe@gitlab.com>"]
-          }'
+        example:
+          Signed-off-by:
+          - John Doe <johndoe@gitlab.com>
+          - Jane Doe <janedoe@gitlab.com>
       web_url:
         type: string
         example: https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746
@@ -55130,9 +55364,13 @@ definitions:
         type: object
         properties:
           total:
-            type: string
+            type: integer
+            format: int32
+            example: 10
           closed:
-            type: string
+            type: integer
+            format: int32
+            example: 5
         required:
         - total
         - closed
@@ -55305,8 +55543,7 @@ definitions:
       wiki_page_meta_id:
         type: integer
         format: int32
-        example:
-          wiki_page_meta_id: 123
+        example: 123
     required:
     - format
     - slug
@@ -55328,8 +55565,7 @@ definitions:
       wiki_page_meta_id:
         type: integer
         format: int32
-        example:
-          wiki_page_meta_id: 123
+        example: 123
       content:
         type: string
         example: Here is an instruction how to deploy this project.
@@ -56000,6 +56236,7 @@ definitions:
         - jacoco
         - scip
         - sarif
+        - environment_key
         example: archive
       size:
         type: integer
@@ -56482,13 +56719,12 @@ definitions:
         example: "/test-group/test-project/-/pipelines/287"
       illustration:
         type: object
-        example: |
-          {
-            "image": "illustrations/empty-state/empty-job-not-triggered-md.svg",
-            "size": "",
-            "title": "This job has not been triggered yet",
-            "content": "This job depends on upstream jobs that need to succeed in order for this job to be triggered"
-          }
+        example:
+          image: illustrations/empty-state/empty-job-not-triggered-md.svg
+          size: ''
+          title: This job has not been triggered yet
+          content: This job depends on upstream jobs that need to succeed in order
+            for this job to be triggered
       favicon:
         type: string
         example: "/assets/ci_favicons/favicon_status_success.png"
@@ -56846,7 +57082,7 @@ definitions:
         type: string
         example: 'Failure/Error: is_expected.to eq(3)'
       recent_failures:
-        type: string
+        type: object
         example:
           count: 3
           base_branch: develop
@@ -57271,7 +57507,7 @@ definitions:
         type: string
         format: date-time
         description: Timestamp of when the pipeline trigger token expires.
-        example: '2024-07-01'
+        example: '2024-07-01T00:00:00.000Z'
     required:
     - description
     description: Create a trigger token
@@ -57511,7 +57747,8 @@ definitions:
         type: array
         items:
           type: string
-        example: 2a4b78934375d7f53875269ffd4f45fd83a84ebe
+        example:
+        - 2a4b78934375d7f53875269ffd4f45fd83a84ebe
       title:
         type: string
         example: Initial commit
@@ -57540,11 +57777,14 @@ definitions:
         example: '2012-05-28T04:42:42-07:00'
       trailers:
         type: object
-        example: '{ "Merged-By": "Jane Doe janedoe@gitlab.com" }'
+        example:
+          Merged-By: Jane Doe janedoe@gitlab.com
       extended_trailers:
         type: object
-        example: '{ "Signed-off-by": ["John Doe <johndoe@gitlab.com>", "Jane Doe <janedoe@gitlab.com>"]
-          }'
+        example:
+          Signed-off-by:
+          - John Doe <johndoe@gitlab.com>
+          - Jane Doe <janedoe@gitlab.com>
       web_url:
         type: string
         example: https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746
@@ -57761,7 +58001,7 @@ definitions:
         type: string
         example: PGP
       signature:
-        type: string
+        type: object
       commit_source:
         type: string
         example: gitaly
@@ -57902,7 +58142,8 @@ definitions:
     properties:
       package_snapshot:
         type: object
-        example: '{ "conan_package.tgz": "749b29bdf72587081ca03ec033ee59dc" }'
+        example:
+          conan_package.tgz: 749b29bdf72587081ca03ec033ee59dc
     required:
     - package_snapshot
     description: API_Entities_Packages_Conan_PackageSnapshot model
@@ -57911,7 +58152,8 @@ definitions:
     properties:
       recipe_snapshot:
         type: object
-        example: '{ "conan_sources.tgz": "eadf19b33f4c3c7e113faabf26e76277" }'
+        example:
+          conan_sources.tgz: eadf19b33f4c3c7e113faabf26e76277
     required:
     - recipe_snapshot
     description: API_Entities_Packages_Conan_RecipeSnapshot model
@@ -57920,7 +58162,8 @@ definitions:
     properties:
       package_urls:
         type: object
-        example: '{ "conan_package.tgz": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/packages/103f6067a947f366ef91fc1b7da351c588d1827f/0/conan_package.tgz"'
+        example:
+          conan_package.tgz: https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/packages/103f6067a947f366ef91fc1b7da351c588d1827f/0/conan_package.tgz
     required:
     - package_urls
     description: API_Entities_Packages_Conan_PackageManifest model
@@ -57929,8 +58172,8 @@ definitions:
     properties:
       recipe_urls:
         type: object
-        example: '{ "conan_sources.tgz": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/export/conan_sources.tgz"
-          }'
+        example:
+          conan_sources.tgz: https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/export/conan_sources.tgz
     required:
     - recipe_urls
     description: API_Entities_Packages_Conan_RecipeManifest model
@@ -57939,8 +58182,8 @@ definitions:
     properties:
       upload_urls:
         type: object
-        example: '{ "conan_package.tgz": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/package/103f6067a947f366ef91fc1b7da351c588d1827f/0/conan_package.tgz"
-          }'
+        example:
+          conan_package.tgz: https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/package/103f6067a947f366ef91fc1b7da351c588d1827f/0/conan_package.tgz
     required:
     - upload_urls
     description: API_Entities_Packages_Conan_UploadUrls model
@@ -57998,8 +58241,10 @@ definitions:
     properties:
       files:
         type: object
-        example: '{ "files" : { "conan_sources.tgz" : { }, "conanmanifest.txt" : {
-          }, "conanfile.py" : { } } }'
+        example:
+          conan_sources.tgz: {}
+          conanmanifest.txt: {}
+          conanfile.py: {}
     required:
     - files
     description: API_Entities_Packages_Conan_FilesList model
@@ -58394,19 +58639,25 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       user_id:
-        type: string
+        type: integer
+        format: int32
       group_id:
-        type: string
+        type: integer
+        format: int32
       access_level:
-        type: string
+        type: integer
+        format: int32
       access_level_description:
         type: string
       required_approvals:
-        type: string
+        type: integer
+        format: int32
       group_inheritance_type:
-        type: string
+        type: integer
+        format: int32
       deployment_approvals:
         "$ref": "#/definitions/API_Entities_Deployments_Approval"
     required:
@@ -59022,7 +59273,7 @@ definitions:
         format: date-time
         example: '2019-11-04T08:13:51.423Z'
       scopes:
-        type: string
+        type: array
       strategies:
         "$ref": "#/definitions/API_Entities_FeatureFlag_Strategy"
     required:
@@ -59272,7 +59523,11 @@ definitions:
       commit:
         "$ref": "#/definitions/API_Entities_BlameRangeCommit"
       lines:
-        type: string
+        type: array
+        items:
+          type: string
+        example:
+        - lorem ipsum
     required:
     - commit
     - lines
@@ -59282,22 +59537,36 @@ definitions:
     properties:
       id:
         type: string
+        example: 2695effb5807a22ff3d138d593fd856244e155e7
       parent_ids:
-        type: string
+        type: array
+        items:
+          type: string
+        example:
+        - 2a4b78934375d7f53875269ffd4f45fd83a84ebe
       message:
         type: string
+        example: Initial commit
       authored_date:
         type: string
+        format: date-time
+        example: '2012-05-28T04:42:42-07:00'
       author_name:
         type: string
+        example: John Smith
       author_email:
         type: string
+        example: john@example.com
       committed_date:
         type: string
+        format: date-time
+        example: '2012-05-28T04:42:42-07:00'
       committer_name:
         type: string
+        example: Jack Smith
       committer_email:
         type: string
+        example: jack@example.com
     required:
     - id
     - parent_ids
@@ -60223,13 +60492,14 @@ definitions:
       jira_auth_type:
         type: integer
         format: int32
-        description: The authentication method to use with Jira. Use `0` for Basic
-          Authentication, and `1` for Jira personal access token. Defaults to `0`.
+        description: The authentication method to use with Jira. Use `0` for basic
+          authentication, `1` for Jira personal access token, and `2` for Jira Cloud
+          service accounts. Defaults to `0`.
       username:
         type: string
         description: The email or username to use with Jira. Use an email for Jira
           Cloud, and a username for Jira Data Center and Jira Server. Required when
-          using Basic Authentication (`jira_auth_type` is `0`).
+          using basic authentication (`jira_auth_type` is `0`).
       password:
         type: string
         description: The Jira API token, password, or personal access token to use
@@ -60427,19 +60697,6 @@ definitions:
     required:
     - token
     description: Create/Edit Mattermost Slash Commands integration
-  putApiV4ProjectsIdServicesSlackSlashCommands:
-    type: object
-    properties:
-      token:
-        type: string
-        description: The Slack token.
-      use_inherited_settings:
-        type: boolean
-        description: Indicates whether to inherit the default settings. Defaults to
-          `false`.
-    required:
-    - token
-    description: Create/Edit Slack Slash Commands integration
   putApiV4ProjectsIdServicesPackagist:
     type: object
     properties:
@@ -60509,6 +60766,9 @@ definitions:
         description: Branches to send notifications for. Valid options are `all`,
           `default`, `protected`, and `default_and_protected`. The default value is
           `default`.
+      notify_child_pipelines:
+        type: boolean
+        description: Send notifications for child pipelines.
       pipeline_events:
         type: boolean
         description: Trigger event when a pipeline status changes.
@@ -61392,15 +61652,6 @@ definitions:
     required:
     - token
     description: Trigger a slash command for mattermost-slash-commands
-  postApiV4ProjectsIdServicesSlackSlashCommandsTrigger:
-    type: object
-    properties:
-      token:
-        type: string
-        description: The Slack token.
-    required:
-    - token
-    description: Trigger a slash command for slack-slash-commands
   putApiV4ProjectsIdIntegrationsAppleAppStore:
     type: object
     properties:
@@ -62168,13 +62419,14 @@ definitions:
       jira_auth_type:
         type: integer
         format: int32
-        description: The authentication method to use with Jira. Use `0` for Basic
-          Authentication, and `1` for Jira personal access token. Defaults to `0`.
+        description: The authentication method to use with Jira. Use `0` for basic
+          authentication, `1` for Jira personal access token, and `2` for Jira Cloud
+          service accounts. Defaults to `0`.
       username:
         type: string
         description: The email or username to use with Jira. Use an email for Jira
           Cloud, and a username for Jira Data Center and Jira Server. Required when
-          using Basic Authentication (`jira_auth_type` is `0`).
+          using basic authentication (`jira_auth_type` is `0`).
       password:
         type: string
         description: The Jira API token, password, or personal access token to use
@@ -62372,19 +62624,6 @@ definitions:
     required:
     - token
     description: Create/Edit Mattermost Slash Commands integration
-  putApiV4ProjectsIdIntegrationsSlackSlashCommands:
-    type: object
-    properties:
-      token:
-        type: string
-        description: The Slack token.
-      use_inherited_settings:
-        type: boolean
-        description: Indicates whether to inherit the default settings. Defaults to
-          `false`.
-    required:
-    - token
-    description: Create/Edit Slack Slash Commands integration
   putApiV4ProjectsIdIntegrationsPackagist:
     type: object
     properties:
@@ -62454,6 +62693,9 @@ definitions:
         description: Branches to send notifications for. Valid options are `all`,
           `default`, `protected`, and `default_and_protected`. The default value is
           `default`.
+      notify_child_pipelines:
+        type: boolean
+        description: Send notifications for child pipelines.
       pipeline_events:
         type: boolean
         description: Trigger event when a pipeline status changes.
@@ -63337,15 +63579,6 @@ definitions:
     required:
     - token
     description: Trigger a slash command for mattermost-slash-commands
-  postApiV4ProjectsIdIntegrationsSlackSlashCommandsTrigger:
-    type: object
-    properties:
-      token:
-        type: string
-        description: The Slack token.
-    required:
-    - token
-    description: Trigger a slash command for slack-slash-commands
   postApiV4ProjectsIdInvitations:
     type: object
     properties:
@@ -63452,7 +63685,8 @@ definitions:
         type: array
         items:
           type: string
-        example: bug
+        example:
+        - bug
       milestone:
         "$ref": "#/definitions/API_Entities_Milestone"
       assignees:
@@ -63501,26 +63735,37 @@ definitions:
       task_completion_status:
         "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       weight:
-        type: string
+        type: integer
+        format: int32
+        example: 5
       blocking_issues_count:
-        type: string
+        type: integer
+        format: int32
+        example: 2
       has_tasks:
-        type: string
+        type: boolean
+        example: true
       task_status:
         type: string
+        example: 2 of 4 tasks completed
       _links:
         type: object
         properties:
           self:
             type: string
+            example: http://example.com/api/v4/projects/1/issues/2
           notes:
             type: string
+            example: http://example.com/api/v4/projects/1/issues/2/notes
           award_emoji:
             type: string
+            example: http://example.com/api/v4/projects/1/issues/2/award_emoji
           project:
             type: string
+            example: http://example.com/api/v4/projects/1
           closed_as_duplicate_of:
             type: string
+            example: http://example.com/api/v4/projects/1/issues/75
         required:
         - self
         - notes
@@ -63533,16 +63778,21 @@ definitions:
         type: string
         description: One of ["UNKNOWN", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
       subscribed:
-        type: string
+        type: boolean
+        example: false
       moved_to_id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       imported:
-        type: string
+        type: boolean
+        example: false
       imported_from:
         type: string
         example: github
       service_desk_reply_to:
         type: string
+        example: user@example.com
       epic_iid:
         type: string
       epic:
@@ -63552,13 +63802,20 @@ definitions:
       health_status:
         type: string
       issue_link_id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       link_type:
         type: string
+        example: relates_to
       link_created_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:44.988Z'
       link_updated_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:44.988Z'
     required:
     - id
     - iid
@@ -63636,6 +63893,7 @@ definitions:
         "$ref": "#/definitions/API_Entities_IssueBasic"
       link_type:
         type: string
+        example: relates_to
     required:
     - id
     - source_issue
@@ -63684,7 +63942,8 @@ definitions:
         type: array
         items:
           type: string
-        example: bug
+        example:
+        - bug
       milestone:
         "$ref": "#/definitions/API_Entities_Milestone"
       assignees:
@@ -63733,9 +63992,13 @@ definitions:
       task_completion_status:
         "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       weight:
-        type: string
+        type: integer
+        format: int32
+        example: 5
       blocking_issues_count:
-        type: string
+        type: integer
+        format: int32
+        example: 2
     required:
     - id
     - iid
@@ -64031,17 +64294,25 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       created_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       filename:
         type: string
+        example: image.png
       file_path:
         type: string
+        example: "/uploads/-/system/issuable_metric_image/file/1/image.png"
       url:
         type: string
+        example: https://gitlab.example.com/example
       url_text:
         type: string
+        example: Example URL
     required:
     - id
     - created_at
@@ -64069,12 +64340,14 @@ definitions:
         type: array
         items:
           type: string
-        example: variables config should be a hash of key value pairs
+        example:
+        - variables config should be a hash of key value pairs
       warnings:
         type: array
         items:
           type: string
-        example: jobs:job may allow multiple pipelines ...
+        example:
+        - jobs:job may allow multiple pipelines ...
       merged_yaml:
         type: string
         example: |-
@@ -64084,12 +64357,16 @@ definitions:
         type: array
         items:
           "$ref": "#/definitions/API_Entities_Ci_Lint_Result_Include"
-        example: '{ "blob": "https://gitlab.com/root/example-project/-/blob/...'
+        example:
+        - blob: https://gitlab.com/root/example-project/-/blob/...
       jobs:
         type: array
         items:
           type: object
-        example: '{ "name": "test: .... }'
+        example:
+        - name: test
+          script:
+          - ls
     required:
     - valid
     - errors
@@ -64114,8 +64391,10 @@ definitions:
         example: https://gitlab.com/gitlab-org/gitlab/-/raw/e52d6d0246d7375291850e61f0abc101fbda9dc2/.gitlab/ci/build-images.gitlab-ci.yml
       extra:
         type: object
-        example: '{ "job_name": "test", "project": "gitlab-org/gitlab", "ref": "master"
-          }'
+        example:
+          job_name: test
+          project: gitlab-org/gitlab
+          ref: master
       context_project:
         type: string
         example: gitlab-org/gitlab
@@ -64166,15 +64445,21 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       alt:
         type: string
+        example: filename
       url:
         type: string
+        example: "/uploads/secret/filename"
       full_path:
         type: string
+        example: "/-/project/1/uploads/secret/filename"
       markdown:
         type: string
+        example: "[filename](/uploads/secret/filename)"
     required:
     - id
     - alt
@@ -64390,10 +64675,14 @@ definitions:
         "$ref": "#/definitions/API_Entities_UserBasic"
       merged_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       closed_by:
         "$ref": "#/definitions/API_Entities_UserBasic"
       closed_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       title_html:
         type: string
       description_html:
@@ -64426,7 +64715,9 @@ definitions:
         type: integer
         format: int32
       labels:
-        type: string
+        type: array
+        items:
+          type: string
       draft:
         type: boolean
       imported:
@@ -64442,58 +64733,78 @@ definitions:
         type: boolean
       merge_status:
         type: string
+        example: unchecked
       detailed_merge_status:
         type: string
+        example: mergeable
       merge_after:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       sha:
         type: string
+        example: 1234abcd
       merge_commit_sha:
         type: string
+        example: 1234abcd
       squash_commit_sha:
         type: string
+        example: 1234abcd
       discussion_locked:
-        type: string
+        type: boolean
       should_remove_source_branch:
-        type: string
+        type: boolean
       force_remove_source_branch:
-        type: string
+        type: boolean
       prepared_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       allow_collaboration:
-        type: string
+        type: boolean
       allow_maintainer_to_push:
-        type: string
+        type: boolean
       reference:
         type: string
+        example: "!1"
       references:
         "$ref": "#/definitions/API_Entities_IssuableReferences"
       web_url:
         type: string
+        example: https://gitlab.example.com/my-group/my-project/-/merge_requests/1
       time_stats:
         "$ref": "#/definitions/API_Entities_IssuableTimeStats"
       squash:
-        type: string
+        type: boolean
       squash_on_merge:
-        type: string
+        type: boolean
       task_completion_status:
         "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       has_conflicts:
-        type: string
+        type: boolean
       blocking_discussions_resolved:
-        type: string
+        type: boolean
       approvals_before_merge:
-        type: string
+        type: integer
+        format: int32
+        example: 2
       subscribed:
-        type: string
+        type: boolean
       changes_count:
         type: string
+        example: '1'
       latest_build_started_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       latest_build_finished_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       first_deployed_to_production_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       pipeline:
         "$ref": "#/definitions/API_Entities_Ci_PipelineBasic"
       head_pipeline:
@@ -64502,17 +64813,20 @@ definitions:
         "$ref": "#/definitions/API_Entities_DiffRefs"
       merge_error:
         type: string
+        example: Merge error
       rebase_in_progress:
-        type: string
+        type: boolean
       diverged_commits_count:
-        type: string
+        type: integer
+        format: int32
+        example: 0
       first_contribution:
-        type: string
+        type: boolean
       user:
         type: object
         properties:
           can_merge:
-            type: string
+            type: boolean
         required:
         - can_merge
     required:
@@ -64577,10 +64891,13 @@ definitions:
     properties:
       base_sha:
         type: string
+        example: b83d6e391c22777fca1ed3012fce84f633d7fed0
       head_sha:
         type: string
+        example: b83d6e391c22777fca1ed3012fce84f633d7fed0
       start_sha:
         type: string
+        example: b83d6e391c22777fca1ed3012fce84f633d7fed0
     required:
     - base_sha
     - head_sha
@@ -64592,8 +64909,11 @@ definitions:
         "$ref": "#/definitions/API_Entities_UserBasic"
       state:
         type: string
+        example: unreviewed
       created_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
     required:
     - user
     - state
@@ -64648,10 +64968,14 @@ definitions:
         "$ref": "#/definitions/API_Entities_UserBasic"
       merged_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       closed_by:
         "$ref": "#/definitions/API_Entities_UserBasic"
       closed_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       title_html:
         type: string
       description_html:
@@ -64684,7 +65008,9 @@ definitions:
         type: integer
         format: int32
       labels:
-        type: string
+        type: array
+        items:
+          type: string
       draft:
         type: boolean
       imported:
@@ -64700,58 +65026,78 @@ definitions:
         type: boolean
       merge_status:
         type: string
+        example: unchecked
       detailed_merge_status:
         type: string
+        example: mergeable
       merge_after:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       sha:
         type: string
+        example: 1234abcd
       merge_commit_sha:
         type: string
+        example: 1234abcd
       squash_commit_sha:
         type: string
+        example: 1234abcd
       discussion_locked:
-        type: string
+        type: boolean
       should_remove_source_branch:
-        type: string
+        type: boolean
       force_remove_source_branch:
-        type: string
+        type: boolean
       prepared_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       allow_collaboration:
-        type: string
+        type: boolean
       allow_maintainer_to_push:
-        type: string
+        type: boolean
       reference:
         type: string
+        example: "!1"
       references:
         "$ref": "#/definitions/API_Entities_IssuableReferences"
       web_url:
         type: string
+        example: https://gitlab.example.com/my-group/my-project/-/merge_requests/1
       time_stats:
         "$ref": "#/definitions/API_Entities_IssuableTimeStats"
       squash:
-        type: string
+        type: boolean
       squash_on_merge:
-        type: string
+        type: boolean
       task_completion_status:
         "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       has_conflicts:
-        type: string
+        type: boolean
       blocking_discussions_resolved:
-        type: string
+        type: boolean
       approvals_before_merge:
-        type: string
+        type: integer
+        format: int32
+        example: 2
       subscribed:
-        type: string
+        type: boolean
       changes_count:
         type: string
+        example: '1'
       latest_build_started_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       latest_build_finished_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       first_deployed_to_production_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       pipeline:
         "$ref": "#/definitions/API_Entities_Ci_PipelineBasic"
       head_pipeline:
@@ -64760,23 +65106,28 @@ definitions:
         "$ref": "#/definitions/API_Entities_DiffRefs"
       merge_error:
         type: string
+        example: Merge error
       rebase_in_progress:
-        type: string
+        type: boolean
       diverged_commits_count:
-        type: string
+        type: integer
+        format: int32
+        example: 0
       first_contribution:
-        type: string
+        type: boolean
       user:
         type: object
         properties:
           can_merge:
-            type: string
+            type: boolean
         required:
         - can_merge
       changes:
-        "$ref": "#/definitions/API_Entities_Diff"
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_Diff"
       overflow:
-        type: string
+        type: boolean
     required:
     - id
     - iid
@@ -64972,6 +65323,7 @@ definitions:
     properties:
       note:
         type: string
+        example: LGTM!
       author:
         "$ref": "#/definitions/API_Entities_UserBasic"
     required:
@@ -65176,9 +65528,13 @@ definitions:
         items:
           "$ref": "#/definitions/API_Entities_UserBasic"
       approvers:
-        type: string
+        type: array
+        items:
+          type: object
       approver_groups:
-        type: string
+        type: array
+        items:
+          type: object
       user_has_approved:
         type: boolean
       user_can_approve:
@@ -65244,23 +65600,35 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       head_commit_sha:
         type: string
+        example: 1234abcd
       base_commit_sha:
         type: string
+        example: 1234abcd
       start_commit_sha:
         type: string
+        example: 1234abcd
       created_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       merge_request_id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       state:
         type: string
+        example: collected
       real_size:
         type: string
+        example: '1'
       patch_id_sha:
         type: string
+        example: 1234abcd
     required:
     - id
     - head_commit_sha
@@ -65276,27 +65644,43 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       head_commit_sha:
         type: string
+        example: 1234abcd
       base_commit_sha:
         type: string
+        example: 1234abcd
       start_commit_sha:
         type: string
+        example: 1234abcd
       created_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:45.080Z'
       merge_request_id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       state:
         type: string
+        example: collected
       real_size:
         type: string
+        example: '1'
       patch_id_sha:
         type: string
+        example: 1234abcd
       commits:
-        "$ref": "#/definitions/API_Entities_Commit"
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_Commit"
       diffs:
-        "$ref": "#/definitions/API_Entities_Diff"
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_Diff"
     required:
     - id
     - head_commit_sha
@@ -65366,7 +65750,8 @@ definitions:
         type: array
         items:
           type: string
-        example: 1.3.0.17
+        example:
+        - 1.3.0.17
     required:
     - versions
     description: API_Entities_Nuget_PackagesVersions model
@@ -65418,7 +65803,7 @@ definitions:
       size:
         type: integer
         format: int32
-        example: '2421'
+        example: 2421
       file_md5:
         type: string
         example: 58e6a45a629910c6ff99145a688971ac
@@ -66060,52 +66445,76 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       type:
         type: string
+        example: DiscussionNote
       body:
         type: string
+        example: Note body.
       author:
         "$ref": "#/definitions/API_Entities_UserBasic"
       created_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:44.988Z'
       updated_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:44.988Z'
       system:
-        type: string
+        type: boolean
+        example: false
       noteable_id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       noteable_type:
         type: string
+        example: Issue
       project_id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       commit_id:
         type: string
+        example: 7b09ce7e6f80347baf0316c8c94cdba9a0a7e91d
       position:
-        type: string
+        type: object
       resolvable:
-        type: string
+        type: boolean
+        example: false
       resolved:
-        type: string
+        type: boolean
+        example: false
       resolved_by:
         "$ref": "#/definitions/API_Entities_UserBasic"
       resolved_at:
         type: string
+        format: date-time
+        example: '2022-01-31T15:10:44.988Z'
       suggestions:
         "$ref": "#/definitions/API_Entities_Suggestion"
       confidential:
-        type: string
+        type: boolean
+        example: false
       internal:
-        type: string
+        type: boolean
+        example: false
       imported:
-        type: string
+        type: boolean
+        example: false
       imported_from:
         type: string
         example: github
       noteable_iid:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       commands_changes:
-        type: string
+        type: object
     required:
     - id
     - type
@@ -66128,19 +66537,33 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       from_line:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       to_line:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       appliable:
-        type: string
+        type: boolean
+        example: true
       applied:
-        type: string
+        type: boolean
+        example: false
       from_content:
         type: string
+        example: 'Original content
+
+          '
       to_content:
         type: string
+        example: 'New content
+
+          '
     required:
     - id
     - from_line
@@ -66300,7 +66723,8 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
         example: 1
       url:
         type: string
@@ -66341,7 +66765,7 @@ definitions:
         items:
           type: object
         example:
-          token: secr3t
+        - token: secr3t
       push_events_branch_filter:
         type: string
         example: my-branch-*
@@ -66356,9 +66780,18 @@ definitions:
         items:
           type: object
         example:
-          X-Custom-Header: value
+        - X-Custom-Header: value
+      token_present:
+        type: boolean
+        example: false
+        description: Whether a secret token is configured
+      signing_token_present:
+        type: boolean
+        example: false
+        description: Whether an HMAC signing token is configured
       project_id:
-        type: string
+        type: integer
+        format: int32
         example: 1
       issues_events:
         type: boolean
@@ -66406,6 +66839,8 @@ definitions:
     - push_events_branch_filter
     - branch_filter_strategy
     - custom_webhook_template
+    - token_present
+    - signing_token_present
     - project_id
     - issues_events
     - confidential_issues_events
@@ -66493,6 +66928,11 @@ definitions:
         type: string
         description: Secret token to validate received payloads; this will not be
           returned in the response
+      signing_token:
+        type: string
+        description: HMAC signing token used to compute the webhook-signature header.
+          Must be in whsec_<base64> format encoding a 32-byte key. Not returned in
+          the response
       push_events_branch_filter:
         type: string
         description: Trigger hook on specified branch only
@@ -66616,6 +67056,11 @@ definitions:
         type: string
         description: Secret token to validate received payloads; this will not be
           returned in the response
+      signing_token:
+        type: string
+        description: HMAC signing token used to compute the webhook-signature header.
+          Must be in whsec_<base64> format encoding a 32-byte key. Not returned in
+          the response
       push_events_branch_filter:
         type: string
         description: Trigger hook on specified branch only
@@ -66733,7 +67178,8 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
         example: 1
       created_at:
         type: string
@@ -67018,8 +67464,10 @@ definitions:
       files:
         type: array
         items:
-          type: string
-        example: e0d123e5f316bef78bfdf5a008837577
+          type: object
+        example:
+        - path: file.txt
+          raw_url: https://gitlab.example.com/.../raw
       imported:
         type: boolean
         example: false
@@ -67028,6 +67476,7 @@ definitions:
         example: none
       repository_storage:
         type: string
+        example: default
     required:
     - id
     - title
@@ -67208,17 +67657,20 @@ definitions:
         type: array
         items:
           type: string
-        example: include-copyright
+        example:
+        - include-copyright
       permissions:
         type: array
         items:
           type: string
-        example: commercial-use
+        example:
+        - commercial-use
       limitations:
         type: array
         items:
           type: string
-        example: liability
+        example:
+        - liability
       content:
         type: string
         example: GNU GENERAL PUBLIC LICENSE
@@ -67612,6 +68064,10 @@ definitions:
       mr_default_target_self:
         type: boolean
         description: Merge requests of this forked project targets itself by default
+      mr_default_title_template:
+        type: string
+        description: Template used to generate the default merge request title. Maximum
+          100 characters.
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -68066,6 +68522,10 @@ definitions:
       mr_default_target_self:
         type: boolean
         description: Merge requests of this forked project targets itself by default
+      mr_default_title_template:
+        type: string
+        description: Template used to generate the default merge request title. Maximum
+          100 characters.
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -68188,12 +68648,14 @@ definitions:
         type: array
         items:
           type: string
-        example: tag
+        example:
+        - tag
       topics:
         type: array
         items:
           type: string
-        example: topic
+        example:
+        - topic
       ssh_url_to_repo:
         type: string
         example: git@gitlab.example.com:gitlab/gitlab.git
@@ -68277,8 +68739,12 @@ definitions:
         - cluster_agents
       marked_for_deletion_at:
         type: string
+        format: date-time
+        example: '2020-05-07T04:27:17.016Z'
       marked_for_deletion_on:
         type: string
+        format: date-time
+        example: '2020-05-07T04:27:17.016Z'
       packages_enabled:
         type: boolean
       empty_repo:
@@ -68477,7 +68943,7 @@ definitions:
       shared_with_groups:
         type: array
         items:
-          type: string
+          type: object
       only_allow_merge_if_pipeline_succeeds:
         type: boolean
       allow_merge_on_skipped_pipeline:
@@ -68505,6 +68971,9 @@ definitions:
         type: string
         example: "%(title)"
       squash_commit_template:
+        type: string
+        example: "%(source_branch)"
+      mr_default_title_template:
         type: string
         example: "%(source_branch)"
       issue_branch_template:
@@ -68556,6 +69025,8 @@ definitions:
       merge_trains_enabled:
         type: string
       merge_trains_skip_train_allowed:
+        type: string
+      max_pipelines_per_merge_train:
         type: string
       only_allow_merge_if_all_status_checks_passed:
         type: string
@@ -68677,6 +69148,7 @@ definitions:
     - suggestion_commit_message
     - merge_commit_template
     - squash_commit_template
+    - mr_default_title_template
     - issue_branch_template
     - warn_about_potentially_unwanted_characters
     - autoclose_referenced_issues
@@ -69118,6 +69590,10 @@ definitions:
       mr_default_target_self:
         type: boolean
         description: Merge requests of this forked project targets itself by default
+      mr_default_title_template:
+        type: string
+        description: Template used to generate the default merge request title. Maximum
+          100 characters.
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -69271,6 +69747,11 @@ definitions:
         type: boolean
         description: Allow merge train merge requests to be merged without waiting
           for pipelines to finish.
+      max_pipelines_per_merge_train:
+        type: integer
+        format: int32
+        description: Maximum number of parallel pipelines per merge train for this
+          project.
       ci_restrict_pipeline_cancellation_role:
         type: string
         description: Roles allowed to cancel pipelines and jobs.
@@ -69355,14 +69836,19 @@ definitions:
         format: int32
       web_url:
         type: string
+        example: http://gitlab.example.com/groups/diaspora
       name:
         type: string
+        example: Diaspora
       avatar_url:
         type: string
+        example: http://gitlab.example.com/uploads/group/avatar/1/avatar.png
       full_name:
         type: string
+        example: Foobar Group
       full_path:
         type: string
+        example: foo-bar
     required:
     - id
     - web_url
@@ -69770,7 +70256,9 @@ definitions:
         type: string
         example: release-1-0
       create_access_levels:
-        "$ref": "#/definitions/API_Entities_ProtectedRefAccess"
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_ProtectedRefAccess"
     required:
     - name
     - create_access_levels
@@ -70070,8 +70558,7 @@ definitions:
         format: date-time
         example: '2020-01-06T17:31:55.864Z'
       last_error:
-        type: integer
-        format: int32
+        type: string
         example: The remote mirror URL is invalid.
       only_protected_branches:
         type: boolean
@@ -70086,6 +70573,7 @@ definitions:
           "$ref": "#/definitions/API_Entities_MirrorHostKey"
       mirror_branch_regex:
         type: string
+        example: feature-.*
     required:
     - id
     - enabled
@@ -70106,6 +70594,7 @@ definitions:
     properties:
       fingerprint_sha256:
         type: string
+        example: SHA256:abcd1234
     required:
     - fingerprint_sha256
   postApiV4ProjectsIdRemoteMirrors:
@@ -70415,6 +70904,7 @@ definitions:
     properties:
       notes:
         type: string
+        example: "## 1.0.0 (2023-01-01)"
     required:
     - notes
     description: API_Entities_Changelog model
@@ -70673,7 +71163,7 @@ definitions:
         type: string
         example: PGP
       signature:
-        type: string
+        type: object
     required:
     - signature_type
     - signature
@@ -70960,10 +71450,15 @@ definitions:
         type: array
         items:
           type: string
-        example: database
+        example:
+        - database
+      table_size:
+        type: string
+        example: small
     required:
     - table_name
     - feature_categories
+    - table_size
     description: API_Entities_Dictionary_Table model
   postApiV4AdminClustersAdd:
     type: object
@@ -72013,6 +72508,7 @@ definitions:
         - jacoco
         - scip
         - sarif
+        - environment_key
         default: archive
     description: Authorize uploading job artifact
   postApiV4JobsIdArtifacts:
@@ -72065,6 +72561,7 @@ definitions:
         - jacoco
         - scip
         - sarif
+        - environment_key
         default: archive
       artifact_format:
         type: string
@@ -72193,13 +72690,13 @@ definitions:
       milestone:
         type: string
       log_state_changes:
-        type: string
+        type: boolean
       type:
         type: string
       group:
         type: string
       default_enabled:
-        type: string
+        type: boolean
       intended_to_rollout_by:
         type: string
     required:
@@ -72250,6 +72747,10 @@ definitions:
       runner:
         type: string
         description: A runner ID, or comma-separated list of runner IDs
+      endpoint:
+        type: string
+        description: A caller_id identifying a code path, for example `GET /api/v4/projects/:id`
+          or `ProjectsController#show`. Use comma to separate multiple endpoint paths
       force:
         type: boolean
         description: Skip feature flag validation checks, such as a YAML definition
@@ -73327,6 +73828,138 @@ definitions:
         type: string
       packages_helm_metadata_caches_oldest_unsynced_time:
         type: string
+      vulnerability_archive_export_uploads_count:
+        type: string
+      vulnerability_archive_export_uploads_checksum_total_count:
+        type: string
+      vulnerability_archive_export_uploads_checksummed_count:
+        type: string
+      vulnerability_archive_export_uploads_checksum_failed_count:
+        type: string
+      vulnerability_archive_export_uploads_synced_count:
+        type: string
+      vulnerability_archive_export_uploads_failed_count:
+        type: string
+      vulnerability_archive_export_uploads_registry_count:
+        type: string
+      vulnerability_archive_export_uploads_verification_total_count:
+        type: string
+      vulnerability_archive_export_uploads_verified_count:
+        type: string
+      vulnerability_archive_export_uploads_verification_failed_count:
+        type: string
+      vulnerability_archive_export_uploads_oldest_unsynced_time:
+        type: string
+      vulnerability_export_uploads_count:
+        type: string
+      vulnerability_export_uploads_checksum_total_count:
+        type: string
+      vulnerability_export_uploads_checksummed_count:
+        type: string
+      vulnerability_export_uploads_checksum_failed_count:
+        type: string
+      vulnerability_export_uploads_synced_count:
+        type: string
+      vulnerability_export_uploads_failed_count:
+        type: string
+      vulnerability_export_uploads_registry_count:
+        type: string
+      vulnerability_export_uploads_verification_total_count:
+        type: string
+      vulnerability_export_uploads_verified_count:
+        type: string
+      vulnerability_export_uploads_verification_failed_count:
+        type: string
+      vulnerability_export_uploads_oldest_unsynced_time:
+        type: string
+      bulk_import_export_upload_uploads_count:
+        type: string
+      bulk_import_export_upload_uploads_checksum_total_count:
+        type: string
+      bulk_import_export_upload_uploads_checksummed_count:
+        type: string
+      bulk_import_export_upload_uploads_checksum_failed_count:
+        type: string
+      bulk_import_export_upload_uploads_synced_count:
+        type: string
+      bulk_import_export_upload_uploads_failed_count:
+        type: string
+      bulk_import_export_upload_uploads_registry_count:
+        type: string
+      bulk_import_export_upload_uploads_verification_total_count:
+        type: string
+      bulk_import_export_upload_uploads_verified_count:
+        type: string
+      bulk_import_export_upload_uploads_verification_failed_count:
+        type: string
+      bulk_import_export_upload_uploads_oldest_unsynced_time:
+        type: string
+      project_import_export_relation_export_upload_uploads_count:
+        type: string
+      project_import_export_relation_export_upload_uploads_checksum_total_count:
+        type: string
+      project_import_export_relation_export_upload_uploads_checksummed_count:
+        type: string
+      project_import_export_relation_export_upload_uploads_checksum_failed_count:
+        type: string
+      project_import_export_relation_export_upload_uploads_synced_count:
+        type: string
+      project_import_export_relation_export_upload_uploads_failed_count:
+        type: string
+      project_import_export_relation_export_upload_uploads_registry_count:
+        type: string
+      project_import_export_relation_export_upload_uploads_verification_total_count:
+        type: string
+      project_import_export_relation_export_upload_uploads_verified_count:
+        type: string
+      project_import_export_relation_export_upload_uploads_verification_failed_count:
+        type: string
+      project_import_export_relation_export_upload_uploads_oldest_unsynced_time:
+        type: string
+      ai_vectorizable_file_uploads_count:
+        type: string
+      ai_vectorizable_file_uploads_checksum_total_count:
+        type: string
+      ai_vectorizable_file_uploads_checksummed_count:
+        type: string
+      ai_vectorizable_file_uploads_checksum_failed_count:
+        type: string
+      ai_vectorizable_file_uploads_synced_count:
+        type: string
+      ai_vectorizable_file_uploads_failed_count:
+        type: string
+      ai_vectorizable_file_uploads_registry_count:
+        type: string
+      ai_vectorizable_file_uploads_verification_total_count:
+        type: string
+      ai_vectorizable_file_uploads_verified_count:
+        type: string
+      ai_vectorizable_file_uploads_verification_failed_count:
+        type: string
+      ai_vectorizable_file_uploads_oldest_unsynced_time:
+        type: string
+      import_export_upload_uploads_count:
+        type: string
+      import_export_upload_uploads_checksum_total_count:
+        type: string
+      import_export_upload_uploads_checksummed_count:
+        type: string
+      import_export_upload_uploads_checksum_failed_count:
+        type: string
+      import_export_upload_uploads_synced_count:
+        type: string
+      import_export_upload_uploads_failed_count:
+        type: string
+      import_export_upload_uploads_registry_count:
+        type: string
+      import_export_upload_uploads_verification_total_count:
+        type: string
+      import_export_upload_uploads_verified_count:
+        type: string
+      import_export_upload_uploads_verification_failed_count:
+        type: string
+      import_export_upload_uploads_oldest_unsynced_time:
+        type: string
       design_management_action_uploads_count:
         type: string
       design_management_action_uploads_checksum_total_count:
@@ -73550,6 +74183,30 @@ definitions:
       packages_helm_metadata_caches_synced_in_percentage:
         type: string
       packages_helm_metadata_caches_verified_in_percentage:
+        type: string
+      vulnerability_archive_export_uploads_synced_in_percentage:
+        type: string
+      vulnerability_archive_export_uploads_verified_in_percentage:
+        type: string
+      vulnerability_export_uploads_synced_in_percentage:
+        type: string
+      vulnerability_export_uploads_verified_in_percentage:
+        type: string
+      bulk_import_export_upload_uploads_synced_in_percentage:
+        type: string
+      bulk_import_export_upload_uploads_verified_in_percentage:
+        type: string
+      project_import_export_relation_export_upload_uploads_synced_in_percentage:
+        type: string
+      project_import_export_relation_export_upload_uploads_verified_in_percentage:
+        type: string
+      ai_vectorizable_file_uploads_synced_in_percentage:
+        type: string
+      ai_vectorizable_file_uploads_verified_in_percentage:
+        type: string
+      import_export_upload_uploads_synced_in_percentage:
+        type: string
+      import_export_upload_uploads_verified_in_percentage:
         type: string
       design_management_action_uploads_synced_in_percentage:
         type: string
@@ -73855,6 +74512,72 @@ definitions:
     - packages_helm_metadata_caches_verified_count
     - packages_helm_metadata_caches_verification_failed_count
     - packages_helm_metadata_caches_oldest_unsynced_time
+    - vulnerability_archive_export_uploads_count
+    - vulnerability_archive_export_uploads_checksum_total_count
+    - vulnerability_archive_export_uploads_checksummed_count
+    - vulnerability_archive_export_uploads_checksum_failed_count
+    - vulnerability_archive_export_uploads_synced_count
+    - vulnerability_archive_export_uploads_failed_count
+    - vulnerability_archive_export_uploads_registry_count
+    - vulnerability_archive_export_uploads_verification_total_count
+    - vulnerability_archive_export_uploads_verified_count
+    - vulnerability_archive_export_uploads_verification_failed_count
+    - vulnerability_archive_export_uploads_oldest_unsynced_time
+    - vulnerability_export_uploads_count
+    - vulnerability_export_uploads_checksum_total_count
+    - vulnerability_export_uploads_checksummed_count
+    - vulnerability_export_uploads_checksum_failed_count
+    - vulnerability_export_uploads_synced_count
+    - vulnerability_export_uploads_failed_count
+    - vulnerability_export_uploads_registry_count
+    - vulnerability_export_uploads_verification_total_count
+    - vulnerability_export_uploads_verified_count
+    - vulnerability_export_uploads_verification_failed_count
+    - vulnerability_export_uploads_oldest_unsynced_time
+    - bulk_import_export_upload_uploads_count
+    - bulk_import_export_upload_uploads_checksum_total_count
+    - bulk_import_export_upload_uploads_checksummed_count
+    - bulk_import_export_upload_uploads_checksum_failed_count
+    - bulk_import_export_upload_uploads_synced_count
+    - bulk_import_export_upload_uploads_failed_count
+    - bulk_import_export_upload_uploads_registry_count
+    - bulk_import_export_upload_uploads_verification_total_count
+    - bulk_import_export_upload_uploads_verified_count
+    - bulk_import_export_upload_uploads_verification_failed_count
+    - bulk_import_export_upload_uploads_oldest_unsynced_time
+    - project_import_export_relation_export_upload_uploads_count
+    - project_import_export_relation_export_upload_uploads_checksum_total_count
+    - project_import_export_relation_export_upload_uploads_checksummed_count
+    - project_import_export_relation_export_upload_uploads_checksum_failed_count
+    - project_import_export_relation_export_upload_uploads_synced_count
+    - project_import_export_relation_export_upload_uploads_failed_count
+    - project_import_export_relation_export_upload_uploads_registry_count
+    - project_import_export_relation_export_upload_uploads_verification_total_count
+    - project_import_export_relation_export_upload_uploads_verified_count
+    - project_import_export_relation_export_upload_uploads_verification_failed_count
+    - project_import_export_relation_export_upload_uploads_oldest_unsynced_time
+    - ai_vectorizable_file_uploads_count
+    - ai_vectorizable_file_uploads_checksum_total_count
+    - ai_vectorizable_file_uploads_checksummed_count
+    - ai_vectorizable_file_uploads_checksum_failed_count
+    - ai_vectorizable_file_uploads_synced_count
+    - ai_vectorizable_file_uploads_failed_count
+    - ai_vectorizable_file_uploads_registry_count
+    - ai_vectorizable_file_uploads_verification_total_count
+    - ai_vectorizable_file_uploads_verified_count
+    - ai_vectorizable_file_uploads_verification_failed_count
+    - ai_vectorizable_file_uploads_oldest_unsynced_time
+    - import_export_upload_uploads_count
+    - import_export_upload_uploads_checksum_total_count
+    - import_export_upload_uploads_checksummed_count
+    - import_export_upload_uploads_checksum_failed_count
+    - import_export_upload_uploads_synced_count
+    - import_export_upload_uploads_failed_count
+    - import_export_upload_uploads_registry_count
+    - import_export_upload_uploads_verification_total_count
+    - import_export_upload_uploads_verified_count
+    - import_export_upload_uploads_verification_failed_count
+    - import_export_upload_uploads_oldest_unsynced_time
     - design_management_action_uploads_count
     - design_management_action_uploads_checksum_total_count
     - design_management_action_uploads_checksummed_count
@@ -73967,6 +74690,18 @@ definitions:
     - supply_chain_attestations_verified_in_percentage
     - packages_helm_metadata_caches_synced_in_percentage
     - packages_helm_metadata_caches_verified_in_percentage
+    - vulnerability_archive_export_uploads_synced_in_percentage
+    - vulnerability_archive_export_uploads_verified_in_percentage
+    - vulnerability_export_uploads_synced_in_percentage
+    - vulnerability_export_uploads_verified_in_percentage
+    - bulk_import_export_upload_uploads_synced_in_percentage
+    - bulk_import_export_upload_uploads_verified_in_percentage
+    - project_import_export_relation_export_upload_uploads_synced_in_percentage
+    - project_import_export_relation_export_upload_uploads_verified_in_percentage
+    - ai_vectorizable_file_uploads_synced_in_percentage
+    - ai_vectorizable_file_uploads_verified_in_percentage
+    - import_export_upload_uploads_synced_in_percentage
+    - import_export_upload_uploads_verified_in_percentage
     - design_management_action_uploads_synced_in_percentage
     - design_management_action_uploads_verified_in_percentage
     - user_uploads_synced_in_percentage
@@ -74438,7 +75173,7 @@ definitions:
         type: boolean
       private_profile:
         type: boolean
-        example: 'null'
+        example: false
       commit_email:
         type: string
       preferred_language:
@@ -74709,13 +75444,13 @@ definitions:
           name:
             type: string
           trial:
-            type: string
+            type: boolean
           auto_renew:
-            type: string
+            type: boolean
           upgradable:
-            type: string
+            type: boolean
           exclude_guests:
-            type: string
+            type: boolean
         required:
         - code
         - name
@@ -74727,13 +75462,17 @@ definitions:
         type: object
         properties:
           seats_in_subscription:
-            type: string
+            type: integer
+            format: int32
           seats_in_use:
-            type: string
+            type: integer
+            format: int32
           max_seats_used:
-            type: string
+            type: integer
+            format: int32
           seats_owed:
-            type: string
+            type: integer
+            format: int32
         required:
         - seats_in_subscription
         - seats_in_use
@@ -74744,10 +75483,13 @@ definitions:
         properties:
           subscription_start_date:
             type: string
+            format: date
           subscription_end_date:
             type: string
+            format: date
           trial_ends_on:
             type: string
+            format: date
         required:
         - subscription_start_date
         - subscription_end_date
@@ -74798,7 +75540,8 @@ definitions:
         type: array
         items:
           type: string
-        example: my-group1
+        example:
+        - my-group1
     required:
     - exists
     - suggests
@@ -74824,7 +75567,7 @@ definitions:
             description: AWS S3 object storage region
           path_style:
             type: boolean
-            description: Use path-style URLs instead of virtual hosted-style URLs
+            description: Use path-style URLs instead of virtual-hosted-style URLs
             default: false
         required:
         - aws_access_key_id
@@ -74848,7 +75591,7 @@ definitions:
             description: Object storage location endpoint
           path_style:
             type: boolean
-            description: Use path-style URLs instead of virtual hosted-style URLs
+            description: Use path-style URLs instead of virtual-hosted-style URLs
             default: true
         required:
         - aws_access_key_id
@@ -74871,6 +75614,91 @@ definitions:
     - bucket
     - entities
     description: Start a new offline transfer export
+  postApiV4OfflineImports:
+    type: object
+    properties:
+      bucket:
+        type: string
+        description: Name of the object storage bucket where export data is stored
+      aws_s3_configuration:
+        type: object
+        description: AWS S3 object storage configuration
+        properties:
+          aws_access_key_id:
+            type: string
+            description: AWS S3 access key ID
+          aws_secret_access_key:
+            type: string
+            description: AWS S3 secret access key
+          region:
+            type: string
+            description: AWS S3 object storage region
+          path_style:
+            type: boolean
+            description: Use path-style URLs instead of virtual-hosted-style URLs
+            default: false
+        required:
+        - aws_access_key_id
+        - aws_secret_access_key
+        - region
+      s3_compatible_configuration:
+        type: object
+        description: MinIO or other S3-compatible object storage configuration
+        properties:
+          aws_access_key_id:
+            type: string
+            description: S3-compatible access key ID
+          aws_secret_access_key:
+            type: string
+            description: S3-compatible secret access key
+          region:
+            type: string
+            description: S3-compatible object storage region
+          endpoint:
+            type: string
+            description: Object storage location endpoint
+          path_style:
+            type: boolean
+            description: Use path-style URLs instead of virtual-hosted-style URLs
+            default: true
+        required:
+        - aws_access_key_id
+        - aws_secret_access_key
+        - region
+        - endpoint
+      export_prefix:
+        type: string
+        description: Prefix of the export within the bucket
+      entities:
+        type: array
+        description: List of entities to import
+        items:
+          type: object
+          properties:
+            source_type:
+              type: string
+              description: Type of the entity to import
+              enum:
+              - group_entity
+              - project_entity
+            source_full_path:
+              type: string
+              description: Full path of the entity on the source instance
+            destination_namespace:
+              type: string
+              description: Full path of the destination namespace
+            destination_slug:
+              type: string
+              description: Destination slug for the imported entity
+          required:
+          - source_type
+          - source_full_path
+          - destination_namespace
+    required:
+    - bucket
+    - export_prefix
+    - entities
+    description: Start a new offline transfer import
   postApiV4Organizations:
     type: object
     properties:
@@ -74916,7 +75744,7 @@ definitions:
         example: '2022-02-24T20:22:30.097Z'
       web_url:
         type: string
-        example: https://example.com/-/organizations/gitlab
+        example: https://example.com/o/gitlab/-/overview
       avatar_url:
         type: string
         example: https://example.com/uploads/-/system/organizations/organization_detail/avatar/1/avatar.png
@@ -75197,8 +76025,10 @@ definitions:
       files:
         type: array
         items:
-          type: string
-        example: e0d123e5f316bef78bfdf5a008837577
+          type: object
+        example:
+        - path: file.txt
+          raw_url: https://gitlab.example.com/.../raw
       imported:
         type: boolean
         example: false
@@ -75207,6 +76037,7 @@ definitions:
         example: none
       repository_storage:
         type: string
+        example: default
     required:
     - id
     - title
@@ -75271,8 +76102,10 @@ definitions:
       files:
         type: array
         items:
-          type: string
-        example: e0d123e5f316bef78bfdf5a008837577
+          type: object
+        example:
+        - path: file.txt
+          raw_url: https://gitlab.example.com/.../raw
       imported:
         type: boolean
         example: false
@@ -75281,6 +76114,7 @@ definitions:
         example: none
       repository_storage:
         type: string
+        example: default
     required:
     - id
     - title
@@ -75435,7 +76269,8 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
         example: 1
       url:
         type: string
@@ -75476,7 +76311,7 @@ definitions:
         items:
           type: object
         example:
-          token: secr3t
+        - token: secr3t
       push_events_branch_filter:
         type: string
         example: my-branch-*
@@ -75491,7 +76326,15 @@ definitions:
         items:
           type: object
         example:
-          X-Custom-Header: value
+        - X-Custom-Header: value
+      token_present:
+        type: boolean
+        example: false
+        description: Whether a secret token is configured
+      signing_token_present:
+        type: boolean
+        example: false
+        description: Whether an HMAC signing token is configured
     required:
     - id
     - url
@@ -75508,6 +76351,8 @@ definitions:
     - push_events_branch_filter
     - branch_filter_strategy
     - custom_webhook_template
+    - token_present
+    - signing_token_present
     description: API_Entities_Hook model
   postApiV4Hooks:
     type: object
@@ -75526,6 +76371,11 @@ definitions:
         type: string
         description: Secret token to validate received payloads; this isn't returned
           in the response
+      signing_token:
+        type: string
+        description: HMAC signing token used to compute the webhook-signature header.
+          Must be in whsec_<base64> format encoding a 32-byte key. Not returned in
+          the response
       push_events:
         type: boolean
         description: When true, the hook fires on push events
@@ -75552,6 +76402,9 @@ definitions:
         - wildcard
         - regex
         - all_branches
+      custom_webhook_template:
+        type: string
+        description: Custom template for the request payload
       url_variables:
         type: array
         description: URL variables for interpolation
@@ -75605,6 +76458,11 @@ definitions:
         type: string
         description: Secret token to validate received payloads; this isn't returned
           in the response
+      signing_token:
+        type: string
+        description: HMAC signing token used to compute the webhook-signature header.
+          Must be in whsec_<base64> format encoding a 32-byte key. Not returned in
+          the response
       push_events:
         type: boolean
         description: When true, the hook fires on push events
@@ -75631,6 +76489,9 @@ definitions:
         - wildcard
         - regex
         - all_branches
+      custom_webhook_template:
+        type: string
+        description: Custom template for the request payload
       url_variables:
         type: array
         description: URL variables for interpolation
@@ -75944,9 +76805,17 @@ definitions:
         example: 5242880
       limits_history:
         type: object
-        example: |-
-          {"enforcement_limit"=>[{"timestamp"=>1686909124, "user_id"=>1, "username"=>"x", "value"=>5}],
-                             "notification_limit"=>[{"timestamp"=>1686909124, "user_id"=>2, "username"=>"y", "value"=>7}]}
+        example:
+          enforcement_limit:
+          - timestamp: 1686909124
+            user_id: 1
+            username: x
+            value: 5
+          notification_limit:
+          - timestamp: 1686909124
+            user_id: 2
+            username: "y"
+            value: 7
       maven_max_file_size:
         type: integer
         format: int32
@@ -75991,6 +76860,10 @@ definitions:
         type: integer
         format: int32
         example: 500
+      max_pipelines_per_merge_train:
+        type: integer
+        format: int32
+        example: 20
     required:
     - ci_instance_level_variables
     - ci_pipeline_size
@@ -76018,6 +76891,7 @@ definitions:
     - web_hook_calls
     - web_hook_calls_low
     - web_hook_calls_mid
+    - max_pipelines_per_merge_train
     description: API_Entities_PlanLimit model
   putApiV4ApplicationPlanLimits:
     type: object
@@ -76145,6 +77019,10 @@ definitions:
         format: int32
         description: Maximum number of times a webhook can be called per minute, per
           top-level namespace. 0 for unlimited (GitLab.com only).
+      max_pipelines_per_merge_train:
+        type: integer
+        format: int32
+        description: Maximum number of parallel pipelines per merge train
     required:
     - plan_name
     description: Change plan limits
@@ -76309,15 +77187,9 @@ definitions:
   postApiV4ImportBitbucket:
     type: object
     properties:
-      bitbucket_username:
-        type: string
-        description: BitBucket username (for app passwords)
-      bitbucket_app_password:
-        type: string
-        description: BitBucket app password
       bitbucket_email:
         type: string
-        description: BitBucket email (for API tokens)
+        description: BitBucket email
       bitbucket_api_token:
         type: string
         description: BitBucket API token
@@ -76331,6 +77203,8 @@ definitions:
         type: string
         description: New repository name
     required:
+    - bitbucket_email
+    - bitbucket_api_token
     - repo_path
     - target_namespace
     description: Import a BitBucket Cloud repository
@@ -76566,19 +77440,29 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       name:
         type: string
+        example: topic1
       title:
         type: string
+        example: Topic 1
       description:
         type: string
+        example: A description
       total_projects_count:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       organization_id:
-        type: string
+        type: integer
+        format: int32
+        example: 1
       avatar_url:
         type: string
+        example: http://gitlab.example.com/uploads/topic/avatar/1/avatar.png
     required:
     - id
     - name

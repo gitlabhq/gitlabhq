@@ -49,7 +49,7 @@ RSpec.describe 'Delete an upload', feature_category: :navigation do
           expect(mutation_response['upload']).to be_nil
           expect(mutation_response['errors']).to match_array(
             [
-              "The resource that you are attempting to access does not "\
+              "The resource that you are attempting to access does not " \
               "exist or you don't have permission to perform this action."
             ])
         end

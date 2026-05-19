@@ -14,7 +14,6 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       read_build_trace
       read_ci_minutes_limited_summary
       read_job_artifacts
-      read_manual_variables
       read_web_ide_terminal
       troubleshoot_job_with_ai
       update_web_ide_terminal
@@ -29,26 +28,29 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
 
   shared_context 'public pipelines disabled' do
     before do
-      project.update_attribute(:public_builds, false)
+      project.update_columns(public_builds: false)
     end
+  end
+
+  shared_context 'pipeline and build for project' do
+    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
   end
 
   describe 'delegation' do
     let_it_be(:project) { create(:project) }
+
+    include_context 'pipeline and build for project'
 
     it { expect(policy).to delegate_to(ProjectPolicy) }
     it { expect(described_class).to override_delegates_for(*overrides) }
   end
 
   describe 'artifacts access config with access keyword' do
-    let_it_be(:project) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :public, developers: user) }
 
     include_context 'public pipelines disabled'
-
-    before_all do
-      project.add_developer(user)
-    end
 
     context 'when job artifact access is set to all' do
       let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
@@ -98,11 +100,10 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         :artifacts           | :with_public_artifacts_config | :maintainer | true
         :artifacts           | :with_public_artifacts_config | :owner      | true
         :artifacts           | :with_public_artifacts_config | :developer  | true
-        :artifacts           | :with_public_artifacts_config | :guest      | true
+        :artifacts           | :with_public_artifacts_config | :guest      | false
 
-        # -- Some examples only-shows we honor the artifact access level --
-        # -- Just to illustrate the logic: we respect only job_artifacts access level --
-        :artifacts           | :with_none_access_artifacts   | :guest      | true
+        # -- Guest cannot read builds when public_builds is false (set by shared context above) --
+        :artifacts           | :with_none_access_artifacts   | :guest      | false
 
         :private_artifacts   | :with_private_artifacts_config | :maintainer | true
         :private_artifacts   | :with_private_artifacts_config | :owner      | true
@@ -159,10 +160,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     context 'when no job artifacts on the build' do
       let(:build) { create(:ci_build, pipeline: pipeline) }
       let_it_be(:user) { create(:user) }
-
-      before_all do
-        project.add_developer(user)
-      end
+      let_it_be(:project) { create(:project, :public, developers: user) }
 
       it 'allows read_job_artifacts to project members' do
         expect(policy).to be_allowed :read_job_artifacts
@@ -171,82 +169,40 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
   end
 
   describe ':read_manual_variables' do
-    context 'when project is public' do
-      let_it_be(:project) { create(:project, :public) }
-      let_it_be(:user) { create(:user) }
+    subject { policy }
 
-      context 'when user is at least a developer' do
-        before_all do
-          project.add_developer(user)
-        end
+    let_it_be(:project, freeze: true) { create(:project) }
 
-        it 'is allowed' do
-          expect(policy).to be_allowed :read_manual_variables
-        end
-      end
+    context 'when user is at least a reporter' do
+      let_it_be(:user) { create(:user, reporter_of: project) }
 
-      context 'when user is a developer or below' do
-        before_all do
-          project.add_guest(user)
-        end
-
-        it 'is not allowed' do
-          expect(policy).not_to be_allowed :read_manual_variables
-        end
-      end
+      it { expect_allowed(:read_manual_variables) }
     end
 
-    context 'when project is internal' do
-      let_it_be(:project) { create(:project, :internal) }
+    context 'when user is a planner' do
+      let_it_be(:user) { create(:user, planner_of: project) }
 
-      context 'when user is an explicit member of the project' do
-        let_it_be(:user) { create(:user) }
-
-        before_all do
-          project.add_guest(user)
-        end
-
-        it 'is allowed' do
-          expect(policy).to be_allowed :read_manual_variables
-        end
-      end
-
-      context 'when user is not a member of the project but has implicit guest access' do
-        let(:user) { create(:user) }
-
-        it 'is not allowed' do
-          expect(policy).not_to be_allowed :read_manual_variables
-        end
-      end
+      it { expect_disallowed(:read_manual_variables) }
     end
 
-    context 'when project is private' do
-      let_it_be(:project) { create(:project, :private) }
-      let_it_be(:user) { create(:user) }
+    context 'when user is a guest' do
+      let_it_be(:user) { create(:user, guest_of: project) }
 
-      context 'when user is a guest and a member of the project' do
-        before_all do
-          project.add_guest(user)
-        end
+      it { expect_disallowed(:read_manual_variables) }
+    end
 
-        it 'is allowed' do
-          expect(policy).to be_allowed :read_manual_variables
-        end
-      end
+    context 'when user is not a member of the project' do
+      let(:user) { create(:user) }
 
-      context 'when user is not a member of the project' do
-        let(:user) { create(:user) }
-
-        it 'is not allowed' do
-          expect(policy).not_to be_allowed :read_manual_variables
-        end
-      end
+      it { expect_disallowed(:read_manual_variables) }
     end
   end
 
   describe '#rules' do
     context 'when user does not have access to the project' do
-      let(:project) { create(:project, :private) }
+      let_it_be(:project) { create(:project, :private) }
+
+      include_context 'pipeline and build for project'
 
       context 'when public builds are enabled' do
         it 'does not include ability to read build' do
@@ -264,7 +220,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     end
 
     context 'when anonymous user has access to the project' do
-      let(:project) { create(:project, :public) }
+      let_it_be_with_reload(:project) { create(:project, :public) }
 
       context 'when public builds are enabled' do
         it 'includes ability to read build' do
@@ -282,12 +238,9 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     end
 
     context 'when team member has access to the project' do
-      let(:project) { create(:project, :public) }
-
       context 'team member is a guest' do
-        before do
-          project.add_guest(user)
-        end
+        let_it_be(:user) { create(:user) }
+        let_it_be_with_reload(:project) { create(:project, :public, guests: user) }
 
         context 'when public builds are enabled' do
           it 'includes ability to read build' do
@@ -305,9 +258,8 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       end
 
       context 'team member is a reporter' do
-        before do
-          project.add_reporter(user)
-        end
+        let_it_be(:user) { create(:user) }
+        let_it_be_with_reload(:project) { create(:project, :public, reporters: user) }
 
         context 'when public builds are enabled' do
           it 'includes ability to read build' do
@@ -339,16 +291,46 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
           expect(policy).to be_allowed :update_build
         end
       end
+
+      context 'when branch allows collaboration and user is a non-member' do
+        subject { policy }
+
+        before do
+          allow(project).to receive(:empty_repo?).and_return(false)
+          allow(project).to receive(:branch_allows_collaboration?).and_return(true)
+        end
+
+        context 'on a public project' do
+          let_it_be(:project) { create(:project, :public) }
+
+          it { expect_allowed(:cancel_build, *described_class.all_job_update_abilities) }
+        end
+
+        context 'on an internal project' do
+          let_it_be(:project) { create(:project, :internal) }
+
+          it { expect_allowed(:cancel_build, *described_class.all_job_update_abilities) }
+
+          context 'when the user is external' do
+            let_it_be(:user) { create(:user, external: true) }
+
+            it { expect_disallowed(:cancel_build) }
+          end
+        end
+
+        context 'on a private project' do
+          let_it_be(:project) { create(:project, :private) }
+
+          it { expect_disallowed(:cancel_build) }
+        end
+      end
     end
 
     describe 'rules for archived jobs' do
-      let_it_be(:project, reload: true) { create(:project, :repository) }
+      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
 
       let(:build) { create(:ci_build, user: user, pipeline: pipeline, ref: 'feature') }
-
-      before do
-        project.add_developer(user)
-      end
 
       context 'when job is not archived' do
         it 'allows update and cleanup job abilities' do
@@ -380,12 +362,8 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     end
 
     describe 'rules for protected ref' do
-      let(:project) { create(:project, :repository) }
+      let(:project) { create(:project, :repository, developers: user) }
       let(:build) { create(:ci_build, ref: 'some-ref', pipeline: pipeline) }
-
-      before do
-        project.add_developer(user)
-      end
 
       context 'when no one can push or merge to the branch' do
         before do
@@ -450,9 +428,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       let(:build) { create(:ci_build, pipeline: pipeline, ref: 'some-ref', user: owner) }
 
       context 'when a developer erases a build' do
-        before do
-          project.add_developer(user)
-        end
+        let(:project) { create(:project, :repository, developers: user) }
 
         context 'when developers can push to the branch' do
           context 'when the build was created by the developer' do
@@ -490,9 +466,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       end
 
       context 'when a maintainer erases a build' do
-        before do
-          project.add_maintainer(user)
-        end
+        let(:project) { create(:project, :repository, maintainers: user) }
 
         context 'when maintainers can push to the branch' do
           before do
@@ -557,25 +531,20 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
 
   describe 'manage a web ide terminal' do
     let(:build_permissions) { %i[read_web_ide_terminal create_build_terminal update_web_ide_terminal create_build_service_proxy] }
-    let_it_be(:maintainer) { create(:user) }
 
-    let(:owner) { create(:owner) }
-    let(:admin) { create(:admin) }
-    let(:maintainer) { create(:user) }
-    let(:developer) { create(:user) }
-    let(:reporter) { create(:user) }
-    let(:guest) { create(:user) }
-    let(:project) { create(:project, :public, namespace: owner.namespace) }
-    let(:pipeline) { create(:ci_empty_pipeline, project: project, source: :webide) }
+    let_it_be(:owner) { create(:owner) }
+    let_it_be(:admin) { create(:admin) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:developer) { create(:user) }
+    let_it_be(:reporter) { create(:user) }
+    let_it_be(:guest) { create(:user) }
+    let_it_be(:project) { create(:project, :public, namespace: owner.namespace, maintainers: maintainer, developers: developer, reporters: reporter, guests: guest) }
+
+    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, source: :webide) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
 
     before do
       allow(build).to receive(:has_terminal?).and_return(true)
-
-      project.add_maintainer(maintainer)
-      project.add_developer(developer)
-      project.add_reporter(reporter)
-      project.add_guest(guest)
     end
 
     subject { described_class.new(current_user, build) }
@@ -682,14 +651,12 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
   end
 
   describe 'ability :create_build_terminal' do
-    let(:project) { create(:project, :private) }
-
     subject { described_class.new(user, build) }
 
+    let_it_be(:user) { create(:user) }
+
     context 'when user can update_build' do
-      before do
-        project.add_maintainer(user)
-      end
+      let_it_be(:project) { create(:project, :private, maintainers: user) }
 
       context 'when job has terminal' do
         before do
@@ -720,8 +687,9 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     end
 
     context 'when user cannot update build' do
+      let_it_be(:project) { create(:project, :private, guests: user) }
+
       before do
-        project.add_guest(user)
         allow(build).to receive(:has_terminal?).and_return(true)
       end
 

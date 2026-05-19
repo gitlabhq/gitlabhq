@@ -5,21 +5,30 @@ import { s__, __ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { i18n, STATE_CLOSED, STATE_OPEN } from '~/work_items/constants';
+import { i18n, STATE_CLOSED, STATE_OPEN, LINKED_CATEGORIES_MAP } from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
+import WorkItemCloseConfirmModal from '~/work_items/components/work_item_close_confirm_modal.vue';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import workItemEmailParticipantsByIidQuery from '../../graphql/notes/work_item_email_participants_by_iid.query.graphql';
-import { findEmailParticipantsWidget } from '../../utils';
+import {
+  findEmailParticipantsWidget,
+  findLinkedItemsWidget,
+  findHierarchyWidget,
+} from '../../utils';
+import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
+import workItemOpenChildCountQuery from '../../graphql/open_child_count.query.graphql';
 
 export default {
+  name: 'WorkItemCommentForm',
   i18n: {
     internal: s__('Notes|Make this an internal note'),
     internalVisibility: s__(
@@ -37,6 +46,7 @@ export default {
     MarkdownEditor,
     GlFormCheckbox,
     HelpIcon,
+    WorkItemCloseConfirmModal,
     WorkItemStateToggle,
     CommentTemperature: () =>
       import(
@@ -46,7 +56,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glAbilitiesMixin()],
+  mixins: [glAbilitiesMixin(), glFeatureFlagsMixin()],
   props: {
     workItemId: {
       type: String,
@@ -181,6 +191,9 @@ export default {
       workItem: {},
       isMeasuringCommentTemperature: false,
       isCancellingEdit: false,
+      blockerItems: [],
+      openChildItemsCount: 0,
+      closeConfirmModalVisible: false,
     };
   },
   computed: {
@@ -239,6 +252,15 @@ export default {
         !(this.workItemState === STATE_CLOSED && this.isDiscussionLocked)
       );
     },
+    hasCloseQuickAction() {
+      return /^\s*\/close\s*$/im.test(this.commentText) && this.workItemState === STATE_OPEN;
+    },
+    isBlockedByOpenItems() {
+      return this.hasCloseQuickAction && this.blockerItems.length > 0;
+    },
+    hasOpenChildItems() {
+      return this.hasCloseQuickAction && this.openChildItemsCount > 0;
+    },
   },
   apollo: {
     emailParticipants: {
@@ -268,6 +290,7 @@ export default {
         return {
           fullPath: this.fullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
         };
       },
       update(data) {
@@ -278,6 +301,48 @@ export default {
       },
       error() {
         this.$emit('error', i18n.fetchError);
+      },
+    },
+    blockerItems: {
+      query: workItemLinkedItemsQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+        };
+      },
+      skip() {
+        return !this.workItemIid || !this.hasCloseQuickAction;
+      },
+      update({ namespace }) {
+        if (!namespace?.workItem) return [];
+        const linkedWorkItems = findLinkedItemsWidget(namespace.workItem)?.linkedItems?.nodes || [];
+        return linkedWorkItems.filter(
+          (item) =>
+            item.linkType === LINKED_CATEGORIES_MAP.IS_BLOCKED_BY &&
+            item.workItemState !== STATE_CLOSED,
+        );
+      },
+      error(e) {
+        this.$emit('error', e.message || i18n.fetchError);
+      },
+    },
+    openChildItemsCount: {
+      query: workItemOpenChildCountQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+        };
+      },
+      skip() {
+        return !this.workItemIid || !this.hasCloseQuickAction;
+      },
+      update({ namespace }) {
+        if (!namespace?.workItem) return 0;
+        const countsByType = findHierarchyWidget(namespace.workItem)?.rolledUpCountsByType;
+        if (!countsByType) return 0;
+        return countsByType.reduce((acc, curr) => acc + curr.countsByState.opened, 0);
       },
     },
   },
@@ -358,6 +423,14 @@ export default {
         return;
       }
 
+      if (this.isBlockedByOpenItems || this.hasOpenChildItems) {
+        this.closeConfirmModalVisible = true;
+        return;
+      }
+
+      this.proceedWithSubmit();
+    },
+    proceedWithSubmit() {
       if (this.toggleResolveChecked) {
         this.$emit('toggle-resolve-discussion');
       }
@@ -482,5 +555,15 @@ export default {
         </div>
       </form>
     </div>
+
+    <work-item-close-confirm-modal
+      v-if="closeConfirmModalVisible"
+      :work-item-type="workItemType"
+      :is-blocked-by-open-items="isBlockedByOpenItems"
+      :blocker-items="blockerItems"
+      :visible="closeConfirmModalVisible"
+      @hide="closeConfirmModalVisible = false"
+      @proceed="proceedWithSubmit"
+    />
   </div>
 </template>

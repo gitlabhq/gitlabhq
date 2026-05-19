@@ -27,6 +27,8 @@ module Mutations
           description: 'Branch after mutation.'
 
         authorize :push_code
+        authorize_granular_token permissions: :create_branch, boundary_argument: :project_path,
+          boundary_type: :project
 
         def resolve(project_path:, name:, ref:)
           project = authorized_find!(project_path)

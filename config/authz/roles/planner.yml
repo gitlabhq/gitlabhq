@@ -34,7 +34,9 @@ project:
   - download_code
   - download_wiki_code
   - export_requirements
+  - import_issues
   - import_requirements
+  - import_work_items
   - mark_note_as_internal
   - move_design
   - read_code
@@ -71,7 +73,6 @@ group:
   - destroy_epic
   - destroy_issue
   - download_wiki_code
-  - guest_access
   - mark_note_as_internal
   - read_confidential_epic
   - read_confidential_issues

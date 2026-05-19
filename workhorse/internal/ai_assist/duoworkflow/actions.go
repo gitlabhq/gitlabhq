@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
@@ -24,6 +25,7 @@ import (
 var (
 	errResponseBodySizeLimitExceeded = errors.New("response body exceeded size limit")
 	errRequestAborted                = errors.New("request aborted")
+	errRequestTimedOut               = errors.New("request timed out")
 )
 
 // ActionResponseBodyLimit is the maximum size of response body that can be received.
@@ -31,12 +33,15 @@ var (
 // With some extra space to wrap the body into a gRPC message.
 const ActionResponseBodyLimit = MaxMessageSize - 4096
 
+const httpRequestTimeout = 5 * time.Second
+
 type runHTTPActionHandler struct {
-	rails       *api.API
-	backend     http.Handler
-	token       string
-	originalReq *http.Request
-	action      *pb.Action
+	rails                     *api.API
+	backend                   http.Handler
+	token                     string
+	originalReq               *http.Request
+	action                    *pb.Action
+	shouldTimeoutHTTPRequests bool
 }
 
 type nullResponseWriter struct {
@@ -124,9 +129,20 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 
 	logger.Info("Executing HTTP request")
 
+	if a.shouldTimeoutHTTPRequests {
+		timeoutCtx, cancel := context.WithTimeout(req.Context(), httpRequestTimeout)
+		defer cancel()
+		req = req.WithContext(timeoutCtx)
+	}
+
 	nrw := &nullResponseWriter{header: make(http.Header), logger: logger}
 	err = serveHTTPSafe(a.backend, nrw, req)
 
+	// check if there is context deadline because the roundtripper converts such errors
+	// to a 502 status bad gateway. We want to provide a more descriptive error to DWS.
+	if a.shouldTimeoutHTTPRequests && errors.Is(req.Context().Err(), context.DeadlineExceeded) {
+		err = errRequestTimedOut
+	}
 	clientEvent := a.buildClientEvent(nrw, err)
 
 	logger.WithFields(log.Fields{

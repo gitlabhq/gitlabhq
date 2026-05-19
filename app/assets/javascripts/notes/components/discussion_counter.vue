@@ -6,7 +6,7 @@ import {
   GlIcon,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { mapActions, mapState } from 'pinia';
+import { mapState } from 'pinia';
 import { __, n__ } from '~/locale';
 import {
   keysFor,
@@ -15,7 +15,6 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { sanitize } from '~/lib/dompurify';
-import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useNotes } from '~/notes/store/legacy_notes';
 import discussionNavigation from '../mixins/discussion_navigation';
 
@@ -35,6 +34,9 @@ export default {
     GlIcon,
   },
   mixins: [discussionNavigation],
+  inject: {
+    store: { type: Object },
+  },
   props: {
     blocksMerge: {
       type: Boolean,
@@ -56,12 +58,11 @@ export default {
       'resolvableDiscussionsCount',
       'unresolvedDiscussionsCount',
     ]),
-    ...mapState(useMrNotes, ['allVisibleDiscussionsExpanded']),
     allResolved() {
       return this.unresolvedDiscussionsCount === 0;
     },
     toggleThreadsLabel() {
-      return !this.allVisibleDiscussionsExpanded
+      return !this.store.allVisibleDiscussionsExpanded
         ? __('Show all comments')
         : __('Hide all comments');
     },
@@ -107,7 +108,7 @@ export default {
       const options = [
         {
           text: this.toggleThreadsLabel,
-          action: this.toggleAllVisibleDiscussions,
+          action: () => this.store.toggleAllVisibleDiscussions(),
           extraAttrs: {
             'data-testid': 'toggle-all-discussions-btn',
           },
@@ -126,9 +127,6 @@ export default {
 
       return options;
     },
-  },
-  methods: {
-    ...mapActions(useMrNotes, ['toggleAllVisibleDiscussions']),
   },
 };
 </script>

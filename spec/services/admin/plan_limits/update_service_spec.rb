@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :consumables_cost_management do
   let_it_be(:user) { create(:admin) }
   let_it_be(:plan) { create(:plan, name: 'free') }
-  let_it_be(:limits) { plan.actual_limits }
-  let_it_be(:params) do
+  let_it_be(:limits, freeze: false) { plan.actual_limits }
+  let_it_be(:params, freeze: false) do
     {
       ci_pipeline_size: 101,
       ci_active_jobs: 102,

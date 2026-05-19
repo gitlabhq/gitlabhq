@@ -54,7 +54,12 @@ class User < ApplicationRecord
 
   COUNT_CACHE_VALIDITY_PERIOD = 24.hours
 
-  OTP_SECRET_LENGTH = 32
+  # Number of random bytes used to generate the OTP secret via ROTP::Base32.random.
+  # 20 bytes produces a 32-character Base32 string (160-bit key), matching the
+  # devise-two-factor v6+ default and RFC 4226 recommended key length.
+  # NOTE: In devise-two-factor < 6.0, this value was a character count; from v6.0
+  # it is a byte count. 20 bytes -> 32 Base32 chars (same output as the old 32-char default).
+  OTP_SECRET_LENGTH = 20
   OTP_SECRET_TTL = 2.minutes
 
   MAX_USERNAME_LENGTH = 255
@@ -525,6 +530,11 @@ class User < ApplicationRecord
     :use_work_items_view, :use_work_items_view=,
     :text_editor, :text_editor=,
     :default_text_editor_enabled, :default_text_editor_enabled=,
+    :orbit_enabled, :orbit_enabled=,
+    :orbit_agent_enabled, :orbit_agent_enabled=,
+    :orbit_agentic_chat_enabled, :orbit_agentic_chat_enabled=,
+    :orbit_other_foundational_agents_enabled, :orbit_other_foundational_agents_enabled=,
+    :orbit_custom_agents_enabled, :orbit_custom_agents_enabled=,
     :merge_request_dashboard_list_type, :merge_request_dashboard_list_type=,
     :merge_request_dashboard_show_drafts, :merge_request_dashboard_show_drafts=,
     to: :user_preference
@@ -542,7 +552,6 @@ class User < ApplicationRecord
   delegate :twitter, :twitter=, to: :user_detail, allow_nil: true
   delegate :website_url, :website_url=, to: :user_detail, allow_nil: true
   delegate :location, :location=, to: :user_detail, allow_nil: true
-  delegate :organization, :organization=, to: :user_detail, prefix: true, allow_nil: true
   delegate :company, :company=, to: :user_detail, allow_nil: true
   delegate :discord, :discord=, to: :user_detail, allow_nil: true
   delegate :github, :github=, to: :user_detail, allow_nil: true
@@ -745,6 +754,7 @@ class User < ApplicationRecord
   scope :order_oldest_last_activity, -> { reorder(arel_table[:last_activity_on].asc.nulls_first, arel_table[:id].desc) }
   scope :ordered_by_id_desc, -> { reorder(arel_table[:id].desc) }
   scope :ordered_by_name_asc_id_desc, -> { order(name: :asc, id: :desc) }
+  scope :order_random, -> { order(Arel.sql('random()')) }
 
   scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', Gitlab::CurrentSettings.deactivate_dormant_users_period.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil).where('created_at <= ?', MINIMUM_DAYS_CREATED.day.ago.to_date) }
@@ -1364,9 +1374,21 @@ class User < ApplicationRecord
     end
   end
 
+  # Overrides Devise::Models::TwoFactorBackupable#invalidate_otp_backup_code! to
+  # return false on read-only replicas, and to dispatch to the FIPS-compliant
+  # PBKDF2 implementation when applicable.
+  #
+  # Backup code authentication requires a DB write to consume the code. On a
+  # read-only replica we cannot perform that write, so we treat the attempt as
+  # failed. This preserves the pre-existing behaviour: backup code auth was
+  # always denied on replicas because the external save! would raise.
   def invalidate_otp_backup_code!(code)
+    return false if Gitlab::Database.read_only?
+
     if Gitlab::FIPS.enabled? && pbkdf2?
-      invalidate_otp_backup_code_pdkdf2!(code)
+      result = invalidate_otp_backup_code_pdkdf2!(code)
+      save!(validate: false) if result
+      result
     else
       super(code)
     end
@@ -1473,7 +1495,6 @@ class User < ApplicationRecord
   end
 
   def allow_passkey_authentication?
-    return false if Feature.disabled?(:passkeys, self)
     return false if disable_password_authentication_for_sso_users?
 
     Gitlab::CurrentSettings.password_authentication_enabled_for_web?
@@ -2939,6 +2960,20 @@ class User < ApplicationRecord
     service_account? && composite_identity_enforced?
   end
 
+  def sa_provisioned_by_project?
+    return false unless service_account?
+
+    provisioned_by_project_id.present?
+  end
+
+  def sa_provisioned_by_subgroup?
+    return false unless service_account?
+
+    return false if provisioned_by_group_id.blank?
+
+    !!provisioned_by_group&.has_parent?
+  end
+
   def composite_identity_enforced?
     return !!@composite_identity_enforced_override if defined?(@composite_identity_enforced_override)
 
@@ -2959,7 +2994,7 @@ class User < ApplicationRecord
 
   # override, from Devise::Validatable
   def password_required?
-    return false if internal? || project_bot? || security_policy_bot? || placeholder?
+    return false if internal? || project_bot? || security_policy_bot? || placeholder? || service_account?
 
     super
   end
@@ -2974,18 +3009,26 @@ class User < ApplicationRecord
   end
   alias_method :in_confirmation_period?, :confirmation_period_valid?
 
-  # This is copied from Devise::Models::TwoFactorAuthenticatable#consume_otp!
+  # Overrides Devise::Models::TwoFactorAuthenticatable#consume_otp! to skip
+  # the database write on read-only replicas while still returning true so that
+  # OTP validation succeeds.
   #
-  # An OTP cannot be used more than once in a given timestep
-  # Storing timestep of last valid OTP is sufficient to satisfy this requirement
+  # An OTP cannot be used more than once in a given timestep.
+  # Storing the timestep of the last valid OTP is sufficient to satisfy this
+  # requirement.
   #
   # See:
-  #   <https://github.com/tinfoil/devise-two-factor/blob/master/lib/devise_two_factor/models/two_factor_authenticatable.rb#L66>
+  #   https://github.com/devise-two-factor/devise-two-factor/blob/main/lib/devise_two_factor/models/two_factor_authenticatable.rb
   #
-  def consume_otp!
-    if self.consumed_timestep != current_otp_timestep
-      self.consumed_timestep = current_otp_timestep
-      return Gitlab::Database.read_only? ? true : save(validate: false)
+  def consume_otp!(otp, timestamp)
+    timestep = timestamp / otp.interval
+
+    if self.consumed_timestep != timestep
+      self.consumed_timestep = timestep
+      return true if Gitlab::Database.read_only?
+
+      save!(validate: false)
+      return true
     end
 
     false

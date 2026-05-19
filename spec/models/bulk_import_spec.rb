@@ -356,4 +356,20 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
       it { expect { import.start }.not_to schedule_configuration_purge }
     end
   end
+
+  describe '#offline?' do
+    subject(:offline) { bulk_import.offline? }
+
+    context 'with an associated offline configuration' do
+      let(:bulk_import) { build(:bulk_import, :with_offline_configuration) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'without an associated offline configuration' do
+      let(:bulk_import) { build(:bulk_import) }
+
+      it { is_expected.to be(false) }
+    end
+  end
 end

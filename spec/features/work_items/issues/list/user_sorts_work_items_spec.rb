@@ -30,21 +30,21 @@ RSpec.describe "User sorts work items", feature_category: :portfolio_management 
     sign_in(user)
   end
 
-  it 'keeps the sort option', :js,
-    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9311' do
+  it 'keeps the sort option', :js do
     visit(project_work_items_path(project))
-
-    click_button 'Created date'
-    click_button 'Milestone'
+    pajamas_sort_by 'Milestone due date', from: 'Created date'
+    wait_for_requests
 
     visit(issues_dashboard_path(assignee_username: user.username))
-
-    expect(page).to have_button 'Milestone'
-
     visit(project_work_items_path(project))
 
     expect(page).to have_button 'Milestone'
 
+    visit(group_work_items_path(group))
+    pajamas_sort_by 'Milestone due date', from: 'Created date'
+    wait_for_requests
+
+    visit(issues_dashboard_path(assignee_username: user.username))
     visit(group_work_items_path(group))
 
     expect(page).to have_button 'Milestone'

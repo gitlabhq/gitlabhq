@@ -50,7 +50,7 @@ following response attributes:
 | `mirror_overwrites_diverged_branches` | boolean         | If `true`, overwrites diverged branches during mirroring. |
 | `mirror_trigger_builds`               | boolean         | If `true`, triggers builds for mirror updates. |
 | `only_mirror_protected_branches`      | boolean or null | If `true`, only protected branches are mirrored. If not set, the value is `null`. |
-| `update_status`                       | string          | Status of the mirror update process. |
+| `update_status`                       | string          | Status of the mirror update process. Possible values: `none`, `scheduled`, `started`, `finished`, `failed`, or `canceled`. |
 | `url`                                 | string          | URL of the mirrored repository. |
 
 Example request:

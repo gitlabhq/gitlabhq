@@ -52,7 +52,7 @@ RSpec.describe Clusters::Kubernetes::CreateOrUpdateNamespaceService, '#execute',
     it 'creates a Clusters::KubernetesNamespace' do
       expect do
         subject
-      end.to change(Clusters::KubernetesNamespace, :count).by(1)
+      end.to change { Clusters::KubernetesNamespace.count }.by(1)
     end
 
     it 'creates project service account and namespace' do

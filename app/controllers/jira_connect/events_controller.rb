@@ -24,6 +24,7 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
     )
       head :ok
     else
+      log_lifecycle_failure(action: :uninstall, errors: current_jira_installation&.errors&.full_messages)
       head :unprocessable_entity
     end
   end
@@ -31,16 +32,40 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
   private
 
   def create_installation
-    JiraConnectInstallation.new(create_params).save
+    installation = JiraConnectInstallation.new(create_params)
+    return true if installation.save
+
+    log_lifecycle_failure(action: :create, errors: installation.errors.full_messages)
+    false
   end
 
   def update_installation
-    JiraConnectInstallations::UpdateService.execute(
+    response = JiraConnectInstallations::UpdateService.execute(
       current_jira_installation,
       nil,
       update_params,
       skip_jira_admin_check: true
-    ).success?
+    )
+    return true if response.success?
+
+    log_lifecycle_failure(action: :update, errors: extract_errors(response.message))
+    false
+  end
+
+  def extract_errors(message)
+    return message.full_messages if message.respond_to?(:full_messages)
+
+    Array.wrap(message)
+  end
+
+  def log_lifecycle_failure(action:, errors:)
+    Gitlab::IntegrationsLogger.info(
+      integration: 'JiraConnect',
+      message: 'JiraConnect lifecycle event rejected',
+      jira_event_action: action,
+      jira_client_key: transformed_params[:client_key],
+      jira_errors: errors
+    )
   end
 
   def create_params

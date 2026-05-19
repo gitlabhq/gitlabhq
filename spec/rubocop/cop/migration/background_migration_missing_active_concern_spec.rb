@@ -82,5 +82,19 @@ RSpec.describe RuboCop::Cop::Migration::BackgroundMigrationMissingActiveConcern 
         RUBY
       end
     end
+
+    context 'when body uses numbered block parameters' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          module Gitlab
+            module BackgroundMigration
+              prepended do
+                [1, 2].each { _1 }
+              end
+            end
+          end
+        RUBY
+      end
+    end
   end
 end

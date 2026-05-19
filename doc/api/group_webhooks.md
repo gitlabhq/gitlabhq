@@ -85,12 +85,21 @@ Example response:
       {
         "key": "Authorization"
       }
-    ]
+    ],
+    "token_present": false,
+    "signing_token_present": false
   }
 ]
 ```
 
 ## Retrieve a group hook
+
+{{< history >}}
+
+- `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+- `token_present` and `signing_token_present` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0.
+
+{{< /history >}}
 
 Retrieves a specified group hook.
 
@@ -153,7 +162,9 @@ Example response:
     {
       "key": "Authorization"
     }
-  ]
+  ],
+  "token_present": false,
+  "signing_token_present": false
 }
 ```
 
@@ -483,6 +494,17 @@ Example response:
 
 ## Create a group hook
 
+{{< history >}}
+
+- `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+- `signing_token` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the `signing_token` attribute is controlled by a feature flag.
+> For more information, see the history.
+
 Creates a group hook for a specified group.
 
 ```plaintext
@@ -517,9 +539,10 @@ Supported attributes:
 | `push_events_branch_filter`    | String            | No       | Trigger hook on push events for matching branches only. |
 | `releases_events`              | Boolean           | No       | Trigger hook on release events. |
 | `resource_access_token_events` | Boolean           | No       | Trigger hook on project access token expiry events. |
+| `signing_token`                | String            | No       | HMAC signing token used to compute the `webhook-signature` header. Must be in `whsec_<base64>` format encoding a 32-byte key. Not returned in the response. |
 | `subgroup_events`              | Boolean           | No       | Trigger hook on subgroup events. |
 | `tag_push_events`              | Boolean           | No       | Trigger hook on tag push events. |
-| `token`                        | String            | No       | Secret token to validate received payloads; not returned in the response. |
+| `token`                        | String            | No       | Secret token to validate received payloads. Not returned in the response. |
 | `wiki_page_events`             | Boolean           | No       | Trigger hook on wiki page events. |
 
 Example request:
@@ -568,10 +591,23 @@ Example response:
   "created_at": "2012-10-12T17:04:47Z",
   "resource_access_token_events": true,
   "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}",
+  "token_present": false,
+  "signing_token_present": false
 }
 ```
 
 ## Update a group hook
+
+{{< history >}}
+
+- `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+- `signing_token` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the `signing_token` attribute is controlled by a feature flag.
+> For more information, see the history.
 
 Updates a group hook for a specified group.
 
@@ -592,7 +628,7 @@ Supported attributes:
 | `custom_headers`                            | Array             | No       | Custom headers for the hook. |
 | `custom_webhook_template`                   | String            | No       | Custom webhook template for the hook. |
 | `deployment_events`                         | Boolean           | No       | Trigger hook on deployment events. |
-| `description`                               | String            | No       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
+| `description`                               | String            | No       | Description of the hook. |
 | `enable_ssl_verification`                   | Boolean           | No       | Do SSL verification when triggering the hook. |
 | `feature_flag_events`                       | Boolean           | No       | Trigger hook on feature flag events. |
 | `issues_events`                             | Boolean           | No       | Trigger hook on issue events. |
@@ -600,7 +636,7 @@ Supported attributes:
 | `member_events`                             | Boolean           | No       | Trigger hook on member events. |
 | `merge_requests_events`                     | Boolean           | No       | Trigger hook on merge request events. |
 | `milestone_events`                          | Boolean           | No       | Trigger hook on milestone events. |
-| `name`                                      | String            | No       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
+| `name`                                      | String            | No       | Name of the hook. |
 | `note_events`                               | Boolean           | No       | Trigger hook on note events. |
 | `pipeline_events`                           | Boolean           | No       | Trigger hook on pipeline events. |
 | `project_events`                            | Boolean           | No       | Trigger hook on project events. |
@@ -609,6 +645,7 @@ Supported attributes:
 | `releases_events`                           | Boolean           | No       | Trigger hook on release events. |
 | `resource_access_token_events`              | Boolean           | No       | Trigger hook on project access token expiry events. |
 | `service_access_tokens_expiration_enforced` | Boolean           | No       | Require service account access tokens to have an expiration date. |
+| `signing_token`                             | String            | No       | HMAC signing token used to compute the `webhook-signature` header. Must be in `whsec_<base64>` format encoding a 32-byte key. Not returned in the response. |
 | `subgroup_events`                           | Boolean           | No       | Trigger hook on subgroup events. |
 | `tag_push_events`                           | Boolean           | No       | Trigger hook on tag push events. |
 | `token`                                     | String            | No       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
@@ -664,7 +701,9 @@ Example response:
     {
       "key": "Authorization"
     }
-  ]
+  ],
+  "token_present": false,
+  "signing_token_present": false
 }
 ```
 

@@ -62,9 +62,11 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
     it_behaves_like 'when the user is not authorized'
 
     context 'when the user has guest privileges or higher' do
-      before do
+      before_all do
         project.add_guest(user)
+      end
 
+      before do
         v1_0_0.update!(released_at: 2.days.ago, created_at: 1.day.ago)
         v1_1_0.update!(released_at: 1.day.ago, created_at: 2.days.ago)
       end
@@ -115,7 +117,7 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
     it_behaves_like 'when the user is not authorized'
 
     context 'when the user has guest privileges or higher on one project' do
-      before do
+      before_all do
         project.add_guest(user)
       end
 
@@ -127,10 +129,12 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
     end
 
     context 'when the user has guest privileges or higher on all projects' do
-      before do
+      before_all do
         project.add_guest(user)
         project2.add_guest(user)
+      end
 
+      before do
         v1_0_0.update!(released_at: 4.days.ago, created_at: 1.day.ago)
         v1_1_0.update!(released_at: 3.days.ago, created_at: 2.days.ago)
         v2_0_0.update!(released_at: 2.days.ago, created_at: 3.days.ago)
@@ -238,7 +242,7 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
     it_behaves_like 'when the user is not authorized'
 
     context 'when the user has guest privileges or higher on one project' do
-      before do
+      before_all do
         project.add_guest(user)
       end
 
@@ -248,7 +252,7 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
     end
 
     context 'when the user has guest privileges or higher on all projects' do
-      before do
+      before_all do
         project.add_guest(user)
         project2.add_guest(user)
       end

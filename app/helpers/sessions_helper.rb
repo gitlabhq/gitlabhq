@@ -34,7 +34,8 @@ module SessionsHelper
       obfuscated_email: obfuscated_email(user.email),
       verify_path: session_path(:user),
       resend_path: users_resend_verification_code_path,
-      skip_path: permitted_to_skip ? users_skip_verification_for_now_path : nil
+      skip_path: permitted_to_skip ? users_skip_verification_for_now_path : nil,
+      show_resend_after: show_email_otp_resend_after(user)
     }
   end
 

@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  class CreateApprovalNoteWorker
+  # Worker is not idempotent: each run creates a system note.
+  # A reviewer can approve multiple times across different commits,
+  # so a note-existence guard is insufficient to prevent duplicates.
+  class CreateApprovalNoteWorker # rubocop:disable Scalability/IdempotentWorker -- Currently not idempotent
     include Gitlab::EventStore::Subscriber
 
     data_consistency :always
     feature_category :code_review_workflow
     urgency :low
-    idempotent!
 
     def handle_event(event)
       current_user_id = event.data[:current_user_id]

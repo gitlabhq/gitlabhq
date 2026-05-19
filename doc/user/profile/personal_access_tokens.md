@@ -153,7 +153,7 @@ Scopes define the actions available when you authenticate with a personal access
 | `create_runner`          | Grants permission to create runners. |
 | `manage_runner`          | Grants permission to manage runners. |
 | `admin_mode`             | Grants permission to perform API actions when [Admin Mode](../../administration/settings/sign_in_restrictions.md#admin-mode) is enabled. Available only to administrators on GitLab Self-Managed instances. |
-| `ai_features`            | Grants permission to perform API actions for GitLab Duo, the Code Suggestions API, and the GitLab Duo Chat API. Designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see the individual extension documentation. Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7. |
+| `ai_features`            | Grants permission to perform API actions for GitLab Duo, the Code Suggestions API, and the GitLab Duo Chat API. Designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see the individual extension documentation. Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7. On GitLab Self-Managed and GitLab Dedicated, this scope is only available when GitLab Duo is enabled. |
 | `k8s_proxy`              | Grants permission to perform Kubernetes API calls using the agent for Kubernetes. |
 | `self_rotate`            | Grants permission to rotate this token using the [personal access token API](../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
 | `read_service_ping`      | Grants access to download the Service Ping payloads through the API when authenticated as an administrator. |
@@ -262,8 +262,9 @@ Prerequisites:
 - You must have the Owner role for the top-level group.
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General** > **Permissions and group features**.
-1. Clear the **Service account token expiration** checkbox.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Permissions and group features**.
+1. Under **Personal access tokens**, clear the **Require expiration dates for service accounts** checkbox.
 
 You can now create personal access tokens for a service account user with no expiry date.
 
@@ -274,7 +275,7 @@ Prerequisites:
 - You must be an administrator for your GitLab Self-Managed instance.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Account and limit**.
 1. Clear the **Service account token expiration** checkbox.
 
@@ -314,7 +315,7 @@ When you disable access tokens, the following rules apply:
 To disable access tokens for the instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Account and limit**.
 1. Select the **Disable access tokens** checkbox.
 1. Select **Save changes**.
@@ -354,7 +355,7 @@ Disabling the personal access tokens of a group's [enterprise users](../enterpri
 To disable the enterprise users' personal access tokens:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Enterprise users**, select **Disable personal access tokens**.
 1. Select **Save changes**.

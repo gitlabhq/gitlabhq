@@ -9,7 +9,7 @@ One of the advantages of working with UX themes is that it allows us to think an
 ----
 
 ### Theme statement
-<!-- A theme statement combines the beneficiary, their job, and their expected outcome when the work is delivered and serves as the design goal for the team who owns the theme. Well-defined statements are concise without sacrificing the substance of the theme so that anyone can understand it at a glance. Well-defined statements are concise without sacrificing the substance of the theme so that anyone can understand it at a glance. (For instance, Reduce the effort for security teams when prioritizing business-critical risks in their assets.) -->
+<!-- A theme statement combines the beneficiary, their job, and their expected outcome when the work is delivered and serves as the design goal for the team who owns the theme. Well-defined statements are concise without sacrificing the substance of the theme so that anyone can understand it at a glance. (For instance, Reduce the effort for security teams when prioritizing business-critical risks in their assets.) -->
 
 <!-- Also Theme issue tile -->
 {`Need/outcome` } + {`Beneficiary`} + {`Job/Small Job`} 

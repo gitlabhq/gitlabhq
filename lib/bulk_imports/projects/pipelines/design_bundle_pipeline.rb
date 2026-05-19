@@ -39,9 +39,9 @@ module BulkImports
         private
 
         def download_service
-          BulkImports::FileDownloadService.new(
+          BulkImports::FileDownloadService.for_context(
             context: context,
-            relative_url: context.entity.relation_download_url_path(self.class.relation),
+            relation: self.class.relation,
             tmpdir: tmpdir,
             filename: targz_filename
           )

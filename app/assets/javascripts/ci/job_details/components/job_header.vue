@@ -62,6 +62,9 @@ export default {
           id: convertToGraphQLId(TYPENAME_CI_BUILD, this.jobId),
         };
       },
+      skip() {
+        return !this.jobId || !this.projectPath;
+      },
       update({ project }) {
         return project.job;
       },

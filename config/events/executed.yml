@@ -6,6 +6,8 @@ identifiers:
 - namespace
 - user
 product_group: global_search
+product_categories:
+- global_search
 milestone: '15.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169895
 tiers:

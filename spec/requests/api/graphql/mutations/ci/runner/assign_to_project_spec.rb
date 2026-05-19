@@ -10,6 +10,8 @@ RSpec.describe Mutations::Ci::Runner::AssignToProject, feature_category: :runner
   let_it_be(:group) { create(:group, owners: group_owner) }
   let_it_be(:project) { create(:project, namespace: group, owners: project_owner) }
   let_it_be(:project2) { create(:project, namespace: group, owners: project_owner) }
+  let_it_be(:other_org) { create(:organization) }
+  let_it_be(:other_org_owner) { create(:user, organization: other_org) }
   let_it_be(:project_with_org) { create(:project, organization: create(:organization), owners: project_owner) }
   let_it_be(:runner) { create(:ci_runner, :project, projects: [project2]) }
   let_it_be(:admin) { create(:admin) }
@@ -33,6 +35,12 @@ RSpec.describe Mutations::Ci::Runner::AssignToProject, feature_category: :runner
   let(:mutation_response) { graphql_mutation_response(:runner_assign_to_project) }
 
   specify { expect(described_class).to require_graphql_authorizations(:assign_runner) }
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :assign_runner do
+    let(:user) { group_owner }
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
 
   context 'with invalid parameters' do
     context 'when project_path is not given' do
@@ -114,9 +122,10 @@ RSpec.describe Mutations::Ci::Runner::AssignToProject, feature_category: :runner
 
       it 'returns an error' do
         post_graphql_mutation(mutation, current_user: project_owner)
+
         expect(graphql_mutation_response(:runner_assign_to_project)['errors'])
-          .to include("user is not authorized to add runners to project")
-        expect(runner.reload.projects).not_to include(project)
+          .to include(_('runner can only be assigned to projects in the same organization'))
+        expect(runner.reload.projects).not_to include(project_with_org)
       end
     end
   end

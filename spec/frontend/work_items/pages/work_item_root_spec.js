@@ -4,6 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { visitUrl } from '~/lib/utils/url_utility';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
@@ -42,19 +43,18 @@ describe('Work items root component', () => {
           show: mockToastShow,
         },
       },
+      stubs: {
+        WorkItemDetail: stubComponent(WorkItemDetail),
+      },
     });
   };
 
   it('renders WorkItemDetail', () => {
     createComponent();
 
-    expect(findWorkItemDetail().props()).toEqual({
-      isModal: false,
-      workItemId: null,
+    expect(findWorkItemDetail().props()).toMatchObject({
       workItemIid: '1',
       workItemFullPath: 'full-path',
-      isDrawer: false,
-      isBoard: false,
     });
   });
 

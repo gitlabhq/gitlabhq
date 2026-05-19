@@ -189,6 +189,28 @@ RSpec.describe Gitlab::GrapeOpenapi::Generator do
         expect(schemas.keys.count('TestEntitiesUserEntity')).to eq(1)
       end
     end
+
+    describe 'when routes only declare entities via the success DSL' do
+      let(:api_classes) { [TestApis::SuccessKeywordApi] }
+
+      it 'registers entities declared via `success code:, model:` (Hash shape)' do
+        expect(spec[:components][:schemas].keys).to include('TestEntitiesUserPersonEntity')
+      end
+
+      it 'emits the entity $ref in the operation response (Hash shape)' do
+        operation = spec[:paths]['/api/v1/persons']['get']
+        schema = operation[:responses]['200'][:content]['application/json'][:schema]
+
+        expect(schema).to eq({ '$ref' => '#/components/schemas/TestEntitiesUserPersonEntity' })
+      end
+
+      it 'emits the entity $ref in the operation response (Array shape)' do
+        operation = spec[:paths]['/api/v1/persons']['post']
+        schema = operation[:responses]['201'][:content]['application/json'][:schema]
+
+        expect(schema).to eq({ '$ref' => '#/components/schemas/TestEntitiesUserPersonEntity' })
+      end
+    end
   end
 
   describe '#paths' do

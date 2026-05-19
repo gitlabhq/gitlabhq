@@ -60,9 +60,9 @@ describe('commitDiffDiscussions store', () => {
   it.each([
     'discussionsWithForms',
     'findAllImageDiscussionsForFile',
-    'findDiscussionsForPosition',
     'findDiscussionsForFile',
-    'findAllLineDiscussionsForFile',
+    'findLinePositionsForFile',
+    'findLineDiscussionsForPosition',
   ])('exposes %s getter', (getter) => {
     expect(useCommitDiffDiscussions()[getter]).toBeDefined();
   });

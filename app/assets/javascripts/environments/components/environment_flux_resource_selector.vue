@@ -186,6 +186,7 @@ export default {
       return (
         this.fluxKustomizations?.map((item) => {
           return {
+            // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Kubernetes API resource identifier, not a GitLab URL
             value: `${item.apiVersion}/namespaces/${item.metadata.namespace}/${KUSTOMIZATIONS_RESOURCE_TYPE}/${item.metadata.name}`,
             text: item.metadata.name,
           };
@@ -196,6 +197,7 @@ export default {
       return (
         this.fluxHelmReleases?.map((item) => {
           return {
+            // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Kubernetes API resource identifier, not a GitLab URL
             value: `${item.apiVersion}/namespaces/${item.metadata.namespace}/${HELM_RELEASES_RESOURCE_TYPE}/${item.metadata.name}`,
             text: item.metadata.name,
           };

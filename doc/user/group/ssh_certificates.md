@@ -125,6 +125,26 @@ The expiration date (`+1d`) identifies how long the SSH certificate can be used 
 
 The user certificates can only be used to access the projects in the top-level group.
 
+### Certificate principals
+
+The previous `ssh-keygen` example does not set any certificate principals (`-n` flag).
+Without principals, OpenSSH accepts the certificate for any SSH login user. GitLab maps the
+certificate to a user with the identity (`-I`) value.
+
+If you sign the certificate with one or more principals, the list must include `git`, because
+users authenticate to GitLab over SSH as the `git` user (for example, `git@gitlab.com`):
+
+```shell
+ssh-keygen -s CA -I user@example.com -n git -V +1d user-key.pub
+```
+
+If `git` is missing from a non-empty principals list, GitLab rejects the certificate with an
+error similar to:
+
+```plaintext
+ssh: principal "git" not in the set of valid principals for given certificate: ["user@example.com"]
+```
+
 ## Enforce SSH certificates
 
 {{< history >}}
@@ -154,7 +174,7 @@ Prerequisites:
 To enforce using SSH certificates:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select the **Enforce SSH Certificates** checkbox.
 1. Select **Save changes**.

@@ -7,6 +7,12 @@ module Mutations
         graphql_name 'RunnerUpdate'
 
         authorize :update_runner
+        authorize_granular_token permissions: :update_runner,
+          boundaries: [
+            { boundary_argument: :id, boundary_type: :project },
+            { boundary_argument: :id, boundary_type: :group },
+            { boundary: :instance, boundary_type: :instance }
+          ]
 
         include Mutations::Ci::Runner::CommonMutationArguments
 

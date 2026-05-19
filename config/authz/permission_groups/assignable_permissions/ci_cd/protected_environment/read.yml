@@ -1,8 +1,10 @@
 ---
 name: read_protected_environment
 description: Grants the ability to read protected environments
-permissions:
-  - read_protected_environment
 boundaries:
   - project
   - group
+available_for:
+  - granular_access_token
+permissions:
+  - read_protected_environment

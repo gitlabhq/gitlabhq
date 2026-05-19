@@ -1,9 +1,11 @@
 ---
 name: create_variable
 description: Grants the ability to create variables
-permissions:
-  - create_variable
 boundaries:
   - project
   - group
   - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_variable

@@ -1,0 +1,10 @@
+---
+name: group_minimal_access_role_adjusted_seat_limit
+description: A group member is assigned the Minimal Access role due to seat limit
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/580432
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233661
+feature_category: seat_cost_management
+milestone: '19.0'
+saved_to_database: true
+streamed: true
+scope: [Group]

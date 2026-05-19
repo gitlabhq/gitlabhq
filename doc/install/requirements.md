@@ -192,14 +192,12 @@ More threads would lead to excessive swapping and lower performance.
 
 ## Redis
 
-[Redis](https://redis.io/) stores all user sessions and background tasks
+[Redis](https://redis.io/) or [Valkey](https://valkey.io/) stores all user sessions and background tasks
 and requires about 25 kB per user on average.
 
-In GitLab 16.0 and later, Redis 6.x or 7.x is required.
+Redis 7.2 or Valkey 7.2 is required.
 For more information about end-of-life dates, see the
-[Redis documentation](https://redis.io/docs/latest/operate/rs/installing-upgrading/product-lifecycle/).
-
-For Redis:
+[Redis documentation](https://redis.io/docs/latest/operate/oss_and_stack/install/version-mgmt/).
 
 - Use a standalone instance (with or without high availability).
   Redis Cluster is not supported.

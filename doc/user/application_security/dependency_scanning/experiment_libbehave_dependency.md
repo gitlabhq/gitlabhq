@@ -96,7 +96,7 @@ Prerequisites:
 To enable Libbehave:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. Select the `.gitlab-ci.yml` file.
 1. Select **Edit** > **Edit single file**.
 1. Add the Libbehave [CI/CD components](../../../ci/components/_index.md):
@@ -124,7 +124,7 @@ Prerequisites:
 To configure merge request comments:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Access tokens**.
+1. In the left sidebar, select **Settings** > **Access tokens**.
 1. Select **Add new token** and complete the fields:
    - **Token name**: Enter a name, for example, `libbehave-bot`.
    - **Role**: Select **Guest**.
@@ -176,7 +176,7 @@ The following flags are available, but are untested and should be left at their 
 
 Because all variables have not been tested, you may find some that work and others that do not.
 If you need one that does not work,
-[submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
+[submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
 or contributing to the code to enable it to be used.
 
 ## Dependency detection and analysis

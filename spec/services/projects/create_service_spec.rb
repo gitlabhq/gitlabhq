@@ -1235,7 +1235,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
       project = create_project(user, opts)
 
       expect(
-        Ability.allowed?(other_user, :developer_access, project)
+        Ability.allowed?(other_user, :push_code, project)
       ).to be_truthy
     end
   end

@@ -98,6 +98,20 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
       end
     end
 
+    describe 'organizations for reconciliation' do
+      base_input_path = 'organizations/index/graphql/queries/'
+      base_output_path = 'graphql/organizations/'
+      query_name = 'organizations_for_reconciliation.query.graphql'
+
+      it "#{base_output_path}#{query_name}.json" do
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+        post_graphql(query, current_user: current_user)
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
     describe 'organization groups' do
       let_it_be_with_reload(:current_user) { create(:user, organization: organization, organizations: [organization]) }
 

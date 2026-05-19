@@ -6,7 +6,7 @@ RSpec.describe GitlabSchema.types['ContainerRepositoryDetails'], feature_categor
   fields = %i[id name path location created_at updated_at expiration_policy_started_at
     status tags_count expiration_policy_cleanup_status tags size manifest
     project migration_state last_cleanup_deleted_tags_count user_permissions last_published_at
-    protection_rule_exists]
+    protection_rule_exists tag_details]
 
   it { expect(described_class.graphql_name).to eq('ContainerRepositoryDetails') }
 

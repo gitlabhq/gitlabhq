@@ -6,6 +6,10 @@ RSpec.describe 'User searches for projects', :js, :disable_rate_limiter, feature
   let!(:project) { create(:project, :public, name: 'Shop') }
 
   context 'when signed out' do
+    before do
+      stub_current_organization(project.organization)
+    end
+
     context 'when global_search_block_anonymous_searches_enabled is disabled' do
       before do
         stub_application_setting(global_search_block_anonymous_searches_enabled: false)

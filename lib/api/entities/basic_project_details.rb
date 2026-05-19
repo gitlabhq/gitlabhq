@@ -9,8 +9,8 @@ module API
       expose :default_branch_or_main, documentation: { type: 'String', example: 'main' }, as: :default_branch, if: ->(project, options) { Ability.allowed?(options[:current_user], :read_code, project) }
       # Avoids an N+1 query: https://github.com/mbleigh/acts-as-taggable-on/issues/91#issuecomment-168273770
 
-      expose :topic_names, as: :tag_list, documentation: { type: 'String', is_array: true, example: 'tag' }
-      expose :topic_names, as: :topics, documentation: { type: 'String', is_array: true, example: 'topic' }
+      expose :topic_names, as: :tag_list, documentation: { type: 'String', is_array: true, example: ['tag'] }
+      expose :topic_names, as: :topics, documentation: { type: 'String', is_array: true, example: ['topic'] }
 
       expose :ssh_url_to_repo, documentation: { type: 'String', example: 'git@gitlab.example.com:gitlab/gitlab.git' }
       expose :http_url_to_repo, documentation: { type: 'String', example: 'https://gitlab.example.com/gitlab/gitlab.git' }
@@ -28,7 +28,7 @@ module API
         end
       end
 
-      expose :license, with: 'API::Entities::LicenseBasic', if: :license do |project|
+      expose :license, using: ::API::Entities::LicenseBasic, if: :license do |project|
         project.repository.license
       end
 

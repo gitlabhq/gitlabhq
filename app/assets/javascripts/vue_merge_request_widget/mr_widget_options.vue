@@ -43,6 +43,8 @@ import {
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateSubscription from './queries/get_state.subscription.graphql';
+import mergeChecksQuery from './queries/merge_checks.query.graphql';
+import mergeChecksSubscription from './queries/merge_checks.subscription.graphql';
 import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
 import MergeChecks from './components/merge_checks.vue';
 
@@ -137,6 +139,45 @@ export default {
         },
       },
     },
+    mergeChecksState: {
+      query: mergeChecksQuery,
+      fetchPolicy: 'no-cache',
+      skip() {
+        return !this.mr;
+      },
+      variables() {
+        return this.mergeRequestQueryVariables;
+      },
+      update: (data) => data?.project?.mergeRequest,
+      error() {
+        this.mergeChecksState = {};
+      },
+      subscribeToMore: {
+        document() {
+          return mergeChecksSubscription;
+        },
+        skip() {
+          return !this.mr?.id;
+        },
+        variables() {
+          return {
+            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mr?.id),
+          };
+        },
+        updateQuery(
+          _,
+          {
+            subscriptionData: {
+              data: { mergeRequestMergeStatusUpdated },
+            },
+          },
+        ) {
+          if (mergeRequestMergeStatusUpdated) {
+            this.mergeChecksState = mergeRequestMergeStatusUpdated;
+          }
+        },
+      },
+    },
   },
   mixins: [mergeRequestQueryVariablesMixin],
   props: {
@@ -158,9 +199,13 @@ export default {
       startingPollInterval: STATE_QUERY_POLLING_INTERVAL_DEFAULT,
       pollInterval: -1,
       initialRequest: true,
+      mergeChecksState: {},
     };
   },
   computed: {
+    isLoadingMergeChecks() {
+      return this.$apollo.queries.mergeChecksState.loading;
+    },
     shouldRenderApprovals() {
       return !['preparing', 'nothingToMerge'].includes(this.mr.state);
     },
@@ -532,8 +577,6 @@ export default {
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"
       :human-access="formattedHumanAccess"
-      :user-callouts-path="mr.userCalloutsPath"
-      :user-callout-feature-id="mr.suggestPipelineFeatureId"
     />
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"
@@ -579,7 +622,12 @@ export default {
             :service="service"
             class="gl-border-b gl-border-b-section"
           />
-          <merge-checks :mr="mr" :service="service" />
+          <merge-checks
+            :mr="mr"
+            :service="service"
+            :merge-checks-state="mergeChecksState"
+            :is-loading-merge-checks="isLoadingMergeChecks"
+          />
         </template>
         <component :is="componentName" v-else :mr="mr" :service="service" />
         <ready-to-merge v-if="mr.commitsCount" :mr="mr" :service="service" />

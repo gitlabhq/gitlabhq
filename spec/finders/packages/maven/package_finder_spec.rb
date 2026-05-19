@@ -13,7 +13,7 @@ RSpec.describe ::Packages::Maven::PackageFinder, feature_category: :package_regi
   let(:param_order_by_package_file) { false }
   let(:finder) { described_class.new(user, project_or_group, path: param_path, order_by_package_file: param_order_by_package_file) }
 
-  before do
+  before_all do
     group.add_developer(user)
   end
 
@@ -81,7 +81,7 @@ RSpec.describe ::Packages::Maven::PackageFinder, feature_category: :package_regi
       let(:project_or_group) { group }
       let(:param_path) { package_name }
 
-      before do
+      before_all do
         sub_group1.add_developer(user)
         sub_group2.add_developer(user)
       end

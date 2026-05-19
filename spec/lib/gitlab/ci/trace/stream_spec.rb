@@ -529,4 +529,71 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
       it_behaves_like 'extract_coverages'
     end
   end
+
+  describe '#raw_range' do
+    let(:data) { 'Hello, this is a trace log output for testing.' }
+
+    shared_examples_for 'raw_range' do
+      it 'returns data from the given byte offset with the given byte limit' do
+        expect(stream.raw_range(byte_offset: 7, byte_limit: 4)).to eq('this')
+      end
+
+      it 'returns data from the beginning when byte_offset is 0' do
+        expect(stream.raw_range(byte_offset: 0, byte_limit: 5)).to eq('Hello')
+      end
+
+      it 'returns remaining data when byte_limit exceeds available bytes' do
+        expect(stream.raw_range(byte_offset: 41, byte_limit: 100)).to eq('ting.')
+      end
+
+      it 'returns empty data when byte_offset is at the end' do
+        expect(stream.raw_range(byte_offset: data.bytesize, byte_limit: 10)).to eq('')
+      end
+
+      it 'returns empty data when byte_offset exceeds total size' do
+        expect(stream.raw_range(byte_offset: data.bytesize + 100, byte_limit: 10)).to eq('')
+      end
+
+      it 'returns data encoded as Encoding.default_external' do
+        result = stream.raw_range(byte_offset: 0, byte_limit: 5)
+
+        expect(result.encoding).to eq(Encoding.default_external)
+      end
+
+      it 'reads all remaining bytes when byte_limit is nil' do
+        expect(stream.raw_range(byte_offset: 7, byte_limit: nil)).to eq(data.byteslice(7..))
+      end
+    end
+
+    context 'when stream is StringIO' do
+      let(:stream) do
+        described_class.new do
+          StringIO.new(data)
+        end
+      end
+
+      it_behaves_like 'raw_range'
+    end
+
+    context 'when stream is ChunkedIO' do
+      let(:stream) do
+        described_class.new do
+          Gitlab::Ci::Trace::ChunkedIO.new(build).tap do |chunked_io|
+            chunked_io.write(data)
+            chunked_io.seek(0, IO::SEEK_SET)
+          end
+        end
+      end
+
+      it_behaves_like 'raw_range'
+    end
+
+    context 'when stream is not valid' do
+      let(:stream) { described_class.new { nil } }
+
+      it 'returns nil' do
+        expect(stream.raw_range(byte_offset: 0, byte_limit: 10)).to be_nil
+      end
+    end
+  end
 end

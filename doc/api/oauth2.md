@@ -50,8 +50,6 @@ GitLab supports the following authorization flows:
   and is recommended for both client and server apps.
 - **Authorization code**: Secure and common flow. Recommended option for secure
   server-side apps.
-- **Resource owner password credentials**: To be used **only** for securely
-  hosted, first-party services. GitLab recommends against use of this flow.
 - **Device Authorization Grant** (GitLab 17.1 and later) Secure flow oriented toward devices without browser access. Requires a secondary device to complete the authorization flow.
 
 The draft specification for [OAuth 2.1](https://oauth.net/2.1/) specifically omits both the
@@ -409,95 +407,6 @@ This makes the device authorization grant flow ideal for users attempting to use
 At this point, the device authentication flow is complete. The returned `access_token` can be provided to GitLab to authenticate the user identity when accessing GitLab resources, such as when cloning over HTTPS or accessing the API.
 
 A sample application that implements the client side device flow can be found at: <https://gitlab.com/johnwparent/git-auth-over-https>.
-
-### Resource owner password credentials flow
-
-> [!note]
-> Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.3) for a
-> detailed flow description.
->
-> Resource owner password credentials are disabled for users with
-> [two-factor authentication](../user/profile/account/two_factor_authentication.md) turned on
-> and [enterprise users](../user/enterprise_user/_index.md)
-> with [password authentication disabled for their group](../user/enterprise_user/_index.md#restrict-authentication-methods).
-> These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
-> instead.
->
-> Ensure the [**Allow password authentication for Git over HTTP(S)**](../administration/settings/sign_in_restrictions.md#allow-password-authentication-for-git-over-https)
-> checkbox is selected for the GitLab instance to support the password credentials flow.
-
-In this flow, a token is requested in exchange for the resource owner credentials
-(username and password).
-
-The credentials should only be used when:
-
-- There is a high degree of trust between the resource owner and the client. For
-  example, the client is part of the device operating system or a highly
-  privileged application.
-- Other authorization grant types are not available (such as an authorization code).
-
-> [!warning]
-> Never store the user's credentials and only use this grant type when your client
-> is deployed to a trusted environment, in 99% of cases
-> [personal access tokens](../user/profile/personal_access_tokens.md) are a better
-> choice.
-
-Even though this grant type requires direct client access to the resource owner
-credentials, the resource owner credentials are used for a single request and
-are exchanged for an access token. This grant type can eliminate the need for
-the client to store the resource owner credentials for future use, by exchanging
-the credentials with a long-lived access token or refresh token.
-
-To request an access token, you must make a POST request to `/oauth/token` with
-the following parameters:
-
-```json
-{
-  "grant_type"    : "password",
-  "username"      : "user@example.com",
-  "password"      : "secret"
-}
-```
-
-Example cURL request:
-
-```shell
-echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
-curl --request POST \
-  --url "https://gitlab.example.com/oauth/token" \
-  --data "@auth.txt"
-```
-
-You can also use this grant flow with registered OAuth applications, by using
-HTTP Basic Authentication with the application's `client_id` and `client_secret`:
-
-```shell
-echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
-curl --request POST \
-  --url "https://gitlab.example.com/oauth/token" \
-  --data "@auth.txt" \
-  --user client_id:client_secret
-```
-
-Then, you receive a response containing the access token:
-
-```json
-{
-  "access_token": "1f0af717251950dbd4d73154fdf0a474a5c5119adad999683f5b450c460726aa",
-  "token_type": "bearer",
-  "expires_in": 7200
-}
-```
-
-By default, the scope of the access token is `api`, which provides complete read/write access.
-
-For testing, you can use the `oauth2` Ruby gem:
-
-```ruby
-client = OAuth2::Client.new('the_client_id', 'the_client_secret', :site => "https://example.com")
-access_token = client.password.get_token('user@example.com', 'secret')
-puts access_token.token
-```
 
 ## Access GitLab API with `access token`
 

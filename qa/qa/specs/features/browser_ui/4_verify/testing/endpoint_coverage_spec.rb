@@ -61,7 +61,7 @@ module QA
 
         Page::Project::Job::Show.perform do |show|
           # user views job succeeding
-          expect { show.passed? }.to eventually_be_truthy.within(max_duration: 120, sleep_interval: 1)
+          expect(show).to have_passed(timeout: 120)
 
           expect(show).to have_browse_button
           show.click_browse_button

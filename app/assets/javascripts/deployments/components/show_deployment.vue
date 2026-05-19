@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
-import { toggleQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
+import { setupQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import deploymentQuery from '../graphql/queries/deployment.query.graphql';
 import environmentQuery from '../graphql/queries/environment.query.graphql';
@@ -91,10 +91,13 @@ export default {
     },
   },
   mounted() {
-    toggleQueryPollingByVisibility(
+    this.pollingVisibilityCleanup = setupQueryPollingByVisibility(
       this.$apollo.queries.deployment,
       DEPLOYMENT_QUERY_POLLING_INTERVAL,
     );
+  },
+  beforeDestroy() {
+    this.pollingVisibilityCleanup?.();
   },
   i18n: {
     header: s__('Deployment|Deployment #%{iid}'),

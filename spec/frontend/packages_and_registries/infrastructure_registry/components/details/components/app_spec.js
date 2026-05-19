@@ -228,13 +228,21 @@ describe('PackagesApp', () => {
       });
 
       it('calls window.replace with project url', async () => {
-        deletePackage.mockResolvedValue();
+        deletePackage.mockResolvedValue({ status: 204 });
         createComponent({ packageEntity: npmPackage });
         findDeleteModal().vm.$emit('primary');
         await deletePackage();
         expect(window.location.replace).toHaveBeenCalledWith(
           'project_url?showSuccessDeleteAlert=true',
         );
+      });
+
+      it('does not redirect on delete failure', async () => {
+        deletePackage.mockResolvedValue();
+        createComponent({ packageEntity: npmPackage });
+        findDeleteModal().vm.$emit('primary');
+        await deletePackage();
+        expect(window.location.replace).not.toHaveBeenCalled();
       });
     });
 

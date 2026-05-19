@@ -1,5 +1,3 @@
-- @main_wrapper_class = "container-queries-enabled gl-@container/panel js-container-queries-enabled"
-
 .layout-page.js-page-layout{ class: page_with_sidebar_class }
   -# this is required to exactly match the main container width to the viewport inner width, which includes scrollbar
   = javascript_tag do
@@ -26,36 +24,46 @@
 
   .panels-container.gl-flex.gl-gap-3
     .content-panels.gl-flex-1.gl-w-full.gl-flex.gl-gap-3.gl-relative.js-content-panels{ class: 'gl-@container/content-panels' }
-      #static-panel-portal.js-static-panel.static-panel.content-wrapper.gl-relative.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-bg-default{ class: "#{@content_wrapper_class}" }
-        .panel-header
-          -# Broadcast messages
-          .broadcast-wrapper
-            = dispensable_render_if_exists "shared/token_expiration_banner"
-            = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
+      -# For clarity:
+      -#   @content_wrapper_class: custom page-specific classes, like `gl-relative`
+      -#   container_class       : fixed/fluid layout classes, like `container-fluid container-limited`
+      -#   @content_class        : custom page-specific classes, like `limit-container-width`
+      = render ::Layouts::StaticPanelComponent.new(html_options: { class: @content_wrapper_class },
+          container_options: { class: "#{container_class unless @no_container} #{@content_class}" },
+          main_options: page_itemtype,
+          page_breadcrumbs_in_top_bar_feature_flag: !@force_show_panel_header && Feature.enabled?(:page_breadcrumbs_in_top_bar, current_user)) do |c|
 
-          -# Top bar
-          = render "layouts/nav/top_bar", paneled_view: true
+        - c.with_broadcasts do
+          = dispensable_render_if_exists "shared/token_expiration_banner"
+          = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
 
-        .panel-content
-          .panel-content-inner.js-static-panel-inner
-            -# Alerts
-            = render 'layouts/alerts', alert_class: alert_class, context: context
+        - c.with_header do
+          = render "layouts/nav/breadcrumbs/breadcrumbs"
 
-            %div{ class: "#{container_class unless @no_container} #{@content_class}" }
-              %main#content-body.content{ class: "gl-@container/panel gl-pb-3", **page_itemtype }
-                -# mount drawers here for better page performance
-                #js-drawer-container
-                -# Sticky alerts
-                = render "layouts/flash" unless @hide_flash
-                = yield :after_flash_content
-                = yield :before_content
-                = yield
-            = yield :after_content
-            -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
+        - c.with_actions do
+          = yield :static_panel_actions
+
+        - c.with_before_body do
+          = render 'layouts/alerts', alert_class: alert_class, context: context
+
+        - c.with_body do
+          -# mount drawers here for better page performance
+          #js-drawer-container
+          -# Sticky alerts
+          = render "layouts/flash" unless @hide_flash
+          = yield :after_flash_content
+          = yield :before_content
+          = yield
+
+        - c.with_after_body do
+          = yield :after_content
+
+        - c.with_footer do
+          -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
           = render_if_exists "shared/footer/global_footer"
 
 
-      #contextual-panel-portal.js-dynamic-panel.paneled-view.contextual-panel{
+      #contextual-panel-portal.paneled-view.contextual-panel{
         class: 'gl-@container/panel !gl-absolute gl-shadow-lg @xl/content-panels:gl-w-1/2 @xl/content-panels:gl-shadow-none @xl/content-panels:!gl-relative'
       }
 

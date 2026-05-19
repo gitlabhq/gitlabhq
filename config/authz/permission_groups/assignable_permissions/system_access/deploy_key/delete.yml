@@ -3,5 +3,7 @@ name: delete_deploy_key
 description: Grants the ability to remove deploy keys
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - delete_deploy_key

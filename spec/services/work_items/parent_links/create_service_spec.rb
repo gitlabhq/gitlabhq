@@ -193,10 +193,10 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
 
         work_item_notes = work_item.notes.last(2)
         resource_link_events = WorkItems::ResourceLinkEvent.last(2)
-        expect(work_item_notes.first.note).to eq("added #{task1.to_reference} as child task")
-        expect(work_item_notes.last.note).to eq("added #{task2.to_reference} as child task")
-        expect(task1.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
-        expect(task2.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
+        expect(work_item_notes.first.note).to eq("added #{task1.to_reference} as child item")
+        expect(work_item_notes.last.note).to eq("added #{task2.to_reference} as child item")
+        expect(task1.notes.last.note).to eq("added #{work_item.to_reference} as parent item")
+        expect(task2.notes.last.note).to eq("added #{work_item.to_reference} as parent item")
         expect(resource_link_events.first).to have_attributes(
           user_id: user.id,
           issue_id: work_item.id,
@@ -252,8 +252,8 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
             .and change { WorkItems::ResourceLinkEvent.count }.by(1)
 
           expect(subject[:created_references].map(&:work_item_id)).to match_array([task2.id])
-          expect(work_item.notes.last.note).to eq("added #{task2.to_reference} as child task")
-          expect(task2.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
+          expect(work_item.notes.last.note).to eq("added #{task2.to_reference} as child item")
+          expect(task2.notes.last.note).to eq("added #{work_item.to_reference} as parent item")
           expect(task.notes).to be_empty
           expect(WorkItems::ResourceLinkEvent.last).to have_attributes(
             user_id: user.id,
@@ -284,8 +284,8 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
         it 'creates notes for valid links', :aggregate_failures do
           subject
 
-          expect(work_item.notes.last.note).to eq("added #{other_project_task.to_reference(full: true)} as child task")
-          expect(task1.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
+          expect(work_item.notes.last.note).to eq("added #{other_project_task.to_reference(full: true)} as child item")
+          expect(task1.notes.last.note).to eq("added #{work_item.to_reference} as parent item")
           expect(issue.notes).to be_empty
           expect(other_project_task.notes).not_to be_empty
         end

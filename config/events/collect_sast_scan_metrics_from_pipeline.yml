@@ -38,3 +38,7 @@ additional_properties:
     description: "project size in terms of number of files"
   language_feature_usage:
     description: "counts of programming language features used in the project"
+  scan_mode:
+    description: "scan mode used: full or differential"
+  incremental_scan_enabled:
+    description: "whether incremental scanning (taint signature caching) was enabled (1=yes, 0=no)"

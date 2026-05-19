@@ -87,7 +87,7 @@ Prerequisites:
 To create an application for your GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Applications**.
+1. In the left sidebar, select **Applications**.
 1. Select **New application**.
 
 When creating application in the **Admin** area, mark it as **trusted**.

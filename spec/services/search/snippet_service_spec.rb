@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Search::SnippetService, feature_category: :global_search do
+RSpec.describe Search::SnippetService, :with_current_organization, feature_category: :global_search do
   let_it_be(:author) { create(:author) }
   let_it_be(:project) { create(:project, :public) }
 
@@ -17,6 +17,16 @@ RSpec.describe Search::SnippetService, feature_category: :global_search do
   let_it_be(:user) { create(:user) }
 
   describe '#execute' do
+    it 'passes organization_id to SnippetSearchResults' do
+      expect(Gitlab::SnippetSearchResults).to receive(:new).with(
+        anything,
+        anything,
+        hash_including(organization_id: current_organization.id)
+      ).and_call_original
+
+      described_class.new(user, search: 'bar', organization_id: current_organization.id).execute
+    end
+
     context 'unauthenticated' do
       it 'returns public snippets only' do
         search = described_class.new(nil, search: 'bar')

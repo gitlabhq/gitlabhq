@@ -1,3 +1,5 @@
+# @feature_category: pipeline_composition
+
 query getCurrentPage {
   page @client {
     current

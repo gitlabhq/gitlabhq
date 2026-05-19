@@ -3,6 +3,7 @@
 class Projects::GraphsController < Projects::ApplicationController
   include ExtractsPath
   include ProductAnalyticsTracking
+  include HandlesGitalyErrors
 
   # Authorize
   before_action :require_non_empty_project

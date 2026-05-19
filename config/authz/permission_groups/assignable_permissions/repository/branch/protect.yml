@@ -4,6 +4,8 @@ description: Grants the ability to protect branches
 boundaries:
   - project
   - group
+available_for:
+  - granular_access_token
 permissions:
   - create_protected_branch
   - delete_protected_branch

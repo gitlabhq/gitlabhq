@@ -14,6 +14,7 @@ import highlight from './serializer/highlight';
 import inlineDiff from './serializer/inline_diff';
 import mathInline from './serializer/math_inline';
 import htmlMark from './serializer/html_mark';
+import iframe from './serializer/iframe';
 import image from './serializer/image';
 import audio from './serializer/audio';
 import drawioDiagram from './serializer/drawio_diagram';
@@ -93,6 +94,7 @@ const defaultSerializerConfig = {
     [extensions.HardBreak.name]: hardBreak,
     [extensions.Heading.name]: heading,
     [extensions.HorizontalRule.name]: horizontalRule,
+    [extensions.Iframe.name]: iframe,
     [extensions.Image.name]: image,
     [extensions.ListItem.name]: listItem,
     [extensions.Loading.name]: loading,

@@ -1171,6 +1171,62 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     end
   end
 
+  describe 'GET repository_file_accessed_api audit event' do
+    let(:params) { { ref: 'master' } }
+
+    context 'when accessing GET /projects/:id/repository/files/:file_path' do
+      it 'emits a repository_file_accessed_api audit event for authenticated users' do
+        expect(::Gitlab::Audit::Auditor).to receive(:audit).with(
+          hash_including(
+            name: 'repository_file_accessed_api',
+            author: user,
+            scope: project,
+            target: project,
+            message: a_string_including('via API'),
+            additional_details: hash_including(
+              file_path: CGI.unescape(file_path),
+              ref: 'master',
+              project_path: project.full_path,
+              project_id: project.id
+            )
+          )
+        )
+
+        get api(route(file_path), user), params: params
+      end
+
+      it 'does not emit an audit event for unauthenticated requests' do
+        expect(::Gitlab::Audit::Auditor).not_to receive(:audit).with(
+          hash_including(name: 'repository_file_accessed_api')
+        )
+
+        get api(route(file_path)), params: params
+      end
+    end
+
+    context 'when accessing GET /projects/:id/repository/files/:file_path/raw' do
+      it 'emits a repository_file_accessed_api audit event for authenticated users' do
+        expect(::Gitlab::Audit::Auditor).to receive(:audit).with(
+          hash_including(
+            name: 'repository_file_accessed_api',
+            author: user,
+            scope: project,
+            target: project,
+            message: a_string_including('via API'),
+            additional_details: hash_including(
+              file_path: CGI.unescape(file_path),
+              ref: 'master',
+              project_path: project.full_path,
+              project_id: project.id
+            )
+          )
+        )
+
+        get api(route(file_path) + '/raw', user), params: params
+      end
+    end
+  end
+
   # rubocop:disable RSpec/MultipleMemoizedHelpers -- sverrides make these blocks much more readable
   describe 'POST /projects/:id/repository/files/:file_path' do
     let(:file_path) { FFaker::UUID.uuidv4 }

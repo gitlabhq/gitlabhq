@@ -55,7 +55,7 @@ together with the Linux package. This is recommended as part of our
    # Replace POSTGRESQL_PASSWORD_HASH with a generated md5 value
    postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
 
-   # Replace APPLICATION_SERVER_IP_BLOCKS with with Network Address (XXX.XXX.XXX.XXX/YY)
+   # Replace APPLICATION_SERVER_IP_BLOCKS with Network Address (XXX.XXX.XXX.XXX/YY)
    postgresql['trust_auth_cidr_addresses'] = %w(APPLICATION_SERVER_IP_BLOCKS)
 
    # Disable automatic database migrations

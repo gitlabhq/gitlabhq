@@ -15,7 +15,7 @@ module API
             object.file_name
           end
 
-          def is_dir # rubocop:disable Naming/PredicateName -- It's the name of the mlflow attribute
+          def is_dir # rubocop:disable Naming/PredicatePrefix -- It's the name of the mlflow attribute
             false
           end
 

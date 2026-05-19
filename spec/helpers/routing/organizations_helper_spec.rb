@@ -118,6 +118,16 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
     it 'aliases root_path as unscoped_root_path' do
       expect(root_path).to eq(unscoped_root_path)
     end
+
+    it 'aliases group_canonical_url as unscoped_group_canonical_url' do
+      group = build_stubbed(:group)
+      expect(group_canonical_url(group)).to eq(unscoped_group_canonical_url(group))
+    end
+
+    it 'aliases group_canonical_path as unscoped_group_canonical_path' do
+      group = build_stubbed(:group)
+      expect(group_canonical_path(group)).to eq(unscoped_group_canonical_path(group))
+    end
   end
 
   describe '#root_path' do

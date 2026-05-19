@@ -38,6 +38,7 @@ RSpec.describe UsersStatistics do
       create_list(:user_highest_role, 2, :guest)
       create_list(:user_highest_role, 2, :planner)
       create_list(:user_highest_role, 2, :reporter)
+      create_list(:user_highest_role, 2, :security_manager)
       create_list(:user_highest_role, 2, :developer)
       create_list(:user_highest_role, 2, :maintainer)
       create_list(:user_highest_role, 2, :owner)
@@ -54,6 +55,7 @@ RSpec.describe UsersStatistics do
           with_highest_role_guest: 2,
           with_highest_role_planner: 2,
           with_highest_role_reporter: 2,
+          with_highest_role_security_manager: 2,
           with_highest_role_developer: 2,
           with_highest_role_maintainer: 2,
           with_highest_role_owner: 2,
@@ -74,13 +76,13 @@ RSpec.describe UsersStatistics do
 
   describe '#active' do
     it 'sums users statistics values without the value for blocked' do
-      expect(users_statistics.active).to eq(78)
+      expect(users_statistics.active).to eq(81)
     end
   end
 
   describe '#total' do
     it 'sums all users statistics values' do
-      expect(users_statistics.total).to eq(85)
+      expect(users_statistics.total).to eq(88)
     end
   end
 end

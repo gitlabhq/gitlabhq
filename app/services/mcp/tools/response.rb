@@ -17,7 +17,7 @@ module Mcp
       def self.error(message, details = nil)
         {
           content: [{ type: TEXT_CONTENT, text: message.to_s }],
-          structuredContent: details ? { error: details } : {},
+          structuredContent: details.nil? ? {} : { error: details },
           isError: true
         }
       end

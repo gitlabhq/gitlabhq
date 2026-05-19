@@ -35,8 +35,13 @@ import {
   mockCreateMutationResponse,
   mockCreateMutationInput,
   mockSourceTokenQueryResponse,
-  mockGranularProjectScope,
-  mockGranularUserScope,
+  mockGroupScopedTokenQueryResponse,
+  mockProjectScopedTokenQueryResponse,
+  mockUserScopedTokenQueryResponse,
+  mockNullDescriptionTokenQueryResponse,
+  mockLegacySourceTokenQueryResponse,
+  mockProjects,
+  mockGroups,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -53,7 +58,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     .fn()
     .mockResolvedValue({ data: { accessTokenPermissions: [] } });
 
-  const mockSourceTokenHandler = jest.fn().mockResolvedValue(mockSourceTokenQueryResponse);
+  const mockSourceTokenHandler = jest.fn().mockResolvedValue(mockGroupScopedTokenQueryResponse);
 
   const createComponent = ({
     mutationHandler = mockMutationHandler,
@@ -96,6 +101,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
   const findNamespaceSelector = () => wrapper.findComponent(PersonalAccessTokenNamespaceSelector);
 
   const findLink = () => wrapper.findComponent(GlLink);
+  const findLinks = () => wrapper.findAllComponents(GlLink);
   const findTabs = () => wrapper.findComponent(GlTabs);
 
   const findPermissionsSelectors = () =>
@@ -122,7 +128,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
 
       await nextTick();
 
-      findNamespaceSelector().vm.$emit('input', mockCreateMutationInput.group.resourceIds);
+      findNamespaceSelector().vm.$emit('input', [mockProjects[0], mockGroups[0]]);
       findGroupPermissionsSelector().vm.$emit('input', mockCreateMutationInput.group.permissions);
     }
 
@@ -216,6 +222,21 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
 
     it('opens the documentation link in a new tab', () => {
       expect(findLink().attributes('target')).toBe('_blank');
+    });
+
+    it('displays the public access note with a link to the publicly accessible endpoints docs', () => {
+      const text = wrapper.text().replace(/\s+/g, ' ');
+      expect(text).toContain(
+        'Publicly visible resources are accessible without a permission. See the list of publicly accessible endpoints',
+      );
+
+      const publicAccessLink = findLinks().at(1);
+      expect(publicAccessLink.attributes('href')).toBe(
+        helpPagePath('auth/tokens/fine_grained_access_tokens.md', {
+          anchor: 'publicly-accessible-endpoints',
+        }),
+      );
+      expect(publicAccessLink.attributes('target')).toBe('_blank');
     });
 
     it('renders permissions selectors for group and user scope', () => {
@@ -413,10 +434,10 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     it('displays the created token and hides the form', async () => {
       await fillAndSubmitForm();
 
-      expect(findCreatedToken().exists()).toBe(true);
-      expect(findCreatedToken().props('value')).toBe(
-        mockCreateMutationResponse.data.personalAccessTokenCreate.token,
-      );
+      expect(findCreatedToken().props()).toMatchObject({
+        token: 'xx',
+        href: '/-/personal_access_tokens',
+      });
 
       expect(findForm().exists()).toBe(false);
     });
@@ -468,7 +489,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     });
   });
 
-  describe('source token pre-population', () => {
+  describe('duplicating a token', () => {
     beforeEach(() => {
       window.gon = { current_user_id: 42 };
       setWindowLocation('?source_token_id=1');
@@ -490,12 +511,10 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     });
 
     it('fetches the source token with the correct variables', async () => {
-      const sourceTokenHandler = jest.fn().mockResolvedValue(mockSourceTokenQueryResponse);
-      createComponent({ sourceTokenHandler });
-
+      createComponent();
       await waitForPromises();
 
-      expect(sourceTokenHandler).toHaveBeenCalledWith({
+      expect(mockSourceTokenHandler).toHaveBeenCalledWith({
         userId: 'gid://gitlab/User/42',
         id: 'gid://gitlab/PersonalAccessToken/1',
       });
@@ -514,50 +533,34 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       createComponent();
       await waitForPromises();
 
-      expect(findGroupPermissionsSelector().props('permissionsToSelect')).toEqual([
+      expect(findGroupPermissionsSelector().props('value')).toEqual([
         'read_project',
         'write_project',
         'read_repository',
         'read_contributed_project',
       ]);
-      expect(findUserPermissionsSelector().props('permissionsToSelect')).toEqual([]);
+
+      expect(findUserPermissionsSelector().props('value')).toEqual([]);
     });
 
     it('pre-populates namespace selector from the fetched token scopes', async () => {
       createComponent();
       await waitForPromises();
 
-      expect(findNamespaceSelector().props('prefillNamespaces')).toEqual([
+      expect(findNamespaceSelector().exists()).toBe(true);
+
+      expect(findNamespaceSelector().props('value')).toEqual([
         expect.objectContaining({ id: 'gid://gitlab/Group/1', fullPath: 'my-group' }),
       ]);
-      expect(findNamespaceSelector().exists()).toBe(true);
     });
 
     it('uses the project object (not namespace) when pre-populating project scopes', async () => {
-      const projectTokenResponse = {
-        data: {
-          user: {
-            id: 'gid://gitlab/User/42',
-            __typename: 'UserCore',
-            personalAccessTokens: {
-              __typename: 'PersonalAccessTokenConnection',
-              nodes: [
-                {
-                  id: 'gid://gitlab/PersonalAccessToken/2',
-                  __typename: 'PersonalAccessToken',
-                  name: 'Project Token',
-                  description: 'A project-scoped token',
-                  scopes: [mockGranularProjectScope],
-                },
-              ],
-            },
-          },
-        },
-      };
-      createComponent({ sourceTokenHandler: jest.fn().mockResolvedValue(projectTokenResponse) });
+      createComponent({
+        sourceTokenHandler: jest.fn().mockResolvedValue(mockProjectScopedTokenQueryResponse),
+      });
       await waitForPromises();
 
-      expect(findNamespaceSelector().props('prefillNamespaces')).toEqual([
+      expect(findNamespaceSelector().props('value')).toEqual([
         expect.objectContaining({
           id: 'gid://gitlab/Project/10',
           fullPath: 'my-group/my-project',
@@ -567,92 +570,40 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     });
 
     it('handles user-scope-only source token without setting access or namespaces', async () => {
-      const userOnlyTokenResponse = {
-        data: {
-          user: {
-            id: 'gid://gitlab/User/42',
-            __typename: 'UserCore',
-            personalAccessTokens: {
-              __typename: 'PersonalAccessTokenConnection',
-              nodes: [
-                {
-                  id: 'gid://gitlab/PersonalAccessToken/3',
-                  __typename: 'PersonalAccessToken',
-                  name: 'User Only Token',
-                  description: 'A user-scoped token',
-                  scopes: [{ ...mockGranularUserScope, project: null }],
-                },
-              ],
-            },
-          },
-        },
-      };
-      createComponent({ sourceTokenHandler: jest.fn().mockResolvedValue(userOnlyTokenResponse) });
+      createComponent({
+        sourceTokenHandler: jest.fn().mockResolvedValue(mockUserScopedTokenQueryResponse),
+      });
       await waitForPromises();
 
       expect(findNameInput().attributes('value')).toBe('User Only Token (copy)');
       expect(findDescriptionTextarea().attributes('value')).toBe('A user-scoped token');
       expect(findNamespaceSelector().exists()).toBe(false);
-      expect(findGroupPermissionsSelector().props('permissionsToSelect')).toEqual([]);
-      expect(findUserPermissionsSelector().props('permissionsToSelect')).toEqual([
+      expect(findGroupPermissionsSelector().props('value')).toEqual([]);
+      expect(findUserPermissionsSelector().props('value')).toEqual([
         'read_user',
         'read_contributed_project',
       ]);
     });
 
-    it('clears prefill permissions when user manually selects permissions', async () => {
-      createComponent();
-      await waitForPromises();
-
-      expect(findGroupPermissionsSelector().props('permissionsToSelect')).not.toEqual([]);
-
-      wrapper.vm.handlePermissionsSelected(['read_project']);
-      await nextTick();
-
-      expect(findGroupPermissionsSelector().props('permissionsToSelect')).toEqual(['read_project']);
-      expect(findUserPermissionsSelector().props('permissionsToSelect')).toEqual(['read_project']);
-    });
-
-    it('clears prefill permissions when user manually clears permissions', async () => {
-      createComponent();
-      await waitForPromises();
-
-      expect(findGroupPermissionsSelector().props('permissionsToSelect')).not.toEqual([]);
-
-      wrapper.vm.handlePermissionsCleared(['read_project']);
-      await nextTick();
-
-      expect(findGroupPermissionsSelector().props('permissionsToSelect')).toEqual([]);
-      expect(findUserPermissionsSelector().props('permissionsToSelect')).toEqual([]);
-    });
-
     it('sets description to empty string when source token has null description', async () => {
-      const nullDescriptionResponse = {
-        data: {
-          user: {
-            id: 'gid://gitlab/User/42',
-            __typename: 'UserCore',
-            personalAccessTokens: {
-              __typename: 'PersonalAccessTokenConnection',
-              nodes: [
-                {
-                  id: 'gid://gitlab/PersonalAccessToken/5',
-                  __typename: 'PersonalAccessToken',
-                  name: 'No Description Token',
-                  description: null,
-                  scopes: [{ ...mockGranularUserScope, project: null }],
-                },
-              ],
-            },
-          },
-        },
-      };
       createComponent({
-        sourceTokenHandler: jest.fn().mockResolvedValue(nullDescriptionResponse),
+        sourceTokenHandler: jest.fn().mockResolvedValue(mockNullDescriptionTokenQueryResponse),
       });
+
       await waitForPromises();
 
       expect(findDescriptionTextarea().attributes('value')).toBe('');
+    });
+
+    it('does not pre-populate the form when source token is not granular', async () => {
+      createComponent({
+        sourceTokenHandler: jest.fn().mockResolvedValue(mockLegacySourceTokenQueryResponse),
+      });
+      await waitForPromises();
+
+      expect(findNameInput().attributes('value')).toBe('');
+      expect(findDescriptionTextarea().attributes('value')).toBe('');
+      expect(findScopeSelectorComponent().props('value')).toBeNull();
     });
 
     it('shows an alert when the source token fetch fails', async () => {
@@ -679,40 +630,20 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     });
 
     it('splits permissions correctly for tokens with both namespace and user scopes', async () => {
-      const mixedScopeTokenResponse = {
-        data: {
-          user: {
-            id: 'gid://gitlab/User/42',
-            __typename: 'UserCore',
-            personalAccessTokens: {
-              __typename: 'PersonalAccessTokenConnection',
-              nodes: [
-                {
-                  id: 'gid://gitlab/PersonalAccessToken/4',
-                  __typename: 'PersonalAccessToken',
-                  name: 'Mixed Token',
-                  description: 'A token with both namespace and user scopes',
-                  scopes: [
-                    { ...mockGranularProjectScope },
-                    { ...mockGranularUserScope, project: null },
-                  ],
-                },
-              ],
-            },
-          },
-        },
-      };
       createComponent({
-        sourceTokenHandler: jest.fn().mockResolvedValue(mixedScopeTokenResponse),
+        sourceTokenHandler: jest.fn().mockResolvedValue(mockSourceTokenQueryResponse),
       });
+
       await waitForPromises();
 
-      expect(findGroupPermissionsSelector().props('permissionsToSelect')).toEqual(['read_project']);
-      expect(findUserPermissionsSelector().props('permissionsToSelect')).toEqual([
+      expect(findGroupPermissionsSelector().props('value')).toEqual(['read_project']);
+
+      expect(findUserPermissionsSelector().props('value')).toEqual([
         'read_user',
         'read_contributed_project',
       ]);
-      expect(findNamespaceSelector().props('prefillNamespaces')).toEqual([
+
+      expect(findNamespaceSelector().props('value')).toEqual([
         expect.objectContaining({ id: 'gid://gitlab/Project/10' }),
       ]);
     });

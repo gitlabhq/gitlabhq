@@ -296,7 +296,7 @@ help integrators set its fields.
 The format is extensively described in the documentation of
 [SAST](../../user/application_security/sast/_index.md#download-a-sast-report),
 [DAST](../../user/application_security/dast/browser/_index.md),
-[dependency scanning](../../user/application_security/dependency_scanning/_index.md#understanding-the-results),
+[dependency scanning](../../user/application_security/dependency_scanning/dependency_scanning_sbom/_index.md#understanding-the-results),
 and [container scanning](../../user/application_security/container_scanning/_index.md#reports-json-format)
 
 You can find the schemas for these scanners here:

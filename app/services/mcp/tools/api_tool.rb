@@ -20,6 +20,8 @@ module Mcp
 
       ARRAY_TYPE_PATTERN = /^Array\[(\w+)\]$/
 
+      GENERIC_NOT_FOUND_MESSAGE = '404 Not Found'
+
       def initialize(name:, route:)
         @name = name
         @route = route
@@ -92,7 +94,13 @@ module Mcp
       def process_response(status, body)
         parsed_response = Gitlab::Json.safe_parse(body)
         if status >= 400
-          message = parsed_response['error'] || parsed_response['message'] || "HTTP #{status}"
+          message =
+            if status == 404 && settings[:resource_name] && generic_not_found?(parsed_response)
+              resource_not_found_message
+            else
+              parsed_response['error'] || parsed_response['message'] || "HTTP #{status}"
+            end
+
           ::Mcp::Tools::Response.error(message, parsed_response)
         else
           formatted_content = [{ type: 'text', text: body }]
@@ -100,6 +108,14 @@ module Mcp
         end
       rescue JSON::ParserError => e
         ::Mcp::Tools::Response.error('Invalid JSON response', { message: e.message })
+      end
+
+      def resource_not_found_message
+        "404 #{settings[:resource_name].capitalize} Not Found"
+      end
+
+      def generic_not_found?(parsed_response)
+        parsed_response['message']&.casecmp?(GENERIC_NOT_FOUND_MESSAGE)
       end
     end
   end

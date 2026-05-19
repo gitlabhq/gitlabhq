@@ -49,7 +49,7 @@ func postRPCHandler(
 	a *api.API,
 	name string,
 	handler func(*HTTPResponseWriter, *http.Request, *api.Response) (*gitalypb.PackfileNegotiationStatistics, error),
-	postFunc func(*api.API, *http.Request, *api.Response, *gitalypb.PackfileNegotiationStatistics),
+	postFunc func(*api.API, *http.Request, *api.Response, *gitalypb.PackfileNegotiationStatistics, int64, int64),
 	errWriter func(io.Writer, string) error,
 ) http.Handler {
 	return repoPreAuthorizeHandler(a, func(rw http.ResponseWriter, r *http.Request, ar *api.Response) {
@@ -72,7 +72,7 @@ func postRPCHandler(
 			log.WithRequest(r).WithError(fmt.Errorf("%s: %v", name, err)).Error()
 		}
 
-		postFunc(a, r, ar, stats)
+		postFunc(a, r, ar, stats, w.Count(), cr.Count())
 	})
 }
 
@@ -104,8 +104,8 @@ func repoPreAuthorizeHandler(myAPI *api.API, handleFunc api.HandleFunc) http.Han
 	}, "")
 }
 
-func sendGitAuditEvent(action string) func(*api.API, *http.Request, *api.Response, *gitalypb.PackfileNegotiationStatistics) {
-	return func(a *api.API, r *http.Request, response *api.Response, stats *gitalypb.PackfileNegotiationStatistics) {
+func sendGitAuditEvent(action string) func(*api.API, *http.Request, *api.Response, *gitalypb.PackfileNegotiationStatistics, int64, int64) {
+	return func(a *api.API, r *http.Request, response *api.Response, stats *gitalypb.PackfileNegotiationStatistics, writtenBytes int64, receivedBytes int64) {
 		if !response.NeedAudit {
 			return
 		}
@@ -119,6 +119,8 @@ func sendGitAuditEvent(action string) func(*api.API, *http.Request, *api.Respons
 			Identifier:    response.GL_ID,
 			PackfileStats: stats,
 			Changes:       "_any",
+			WrittenBytes:  writtenBytes,
+			ReceivedBytes: receivedBytes,
 		})
 		if err != nil {
 			log.WithContextFields(ctx, log.Fields{

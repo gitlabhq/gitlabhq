@@ -9,6 +9,12 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
 
   let(:query) { graphql_query_for('metadata', {}, all_graphql_fields_for('Metadata')) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :read_metadata do
+    let(:user) { current_user }
+    let(:boundary_object) { :instance }
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+  end
+
   context 'logged in' do
     let(:expected_data) do
       {
@@ -34,6 +40,13 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
 
       before do
         allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
+      end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :read_metadata do
+        let(:query) { graphql_query_for('metadata', {}, 'kas { enabled version externalUrl }') }
+        let(:user) { current_user }
+        let(:boundary_object) { :instance }
+        let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
       end
 
       context 'when kas server info fetched successfully' do
@@ -119,6 +132,12 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
           ]
         }
       })
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_metadata do
+      let(:user) { current_user }
+      let(:boundary_object) { :instance }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
     end
 
     it 'avoids N+1 queries' do

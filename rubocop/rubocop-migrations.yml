@@ -31,7 +31,6 @@ Migration/UpdateLargeTable:
   - :project_daily_statistics_archived
   - :push_event_payloads
   - :resource_label_events
-  - :sbom_occurrence_refs
   - :sbom_occurrences
   - :security_findings
   - :security_scans
@@ -63,7 +62,6 @@ Migration/UpdateLargeTable:
   - :project_uploads
   - :projects
   - :resource_state_events
-  - :sbom_occurrence_refs
   - :sbom_occurrences
   - :security_scans
   - :uploads

@@ -9,6 +9,8 @@ export default {
   components: {
     CiResourceReadme,
     CiResourceComponents,
+    CiResourceAnalytics: () =>
+      import('ee_component/ci/catalog/components/details/ci_resource_analytics.vue'),
     GlTab,
     GlTabs,
   },
@@ -48,5 +50,6 @@ export default {
         :version="version"
       />
     </gl-tab>
+    <ci-resource-analytics :class="$options.componentStyles" :resource-path="resourcePath" />
   </gl-tabs>
 </template>

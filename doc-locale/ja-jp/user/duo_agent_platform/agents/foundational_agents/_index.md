@@ -7,7 +7,7 @@ title: 基本エージェント
 
 {{< details >}}
 
-- プラン: Premium、Ultimate
+- プラン: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom)、Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
@@ -16,6 +16,7 @@ title: 基本エージェント
 
 - GitLab 18.6でベータ版として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/576618)されました。
 - GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273)になりました。
+- GitLab 18.10では、GitLab.comのFreeティアでGitLabクレジットとともに利用できます。
 
 {{< /history >}}
 
@@ -27,16 +28,17 @@ title: 基本エージェント
 
 ## 前提条件 {#prerequisites}
 
-- GitLab Duo Agent Platformの[前提条件](../../_index.md#prerequisites)を満たしている必要があります。
-- [基本エージェントが有効になっている](#turn-foundational-agents-on-or-off)必要があります。
+- [GitLab Duo Agent Platformの前提条件](../../_index.md#prerequisites)を満たしていること。
+- [基本エージェントが有効になっている](#turn-foundational-agents-on-or-off)ことを確認してください。
 
 ## 利用可能な基本エージェント {#available-foundational-agents}
 
-以下の基本エージェントは、GitLab UI、VS Code、およびJetBrains IDEで利用できます:
+次の基本エージェントは、GitLab UI、VS Code、およびJetBrains IDEで利用できます。エージェントによって利用可能なティアが異なります。詳細については、各エージェントのページを参照してください。
 
 - [プランナー](planner.md)。プロダクト管理および計画ワークフローに対応。
 - [セキュリティ分析](security_analyst_agent.md)。セキュリティ分析および脆弱性管理に対応。
 - [データ分析](data_analyst.md)。プラットフォームデータの分析および可視化に対応。
+- [CI Expert](ci_expert_agent.md)は、GitLab CI/CDパイプラインの作成、デバッグ、および最適化用です。
 
 ## エージェントを複製する {#duplicate-an-agent}
 
@@ -44,7 +46,7 @@ title: 基本エージェント
 
 前提条件: 
 
-- プロジェクトのメンテナーまたはオーナーロールを持っている必要があります。
+- プロジェクトのメンテナーまたはオーナーロールが必要です。
 
 エージェントを複製するには:
 
@@ -75,7 +77,7 @@ title: 基本エージェント
 
 前提条件: 
 
-- グループのオーナーロールが必要です。
+- グループのオーナーのロールを持っている必要があります。
 
 1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
 1. **設定** > **GitLab Duo**を選択します。
@@ -91,7 +93,7 @@ title: 基本エージェント
 
 これらの設定は、次のユーザーに適用されます:
 
-- トップレベルグループを[デフォルトのGitLab Duoのネームスペース](../../../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace)として設定しているユーザー。
+- トップレベルグループを[デフォルトのGitLab Duoのネームスペース](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace)として設定しているユーザー。
 - デフォルトのネームスペースを設定しておらず、トップレベルグループに属するネームスペースにアクセスするユーザー。
 
 トップレベルグループで基本エージェントをオフにすると、そのグループをデフォルトのGitLab Duoネームスペースとして使用しているユーザーは、どのネームスペースでも基本エージェントにアクセスできなくなります。

@@ -384,6 +384,7 @@ lib/api/entities/project.rb:
 - members
 - merge_commit_template
 - merge_method
+- mr_default_title_template
 - merge_requests
 - merge_requests_access_level
 - merge_requests_enabled

@@ -447,6 +447,33 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
         end
       end
     end
+
+    context 'when Gitaly is unavailable' do
+      let(:from_project_id) { nil }
+      let(:from_ref) { 'master' }
+      let(:to_ref) { 'feature' }
+
+      before do
+        allow_next_instance_of(CompareService) do |service|
+          allow(service).to receive(:execute)
+            .and_raise(Gitlab::Git::CommandError, 'Gitaly unavailable')
+        end
+      end
+
+      it 'returns 503 and sets gitaly_unavailable' do
+        show_request
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+        expect(assigns(:gitaly_unavailable)).to be true
+      end
+
+      it 'tracks the exception' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(instance_of(Gitlab::Git::CommandError))
+
+        show_request
+      end
+    end
   end
 
   describe 'GET diff_for_path' do

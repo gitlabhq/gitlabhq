@@ -81,7 +81,7 @@ is shared with a project, it automatically appears in the project agent tab.
 To view the list of shared agents:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Kubernetes clusters**.
+1. In the left sidebar, select **Operate** > **Kubernetes clusters**.
 1. Select the **Agent** tab.
 
 The list of shared agents and their clusters are displayed.

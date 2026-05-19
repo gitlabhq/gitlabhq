@@ -28,7 +28,7 @@ The usage trends page displays:
   - Pipelines
   - Issues and merge requests
 
-![Usage trends counts and charts for total users, projects and groups](img/usage_trends_v17_7.png)
+![Usage trends counts and charts for total users, projects and groups.](img/usage_trends_v17_7.png)
 
 Usage trends data refreshes daily.
 
@@ -41,4 +41,4 @@ Prerequisites:
 To view usage trends:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Analytics** > **Usage trends**.
+1. In the left sidebar, select **Analytics** > **Usage trends**.

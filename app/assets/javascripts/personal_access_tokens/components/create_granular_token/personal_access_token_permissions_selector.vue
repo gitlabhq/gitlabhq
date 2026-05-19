@@ -32,15 +32,10 @@ export default {
       required: false,
       default: '',
     },
-    permissionsToSelect: {
-      type: Array,
+    aiPermissions: {
+      type: Object,
       required: false,
-      default: () => [],
-    },
-    permissionsToClear: {
-      type: Array,
-      required: false,
-      default: () => [],
+      default: () => ({ suggested: [], removed: [] }),
     },
   },
   emits: ['input'],
@@ -108,28 +103,34 @@ export default {
   },
   watch: {
     selectedResources(newResources, oldResources) {
+      if (!oldResources.length) return;
+
       const removedResources = oldResources.filter((resource) => !newResources.includes(resource));
 
       if (removedResources.length > 0) {
         this.removePermissionsForResources(removedResources);
       }
     },
-    permissionsToSelect: {
-      immediate: true,
-      handler(newPermissions) {
-        if (newPermissions.length === 0) return;
-        this.applyPermissions(newPermissions);
-      },
+    value(newPermissions) {
+      // when a token is duplicated, parent passes down selected permissions
+      // select associated resources for those permissions
+      this.syncSelectedResources(newPermissions);
     },
     permissions() {
-      if (this.permissionsToSelect.length > 0) {
-        this.applyPermissions(this.permissionsToSelect);
-      }
+      this.syncSelectedResources(this.value);
+      this.applyAiSuggestedPermissions(this.aiPermissions.suggested);
     },
-    permissionsToClear(newRemovals) {
-      if (newRemovals.length > 0) {
-        this.removePermissions(newRemovals);
-      }
+    'aiPermissions.suggested': {
+      immediate: true,
+      handler(suggested) {
+        this.applyAiSuggestedPermissions(suggested);
+      },
+    },
+    'aiPermissions.removed': {
+      immediate: true,
+      handler(removed) {
+        this.applyAiRemovedPermissions(removed);
+      },
     },
   },
   methods: {
@@ -147,23 +148,37 @@ export default {
         (permission) => !permissionsToRemove.includes(permission),
       );
     },
-    applyPermissions(permissionNames) {
-      const namesSet = new Set(permissionNames);
-      const matching = this.permissions.filter((p) => namesSet.has(p.name));
+    getMatchingPermissions(permissionNames) {
+      if (!permissionNames.length || !this.permissions.length) return [];
 
-      if (matching.length === 0) return;
+      const namesSet = new Set(permissionNames);
+
+      return this.permissions.filter((p) => namesSet.has(p.name));
+    },
+    syncSelectedResources(permissionNames) {
+      const matching = this.getMatchingPermissions(permissionNames);
+      if (!matching.length) return;
 
       this.selectedResources = [
         ...new Set([...this.selectedResources, ...matching.map((p) => p.resource)]),
       ];
-      const newPermissions = [
+    },
+    applyAiSuggestedPermissions(suggested) {
+      const matching = this.getMatchingPermissions(suggested);
+      if (!matching.length) return;
+
+      this.selectedResources = [
+        ...new Set([...this.selectedResources, ...matching.map((p) => p.resource)]),
+      ];
+      this.selectedPermissions = [
         ...new Set([...this.selectedPermissions, ...matching.map((p) => p.name)]),
       ];
-
-      this.selectedPermissions = newPermissions;
     },
-    removePermissions(permissionNames) {
-      const removalSet = new Set(permissionNames);
+    applyAiRemovedPermissions(removed) {
+      if (!removed.length) return;
+
+      const removalSet = new Set(removed);
+
       this.selectedPermissions = this.selectedPermissions.filter((name) => !removalSet.has(name));
     },
   },

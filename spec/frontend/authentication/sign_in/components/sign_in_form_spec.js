@@ -313,9 +313,9 @@ describe('SignInForm', () => {
     });
   });
 
-  describe('when passkeys feature flag is enabled', () => {
+  describe('passkeys button and remember me', () => {
     beforeEach(() => {
-      createComponent({ provide: { glFeatures: { passkeys: true } } });
+      createComponent();
     });
 
     it('renders form with passkeys button', () => {
@@ -347,7 +347,7 @@ describe('SignInForm', () => {
   });
 
   describe('when twoStepSignIn feature flag is enabled', () => {
-    const provide = { glFeatures: { passkeys: true, twoStepSignIn: true } };
+    const provide = { glFeatures: { twoStepSignIn: true } };
 
     describe('when login field is not prefilled', () => {
       it('renders focused login field with correct name and id attributes', async () => {

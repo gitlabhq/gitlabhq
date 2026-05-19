@@ -209,7 +209,7 @@ Prerequisites:
 To remove blobs from your repository:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. Select **Remove blobs**.
 1. Enter a list of blob IDs to remove, each ID on its own line.
@@ -315,7 +315,7 @@ Prerequisites:
 To redact text from your repository:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. Select **Redact text**.
 1. On the drawer, enter the text to redact. Regexes and glob patterns are accepted.

@@ -1,10 +1,16 @@
-mutation workItemSubscribe($input: WorkItemSubscribeInput!) {
+mutation workItemSubscribe($input: WorkItemSubscribeInput!, $useWorkItemFeatures: Boolean = false) {
   workItemSubscribe(input: $input) {
     errors
     workItem {
       id
-      widgets(onlyTypes: [NOTIFICATIONS]) {
+      widgets(onlyTypes: [NOTIFICATIONS]) @skip(if: $useWorkItemFeatures) {
         ... on WorkItemWidgetNotifications {
+          type
+          subscribed
+        }
+      }
+      features @include(if: $useWorkItemFeatures) {
+        notifications {
           type
           subscribed
         }

@@ -59,7 +59,7 @@ your organization's security standards.
 
 - Configure [password complexity requirements](../administration/settings/sign_up_restrictions.md#modify-password-complexity-requirements)
   appropriate for your organization.
-- Enable [compromised password detection](../security/compromised_password_detection.md) to
+- Enable [compromised password detection](../user/profile/user_passwords.md) to
   prevent the use of known compromised passwords.
 
 ### Two-factor authentication

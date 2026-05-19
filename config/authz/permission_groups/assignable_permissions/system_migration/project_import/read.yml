@@ -1,0 +1,10 @@
+---
+name: read_project_import
+description: Grants the ability to read project import status
+deprecated: true
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_project_import

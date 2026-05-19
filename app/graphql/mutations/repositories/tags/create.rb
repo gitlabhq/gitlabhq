@@ -33,6 +33,8 @@ module Mutations
           description: 'Tag after mutation.'
 
         authorize :admin_tag
+        authorize_granular_token permissions: :create_repository_tag, boundary_argument: :project_path,
+          boundary_type: :project
 
         def resolve(project_path:, name:, ref:, message:)
           project = authorized_find!(project_path)

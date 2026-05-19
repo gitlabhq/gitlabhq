@@ -21,7 +21,12 @@ describe('InviteModalBase', () => {
   let wrapper;
   const dropdownItems = roleDropdownItems({ validRoles: propsData.accessLevels });
 
-  const createComponent = ({ props = {}, stubs = {}, mountFn = shallowMountExtended } = {}) => {
+  const createComponent = ({
+    props = {},
+    stubs = {},
+    slots = {},
+    mountFn = shallowMountExtended,
+  } = {}) => {
     const requiredStubs =
       mountFn === mountExtended
         ? {}
@@ -45,6 +50,7 @@ describe('InviteModalBase', () => {
         ...requiredStubs,
         ...stubs,
       },
+      slots,
     });
   };
 
@@ -245,8 +251,7 @@ describe('InviteModalBase', () => {
     });
 
     describe('when users limit is not reached', () => {
-      const textRegex =
-        /Select maximum role\s*Invited members are assigned the selected role or the role they have in the group, whichever is lower. Learn more about roles.\s*Grant temporary access/;
+      const textRegex = /Select maximum role\s*What are roles\?\s*Grant temporary access/;
 
       beforeEach(() => {
         createComponent({ props: { reachedLimit: false }, stubs: { GlModal, GlFormGroup } });
@@ -297,5 +302,18 @@ describe('InviteModalBase', () => {
     findModal().vm.$emit('shown');
 
     expect(wrapper.emitted('shown')).toHaveLength(1);
+  });
+
+  describe('membership-selector slot', () => {
+    it('renders content passed to the membership-selector slot', () => {
+      createComponent({
+        stubs: { GlModal, GlFormGroup },
+        slots: {
+          'membership-selector': '<div data-testid="test-membership-slot">slot content</div>',
+        },
+      });
+
+      expect(wrapper.findByTestId('test-membership-slot').exists()).toBe(true);
+    });
   });
 });

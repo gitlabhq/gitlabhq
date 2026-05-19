@@ -80,6 +80,15 @@ describe('Batch comments mutations', () => {
         { id: 2, isDraft: true, isEditing: false, editedNote: null },
       ]);
     });
+
+    it.each([null, undefined, 'string', {}, 42])(
+      'sets drafts to empty array when given %s',
+      (input) => {
+        store[types.SET_BATCH_COMMENTS_DRAFTS](input);
+
+        expect(store.drafts).toEqual([]);
+      },
+    );
   });
 
   describe(types.REQUEST_PUBLISH_REVIEW, () => {

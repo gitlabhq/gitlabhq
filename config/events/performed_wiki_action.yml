@@ -10,6 +10,8 @@ additional_properties:
   label:
     description: Type of action (created, updated, destroyed)
 product_group: knowledge
+product_categories:
+- wiki
 milestone: '17.7'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174095
 tiers:

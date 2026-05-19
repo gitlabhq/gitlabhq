@@ -23,9 +23,6 @@ The Slack notifications integration enables your GitLab project to send events
 (such as issue creation) to your existing Slack team as notifications. Setting up
 Slack notifications requires configuration changes for both Slack and GitLab.
 
-You can also use [Slack slash commands](slack_slash_commands.md)
-to control GitLab from Slack. Slash commands are configured separately.
-
 ## Configure Slack
 
 1. Sign in to your Slack team and [start a new Incoming WebHooks configuration](https://my.slack.com/services/new/incoming-webhook).
@@ -42,7 +39,7 @@ to control GitLab from Slack. Slash commands are configured separately.
 {{< /history >}}
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **Slack notifications**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. In the **Trigger** section, select the checkboxes for each type of GitLab

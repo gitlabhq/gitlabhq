@@ -5,7 +5,68 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: GitLab Cells Development Guidelines
 ---
 
-For background of GitLab Cells, refer to the [design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/).
+## Overview
+
+Cells is a new architecture that allows different organizations to be served by
+distinct physical instances of GitLab. Each instance is called a cell.
+For the goals and motivation behind this architecture, see the
+[Cells goals page](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/goals/).
+For a broader architectural overview, see the
+[design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/).
+
+Cells is planned for GitLab.com only. GitLab Self-Managed and GitLab Dedicated
+run as a single cell.
+
+## Cells development principles
+
+All developers must follow these principles when building or modifying features.
+
+All of the principles below should already be automated - though edge cases, and legacy
+cases remain.
+
+### Scope compute to a single organization
+
+Web/API requests and Sidekiq workers should be run under a single organization.
+Convert cross-organization compute to be organization-scoped where possible.
+
+### Keep organization data ownership clear
+
+Organization data must be migratable to another cell. For this to be possible,
+data ownership must be clear from the schema. Every customer-data table must have
+a traceable path to an organization through its
+[sharding key](../organization/sharding/_index.md#choosing-the-right-sharding-key).
+
+Every new model that stores customer data must define a sharding key so each row
+is attributable to a single organization. Non-customer data (data that does not
+belong to a customer organization) must be marked as cell-local in the
+[schema classification](#available-cells--organization-schemas).
+Cell-local means the row never leaves the cell.
+
+When designing a new table or extending an existing one, confirm that the
+ownership of each row is unambiguous. Ambiguous ownership blocks future cell migrations.
+
+### No new customer-owned resources outside an organization
+
+Do not introduce new customer-owned resources that exist outside of an organization.
+All customer data must belong inside an organization. Resources that exist outside
+an organization cannot be migrated when an organization moves to a different cell.
+
+### An organization is isolated to a cell
+
+An organization is by nature isolated to a cell. All data and compute for an
+organization lives on a single cell. Cross-cell access to organization data is
+not supported.
+
+### Cross-organization isolation is the organization's choice
+
+Isolation between organizations on the same cell is the organization's choice.
+This is especially important for existing organizations on the legacy cell
+(the existing GitLab.com instance), where cross-organization interactions may
+already exist.
+
+Controls that provide cross-organization isolation must account for whether an
+organization has opted into isolation. Do not assume all organizations on the
+same cell are isolated from each other.
 
 ## Available Cells / Organization schemas
 
@@ -15,10 +76,10 @@ Below are available schemas related to Cells and Organizations:
 | ------ | ----------- |
 | `gitlab_main` (deprecated) | This is being replaced with `gitlab_main_org`, for the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. |
 | `gitlab_main_org`| Use for all tables in the `main:` database that are for an Organization. For example, `projects` and `groups` |
-| `gitlab_main_cell_setting` | All tables in the `main:` database related to cell settings. For example, `application_settings`. These cell-local tables should not have any foreign key references from/to organization tables. |
-| `gitlab_main_cell_local` | For tables in the `main:` database that are related to features that is distinct for each cell. For example, `zoekt_nodes`, or `shards`. These cell-local tables should not have any foreign key references from organization tables. |
+| `gitlab_main_cell_setting` | All tables in the `main:` database related to cell settings. For example, `application_settings`. These cell-local tables may have hard foreign key references to `gitlab_main_org` or `gitlab_main_user` tables, but must not be referenced by foreign keys from organization tables. |
+| `gitlab_main_cell_local` | For tables in the `main:` database that are related to features that is distinct for each cell. For example, `zoekt_nodes`, or `shards`. These cell-local tables may have hard foreign key references to `gitlab_main_org` or `gitlab_main_user` tables, but must not be referenced by foreign keys from organization tables. |
 | `gitlab_ci` | Use for all tables in the `ci:` database that are for an Organization. For example, `ci_pipelines` and `ci_builds` |
-| `gitlab_ci_cell_local` | For tables in the `ci:` database that are related to features that is distinct for each cell. For example, `instance_type_ci_runners`, or `ci_cost_settings`. These cell-local tables should not have any foreign key references from organization tables. |
+| `gitlab_ci_cell_local` | For tables in the `ci:` database that are related to features that is distinct for each cell. For example, `instance_type_ci_runners`, or `ci_cost_settings`. These cell-local tables may have hard foreign key references to `gitlab_main_org` or `gitlab_main_user` tables, but must not be referenced by foreign keys from organization tables. |
 | `gitlab_main_user` | Schema for all User-related tables, ex. `users`, `emails`, etc. Most user functionality is organizational level so should use `gitlab_main_org` instead (e.g. commenting on an issue). For user functionality that is not organizational level, use this schema. Tables on this schema must strictly belong to a user. |
 | `gitlab_shared_org` | Schema for tables with data across multiple databases and has `organization_id` for sharding. These tables inherit from `Gitlab::Database::SharedModel`. Tables in this schema are not allowed to use auto-incrementing integer schemas so that rows across the decomposed databases have unique primary keys. Use Composite, or UUID primary keys instead. |
 | `gitlab_shared_cell_local` | Schema for cell local shared tables that do not require sharding and exist across multiple databases. For example, `loose_foreign_keys_deleted_records`. These tables also inherit from `Gitlab::Database::SharedModel`. |

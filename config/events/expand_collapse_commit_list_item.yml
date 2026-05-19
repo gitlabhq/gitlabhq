@@ -1,0 +1,21 @@
+---
+description: User expands or collapses a commit description drawer in the commit list
+internal_events: true
+status: active
+action: expand_collapse_commit_list_item
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: Direction of the toggle — "expand" or "collapse"
+product_group: source_code
+product_categories:
+  - source_code_management
+milestone: '19.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231975
+tiers:
+  - free
+  - premium
+  - ultimate

@@ -203,6 +203,7 @@ module Projects
 
       destroy_merge_request_diffs!
       delete_environments
+      delete_lfs_objects_projects
 
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
@@ -359,6 +360,23 @@ module Projects
         project_id: project.id,
         message: 'Deleting environments completed',
         deleted_environment_count: deleted_count
+      )
+    end
+
+    def delete_lfs_objects_projects
+      deleted_count = 0
+
+      loop do
+        deleted_rows = LfsObjectsProject.project_id_in(project.id).limit(BATCH_SIZE).delete_all
+        deleted_count += deleted_rows
+        break if deleted_rows < BATCH_SIZE
+      end
+
+      Gitlab::AppLogger.info(
+        class: self.class.name,
+        project_id: project.id,
+        message: 'Deleting LFS objects projects completed',
+        deleted_lfs_objects_project_count: deleted_count
       )
     end
 

@@ -29,7 +29,14 @@ module Gitlab
         alias_method :then, :with
 
         def version
-          with { |redis| redis.info['redis_version'] }
+          with do |redis|
+            info = redis.info
+            if info['server_name'] == 'valkey'
+              info['valkey_version']
+            else
+              info['redis_version']
+            end
+          end
         end
 
         def pool

@@ -28,14 +28,18 @@ From highest to lowest severity, the logging levels are:
 - `info` (default)
 - `debug`
 
-### Debug-level logging
+### Turn on debug-level logging
 
 > [!warning]
 > Debug logging can be a serious security risk. The output may contain the content of
 > environment variables and other secrets available to the job. The output is uploaded
 > to the GitLab server and is visible in job logs.
 
-To enable debug-level logging, add the following to your `.gitlab-ci.yml` file:
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
+To turn on debug-level logging, add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 variables:
@@ -52,7 +56,7 @@ see [logging level](#logging-level).
 
 If a Secure job is failing and it's unclear why:
 
-1. Enable [debug-level logging](#debug-level-logging).
+1. Enable [debug-level logging](#turn-on-debug-level-logging).
 1. Run the job.
 1. Examine the job's output.
 1. Remove the `debug` log level to return to the default `info` value.

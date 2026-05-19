@@ -165,7 +165,7 @@ Models that use [CarrierWave's](https://github.com/carrierwaveuploader/carrierwa
 
 Each file is expected to have its own primary ID and model. Geo strongly recommends treating every single file as a first-class citizen, because in our experience this greatly simplifies tracking replication and verification state.
 
-To implement Geo replication of a new blob-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Geo%20Replicate%20a%20new%20blob%20type).
+To implement Geo replication of a new blob-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Geo%20Replicate%20a%20new%20blob%20type).
 
 To view the implementation steps without opening an issue, [view the issue template file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Geo%20Replicate%20a%20new%20blob%20type.md).
 
@@ -177,6 +177,6 @@ Each Git repository is expected to have its own primary ID and model.
 
 For a detailed explanation of the repository sync flow, exclusive lease mechanism, and troubleshooting orphaned lease keys, see the [repository synchronization documentation](repository_sync.md).
 
-To implement Geo replication of a new Git repository-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Geo%20Replicate%20a%20new%20Git%20repository%20type).
+To implement Geo replication of a new Git repository-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Geo%20Replicate%20a%20new%20Git%20repository%20type).
 
 To view the implementation steps without opening an issue, [view the issue template file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Geo%20Replicate%20a%20new%20Git%20repository%20type.md).

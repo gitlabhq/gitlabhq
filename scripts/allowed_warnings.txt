@@ -39,3 +39,13 @@ DEPRECATION WARNING: Support for `config.active_support.cache_format_version = 6
 Check the Rails upgrade guide at https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-activesupport-cache-serialization-format
 for more information on how to upgrade.
 called from
+
+# Ignore labkit-ruby's baseline-mode banner. The gem logs deprecated logging fields without failing CI.
+LabKit Logging: Baseline generation mode active
+Deprecated fields detected but skip_ci_failure is enabled\.
+Offenses are being logged for collection\.
+To establish baseline:
+  bundle exec labkit-logging fetch <project> <pipeline_id>
+Documentation: https://gitlab\.com/gitlab-org/ruby/gems/labkit-ruby/-/blob/master/doc/FIELD_STANDARDIZATION\.md
+--- Offenses Summary ---
+Total offenses: [0-9]+ across [0-9]+ file\(s\)

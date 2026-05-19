@@ -55,7 +55,8 @@ module Gitlab
             Gitlab::Ci::Pipeline::Seed::Context.new(
               pipeline,
               root_variables: root_variables,
-              logger: logger
+              logger: logger,
+              suspend_options: @command.suspend_options
             )
           end
 

@@ -11,6 +11,7 @@
 .rd-app-header {
   display: flex;
   flex-wrap: wrap;
+  column-gap: $gl-spacing-scale-3;
   padding: constants.$app-header-vertical-padding 0;
   min-height: 3rem;
 }

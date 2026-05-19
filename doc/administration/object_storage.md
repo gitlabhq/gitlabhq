@@ -1623,7 +1623,7 @@ administrators can observe that the secondary still tries to replicate data:
 On the primary site:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 1. Look at the **primary site** and check the verification information. All uploads were verified:
    ![The Geo Sites dashboard displaying successful verification of the primary.](img/geo_primary_uploads_verification_v17_11.png)
 1. Look at the **secondary site** and check the verification information. Notice that two uploads are still being synced, even though the secondary should use the same object storage. Meaning it should not have to synchronize any uploads:

@@ -60,8 +60,10 @@ module API
           tags %w[access_tokens]
         end
         params do
+          # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
           optional :min_access_level, type: Integer, values: Gitlab::Access.all_values,
             desc: 'Limit by minimum access level of authenticated user'
+          # rubocop:enable API/AccessLevelStringType
           use :pagination
         end
         get 'self/associations' do

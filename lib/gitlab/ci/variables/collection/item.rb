@@ -80,7 +80,7 @@ module Gitlab
               new(**resource)
             when ::Ci::HasVariable, ::Ci::PipelineVariableItem
               new(**resource.to_hash_variable)
-            when self
+            when self, LazyItem
               resource
             else
               raise ArgumentError, "Unknown `#{resource.class}` variable resource!"

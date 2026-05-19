@@ -6,11 +6,8 @@ export const getModifierKey = (removeSuffix = false) => {
 
 // The following default values are for frontend unit tests
 const DEFAULT_FORUM_URL = 'https://forum.gitlab.com';
-// eslint-disable-next-line no-restricted-syntax
 const DEFAULT_DOCS_URL = 'https://docs.gitlab.com';
-// eslint-disable-next-line no-restricted-syntax
 const DEFAULT_PROMO_URL = 'https://about.gitlab.com';
-
 const CONTRIBUTE_URL = 'https://contributors.gitlab.com';
 
 const {

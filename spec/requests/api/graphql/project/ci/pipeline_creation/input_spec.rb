@@ -545,6 +545,88 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
         end
       end
     end
+
+    context 'when inputs have rules with conditionTree' do
+      let_it_be(:config_yaml_with_boolean_rules) do
+        <<~YAML
+        spec:
+          inputs:
+            enable_feature:
+              type: boolean
+              default: false
+            feature_option:
+              type: string
+              rules:
+                - if: '$[[ inputs.enable_feature ]] == true'
+                  options: ['option1', 'option2']
+                  default: 'option1'
+        ---
+        job:
+          script: echo hello world
+        YAML
+      end
+
+      let(:ref) { 'feature-with-boolean-rules' }
+
+      let(:query_with_condition_tree) do
+        <<~GQL
+          query {
+            project(fullPath: "#{project.full_path}") {
+              ciPipelineCreationInputs(ref: "#{ref}") {
+                name
+                type
+                rules {
+                  conditionTree {
+                    operator
+                    field
+                    value
+                    children {
+                      operator
+                      field
+                      value
+                    }
+                  }
+                  options
+                  default
+                }
+              }
+            }
+          }
+        GQL
+      end
+
+      before_all do
+        project.repository.create_file(
+          project.creator,
+          '.gitlab-ci.yml',
+          config_yaml_with_boolean_rules,
+          message: 'Add CI with boolean rules',
+          branch_name: 'feature-with-boolean-rules')
+      end
+
+      it 'returns conditionTree with boolean values properly serialized' do
+        post_graphql(query_with_condition_tree, current_user: user)
+
+        expect(graphql_data['project']['ciPipelineCreationInputs']).to include(
+          a_hash_including(
+            'name' => 'feature_option',
+            'type' => 'STRING',
+            'rules' => contain_exactly(
+              a_hash_including(
+                'conditionTree' => a_hash_including(
+                  'operator' => 'equals',
+                  'field' => 'enable_feature',
+                  'value' => true,
+                  'children' => nil
+                ),
+                'options' => %w[option1 option2],
+                'default' => 'option1'
+              )
+            )
+          )
+        )
+      end
+    end
   end
 
   context 'when current user cannot access the project' do

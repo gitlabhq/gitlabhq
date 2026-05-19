@@ -42,7 +42,7 @@ module QA
         end
       end
 
-      def have_text(text, **kwargs) # rubocop:disable Naming/PredicateName
+      def have_text(text, **kwargs) # rubocop:disable Naming/PredicatePrefix
         HaveText.new(text, **kwargs)
       end
 

@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"slices"
 	"strings"
+	"sync"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
@@ -27,6 +28,23 @@ import (
 
 const gitlabServerName = "gitlab"
 const orbitServerName = "orbit"
+
+type workflowState struct {
+	mu         sync.RWMutex
+	workflowID string
+}
+
+func (s *workflowState) WorkflowID() string {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.workflowID
+}
+
+func (s *workflowState) SetWorkflowID(id string) {
+	s.mu.Lock()
+	s.workflowID = id
+	s.mu.Unlock()
+}
 
 type serverSession struct {
 	name    string
@@ -44,6 +62,7 @@ type mcpManager interface {
 	CallTool(context.Context, *pb.Action) (*pb.ClientEvent, error)
 	Tools() []*pb.McpTool
 	PreApprovedTools() []string
+	SetWorkflowID(string)
 	Close() error
 }
 
@@ -52,6 +71,7 @@ type manager struct {
 	preApprovedTools   []string
 	toolSessionsByName map[string]*toolSession
 	serverSessions     []*serverSession
+	workflow           *workflowState
 }
 
 type roundTripper struct {
@@ -60,6 +80,7 @@ type roundTripper struct {
 	headers     map[string]string
 	originalReq *http.Request
 	rails       *api.API
+	workflow    *workflowState
 }
 
 type responseCapture struct {
@@ -89,11 +110,21 @@ func (lrc *limitedReadCloser) Close() error {
 	return lrc.closer.Close()
 }
 
+func (t *roundTripper) setWorkflowHeader(r *http.Request) {
+	if t.workflow == nil {
+		return
+	}
+	if wfID := t.workflow.WorkflowID(); wfID != "" {
+		r.Header.Set("X-Duo-Workflow-Session-Id", wfID)
+	}
+}
+
 func (t *roundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 	for name, value := range t.headers {
 		r.Header.Set(name, value)
 	}
 	r.Header.Set("User-Agent", "GitLab-Workhorse-Mcp-Client")
+	t.setWorkflowHeader(r)
 
 	if t.originalReq != nil {
 		if clientIP, _, splitHostErr := net.SplitHostPort(t.originalReq.RemoteAddr); splitHostErr == nil {
@@ -148,11 +179,12 @@ func newMcpManager(rails *api.API, r *http.Request, servers map[string]api.McpSe
 		return nil, fmt.Errorf("the list of server configs is empty")
 	}
 
+	state := &workflowState{}
 	var errs []error
 	var sessions []*serverSession
 
 	for serverName, serverCfg := range servers {
-		session, err := buildSession(rails, r, serverName, serverCfg)
+		session, err := buildSession(rails, r, serverName, serverCfg, state)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to initialize MCP session %s: %v", serverName, err))
 			continue
@@ -164,6 +196,7 @@ func newMcpManager(rails *api.API, r *http.Request, servers map[string]api.McpSe
 	manager := &manager{
 		toolSessionsByName: make(map[string]*toolSession),
 		serverSessions:     sessions,
+		workflow:           state,
 	}
 
 	if err := manager.buildTools(r.Context()); err != nil {
@@ -173,7 +206,7 @@ func newMcpManager(rails *api.API, r *http.Request, servers map[string]api.McpSe
 	return manager, errors.Join(errs...)
 }
 
-func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg api.McpServerConfig) (*serverSession, error) {
+func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg api.McpServerConfig, state *workflowState) (*serverSession, error) {
 	client := mcp.NewClient(&mcp.Implementation{Name: "mcp-client", Version: "v1.0.0"}, nil)
 
 	var t *mcp.StreamableClientTransport
@@ -199,6 +232,7 @@ func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg 
 		next:        nextTransport,
 		headers:     serverCfg.Headers,
 		originalReq: r,
+		workflow:    state,
 	}
 	if serverName == orbitServerName {
 		rt.rails = rails
@@ -303,6 +337,14 @@ func (m *manager) PreApprovedTools() []string {
 	}
 
 	return m.preApprovedTools
+}
+
+func (m *manager) SetWorkflowID(id string) {
+	if m == nil || m.workflow == nil {
+		return
+	}
+
+	m.workflow.SetWorkflowID(id)
 }
 
 func (m *manager) CallTool(ctx context.Context, action *pb.Action) (*pb.ClientEvent, error) {

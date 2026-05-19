@@ -154,6 +154,9 @@ describe('Settings Panel', () => {
   const findModelRegistrySettings = () => wrapper.findComponent({ ref: 'model-registry-settings' });
   const findPipelineExecutionPolicySettings = () =>
     wrapper.findByTestId('pipeline-execution-policy-settings');
+  const findBotAccessSettings = () => wrapper.findByTestId('bot-access-settings');
+  const findBotAccessFilePatternsInput = () =>
+    wrapper.findByTestId('bot-access-file-patterns-input');
   const findProjectFeatureInputByAttribute = (attributeName) =>
     wrapper.find(`[name="project[project_feature_attributes][${attributeName}]"]`);
 
@@ -937,6 +940,86 @@ describe('Settings Panel', () => {
       expect(
         findPipelineExecutionPolicySettings().find('input[type="hidden"]').attributes('value'),
       ).not.toEqual(originalHiddenInputValue);
+    });
+  });
+
+  describe('Security policy bot access settings', () => {
+    it('does not show bot access settings by default', () => {
+      wrapper = mountComponent();
+
+      expect(findBotAccessSettings().exists()).toBe(false);
+    });
+
+    it('shows bot access settings when botAccessSettingsAvailable is true', () => {
+      wrapper = mountComponent(
+        {
+          botAccessSettingsAvailable: true,
+        },
+        mountExtended,
+      );
+
+      expect(findBotAccessSettings().exists()).toBe(true);
+    });
+
+    it('does not show file patterns input when bot access is disabled', () => {
+      wrapper = mountComponent(
+        {
+          botAccessSettingsAvailable: true,
+          currentSettings: { pipelineExecutionPolicyBotAccessEnabled: false },
+        },
+        mountExtended,
+      );
+
+      expect(findBotAccessFilePatternsInput().exists()).toBe(false);
+    });
+
+    it('shows file patterns input when bot access is enabled', () => {
+      wrapper = mountComponent(
+        {
+          botAccessSettingsAvailable: true,
+          currentSettings: {
+            pipelineExecutionPolicyBotAccessEnabled: true,
+            pipelineExecutionPolicyBotAccessFilePatterns: ['ci/**/*.yml'],
+          },
+        },
+        mountExtended,
+      );
+
+      expect(findBotAccessFilePatternsInput().exists()).toBe(true);
+      expect(findBotAccessFilePatternsInput().element.value).toBe('ci/**/*.yml');
+    });
+
+    it('updates the hidden value when checkbox is toggled', async () => {
+      wrapper = mountComponent(
+        {
+          botAccessSettingsAvailable: true,
+          currentSettings: { pipelineExecutionPolicyBotAccessEnabled: true },
+        },
+        mountExtended,
+      );
+
+      const originalValue = findBotAccessSettings()
+        .find('input[type="hidden"]')
+        .attributes('value');
+
+      await findBotAccessSettings().findComponent(GlFormCheckbox).find('input').setChecked(false);
+
+      expect(findBotAccessSettings().find('input[type="hidden"]').attributes('value')).not.toEqual(
+        originalValue,
+      );
+    });
+
+    it('does not render bot access settings when feature is unavailable', () => {
+      wrapper = mountComponent(
+        {
+          botAccessSettingsAvailable: false,
+          botAccessGroupId: 42,
+          currentSettings: { pipelineExecutionPolicyBotAccessEnabled: true },
+        },
+        mountExtended,
+      );
+
+      expect(findBotAccessSettings().exists()).toBe(false);
     });
   });
 

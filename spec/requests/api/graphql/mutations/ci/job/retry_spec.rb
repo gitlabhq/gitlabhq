@@ -32,6 +32,12 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
     project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :retry_job do
+    let(:boundary_object) { project }
+    let(:mutation) { graphql_mutation(:job_retry, { id: job.to_global_id.to_s }, 'errors') }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'returns an error if the user is not allowed to retry the job' do
     post_graphql_mutation(mutation, current_user: create(:user))
 

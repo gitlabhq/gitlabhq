@@ -366,7 +366,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
 
       expect(client).to receive(:requests_remaining?).and_return(true)
 
-      client.with_rate_limit {}
+      client.with_rate_limit { nil }
     end
 
     it 'ignores rate limiting when disabled' do

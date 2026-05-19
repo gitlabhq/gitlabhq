@@ -14,7 +14,7 @@ module Resolvers
 
           def resolve_with_lookahead(**arguments)
             scope_context = object
-            request = build_aggregation_request(scope_context[:request], arguments)
+            request = build_aggregation_request(scope_context, arguments)
             scope_context[:validate_request].call(request)
 
             response = scope_context[:engine].execute(request)
@@ -26,11 +26,17 @@ module Resolvers
 
           private
 
-          def build_aggregation_request(outer_request, arguments)
+          def build_aggregation_request(scope_context, arguments)
+            outer_request = scope_context[:request]
+            engine = scope_context[:engine]
+
             nodes_selection = lookahead.selections.detect { |s| s.name == :nodes }
             selections = nodes_selection&.selections || []
 
             order = build_order(arguments.delete(:order_by))
+
+            metric_filters = ::Gitlab::Database::Aggregation::Graphql::Adapter
+              .arguments_to_filters(engine.class.filters.select(&:metric?), arguments)
 
             dimensions_selection = selections.detect { |s| s.name == :dimensions }
             dimensions = dimensions_selection ? build_parts_from_selection(dimensions_selection.selections) : []
@@ -39,7 +45,10 @@ module Resolvers
             metrics = build_parts_from_selection(metric_selections)
 
             ::Gitlab::Database::Aggregation::Request.new(
-              filters: outer_request.filters, dimensions: dimensions, metrics: metrics, order: order
+              filters: outer_request.filters + metric_filters,
+              dimensions: dimensions,
+              metrics: metrics,
+              order: order
             )
           end
 

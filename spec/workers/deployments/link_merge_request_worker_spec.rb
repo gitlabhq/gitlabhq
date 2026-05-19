@@ -27,45 +27,43 @@ RSpec.describe Deployments::LinkMergeRequestWorker, feature_category: :continuou
     end
   end
 
-  context 'idempotent' do
-    include_examples 'an idempotent worker' do
-      let(:project) { create(:project, :repository) }
-      let(:environment) { create(:environment, project: project) }
-      let(:deployment) { create(:deployment, :success, project: project, environment: environment) }
-      let(:job_args) { deployment.id }
+  it_behaves_like 'an idempotent worker' do
+    let(:project) { create(:project, :repository) }
+    let(:environment) { create(:environment, project: project) }
+    let(:deployment) { create(:deployment, :success, project: project, environment: environment) }
+    let(:job_args) { deployment.id }
 
-      it 'links merge requests to deployment' do
-        mr1 = create(
-          :merge_request,
-          :merged,
-          source_project: project,
-          target_project: project,
-          source_branch: 'source1',
-          target_branch: deployment.ref
-        )
+    it 'links merge requests to deployment' do
+      mr1 = create(
+        :merge_request,
+        :merged,
+        source_project: project,
+        target_project: project,
+        source_branch: 'source1',
+        target_branch: deployment.ref
+      )
 
-        mr2 = create(
-          :merge_request,
-          :merged,
-          source_project: project,
-          target_project: project,
-          source_branch: 'source2',
-          target_branch: deployment.ref
-        )
+      mr2 = create(
+        :merge_request,
+        :merged,
+        source_project: project,
+        target_project: project,
+        source_branch: 'source2',
+        target_branch: deployment.ref
+      )
 
-        mr3 = create(
-          :merge_request,
-          :merged,
-          source_project: project,
-          target_project: project,
-          target_branch: 'foo'
-        )
+      mr3 = create(
+        :merge_request,
+        :merged,
+        source_project: project,
+        target_project: project,
+        target_branch: 'foo'
+      )
 
-        subject
+      subject
 
-        expect(deployment.merge_requests).to include(mr1, mr2)
-        expect(deployment.merge_requests).not_to include(mr3)
-      end
+      expect(deployment.merge_requests).to include(mr1, mr2)
+      expect(deployment.merge_requests).not_to include(mr3)
     end
   end
 end

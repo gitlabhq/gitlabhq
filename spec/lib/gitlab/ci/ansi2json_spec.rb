@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration do
+RSpec.shared_examples 'an ansi2json converter' do
   subject { described_class }
 
   describe 'lines' do
@@ -820,4 +820,12 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
       subject.convert(stream).lines
     end
   end
+end
+
+RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration do
+  it_behaves_like 'an ansi2json converter'
+end
+
+RSpec.describe Gitlab::Ci::Ansi2json::V2, feature_category: :continuous_integration do
+  it_behaves_like 'an ansi2json converter'
 end

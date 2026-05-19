@@ -251,6 +251,9 @@ export default {
         !this.branchProtection?.isGroupLevel
       );
     },
+    isGroupLevelProtection() {
+      return Boolean(this.branchProtection?.isGroupLevel);
+    },
     warnProtectedFromPushBySecurityPolicy() {
       return this.branchProtection?.warnProtectedFromPushBySecurityPolicy ?? false;
     },
@@ -582,7 +585,7 @@ export default {
           :groups="mergeAccessLevels.groups"
           :empty-state-copy="$options.i18n.allowedToMergeEmptyState"
           :is-edit-available="canAdminProtectedBranches"
-          :is-group-level="branchProtection.isGroupLevel"
+          :is-group-level="isGroupLevelProtection"
           data-testid="allowed-to-merge-content"
           @edit="openAllowedToMergeDrawer"
         />
@@ -603,7 +606,7 @@ export default {
           :empty-state-copy="$options.i18n.allowedToPushEmptyState"
           :help-text="$options.i18n.allowedToPushDescription"
           :is-edit-available="canAdminProtectedBranches"
-          :is-group-level="branchProtection.isGroupLevel"
+          :is-group-level="isGroupLevelProtection"
           data-testid="allowed-to-push-content"
           @edit="openAllowedToPushAndMergeDrawer"
         />
@@ -622,7 +625,7 @@ export default {
           :description="forcePushAttributes.description"
           :description-link="$options.pushRulesHelpDocLink"
           :is-loading="isAllowForcePushLoading"
-          :is-group-level="branchProtection.isGroupLevel"
+          :is-group-level="isGroupLevelProtection"
           @toggle="onEnableForcePushToggle"
         />
 

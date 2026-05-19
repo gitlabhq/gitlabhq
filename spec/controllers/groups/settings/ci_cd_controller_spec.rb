@@ -68,7 +68,8 @@ RSpec.describe Groups::Settings::CiCdController, feature_category: :continuous_i
             group_path: group.full_path,
             group_id: group.id,
             timestamp: kind_of(String),
-            action: 'group_ci_cd_settings_page_viewed'
+            action: 'group_ci_cd_settings_page_viewed',
+            user_agent: kind_of(String)
           )
         })
 

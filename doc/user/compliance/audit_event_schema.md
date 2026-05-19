@@ -121,7 +121,9 @@ Fetch:
     "target_details": "example-project",
     "custom_message": {
       "protocol": "ssh",
-      "action": "git-upload-pack"
+      "action": "git-upload-pack",
+      "written_bytes": 1048576,
+      "received_bytes": 2048
     },
     "ip_address": "127.0.0.1",
     "entity_path": "example-group/example-project"
@@ -136,3 +138,10 @@ Fetch:
   "event_type": "repository_git_operation"
 }
 ```
+
+The `custom_message` object includes data transfer size fields for Git operations:
+
+- `written_bytes`: Number of bytes sent to the client during the Git operation (for example, during a clone, fetch, or pull).
+- `received_bytes`: Number of bytes received from the client during the Git operation (for example, during a push).
+
+These fields are omitted when no bytes are transferred, such as when a request fails before any data is exchanged.

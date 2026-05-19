@@ -53,7 +53,7 @@ module Quality
 
       private
 
-      # Overriden on Quality::Seeders::Insights::Issues
+      # Overridden on Quality::Seeders::Insights::Issues
       def additional_params
         {}
       end

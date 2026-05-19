@@ -127,8 +127,14 @@ module Gitlab
       def empty_project_push_message
         <<~MESSAGE
 
-        A default branch (e.g. main) does not yet exist for #{project.full_path}
-        Ask a project Owner or Maintainer to create a default branch:
+        You cannot push the initial commit because the default branch is
+        protected and your role does not allow it.
+
+        To resolve this, either:
+        - Ask a Maintainer to push the initial commit.
+        - Contact an Owner or administrator for help.
+
+        Find a Maintainer, Owner, or administrator at:
 
           #{project_members_url}
 

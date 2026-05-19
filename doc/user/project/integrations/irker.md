@@ -47,7 +47,7 @@ need to follow the first steps of the next section.
 ## Complete these steps in GitLab
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **irker (IRC gateway)**.
 1. Ensure that the **Active** toggle is enabled.
 1. Optional. Under **Server host**, enter the server host address where `irkerd` runs. If empty,

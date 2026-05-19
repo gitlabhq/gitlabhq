@@ -29,6 +29,7 @@ class WebHookWorker
     WebHookService.new(hook, data, hook_name, jid, idempotency_key: idempotency_key).execute.tap do |response|
       log_extra_metadata_on_done(:response_status, response.status)
       log_extra_metadata_on_done(:http_status, response[:http_status])
+      log_extra_metadata_on_done(:signing_token_present, hook.signing_token.present?)
     end
   end
 end

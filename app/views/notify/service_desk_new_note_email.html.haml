@@ -1,5 +1,8 @@
-- if Gitlab::CurrentSettings.email_author_in_body
-  .gl-mb-5
-    = _("%{author_link} wrote:").html_safe % { author_link: link_to(@note.author_name, user_url(@note.author)) }
-.md
-  = markdown(@note.note, pipeline: :service_desk_email, author: @note.author, issuable_reference_expansion_enabled: true, uploads_as_attachments: @uploads_as_attachments, no_header_anchors: true)
+- if @custom_template_body
+  = @custom_template_body.html_safe
+- else
+  - if Gitlab::CurrentSettings.email_author_in_body
+    .gl-mb-5
+      = _("%{author_link} wrote:").html_safe % { author_link: link_to(@note.author_name, user_url(@note.author)) }
+  .md
+    = markdown(@note.note, pipeline: :service_desk_email, author: @note.author, issuable_reference_expansion_enabled: true, uploads_as_attachments: @uploads_as_attachments, no_header_anchors: true)

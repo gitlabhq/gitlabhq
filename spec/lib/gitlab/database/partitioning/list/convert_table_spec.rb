@@ -252,6 +252,15 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
         expect { referencing_model.create!(partitioning_column => 1, :ref_id => 1) }.not_to raise_error
       end
 
+      it 'attaches foreign keys to the parent table using reverse lock order' do
+        expect(migration_context).to receive(:add_concurrent_foreign_key)
+          .with(parent_table_name, anything, hash_including(reverse_lock_order: true))
+          .twice
+          .and_call_original
+
+        partition
+      end
+
       context 'when the existing table is owned by a different user' do
         before do
           connection.execute(<<~SQL)
@@ -355,7 +364,11 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
 
       it 'sets up partitioning analysis for parent table' do
         expect(migration_context).to receive(:execute).with(/CREATE TABLE/).ordered.and_call_original
-        expect(migration_context).to receive(:execute).exactly(5).with(/ALTER TABLE/).ordered.and_call_original
+        expect(migration_context).to receive(:execute).with(/ALTER TABLE/).ordered.and_call_original
+        expect(migration_context).to receive(:execute).with(/LOCK TABLE/).ordered.and_call_original
+        expect(migration_context).to receive(:execute).exactly(2).with(/ALTER TABLE/).ordered.and_call_original
+        expect(migration_context).to receive(:execute).with(/LOCK TABLE/).ordered.and_call_original
+        expect(migration_context).to receive(:execute).exactly(2).with(/ALTER TABLE/).ordered.and_call_original
         expect(migration_context).to receive(:execute).with(/ANALYZE VERBOSE/).ordered.and_call_original
 
         partition

@@ -3,6 +3,8 @@ description: Service Ping was requested via REST API endpoint
 internal_events: true
 action: request_service_ping_via_rest
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 milestone: '16.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143385/
 tiers:

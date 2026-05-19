@@ -39,7 +39,7 @@ Prerequisites:
 On the **primary** site:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 1. Expand **Verification information** tab for that site to view automatic checksumming
    status for repositories and wikis. Successes are shown in green, pending work
    in gray, and failures in red.
@@ -49,7 +49,7 @@ On the **primary** site:
 On the **secondary** site:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 1. Expand **Verification information** tab for that site to view automatic checksumming
    status for repositories and wikis. Successes are shown in green, pending work
    in gray, and failures in red.
@@ -77,7 +77,7 @@ increase load and vice versa.
 On the **primary** site:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 1. Select **Edit** for the **primary** site to customize the minimum
    re-verification interval:
 

@@ -29,7 +29,7 @@ To create a cluster from GitLab using Infrastructure as Code, you must
 create a project to manage the cluster from. In this tutorial, you start with
 a sample project and modify it according to your needs.
 
-Start by [importing the example project by URL](../../../project/import/repo_by_url.md).
+Start by [importing the example project by URL](../../../import/third_party_systems/repo_by_url.md).
 
 To import the project:
 

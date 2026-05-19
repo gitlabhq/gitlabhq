@@ -61,7 +61,7 @@ module Authn
           aud: Authn::IamAuthService.jwt_audience,
           exp_leeway: CLOCK_SKEW_SECONDS,
           verify_iss: true,
-          iss: Authn::IamAuthService.url,
+          iss: Authn::IamAuthService.jwt_issuer,
           verify_iat: true
         }
       end

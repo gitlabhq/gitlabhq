@@ -30,7 +30,7 @@ module Gitlab
           include ::Gitlab::Graphql::ConnectionCollectionMethods
           prepend ::Gitlab::Graphql::ConnectionRedaction
 
-          # rubocop: disable Naming/PredicateName
+          # rubocop: disable Naming/PredicatePrefix
           # https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo.Fields
           def has_previous_page
             strong_memoize(:has_previous_page) do
@@ -65,7 +65,7 @@ module Gitlab
               end
             end
           end
-          # rubocop: enable Naming/PredicateName
+          # rubocop: enable Naming/PredicatePrefix
 
           def cursor_for(node)
             order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(items)

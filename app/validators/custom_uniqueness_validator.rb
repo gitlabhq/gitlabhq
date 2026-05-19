@@ -9,31 +9,43 @@
 #
 # Case insensitive without scope:
 
-# SELECT 1 AS one FROM "work_item_types" WHERE LOWER("work_item_types"."name") = LOWER('Test') LIMIT 1
+# SELECT
+#   1 AS one
+# FROM
+#   "work_item_custom_statuses"
+# WHERE
+#   LOWER("work_item_custom_statuses"."name") = LOWER('Test')
+# LIMIT
+#   1
 #
 # Case insensitive scoped:
 #
 # SELECT
 #   1 AS one
 # FROM
-#   "work_item_widget_definitions"
+#   "work_item_custom_statuses"
 # WHERE
 #   LOWER(
-#     "work_item_widget_definitions"."name"
+#     "work_item_custom_statuses"."name"
 #   ) = LOWER('different')
-#   AND "work_item_widget_definitions"."work_item_type_id" = 5
+#   AND "work_item_custom_statuses"."namespace_id" = 5
 # LIMIT
 #   1
 
 # With this validator you can replace parts of the query with custom sql. Examples:
-#   class WorkItems::Type < ActiveRecord::Base
+#   class WorkItems::Statuses::Custom::Status < ActiveRecord::Base
 #     validates :name, custom_uniqueness: { unique_sql: 'TRIM(BOTH FROM lower(?))' }
 #   end
 #
 # This will generate a query like:
 #   SELECT
-#   1 AS one
-#   FROM "work_item_types" WHERE (TRIM(BOTH FROM lower(work_item_types.name)) = TRIM(BOTH FROM lower('Test'))) LIMIT 1
+#     1 AS one
+#   FROM
+#     "work_item_custom_statuses"
+#   WHERE
+#     TRIM(BOTH FROM lower(work_item_custom_statuses.name)) = TRIM(BOTH FROM lower('Test'))
+#   LIMIT
+#     1
 #
 # rubocop:disable CodeReuse/ActiveRecord -- Validator used in models
 class CustomUniquenessValidator < ActiveModel::EachValidator # rubocop:disable Gitlab/BoundedContexts,Gitlab/NamespacedClass -- Validators can belong to multiple bounded contexts

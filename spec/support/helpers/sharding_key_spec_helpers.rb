@@ -42,6 +42,40 @@ module ShardingKeySpecHelpers
     result.count > 0
   end
 
+  def has_exactly_one_not_null_check_constraint?(table_name, column_names)
+    # This regex searches for **validated** constraints that ensure **exactly one** of a set of columns is NOT NULL.
+    # The accepted forms are:
+    #   - num_nonnulls(col1, col2, ...) = 1
+    #   - (col1 IS NULL) <> (col2 IS NULL)   # equivalent to "exactly one NOT NULL" for two columns
+    sorted_columns = column_names.sort
+    num_nonnulls_regex = "\\ACHECK \\(\\(num_nonnulls\\(#{sorted_columns.join(', ')}\\) = 1\\)\\)\\Z"
+
+    regexes = [num_nonnulls_regex]
+
+    if sorted_columns.length == 2
+      a, b = sorted_columns
+      # Both column orderings are valid since `<>` is commutative.
+      regexes << "\\ACHECK \\(\\(\\(#{a} IS NULL\\) <> \\(#{b} IS NULL\\)\\)\\)\\Z"
+      regexes << "\\ACHECK \\(\\(\\(#{b} IS NULL\\) <> \\(#{a} IS NULL\\)\\)\\)\\Z"
+    end
+
+    or_clause = regexes.map { |r| "pg_get_constraintdef(pg_constraint.oid) ~ '#{r}'" }.join(' OR ')
+
+    sql = <<~SQL
+    SELECT 1
+    FROM pg_constraint
+    INNER JOIN pg_class ON pg_constraint.conrelid = pg_class.oid
+    WHERE pg_class.relname = '#{table_name}'
+    AND contype = 'c'
+    AND convalidated = true
+    AND (#{or_clause})
+    SQL
+
+    result = ApplicationRecord.connection.execute(sql)
+
+    result.count > 0
+  end
+
   def has_multi_column_null_check_constraint?(table_name, column_names)
     # This regex searches for **validated** constraints that ensure at least one of a set of columns is NOT NULL.
     # It assumes the constraint was created using the #add_multi_column_not_null_constraint helper, which also

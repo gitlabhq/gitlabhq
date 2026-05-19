@@ -152,7 +152,7 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
   context 'user applies template to a merge request' do
     let(:template_content) { 'this is a test "feature-proposal" template' }
     let(:bug_template_content) { 'this is merge request bug template' }
-    let(:template_override_warning) { 'Applying a template will replace the existing issue description.' }
+    let(:template_override_warning) { 'Applying a template will replace the existing description.' }
     let(:updated_description) { 'updated merge request description' }
     let(:merge_request) { create(:merge_request, source_project: project) }
 

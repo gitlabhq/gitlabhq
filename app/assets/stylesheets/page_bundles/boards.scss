@@ -8,9 +8,10 @@ $focus-mode-z-index: 9000;
 }
 
 .boards-app {
-  height: calc(#{$calc-application-viewport-height} - var(--header-height, 48px) - var(--broadcast-message-height, 0px));
+  height: var(--panel-content-inner-height);
   display: flex;
   flex-direction: column;
+  overflow-y: hidden;
 
   @include gl-container-width-up(sm, panel) {
     @apply gl-transition-width;
@@ -31,10 +32,6 @@ $focus-mode-z-index: 9000;
   @include gl-container-width-up(sm, panel) {
     min-height: 0;
   }
-}
-
-.boards-list {
-  border-left: 8px solid var(--gl-background-color-default);
 }
 
 .board {
@@ -65,6 +62,14 @@ $focus-mode-z-index: 9000;
       transform-origin: center;
     }
   }
+}
+
+.board-content {
+  @apply gl-pt-3;
+  @apply xl:gl-pt-4;
+  @apply gl-px-3;
+  min-height: 0;
+  overflow-y: hidden;
 }
 
 // to highlight columns we have animated pulse of box-shadow
@@ -193,12 +198,18 @@ $focus-mode-z-index: 9000;
   }
 }
 
+// stylelint-disable-next-line gitlab/no-js-class
 .board-item-path.js-show-tooltip {
   cursor: help;
 }
 
 .issue-boards-content {
   isolation: isolate;
+}
+
+.issue-boards-content,
+.issue-boards-content > .content {
+  @apply gl-h-full;
 }
 
 .issue-boards-content,
@@ -214,7 +225,7 @@ $focus-mode-z-index: 9000;
 }
 
 .content-panels.is-focused {
-  background: var(--super-sidebar-bg);
+  background: var(--body-background-color);
 
   .panel-content .panel-content-inner {
     @apply gl-mx-0;

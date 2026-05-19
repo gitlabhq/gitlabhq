@@ -26,6 +26,7 @@ query getWorkItemsCountOnly(
   $types: [IssueType!]
   $updatedAfter: Time
   $updatedBefore: Time
+  $workItemTypeIds: [WorkItemsTypeID!]
   $crmOrganizationId: String
   $crmContactId: String
   $releaseTag: [String!]
@@ -68,6 +69,7 @@ query getWorkItemsCountOnly(
       types: $types
       updatedAfter: $updatedAfter
       updatedBefore: $updatedBefore
+      workItemTypeIds: $workItemTypeIds
       crmContactId: $crmContactId
       crmOrganizationId: $crmOrganizationId
       releaseTag: $releaseTag

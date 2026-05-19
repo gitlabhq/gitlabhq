@@ -1,8 +1,10 @@
 ---
 name: read_access_request
 description: Grants the ability to read access request
-permissions:
-  - read_access_request
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_access_request

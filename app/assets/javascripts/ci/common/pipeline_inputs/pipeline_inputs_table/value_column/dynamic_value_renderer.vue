@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlFormInput, GlFormTextarea } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import validation, { initForm } from '~/vue_shared/directives/validation';
 import BooleanCell from './boolean_cell.vue';
 
@@ -141,9 +141,23 @@ export default {
     isDropdown() {
       return Boolean(this.item.options?.length);
     },
-    toggleText() {
-      return this.inputValue || __('Select option');
+    isMultiSelectDropdown() {
+      return this.isDropdown && this.item.type === INPUT_TYPES.ARRAY;
     },
+    toggleText() {
+      if (!this.inputValue?.length) {
+        return __('Select option');
+      }
+
+      if (this.item.type === INPUT_TYPES.ARRAY) {
+        return this.inputValue.length > 1
+          ? sprintf(__('%{number} options selected'), { number: this.inputValue.length })
+          : this.inputValue[0];
+      }
+
+      return this.inputValue;
+    },
+
     validationFeedback() {
       const field = this.form.fields[this.item.name];
       const feedback = field?.feedback || '';
@@ -169,7 +183,9 @@ export default {
         return '';
       }
 
-      return this.item.type === INPUT_TYPES.ARRAY && Array.isArray(value)
+      return this.item.type === INPUT_TYPES.ARRAY &&
+        Array.isArray(value) &&
+        !this.isMultiSelectDropdown
         ? JSON.stringify(value)
         : value;
     },
@@ -191,6 +207,7 @@ export default {
       v-model="inputValue"
       block
       searchable
+      :multiple="isMultiSelectDropdown"
       :aria-label="item.name"
       toggle-class="!gl-pl-4"
       :toggle-text="toggleText"

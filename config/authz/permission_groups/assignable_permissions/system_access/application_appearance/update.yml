@@ -3,5 +3,7 @@ name: update_application_appearance
 description: Grants the ability to modify the application appearance settings
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - update_application_appearance

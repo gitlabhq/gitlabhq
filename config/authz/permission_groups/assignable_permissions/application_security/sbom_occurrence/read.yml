@@ -3,5 +3,7 @@ name: read_sbom_occurrence
 description: Grants the ability to read SBOM occurrences
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - read_sbom_occurrence

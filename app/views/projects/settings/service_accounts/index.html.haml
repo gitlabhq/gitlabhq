@@ -1,0 +1,14 @@
+- page_title _('Service accounts')
+
+- if can?(current_user, :read_service_account, @project) && !can?(current_user, :create_service_account, @project)
+  = render Pajamas::AlertComponent.new(title: s_('IdentityVerification|Before you can create service accounts, we need to verify your account.'),
+    variant: :warning,
+    alert_options: { class: 'gl-mt-5' }) do |c|
+    = c.with_body do
+      = s_("IdentityVerification|We won't ask you for this information again. It will never be used for marketing purposes.")
+    = c.with_actions do
+      = render Pajamas::ButtonComponent.new(href: identity_verification_path, variant: :confirm) do
+        = s_('IdentityVerification|Verify my account')
+
+#js-service-accounts{ data: projects_service_accounts_data(@project) }
+  = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

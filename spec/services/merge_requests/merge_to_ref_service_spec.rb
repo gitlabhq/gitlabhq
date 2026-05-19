@@ -67,7 +67,7 @@ RSpec.describe MergeRequests::MergeToRefService, feature_category: :code_review_
     end
   end
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   let(:merge_request) { create(:merge_request, :simple) }
   let(:project) { merge_request.project }

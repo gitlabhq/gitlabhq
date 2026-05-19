@@ -101,5 +101,9 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
     click_filtered_search_bar
     send_keys(search, :enter, :enter)
     click_button 'Clear'
+
+    # Move focus out of filtered search input, so consecutive
+    # submit_then_clear_search calls can succeed.
+    send_keys :tab
   end
 end

@@ -168,6 +168,14 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
     end
   end
 
+  it 'passes creation_source api to the service' do
+    expect(::Authn::PersonalAccessTokens::CreateGranularService).to receive(:new)
+      .with(hash_including(params: hash_including(creation_source: PersonalAccessToken::CREATION_SOURCE_API)))
+      .and_call_original
+
+    mutation_request
+  end
+
   context 'when token creation fails' do
     before do
       allow_next_instance_of(::PersonalAccessTokens::CreateService) do |instance|

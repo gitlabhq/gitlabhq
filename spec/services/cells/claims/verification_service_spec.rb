@@ -105,10 +105,21 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
             message: "Cells::Claims::VerificationService batch processed",
             batch_first_id: 0,
             batch_last_id: user.id,
+            batch_size: 1,
             created: User.cells_claims_attributes.size,
             destroyed: 0,
+            duration_s: kind_of(Numeric),
             over_time: false
           )
+        )
+
+        service.execute
+      end
+
+      it 'tracks drift to Sentry as missing_record_in_topology_service' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          have_attributes(message: 'Claims drift detected: missing_record_in_topology_service'),
+          hash_including(model: 'User', record_id: user.id)
         )
 
         service.execute
@@ -138,9 +149,10 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
         expect(result[:destroyed]).to eq(1)
       end
 
-      it 'tracks drift to Sentry' do
+      it 'tracks drift to Sentry as missing_record_in_local' do
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-          instance_of(described_class::DriftError), hash_including(model: 'User')
+          have_attributes(message: 'Claims drift detected: missing_record_in_local'),
+          hash_including(model: 'User', ts_value: (user.id + 9999).to_s)
         )
 
         service.execute
@@ -188,10 +200,10 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
         service.execute
       end
 
-      it 'tracks drift to Sentry' do
+      it 'tracks drift to Sentry as changed' do
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-          instance_of(described_class::DriftError),
-          hash_including(model: 'User', local_value: user.username, ts_value: 'old_username')
+          have_attributes(message: 'Claims drift detected: changed'),
+          hash_including(model: 'User', record_id: user.id, local_value: user.username, ts_value: 'old_username')
         )
 
         service.execute
@@ -263,6 +275,7 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
       before do
         stub_list_records(ts_records)
         stub_commit
+        allow(Gitlab::ErrorTracking).to receive(:track_exception)
       end
 
       it 'destroys the extra TS record' do
@@ -277,6 +290,15 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
 
       it 'returns the correct destroy count' do
         expect(service.execute).to include(created: 0, destroyed: 1)
+      end
+
+      it 'tracks drift to Sentry as missing_attribute_in_local' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          have_attributes(message: 'Claims drift detected: missing_attribute_in_local'),
+          hash_including(model: 'User', record_id: user.id, ts_value: 'stale@example.com')
+        )
+
+        service.execute
       end
     end
 

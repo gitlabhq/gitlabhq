@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillMissingProjectRepositories
-description: This migration inserts ProjectRepository records when Projects are missing one, and fills the new records with data from the project
+description: This migration inserts ProjectRepository records when Projects are missing
+  one, and fills the new records with data from the project
 feature_category: geo_replication
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224926
 milestone: '18.10'
 queued_migration_version: 20260302144436
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20260417234919'

@@ -27,8 +27,8 @@ describe('OrganizationGroupsNewApp', () => {
 
   const defaultProvide = {
     basePath: 'https://gitlab.com',
-    groupsAndProjectsOrganizationPath: '/-/organizations/carrot/groups_and_projects?display=groups',
-    groupsOrganizationPath: '/-/organizations/default/groups',
+    groupsAndProjectsOrganizationPath: '/o/carrot/-/groups_and_projects?display=groups',
+    groupsOrganizationPath: '/o/default/-/groups',
     availableVisibilityLevels: [
       VISIBILITY_LEVEL_PRIVATE_INTEGER,
       VISIBILITY_LEVEL_INTERNAL_INTEGER,
@@ -92,7 +92,7 @@ describe('OrganizationGroupsNewApp', () => {
     expect(findForm().props()).toEqual({
       loading: false,
       basePath: 'https://gitlab.com',
-      cancelPath: '/-/organizations/carrot/groups_and_projects?display=groups',
+      cancelPath: '/o/carrot/-/groups_and_projects?display=groups',
       pathMaxlength: 10,
       pathPattern: 'mockPattern',
       availableVisibilityLevels: defaultProvide.availableVisibilityLevels,

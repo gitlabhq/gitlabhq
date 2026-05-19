@@ -54,24 +54,20 @@ export default {
     :selected="value && value.value"
     :loading="loading"
     block
+    fluid-width
     @reset="navigateToManageMemberRolesPage"
     @select="emitRole"
   >
     <template #list-item="{ item }">
-      <div
-        class="gl-line-clamp-2"
-        :class="{ 'gl-font-bold': item.memberRoleId }"
-        data-testid="role-data"
-      >
+      <div class="gl-line-clamp-2" data-testid="role-data">
         <span data-testid="role-name">{{ item.text }}</span>
       </div>
       <div
-        v-if="item.memberRoleId"
-        class="gl-mt-1 gl-line-clamp-2 gl-text-sm"
+        v-if="item.dropdownDescription || item.description"
+        class="gl-mt-1 gl-whitespace-normal gl-text-sm"
         data-testid="role-description"
       >
-        <span v-if="item.description" class="gl-text-subtle">{{ item.description }}</span>
-        <span v-else class="gl-text-subtle">{{ s__('MemberRole|No description') }}</span>
+        <span class="gl-text-subtle">{{ item.dropdownDescription || item.description }}</span>
       </div>
     </template>
   </gl-collapsible-listbox>

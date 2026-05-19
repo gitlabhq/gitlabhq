@@ -32,6 +32,16 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     it_behaves_like 'merge train pipeline'
   end
 
+  context "when MR from release-tools/update-gitlab-pages is changing GITLAB_PAGES_VERSION" do
+    let(:source_branch) { 'release-tools/update-gitlab-pages' }
+    let(:changed_files) { ['GITLAB_PAGES_VERSION'] }
+    let(:expected_job_name) { 'clone-gitlab-repo' }
+
+    it_behaves_like 'merge request pipeline'
+
+    it_behaves_like 'merge train pipeline'
+  end
+
   context "with frontend file changes in MR" do
     let(:changed_files) { ['package.json'] }
 

@@ -3,6 +3,8 @@
 FactoryBot.define do
   factory :key do
     sequence(:title) { |n| "title #{n}" }
+    organization { user&.organization || association(:common_organization) }
+
     key do
       # Larger keys take longer to generate, and since this factory gets called frequently,
       # let's only create the smallest one we need.
@@ -10,8 +12,6 @@ FactoryBot.define do
         ::Gitlab::SSHPublicKey.supported_sizes(:rsa).min, unsafe_allow_small_key: true
       ).public_key.openssh(comment: 'dummy@gitlab.com')
     end
-
-    organization_id { user&.organization_id || create(:common_organization).id }
 
     trait :expired do
       to_create { |key| key.save!(validate: false) }

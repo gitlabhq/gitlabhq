@@ -1,3 +1,7 @@
+<% if @custom_template_body %>
+<%= CGI.unescapeHTML(strip_tags(@custom_template_body)) %>
+<% else %>
 <%= _("Thank you for your support request! We are tracking your request as ticket #%{issue_iid}, and will respond as soon as we can.") % { issue_iid: @work_item.iid } %>
 
 <%= _("To unsubscribe from this issue, please paste the following link into your browser:") %>
+<% end %>

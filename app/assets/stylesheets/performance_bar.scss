@@ -1,6 +1,7 @@
 @import 'framework/variables';
 @import 'framework/variables_overrides';
 
+// stylelint-disable-next-line gitlab/no-js-class
 #js-peek {
   position: fixed;
   left: 0;

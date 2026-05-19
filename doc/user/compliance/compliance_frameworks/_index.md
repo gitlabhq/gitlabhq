@@ -30,11 +30,77 @@ For a click-through demo, see [Custom Compliance frameworks](https://gitlab.nava
 ## Prerequisites
 
 - To create, edit, and delete compliance frameworks, users must have either:
-  - The Owner role for the top-level group.
+  - The Owner or Security Manager role for the top-level group.
   - Be assigned a [custom role](../../custom_roles/_index.md) with the `admin_compliance_framework`
     [custom permission](../../custom_roles/abilities.md#compliance-management).
 - To add or remove a compliance framework to or from a project, the group to which the project belongs must have a
   compliance framework.
+
+## Create a compliance framework from a template
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/16808) in GitLab 19.0 [with a flag](../../../administration/feature_flags/_index.md) named `compliance_framework_templates`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Instead of building a compliance framework from scratch, you can create one from a predefined
+out-of-the-box (OOTB) template. Templates include preconfigured requirements and controls
+aligned to common compliance standards, so you can get started quickly without manual setup.
+
+The following templates are available:
+
+| Template | Description |
+|----------|-------------|
+| CIS CSC v8.1 | Center for Internet Security Controls v8.1 framework covering foundational, foundational, and organizational security controls. |
+| CSA CCM v4 | Cloud Security Alliance Cloud Controls Matrix v4 framework for cloud security assurance. |
+| Cyber Essentials | UK government-backed Cyber Essentials scheme covering five key technical controls. |
+| DORA | Digital Operational Resilience Act framework for financial sector ICT risk management. |
+| FedRAMP High | Federal Risk and Authorization Management Program High baseline for US federal cloud services. |
+| FedRAMP Low | Federal Risk and Authorization Management Program Low baseline for US federal cloud services. |
+| FedRAMP Moderate | Federal Risk and Authorization Management Program Moderate baseline for US federal cloud services. |
+| IRAP Official | Australian Information Security Registered Assessors Program Official classification framework. |
+| IRAP Protected | Australian Information Security Registered Assessors Program Protected classification framework. |
+| IRAP Secret | Australian Information Security Registered Assessors Program Secret classification framework. |
+| IRAP Top Secret | Australian Information Security Registered Assessors Program Top Secret classification framework. |
+| ISMAP | Japanese Information System Security Management and Assessment Program framework. |
+| ISO 27001:2022 | International standard for information security management systems. |
+| NIS 2 | EU Network and Information Security Directive 2 framework for critical infrastructure. |
+| NIST 800-171 Rev. 3 CMMC | NIST SP 800-171 Revision 3 Cybersecurity Maturity Model Certification framework. |
+| NIST SP 800-218 | NIST Secure Software Development Framework (SSDF) v1.1. |
+| NIST 800-53 Revision 5 | NIST SP 800-53 Rev. 5 security and privacy controls for information systems. |
+| SOC 2 | System and Organization Controls 2 framework with requirements mapped to COSO principles, covering vulnerability scanning, access controls, and change management. |
+| TISAX | Trusted Information Security Assessment Exchange framework for automotive industry information security requirements. |
+
+### Create a framework from a template by using the UI
+
+To create a compliance framework from a template:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Secure** > **Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Select **New framework**.
+1. Select **Create from template**.
+1. Browse the available templates and select one to preview its requirements and controls.
+1. Optional. Override the **Name**, **Description**, or **Color** to customize the framework.
+1. Optional. Select **Set as default** to make this the default framework for the group.
+1. Select **Create framework**.
+
+The framework is created with all requirements and controls from the template pre-populated.
+You can then edit the framework to add, remove, or modify requirements as needed.
+
+For API-based creation, see [Create a compliance framework from a template](../../../api/graphql/compliance_frameworks.md#create-a-compliance-framework-from-a-template).
 
 ## Import a compliance framework
 
@@ -58,7 +124,7 @@ To import a pre-built compliance framework:
 1. Go to the [Compliance Adherence Templates](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates) project.
 1. Browse the available framework templates and download the JSON file for your framework.
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework**.
 1. Select **Import framework**.
@@ -72,7 +138,7 @@ Your framework is now ready to apply to projects. See [Apply a compliance framew
 To import a compliance framework by using a JSON template:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework**.
 1. Select **Import framework**.
@@ -121,7 +187,7 @@ has the correct permissions. The GitLab UI presents a read-only view to discoura
 To apply a compliance framework to a project through a compliance framework:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
 1. Select **Projects** section.
@@ -147,7 +213,7 @@ A compliance framework that is set to default has a `default` label.
 To set as default (or remove the default) from [compliance projects report](../compliance_center/compliance_projects_report.md):
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
 1. Select **Set as default**.
@@ -156,7 +222,7 @@ To set as default (or remove the default) from [compliance projects report](../c
 To set as default (or remove the default) from [compliance framework report](../compliance_center/compliance_frameworks_report.md):
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
 1. Select **Set as default**.
@@ -180,7 +246,7 @@ With this feature, you can share and back up compliance frameworks.
 To export a compliance framework from the compliance center:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Locate the compliance framework you wish to export.
 1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
@@ -337,7 +403,7 @@ Combine GitLab compliance controls to help you meet
 | Default branch protected from direct push                | `default_branch_protected_from_direct_push`                | [Prevents direct pushes to the default branch](../../project/repository/branches/protected.md). |
 | Default branch users can merge                           | `default_branch_users_can_merge`                           | Controls [whether users can merge changes to the default branch](../../project/repository/branches/protected.md). |
 | Default branch users can push                            | `default_branch_users_can_push`                            | Controls [whether users can push directly to the default branch](../../project/repository/branches/protected.md). |
-| Dependency scanning running                              | `scanner_dep_scanning_running`                             | Ensures that [dependency scanning](../../application_security/dependency_scanning/_index.md) is configured and running in the project's default branch pipeline. **Note**: On GitLab Self-Managed instances (from 18.4), this control may fail when using [SBOM-based dependency scanning](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md) due to artifact differences. See [compatibility considerations](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md#compliance-framework-compatibility). |
+| Dependency scanning running                              | `scanner_dep_scanning_running`                             | Ensures that [dependency scanning](../../application_security/dependency_scanning/_index.md) is configured and running in the project's default branch pipeline. **Note**: On GitLab Self-Managed instances (from 18.4), this control may fail when using [SBOM-based dependency scanning](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md) due to artifact differences. See [compatibility considerations](../../application_security/dependency_scanning/dependency_scanning_sbom/troubleshooting_ds_sbom_analyzer.md#compliance-framework-compatibility). |
 | Ensure two administrators per repository                 | `ensure_2_admins_per_repo`                                 | Ensures that [at least two Owners](../../project/members/_index.md) are assigned to each project. |
 | Error tracking enabled                                   | `error_tracking_enabled`                                   | Ensures that [error tracking](../../../operations/error_tracking.md) is enabled for the project. |
 | Force push disabled                                      | `force_push_disabled`                                      | Prevents [force pushing](../../project/repository/branches/protected.md) to repositories. |
@@ -407,7 +473,7 @@ Status checks fail if an external control stays in the pending state for more th
 To add an external control when creating or editing a framework:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
 1. In the **Requirements** section, select **New requirement**.
@@ -612,7 +678,7 @@ The external service can use this information to perform its compliance checks a
 To add a requirement when creating or editing a framework:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
 1. In the **Requirements** section, select **New requirement**.
@@ -626,7 +692,7 @@ To add a requirement when creating or editing a framework:
 To edit a requirement when creating or editing a framework:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
 1. In the **Requirements** section, select **Action** > **Edit**.

@@ -80,7 +80,6 @@ class WikiPage
   def self.link_reference_pattern
     @link_reference_pattern ||= project_or_group_link_reference_pattern(
       'wikis',
-      namespace_reference_pattern,
       %r{(?<wiki_page>[\/\w-]+)}
     )
   end

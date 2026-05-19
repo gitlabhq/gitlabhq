@@ -186,10 +186,14 @@ RSpec.shared_examples 'work item listing payload' do
 end
 
 RSpec.shared_examples 'avoids N+1 queries' do
+  let_it_be(:timelog_user) { create(:user) }
+
   before do
     create(:issue_assignee, issue: primary_work_item, assignee: user)
     create(:discussion_note_on_work_item, noteable: primary_work_item, project: project)
     create(:work_items_dates_source, :fixed, work_item: primary_work_item)
+    create(:timelog, issue: primary_work_item, user: timelog_user, time_spent: 3600)
+    create(:timelog, issue: secondary_work_item, user: timelog_user, time_spent: 1800)
 
     primary_work_item.update_columns(last_edited_by_id: editor.id, last_edited_at: 2.days.ago)
   end
@@ -209,6 +213,7 @@ RSpec.shared_examples 'avoids N+1 queries' do
     create(:issue_assignee, issue: extra_work_item, assignee: user)
     create(:discussion_note_on_work_item, noteable: extra_work_item, project: project)
     create(:work_items_dates_source, :fixed, work_item: extra_work_item)
+    create(:timelog, issue: extra_work_item, user: timelog_user, time_spent: 1800)
     extra_work_item.update_columns(last_edited_by_id: editor.id, last_edited_at: 1.day.ago)
 
     expect do
@@ -224,10 +229,14 @@ RSpec.shared_examples 'work item N+1 query prevention' do
   let(:request_params) { { fields: 'reference,web_url', features: 'labels,milestone' } }
 
   before do
+    # Settle one-time lazy writes before the baseline so they don't skew the N+1 count.
+    user.create_user_preference! unless user.user_preference
+    user.update_column(:last_activity_on, Time.zone.today) unless user.last_activity_on == Time.zone.today
+
     2.times do
       work_item_label = create_label_for_namespace(namespace_record)
       ms = create_milestone_for_namespace(namespace_record)
-      create_namespace_work_item(namespace_record, labels: [work_item_label], milestone: ms)
+      create_namespace_work_item(namespace_record, author: user, labels: [work_item_label], milestone: ms)
     end
 
     get api(api_request_path, user), params: request_params
@@ -241,8 +250,11 @@ RSpec.shared_examples 'work item N+1 query prevention' do
     2.times do
       new_label = create_label_for_namespace(namespace_record)
       new_milestone = create_milestone_for_namespace(namespace_record)
-      create_namespace_work_item(namespace_record, labels: [new_label], milestone: new_milestone)
+      create_namespace_work_item(namespace_record, author: user, labels: [new_label], milestone: new_milestone)
     end
+
+    # Settle first-request queries for any users created by the factories above before comparing.
+    get api(api_request_path, user), params: request_params
 
     expect do
       get api(api_request_path, user), params: request_params

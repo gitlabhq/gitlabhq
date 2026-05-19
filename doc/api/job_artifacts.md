@@ -38,9 +38,11 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and serves 
 Example request:
 
 ```shell
-curl --location --output artifacts.zip \
+curl --request GET \
+  --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts"
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts" \
+  --output artifacts.zip
 ```
 
 Example request using a CI/CD job token:
@@ -50,8 +52,10 @@ Example request using a CI/CD job token:
 artifact_download:
   stage: test
   script:
-    - 'curl --location --output artifacts.zip \
-         --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts?job_token=$CI_JOB_TOKEN"'
+    - 'curl --request GET \
+         --location \
+         --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts?job_token=$CI_JOB_TOKEN" \
+         --output artifacts.zip'
 ```
 
 ## Download job artifacts by reference name
@@ -104,7 +108,8 @@ If the job or artifacts are not found, returns [`404`](rest/troubleshooting.md#s
 Example request:
 
 ```shell
-curl --location \
+curl --request GET \
+  --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test"
 ```
@@ -116,15 +121,18 @@ Example request using a CI/CD job token:
 artifact_download:
   stage: test
   script:
-    - 'curl --location --output artifacts.zip \
-         --url "https://gitlab.example.com/api/v4/projects/$CI_PROJECT_ID/jobs/artifacts/main/download?job=test&job_token=$CI_JOB_TOKEN"'
+    - 'curl --request GET \
+         --location \
+         --url "https://gitlab.example.com/api/v4/projects/$CI_PROJECT_ID/jobs/artifacts/main/download?job=test&job_token=$CI_JOB_TOKEN" \
+         --output artifacts.zip'
 ```
 
 Example request with recent pipeline search:
 
 ```shell
-curl --location \
-  --header "PRIVATE-TOKEN: " \
+curl --request GET \
+  --location \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test&search_recent_successful_pipelines=true"
 ```
 
@@ -154,7 +162,8 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and sends a
 Example request:
 
 ```shell
-curl --location \
+curl --request GET \
+  --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/5/artifacts/some/release/file.pdf"
 ```
@@ -202,7 +211,8 @@ If the job, artifacts, artifact metadata, or specified path are not found, retur
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree"
 ```
 
@@ -229,14 +239,16 @@ Example response:
 Example request to browse a subdirectory:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree?path=coverage/reports"
 ```
 
 Example request for recursive listing:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree?recursive=true"
 ```
 
@@ -247,7 +259,8 @@ Example request using a CI/CD job token:
 list_artifacts:
   stage: test
   script:
-    - 'curl --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree?job_token=$CI_JOB_TOKEN"'
+    - 'curl --request GET \
+         --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree?job_token=$CI_JOB_TOKEN"'
 ```
 
 ## Download a single artifact file by reference name
@@ -303,7 +316,8 @@ If the job or artifact file are not found, returns [`404`](rest/troubleshooting.
 Example request:
 
 ```shell
-curl --location \
+curl --request GET \
+  --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/raw/some/release/file.pdf?job=pdf"
 ```
@@ -311,7 +325,8 @@ curl --location \
 Example request with recent pipeline search:
 
 ```shell
-curl --location \
+curl --request GET \
+  --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/raw/some/release/file.pdf?job=pdf&search_recent_successful_pipelines=true"
 ```
@@ -460,7 +475,8 @@ In merge request pipelines the ID is available from the variable
 For example, for merge request `!123`:
 
 ```shell
-curl --location \
+curl --request GET \
+  --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/refs/merge-requests/123/head/raw/file.txt?job=test"
 ```

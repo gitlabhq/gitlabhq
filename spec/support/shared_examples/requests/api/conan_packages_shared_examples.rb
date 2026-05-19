@@ -60,31 +60,23 @@ RSpec.shared_examples 'conan search endpoint' do |scope: :project|
     end
 
     context 'returns error when search term is too long' do
+      subject { get api(url), params: params }
+
       let(:params) { { q: 'q' * 201 } }
 
-      before do
-        get api(url), params: params
-      end
-
-      it { expect(response).to have_gitlab_http_status(:bad_request) }
-
-      it 'returns an error message' do
-        expect(json_response['message']).to eq('400 Bad request - Search term length must be less than 200 characters.')
-      end
+      it_behaves_like 'conan structured error response',
+        status: :bad_request,
+        message: '400 Bad request - Search term length must be less than 200 characters.'
     end
 
     context 'returns error when search term has too many wildcards' do
+      subject { get api(url), params: params }
+
       let(:params) { { q: 'al*h*/*@*nn*/*' } }
 
-      before do
-        get api(url), params: params
-      end
-
-      it { expect(response).to have_gitlab_http_status(:bad_request) }
-
-      it 'returns an error message' do
-        expect(json_response['message']).to eq('400 Bad request - Too many wildcards in search term. Maximum is 5.')
-      end
+      it_behaves_like 'conan structured error response',
+        status: :bad_request,
+        message: '400 Bad request - Too many wildcards in search term. Maximum is 5.'
     end
 
     context 'with ignorecase' do
@@ -707,11 +699,9 @@ RSpec.shared_examples 'delete package endpoint' do
   it_behaves_like 'handling empty values for username and channel'
   it_behaves_like 'updating personal access token last used'
 
-  it 'returns unauthorized for users without valid permission' do
-    subject
-
-    expect(response).to have_gitlab_http_status(:forbidden)
-  end
+  it_behaves_like 'conan structured error response',
+    status: :forbidden,
+    message: '403 Forbidden'
 
   context 'with delete permissions' do
     before do
@@ -902,6 +892,12 @@ RSpec.shared_examples 'workhorse authorize endpoint' do |with_checksum_deploy_he
       it_behaves_like 'returning response status', :ok
     end
 
+    shared_examples 'protected package' do
+      it_behaves_like 'conan structured error response',
+        status: :forbidden,
+        message: '403 Forbidden - Package protected.'
+    end
+
     where(:package_name_pattern, :minimum_access_level_for_push, :personal_access_token, :shared_examples_name) do
       ref(:conan_package_name)          | :maintainer | ref(:pat_project_developer)  | 'protected package'
       ref(:conan_package_name)          | :maintainer | ref(:pat_project_maintainer) | 'authorized package'
@@ -944,7 +940,9 @@ RSpec.shared_examples 'protected package main example' do
     end
 
     shared_examples 'protected package' do
-      it_behaves_like 'returning response status', 403
+      it_behaves_like 'conan structured error response',
+        status: :forbidden,
+        message: '403 Forbidden - Package protected.'
 
       it 'does not create any conan-related package records' do
         expect { subject }
@@ -1346,12 +1344,24 @@ RSpec.shared_examples 'package not found' do
   context 'when package does not exist' do
     let(:recipe_path) { "missing/0.1.0/#{project.full_path.tr('/', '+')}/stable" }
 
-    it 'returns 404 not found' do
-      subject
+    it_behaves_like 'conan structured error response',
+      status: :not_found,
+      message: '404 Package Not Found'
+  end
+end
 
-      expect(response).to have_gitlab_http_status(:not_found)
-      expect(json_response['message']).to eq('404 Package Not Found')
-    end
+RSpec.shared_examples 'conan structured error response' do |status:, message:|
+  it "returns structured error format with status #{Rack::Utils.status_code(status)}" do
+    subject
+
+    status_code = Rack::Utils.status_code(status)
+    expected_errors_message = message.to_s.sub(/\A#{status_code}\s+/, '')
+
+    expect(response).to have_gitlab_http_status(status)
+    expect(json_response['message']).to eq(message)
+    expect(json_response['errors']).to match_array([
+      { 'status' => status_code, 'message' => expected_errors_message }
+    ])
   end
 end
 

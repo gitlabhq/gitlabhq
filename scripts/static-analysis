@@ -55,6 +55,7 @@ class StaticAnalysis
     EEOnlyTask.new(%w[bin/rake gettext:updated_check], 60),
     Task.new(%w[bin/rake lint:static_verification], 45),
     Task.new(%w[bin/rake gitlab:sidekiq:all_queues_yml:check], 30),
+    EEOnlyTask.new(%w[bundle exec scripts/lint/unused_methods.rb], 30),
     EEOnlyTask.new(%w[bin/rake gitlab:sidekiq:sidekiq_queues_yml:check], 25),
     Task.new(%w[bin/rake config_lint], 10),
     Task.new(%w[yarn run internal:stylelint], 10),

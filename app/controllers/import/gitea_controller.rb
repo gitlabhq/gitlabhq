@@ -94,19 +94,11 @@ class Import::GiteaController < Import::GithubController
   def verify_blocked_uri
     @verified_url_and_hostname ||= Gitlab::HTTP_V2::UrlBlocker.validate!(
       provider_url,
-      allow_localhost: allow_local_requests?,
-      allow_local_network: allow_local_requests?,
-      schemes: %w[http https],
-      deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
-      outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
+      **Import::Framework::UrlBlockerParams.new.to_h
     )
   rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     session[access_token_key] = nil
 
     redirect_to new_import_url, alert: safe_format(_('Specified URL cannot be used: "%{reason}"'), reason: e.message)
-  end
-
-  def allow_local_requests?
-    Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
   end
 end

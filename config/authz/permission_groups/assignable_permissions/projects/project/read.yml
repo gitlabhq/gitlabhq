@@ -1,6 +1,12 @@
 ---
 name: read_project
 description: Grants the ability to read projects
+boundaries:
+  - group
+  - project
+  - user
+available_for:
+  - granular_access_token
 permissions:
   - read_ancestor_group
   - read_contributed_project
@@ -12,9 +18,6 @@ permissions:
   - read_project_invited_group
   - read_project_transfer_location
   - read_share_location
+  - read_starred_project
   - read_starring_user
   - read_storage
-boundaries:
-  - group
-  - project
-  - user

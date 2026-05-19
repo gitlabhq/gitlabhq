@@ -6,6 +6,7 @@ module Sidebars
       class SettingsMenu < ::Sidebars::Menu
         MENU_ITEMS = %i[
           general_menu_item
+          service_accounts_menu_item
           integrations_menu_item
           webhooks_menu_item
           access_tokens_menu_item
@@ -169,6 +170,22 @@ module Sidebars
             active_routes: { path: 'operations#show' },
             item_id: :monitor
           )
+        end
+
+        def service_accounts_menu_item
+          return ::Sidebars::NilMenuItem.new(item_id: :service_accounts) unless service_accounts_available?
+
+          ::Sidebars::MenuItem.new(
+            title: _('Service accounts'),
+            link: project_settings_service_accounts_path(context.project),
+            active_routes: { path: %w[projects/settings/service_accounts#index] },
+            item_id: :service_accounts
+          )
+        end
+
+        def service_accounts_available?
+          can_admin_project? &&
+            can?(context.current_user, :read_service_account, context.project)
         end
 
         def usage_quotas_menu_item

@@ -3,7 +3,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import { pinia } from '~/pinia/instance';
 
-export function initDiscussionCounter() {
+export function initDiscussionCounter(store) {
   const el = document.getElementById('js-vue-discussion-counter');
 
   if (el) {
@@ -17,6 +17,9 @@ export function initDiscussionCounter() {
         DiscussionCounter,
       },
       pinia,
+      provide: {
+        store,
+      },
       render(createElement) {
         return createElement('discussion-counter', {
           props: {

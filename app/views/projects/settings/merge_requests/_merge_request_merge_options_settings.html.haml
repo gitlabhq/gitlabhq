@@ -7,7 +7,7 @@
     = s_('ProjectSettings|Additional settings that influence how and when merges are done.')
   = render_if_exists 'projects/settings/merge_requests/merge_pipelines_settings', form: form
   = render_if_exists 'projects/settings/merge_requests/merge_trains_settings', form: form
-  - if Feature.enabled?(:rebase_on_merge_automatic, @project) && @project.project_setting.respond_to?(:automatic_rebase_enabled)
+  - if @project.project_setting.respond_to?(:automatic_rebase_enabled)
     - help_link_automatic_rebase = link_to('', help_page_path('user/project/merge_requests/methods/_index.md', anchor: 'automatic-rebase-before-merge'), target: '_blank', rel: 'noopener noreferrer')
     - beta_badge = render(Pajamas::ExperimentBadgeComponent.new(type: :beta))
     = form.fields_for :project_setting do |settings|

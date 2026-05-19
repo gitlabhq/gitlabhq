@@ -54,6 +54,10 @@ RSpec.describe 'Group merge requests page', :js, feature_category: :code_review_
   context 'group filtered search', :js do
     let(:user2) { user_outside_group }
 
+    before do
+      visit path
+    end
+
     it 'filters by assignee only group users' do
       select_tokens 'Assignee', '=', submit: false
 

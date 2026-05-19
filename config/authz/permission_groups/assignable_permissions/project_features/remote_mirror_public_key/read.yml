@@ -3,5 +3,7 @@ name: read_remote_mirror_public_key
 description: Grants the ability to read remote mirror public keys
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - read_remote_mirror_public_key

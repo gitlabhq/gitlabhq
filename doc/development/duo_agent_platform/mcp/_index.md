@@ -141,13 +141,14 @@ This [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20183
 Adding the following `route_setting` to an API route definition:
 
 ```ruby
-route_setting :mcp, tool_name: :get_merge_request, params: [:id, :merge_request_iid]
+route_setting :mcp, tool_name: :get_merge_request, params: [:id, :merge_request_iid], resource_name: "merge request"
 ```
 
 - Adds a `get_merge_request` tool to the list of tools and enables its execution
 - The tool and parameters description is taken from the OpenAPI route definition
 - The accepted parameters are filtered by the `params` argument. For example, only `id` and `merge_request_iid` are advertised and accepted
 - When the tool is called, the route code is executed directly with the passed parameters
+- The optional `resource_name` field provides a resource-specific 404 error message (for example, `"404 Merge request Not Found"` instead of a generic `"404 Not Found"`). Use a lowercase string such as `"issue"` or `"merge request"`. The first letter is capitalized in the rendered message.
 
 This [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) provides more examples.
 

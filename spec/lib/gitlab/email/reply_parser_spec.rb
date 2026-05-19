@@ -23,10 +23,12 @@ RSpec.describe Gitlab::Email::ReplyParser, feature_category: :team_planning do
 
     context 'when allow_only_quotes is true' do
       it "returns quoted text from email" do
-        text = test_parse_body(fixture_file("emails/no_content_reply.eml"), allow_only_quotes: true)
+        text = test_parse_body(fixture_file("emails/no_content_reply.eml"), trim_reply: false, allow_only_quotes: true)
 
         expect(text).to eq(
           <<-BODY.strip_heredoc.chomp
+            On Sun, Jun 9, 2013 at 1:39 PM, eviltrout via Discourse Meta
+            <reply+59d8df8370b7e95c5a49fbf86aeb2c93@appmail.adventuretime.ooo> wrote:
             >
             >
             >
@@ -42,6 +44,12 @@ RSpec.describe Gitlab::Email::ReplyParser, feature_category: :team_planning do
             >
           BODY
         )
+      end
+
+      it "cannot be used with trim_reply: true" do
+        expect do
+          test_parse_body(fixture_file("emails/no_content_reply.eml"), trim_reply: true, allow_only_quotes: true)
+        end.to raise_error(ArgumentError, "Cannot use `allow_only_quotes: true` with `trim_reply: true`")
       end
     end
 
@@ -127,40 +135,6 @@ RSpec.describe Gitlab::Email::ReplyParser, feature_category: :team_planning do
       expect(test_parse_body(fixture_file("emails/inline_reply.eml")))
         .to eq(
           <<-BODY.strip_heredoc.chomp
-            >     techAPJ <https://meta.discourse.org/users/techapj>
-            > November 28
-            >
-            > Test reply.
-            >
-            > First paragraph.
-            >
-            > Second paragraph.
-            >
-            > To respond, reply to this email or visit
-            > https://meta.discourse.org/t/testing-default-email-replies/22638/3 in
-            > your browser.
-            >  ------------------------------
-            > Previous Replies    codinghorror
-            > <https://meta.discourse.org/users/codinghorror>
-            > November 28
-            >
-            > We're testing the latest GitHub email processing library which we are
-            > integrating now.
-            >
-            > https://github.com/github/email_reply_parser
-            >
-            > Go ahead and reply to this topic and I'll reply from various email clients
-            > for testing.
-            >   ------------------------------
-            >
-            > To respond, reply to this email or visit
-            > https://meta.discourse.org/t/testing-default-email-replies/22638/3 in
-            > your browser.
-            >
-            > To unsubscribe from these emails, visit your user preferences
-            > <https://meta.discourse.org/my/preferences>.
-            >
-
             The quick brown fox jumps over the lazy dog. The quick brown fox jumps over
             the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown
             fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.

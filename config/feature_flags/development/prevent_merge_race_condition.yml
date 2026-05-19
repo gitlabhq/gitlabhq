@@ -1,9 +1,0 @@
----
-name: prevent_merge_race_condition
-description: Prevents data loss when merging chained MRs by blocking merges into branches pending deletion
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225517
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/593462
-milestone: '18.11'
-type: development
-group: group::code review
-default_enabled: false

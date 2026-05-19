@@ -10,8 +10,6 @@ RSpec.describe 'User edits a merge request', :js, feature_category: :code_review
   before do
     project.add_maintainer(user)
     sign_in(user)
-
-    visit(edit_project_merge_request_path(project, merge_request))
   end
 
   describe 'Squash commits' do
@@ -85,6 +83,8 @@ RSpec.describe 'User edits a merge request', :js, feature_category: :code_review
 
   describe 'changing target branch' do
     it 'allows user to change target branch' do
+      visit(edit_project_merge_request_path(project, merge_request))
+
       expect(page).to have_content('From master into feature')
 
       first('.js-target-branch').click
@@ -103,19 +103,29 @@ RSpec.describe 'User edits a merge request', :js, feature_category: :code_review
       let(:merge_request) { create(:merge_request, source_project: project, target_project: project, state: :merged) }
 
       it 'does not allow user to change target branch' do
+        visit(edit_project_merge_request_path(project, merge_request))
+
         expect(page).to have_content('From master into feature')
         expect(page).not_to have_selector('.js-target-branch.js-compare-dropdown')
       end
     end
   end
 
-  it_behaves_like 'rich text editor - common'
+  context 'with rich text editor' do
+    before do
+      visit(edit_project_merge_request_path(project, merge_request))
+    end
+
+    it_behaves_like 'rich text editor - common'
+  end
 
   describe 'when deleting merge request' do
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project, title: '<img src="https://example.com/auth/test.svg">') }
     let(:user) { project.owner }
 
     it 'safely renders merge request title' do
+      visit(edit_project_merge_request_path(project, merge_request))
+
       click_link 'Delete'
 
       page.within find_by_testid('confirmation-modal') do

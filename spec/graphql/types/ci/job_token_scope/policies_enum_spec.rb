@@ -19,6 +19,7 @@ RSpec.describe ::Types::Ci::JobTokenScope::PoliciesEnum, feature_category: :secr
       READ_RELEASES
       ADMIN_RELEASES
       READ_REPOSITORIES
+      ADMIN_REPOSITORIES
       READ_SECURE_FILES
       ADMIN_SECURE_FILES
       READ_TERRAFORM_STATE

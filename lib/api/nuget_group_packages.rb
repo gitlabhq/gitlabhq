@@ -12,6 +12,7 @@ module API
     helpers ::API::Helpers::PackagesHelpers
     helpers ::API::Helpers::Packages::BasicAuthHelpers
     helpers ::API::Helpers::Packages::Nuget
+    helpers ::API::Helpers::Packages::Nuget::WarningHeader
     include ::API::Helpers::Authentication
 
     feature_category :package_registry

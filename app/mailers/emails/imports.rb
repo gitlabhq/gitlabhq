@@ -122,6 +122,28 @@ module Emails
       )
     end
 
+    def offline_export_complete(user_id, offline_export_id)
+      @offline_export = Import::Offline::Export.find(offline_export_id)
+      @configuration = @offline_export.configuration
+      user = User.find(user_id)
+
+      email_with_layout(
+        to: user.notification_email_or_default,
+        subject: subject(s_('OfflineTransfer|Offline export complete'))
+      )
+    end
+
+    def offline_export_failed(user_id, offline_export_id)
+      @offline_export = Import::Offline::Export.find(offline_export_id)
+      @configuration = @offline_export.configuration
+      user = User.find(user_id)
+
+      email_with_layout(
+        to: user.notification_email_or_default,
+        subject: subject(s_('OfflineTransfer|Offline export failed'))
+      )
+    end
+
     def import_source_user_complete(source_user_id)
       @source_user = Import::SourceUser.find(source_user_id)
       @reassign_to_user = @source_user.reassign_to_user

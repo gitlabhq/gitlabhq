@@ -8,7 +8,7 @@ RSpec.describe WorkItems::TypePolicy, feature_category: :team_planning do
   subject(:policy) { described_class.new(user, work_item_type) }
 
   context 'when work item type is present' do
-    let(:work_item_type) { build_stubbed(:work_item_type) }
+    let(:work_item_type) { build(:work_item_system_defined_type) }
 
     it { is_expected.to be_allowed(:read_work_item_type) }
   end

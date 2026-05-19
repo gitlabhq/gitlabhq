@@ -12,7 +12,7 @@ class Profiles::AccountsController < Profiles::ApplicationController
   end
 
   def unlink
-    provider = params[:provider]
+    provider = normalize_provider(params[:provider])
     identity = find_identity(provider)
 
     return render_404 unless identity

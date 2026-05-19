@@ -74,6 +74,9 @@ export default {
     :is-ascending="isDirectionAscending"
     :sort-options="sortOptions"
     :sort-by="orderBy"
+    class="gl-flex gl-grow"
+    dropdown-class="gl-w-full"
+    block
     data-testid="releases-sort"
     @sortDirectionChange="onDirectionChange"
     @sortByChange="onSortItemClick"

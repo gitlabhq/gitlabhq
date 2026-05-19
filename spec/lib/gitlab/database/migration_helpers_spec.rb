@@ -702,79 +702,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     end
   end
 
-  describe '#install_rename_triggers' do
-    let(:connection) { ActiveRecord::Migration.connection }
-
-    it 'installs the triggers' do
-      copy_trigger = double('copy trigger')
-
-      expect(Gitlab::Database::UnidirectionalCopyTrigger).to receive(:on_table)
-        .with(:users, connection: connection).and_return(copy_trigger)
-
-      expect(copy_trigger).to receive(:create).with(:old, :new, trigger_name: 'foo')
-
-      model.install_rename_triggers(:users, :old, :new, trigger_name: 'foo')
-    end
-  end
-
-  describe '#remove_rename_triggers' do
-    let(:connection) { ActiveRecord::Migration.connection }
-
-    it 'removes the function and trigger' do
-      copy_trigger = double('copy trigger')
-
-      expect(Gitlab::Database::UnidirectionalCopyTrigger).to receive(:on_table)
-        .with('bar', connection: connection).and_return(copy_trigger)
-
-      expect(copy_trigger).to receive(:drop).with('foo')
-
-      model.remove_rename_triggers('bar', 'foo')
-    end
-  end
-
-  describe '#rename_trigger_name' do
-    it 'returns a String' do
-      expect(model.rename_trigger_name(:users, :foo, :bar))
-        .to match(/trigger_.{12}/)
-    end
-  end
-
-  describe '#install_sharding_key_assignment_trigger' do
-    let(:trigger) { double }
-    let(:connection) { ActiveRecord::Base.connection }
-
-    it do
-      expect(Gitlab::Database::Triggers::AssignDesiredShardingKey).to receive(:new)
-        .with(table: :test_table, sharding_key: :project_id, parent_table: :parent_table, parent_table_primary_key: :project_id,
-          parent_sharding_key: :parent_project_id, foreign_key: :foreign_key, connection: connection,
-          trigger_name: 'trigger_name').and_return(trigger)
-
-      expect(trigger).to receive(:create)
-
-      model.install_sharding_key_assignment_trigger(table: :test_table, sharding_key: :project_id, parent_table: :parent_table,
-        parent_table_primary_key: :project_id, parent_sharding_key: :parent_project_id, foreign_key: :foreign_key,
-        trigger_name: 'trigger_name')
-    end
-  end
-
-  describe '#remove_sharding_key_assignment_trigger' do
-    let(:trigger) { double }
-    let(:connection) { ActiveRecord::Base.connection }
-
-    it do
-      expect(Gitlab::Database::Triggers::AssignDesiredShardingKey).to receive(:new)
-        .with(table: :test_table, sharding_key: :project_id, parent_table: :parent_table, parent_table_primary_key: :project_id,
-          parent_sharding_key: :parent_project_id, foreign_key: :foreign_key, connection: connection,
-          trigger_name: 'trigger_name').and_return(trigger)
-
-      expect(trigger).to receive(:drop)
-
-      model.remove_sharding_key_assignment_trigger(table: :test_table, sharding_key: :project_id, parent_table: :parent_table,
-        parent_table_primary_key: :project_id, parent_sharding_key: :parent_project_id, foreign_key: :foreign_key,
-        trigger_name: 'trigger_name')
-    end
-  end
-
   describe '#indexes_for' do
     it 'returns the indexes for a column' do
       idx1 = double(:idx, columns: %w[project_id])
@@ -1112,22 +1039,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     end
   end
 
-  describe '#check_trigger_permissions!' do
-    it 'does nothing when the user has the correct permissions' do
-      expect { model.check_trigger_permissions!('users') }
-        .not_to raise_error
-    end
-
-    it 'raises RuntimeError when the user does not have the correct permissions' do
-      allow(Gitlab::Database::Grant).to receive(:create_and_execute_trigger?)
-        .with('kittens')
-        .and_return(false)
-
-      expect { model.check_trigger_permissions!('kittens') }
-        .to raise_error(RuntimeError, /Your database user is not allowed/)
-    end
-  end
-
   describe '#convert_to_bigint_column' do
     it 'returns the name of the temporary column used to convert to bigint' do
       expect(model.convert_to_bigint_column(:id)).to eq('id_convert_to_bigint')
@@ -1244,7 +1155,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     include MigrationsHelpers
 
     let_it_be(:issue_base_type_enum) { 0 }
-    let_it_be(:issue_type) { table(:work_item_types).find_by(base_type: issue_base_type_enum) }
+    let_it_be(:issue_type_id) { 1 }
 
     let(:issue_class) do
       type_id = build(:work_item_system_defined_type, :issue).id
@@ -1313,7 +1224,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
     it 'generates iids properly for models created after the migration when iids are backfilled' do
       project = setup
-      issue_a = issues.create!(project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: issue_type.id)
+      issue_a = issues.create!(project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: issue_type_id)
 
       model.backfill_iids('issues')
 
@@ -1326,14 +1237,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     it 'generates iids properly for models created after the migration across multiple projects' do
       project_a = setup
       project_b = setup
-      issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id)
-      issues.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type.id)
-      issues.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type.id)
+      issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type_id)
+      issues.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type_id)
+      issues.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type_id)
 
       model.backfill_iids('issues')
 
-      issue_a = issue_class.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id)
-      issue_b = issue_class.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type.id)
+      issue_a = issue_class.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type_id)
+      issue_b = issue_class.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type_id)
 
       expect(issue_a.iid).to eq(2)
       expect(issue_b.iid).to eq(3)
@@ -1343,7 +1254,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       it 'generates an iid' do
         project_a = setup
         project_b = setup
-        issue_a = issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id)
+        issue_a = issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type_id)
 
         model.backfill_iids('issues')
 
@@ -1357,8 +1268,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'when a row already has an iid set in the database' do
       it 'backfills iids' do
         project = setup
-        issue_a = issues.create!(project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: issue_type.id, iid: 1)
-        issue_b = issues.create!(project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: issue_type.id, iid: 2)
+        issue_a = issues.create!(project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: issue_type_id, iid: 1)
+        issue_b = issues.create!(project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: issue_type_id, iid: 2)
 
         model.backfill_iids('issues')
 
@@ -1369,9 +1280,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       it 'backfills for multiple projects' do
         project_a = setup
         project_b = setup
-        issue_a = issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id, iid: 1)
-        issue_b = issues.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type.id, iid: 1)
-        issue_c = issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id, iid: 2)
+        issue_a = issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type_id, iid: 1)
+        issue_b = issues.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type_id, iid: 1)
+        issue_c = issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type_id, iid: 2)
 
         model.backfill_iids('issues')
 

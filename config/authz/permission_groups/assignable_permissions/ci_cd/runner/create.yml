@@ -3,5 +3,10 @@ name: create_runner
 description: Grants the ability to create runners
 boundaries:
   - user
+  - project
+  - group
+  - instance
+available_for:
+  - granular_access_token
 permissions:
   - create_runner

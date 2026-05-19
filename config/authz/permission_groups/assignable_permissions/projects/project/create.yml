@@ -1,7 +1,9 @@
 ---
 name: create_project
 description: Grants the ability to create projects
-permissions:
-  - create_project
 boundaries:
   - user
+available_for:
+  - granular_access_token
+permissions:
+  - create_project

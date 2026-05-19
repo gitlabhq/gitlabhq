@@ -84,7 +84,7 @@ describe('stage column component', () => {
     });
 
     it('should emit updateMeasurements event on mount', () => {
-      expect(wrapper.emitted().updateMeasurements).toHaveLength(1);
+      expect(wrapper.emitted()['update-measurements']).toHaveLength(1);
     });
   });
 
@@ -103,11 +103,11 @@ describe('stage column component', () => {
           ],
         },
       });
-      findJobItem().vm.$emit('pipelineActionRequestComplete');
+      findJobItem().vm.$emit('pipeline-action-request-complete');
     });
 
-    it('emits refreshPipelineGraph', () => {
-      expect(wrapper.emitted().refreshPipelineGraph).toHaveLength(1);
+    it('emits refresh-pipeline-graph', () => {
+      expect(wrapper.emitted()['refresh-pipeline-graph']).toHaveLength(1);
     });
   });
 
@@ -190,11 +190,11 @@ describe('stage column component', () => {
         createComponent({ method: mount });
       });
 
-      it('emits jobHovered event on mouseenter and mouseleave', async () => {
+      it('emits job-hover event on mouseenter and mouseleave', async () => {
         await findStageColumnGroup().trigger('mouseenter');
-        expect(wrapper.emitted().jobHover).toEqual([[defaultProps.groups[0].name]]);
+        expect(wrapper.emitted()['job-hover']).toEqual([[defaultProps.groups[0].name]]);
         await findStageColumnGroup().trigger('mouseleave');
-        expect(wrapper.emitted().jobHover).toEqual([[defaultProps.groups[0].name], ['']]);
+        expect(wrapper.emitted()['job-hover']).toEqual([[defaultProps.groups[0].name], ['']]);
       });
     });
   });

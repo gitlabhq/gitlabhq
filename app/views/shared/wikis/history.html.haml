@@ -6,7 +6,7 @@
   .wiki-page-header
     = render ::Layouts::PageHeadingComponent.new('') do |c|
       - c.with_heading do
-        .gl-flex.gl-gap-3
+        .gl-flex.gl-items-center.gl-gap-3
           = wiki_sidebar_toggle_button
           %h1.gl-heading-1.gl-m-0{ data: { testid: 'page-heading' } }
             = _('History')

@@ -400,8 +400,6 @@ Style/ClassAndModuleChildren:
     - 'ee/app/models/analytics/devops_adoption.rb'
     - 'ee/app/models/analytics/devops_adoption/enabled_namespace.rb'
     - 'ee/app/models/analytics/devops_adoption/snapshot.rb'
-    - 'ee/app/models/analytics/language_trend.rb'
-    - 'ee/app/models/analytics/language_trend/repository_language.rb'
     - 'ee/app/models/dast/profile_schedule.rb'
     - 'ee/app/models/ee/ci/job_artifact.rb'
     - 'ee/app/models/epic/related_epic_link.rb'

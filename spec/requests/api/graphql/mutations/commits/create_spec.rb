@@ -11,11 +11,12 @@ RSpec.describe 'Creation of a new commit', feature_category: :source_code_manage
   let(:input) { { project_path: project.full_path, branch: branch, message: message, actions: actions } }
   let(:branch) { 'master' }
   let(:message) { 'Commit message' }
+  let(:file_path) { "NEW_FILE_#{SecureRandom.hex(4)}.md" }
   let(:actions) do
     [
       {
         action: 'CREATE',
-        filePath: 'NEW_FILE.md',
+        filePath: file_path,
         content: 'Hello'
       }
     ]
@@ -23,6 +24,13 @@ RSpec.describe 'Creation of a new commit', feature_category: :source_code_manage
 
   let(:mutation) { graphql_mutation(:commit_create, input) }
   let(:mutation_response) { graphql_mutation_response(:commit_create) }
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :push_code do
+    let(:user) { create(:user, developer_of: project) }
+    let(:boundary_object) { project }
+    let(:mutation) { graphql_mutation(:commit_create, input, 'errors') }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
 
   shared_examples 'a commit is successful' do
     it 'creates a new commit' do
@@ -62,7 +70,7 @@ RSpec.describe 'Creation of a new commit', feature_category: :source_code_manage
         [
           {
             action: 'CREATE',
-            filePath: 'ANOTHER_FILE.md',
+            filePath: "ANOTHER_FILE_#{SecureRandom.hex(4)}.md",
             content: 'Bye'
           }
         ]

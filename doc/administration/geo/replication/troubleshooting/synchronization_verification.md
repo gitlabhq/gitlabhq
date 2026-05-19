@@ -388,7 +388,7 @@ It is possible to trigger bulk actions from the UI or from the Rails console.
 You can schedule a full resync of all resources of one component from the UI:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 1. Under **Replication details**, select the desired component.
 
 ##### Resync resources for the selected component
@@ -411,7 +411,7 @@ Any mismatch marks the registry as `sync failed`, which causes sync retries to b
 You can recalculate the primary site's checksum from the UI:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Monitoring** > **Data management**.
+1. In the left sidebar, select **Monitoring** > **Data management**.
 1. Select the desired component in the dropdown list.
 1. Select **Checksum all**.
 

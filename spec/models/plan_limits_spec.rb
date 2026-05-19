@@ -21,6 +21,12 @@ RSpec.describe PlanLimits do
     it { is_expected.to validate_numericality_of(:web_hook_calls_low).is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:web_hook_calls_mid).is_greater_than_or_equal_to(0) }
 
+    it 'validates max_pipelines_per_merge_train is at least 1' do
+      is_expected.to validate_numericality_of(:max_pipelines_per_merge_train)
+        .only_integer
+        .is_greater_than_or_equal_to(1)
+    end
+
     describe 'limits_history' do
       context 'when does not match the JSON schema' do
         it 'does not allow invalid json' do

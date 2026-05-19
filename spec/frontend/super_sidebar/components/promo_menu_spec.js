@@ -42,19 +42,16 @@ describe('PromoMenu', () => {
       expect(findMenu().exists()).toBe(true);
 
       expect(wrapper.vm.visibleItems).toEqual([
-        // eslint-disable-next-line no-restricted-syntax
         { href: 'https://about.gitlab.com/why-gitlab', text: 'Why GitLab' },
         { href: '/pricing', text: 'Pricing' },
         { href: '/explore', text: 'Explore' },
       ]);
 
       expect(findDropdown().props('items')).toEqual([
-        // eslint-disable-next-line no-restricted-syntax
         { href: 'https://about.gitlab.com/why-gitlab', text: 'Why GitLab' },
         { href: '/pricing', text: 'Pricing' },
         {
           extraAttrs: { dataMenuOnly: true },
-          // eslint-disable-next-line no-restricted-syntax
           href: 'https://about.gitlab.com/sales',
           text: 'Contact Sales',
         },

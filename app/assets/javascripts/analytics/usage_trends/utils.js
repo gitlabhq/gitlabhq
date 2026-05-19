@@ -10,7 +10,7 @@ const { isoDate } = masks;
  * @param  {Number} items[index].count value to be averaged
  * @param  {String} items[index].recordedAt item dateTime time stamp to be collected into a month
  * @param  {Object} options
- * @param  {Object} options.shouldRound an option to specify whether the retuned averages should be rounded
+ * @param  {Object} options.shouldRound an option to specify whether the returned averages should be rounded
  * @return {Array} items collected into [month, average],
  * where month is a dateTime string representing the first of the given month
  * and average is the average of the count

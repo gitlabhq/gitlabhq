@@ -1,6 +1,5 @@
 <script>
 import { GlDropdownItem } from '@gitlab/ui';
-import Vue from 'vue';
 import { createAlert } from '~/alert';
 import { TYPE_ALERT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, n__ } from '~/locale';
@@ -9,6 +8,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { keysFor, ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { sanitize } from '~/lib/dompurify';
+import { observable } from '~/lib/utils/observable';
 import { assigneesQueries } from '../../queries/constants';
 import SidebarEditableItem from '../sidebar_editable_item.vue';
 import SidebarAssigneesRealtime from './assignees_realtime.vue';
@@ -16,7 +16,7 @@ import IssuableAssignees from './issuable_assignees.vue';
 import SidebarInviteMembers from './sidebar_invite_members.vue';
 import { userTypes } from './constants';
 
-export const assigneesWidget = Vue.observable({
+export const assigneesWidget = observable('sidebar_assignees_widget', {
   updateAssignees: null,
 });
 

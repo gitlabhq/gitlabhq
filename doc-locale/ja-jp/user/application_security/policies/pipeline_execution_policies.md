@@ -1,8 +1,8 @@
 ---
 stage: Security Risk Management
 group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: パイプライン実行ポリシーは、CI/CDパイプラインの実行を管理および強制し、セキュリティとコンプライアンスに役立ちます。
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: パイプライン実行ポリシーは、CI/CDパイプラインの実行を管理および強制し、セキュリティとコンプライアンスに貢献します。
 title: パイプライン実行ポリシー
 ---
 
@@ -22,7 +22,10 @@ title: パイプライン実行ポリシー
 
 パイプライン実行ポリシーを使用して、単一の設定で複数のプロジェクトのCI/CDジョブを管理および適用します。
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>ビデオチュートリアルについては、[Security Policies: Pipeline Execution Policy Type（セキュリティポリシー: パイプライン実行ポリシーの種類）](https://www.youtube.com/watch?v=QQAOpkZ__pA)をご覧ください。
+> [!warning]
+> 既存の[コンプライアンスパイプライン](../../compliance/compliance_pipelines.md)を同じプロジェクトで移行するまで、パイプライン実行ポリシーを有効にしないでください。両方が設定されている場合、コンプライアンスパイプラインは標準のプロジェクトパイプラインを置き換えますが、パイプライン実行ポリシーは元のプロジェクトパイプラインに基づいて適用されます。これにより、パイプライン実行ポリシーの戦略およびCI/CD設定によって異なる予測不能な動作が発生し、ジョブの重複、パイプラインの失敗、または重要なセキュリティとコンプライアンスチェックの欠落につながる可能性があります。コンプライアンスパイプラインは[非推奨](../../../update/deprecations.md#compliance-pipelines)です。既存のコンプライアンスパイプラインをできるだけ早く移行する必要があります。また、すべての新しい実装にパイプライン実行ポリシーを使用してください。
+
+- <i class="fa-youtube-play" aria-hidden="true"></i> ビデオチュートリアルについては、[Security Policies: Pipeline Execution Policy Type（セキュリティポリシー: パイプライン実行ポリシーの種類）](https://www.youtube.com/watch?v=QQAOpkZ__pA)をご覧ください。
 
 ## スキーマ {#schema}
 
@@ -30,6 +33,7 @@ title: パイプライン実行ポリシー
 
 - GitLab 17.4で`suffix`フィールドを[有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159858)にしました。
 - GitLab 17.7で、`.pipeline-policy-pre`ステージが完了するまで、それ以降のステージが待機するようにパイプラインの実行を[変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165096)しました。
+- [変更され](https://gitlab.com/gitlab-org/gitlab/-/issues/558233)、`.pipeline-policy-pre`ステージが失敗した場合、すべての以降のジョブがスキップされるようになりました (GitLab 18.10にて`ensure_pipeline_policy_pre_succeeds`という[フラグ](../../../administration/feature_flags/_index.md)と共に)。デフォルトでは有効になっています。
 
 {{< /history >}}
 
@@ -43,23 +47,24 @@ title: パイプライン実行ポリシー
 
 ## `pipeline_execution_policy`スキーマ {#pipeline_execution_policy-schema}
 
-| フィールド | 型 | 必須 | 説明 |
-|-------|------|----------|-------------|
-| `name` | `string` | はい | ポリシーの名前。最大255文字。|
-| `description`（オプション） | `string` | はい | ポリシーの説明。 |
-| `enabled` | `boolean` | はい | ポリシーを有効（`true`）または無効（`false`）にするフラグ。 |
-| `content` | [`content`](#content-type)の`object` | はい | プロジェクトのパイプラインに挿入するCI/CD設定への参照。 |
-| `pipeline_config_strategy` | `string` | いいえ | `inject_policy`、`inject_ci`（非推奨）または`override_project_ci`を指定できます。詳細については、[パイプライン戦略](#pipeline-configuration-strategies)を参照してください。 |
-| `policy_scope` | [`policy_scope`](_index.md#configure-the-policy-scope)の`object` | いいえ | 指定したプロジェクト、グループ、またはコンプライアンスフレームワークのラベルに基づいてポリシーのスコープを設定します。 |
+| フィールド | 型 | 必須 | 説明                                                                                                                                                                                                                                                                                                                     |
+|-------|------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `name` | `string` | はい | ポリシーの名前。最大255文字。                                                                                                                                                                                                                                                                                  |
+| `description`（オプション） | `string` | はい | ポリシーの説明。                                                                                                                                                                                                                                                                                                      |
+| `enabled` | `boolean` | はい | ポリシーを有効（`true`）または無効（`false`）にするフラグ。                                                                                                                                                                                                                                                                        |
+| `content` | [`content`](#content-type)の`object` | はい | プロジェクトのパイプラインに挿入するCI/CD設定への参照。                                                                                                                                                                                                                                                          |
+| `pipeline_config_strategy` | `string` | いいえ | `inject_policy`、`inject_ci`（非推奨）または`override_project_ci`を指定できます。詳細については、[パイプライン戦略](#pipeline-configuration-strategies)を参照してください。                                                                                                                                                                 |
+| `policy_scope` | [`policy_scope`](_index.md#configure-the-policy-scope)の`object` | いいえ | 指定したプロジェクト、グループ、またはコンプライアンスフレームワークのラベルに基づいてポリシーのスコープを設定します。                                                                                                                                                                                                                                        |
 | `suffix` | `string` | いいえ | `on_conflict`（デフォルト）または`never`のいずれかを指定できます。ジョブの命名の競合を処理するための動作を定義します。`on_conflict`は、一意性を損なうジョブに対して、ジョブ名に一意のサフィックスを適用します。`never`は、プロジェクトおよび適用可能なすべてのポリシーでジョブ名が一意でない場合、パイプラインを失敗させます。 |
-| `skip_ci` | [`skip_ci`](pipeline_execution_policies.md#skip_ci-type)の`object` | いいえ | ユーザーが`skip-ci`ディレクティブを適用できるかどうかを定義します。デフォルトでは、`skip-ci`の使用は無視されるため、パイプライン実行ポリシーを含むパイプラインはスキップできません。 |
-| `variables_override` | [`variables_override`](pipeline_execution_policies.md#variables_override-type)の`object` | いいえ | ポリシーによって作成されたジョブで、ユーザーがポリシー変数の動作をオーバーライドできるかどうかを制御します。デフォルトでは、ポリシー変数は最優先で適用され、ユーザーはオーバーライドできません。 |
+| `skip_ci` | [`skip_ci`](pipeline_execution_policies.md#skip_ci-type)の`object` | いいえ | ユーザーが`skip-ci`ディレクティブを適用できるかどうかを定義します。デフォルトでは、`skip-ci`の使用は無視されるため、パイプライン実行ポリシーを含むパイプラインはスキップできません。                                                                                                                                             |
+| `no_pipeline` | [`no_pipeline`](pipeline_execution_policies.md#no_pipeline-type)の`object` | いいえ | ユーザーが`no_pipeline`ディレクティブを適用できるかどうかを定義します。デフォルトでは、`no_pipeline`の使用は無視され、その結果、パイプライン実行ポリシーが設定されたパイプラインは作成できません。                                                                                                                                 |
+| `variables_override` | [`variables_override`](pipeline_execution_policies.md#variables_override-type)の`object` | いいえ | ユーザーがポリシーによって作成されたジョブ内のポリシー変数の動作をオーバーライドできるかどうかを制御します。デフォルトでは、ポリシー変数は最優先で適用され、ユーザーはオーバーライドできません。                                                                                                               |
 
-注意点:
+次の点に注意してください。
 
 - パイプラインをトリガーするユーザーには、少なくとも、パイプライン実行ポリシーに指定されたパイプライン実行ファイルに対する読み取りアクセス権が必要です。そうでない場合、パイプラインは開始されません。
 - パイプライン実行ファイルの削除または名前の変更が行われた場合、ポリシーが適用されたプロジェクトのパイプラインが動作しなくなる可能性があります。
-- パイプライン実行ポリシーのジョブは、次の2つの予約済みステージのいずれかに割り当てることができます:
+- パイプライン実行ポリシーのジョブは、次の2つの予約済みステージのいずれかに割り当てることができます。
   - パイプラインの先頭にある`.pipeline-policy-pre`（`.pre`ステージの前）。
   - パイプラインの最後にある`.pipeline-policy-post`（`.post`ステージの後）。
 - 予約済みステージのいずれかにジョブを挿入すると、常に動作することが保証されます。実行ポリシーのジョブは、標準（ビルド、テスト、デプロイ）ステージまたはユーザー定義のステージに割り当てることもできます。ただし、この場合、ジョブはプロジェクトのパイプライン設定に応じて無視されることがあります。
@@ -68,42 +73,63 @@ title: パイプライン実行ポリシー
 - パイプライン実行ポリシーは、プロジェクトにCI/CD設定ファイルがない場合でも有効です。
 - 適用されるサフィックスについては、ポリシーの順序が重要になります。
 - 特定のプロジェクトに適用されるポリシーに`suffix: never`があり、同じ名前の別のジョブがパイプラインにすでに存在する場合は、パイプラインが失敗します。
-- パイプライン実行ポリシーは、すべてのブランチおよびパイプラインソースで適用されます。ただし、[マージリクエストパイプライン](../../../ci/pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines)の場合、`rules:`または`workflow:rules`の設定によっては、ジョブの実行が妨げられる場合があります。[ワークフロールール](../../../ci/yaml/workflow.md)を使用して、パイプライン実行ポリシーを適用するタイミングを制御できます。
+- パイプライン実行ポリシーは、すべてのブランチおよびパイプラインソースで適用されます。ただし、[マージリクエストパイプライン](../../../ci/pipelines/merge_request_pipelines.md#configure-merge-request-pipelines)の場合、一部の`rules:`または`workflow:rules`設定によってジョブの実行が妨げられることがあります。パイプライン実行ポリシーが適用されるタイミングを制御するには、[ワークフロールール](../../../ci/yaml/workflow.md)を使用します。
 
-### `.pipeline-policy-pre`ステージ {#pipeline-policy-pre-stage}
-
-`.pipeline-policy-pre`ステージのジョブは常に実行されます。このステージは、セキュリティとコンプライアンスのユースケース向けに設計されています。`.pipeline-policy-pre`ステージが完了するまで、パイプライン内のジョブは開始されません。
-
-ワークフローでこの動作が不要な場合は、代わりに`.pre`ステージまたはカスタムステージを使用できます。
-
-#### `.pipeline-policy-pre`が成功することを確認する {#ensure-that-pipeline-policy-pre-succeeds}
+### セキュリティポリシーパイプラインチェック {#security-policy-pipeline-check}
 
 {{< details >}}
 
+- プラン: Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 - ステータス: 実験的機能
 
 {{< /details >}}
 
-{{< alert type="note" >}}
+{{< history >}}
 
-この機能は実験的なものであり、今後のリリースで変更される可能性があります。本番環境では不安定になる可能性があるため、本番環境以外の環境でのみ十分にテストしてください。
+- GitLab 18.11で`security_policy_pipeline_check`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/589650)されました。デフォルトでは無効になっています。
+- GitLab 18.11で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/592205)になりました。
 
-{{< /alert >}}
+{{< /history >}}
 
-`.pipeline-policy-pre`が完了して成功することを確認するには、セキュリティポリシー設定で`ensure_pipeline_policy_pre_succeeds`実験を有効にします。`.gitlab/security-policies/policy.yml` YAML設定ファイルは、セキュリティポリシープロジェクトに保存されています:
+パイプライン実行ポリシーまたは[スキャン実行ポリシー](scan_execution_policies.md)がプロジェクトに設定されている場合、セキュリティポリシーパイプラインチェックは、マージリクエストがマージされる前に、最新のコミットに対するすべてのパイプラインが成功することを要求します。このチェックは、コミットによって実行されるすべてのパイプラインに適用され、セキュリティポリシーによって作成されたパイプラインに限定されません。
 
-```yaml
-experiments:
-  ensure_pipeline_policy_pre_succeeds:
-    enabled: true
-```
+セキュリティポリシーパイプラインチェックは、マージリクエストパイプラインが成功しても、別のパイプライン（セキュリティポリシーによって作成されたブランチパイプラインなど）が失敗した場合に、マージを防止します。これにより、未検証のコードがマージされるのを防ぎます。
 
-`.pipeline-policy-pre`ステージが失敗するか、このステージ内のすべてのジョブがスキップされた場合、以降のステージ内のすべてのジョブがスキップされます。これには、次のジョブが含まれます:
+セキュリティポリシーパイプラインチェックは次のように動作します:
 
-- `needs: []`を使用したジョブ
-- `when: always`を使用したジョブ
+- プロジェクト設定の**パイプラインが完了している**が有効になっている場合、失敗したパイプラインは、マージを妨げるハードブロックとなります。
+- **パイプラインが完了している**が有効になっていない場合、失敗したパイプラインは警告となります。マージリクエストは引き続き[自動マージ](../../project/merge_requests/auto_merge.md)に設定できます。
+- プロジェクト設定の**スキップしたパイプラインは成功と見なされます**が有効になっている場合、スキップされたパイプラインは成功したものとして扱われます。
 
-複数のパイプライン実行ポリシーが適用される場合、それらのいずれかで実験が有効になっていれば、その実験が有効になり、`.pipeline-policy-pre`が必ず成功します。
+### `.pipeline-policy-pre`ステージ {#pipeline-policy-pre-stage}
+
+{{< details >}}
+
+- ステータス: ベータ版
+
+{{< /details >}}
+
+{{< history >}}
+
+- [変更され](https://gitlab.com/gitlab-org/gitlab/-/issues/558233)、`.pipeline-policy-pre`ステージが失敗した場合、すべての以降のジョブがスキップされるようになりました (GitLab 18.10にて`ensure_pipeline_policy_pre_succeeds`という[フラグ](../../../administration/feature_flags/_index.md)と共に)。デフォルトでは有効になっています。
+
+{{< /history >}}
+
+> [!flag]
+> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+
+`.pipeline-policy-pre`ステージのジョブは常に実行されます。このステージは、セキュリティとコンプライアンスのユースケース向けに設計されています。`.pipeline-policy-pre`ステージが完了するまで、パイプライン内のジョブは開始されません。
+
+`.pipeline-policy-pre`ステージが失敗するか、このステージ内のすべてのジョブがスキップされた場合、以降のステージ内のすべてのジョブがスキップされます。これには、次のジョブが含まれます。
+
+- ジョブ (`needs: []`を伴う)。
+- ジョブ (`when: always`を伴う)。
+
+この動作がワークフローに不要な場合は、代わりに`.pre`ステージまたはカスタムステージを使用してください。
+
+> [!note]
+> GitLab 18.9以前では、`needs: []`または`when: always`を持つジョブは、`ensure_pipeline_policy_pre_succeeds`実験を有効にしない限り、`.pipeline-policy-pre`ステージの失敗をバイパスすることができました。この実験はもう必要ありません。この動作がデフォルトになりました。GitLab Self-Managedでは、管理者が[この機能フラグを無効にする](../../../administration/feature_flags/_index.md)ことで、`needs`ジョブのみがブロックされる以前の動作に戻すことができます。
 
 ### ジョブの命名に関するベストプラクティス {#job-naming-best-practice}
 
@@ -120,20 +146,20 @@ experiments:
 - `policy1:deployments:sast`を使用してください。この名前は、他のすべてのポリシーとプロジェクト全体で一意であると考えられます。
 - `sast`を使用しないでください。この名前は、他のポリシーやプロジェクトで重複している可能性があります。
 
-パイプライン実行ポリシーは、`suffix`属性に応じて命名の競合を処理します。同じ名前のジョブが複数ある場合、次のようになります:
+パイプライン実行ポリシーは、`suffix`属性に応じて命名の競合を処理します。同じ名前のジョブが複数ある場合、次のようになります。
 
 - `on_conflict`（デフォルト）を使用すると、ジョブ名がパイプライン内の別のジョブと競合する場合にサフィックスがジョブに追加されます。
 - `never`を使用すると、競合が発生した場合にサフィックスは追加されず、パイプラインは失敗します。
 
 サフィックスは、ジョブがメインパイプラインにマージされる順序に基づいて追加されます。
 
-順序は次のとおりです:
+順序は次のとおりです。
 
 1. プロジェクトパイプラインのジョブ
 1. プロジェクトポリシーのジョブ（該当する場合）
 1. グループポリシーのジョブ（該当する場合、階層順。トップレベルグループが最後に適用される）
 
-適用されるサフィックスの形式は次のとおりです:
+適用されるサフィックスの形式は次のとおりです。
 
 `:policy-<security-policy-project-id>-<policy-index>`。
 
@@ -150,13 +176,10 @@ experiments:
 
 パイプライン実行ポリシーで定義されたジョブは、プロジェクトのCI/CD設定で定義された任意の[ステージ](../../../ci/yaml/_index.md#stage)を使用でき、予約済みステージ`.pipeline-policy-pre`と`.pipeline-policy-post`も使用できます。
 
-{{< alert type="note" >}}
-
-ポリシーに`.pre`ステージと`.post`ステージのみのジョブが含まれている場合、ポリシーのパイプラインは`empty`として評価されます。これは、プロジェクトのパイプラインとマージされません。
-
-パイプライン実行ポリシーで`.pre`ステージと`.post`ステージを使用するには、別のステージで実行されるジョブを少なくとも1つ含める必要があります。たとえば、`.pipeline-policy-pre`のようになります。
-
-{{< /alert >}}
+> [!note]
+> ポリシーに`.pre`と`.post`のステージのみにジョブが含まれる場合、そのポリシーのパイプラインは`empty`と評価されます。これは、プロジェクトのパイプラインとマージされません。
+>
+> パイプライン実行ポリシーで`.pre`ステージと`.post`ステージを使用するには、別のステージで実行されるジョブを少なくとも1つ含める必要があります。例: `.pipeline-policy-pre`。
 
 `inject_policy`[パイプライン戦略](#pipeline-configuration-strategies)を使用するときに、対象のプロジェクトに独自の`.gitlab-ci.yml`ファイルがない場合、すべてのポリシーステージがパイプラインに挿入されます。
 
@@ -164,7 +187,7 @@ experiments:
 
 変更する権限がないCI/CD設定を持つプロジェクトにパイプライン実行ポリシーを適用する場合は、`.pipeline-policy-pre`ステージと`.pipeline-policy-post`ステージでジョブを定義する必要があります。これらのステージは、プロジェクトのCI/CD設定に関係なく、常に使用できます。
 
-`override_project_ci`[パイプライン戦略](#pipeline-configuration-strategies)、複数のパイプライン実行ポリシー、カスタムステージを同時に使用する場合、ステージを同じ相対順序で定義して、相互の互換性を確保する必要があります:
+`override_project_ci`[パイプライン戦略](#pipeline-configuration-strategies)、複数のパイプライン実行ポリシー、カスタムステージを同時に使用する場合、ステージを同じ相対順序で定義して、相互の互換性を確保する必要があります。
 
 有効な設定例:
 
@@ -192,7 +215,7 @@ experiments:
 
 別のリポジトリに保存されているCI/CD設定を参照するには、ポリシーで`content`タイプを使用します。これにより、複数のポリシーで同じCI/CD設定を再利用できるため、これらの設定のメンテナンスのオーバーヘッドを削減できます。たとえば、ポリシーAとポリシーBで適用するカスタムシークレット検出CI/CD設定がある場合は、1つのYAML設定ファイルを作成し、両方のポリシーでその設定を参照できます。
 
-前提要件:
+前提条件: 
 
 - `content`タイプを含むポリシーが適用されているプロジェクトでパイプライン実行をトリガーするユーザーには、少なくとも、CI/CDを含むプロジェクトに対する読み取り専用アクセス権が必要です。
 - パイプライン実行ポリシーを適用するプロジェクトでは、パイプラインをトリガーするために、ユーザーに少なくとも、CI/CD設定を含むプロジェクトに対する読み取り専用アクセス権が必要です。
@@ -216,6 +239,17 @@ experiments:
 | `allowed` | `boolean`   | `true`、`false` | パイプライン実行ポリシーが適用されたパイプラインで、`skip-ci`ディレクティブの使用を許可（`true`）または禁止（`false`）するフラグ。 |
 | `allowlist`             | `object` | `users` | `allowed`フラグに関係なく、`skip-ci`ディレクティブの使用が常に許可されるユーザーを指定します。`users:`の後に、ユーザーIDを表す`id`キーを含んだオブジェクトの配列を指定します。 |
 
+### `no_pipeline`型 {#no_pipeline-type}
+
+パイプライン実行ポリシーは、誰が`[no_pipeline]`ディレクティブを使用できるかを制御します。`[no_pipeline]`を使用できる特定のユーザーまたはサービスアカウントを指定すると同時に、重要なセキュリティとコンプライアンスのチェックが確実に実行されるようにすることができます。
+
+`no_pipeline`キーワードを使用して、ユーザーが`no_pipeline`ディレクティブを適用してパイプラインを作成しないことを許可するかどうかを指定します。キーワードを指定しなかった場合、`no_pipeline`ディレクティブは無視され、すべてのユーザーはパイプライン実行ポリシーをバイパスできません。
+
+| フィールド                   | 型     | 使用可能な値          | 説明 |
+|-------------------------|----------|--------------------------|-------------|
+| `allowed` | `boolean`   | `true`、`false` | パイプライン実行ポリシーが適用されたパイプラインで、`no_pipeline`ディレクティブの使用を許可（`true`）または禁止（`false`）するフラグ。 |
+| `allowlist`             | `object` | `users` | `allowed`フラグに関係なく、`no_pipeline`ディレクティブの使用が常に許可されるユーザーを指定します。`users:`の後に、ユーザーIDを表す`id`キーを含んだオブジェクトの配列を指定します。 |
+
 ### `variables_override`型 {#variables_override-type}
 
 {{< history >}}
@@ -228,14 +262,15 @@ experiments:
 |-------------------------|----------|--------------------------|-------------|
 | `allowed` | `boolean`   | `true`、`false` | `true`の場合、他の設定はポリシー変数をオーバーライドできます。`false`の場合、他の設定はポリシー変数をオーバーライドできません。 |
 | `exceptions` | `array` | `array`の`string` | グローバルルールの例外となる変数。`allowed: false`の場合、`exceptions`は許可リストです。`allowed: true`の場合、`exceptions`は拒否リストです。 |
+| `dotenv` | `string` | `respect_policy`、`allow_override` | [dotenvアーティファクト](../../../ci/yaml/artifacts_reports.md#artifactsreportsdotenv)の変数が`variables_override`ポリシールールを尊重するかどうかを制御します。デフォルトでは（指定されない場合、または`respect_policy`に設定されている場合）、dotenv変数は他の変数と同じオーバーライドルールに従います。`allow_override`に設定すると、dotenv変数がポリシールールをバイパスすることができます。このオプションは、dotenvアーティファクトがポリシー変数をオーバーライドすることに依存するワークフローとの下位互換性のために提供されています。`allow_override`の使用は、`variables_override`によって提供されるセキュリティ保証を弱めるため、推奨されません。 |
 
-このオプションは、ポリシーが適用されたパイプラインでユーザー定義変数がどのように処理されるかを制御します。この機能を使用すると、次のことが可能になります:
+このオプションは、ポリシーが適用されたパイプラインでユーザー定義変数がどのように処理されるかを制御します。この機能を使用すると、次のことが可能になります。
 
 - デフォルトでユーザー定義変数を拒否します（推奨）。これにより、セキュリティが強化されますが、カスタマイズ可能なすべての変数を`exceptions`許可リストに追加する必要があります。
 - デフォルトでユーザー定義変数を許可します。これにより、柔軟性が向上しますが、ポリシーの適用に影響を与える可能性のある変数を`exceptions`拒否リストに追加する必要があるため、セキュリティは低下します。
 - `allowed`グローバルルールに例外を定義します。
 
-ユーザー定義変数は、パイプライン内の任意のポリシージョブの動作に影響を与える可能性があり、さまざまなソースから送信される可能性があります:
+ユーザー定義変数は、パイプライン内の任意のポリシージョブの動作に影響を与える可能性があり、さまざまなソースから送信される可能性があります。
 
 - [パイプライン変数](../../../ci/variables/_index.md#use-pipeline-variables)。
 - [プロジェクト変数](../../../ci/variables/_index.md#for-a-project)。
@@ -248,7 +283,7 @@ experiments:
 
 #### `variables_override`の設定例 {#example-variables_override-configuration}
 
-`variables_override`オプションをパイプライン実行ポリシー設定に追加します:
+`variables_override`オプションをパイプライン実行ポリシー設定に追加します。
 
 ```yaml
 pipeline_execution_policy:
@@ -269,7 +304,7 @@ pipeline_execution_policy:
 
 ##### コンテナカスタマイズを許可しながらセキュリティスキャンを適用する（許可リストアプローチ） {#enforcing-security-scans-while-allowing-container-customization-allowlist-approach}
 
-セキュリティスキャンを適用しながら、プロジェクトチームが独自のコンテナイメージを指定できるようにするには、次のようにします:
+セキュリティスキャンを適用しながら、プロジェクトチームが独自のコンテナイメージを指定できるようにするには、次のようにします。
 
 ```yaml
 variables_override:
@@ -282,7 +317,7 @@ variables_override:
 
 ##### 特定のセキュリティ変数のオーバーライドを防ぐ（拒否リストアプローチ） {#prevent-specific-security-variable-overrides-denylist-approach}
 
-ほとんどの変数を許可しながら、セキュリティスキャンを無効にできないようにするには、次のようにします:
+ほとんどの変数を許可しながら、セキュリティスキャンを無効にできないようにするには、次のようにします。
 
 ```yaml
 variables_override:
@@ -297,15 +332,15 @@ variables_override:
 
 この設定では、セキュリティスキャンを無効にする可能性のあるものを除き、すべてのユーザー定義変数を許可します。
 
-{{< alert type="warning" >}}
-
-この設定は柔軟性を備えていますが、セキュリティへの影響があるため、推奨されません。`exceptions`に明示的にリストされていない変数は、ユーザーが挿入できます。そのため、ポリシー設定は、`allowlist`アプローチを利用した場合ほど適切に保護されません。
-
-{{< /alert >}}
+> [!warning]
+> この設定は柔軟性を提供できますが、セキュリティ上の影響があるため推奨されません。`exceptions`に明示的にリストされていない変数は、ユーザーが挿入できます。そのため、ポリシー設定は、`allowlist`アプローチを利用した場合ほど適切に保護されません。
 
 ### `policy scope`スキーマ {#policy-scope-schema}
 
 ポリシーの適用をカスタマイズするには、ポリシーのスコープを定義して、指定したプロジェクト、グループ、またはコンプライアンスフレームワークのラベルを含めるか、除外します。詳細については、[スコープ](_index.md#configure-the-policy-scope)を参照してください。
+
+> [!note]
+> `policy_scope`フィールドを空のコレクション（たとえば`including: []`）に設定することは、フィールドを省略することと同じとみなされ、そのスコープ次元のすべてのプロジェクトにポリシーが適用されます。ポリシー全体を無効にするには、`enabled: false`を使用します。詳細については、[`policy_scope`内の空のコレクション](_index.md#empty-collections-in-policy_scope)を参照してください。
 
 ## CI/CD設定へのアクセスを管理する {#manage-access-to-the-cicd-configuration}
 
@@ -319,28 +354,25 @@ variables_override:
 
 パイプライン実行ポリシーが適用されたプロジェクトでパイプラインを実行するすべてのユーザーに対して、ポリシーのCI/CD設定へのアクセス権を自動的に付与できます。
 
-前提要件:
+前提条件: 
 
 - パイプライン実行ポリシーのCI/CD設定がセキュリティポリシープロジェクトに保存されていることを確認してください。
 - セキュリティポリシープロジェクトの一般設定で、**パイプライン実行ポリシー**設定を有効にします。
 
-セキュリティポリシープロジェクトがまだなく、最初のパイプライン実行ポリシーを作成する場合は、空のプロジェクトを作成し、セキュリティポリシープロジェクトとしてリンクします。プロジェクトをリンクするには、次の手順を実行します:
+セキュリティポリシープロジェクトがまだなく、最初のパイプライン実行ポリシーを作成する場合は、空のプロジェクトを作成し、セキュリティポリシープロジェクトとしてリンクします。プロジェクトをリンクするには、次の手順を実行します。
 
 1. ポリシーを適用するグループまたはプロジェクトで、**セキュリティ** > **ポリシー** > **ポリシープロジェクトを編集**を選択します。
 1. セキュリティポリシープロジェクトを選択します。
 
 プロジェクトはセキュリティポリシープロジェクトになり、設定が利用可能になります。
 
-{{< alert type="note" >}}
-
-`$CI_JOB_TOKEN`を使用してダウンストリームパイプラインを作成するには、プロジェクトとグループによるセキュリティポリシープロジェクトのリクエストが許可されていることを確認する必要があります。セキュリティポリシープロジェクトで、**設定** > **CI/CD** > **ジョブトークンの権限**に移動し、許可されたグループとプロジェクトを許可リストに追加します。**CI/CD**の設定が表示されない場合は、**設定** > **一般** > **可視性、プロジェクトの機能、権限**に移動し、**CI/CD**を有効にします。
-
-{{< /alert >}}
+> [!note]
+> `$CI_JOB_TOKEN`を使用してダウンストリームパイプラインを作成するには、プロジェクトとグループがセキュリティポリシープロジェクトをリクエストする権限を持っていることを確認する必要があります。セキュリティポリシープロジェクトで、**設定** > **CI/CD** > **ジョブトークンの権限**に移動し、承認されたグループとプロジェクトを許可リストに追加します。**CI/CD**設定が表示されない場合は、**設定** > **一般** > **可視性、プロジェクトの機能、権限**に移動し、**CI/CD**を有効にしてください。
 
 #### 設定 {#configuration}
 
 1. ポリシープロジェクトで、**設定** > **一般** > **可視性、プロジェクトの機能、権限**を選択します。
-1. **パイプライン実行ポリシー**の設定を有効にします。
+1. **パイプライン実行ポリシー**設定を有効にします。
 1. ポリシープロジェクトで、ポリシーのCI/CD設定のファイルを作成します。
 
    ```yaml
@@ -380,17 +412,14 @@ variables_override:
 
 非推奨の`inject_ci`戦略とは異なり、`inject_policy`を使用すると、カスタムポリシーのステージをパイプラインに挿入できるため、CI/CDワークフローでポリシールールが適用される場所をよりきめ細かく制御できます。
 
-複数のポリシーが有効になっている場合、この戦略は各ポリシーからすべてのジョブを挿入します。
+複数のポリシーが有効になっている場合、この戦略は各ポリシーのすべてのジョブを注入します。
 
 この戦略を使用する場合、各パイプラインには分離されたYAML設定があるため、プロジェクトのCI/CD設定はポリシーパイプラインで定義された動作をオーバーライドできません。
 
 `.gitlab-ci.yml`ファイルがないプロジェクトの場合、この戦略は`.gitlab-ci.yml`ファイルを暗黙的に作成します。実行されるパイプラインには、パイプライン実行ポリシーで定義されたジョブのみが追加されます。
 
-{{< alert type="note" >}}
-
-パイプライン実行ポリシーで、ポリシージョブが実行されないようにするワークフロールールを使用する場合、プロジェクトのCI/CDジョブのみが実行されます。プロジェクトで、プロジェクトのCI/CDジョブが実行されないようにするワークフロールールを使用する場合、パイプライン実行ポリシーのジョブのみが実行されます。
-
-{{< /alert >}}
+> [!note]
+> パイプライン実行ポリシーがポリシージョブの実行を妨げるワークフロールールを使用する場合、実行されるジョブはプロジェクトのCI/CDジョブのみです。プロジェクトで、プロジェクトのCI/CDジョブが実行されないようにするワークフロールールを使用する場合、パイプライン実行ポリシーのジョブのみが実行されます。
 
 #### ステージの挿入 {#stages-injection}
 
@@ -400,7 +429,7 @@ variables_override:
 
 ポリシーパイプライン設定でステージが明示的に定義されていない場合、パイプラインはデフォルトのステージ`stages: [build, test, deploy]`を使用します。これらのステージが含まれているにもかかわらず、異なる順序でリストされている場合、パイプラインは`Cyclic dependencies detected when enforcing policies`エラーで失敗します。
 
-以下の例は、この動作を示しています。すべての例は、以下のプロジェクトのCI/CD設定を前提としています:
+以下の例は、この動作を示しています。すべての例は、以下のプロジェクトのCI/CD設定を前提としています。
 
 ```yaml
 # .gitlab-ci.yml
@@ -430,7 +459,7 @@ policy-job:
   script: ...
 ```
 
-この例では、`policy-stage`ステージは次の場所に挿入する必要があります:
+この例では、`policy-stage`ステージは次の場所に挿入する必要があります。
 
 - 存在する場合、`test`ステージの後
 - 存在する場合、`deploy`ステージの前
@@ -453,7 +482,7 @@ policy-job:
   script: ...
 ```
 
-この例では、`policy-stage`ステージは次の場所に挿入する必要があります:
+この例では、`policy-stage`ステージは次の場所に挿入する必要があります。
 
 - 存在する場合、`deploy`ステージの前
 
@@ -475,7 +504,7 @@ policy-job:
   script: ...
 ```
 
-この例では、`policy-stage`ステージは次の場所に挿入する必要があります:
+この例では、`policy-stage`ステージは次の場所に挿入する必要があります。
 
 - 存在する場合、`test`ステージの後
 
@@ -511,7 +540,7 @@ policy-job:
   script: ...
 ```
 
-この例では、`policy-stage`ステージは次の場所に挿入する必要があります:
+この例では、`policy-stage`ステージは次の場所に挿入する必要があります。
 
 - 存在する場合、`check`、`lint`、`test`ステージの後
 - 存在する場合、`deploy`、`verify`、`publish`ステージの前
@@ -524,7 +553,7 @@ policy-job:
 
 #### デフォルトのステージ順序 {#default-stage-order}
 
-ポリシーでステージが定義されていない場合、GitLabは、次のデフォルトのステージ順序を適用します:
+ポリシーでステージが定義されていない場合、GitLabは、次のデフォルトのステージ順序を適用します。
 
 1. `.pre`
 1. `build`
@@ -536,7 +565,7 @@ policy-job:
 
 #### 循環依存関係を回避する {#avoiding-cyclic-dependencies}
 
-循環依存関係のエラーは、ポリシーのステージ順序がプロジェクトのステージ順序と競合する場合に発生します。これらのエラーを回避するには、次のようにします:
+循環依存関係のエラーは、ポリシーのステージ順序がプロジェクトのステージ順序と競合する場合に発生します。これらのエラーを回避するには、次のようにします。
 
 - ステージ順序を明確にして、プロジェクトと互換性があるようにするために、ポリシーでステージを常に明示的に定義します。ポリシーでデフォルトステージの`build`、`test`、または`deploy`を使用する場合は、順序がすべてのプロジェクトで適用されることに注意してください。
 - 予約済みステージ（`.pipeline-policy-pre`および`.pipeline-policy-post`）のみを使用する場合は、これらの予約済みステージは常にパイプラインの最初と最後に配置されるため、ポリシーでデフォルトステージを定義する必要はありません。
@@ -545,11 +574,8 @@ policy-job:
 
 ### `inject_ci`（非推奨） {#inject_ci-deprecated}
 
-{{< alert type="warning" >}}
-
-この機能は、GitLab 17.9で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/475152)になりました。代わりに[`inject_policy`](#inject_policy-type)を使用してください。この機能はカスタムポリシーのステージの適用をサポートしています。
-
-{{< /alert >}}
+> [!warning]
+> この機能はGitLab 17.9で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/475152)になりました。代わりに[`inject_policy`](#inject_policy-type)を使用してください。この機能はカスタムポリシーのステージの適用をサポートしています。
 
 この戦略では、プロジェクトの元のCI/CD設定を完全に置き換えることなく、カスタムCI/CD設定を既存のプロジェクトパイプラインに追加します。これは、新しいセキュリティスキャン、コンプライアンスチェック、カスタムスクリプトの追加など、追加の手順で現在のパイプラインを強化または拡張する場合に適しています。
 
@@ -559,19 +585,17 @@ policy-job:
 
 `.gitlab-ci.yml`ファイルがないプロジェクトの場合、この戦略は`.gitlab-ci.yml`ファイルを暗黙的に作成します。つまり、パイプライン実行ポリシーで定義されたジョブのみを含むパイプラインが実行されます。
 
-{{< alert type="note" >}}
-
-パイプライン実行ポリシーで、ポリシージョブが実行されないようにするワークフロールールを使用する場合、プロジェクトのCI/CDジョブのみが実行されます。プロジェクトで、プロジェクトのCI/CDジョブが実行されないようにするワークフロールールを使用する場合、パイプライン実行ポリシーのジョブのみが実行されます。
-
-{{< /alert >}}
+> [!note]
+> パイプライン実行ポリシーがポリシージョブの実行を妨げるワークフロールールを使用する場合、実行されるジョブはプロジェクトのCI/CDジョブのみです。プロジェクトで、プロジェクトのCI/CDジョブが実行されないようにするワークフロールールを使用する場合、パイプライン実行ポリシーのジョブのみが実行されます。
 
 ### `override_project_ci` {#override_project_ci}
 
 {{< history >}}
 
-- GitLab 17.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175088)されたワークフロールールの処理は、`policies_always_override_project_ci`[フラグ](../../../administration/feature_flags/_index.md)とともに更新されました。デフォルトでは有効になっています。
-- GitLab 17.9で、[`override_project_ci`の更新された処理](https://gitlab.com/gitlab-org/gitlab/-/issues/504434)により、スキャン実行ポリシーがパイプライン実行ポリシーと一緒に実行できるようになりました。
-- ワークフロールールの更新された処理は、GitLab 17.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/512877)になりました。機能フラグ`policies_always_override_project_ci`は削除されました。
+- ワークフロールールの処理を更新しました:
+  - GitLab 17.8で`policies_always_override_project_ci`[フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175088)されました。デフォルトでは有効になっています。
+  - GitLab 17.10で、[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/512877)になりました。機能フラグ`policies_always_override_project_ci`は削除されました。
+- `override_project_ci`の処理が[変更され](https://gitlab.com/gitlab-org/gitlab/-/issues/504434)、GitLab 17.9でスキャン実行ポリシーをパイプライン実行ポリシーと同時に実行できるようになりました。
 
 {{< /history >}}
 
@@ -581,7 +605,7 @@ policy-job:
 
 スキャン実行ポリシーとパイプライン実行ポリシーの両方で`override_project_ci`を使用すると、CI/CD設定がマージされ、両方のポリシーが結果のパイプラインに適用されます。
 
-または、プロジェクトのCI/CD設定をオーバーライドする代わりに、プロジェクトの`.gitlab-ci.yml`とマージできます。設定をマージするには、`include:project`を使用します。この戦略を使用すると、ユーザーはプロジェクトのCI/CD設定をパイプライン実行ポリシー設定に含めることができるため、ユーザーはポリシーのジョブをカスタマイズできます。たとえば、ポリシーとプロジェクトのCI/CD設定を1つのYAMLファイルに結合して、`before_script`設定をオーバーライドしたり、スキャンするコンテナに必要なパスを定義するために`CS_IMAGE`などの必要な変数を定義したりできます。[こちら](https://youtu.be/W8tubneJ1X8)に、この動作の短いデモがあります。次の図は、プロジェクトレベルおよびポリシーレベルで定義された変数が、結果のパイプラインでどのように選択されるかを示しています:
+または、プロジェクトのCI/CD設定をオーバーライドする代わりに、プロジェクトの`.gitlab-ci.yml`とマージできます。設定をマージするには、`include:project`を使用します。この戦略を使用すると、ユーザーはプロジェクトのCI/CD設定をパイプライン実行ポリシー設定に含めることができるため、ユーザーはポリシーのジョブをカスタマイズできます。たとえば、ポリシーとプロジェクトのCI/CD設定を1つのYAMLファイルに結合して、`before_script`設定をオーバーライドしたり、スキャンするコンテナに必要なパスを定義するために`CS_IMAGE`などの必要な変数を定義したりできます。[こちら](https://youtu.be/W8tubneJ1X8)に、この動作の短いデモがあります。次の図は、プロジェクトレベルおよびポリシーレベルで定義された変数が、結果のパイプラインでどのように選択されるかを示しています。
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -675,15 +699,20 @@ PolicyVariablesYAML -- "Inject <code>policy-job</code> if Test Stage exists" -->
 ProjectVariablesYAML -- "Basis of the resulting pipeline" --> ResultingProjectVariablesYAML
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> パイプライン実行ポリシーのワークフロールールは、プロジェクトの元のCI/CD設定をオーバーライドします。ポリシーでワークフロールールを定義することにより、ブランチパイプラインの使用を禁止するなど、リンクされているすべてのプロジェクトに適用されるルールを設定できます。
 
-パイプライン実行ポリシーのワークフロールールは、プロジェクトの元のCI/CD設定をオーバーライドします。ポリシーでワークフロールールを定義することにより、ブランチパイプラインの使用を禁止するなど、リンクされているすべてのプロジェクトに適用されるルールを設定できます。
+#### パイプライン名 {#pipeline-name}
 
-{{< /alert >}}
+パイプライン実行ポリシーが`override_project_ci`戦略を使用する場合、プロジェクトの元のCI/CD設定で定義されている[パイプライン名](../../../ci/yaml/_index.md#workflowname)をオーバーライドします。
+
+パイプライン実行ポリシー設定でパイプライン名を定義できます。
+
+`override_project_ci`戦略を持つ複数のパイプライン実行ポリシーがある場合、グループ階層で最も低いものが適用されます。たとえば、プロジェクトのポリシーは、そのプロジェクトが属するグループのポリシーをオーバーライドします。サブグループのポリシーは、そのサブグループが属するグループのポリシーよりも優先されます。
 
 ### パイプライン実行ポリシーの設定にプロジェクトのCI/CD設定を含める {#include-a-projects-cicd-configuration-in-the-pipeline-execution-policy-configuration}
 
-`override_project_ci`戦略を使用する場合、プロジェクトの設定をパイプライン実行ポリシーの設定に含めることができます:
+`override_project_ci`戦略を使用する場合、プロジェクトの設定をパイプライン実行ポリシーの設定に含めることができます。
 
 ```yaml
 include:
@@ -701,19 +730,30 @@ compliance_job:
  ...
 ```
 
+> [!note]
+> プロジェクトの`.gitlab-ci.yml`設定が`include:project`を使用して`override_project_ci`ポリシーに含まれる場合、プロジェクト設定はポリシーパイプラインの一部になります。このシナリオでは、予約済みステージの使用がポリシーパイプライン内で許可されているため、含まれるプロジェクト設定は予約済みステージ（`.pipeline-policy-pre`と`.pipeline-policy-post`）にジョブを割り当てることができます。この例外を除き、[予約済みステージにジョブを割り当てることはできません](#job-stage-best-practice)。
+
 ## CI/CD変数 {#cicd-variables}
 
-{{< alert type="warning" >}}
+> [!warning]
+> 機密情報や認証情報は、Gitリポジトリ内のプレーンテキストのポリシー設定の一部として保存されるため、変数に保存しないでください。
 
-変数はプレーンテキストのポリシー設定の一部としてGitリポジトリに保存されるため、機密情報や認証情報を変数に保存しないでください。
+デフォルトでは、パイプライン実行ポリシーは分離して実行されるため、ポリシーの外部で定義された変数は適用されません。
 
-{{< /alert >}}
+[`variables_override`設定](#variables_override-type)を有効にすると、パイプライン実行ポリシーは次のユーザー定義変数にアクセスできます:
 
-パイプライン実行ポリシーの変数は、外部からオーバーライドできません。パイプライン実行ポリシーのジョブは分離された状態で実行されるため、別のポリシーまたはプロジェクトの`.gitlab-ci.yml`ファイルで定義された変数をパイプライン実行ポリシーで使用することはできません。
+- グループのCI/CD設定からの変数。
+- プロジェクトのCI/CD設定からの変数。
+- 新しいパイプラインの実行時にユーザーによって指定された変数。
 
-[`variables_override`タイプ](#variables_override-type)では、ユーザー定義変数をオーバーライドするようにポリシー変数を設定することのみが可能です。これには、ユーザーがCI/CD設定で指定する変数、または新しいパイプラインを実行するときに指定する変数が含まれます。
+ただし、`variables_override`設定が有効になっている場合でも、パイプライン実行ポリシーは次の種類の変数にアクセスできません:
 
-変数は、グループまたはプロジェクトの設定を使用してパイプライン実行ポリシーと共有できます。これは、標準の[CI/CD変数の優先順位](../../../ci/variables/_index.md#cicd-variable-precedence)ルールに従います。ただし、優先順位ルールは、パイプライン実行ポリシー戦略に応じて異なる可能性があるため、パイプライン実行ポリシーを使用する場合はより複雑になります:
+- 他のポリシーで定義された変数。
+- プロジェクトの`.gitlab-ci.yml`ファイルで定義された変数。
+
+有効にすると、`variables_override`設定により、ポリシーは標準の[CI/CD変数の変数の優先順位](../../../ci/variables/_index.md#cicd-variable-precedence)ルールに従って変数にアクセスし、適用できます。
+
+ただし、優先順位ルールは、パイプライン実行ポリシー戦略に応じて異なる可能性があるため、パイプライン実行ポリシーを使用する場合はより複雑になります。
 
 - `inject_policy`戦略: 変数がパイプライン実行ポリシーで定義されている場合、ジョブは常にこの値を使用します。変数がパイプライン実行ポリシーで定義されていない場合、ジョブはグループまたはプロジェクトの設定からの値を適用します。
 - `inject_ci`戦略: 変数がパイプライン実行ポリシーで定義されている場合、ジョブは常にこの値を使用します。変数がパイプライン実行ポリシーで定義されていない場合、ジョブはグループまたはプロジェクトの設定からの値を適用します。
@@ -725,7 +765,7 @@ compliance_job:
 
 ### パイプライン実行ポリシーでの変数の優先順位 {#precedence-of-variables-in-pipeline-execution-policies}
 
-特に`override_project_ci`戦略と一緒にパイプライン実行ポリシーを使用する場合、複数の場所で定義された変数の値の優先順位は、標準のCI/CDパイプラインとは異なる場合があります。理解しておくべき重要な点を次に示します:
+特に`override_project_ci`戦略と一緒にパイプライン実行ポリシーを使用する場合、複数の場所で定義された変数の値の優先順位は、標準のCI/CDパイプラインとは異なる場合があります。理解しておくべき重要な点を次に示します。
 
 - `override_project_ci`を使用する場合、結果のパイプライン内のすべてのジョブは、含まれているプロジェクトのCI/CD設定からのジョブを含め、ポリシーのジョブと見なされます。
 - ポリシーパイプラインで定義された変数（インスタンス全体またはジョブを対象）は、プロジェクトまたはグループの設定で定義された変数よりも優先されます。
@@ -735,12 +775,12 @@ compliance_job:
 
 プロジェクトのCI/CD設定の変数と、含まれている`.gitlab-ci.yml`ファイルに定義されているジョブの変数が同じ名前を持つ場合、`override_project_ci`を使用するとジョブの変数が優先されます。
 
-プロジェクトのCI/CD設定に、`MY_VAR`変数が定義されています:
+プロジェクトのCI/CD設定に、`MY_VAR`変数が定義されています。
 
 - キー: `MY_VAR`
 - 値: `Project configuration variable value`
 
-含まれているプロジェクトの`.gitlab-ci.yml`に、同じ変数が定義されています:
+含まれているプロジェクトの`.gitlab-ci.yml`に、同じ変数が定義されています。
 
 ```yaml
 project-job:
@@ -752,7 +792,7 @@ project-job:
 
 この場合、ジョブの変数の値`Project job variable value`が優先されます。
 
-### 手動実行パイプラインで変数を事前入力します {#prefill-variables-in-manually-run-pipelines}
+### 手動実行パイプラインで変数を事前入力する {#prefill-variables-in-manually-run-pipelines}
 
 {{< history >}}
 
@@ -760,36 +800,33 @@ project-job:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
+> [!warning]
+> この機能は、GitLab 18.5より前に作成されたパイプライン実行ポリシーでは動作しません。古いパイプライン実行ポリシーでこの機能を使用するには、次のいずれかの方法があります:
+>
+> - パイプライン実行ポリシーの既存のYAML設定ファイルを変更します。
+> - ポリシーをコピー、削除、再作成します。
+>
+> 詳細については、[パイプライン実行ポリシーを再作成する](#recreate-pipeline-execution-policies)を参照してください。
 
-この機能は、GitLab 18.5より前に作成されたパイプライン実行ポリシーでは動作しません。この機能を以前のパイプライン実行ポリシーで使用するには、次のいずれかを実行します:
+`description`、`value`、および`options`キーワードを使用して、ユーザーがパイプラインを手動で実行する際に[事前入力される](../../../ci/pipelines/_index.md#prefill-variables-in-manual-pipelines)CI/CD変数を定義できます。変数の用途や許容される値など、関連情報を提供するために説明を使用します。
 
-- パイプライン実行ポリシーの既存のYAML設定ファイルに何らかの変更を加えます。
-- ポリシーをコピー、削除、再作成します。
+ジョブ固有の変数を事前入力することはできません。
 
-詳細については、[パイプライン実行ポリシーの再作成](#recreate-pipeline-execution-policies)を参照してください。
+手動でトリガーされるパイプラインでは、**新しいパイプライン**ページに、適用可能なすべてのポリシーのCI/CD設定で定義されている`description`を持つすべてのパイプライン変数が表示されます。
 
-{{< /alert >}}
-
-`description`、`value`、`options`のキーワードを使用して、CI/CD変数を定義できます。これらの変数は、[ユーザーがパイプラインを手動で実行するときに事前に入力されます](../../../ci/pipelines/_index.md#prefill-variables-in-manual-pipelines)。descriptionは、変数の用途や許容値などの関連情報を提供するために使用します。
-
-ジョブ固有の変数を事前に入力することはできません。
-
-手動でトリガーされたパイプラインでは、**新しいパイプライン**ページに、適用可能なすべてのポリシーから、CI/CD設定で`description`が定義されているすべてのパイプライン変数が表示されます。
-
-[`variables_override`](pipeline_execution_policies.md#variables_override-type)を使用して事前に入力された変数を許可されるように設定する必要があります。そうしない場合、パイプラインを手動でトリガーするときに使用される値は無視されます。
+事前入力された変数は[`variables_override`](pipeline_execution_policies.md#variables_override-type)を使用して許可済みとして設定する必要があります。そうしないと、パイプラインを手動でトリガーしたときに使用される値は無視されます。
 
 #### パイプライン実行ポリシーを再作成する {#recreate-pipeline-execution-policies}
 
-パイプライン実行ポリシーを再作成するには、次の手順に従います:
+パイプライン実行ポリシーを再作成するには:
 
 <!-- markdownlint-disable MD044 -->
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオン](../../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーに表示されます。
+1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
 1. **セキュリティ** > **ポリシー**を選択します。
-1. 再作成するパイプライン実行ポリシーを選択します。
-1. 右側のサイドバーで、**YAML**タブを選択し、ポリシーファイル全体の内容をコピーします。
-1. ポリシーテーブルの横にある縦方向の省略記号({{< icon name="ellipsis_v" >}})を選択し、**削除**を選択します。
+1. 再作成したいパイプライン実行ポリシーを選択します。
+1. 右サイドバーで**YAML**タブを選択し、ポリシーファイルの内容全体をコピーします。
+1. ポリシーテーブルの横にある縦方向の省略記号（{{< icon name="ellipsis_v" >}}）を選択し、**削除**を選択します。
 1. 生成されたマージリクエストをマージします。
 1. **セキュリティ** > **ポリシー**に戻り、**新規ポリシー**を選択します。
 1. **パイプライン実行ポリシー**セクションで、**ポリシーの選択**を選択します。
@@ -798,28 +835,28 @@ project-job:
 
 <!-- markdownlint-enable MD044 -->
 
-## セキュリティ上重要なポリシーの実行の保証 {#ensuring-that-security-critical-policies-execute}
+## セキュリティ上重要なポリシーが実行されることを保証する {#ensuring-that-security-critical-policies-execute}
 
-セキュリティとコンプライアンスの目的でパイプライン実行ポリシーを実装する場合は、ポリシーが回避または侵害されないように、次のベストプラクティスを検討してください。
+セキュリティおよびコンプライアンス目的でパイプライン実行ポリシーを実装する場合、ポリシーがバイパスするされたり侵害されたりしないように、次のベストプラクティスを考慮してください。
 
-### セキュリティジョブに`changes:`ルールを使用しない {#avoid-changes-rules-for-security-critical-jobs}
+### セキュリティ上重要なジョブに`changes:`ルールの使用を避ける {#avoid-changes-rules-for-security-critical-jobs}
 
-セキュリティ上重要なパイプラインポリシーでは、`changes:`ルールを使用しないでください。ブランチパイプラインで予期しない結果が生じる可能性があります。`changes:`キーワードはSHAベースの差分に依存しており、`git commit --amend`の後に強制プッシュを使用する場合など、特定のシナリオでは回避される可能性があります。
+セキュリティ上重要なパイプラインポリシーでは、`changes:`ルールはブランチパイプラインで予期せぬ結果を生む可能性があるため、使用を避けてください。`changes:`キーワードはSHAベースの差分に依存しており、`git commit --amend`に強制プッシュを続行する場合など、特定のシナリオでバイパスすることができます。
 
-`git commit --amend`の後に強制プッシュを使用すると、GitLabは変更されたファイルを異なる方法で計算します:
+`git commit --amend`に強制プッシュを続行する場合、GitLabは変更されたファイルを異なる方法で計算します:
 
 1. 最初のプッシュ（標準コミット）:
-   1. GitLabは、新しいコミットをその親と照合します。
-   1. GitLabは、対象ファイルが変更されたことを検出します。
-   1. `changes: [filename]`ルールが正しくトリガーされます。
+   1. GitLabは新しいコミットをその親と比較します。
+   1. GitLabはターゲットファイルが変更されたことを検出します。
+   1. The `changes: [filename]`ルールが正しくトリガーされます。
 
-1. 2回目のプッシュ（`--force`を使用した修正されたコミット）:
-   1. 修正されたコミットは、以前のコミットを新しいSHAで完全に置き換えます。
+1. 2回目のプッシュ（`--force`を伴う修正コミット）:
+   1. 修正されたコミットは、以前のコミット全体を新しいSHAで置き換えます。
    1. GitLabは`git diff HEAD~`を使用して変更を計算します。これは、ブランチ上の以前のコミットと比較します。
-   1. そのブランチ上の以前のコミットにも同じファイルの変更があったため、差分には**no new changes**（新しい変更は表示されません）。
-   1. `changes:`ルールはトリガーされません。
+   1. そのブランチ上の以前のコミットも同じファイル変更を含んでいたため、差分には**no new changes**は表示されません。
+   1. The `changes:`ルールはトリガーされません。
 
-代わりに、回避できない条件を使用してください:
+代わりに、バイパスするできない条件を使用してください:
 
 ```yaml
 check-critical-files:
@@ -836,7 +873,7 @@ check-critical-files:
       when: always
 ```
 
-または、`changes:`条件なしで、すべてのパイプラインでポリシーチェックを実行します:
+または、`changes:`条件なしですべてのパイプラインでポリシーチェックを実行します:
 
 ```yaml
 security-check:
@@ -848,17 +885,62 @@ security-check:
     - when: always
 ```
 
-`changes:`の動作の詳細については、[`changes`を使用すると、ジョブまたはパイプラインが予期せず実行される](../../../ci/jobs/job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes)を参照してください。
+`changes:`の動作の詳細については、[ジョブまたはパイプラインが`changes`を使用したときに予期せず実行される](../../../ci/jobs/job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes)を参照してください。
 
 ### 重要なセキュリティチェックには`.pipeline-policy-pre`ステージを使用する {#use-the-pipeline-policy-pre-stage-for-critical-security-checks}
 
-`.pipeline-policy-pre`ステージのジョブは、セキュリティとコンプライアンスのユースケース向けに設計されています。他のすべてのパイプラインジョブは、このステージが完了するまで開始されません。
+`.pipeline-policy-pre`ステージのジョブは、セキュリティおよびコンプライアンスのユースケースのために設計されています。他のすべてのパイプラインジョブは、このステージが完了するまで待機してから開始されます。`.pipeline-policy-pre`ステージが失敗した場合、後続のすべてのジョブはスキップされます。
 
-セキュリティを向上させるために、試験的な`ensure_pipeline_policy_pre_succeeds`機能を有効にして、`.pipeline-policy-pre`ステージが失敗した場合、後続のすべてのジョブがスキップされるようにすることを検討してください。
+#### 重複するセキュリティ設定を検出する {#detect-duplicate-security-configurations}
 
-### 変数のオーバーライドの制御 {#control-variable-overrides}
+`.pipeline-policy-pre`を使用して、既存のセキュリティ設定をチェックし、ガイダンスを提供するカスタム検証ジョブを作成できます。たとえば、パイプライン実行ポリシーを使用して組織全体でセキュリティスキャンを強制している場合でも、一部のプロジェクトには独自のセキュリティスキャン実装がすでに存在する場合、`.pipeline-policy-pre`を使用して重複するスキャンを特定できます。
 
-[`variables_override`](#variables_override-type)設定を使用して、セキュリティスキャンを無効にしたり、重要なセキュリティ設定を変更したりして、ユーザーが重要なセキュリティ変数をオーバーライドできないようにします。
+ポリシーのCI/CD設定の例:
+
+```yaml
+# policy-ci.yml
+check-duplicate-scans:
+  stage: .pipeline-policy-pre
+  script:
+    - |
+      echo "Checking for duplicate security scan configurations..."
+      if [ -f ".gitlab-ci.yml" ]; then
+        if grep -q "secret_detection:" .gitlab-ci.yml || \
+           grep -q "sast:" .gitlab-ci.yml || \
+           grep -q "dependency_scanning:" .gitlab-ci.yml || \
+           grep -q "container_scanning:" .gitlab-ci.yml; then
+          echo "WARNING: Duplicate security scans detected."
+          echo ""
+          echo "This project has security scans defined in .gitlab-ci.yml"
+          echo "that might duplicate the scans enforced by pipeline execution policies."
+          echo ""
+          echo "To avoid redundant scans and reduce pipeline time:"
+          echo "1. Review your .gitlab-ci.yml for security scanning jobs."
+          echo "2. Remove duplicate jobs (secret_detection, sast, dependency_scanning, and so on)."
+          echo "3. The pipeline execution policy ensures these scans still run."
+          echo ""
+          echo "For questions, contact your security team."
+        else
+          echo "No duplicate security scans detected."
+        fi
+      fi
+  allow_failure: true
+  rules:
+    - when: always
+```
+
+この設定では:
+
+- パイプラインをブロックせずに、潜在的な重複設定を検出します。
+- 開発チームに実用的なガイダンスを提供します。
+- クリーンアップが必要なプロジェクトの表示レベルを維持します。
+- 意図しない結果を招く可能性があるジョブの自動削除の複雑さを回避します。
+
+この例を拡張して、他の設定の問題をチェックしたり、セキュリティチームがプロジェクト全体のコンプライアンスを追跡するためのレポートを生成したりすることができます。
+
+### 変数のオーバーライドを制御する {#control-variable-overrides}
+
+[`variables_override`](#variables_override-type)設定を使用して、セキュリティスキャンを無効にしたり、重要なセキュリティ設定を変更したりすることで、ユーザーが重要なセキュリティ変数をオーバーライドするのを防ぎます。
 
 ```yaml
 variables_override:
@@ -867,9 +949,9 @@ variables_override:
     - CS_IMAGE  # Allow customization of container image only
 ```
 
-### セキュリティで保護されたジョブの命名 {#secure-job-naming}
+### ジョブの命名を保護する {#secure-job-naming}
 
-プレフィックスが付いた一意のわかりやすいジョブ名を使用して、競合を回避し、ジョブがセキュリティで強制されていることをユーザーに明確にします:
+ジョブ名に一意で分かりやすいプレフィックスを使用して、競合を防ぎ、ジョブがセキュリティ強制であることをユーザーに明確に示します:
 
 ```yaml
 # Good: Clear security policy job name
@@ -883,6 +965,12 @@ sast:
   script: ...
 ```
 
+## `[no_pipeline]`を使用する場合の動作 {#behavior-with-no_pipeline}
+
+デフォルトでは、通常のパイプラインが作成されないようにするために、ユーザーはプッシュオプションに`[no_pipeline]`を含めて保護ブランチにコミットをプッシュできます。ただし、ポリシーは`[no_pipeline]`ディレクティブを無視するため、パイプライン実行ポリシーで定義されたジョブは常にトリガーされます。これにより、デベロッパーはポリシーで定義されたジョブの実行をスキップできなくなり、重要なセキュリティとコンプライアンスのチェックが常に実行されるようになります。
+
+`[no_pipeline]`動作のより柔軟な制御については、[`no_pipeline`タイプ](#no_pipeline-type)セクションを参照してください。
+
 ## `[skip ci]`を使用する場合の動作 {#behavior-with-skip-ci}
 
 デフォルトでは、標準のパイプラインがトリガーされないようにするために、ユーザーはコミットメッセージに`[skip ci]`を追加して、保護ブランチにコミットをプッシュできます。ただし、ポリシーは`[skip ci]`ディレクティブを無視するため、パイプライン実行ポリシーで定義されたジョブは常にトリガーされます。これにより、デベロッパーはポリシーで定義されたジョブの実行をスキップできなくなり、重要なセキュリティとコンプライアンスのチェックが常に実行されるようになります。
@@ -895,7 +983,7 @@ sast:
 
 ### パイプライン実行ポリシー {#pipeline-execution-policy}
 
-[セキュリティポリシープロジェクト](enforcement/security_policy_projects.md)に保存されている`.gitlab/security-policies/policy.yml`ファイルで、次の例を使用できます:
+[セキュリティポリシープロジェクト](enforcement/security_policy_projects.md)に保存されている`.gitlab/security-policies/policy.yml`ファイルで、次の例を使用できます。
 
 ```yaml
 ---
@@ -917,28 +1005,28 @@ pipeline_execution_policy:
 
 ### プロジェクト変数に基づいて適用されるジョブをカスタマイズする {#customize-enforced-jobs-based-on-project-variables}
 
-パイプライン実行ポリシーは、プロジェクト固有の変数に基づいて動作を適合させます。個々のプロジェクトが強制されるジョブの特定の側面をカスタマイズできるようにしながら、適切なデフォルトを提供する柔軟なポリシーを作成できます。
+パイプライン実行ポリシーは、プロジェクト固有の変数に基づいて動作を適応させます。個々のプロジェクトが強制されるジョブの特定の側面をカスタマイズできるようにしながら、適切なデフォルトを提供する柔軟なポリシーを作成できます。
 
 #### 変数の評価 {#variable-evaluation}
 
-パイプライン実行ポリシーのルール（`if: $PROJECT_CS_IMAGE`など）は、プロジェクトのコンテキストではなく、ポリシーの実行中に評価されます。これは、次の意味をもちます:
+パイプライン実行ポリシーのルール（`if: $PROJECT_CS_IMAGE`など）は、プロジェクトのコンテキストに基づいてではなく、ポリシーの実行中に評価されます。これは、次の意味をもちます。
 
-- プロジェクト変数は、標準名（`$PROJECT_CS_IMAGE`など）を使用してポリシーで使用できます。
-- プロジェクト変数は、ポリシー定義の変数よりも優先される場合があります。
-- 使用する変数の評価は、GitLabがポリシーパイプラインを構築するときに行われます。
+- プロジェクト変数は、標準名（たとえば、`$PROJECT_CS_IMAGE`）を使用してポリシーで利用できます。
+- プロジェクト変数は、ポリシーで定義された変数よりも優先されることがあります。
+- どの変数を使用するかについての評価は、GitLabがポリシーパイプラインを構築する際に発生します。
 
-#### 変数の命名規則 {#variable-naming-patterns}
+#### 変数の命名パターン {#variable-naming-patterns}
 
 カスタマイズ可能なポリシーを作成する場合は、次の命名規則に従ってください:
 
-- ポリシー変数: デフォルト値には標準名（`CS_IMAGE`など）を使用します。
-- プロジェクトオーバーライド変数: 目的を明確に示すために、わかりやすいプレフィックス（`PROJECT_CS_IMAGE`など）を使用します。
+- ポリシー変数: デフォルト値には標準名（たとえば、`CS_IMAGE`）を使用します。
+- プロジェクトオーバーライド変数: その目的を明確に示すために、説明的なプレフィックス（たとえば、`PROJECT_CS_IMAGE`）を使用します。
 
-このパターンにより、名前の競合を防ぎ、意図を明確にすることができます。
+このパターンは、命名の競合を防ぎ、意図を明確にします。
 
-#### 例: カスタマイズ可能なイメージを使用したコンテナスキャン {#example-container-scanning-with-customizable-image}
+#### 例: カスタマイズ可能なコンテナイメージによるコンテナスキャン {#example-container-scanning-with-customizable-image}
 
-この例では、デフォルトのコンテナイメージを使用するが、プロジェクトが独自のイメージを指定できるようにするポリシーを作成する方法を示します:
+この例は、デフォルトのコンテナイメージを使用しながら、プロジェクトが独自のコンテナイメージを指定できるようにするポリシーの作成方法を示しています:
 
 ```yaml
 variables:
@@ -957,33 +1045,33 @@ policy::container-security:
     - echo "CS_IMAGE:$CS_IMAGE"
 ```
 
-仕組み:
+動作の仕組み:
 
-1. デフォルトの動作: プロジェクトで`PROJECT_CS_IMAGE`が定義されていない場合、`CS_IMAGE`は`alpine:latest`のままになります。
-1. カスタム動作: プロジェクトが`PROJECT_CS_IMAGE`を定義している場合、その値は`CS_IMAGE`をオーバーライドします。
-1. ルールの評価: `if: $PROJECT_CS_IMAGE`条件はポリシーコンテキストで評価され、プロジェクト変数にアクセスできます。
-1. 変数の優先順位: ポリシーの変数の割り当ては、デフォルト値よりも優先されます。
+1. デフォルトの動作: プロジェクトに`PROJECT_CS_IMAGE`が定義されていない場合、`CS_IMAGE`は`alpine:latest`のままになります。
+1. カスタム動作: プロジェクトが`PROJECT_CS_IMAGE`を定義した場合、その値は`CS_IMAGE`をオーバーライドします。
+1. ルールの評価: `if: $PROJECT_CS_IMAGE`条件はポリシーのコンテキストで評価され、プロジェクト変数にアクセスできます。
+1. 変数の優先順位: ポリシーの変数割り当ては、デフォルト値よりも優先されます。
 
-コンテナイメージをカスタマイズするには、プロジェクトは`PROJECT_CS_IMAGE`を[プロジェクト変数](../../../ci/variables/_index.md#for-a-project)として定義する必要があります。`.gitlab-ci.yml`ファイルで指定しないでください。
+コンテナイメージをカスタマイズするには、プロジェクトは`PROJECT_CS_IMAGE`を[プロジェクト変数](../../../ci/variables/_index.md#for-a-project)として定義する必要があり、`.gitlab-ci.yml`ファイルに指定してはいけません。
 
 #### 変数に関する考慮事項の概要 {#summary-of-variable-considerations}
 
-変数ソース:
+変数のソース:
 
-- プロジェクト変数は、プロジェクトのCI/CD設定で定義する必要があり、`.gitlab-ci.yml`で定義する必要はありません。
-- ポリシーは、グループ変数とインスタンス変数にも、標準名を使用してアクセスできます。
-- ポリシー変数は、プロジェクト変数よりも優先されます（両方が同じ名前で定義されている場合）。
+- プロジェクト変数は、プロジェクトのCI/CD設定で定義する必要があり、`.gitlab-ci.yml`では定義できません。
+- ポリシーは、標準名を使用してグループ変数およびインスタンス変数にもアクセスできます。
+- ポリシー変数は、両方が同じ名前で定義されている場合、プロジェクト変数よりも優先されます。
 
 ルールの評価: 
 
-- パイプライン実行ポリシーのすべての`rules:`条件は、ポリシーの実行時に評価されます。これは、ポリシーがプロジェクト固有の変数にアクセスして対応できることを意味します。
-- 評価は、ジョブが実行される前、パイプラインの構築中に行われます。
+- パイプライン実行ポリシー内のすべての`rules:`条件は、ポリシーが実行されるときに評価されます。これは、ポリシーがプロジェクト固有の変数にアクセスし、それに対応できることを意味します。
+- 評価は、ジョブが実行される前に、パイプライン構築中に行われます。
 
 ベストプラクティス:
 
-- プロジェクトオーバーライドには、わかりやすい変数名にプレフィックス（`PROJECT_*`など）を使用します。
-- 常に、ポリシーで適切なデフォルトを提供します。
-- ユーザーが使用できるカスタマイズ変数をドキュメント化します。
+- プロジェクトのオーバーライドには、説明的な変数名とプレフィックス（たとえば、`PROJECT_*`）を使用します。
+- ポリシーには常に適切なデフォルトを提供します。
+- ユーザー向けに利用可能なカスタマイズ変数をドキュメント化します。
 
 ### `.gitlab-ci.yml`とアーティファクトを使用して適用されるジョブをカスタマイズする {#customize-enforced-jobs-using-gitlab-ciyml-and-artifacts}
 
@@ -1014,7 +1102,7 @@ test-job:
 
 ### プロジェクトの設定に`before_script`があるセキュリティスキャナーの動作をカスタマイズする {#customize-security-scanners-behavior-with-before_script-in-project-configurations}
 
-プロジェクトの`.gitlab-ci.yml`にあるポリシーによって適用されるセキュリティジョブの動作をカスタマイズするには、`before_script`をオーバーライドします。これを行うには、ポリシーで`override_project_ci`戦略を使用し、プロジェクトのCI/CD設定を含めます。パイプライン実行ポリシー設定の例を次に示します:
+プロジェクトの`.gitlab-ci.yml`にあるポリシーによって適用されるセキュリティジョブの動作をカスタマイズするには、`before_script`をオーバーライドします。これを行うには、ポリシーで`override_project_ci`戦略を使用し、プロジェクトのCI/CD設定を含めます。パイプライン実行ポリシー設定の例を次に示します。
 
 ```yaml
 # policy.yml
@@ -1040,7 +1128,7 @@ include:
   - template: Jobs/Secret-Detection.gitlab-ci.yml
 ```
 
-プロジェクトの`.gitlab-ci.yml`で、スキャナーの`before_script`を定義できます:
+プロジェクトの`.gitlab-ci.yml`で、スキャナーの`before_script`を定義できます。
 
 ```yaml
 include:
@@ -1057,7 +1145,7 @@ secret_detection:
 
 パイプライン実行ポリシーの変数をオーバーライドするグローバル変数をチームが設定できるようにすると同時に、ジョブ固有のオーバーライドを許可することができます。これにより、チームは、セキュリティスキャンに適切なデフォルトを設定して、他のジョブに適切なリソースを使用できるようになります。
 
-以下を`resource-optimized-scans.yml`に含めます:
+以下を`resource-optimized-scans.yml`に含めます。
 
 ```yaml
 variables:
@@ -1074,7 +1162,7 @@ sast:
     KUBERNETES_MEMORY_LIMIT: $SAST_KUBERNETES_MEMORY_REQUEST
 ```
 
-以下を`policy.yml`に含めます:
+以下を`policy.yml`に含めます。
 
 ```yaml
 pipeline_execution_policy:
@@ -1115,19 +1203,19 @@ pipeline execution policy job:
     - echo "$PROJECT_VAR"
 ```
 
-### パイプライン実行ポリシーにプロジェクト設定から変数を含める {#include-variables-from-the-project-configuration-in-a-pipeline-execution-policy}
+### プロジェクト設定からの変数をパイプライン実行ポリシーに含める {#include-variables-from-the-project-configuration-in-a-pipeline-execution-policy}
 
-パイプライン実行ポリシーは独自の分離されたコンテキストで実行されます。つまり、プロジェクトの`.gitlab-ci.yml`ファイルで定義された変数は、ポリシージョブで自動的に使用できるわけではありません。ただし、プロジェクトから別の変数ファイルを参照することにより、プロジェクト定義の変数を含めることができます。
+パイプライン実行ポリシーは独自の分離されたコンテキストで実行されます。これは、プロジェクトの`.gitlab-ci.yml`ファイルで定義された変数がポリシージョブに自動的に利用可能にならないことを意味します。ただし、プロジェクトから別の変数ファイルを参照することで、プロジェクトで定義された変数を含めることができます。
 
-この方法を使用するのは、次の場合です:
+このアプローチを使用するのは次の場合です:
 
 - Dockerコンテナにカスタム命名規則を使用する必要がある場合。
-- ポリシーが尊重する必要のあるプロジェクト固有の設定を維持する場合。
-- 同じプロジェクトからビルドされた名前の異なるコンテナが複数ある場合。
+- ポリシーが尊重すべきプロジェクト固有の設定を維持したい場合。
+- 異なる名前を持つが同じプロジェクトから構築された複数のコンテナがある場合。
 
-#### 例: プロジェクト変数ファイルの含める {#example-include-project-variables-file}
+#### 例: プロジェクト変数ファイルを含める {#example-include-project-variables-file}
 
-プロジェクトリポジトリに変数ファイルを作成します（例: `gitlab-variables.yml`）:
+プロジェクトリポジトリに変数ファイル（たとえば、`gitlab-variables.yml`）を作成します:
 
 ```yaml
 # gitlab-variables.yml
@@ -1137,7 +1225,7 @@ variables:
   CUSTOM_VARIABLE: "custom-value"
 ```
 
-パイプライン実行ポリシーの設定で、この変数ファイルを含めます:
+パイプライン実行ポリシー設定で、この変数ファイルを含めます:
 
 ```yaml
 # Pipeline execution policy configuration
@@ -1156,20 +1244,20 @@ container_scanning:
 
 この設定では:
 
-1. スキャンされるプロジェクトから`gitlab-variables.yml`ファイルを含めます。
-1. そのファイルで定義されている変数を、ポリシージョブで使用できるようにします。
-1. 一貫性のあるポリシー構造を維持しながら、各プロジェクトが独自の変数値を定義できるようにします。
+1. スキャンされているプロジェクトから`gitlab-variables.yml`ファイルを含めます。
+1. そのファイルで定義された変数をポリシージョブで利用できるようにします。
+1. 各プロジェクトが独自の変数値を定義しながら、一貫したポリシー構造を維持できるようにします。
 
 #### 重要な考慮事項 {#important-considerations}
 
-- 変数の優先順位: プロジェクトファイルから含まれる変数は、パイプライン実行ポリシーの標準の[変数の優先順位ルール](#precedence-of-variables-in-pipeline-execution-policies)に従います。
-- ファイルの場所: 変数ファイルは、プロジェクトリポジトリ内の任意の場所に配置できます。簡単に見つけて維持できるように、わかりやすい名前と場所を使用します。
-- 完全なCI/CD設定を含めることを避けます: この方法を使用する場合は、`.gitlab-ci.yml`全体ではなく、変数ファイルのみを含めます。完全なCI/CD設定を含めると、ジョブの重複が発生する可能性があります。
-- セキュリティ: 機密情報を変数ファイルに保存しないでください。機密データには、プロジェクトまたはグループの設定で定義された[CI/CD変数](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui)を使用してください。
+- 変数の優先順位: プロジェクトファイルから含まれる変数は、パイプライン実行ポリシーの標準的な[変数の優先順位ルール](#precedence-of-variables-in-pipeline-execution-policies)に従います。
+- ファイルの場所: 変数ファイルは、プロジェクトリポジトリ内の任意の場所に配置できます。見つけて維持しやすいように、説明的な名前と場所を使用してください。
+- 完全なCI/CD設定を含めることを避ける: このアプローチを使用する場合、`.gitlab-ci.yml`全体ではなく、変数ファイルのみを含めます。完全なCI/CD設定を含めると、ジョブの重複が発生する可能性があります。
+- セキュリティ: 変数ファイルに機密情報を保存しないでください。機密データには、プロジェクトまたはグループ設定で定義された[CI/CD変数](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui)を使用します。
 
-#### 代替: プロジェクトCI/CD設定の使用 {#alternative-use-project-cicd-settings}
+#### 代替案: プロジェクトCI/CD設定を使用する {#alternative-use-project-cicd-settings}
 
-動的に設定された変数が必要ない場合は、個別のファイルを使用する代わりに、プロジェクトのCI/CD設定（**設定** > **CI/CD** > **変数**）で定数を設定できます。これらの変数は、追加の設定なしで、パイプライン実行ポリシージョブで自動的に使用できます。
+動的に設定された変数が必要ない場合は、別のファイルを使用する代わりに、プロジェクトのCI/CD設定（**設定** > **CI/CD** > **変数**）で定数を設定できます。これらの変数は、追加の設定なしでパイプライン実行ポリシージョブで自動的に利用できます。
 
 ### パイプライン実行ポリシーを使用して変数の値を適用する {#enforce-a-variables-value-by-using-a-pipeline-execution-policy}
 
@@ -1187,7 +1275,7 @@ pipeline execution policy job:
 
 ### セキュリティポリシーのスコープが指定された`policy.yml`の例 {#example-policyyml-with-security-policy-scopes}
 
-この例では、セキュリティポリシーの`policy_scope`で以下を指定します:
+この例では、セキュリティポリシーの`policy_scope`で以下を指定します。
 
 - ID `9`が適用されたコンプライアンスフレームワークを持つすべてのプロジェクトを含めます。
 - ID `456`のプロジェクトを除外します。
@@ -1231,6 +1319,27 @@ pipeline_execution_policy:
           - id: 75
 ```
 
+### パイプライン実行ポリシーで`ci_no_pipeline`を設定する {#configure-ci_no_pipeline-in-a-pipeline-execution-policy}
+
+次の例では、パイプライン実行ポリシーが適用され、[CIの作成なし](#no_pipeline-type)は`75`のIDを持つユーザーを除いて許可されません。
+
+```yaml
+pipeline_execution_policy:
+  - name: My pipeline execution policy with ci.no_pipeline exceptions
+    description: 'Enforces CI/CD jobs'
+    enabled: true
+    pipeline_config_strategy: inject_policy
+    content:
+      include:
+        - project: group-a/project1
+          file: README.md
+    no_pipeline:
+      allowed: false
+      allowlist:
+        users:
+          - id: 75
+```
+
 ### `exists`条件を設定する {#configure-the-exists-condition}
 
 `exists`ルールを使用して、特定のファイルが存在する場合に、プロジェクトからCI/CD設定ファイルを組み込むようにパイプライン実行ポリシーを設定します。
@@ -1250,6 +1359,64 @@ include:
 ```
 
 このアプローチを使用するには、グループまたはプロジェクトで`override_project_ci`戦略を使用する必要があります。
+
+### パイプラインステージとジョブを`CI_JOB_TOKEN`で検証する {#validate-pipeline-stages-and-jobs-with-ci_job_token}
+
+`CI_JOB_TOKEN`を`.pipeline-policy-pre`ジョブで呼び出すことで、GitLab APIを呼び出すことで、パイプラインステージとジョブが承認されたステージまたはジョブのリストに含まれているかを検証することができます。このパターンは、プロジェクトが未承認のCI/CDステージとジョブを使用するのを防ぎたい場合に役立ちます。
+
+次のスクリプト例は、パイプラインのジョブをAPIからフェッチし、一意のステージとジョブ名を抽出し、それぞれを`APPROVED_STAGES`および`APPROVED_JOBS`変数と照合します。未承認のステージまたはジョブが見つかった場合、他のジョブが実行される前にパイプラインは失敗します。
+
+`APPROVED_STAGES`と`APPROVED_JOBS`をプロジェクト、グループ、またはポリシー設定で[CI/CD変数](../../../ci/variables/_index.md)として定義します。
+
+```yaml
+validate-pipeline:
+  stage: .pipeline-policy-pre
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache curl jq bash
+  script:
+    - |
+      #!/bin/bash
+
+      echo "Checking pipeline stages and jobs..."
+
+      # Fetch pipeline jobs using CI_JOB_TOKEN
+      api_url="$CI_API_V4_URL/projects/$CI_PROJECT_ID/pipelines/$CI_PIPELINE_ID/jobs"
+      echo "API URL: $api_url"
+
+      jobs=$(curl --silent --header "JOB-TOKEN: $CI_JOB_TOKEN" "$api_url")
+      echo "Fetched Jobs: $jobs"
+
+      if [[ "$jobs" == *"404 Project Not Found"* ]]; then
+        echo "Failed to authenticate with GitLab API: Project not found"
+        exit 1
+      fi
+
+      # Extract stages and jobs
+      pipeline_stages=$(echo "$jobs" | jq -r '.[].stage' | sort | uniq | tr '\n' ',')
+      pipeline_jobs=$(echo "$jobs" | jq -r '.[].name' | sort | uniq | tr '\n' ',')
+
+      echo "Pipeline Stages: $pipeline_stages"
+      echo "Pipeline Jobs: $pipeline_jobs"
+
+      # Check if pipeline stages are approved
+      for stage in $(echo $pipeline_stages | tr ',' ' '); do
+        echo "Checking stage: $stage"
+        if ! [[ ",$APPROVED_STAGES," =~ ",$stage," ]]; then
+          echo "Stage $stage is not approved."
+          exit 1
+        fi
+      done
+
+      # Check if pipeline jobs are approved
+      for job in $(echo $pipeline_jobs | tr ',' ' '); do
+        echo "Checking job: $job"
+        if ! [[ ",$APPROVED_JOBS," =~ ",$job," ]]; then
+          echo "Job $job is not approved."
+          exit 1
+        fi
+      done
+```
 
 ### パイプライン実行ポリシーを使用してコンテナスキャン`component`を適用する {#enforce-a-container-scanning-component-using-a-pipeline-execution-policy}
 

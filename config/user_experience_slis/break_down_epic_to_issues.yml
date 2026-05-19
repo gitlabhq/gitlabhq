@@ -1,0 +1,4 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/raw/master/config/user_experience_slis/schema.json
+description: "Break down work from epic to issues"
+feature_category: "portfolio_management"
+urgency: "async_fast"

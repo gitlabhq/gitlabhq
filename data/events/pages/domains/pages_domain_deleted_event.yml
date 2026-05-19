@@ -1,0 +1,4 @@
+---
+event: Pages::Domains::PagesDomainDeletedEvent
+description: Published when a custom domain is removed from a GitLab Pages site.
+feature_category: pages

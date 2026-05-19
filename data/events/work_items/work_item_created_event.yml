@@ -1,0 +1,4 @@
+---
+event: WorkItems::WorkItemCreatedEvent
+description: Published after a new work item (issue, task, etc.) is created.
+feature_category: team_planning

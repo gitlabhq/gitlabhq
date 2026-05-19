@@ -1,101 +1,13 @@
 ---
-stage: Create
-group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Migrate through a Git URL
-description: "Import repositories to GitLab by using a Git URL."
+redirect_to: '../../import/third_party_systems/repo_by_url.md'
+remove_date: '2026-07-17'
 ---
 
-{{< details >}}
+<!-- markdownlint-disable -->
 
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+This document was moved to [another location](../../import/third_party_systems/repo_by_url.md).
 
-{{< /details >}}
-
-You can import your existing repositories by providing the Git URL. You can't import GitLab issues and merge requests
-this way. Other methods provide more complete import methods.
-
-If the repository is too large, the import might time out.
-
-You can import your Git repository by:
-
-- [Using the UI](#import-a-project-by-using-the-ui)
-- [Using the API](#import-a-project-by-using-the-api)
-
-## Prerequisites
-
-{{< history >}}
-
-- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
-
-{{< /history >}}
-
-- [Repository by URL import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
-  must be enabled. If not enabled, ask your GitLab administrator to enable it. The Repository by URL import source is enabled
-  by default on GitLab.com.
-- The Maintainer or Owner role on the destination group to import to.
-- If importing a private repository, an access token for authenticated access to the source repository might be required
-  instead of a password.
-
-## Import a project by using the UI
-
-1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
-1. Select **Import project**.
-1. Select **Repository by URL**.
-1. Enter a **Git repository URL**.
-1. Complete the remaining fields. A username and password (or access token) is required for imports from private
-   repositories.
-1. Select **Create project**.
-
-Your newly created project is displayed.
-
-### Import a timed-out project
-
-Imports of large repositories might time out after three hours.
-To import a timed-out project:
-
-1. Clone the repository.
-
-   ```shell
-   git clone --mirror https://example.com/group/project.git
-   ```
-
-   The `--mirror` option ensures all branches, tags, and refs are copied.
-
-1. Add the new remote repository.
-
-   ```shell
-   cd repository.git
-   git remote add new-origin https://gitlab.com/group/project.git
-   ```
-
-1. Push everything to the new remote repository.
-
-   ```shell
-   git push --mirror new-origin
-   ```
-
-## Import a project by using the API
-
-You can use the [Projects API](../../../api/projects.md#create-a-project) to import a Git repository:
-
-```shell
-curl --location "https://gitlab.example.com/api/v4/projects/" \
---header 'Content-Type: application/json' \
---header 'Authorization: Bearer <your-token>' \
---data-raw '{
-    "description": "New project description",
-    "path": "new_project_path",
-    "import_url": "https://username:password@example.com/group/project.git"
-}'
-```
-
-Some providers do not allow a password and instead require an access token.
-
-## Related topics
-
-- [Import and export settings](../../../administration/settings/import_and_export_settings.md).
-- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
-- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md).
-- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).
+<!-- This redirect file can be deleted after <2026-07-17>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->

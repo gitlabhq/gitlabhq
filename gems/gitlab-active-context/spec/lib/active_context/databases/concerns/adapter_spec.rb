@@ -182,8 +182,22 @@ RSpec.describe ActiveContext::Databases::Concerns::Adapter, feature_category: :g
 
     it 'delegates search to client' do
       query = double('Query')
-      expect(client).to receive(:search).with(query)
-      adapter.search(query)
+      collection = double('Collection')
+      user = double('User')
+
+      expect(client).to receive(:search).with(user: user, collection: collection, query: query)
+      adapter.search(user: user, collection: collection, query: query)
+    end
+
+    it 'passes source_fields to client' do
+      query = double('Query')
+      collection = double('Collection')
+      user = double('User')
+
+      expect(client).to receive(:search).with(
+        user: user, collection: collection, query: query, source_fields: ['content']
+      )
+      adapter.search(user: user, collection: collection, query: query, source_fields: ['content'])
     end
 
     it 'delegates all_refs to indexer' do

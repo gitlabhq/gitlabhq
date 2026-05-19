@@ -1,0 +1,12 @@
+---
+name: create_export
+description: Grants the ability to create exports
+boundaries:
+  - project
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - create_project_export
+  - create_project_relation_export
+  - start_group_export

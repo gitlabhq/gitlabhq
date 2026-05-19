@@ -15,6 +15,23 @@ RSpec.describe 'getting project members information', feature_category: :groups_
     [user_1, user_2].each { |user| parent_group.add_guest(user) }
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_member] do
+    let_it_be(:project) { create(:project) }
+    let(:boundary_object) { project }
+    let(:query) do
+      graphql_query_for('project',
+        { full_path: project.full_path },
+        [query_graphql_field('projectMembers', { relations: [:DIRECT] }, 'edges { node { id } }')]
+      )
+    end
+
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+
+    before_all do
+      project.add_guest(user)
+    end
+  end
+
   context 'when the request is correct' do
     it_behaves_like 'a working graphql query' do
       before do

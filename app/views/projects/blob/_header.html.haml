@@ -12,4 +12,3 @@
       = view_on_environment_button(@commit.sha, @path, @environment) if @environment
 
 = render_fork_suggestion
-= render_if_exists 'projects/blob/header_file_locks', project: @project, path: @path

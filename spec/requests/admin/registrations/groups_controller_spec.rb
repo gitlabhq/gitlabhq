@@ -22,6 +22,19 @@ RSpec.describe Admin::Registrations::GroupsController, feature_category: :onboar
       end
     end
 
+    context 'when on a Dedicated instance' do
+      before do
+        stub_application_setting(gitlab_dedicated_instance: true)
+        sign_in(admin)
+      end
+
+      it 'returns not found', :enable_admin_mode do
+        get_new
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'when the feature flag is enabled' do
       context 'with an unauthenticated user' do
         it 'redirects to sign in' do
@@ -65,6 +78,12 @@ RSpec.describe Admin::Registrations::GroupsController, feature_category: :onboar
 
           expect(response).to have_gitlab_http_status(:ok)
         end
+
+        it 'tracks the view event' do
+          expect { get_new }
+            .to trigger_internal_events('view_create_first_project_page')
+            .with(user: admin, additional_properties: {})
+        end
       end
     end
   end
@@ -98,10 +117,94 @@ RSpec.describe Admin::Registrations::GroupsController, feature_category: :onboar
           expect { post_create }.to change { Group.count }.by(1).and change { Project.count }.by(1)
         end
 
-        it 'redirects to the created project' do
+        it 'tracks the submit event with success label' do
+          expect { post_create }
+            .to trigger_internal_events('submit_create_first_project_form')
+            .with(user: admin, additional_properties: { label: 'success' })
+        end
+
+        context 'when project_template_name is provided' do
+          subject(:post_create_with_template) do
+            post admin_registrations_groups_path,
+              params: { group: group_params, project: project_params.merge(project_template_name: 'rails') }
+          end
+
+          it 'passes template_name to the service' do
+            service = instance_double(Onboarding::SelfManaged::StandardNamespaceCreateService)
+            allow(service).to receive(:execute)
+              .and_return(ServiceResponse.success(payload: { project: build_stubbed(:project) }))
+            expect(Onboarding::SelfManaged::StandardNamespaceCreateService).to receive(:new).with(
+              admin,
+              hash_including(project_params: hash_including(template_name: 'rails'))
+            ).and_return(service)
+
+            post_create_with_template
+          end
+        end
+
+        context 'when project_template_name is blank' do
+          subject(:post_create_no_template) do
+            post admin_registrations_groups_path,
+              params: { group: group_params, project: project_params.merge(project_template_name: '') }
+          end
+
+          it 'passes template_name as nil to the service' do
+            service = instance_double(Onboarding::SelfManaged::StandardNamespaceCreateService)
+            allow(service).to receive(:execute)
+              .and_return(ServiceResponse.success(payload: { project: build_stubbed(:project) }))
+            expect(Onboarding::SelfManaged::StandardNamespaceCreateService).to receive(:new).with(
+              admin,
+              hash_including(project_params: hash_including(template_name: nil))
+            ).and_return(service)
+
+            post_create_no_template
+          end
+        end
+
+        context 'when template availability changes between requests (license change simulation)' do
+          let(:fake_template) { instance_double(Gitlab::ProjectTemplate, name: 'new_enterprise_template') }
+
+          it 'reflects the updated template list on each request without an app restart' do
+            # First request: template not yet available (license not yet applied)
+            allow(Gitlab::ProjectTemplate).to receive(:all).and_return([])
+            service1 = instance_double(Onboarding::SelfManaged::StandardNamespaceCreateService)
+            allow(service1).to receive(:execute)
+              .and_return(ServiceResponse.success(payload: { project: build_stubbed(:project) }))
+            expect(Onboarding::SelfManaged::StandardNamespaceCreateService).to receive(:new).with(
+              admin,
+              hash_including(project_params: hash_including(template_name: nil))
+            ).and_return(service1)
+
+            post admin_registrations_groups_path,
+              params: { group: group_params,
+                        project: project_params.merge(project_template_name: 'new_enterprise_template') }
+
+            # Second request: license updated, template now valid
+            allow(Gitlab::ProjectTemplate).to receive(:all).and_return([fake_template])
+            service2 = instance_double(Onboarding::SelfManaged::StandardNamespaceCreateService)
+            allow(service2).to receive(:execute)
+              .and_return(ServiceResponse.success(payload: { project: build_stubbed(:project) }))
+            expect(Onboarding::SelfManaged::StandardNamespaceCreateService).to receive(:new).with(
+              admin,
+              hash_including(project_params: hash_including(template_name: 'new_enterprise_template'))
+            ).and_return(service2)
+
+            post admin_registrations_groups_path,
+              params: { group: group_params,
+                        project: project_params.merge(project_template_name: 'new_enterprise_template') }
+          end
+        end
+
+        it 'redirects to the profile step' do
           post_create
 
-          expect(response).to redirect_to(project_path(Project.last))
+          expect(response).to redirect_to(new_admin_registrations_profile_path)
+        end
+
+        it 'stores the created project id in the session' do
+          post_create
+
+          expect(session[:sm_welcome_project_id]).to eq(Project.last.id)
         end
 
         it 'creates the group as PRIVATE regardless of params' do
@@ -148,6 +251,16 @@ RSpec.describe Admin::Registrations::GroupsController, feature_category: :onboar
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
           expect(response.body).to include('Create your first project')
         end
+
+        it 'does not track the view event on re-render' do
+          expect { post_create }.not_to trigger_internal_events('view_create_first_project_page')
+        end
+
+        it 'tracks the submit event with failure label' do
+          expect { post_create }
+            .to trigger_internal_events('submit_create_first_project_form')
+            .with(user: admin, additional_properties: { label: 'failure' })
+        end
       end
 
       context 'when the project cannot be created' do
@@ -163,6 +276,16 @@ RSpec.describe Admin::Registrations::GroupsController, feature_category: :onboar
           post_create
 
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+
+        it 'does not track the view event on re-render' do
+          expect { post_create }.not_to trigger_internal_events('view_create_first_project_page')
+        end
+
+        it 'tracks the submit event with failure label' do
+          expect { post_create }
+            .to trigger_internal_events('submit_create_first_project_form')
+            .with(user: admin, additional_properties: { label: 'failure' })
         end
       end
 

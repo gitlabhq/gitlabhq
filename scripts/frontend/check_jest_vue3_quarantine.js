@@ -11,7 +11,6 @@ const { getLocalQuarantinedFiles } = require('./jest_vue3_quarantine_utils');
 const ROOT = join(__dirname, '..', '..');
 const IS_CI = Boolean(process.env.CI);
 const FIXTURES_HELP_URL =
-  // eslint-disable-next-line no-restricted-syntax
   'https://docs.gitlab.com/ee/development/testing_guide/frontend_testing.html#download-fixtures';
 
 const DIR = join(ROOT, 'tmp/tests/frontend');
@@ -112,7 +111,6 @@ async function parseResults() {
 
 function reportSpecsShouldBeUnquarantined(files) {
   const docsLink =
-    // eslint-disable-next-line no-restricted-syntax
     'https://docs.gitlab.com/ee/development/testing_guide/testing_vue3.html#quarantine-list';
   console.warn(' ');
   console.warn(

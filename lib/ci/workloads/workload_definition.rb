@@ -13,17 +13,37 @@ module Ci
         :artifacts_paths,
         :timeout,
         :cache,
-        :tags
+        :tags,
+        :services,
+        :suspend_on_success,
+        :suspend_on_failure,
+        :environment_key
 
       def initialize
         self.timeout = DEFAULT_TIMEOUT
         @variables = {}
         @commands = []
+        @services = []
         yield self if block_given?
       end
 
       def add_variable(name, value)
         self.variables = variables.merge(name => value)
+      end
+
+      # Adds a service to the workload definition.
+      #
+      # @param service [String, Hash] The service to add. Can be:
+      #   - A string with the service image name (e.g., 'docker:dind', 'postgres:13')
+      #   - A hash with service configuration (e.g., { name: 'postgres:13', alias: 'db' })
+      #
+      # @example Add Docker in Docker service
+      #   workload.add_service('docker:dind')
+      #
+      # @example Add service with alias
+      #   workload.add_service({ name: 'postgres:13', alias: 'db' })
+      def add_service(service)
+        services.push(service)
       end
 
       def to_job_hash
@@ -40,6 +60,7 @@ module Ci
 
         result[:artifacts] = { paths: artifacts_paths } if artifacts_paths.present?
         result[:cache] = cache if cache.present?
+        result[:services] = services if services.present?
 
         result[:tags] = tags if tags.present?
 

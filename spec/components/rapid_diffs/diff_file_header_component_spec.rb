@@ -6,7 +6,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
   let_it_be(:diff_file) { build(:diff_file) }
   let(:header) { page.find('[data-testid="rd-diff-file-header"]') }
 
-  it "renders file path" do
+  it "renders file path with tooltip" do
     project = diff_file.repository.project
     namespace = project.namespace
     href = "/#{namespace.to_param}/#{project.to_param}/-/blob/#{diff_file.content_sha}/#{diff_file.new_path}"
@@ -14,13 +14,19 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     link = header.find('h2 a')
     expect(link.text).to eq(diff_file.file_path)
     expect(link[:href]).to eq(href)
+    expect(link[:title]).to eq(s_('RapidDiffs|Open file in new tab'))
+    expect(link[:class]).to include('has-tooltip')
   end
 
-  it "renders file toggle" do
+  it "renders file toggle with tooltips" do
     render_component
-    expect(header).to have_css('button[data-click="toggleFile"][aria-expanded="true"][aria-label="Hide file contents"]')
-    expect(header)
-      .to have_css('button[data-click="toggleFile"][aria-expanded="false"][aria-label="Show file contents"]')
+    toggle = 'button[data-click="toggleFile"]'
+    expect(header).to have_css(
+      "#{toggle}[aria-expanded=\"true\"][aria-label=\"Hide file contents\"][title=\"Hide file contents\"]"
+    )
+    expect(header).to have_css(
+      "#{toggle}[aria-expanded=\"false\"][aria-label=\"Show file contents\"][title=\"Show file contents\"]"
+    )
   end
 
   it "renders copy path button" do

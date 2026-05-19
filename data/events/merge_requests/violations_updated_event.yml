@@ -1,0 +1,6 @@
+---
+event: MergeRequests::ViolationsUpdatedEvent
+description: Published when scan result / approval policy violations on a merge request
+  have been recalculated and persisted, so subscribers can refresh policy state.
+feature_category: security_policy_management
+ee_only: true

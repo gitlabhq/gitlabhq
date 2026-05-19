@@ -1,11 +1,11 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { mapActions } from 'pinia';
 import { GlButton } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import syntaxHighlight from '~/syntax_highlight';
 import { SYNTAX_HIGHLIGHT_CLASS } from '../constants';
 import utilsMixin from '../mixins/line_conflict_utils';
+import { useMergeConflicts } from '../store';
 
 export default {
   components: {
@@ -26,7 +26,7 @@ export default {
     syntaxHighlight(document.querySelectorAll(`.${SYNTAX_HIGHLIGHT_CLASS}`));
   },
   methods: {
-    ...mapActions(['handleSelected']),
+    ...mapActions(useMergeConflicts, ['handleSelected']),
   },
 };
 </script>

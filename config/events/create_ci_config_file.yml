@@ -15,3 +15,6 @@ tiers:
   - free
   - premium
   - ultimate
+additional_properties:
+  author_source:
+    description: "Source of the commit author. Value of the Duo-Workflow-Definition git trailer if present, otherwise human."

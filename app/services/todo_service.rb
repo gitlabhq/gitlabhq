@@ -12,6 +12,10 @@ class TodoService
 
   BATCH_SIZE = 100
 
+  RESOLVE_ON_MR_FINALIZED_ACTIONS = [
+    Todo::ASSIGNED, Todo::APPROVAL_REQUIRED, Todo::REVIEW_REQUESTED, Todo::ADDED_APPROVER
+  ].freeze
+
   # When create an issue we should:
   #
   #  * create a todo for assignee if issue is assigned
@@ -89,16 +93,26 @@ class TodoService
   # When close a merge request we should:
   #
   #  * mark all pending todos related to the target for the current user as done
+  #  * mark pending todos for all users with specific actions as done
   #
   def close_merge_request(merge_request, current_user)
+    if Feature.enabled?(:merge_request_resolve_all_user_todos, current_user)
+      resolve_todos_with_attributes_for_target(merge_request, { action: RESOLVE_ON_MR_FINALIZED_ACTIONS })
+    end
+
     resolve_todos_for_target(merge_request, current_user)
   end
 
   # When merge a merge request we should:
   #
   #  * mark all pending todos related to the target for the current user as done
+  #  * mark pending todos for all users with specific actions as done
   #
   def merge_merge_request(merge_request, current_user)
+    if Feature.enabled?(:merge_request_resolve_all_user_todos, current_user)
+      resolve_todos_with_attributes_for_target(merge_request, { action: RESOLVE_ON_MR_FINALIZED_ACTIONS })
+    end
+
     resolve_todos_for_target(merge_request, current_user)
   end
 
@@ -312,12 +326,11 @@ class TodoService
   def resolve_todos_with_attributes_for_target(target, attributes, resolution: :done, resolved_by_action: :system_done)
     target_attributes = { target_id: target.id, target_type: target.class.polymorphic_name }
     attributes.merge!(target_attributes)
-    attributes[:preload_user_association] = true
 
     todos = PendingTodosFinder.new(attributes).execute
-    users = todos.map(&:user)
-    todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action)
-    users.each(&:update_todos_count_cache)
+    user_ids = todos.map(&:user_id).uniq
+    todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action, snoozed_until: nil)
+    Users::UpdateTodoCountCacheService.new(user_ids).execute
     todos_ids
   end
 
@@ -486,7 +499,7 @@ class TodoService
   def attributes_for_todo(project, target, author, action, note = nil)
     attributes_for_target(target).merge!(
       project_id: project&.id,
-      author_id: author.id,
+      author_id: Gitlab::Auth::Identity.resolve_composite_identity_actor(author).id,
       action: action,
       note: note
     )

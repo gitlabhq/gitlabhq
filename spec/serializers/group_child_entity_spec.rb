@@ -63,6 +63,7 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
 
     %i[
       id
+      path
       full_name
       full_path
       avatar_url

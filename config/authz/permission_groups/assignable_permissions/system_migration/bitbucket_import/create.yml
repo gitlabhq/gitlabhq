@@ -1,0 +1,11 @@
+---
+name: create_bitbucket_import
+description: Grants the ability to import a repository from Bitbucket Cloud
+deprecated: true
+boundaries:
+  - group
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - create_bitbucket_import

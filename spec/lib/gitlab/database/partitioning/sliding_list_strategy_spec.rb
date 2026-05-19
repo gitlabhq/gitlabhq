@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
       Class.new(Gitlab::Database::SharedModel) do
         include PartitionedTable
         self.table_name = '_test_partitioned_shared_model'
-        self.ignored_columns = [:partition]
+        ignore_column :partition, remove_never: true
         partitioned_by :partition, strategy: :sliding_list, next_partition_if: proc {
           false
         }, detach_partition_if: proc {
@@ -40,7 +40,9 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
   let(:connection) { ActiveRecord::Base.connection }
   let(:table_name) { '_test_partitioned_test' }
   let(:model) do
-    define_batchable_model(table_name, connection: connection).tap { |m| m.ignored_columns = %w[partition] }
+    define_batchable_model(table_name, connection: connection, base_class: ApplicationRecord).tap do |m|
+      m.ignore_column :partition, remove_never: true
+    end
   end
 
   let(:next_partition_if) { double('next_partition_if') }
@@ -264,7 +266,7 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
         Class.new(ApplicationRecord) do
           include PartitionedTable
 
-          self.ignored_columns = [:partition]
+          ignore_column :partition, remove_never: true
 
           partitioned_by :partition,
             strategy: :sliding_list,
@@ -283,7 +285,7 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
         self.table_name = '_test_partitioned_test'
         self.primary_key = :id
 
-        self.ignored_columns = %w[partition]
+        ignore_column :partition, remove_never: true
 
         # method().call cannot be detected by rspec, so we add a layer of indirection here
         def self.next_partition_if_wrapper(...)

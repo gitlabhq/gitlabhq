@@ -3,5 +3,7 @@ name: drop_sidekiq_job
 description: Grants the ability to drop Sidekiq jobs
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - drop_sidekiq_job

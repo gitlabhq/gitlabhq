@@ -126,7 +126,17 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
         }
       end
 
-      it 'returns 422' do
+      it 'returns 422 and logs the validation errors', :aggregate_failures do
+        expect(Gitlab::IntegrationsLogger).to receive(:info).with(
+          hash_including(
+            integration: 'JiraConnect',
+            message: 'JiraConnect lifecycle event rejected',
+            jira_event_action: :create,
+            jira_client_key: client_key,
+            jira_errors: array_including(/Shared secret/)
+          )
+        )
+
         subject
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
@@ -195,7 +205,17 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
       context 'when the new base_url is invalid' do
         let(:base_url) { 'invalid' }
 
-        it 'renders 422', :aggregate_failures do
+        it 'renders 422 and logs the service error', :aggregate_failures do
+          expect(Gitlab::IntegrationsLogger).to receive(:info).with(
+            hash_including(
+              integration: 'JiraConnect',
+              message: 'JiraConnect lifecycle event rejected',
+              jira_event_action: :update,
+              jira_client_key: client_key,
+              jira_errors: array_including(/Base url/)
+            )
+          )
+
           expect { subject }.not_to change { installation.reload.base_url }
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
         end
@@ -341,6 +361,15 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
         expect_next_instance_of(JiraConnectInstallations::DestroyService, installation, jira_base_path, jira_event_path) do |destroy_service|
           expect(destroy_service).to receive(:execute).and_return(false)
         end
+
+        expect(Gitlab::IntegrationsLogger).to receive(:info).with(
+          hash_including(
+            integration: 'JiraConnect',
+            message: 'JiraConnect lifecycle event rejected',
+            jira_event_action: :uninstall,
+            jira_client_key: client_key
+          )
+        )
 
         post_uninstalled
 

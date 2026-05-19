@@ -61,7 +61,7 @@ RSpec.describe 'Projects > Members > Sorting', :js, feature_category: :groups_an
   end
 
   it 'sorts by last activity ascending' do
-    visit_members_list(sort: :oldest_last_activity)
+    visit_members_list(sort: :last_activity_on_asc)
 
     expect(first_row.text).to have_content(developer.name)
     expect(second_row.text).to have_content(maintainer.name)
@@ -70,7 +70,7 @@ RSpec.describe 'Projects > Members > Sorting', :js, feature_category: :groups_an
   end
 
   it 'sorts by last activity descending' do
-    visit_members_list(sort: :recent_last_activity)
+    visit_members_list(sort: :last_activity_on_desc)
 
     expect(first_row.text).to have_content(maintainer.name)
     expect(second_row.text).to have_content(developer.name)

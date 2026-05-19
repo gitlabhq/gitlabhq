@@ -26,4 +26,11 @@ RSpec.shared_examples 'cells claimable model' do |subject_type:, subject_key:, s
       expect(described_class.cells_claims_attributes).to have_key(attr_name)
     end
   end
+
+  it 'has updated_at column' do
+    # updated_at column is checked in Cells::Claims::VerificationService to filter out
+    # recently updated records from being reconciled
+    expect(described_class.column_names).to include('updated_at'),
+      "#{described_class.table_name} must have an updated_at column for Cells verification"
+  end
 end

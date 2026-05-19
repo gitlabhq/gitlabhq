@@ -768,6 +768,20 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     it 'returns true' do
       expect(service.execute).to eq(true)
     end
+
+    context 'for GroupPathChangedEvent' do
+      it 'publishes a GroupPathChangedEvent' do
+        expect { service.execute }
+          .to publish_event(Namespaces::Groups::GroupPathChangedEvent).with(group_id: internal_group.id)
+      end
+
+      context 'when path is not changed' do
+        it 'does not publishes a GroupPathChangedEvent' do
+          expect { described_class.new(internal_group, user, name: 'foo').execute }
+            .not_to publish_event(Namespaces::Groups::GroupPathChangedEvent)
+        end
+      end
+    end
   end
 
   context 'for a subgroup' do

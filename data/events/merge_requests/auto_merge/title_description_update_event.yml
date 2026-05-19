@@ -1,0 +1,6 @@
+---
+event: MergeRequests::AutoMerge::TitleDescriptionUpdateEvent
+description: Published when an MR title or description changes while auto-merge is
+  enabled and the project has merge_request_title_regex configured. Does not fire
+  for description-only changes unless EE Jira-key detection also triggers.
+feature_category: code_review_workflow

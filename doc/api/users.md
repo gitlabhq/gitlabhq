@@ -53,7 +53,6 @@ Supported attributes:
 | `exclude_humans`       | boolean  | no       | Filters only bot or internal users. Default is `false`. |
 | `exclude_internal`     | boolean  | no       | Filters only non internal users. Default is `false`. |
 | `without_project_bots` | boolean  | no       | Filters user without project bots. Default is `false`. |
-| `saml_provider_id`     | number   | no       | Removed in GitLab 18.2. Use [`GET /groups/:id/saml_users`](groups.md#list-all-saml-users) instead. |
 
 Example response:
 
@@ -909,7 +908,8 @@ GET /user/status
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/status"
 ```
 
@@ -942,7 +942,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --url "https://gitlab.example.com/users/<username>/status"
+curl --request GET \
+  --url "https://gitlab.example.com/users/<username>/status"
 ```
 
 Example response:
@@ -989,10 +990,11 @@ Example request:
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/user/status" \
   --data "clear_status_after=1_day" \
   --data "emoji=coffee" \
-  --data "message=I crave coffee" --data "availability=busy" \
-  --url "https://gitlab.example.com/api/v4/user/status"
+  --data "message=I crave coffee" \
+  --data "availability=busy"
 ```
 
 Example response:
@@ -1103,8 +1105,8 @@ Example request:
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --form "avatar=@/path/to/your/avatar.png" \
-  --url "https://gitlab.example.com/api/v4/user/avatar"
+  --url "https://gitlab.example.com/api/v4/user/avatar" \
+  --form "avatar=@/path/to/your/avatar.png"
 ```
 
 Example response:
@@ -1145,7 +1147,8 @@ GET /user_counts
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user_counts"
 ```
 
@@ -1232,7 +1235,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/activities"
 ```
 
@@ -1302,7 +1306,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/:user_id/memberships"
 ```
 
@@ -1369,7 +1374,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PATCH \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/1/disable_two_factor"
 ```
 
@@ -1429,8 +1435,8 @@ Example request:
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --data "runner_type=instance_type" \
-  --url "https://gitlab.example.com/api/v4/user/runners"
+  --url "https://gitlab.example.com/api/v4/user/runners" \
+  --data "runner_type=instance_type"
 ```
 
 Example response:
@@ -1498,7 +1504,7 @@ POST /user/support_pin
 Example request:
 
 ```shell
-curl --request POST |
+curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/support_pin"
 ```
@@ -1541,7 +1547,8 @@ GET /user/support_pin
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/support_pin"
 ```
 
@@ -1583,7 +1590,8 @@ GET /users/:id/support_pin
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/1234/support_pin"
 ```
 

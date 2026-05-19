@@ -1,0 +1,50 @@
+---
+name: events
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(updated_at, deleted) PARTITION BY toYear(created_at)
+  PRIMARY KEY id ORDER BY id SETTINGS index_granularity = 8192
+partition_key: toYear(created_at)
+primary_key: id
+sorting_key: id
+settings:
+  index_granularity: '8192'
+columns:
+- name: id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'0/'"
+- name: author_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: target_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: target_type
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: action
+  type: UInt8
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: deleted
+  type: UInt8
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  is_in_partition_key: true
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')

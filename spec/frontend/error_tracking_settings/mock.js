@@ -1,7 +1,4 @@
 import { TEST_HOST } from 'helpers/test_constants';
-import createStore from '~/error_tracking_settings/store';
-
-const defaultStore = createStore();
 
 export const projectList = [
   {
@@ -73,8 +70,11 @@ export const transformedSettings = {
 };
 
 export const defaultProps = {
-  ...defaultStore.state,
-  ...defaultStore.getters,
+  dropdownLabel: 'No projects available',
+  invalidProjectLabel: '',
+  projectSelectionLabel: 'To enable project selection, enter a valid Auth Token.',
+  projects: [],
+  selectedProject: null,
 };
 
 export const initialEmptyState = {

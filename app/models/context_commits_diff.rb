@@ -42,6 +42,16 @@ class ContextCommitsDiff
     merge_request.merge_request_context_commit_diff_files.where(encoded_file_path: true).any?
   end
 
+  def first_diffs_slice(limit, diff_options = {})
+    diffs(diff_options.merge(max_files: limit))
+  end
+
+  def diff_stats
+    return unless diff_refs
+
+    merge_request.project.repository.diff_stats(diff_refs.base_sha, diff_refs.head_sha)
+  end
+
   private
 
   def compare

@@ -1,0 +1,13 @@
+---
+name: descendant_project_member
+description: A user who is a member of a project that is a descendant of a group but
+  is not a direct member of the group itself. Grants baseline read access to group
+  resources needed to work within the descendant project.
+inherits_from: []
+project:
+  permissions: []
+  raw_permissions: []
+group:
+  permissions: []
+  raw_permissions:
+  - read_group

@@ -42,6 +42,8 @@ describe('CiResourcesPage', () => {
     searchTerm: null,
     sortValue: DEFAULT_SORT_VALUE,
     minAccessLevel: null,
+    verificationLevel: null,
+    topics: [],
   };
 
   const createComponent = () => {
@@ -268,7 +270,11 @@ describe('CiResourcesPage', () => {
         });
 
         it('renders the empty state and passes down the search query', async () => {
-          await findCatalogSearch().vm.$emit('update-search-term', newSearch);
+          await findCatalogSearch().vm.$emit('update-filters', {
+            searchTerm: newSearch,
+            verificationLevel: null,
+            topics: [],
+          });
           await waitForPromises();
 
           expect(findEmptyState().exists()).toBe(true);
@@ -280,7 +286,11 @@ describe('CiResourcesPage', () => {
         beforeEach(async () => {
           catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
           await createComponent();
-          await findCatalogSearch().vm.$emit('update-search-term', newSearch);
+          await findCatalogSearch().vm.$emit('update-filters', {
+            searchTerm: newSearch,
+            verificationLevel: null,
+            topics: [],
+          });
         });
 
         it('passes it to the graphql query', () => {
@@ -290,6 +300,90 @@ describe('CiResourcesPage', () => {
             searchTerm: newSearch,
           });
         });
+      });
+    });
+
+    describe('when search component emits a verification level filter', () => {
+      const verificationLevel = 'VERIFIED_CREATOR_SELF_MANAGED';
+
+      beforeEach(async () => {
+        catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
+        await createComponent();
+        await findCatalogSearch().vm.$emit('update-filters', {
+          searchTerm: null,
+          verificationLevel: 'Verified creator',
+          topics: [],
+        });
+      });
+
+      it('passes it to the graphql query', () => {
+        expect(catalogResourcesResponse).toHaveBeenCalledTimes(2);
+        expect(catalogResourcesResponse.mock.calls[1][0]).toEqual({
+          ...defaultQueryVariables,
+          verificationLevel,
+        });
+      });
+    });
+
+    describe('when verification level is present in URL', () => {
+      beforeEach(async () => {
+        setWindowLocation('?verification_level=Verified creator');
+        catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
+        await createComponent();
+      });
+
+      it('calls the query with verification level', () => {
+        expect(catalogResourcesResponse).toHaveBeenCalledTimes(1);
+        expect(catalogResourcesResponse.mock.calls[0][0]).toEqual({
+          ...defaultQueryVariables,
+          verificationLevel: 'VERIFIED_CREATOR_SELF_MANAGED',
+        });
+      });
+
+      it('passes the verification level to the search component', () => {
+        expect(findCatalogSearch().props('initialVerificationLevel')).toBe('Verified creator');
+      });
+    });
+
+    describe('when search component emits topics filter', () => {
+      const topics = ['ruby', 'ci-cd'];
+
+      beforeEach(async () => {
+        catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
+        await createComponent();
+        await findCatalogSearch().vm.$emit('update-filters', {
+          searchTerm: null,
+          verificationLevel: null,
+          topics,
+        });
+      });
+
+      it('passes topics to the graphql query', () => {
+        expect(catalogResourcesResponse).toHaveBeenCalledTimes(2);
+        expect(catalogResourcesResponse.mock.calls[1][0]).toEqual({
+          ...defaultQueryVariables,
+          topics,
+        });
+      });
+    });
+
+    describe('when topics are present in URL', () => {
+      beforeEach(async () => {
+        setWindowLocation('?topics=ruby,ci-cd');
+        catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
+        await createComponent();
+      });
+
+      it('calls the query with topics', () => {
+        expect(catalogResourcesResponse).toHaveBeenCalledTimes(1);
+        expect(catalogResourcesResponse.mock.calls[0][0]).toEqual({
+          ...defaultQueryVariables,
+          topics: ['ruby', 'ci-cd'],
+        });
+      });
+
+      it('passes the topics to the search component', () => {
+        expect(findCatalogSearch().props('initialTopics')).toEqual(['ruby', 'ci-cd']);
       });
     });
   });

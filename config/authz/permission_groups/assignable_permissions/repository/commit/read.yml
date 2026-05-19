@@ -1,6 +1,10 @@
 ---
 name: read_commit
 description: Grants the ability to read commits and related information
+boundaries:
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - read_commit
   - read_commit_comment
@@ -12,5 +16,3 @@ permissions:
   - read_commit_status
   - read_commit_discussion
   - read_commit_discussion_note
-boundaries:
-  - project

@@ -1,0 +1,12 @@
+---
+table_name: project_import_export_relation_export_upload_upload_states
+description: Separate table for Project Import Export Relation Export Upload Upload verification states
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234470
+milestone: '19.0'
+feature_categories:
+  - geo_replication
+classes:
+  - Geo::ProjectImportExportRelationExportUploadUploadState
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects

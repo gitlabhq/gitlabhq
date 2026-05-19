@@ -231,6 +231,17 @@ describe('Header CI Component', () => {
     });
   });
 
+  describe('waiting on job id', () => {
+    it('skips the query when job id is missing', async () => {
+      // simulates missing jobId
+      createComponent({ jobId: 0, user: defaultProps.user });
+
+      await waitForPromises();
+
+      expect(successHandler).not.toHaveBeenCalled();
+    });
+  });
+
   describe('error', () => {
     beforeEach(async () => {
       createComponent(defaultProps, [[getJobQuery, failedHandler]]);

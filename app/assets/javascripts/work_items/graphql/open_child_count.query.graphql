@@ -1,11 +1,27 @@
-query openChildItemCount($fullPath: ID!, $iid: String!) {
+query openChildItemCount($fullPath: ID!, $iid: String!, $useWorkItemFeatures: Boolean = false) {
   namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id
-      widgets {
+      widgets @skip(if: $useWorkItemFeatures) {
         ... on WorkItemWidgetHierarchy {
           type
+          rolledUpCountsByType {
+            countsByState {
+              opened
+              all
+              closed
+            }
+            workItemType {
+              id
+              name
+              iconName
+            }
+          }
+        }
+      }
+      features @include(if: $useWorkItemFeatures) {
+        hierarchy {
           rolledUpCountsByType {
             countsByState {
               opened

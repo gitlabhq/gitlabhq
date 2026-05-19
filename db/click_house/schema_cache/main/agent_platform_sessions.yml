@@ -1,0 +1,46 @@
+---
+name: agent_platform_sessions
+engine: AggregatingMergeTree
+engine_full: AggregatingMergeTree PARTITION BY session_year ORDER BY (namespace_path,
+  user_id, session_id, flow_type) SETTINGS index_granularity = 8192
+partition_key: session_year
+primary_key: namespace_path, user_id, session_id, flow_type
+sorting_key: namespace_path, user_id, session_id, flow_type
+settings:
+  index_granularity: '8192'
+columns:
+- name: user_id
+  type: UInt64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: namespace_path
+  type: String
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: project_id
+  type: UInt64
+- name: session_id
+  type: UInt64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: flow_type
+  type: String
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: environment
+  type: String
+- name: session_year
+  type: UInt16
+  is_in_partition_key: true
+- name: created_event_at
+  type: AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8)
+- name: started_event_at
+  type: AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8)
+- name: finished_event_at
+  type: AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8)
+- name: dropped_event_at
+  type: AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8)
+- name: stopped_event_at
+  type: AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8)
+- name: resumed_event_at
+  type: AggregateFunction(anyIf, Nullable(DateTime64(6, 'UTC')), UInt8)

@@ -6,6 +6,12 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:package) { create(:pypi_package) }
 
+  shared_examples 'marks the package for destruction' do
+    it 'marks the package for destruction' do
+      expect { execute }.to change { package.reload.status }.from('default').to('pending_destruction')
+    end
+  end
+
   shared_examples 'an instrumented service' do
     it "triggers an internal event" do
       expect { execute }.to trigger_internal_events('delete_package_from_registry').with(
@@ -124,6 +130,68 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
         end
 
         it_behaves_like 'an instrumented service'
+      end
+    end
+
+    context 'with package deletion protection' do
+      let_it_be(:protection_rule, freeze: false) do
+        create(:package_protection_rule,
+          :pypi,
+          project: package.project,
+          package_name_pattern: package.name,
+          minimum_access_level_for_delete: Gitlab::Access::OWNER)
+      end
+
+      before_all do
+        package.project.add_maintainer(user)
+      end
+
+      context 'when a matching protection rule exists' do
+        it { is_expected.to be_error.and have_attributes(message: 'Package is deletion protected.', http_status: 403) }
+
+        it 'does not mark the package for destruction' do
+          expect { execute }.not_to change { package.status }
+        end
+
+        context 'when user has sufficient permissions' do
+          let(:owner) { create(:user, owner_of: [package.project]) }
+          let(:service) { described_class.new(container: package, current_user: owner) }
+
+          it_behaves_like 'marks the package for destruction'
+        end
+
+        context 'with skip_protection_check: true' do
+          let(:service) { described_class.new(container: package, current_user: user, skip_protection_check: true) }
+
+          it_behaves_like 'marks the package for destruction'
+        end
+
+        context 'when feature flag :packages_protected_packages_delete is disabled' do
+          before do
+            stub_feature_flags(packages_protected_packages_delete: false)
+          end
+
+          it_behaves_like 'marks the package for destruction'
+        end
+
+        context 'when CheckRuleExistenceService returns an error' do
+          before do
+            allow_next_instance_of(::Packages::Protection::CheckRuleExistenceService) do |service|
+              allow(service).to receive(:execute)
+                .and_return(ServiceResponse.error(message: 'Unauthorized', reason: :unauthorized))
+            end
+          end
+
+          it_behaves_like 'marks the package for destruction'
+        end
+      end
+
+      context 'when no rule matches the package name' do
+        before do
+          protection_rule.update!(package_name_pattern: 'non_matching_*')
+        end
+
+        it_behaves_like 'marks the package for destruction'
       end
     end
 

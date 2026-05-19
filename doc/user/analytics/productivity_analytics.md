@@ -43,7 +43,7 @@ Prerequisites:
 - You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Analyze** > **Productivity analytics**.
+1. In the left sidebar, select **Analyze** > **Productivity analytics**.
 1. Optional. Filter results:
 
 - To view analytics for a specific project, from the **Projects** dropdown list, select a project.

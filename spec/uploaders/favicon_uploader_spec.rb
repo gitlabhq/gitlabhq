@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe FaviconUploader do
   let_it_be(:model) { build_stubbed(:user) }
-  let_it_be(:uploader) { described_class.new(model, :favicon) }
+  let_it_be(:uploader, freeze: false) { described_class.new(model, :favicon) }
 
   context 'accept allowlist file content type' do
     include_context 'ignore extension allowlist check'

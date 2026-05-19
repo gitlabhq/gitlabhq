@@ -95,7 +95,7 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
 
       before do
         stub_licensed_features(custom_file_templates_for_namespace: false, custom_file_templates: false)
-        group.update_columns(file_template_project_id: group_template_repo.id)
+        set_file_template_project_id(group, group_template_repo.id)
         visit edit_project_path(project)
       end
 

@@ -1,4 +1,5 @@
 import { queryToObject } from '~/lib/utils/url_utility';
+import { projectCommitPath } from '~/lib/utils/path_helpers/repository';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const getQueryParams = (query) =>
@@ -74,7 +75,7 @@ export const beautifyPath = (path) => (path ? path.split('/').join(' / ') : '');
 
 export const getCommitLink = ({ project_path: projectPath, pipeline = {} }, isGroup = false) => {
   if (isGroup) {
-    return `/${projectPath}/commit/${pipeline.sha}`;
+    return projectCommitPath(projectPath, pipeline.sha);
   }
 
   return `../commit/${pipeline.sha}`;

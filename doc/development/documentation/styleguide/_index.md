@@ -129,7 +129,7 @@ Any links created with HTML `<a>` tags must use absolute URLs as their
 Markdown files, as Hugo can only process and replace Markdown-formatted links.
 
 If you have an idea or request for a new element that would be useful on the Docs site,
-submit a [feature request](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/new?issuable_template=Default).
+submit a [feature request](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/new?description_template=Default).
 
 ### Heading levels in Markdown
 
@@ -1321,7 +1321,7 @@ To open project settings:
 
 ```markdown
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
 
@@ -1329,7 +1329,7 @@ To open group settings:
 
 ```markdown
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
 
@@ -1338,7 +1338,7 @@ To open settings for a top-level group:
 ```markdown
 1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
 
@@ -1346,7 +1346,7 @@ To open either project or group settings:
 
 ```markdown
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
 
@@ -1366,10 +1366,8 @@ To open the **Admin** area:
 
 ```markdown
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 ```
-
-You do not have to repeat `In the left sidebar` in your second step.
 
 To open the **Your work** menu item:
 
@@ -1444,7 +1442,7 @@ Use the phrase **Complete the fields**.
 For example:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Complete the fields.
 
@@ -1535,11 +1533,11 @@ To emphasize an area in a screenshot, use an arrow.
 - Save the image with a lowercase filename that's descriptive of the feature
   or concept in the image:
   - If the image is of the GitLab interface, append the GitLab version to the filename,
-    based on this format: `image_name_vX_Y.png`. For example, for a screenshot taken
-    from the pipelines page of GitLab 11.1, a valid name is `pipelines_v11_1.png`.
+    based on this format: `image-name-vX_Y.png`. For example, for a screenshot taken
+    from the pipelines page of GitLab 11.1, a valid name is `pipelines-v11_1.png`.
   - If you're adding an illustration that doesn't include parts of the user interface,
     add the release number corresponding to the release the image was added to.
-    For an MR added to 11.1's milestone, a valid name for an illustration is `devops_diagram_v11_1.png`.
+    For an MR added to 11.1's milestone, a valid name for an illustration is `devops-diagram-v11_1.png`.
 - Place images in a separate directory named `img/` in the same directory where
   the `.md` document that you're working on is located.
   - Do not link to externally-hosted images. Download a copy and store it in the appropriate `img` directory within the docs directory.
@@ -1913,7 +1911,7 @@ Do not use words to describe the icon:
 
 When the button doesn't have any hover text, describe the icon.
 Follow up by creating a
-[UX bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Bug)
+[UX bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Bug)
 to add hover text to the button to improve accessibility.
 
 - Avoid: `Select {{</* icon name="ellipsis_v" */>}}.`

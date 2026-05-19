@@ -1433,6 +1433,59 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
       end
 
+      describe 'routing via environment_key', feature_category: :runner_core do
+        let_it_be(:resume_project) { create(:project, :repository, shared_runners_enabled: false) }
+        let(:resume_pipeline) { create(:ci_pipeline, project: resume_project) }
+        let(:correct_runner)  { create(:ci_runner, :project, projects: [resume_project]) }
+        let(:wrong_runner)    { create(:ci_runner, :project, projects: [resume_project]) }
+
+        let(:system_xid) { 's_testmachine01' }
+        let(:env_key)    { "#{correct_runner.id}/#{system_xid}/executor-specific-data" }
+
+        let!(:resume_job) do
+          create(:ci_build, :pending, :queued, pipeline: resume_pipeline,
+            options: { suspend_options: { environment_key: env_key } })
+        end
+
+        before do
+          create(:ci_runner_machine, runner: correct_runner, system_xid: system_xid)
+          create(:ci_runner_machine, runner: wrong_runner,   system_xid: 's_othermachine')
+        end
+
+        context 'when the correct runner requests the job' do
+          it 'picks the job' do
+            request_job(correct_runner.token, system_id: system_xid)
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['id']).to eq(resume_job.id)
+          end
+        end
+
+        context 'when a different runner requests the job' do
+          it 'does not pick the job' do
+            request_job(wrong_runner.token, system_id: 's_othermachine')
+
+            expect(response).to have_gitlab_http_status(:no_content)
+          end
+        end
+
+        context 'when the correct runner sends a mismatched system_id' do
+          it 'does not pick the job' do
+            request_job(correct_runner.token, system_id: 's_othermachine')
+
+            expect(response).to have_gitlab_http_status(:no_content)
+          end
+        end
+
+        context 'when a different runner sends the same system_id as correct runner' do
+          it 'does not pick the job' do
+            request_job(wrong_runner.token, system_id: system_xid)
+
+            expect(response).to have_gitlab_http_status(:no_content)
+          end
+        end
+      end
+
       def request_job(token = runner.token, **params)
         post api('/jobs/request'), params: params.merge(token: token)
       end

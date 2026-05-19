@@ -175,7 +175,7 @@ Group permissions for [compliance](compliance/_index.md) features including comp
 | View [compliance center](compliance/compliance_center/_index.md)                       |       |         |          |        ✓         |           |            |   ✓   |
 | Manage [compliance frameworks](compliance/compliance_frameworks/_index.md)             |       |         |          |        ✓         |           |            |   ✓   |
 | Assign [compliance frameworks](compliance/compliance_frameworks/_index.md) to projects |       |         |          |        ✓         |           |            |   ✓   |
-| Manage [audit streams](compliance/audit_event_streaming.md)                            |       |         |          |                  |           |            |   ✓   |
+| Manage [audit streams](compliance/audit_event_streaming.md)                            |       |         |          |        ✓         |           |            |   ✓   |
 
 **Footnotes**:
 
@@ -560,6 +560,7 @@ Project permissions for [compliance](compliance/_index.md) features including co
 | View [allowed and denied licenses in MR](compliance/license_scanning_of_cyclonedx_files/_index.md) <sup>1</sup> |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | View [audit events](compliance/audit_events.md) <sup>2</sup>                                                    |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
 | View licenses in [dependency list](application_security/dependency_list/_index.md)                              |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [compliance center](compliance/compliance_center/_index.md)                                                |       |         |          |        ✓         |           |            |   ✓   |
 | Manage [audit streams](compliance/audit_event_streaming.md)                                                     |       |         |          |                  |           |            |   ✓   |
 
 **Footnotes**:
@@ -726,7 +727,7 @@ Project permissions for [issues](project/issues/_index.md):
 | Create [test cases](../ci/test_cases/_index.md)                                   |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Move [test cases](../ci/test_cases/_index.md)                                     |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Reopen [test cases](../ci/test_cases/_index.md)                                   |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
-| [Import](project/issues/csv_import.md) issues from a CSV file                     |       |    ✓    |          |                  |     ✓     |     ✓      |   ✓   |
+| [Import](project/issues/csv_import.md) issues from a CSV file                     |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | [Export](project/issues/csv_export.md) issues to a CSV file                       |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Delete issues <sup>5</sup>                                                        |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Manage [Feature flags](../operations/feature_flags.md)                            |       |         |          |                  |     ✓     |     ✓      |   ✓   |
@@ -903,7 +904,7 @@ to control access to groups and projects in the group hierarchy. You can set the
 Minimal Access for members automatically added to the top-level group through SSO.
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **SAML SSO**.
+1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. From the **Default membership role** dropdown list, select **Minimal Access**.
 1. Select **Save changes**.
 

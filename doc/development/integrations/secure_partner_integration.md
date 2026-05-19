@@ -71,7 +71,7 @@ This section describes the steps you need to complete to onboard as a partner
 and complete an integration with the Secure stage.
 
 1. Read about our [partnerships](https://about.gitlab.com/partners/technology-partners/integrate/).
-1. [Create an issue](https://gitlab.com/gitlab-com/alliances/alliances/-/issues/new?issuable_template=new_partner)
+1. [Create an issue](https://gitlab.com/gitlab-com/alliances/alliances/-/issues/new?description_template=new_partner)
    using our new partner issue template to begin the discussion.
 1. Get a test account to begin developing your integration. You can
    request a [GitLab.com Subscription Sandbox](https://about.gitlab.com/partners/technology-partners/integrate/#gitlabcom-subscription-sandbox-request)
@@ -87,7 +87,7 @@ and complete an integration with the Secure stage.
    - Your report artifact must be in one of our supported formats.
      For more information, see the [documentation on reports](secure.md#report).
      - Documentation for [SAST output](../../user/application_security/sast/_index.md#download-a-sast-report).
-     - Documentation for [dependency scanning reports](../../user/application_security/dependency_scanning/_index.md#understanding-the-results).
+     - Documentation for [dependency scanning reports](../../user/application_security/dependency_scanning/dependency_scanning_sbom/_index.md#understanding-the-results).
      - Documentation for [container scanning reports](../../user/application_security/container_scanning/_index.md#reports-json-format).
      - See this [example secure job definition that also defines the artifact created](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml).
      - If you need a new kind of scan or report, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new#)

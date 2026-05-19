@@ -412,10 +412,9 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
     let(:project) { create(:project) }
     let(:user) { build_stubbed(:user) }
     let(:ref) { 'main' }
-    let(:organization) { build_stubbed(:organization) }
 
     before do
-      Current.organization = organization
+      stub_current_organization(project.organization)
       allow(helper).to receive_messages(selected_branch: ref, current_user: user)
     end
 

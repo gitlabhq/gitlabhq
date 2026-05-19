@@ -357,7 +357,7 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
       put api("/groups/#{group.id}/labels", user), params: { name: group_label1.name }
 
       expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq('new_name, color, description, archived are missing, '\
+      expect(json_response['error']).to eq('new_name, color, description, archived are missing, ' \
                                            'at least one parameter must be provided')
     end
 
@@ -416,7 +416,7 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
       put api("/groups/#{group.id}/labels/#{valid_group_label_title_1_esc}", user)
 
       expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq('new_name, color, description, archived are missing, '\
+      expect(json_response['error']).to eq('new_name, color, description, archived are missing, ' \
                                            'at least one parameter must be provided')
     end
 

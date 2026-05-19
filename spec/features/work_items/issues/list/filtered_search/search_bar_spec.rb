@@ -21,7 +21,7 @@ RSpec.describe 'Search bar', :js, feature_category: :team_planning do
       click_filtered_search_bar
       send_keys :down, :enter
 
-      expect_token_segment 'Assignee'
+      expect_token_segment 'State'
     end
   end
 
@@ -74,7 +74,6 @@ RSpec.describe 'Search bar', :js, feature_category: :team_planning do
       expect_suggestion_count 2
 
       click_button 'Clear'
-      click_filtered_search_bar
 
       expect_suggestion_count(original_size)
     end

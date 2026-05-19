@@ -11,7 +11,7 @@ module QA
 
       let(:source_issue_comments) do
         source_issue.comments.map do |note|
-          { **note.except(:id, :noteable_id, :project_id), author: note[:author].except(:web_url) }
+          note.except(:id, :noteable_id, :project_id, :imported, :imported_from, :author)
         end
       end
 
@@ -24,7 +24,7 @@ module QA
 
       let(:imported_issue_comments) do
         imported_issue.comments.map do |note|
-          { **note.except(:id, :noteable_id, :project_id), author: note[:author].except(:web_url) }
+          note.except(:id, :noteable_id, :project_id, :imported, :imported_from, :author)
         end
       end
 
@@ -35,11 +35,7 @@ module QA
 
         it(
           'successfully imports issue',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347608',
-          quarantine: {
-            type: :stale,
-            issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24005"
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347608'
         ) do
           expect_project_import_finished_successfully
           expect(imported_issues.count).to eq(1)

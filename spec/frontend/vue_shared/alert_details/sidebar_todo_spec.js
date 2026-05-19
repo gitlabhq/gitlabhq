@@ -116,10 +116,10 @@ describe('Alert Details Sidebar To Do', () => {
         });
       });
 
-      it('renders a Mark As Done button when todo is present', async () => {
+      it('renders a Mark To-Do Items Done button when todo is present', async () => {
         await nextTick();
 
-        expect(findToDoButton().text()).toBe('Mark as done');
+        expect(findToDoButton().text()).toBe('Mark to-do items done');
       });
 
       it('calls `$apollo.mutate` with `todoMarkDoneMutation` mutation and variables containing `id`', async () => {

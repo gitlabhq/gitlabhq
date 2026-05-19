@@ -44,6 +44,7 @@ export default {
       default: () => PAGE_CONFIG.OPERATIONS.STATUSES,
     },
   },
+  emits: ['alert-error', 'hide-dropdown', 'handle-updating'],
   data() {
     return {
       alertStatus: this.alert.status,

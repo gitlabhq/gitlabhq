@@ -6,8 +6,7 @@ module QA
     :requires_admin,
     :skip_live_env,
     feature_category:
-    :system_access,
-    feature_flag: { name: :passkeys }
+    :system_access
   ) do
     describe '2FA' do
       let!(:user) { Runtime::User::Store.test_user }

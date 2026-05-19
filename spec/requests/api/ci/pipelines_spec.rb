@@ -917,7 +917,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           )
         end
 
-        shared_examples 'creating a succesful pipeline' do
+        shared_examples 'creating a successful pipeline' do
           it 'creates a pipeline using inputs' do
             expect { post_request }.to change { Ci::Pipeline.count }.by(1)
 
@@ -943,7 +943,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
               params: { ref: project.default_branch, inputs: inputs }.to_json
           end
 
-          it_behaves_like 'creating a succesful pipeline'
+          it_behaves_like 'creating a successful pipeline'
         end
 
         context 'when passing parameters as form data' do
@@ -961,7 +961,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
               params: { ref: project.default_branch, inputs: transformed_values }
           end
 
-          it_behaves_like 'creating a succesful pipeline'
+          it_behaves_like 'creating a successful pipeline'
         end
       end
 

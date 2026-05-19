@@ -207,6 +207,7 @@ export const AI_METRICS = {
   DUO_AGENT_PLATFORM_FLOWS: 'duo_agent_platform_flows',
   DUO_AGENT_PLATFORM_CHATS: 'duo_agent_platform_chats',
   DUO_AGENT_PLATFORM_AGENTS_FLOWS_USERS_COUNT: 'duo_agent_platform_agent_flows_users_count',
+  DUO_POWER_USERS_COUNT: 'duo_power_users_count',
 };
 
 export const VALUE_STREAM_METRIC_DISPLAY_UNITS = {
@@ -520,3 +521,5 @@ export const SUPPORTED_CODE_SUGGESTIONS_DIMENSION_KEYS = [
   IDE_DIMENSION_KEY,
   LANGUAGE_DIMENSION_KEY,
 ];
+
+export const MIN_SEARCH_CHARS = 3;

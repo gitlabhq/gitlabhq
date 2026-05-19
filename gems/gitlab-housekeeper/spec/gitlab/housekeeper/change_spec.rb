@@ -22,6 +22,7 @@ RSpec.describe ::Gitlab::Housekeeper::Change do
       expect(change.assignees).to eq([])
       expect(change.reviewers).to eq([])
       expect(change.push_options.ci_skip).to eq(false)
+      expect(change.has_conflicts).to eq(false)
     end
   end
 
@@ -174,7 +175,7 @@ RSpec.describe ::Gitlab::Housekeeper::Change do
       [:identifiers, :title, :description, :changed_files].each do |attribute|
         change = create_change
         expect(change).to be_valid
-        change.public_send("#{attribute}=", nil)
+        change.public_send(:"#{attribute}=", nil)
         expect(change).not_to be_valid
       end
     end

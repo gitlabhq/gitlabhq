@@ -43,6 +43,8 @@ RSpec.describe 'User reverts a commit', :js, feature_category: :source_code_mana
 
       it 'does not revert a previously reverted commit' do
         revert_commit
+        expect(page).to have_content('The commit has been successfully reverted.')
+
         # Visit the comment again once it was reverted.
         visit project_commit_path(project, sample_commit.id)
 

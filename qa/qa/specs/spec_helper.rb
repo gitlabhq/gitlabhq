@@ -4,7 +4,6 @@ require 'active_support'
 require 'active_support/testing/time_helpers'
 require 'factory_bot'
 require 'gitlab_quality/test_tooling'
-require 'gitlab/rspec/configurations/test_metrics'
 
 require_relative '../../qa'
 # Extension for GitlabQuality::TestTooling::TestQuarantine::QuarantineFormatter
@@ -69,10 +68,10 @@ RSpec.configure do |config|
   unless QA::Runtime::Env.dry_run || config.dry_run?
     config.add_formatter QA::Support::Formatters::CoverbandFormatter if QA::Runtime::Env.coverband_enabled?
 
-    Gitlab::Rspec::Configurations::TestMetrics.configure!(QA::Runtime::Env.run_type) do |exporter_config|
-      exporter_config.test_retried_proc = ->(_example) { QA::Runtime::Env.rspec_retried? }
-      exporter_config.logger = QA::Runtime::Logger.logger
-      exporter_config.spec_file_path_prefix = "qa/"
+    GitlabQuality::TestTooling::TestMetricsExporter::ConfigHelper.configure!(QA::Runtime::Env.run_type) do |exp_config|
+      exp_config.test_retried_proc = ->(_example) { QA::Runtime::Env.rspec_retried? }
+      exp_config.logger = QA::Runtime::Logger.logger
+      exp_config.spec_file_path_prefix = "qa/"
     end
   end
 

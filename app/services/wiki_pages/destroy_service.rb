@@ -5,6 +5,7 @@ module WikiPages
     def execute(page)
       if page.delete
         execute_hooks(page)
+        mark_meta_as_deleted(page)
         ServiceResponse.success(payload: { page: page })
       else
         message = page.template? ? _('Could not delete wiki template') : _('Could not delete wiki page')
@@ -26,6 +27,16 @@ module WikiPages
 
     def fingerprint(page)
       page.wiki.repository.head_commit.sha
+    end
+
+    def mark_meta_as_deleted(page)
+      meta = page.find_or_create_meta
+      meta.update!(deleted_at: Time.current)
+    rescue StandardError => e
+      Gitlab::ErrorTracking.track_exception(e,
+        wiki_page_title: page.title,
+        wiki_page_slug: page.slug
+      )
     end
   end
 end

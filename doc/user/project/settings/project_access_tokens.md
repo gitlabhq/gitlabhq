@@ -70,7 +70,7 @@ From this page, you can perform the following actions:
 To view your project access tokens:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Access tokens**.
+1. In the left sidebar, select **Settings** > **Access tokens**.
 
 Active and usable access tokens are stored in the **Active project access tokens** section.
 Expired, rotated, or revoked tokens are stored in the **Inactive project access tokens** section.
@@ -92,7 +92,7 @@ Expired, rotated, or revoked tokens are stored in the **Inactive project access 
 To create a project access token:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Access tokens**.
+1. In the left sidebar, select **Settings** > **Access tokens**.
 1. Select **Add new token**.
 1. In **Token name**, enter a name. The token name is visible to any user with permissions to view the project.
 1. Optional. In **Token description**, enter a description for the token.
@@ -139,7 +139,7 @@ Scopes define the actions available when you authenticate with a project access 
 | `write_repository` | Grants read and write access (pull and push) to the repository in the project. |
 | `create_runner`    | Grants permission to create runners in the project. |
 | `manage_runner`    | Grants permission to manage runners in the project. |
-| `ai_features`      | Grants permission to perform API actions for GitLab Duo, the Code Suggestions API, and the GitLab Duo Chat API. Designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see the individual extension documentation. Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7. |
+| `ai_features`      | Grants permission to perform API actions for GitLab Duo, the Code Suggestions API, and the GitLab Duo Chat API. Designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see the individual extension documentation. Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7. On GitLab Self-Managed and GitLab Dedicated, this scope is only available when GitLab Duo is enabled. |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project. |
 | `self_rotate`      | Grants permission to rotate this token using the [personal access token API](../../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
 
@@ -171,7 +171,7 @@ On GitLab Self-Managed and GitLab Dedicated, you can modify the
 To rotate a project access token:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Access tokens**.
+1. In the left sidebar, select **Settings** > **Access tokens**.
 1. For the relevant token, select **Rotate** ({{< icon name="retry" >}}).
 1. In the confirmation dialog, select **Rotate**.
 
@@ -196,7 +196,7 @@ GitLab deletes revoked group and project access tokens after 30 days. For more i
 To revoke a project access token:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Access tokens**.
+1. In the left sidebar, select **Settings** > **Access tokens**.
 1. For the relevant token, select **Revoke** ({{< icon name="remove" >}}).
 1. In the confirmation dialog, select **Revoke**.
 
@@ -228,10 +228,10 @@ see [non-expiring access tokens](../../../update/deprecations.md#non-expiring-ac
 {{< /history >}}
 
 GitLab runs a daily check at 1:00 AM UTC to identify project access tokens that expire soon.
-Direct members with the Owner or Maintainer role are notified by email seven days before a token
+Direct members with the Maintainer or Owner role are notified by email seven days before a token
 expires. In GitLab 17.6 and later, notifications are also sent 30 and 60 days before a token expires.
 
-In GitLab 17.7 and later, members with an inherited Owner or Maintainer role can also receive
+In GitLab 17.7 and later, members with an inherited Maintainer or Owner role can also receive
 these emails. You can configure this for every group and project on the
 [GitLab instance](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members)
 or a [specific parent group](../../group/manage.md#expiry-emails-for-group-and-project-access-tokens).

@@ -13,7 +13,7 @@ module Integrations
         datadog diffblue_cover discord drone_ci emails_on_push ewm external_wiki
         gitlab_slack_application hangouts_chat harbor irker jira linear matrix
         mattermost mattermost_slash_commands microsoft_teams packagist phorge pipelines_email
-        pivotaltracker pumble pushover redmine slack slack_slash_commands squash_tm teamcity telegram
+        pivotaltracker pumble pushover redmine slack squash_tm teamcity telegram
         unify_circuit webex_teams youtrack zentao
       ].freeze
 
@@ -307,10 +307,8 @@ module Integrations
         # Returns a list of disabled integration names.
         # Example: ["gitlab_slack_application", ...]
         def disabled_integration_names
-          # The GitLab for Slack app integration is only available when enabled through settings.
-          # The Slack Slash Commands integration is only available for customers
-          # who cannot use the GitLab for Slack app.
-          disabled = Gitlab::CurrentSettings.slack_app_enabled ? ['slack_slash_commands'] : ['gitlab_slack_application']
+          disabled = []
+          disabled += ['gitlab_slack_application'] unless Gitlab::CurrentSettings.slack_app_enabled
           disabled += ['jira_cloud_app'] unless Gitlab::CurrentSettings.jira_connect_application_key.present?
           disabled
         end
@@ -554,6 +552,7 @@ module Integrations
         belongs_to :project, inverse_of: :integrations
         belongs_to :group, inverse_of: :integrations
         belongs_to :organization, class_name: 'Organizations::Organization', inverse_of: :integrations, optional: true
+        belongs_to :inherit_from, class_name: 'Integration', optional: true
 
         validates :project_id, presence: true, unless: -> { instance_level? || group_level? }
         validates :group_id, presence: true, unless: -> { instance_level? || project_level? }

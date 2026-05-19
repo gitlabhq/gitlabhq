@@ -69,7 +69,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
     it_behaves_like 'a working graphql query'
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_work_item, :update_work_item] do
+    it_behaves_like 'authorizing granular token permissions for GraphQL',
+      [:read_work_item, :update_work_item, :create_issue_note] do
       let(:user) { developer }
       let(:boundary_object) { project }
       let(:work_item_fields) { all_graphql_fields_for('WorkItem', max_depth: 1) }

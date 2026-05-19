@@ -70,7 +70,8 @@ RSpec.describe Admin::ApplicationsController do
 
   describe 'POST #create' do
     it 'creates the application' do
-      create_params = attributes_for(:application, trusted: true, confidential: false, scopes: ['api'])
+      create_params = attributes_for(:application, trusted: true, confidential: false, scopes: ['api'],
+        organization: current_organization)
 
       expect do
         post :create, params: { authn_oauth_application: create_params }
@@ -103,7 +104,8 @@ RSpec.describe Admin::ApplicationsController do
 
     context 'when the params are for a confidential application' do
       it 'creates a confidential application' do
-        create_params = attributes_for(:application, confidential: true, scopes: ['read_user'])
+        create_params = attributes_for(:application, confidential: true, scopes: ['read_user'],
+          organization: current_organization)
 
         expect do
           post :create, params: { authn_oauth_application: create_params }

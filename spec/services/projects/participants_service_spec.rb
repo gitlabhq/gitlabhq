@@ -4,12 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_projects do
   describe '#execute' do
-    let_it_be(:user) { create(:user) }
+    # Use explicit usernames to guarantee deterministic sort order.
+    # project_members are sorted by the user's actual username (not the org_user_detail username),
+    # so 'aaa_participant' sorts before 'zzz_org_user' ensuring a stable expected order.
+    let_it_be(:user) { create(:user, username: 'aaa_participant') }
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:noteable) { create(:issue, project: project) }
     let_it_be(:other_organization) { create(:organization) }
     let_it_be(:org_user_detail) do
-      create(:organization_user_detail, username: 'spec_bot')
+      create(:organization_user_detail, user: create(:user, username: 'zzz_org_user'), username: 'spec_bot')
     end
 
     let_it_be(:other_org_user_detail) do
@@ -23,10 +26,6 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
       project.add_developer(org_user_detail.user)
     end
 
-    before do
-      stub_feature_flags(disable_all_mention: false)
-    end
-
     def run_service
       described_class.new(project, user, params).execute(noteable)
     end
@@ -35,12 +34,8 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
       group = create(:group, owners: user)
 
       expect(run_service.pluck(:username)).to eq([
-        noteable.author.username, 'all', user.username, org_user_detail.username, group.full_path
+        noteable.author.username, user.username, org_user_detail.username, group.full_path
       ])
-    end
-
-    it 'includes `All Project and Group Members`' do
-      expect(run_service).to include(a_hash_including({ username: "all", name: "All Project and Group Members" }))
     end
 
     context 'N+1 checks' do
@@ -148,22 +143,6 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
           username: other_org_user_detail.username,
           original_username: other_org_user_detail.user.username
         ))
-      end
-
-      context 'when organization_users_internal FF is disabled' do
-        before do
-          stub_feature_flags(organization_users_internal: false)
-        end
-
-        it { is_expected.to be_empty }
-
-        it 'returns results in correct order' do
-          group = create(:group, owners: user)
-
-          expect(run_service.pluck(:username)).to eq([
-            noteable.author.username, 'all', user.username, org_user_detail.user.username, group.full_path
-          ])
-        end
       end
 
       context 'including other item types' do
@@ -283,14 +262,8 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
       end
     end
 
-    context 'when `disable_all_mention` FF is enabled' do
-      before do
-        stub_feature_flags(disable_all_mention: true)
-      end
-
-      it 'does not include `All Project and Group Members`' do
-        expect(run_service).not_to include(a_hash_including({ username: "all", name: "All Project and Group Members" }))
-      end
+    it 'does not include `All Project and Group Members`' do
+      expect(run_service).not_to include(a_hash_including({ username: "all", name: "All Project and Group Members" }))
     end
   end
 

@@ -85,8 +85,8 @@ module Users
       return false unless current_user.allow_password_authentication?
       return false if current_user.password_automatically_set? || current_user.two_factor_enabled?
 
-      days_until_enrollment = (current_user.email_otp_required_after.to_date - Date.current).to_i
-      days_until_enrollment.between?(8, 14)
+      current_user.email_otp_required_after > 7.days.from_now &&
+        current_user.email_otp_required_after <= 14.days.from_now
     end
 
     def show_single_origin_fallback_callout?

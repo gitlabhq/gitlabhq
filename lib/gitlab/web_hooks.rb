@@ -5,6 +5,9 @@ module Gitlab
     GITLAB_EVENT_HEADER = 'X-Gitlab-Event'
     GITLAB_INSTANCE_HEADER = 'X-Gitlab-Instance'
     GITLAB_UUID_HEADER = 'X-Gitlab-Webhook-UUID'
+    WEBHOOK_ID_HEADER = 'webhook-id'
+    WEBHOOK_SIGNATURE_HEADER = 'webhook-signature'
+    WEBHOOK_TIMESTAMP_HEADER = 'webhook-timestamp'
 
     class << self
       def prepare_data(data)
@@ -13,6 +16,25 @@ module Gitlab
         return data unless data[:object_kind] == 'wiki_page'
 
         prepare_wiki_data(data)
+      end
+
+      # Recursively replaces Time/Date-like values in a webhook payload with
+      # ISO 8601 strings. Called on both webhook delivery paths: the async path
+      # (before enqueuing to Sidekiq) and the sync path (before rendering a
+      # custom template), so the renderer sees the same string format in both.
+      def normalize_dates(value)
+        case value
+        when Time, DateTime, ActiveSupport::TimeWithZone
+          value.iso8601(3)
+        when Date
+          value.iso8601
+        when Hash
+          value.transform_values { |v| normalize_dates(v) }
+        when Array
+          value.map { |v| normalize_dates(v) }
+        else
+          value
+        end
       end
 
       private

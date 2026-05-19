@@ -34,4 +34,26 @@ RSpec.describe 'getting blobs in a project repository', feature_category: :sourc
 
     expect(blobs).to match_array(paths.map { |path| a_hash_including('path' => path) })
   end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL',
+    [:read_project, :read_code, :read_repository_blob] do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:query) do
+      graphql_query_for(
+        'project',
+        { 'fullPath' => project.full_path },
+        query_graphql_field('repository', {}, <<~GQL)
+          blobs(paths:#{paths.inspect}, ref:#{ref.inspect}) {
+            nodes {
+              path
+              name
+            }
+          }
+        GQL
+      )
+    end
+
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+  end
 end

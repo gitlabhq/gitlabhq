@@ -128,9 +128,9 @@ export default {
           :is="tab.component"
           :default-branch-name="defaultBranchName"
           data-testid="clusters-tab-component"
-          @changeTab="setSelectedTab"
-          @kasDisabled="kasDisabled = $event"
-          @registerAgent="openRegistrationModal"
+          @change-tab="setSelectedTab"
+          @kas-disabled="kasDisabled = $event"
+          @register-agent="openRegistrationModal"
         >
           <template #alerts>
             <gl-alert
@@ -161,7 +161,7 @@ export default {
       v-if="!isGroup"
       ref="installAgentModal"
       :kas-disabled="kasDisabled"
-      @clusterAgentCreated="clusterAgentCreated"
+      @cluster-agent-created="clusterAgentCreated"
     />
   </div>
 </template>

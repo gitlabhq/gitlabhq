@@ -18,8 +18,7 @@ RSpec.describe 'User uploads new design', :js, feature_category: :design_managem
   context "when the feature is available" do
     let(:feature_enabled) { true }
 
-    it 'uploads designs',
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/21169' do
+    it 'uploads designs' do
       upload_design(logo_fixture, count: 1)
 
       expect(page).to have_selector('.js-design-list-item', count: 1)
@@ -31,7 +30,13 @@ RSpec.describe 'User uploads new design', :js, feature_category: :design_managem
       upload_design([gif_fixture, logo_svg_fixture, big_image_fixture], count: 4)
 
       expect(page).to have_selector('.js-design-list-item', count: 4)
-      expect(page.all('.js-design-list-item').map(&:text)).to eq(['dk.png', 'banana_sample.gif', 'logo_sample.svg', 'big-image.png'])
+
+      within_testid('designs-root') do
+        expect(page).to have_content('dk.png')
+        expect(page).to have_content('banana_sample.gif')
+        expect(page).to have_content('logo_sample.svg')
+        expect(page).to have_content('big-image.png')
+      end
     end
   end
 

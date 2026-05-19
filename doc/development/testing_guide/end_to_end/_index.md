@@ -63,7 +63,7 @@ The [existing scenarios](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/doc
 that run in the downstream `gitlab-qa-mirror` pipeline include many tests, but there are times when you might want to run a
 test or a group of tests that are different than the groups in any of the existing scenarios.
 
-For example, when we [dequarantine](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/pipeline-triage/#dequarantining-tests) a flaky test we first want to make sure that it's no longer flaky. We can do that by running `_ee:quarantine` manual job. When selecting the name (not the play icon) of manual job, you are prompted to enter variables. You can use any of [the variables that can be used with `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables) as well as these:
+For example, when we [dequarantine](https://handbook.gitlab.com/handbook/engineering/testing/pipeline-triage/#dequarantining-tests) a flaky test we first want to make sure that it's no longer flaky. We can do that by running `_ee:quarantine` manual job. When selecting the name (not the play icon) of manual job, you are prompted to enter variables. You can use any of [the variables that can be used with `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables) as well as these:
 
 | Variable        | Description                                                                                                                                                                                                                 |
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -172,7 +172,7 @@ When these tests are executed in the scope of merge requests, the `Allure` repor
 
 ##### Scheduled pipelines
 
-Scheduled pipelines for these tests contain a `generate-allure-report` job under the `Report` stage. They also output a link to the current test report. Each type of scheduled pipeline generates a static link for the latest test report according to its stage. You can find a list of this in the [GitLab handbook](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/end-to-end-pipeline-monitoring/#allure-report).
+Scheduled pipelines for these tests contain a `generate-allure-report` job under the `Report` stage. They also output a link to the current test report. Each type of scheduled pipeline generates a static link for the latest test report according to its stage. You can find a list of this in the [GitLab handbook](https://handbook.gitlab.com/handbook/engineering/testing/end-to-end-pipeline-monitoring/#allure-report).
 
 ### Provisioning
 

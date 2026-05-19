@@ -409,6 +409,32 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
     end
   end
 
+  context 'when image with placeholder is inside an <a> with a non-matching href' do
+    before do
+      project.add_member(user, Gitlab::Access::GUEST)
+    end
+
+    it 'does not update the parent <a> href' do
+      markdown = '[![](https://%{gitlab_server}/foo.png)](/some/other/path)'
+
+      result = run_filter(markdown)
+      doc = Nokogiri::HTML.fragment(result)
+      link = doc.at_css('a')
+
+      expect(link['href']).to eq('/some/other/path')
+    end
+
+    it 'still replaces the image src' do
+      markdown = '[![](https://%{gitlab_server}/foo.png)](/some/other/path)'
+
+      result = run_filter(markdown)
+      doc = Nokogiri::HTML.fragment(result)
+      img = doc.at_css('img')
+
+      expect(img['data-src']).to eq("https://#{Gitlab.config.gitlab.host}/foo.png")
+    end
+  end
+
   context 'when placeholders in an unsupported node' do
     before do
       project.add_member(user, Gitlab::Access::GUEST)

@@ -6,3 +6,10 @@ InternalAffairs/CopDescriptionWithExample:
   Enabled: true
   Include:
     - '**/*.rb'
+
+# Override the default Include path so this cop runs on GitLab's cops in this
+# directory. rubocop 1.81.7 restricts the cop to lib/rubocop/cop/**/*.rb by
+# default, which doesn't match GitLab's rubocop/cop/ path.
+InternalAffairs/OnSendWithoutOnCSend:
+  Include:
+    - '**/*.rb'

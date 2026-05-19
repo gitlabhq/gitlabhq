@@ -411,6 +411,14 @@ levels of index bloat over time. Reindexing can also be run as a
 A "healthy" level of bloat is highly dependent on the specific index, but generally
 should be below 30%.
 
+Database reindexing performs these tasks:
+
+1. Reindexes PostgreSQL indexes that were manually queued: An index can be manually added to a
+   queue for reindexing. Reindexing a PostgreSQL index usually reduces [index bloat](https://wiki.postgresql.org/wiki/Index_Maintenance#Index_Bloat).
+1. Reindexes PostgreSQL indexes automatically using an [index bloat](https://wiki.postgresql.org/wiki/Index_Maintenance#Index_Bloat)
+   heuristic: PostgreSQL uses a heuristic to identify the most bloated indexes. The process chooses
+   at most 2 indexes during each run to reindex.
+
 Prerequisites:
 
 - This feature requires PostgreSQL 12 or later.
@@ -427,6 +435,8 @@ The following task rebuilds only the two indexes in each database with the highe
    ```
 
 1. Check [`application_json.log`](../logs/_index.md#application_jsonlog) to verify execution or to troubleshoot.
+
+For Cloud Native installations of GitLab running this task using the [Toolbox chart](https://docs.gitlab.com/charts/charts/gitlab/toolbox/#configure-periodic-database-reindexing), logs are in the pod's standard output.
 
 ### Customize reindexing settings
 

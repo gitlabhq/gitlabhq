@@ -8,24 +8,28 @@
 = render_if_exists "layouts/google_tag_manager_body"
 - content_for :overridden_brand_title, custom_sign_up_brand_title
 
-.signup-page
-  .gl-mb-3.gl-p-4
-    = render 'signup_box_form',
-      url: registration_path(resource_name, ::Onboarding::StatusPresenter.registration_path_params(params: params)),
-      button_text: _('Continue')
+- if unified_registration?
+  = render_if_exists 'layouts/registration_left_panel'
+- else
+  .signup-page
+    = render_if_exists 'devise/registrations/subscription_unification_subtext'
+    .gl-mb-3.gl-p-4
+      = render 'signup_box_form',
+        url: registration_path(resource_name, ::Onboarding::StatusPresenter.registration_path_params(params: params)),
+        button_text: _('Continue')
 
-    - if signup_button_based_providers_enabled?
-      .gl-text-center.gl-pt-5
-        %label.gl-font-normal
-          = _('Continue with:')
-        .gl-flex.gl-flex-col.gl-gap-3
-          - enabled_button_based_providers_for_signup.each do |provider|
-            = render 'devise/shared/omniauth_provider_button',
-              href: omniauth_authorize_path(:user, provider, onboarding_status_presenter.registration_omniauth_params),
-              provider: provider,
-              classes: 'js-track-omni-auth',
-              data: { provider: provider, track_action: "#{provider}_sso", track_label: preregistration_tracking_label }
+      - if signup_button_based_providers_enabled?
+        .gl-text-center.gl-pt-5
+          %label.gl-font-normal
+            = _('Continue with:')
+          .gl-flex.gl-flex-col.gl-gap-3
+            - enabled_button_based_providers_for_signup.each do |provider|
+              = render 'devise/shared/omniauth_provider_button',
+                href: omniauth_authorize_path(:user, provider, onboarding_status_presenter.registration_omniauth_params),
+                provider: provider,
+                classes: 'js-track-omni-auth',
+                data: { provider: provider, track_action: "#{provider}_sso", track_label: preregistration_tracking_label }
 
-  = render 'devise/shared/sign_in_link',
-    tracking_action: 'click_sign_in_from_registration_page',
-    tracking_label: preregistration_tracking_label
+    = render 'devise/shared/sign_in_link',
+      tracking_action: 'click_sign_in_from_registration_page',
+      tracking_label: preregistration_tracking_label

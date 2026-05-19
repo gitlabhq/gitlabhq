@@ -1,7 +1,9 @@
 ---
 name: update_pull_mirror
 description: Grants the ability to update pull mirrors
-permissions:
-  - update_pull_mirror
 boundaries:
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_pull_mirror

@@ -16,7 +16,8 @@ export default {
     },
     description: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     dashboardUrl: {
       type: String,
@@ -63,7 +64,7 @@ export default {
         class="gl-font-bold gl-text-black !gl-no-underline"
         >{{ name }}</gl-link
       >
-      <div>
+      <div v-if="description">
         <gl-truncate :text="description" with-tooltip />
       </div>
     </div>

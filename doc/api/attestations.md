@@ -24,14 +24,14 @@ title: Attestations API
 > For more information, see the history.
 > This feature is available for testing, but not ready for production use.
 
-Use this API to interact with [provenance attestations](../ci/pipeline_security/slsa/provenance_v1.md).
+Use this API to interact with [provenance attestations](../ci/pipeline_security/slsa/level_3/provenance_v1.md).
 
 ## Provenance attestations
 
 Some endpoints return [Sigstore bundles](https://docs.sigstore.dev/about/bundle/) as part of the response. You
 can verify these using [glab](https://docs.gitlab.com/cli/) or
 [cosign](https://github.com/sigstore/cosign). For more information on
-provenance, see [SLSA provenance specification](../ci/pipeline_security/slsa/provenance_v1.md)
+provenance, see [SLSA provenance specification](../ci/pipeline_security/slsa/level_3/provenance_v1.md)
 
 ## List all attestations
 

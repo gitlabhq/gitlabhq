@@ -3,12 +3,15 @@
 module API
   class MarkdownUploads < ::API::Base
     include PaginationParams
+    include APIGuard
 
     feature_category :team_planning
 
     FILENAME_QUERY_PARAM_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
       filename: API::NO_SLASH_URL_PART_REGEX
     )
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { request.post? }
 
     before { authenticate_non_get! }
 
@@ -184,6 +187,53 @@ module API
     end
 
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      desc 'Workhorse authorize the file upload' do
+        detail 'This feature was introduced in GitLab 19.0'
+        success code: 200
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[groups]
+      end
+      route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
+      post ':id/uploads/authorize' do
+        not_found! unless Feature.enabled?(:group_uploads_api, user_group)
+
+        require_gitlab_workhorse!
+
+        status 200
+        content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
+        NamespaceFileUploader.workhorse_authorize(
+          has_length: false,
+          maximum_size: Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
+        )
+      end
+
+      desc 'Upload a file to a group' do
+        detail 'Uploads a file to the specified group. Returns a markdown-formatted link to the file.'
+        success code: 201, model: Entities::GroupUpload
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[groups]
+      end
+      params do
+        requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile],
+          desc: 'The file to upload', documentation: { type: 'file' }
+      end
+      route_setting :authorization, permissions: :create_markdown_upload, boundary_type: :group
+      post ':id/uploads' do
+        not_found! unless Feature.enabled?(:group_uploads_api, user_group)
+
+        upload = UploadService.new(user_group, params[:file], NamespaceFileUploader,
+          uploaded_by_user_id: current_user.id).execute
+
+        bad_request!('Failed to upload file') unless upload
+
+        present upload, with: Entities::GroupUpload
+      end
+
       desc 'Get the list of uploads of a group' do
         success code: 200, model: Entities::MarkdownUploadAdmin
         failure [
@@ -227,7 +277,7 @@ module API
         present_carrierwave_file!(upload.retrieve_uploader)
       end
 
-      desc 'Download a single project upload by secret and filename' do
+      desc 'Download a single group upload by secret and filename' do
         success File
         failure [
           { code: 403, message: 'Unauthenticated' },

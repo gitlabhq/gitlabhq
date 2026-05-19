@@ -30,12 +30,12 @@ export default {
     {
       key: 'created_at',
       label: __('Created on'),
-      tdClass: '!gl-align-middle gl-w-2/10',
+      tdClass: ['!gl-align-middle', 'gl-w-2/10'],
     },
     {
       key: 'actions',
       label: '',
-      tdClass: 'gl-text-right !gl-align-middle !gl-pl-0',
+      tdClass: ['gl-text-right', '!gl-align-middle', '!gl-pl-0'],
     },
   ],
   i18n: {

@@ -10,12 +10,16 @@ module Ci
         @current_user = current_user
       end
 
-      def resources(sort: nil, search: nil, scope: :all, verification_level: nil, topics: nil, min_access_level: nil)
+      def resources(
+        sort: nil, search: nil, scope: :all, verification_level: nil, topics: nil,
+        min_access_level: nil, group_ids: nil
+      )
         relation = Ci::Catalog::Resource.published.includes(:project)
         relation = by_scope(relation, scope, min_access_level)
         relation = by_search(relation, search)
         relation = by_verification_level(relation, verification_level)
         relation = by_topics(relation, topics)
+        relation = by_group_ids(relation, group_ids)
 
         case sort.to_s
         when 'name_desc' then relation.order_by_name_desc
@@ -71,6 +75,12 @@ module Ci
         return relation if topics.blank?
 
         relation.with_topics(topics)
+      end
+
+      def by_group_ids(relation, group_ids)
+        return relation if group_ids.blank?
+
+        relation.in_namespaces(group_ids)
       end
     end
   end

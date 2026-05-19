@@ -51,6 +51,9 @@ debt. Here are some acceptable reasons for patching a dependency:
 
 ### Updating a patch
 
+> [!note]
+> `@vue/compat` patches require special care. See [this document](https://gitlab.com/gitlab-org/frontend/vuejs-core/-/blob/v3.5.30-gitlab-hybrid/README.md).
+
 Patches are specific to the particular version of the dependency. When that dependency is updated, any patches for it must also be updated.
 
 If the patch applies cleanly:

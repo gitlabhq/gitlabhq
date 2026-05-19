@@ -16,16 +16,17 @@ RSpec.describe 'Projects > Members > Group requester cannot request access to pr
   before do
     group.add_owner(owner)
     sign_in(user)
-    visit group_path(group)
-    perform_enqueued_jobs do
-      group_actions_dropdown.click
-      click_link 'Request access'
-      wait_for_requests
-    end
-    visit project_path(project)
   end
 
   it 'group requester does not see the request access / withdraw access request button' do
+    visit group_path(group)
+
+    group_actions_dropdown.click
+    click_link 'Request access'
+
+    expect(page).to have_content('Your request for access has been queued for review')
+
+    visit project_path(project)
     find_by_testid('projects-list-item-actions').click
 
     expect(page).not_to have_content 'Request access'

@@ -150,14 +150,6 @@ module NavbarStructureHelper
     )
   end
 
-  def insert_ai_agents_nav(within)
-    insert_after_sub_nav_item(
-      within,
-      within: _('Deploy'),
-      new_sub_nav_item_name: s_('AIAgents|AI Agents')
-    )
-  end
-
   def insert_contribution_analytics_nav
     insert_after_nav_item(
       _('Operate'),

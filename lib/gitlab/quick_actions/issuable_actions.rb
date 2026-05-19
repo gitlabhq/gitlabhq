@@ -81,7 +81,7 @@ module Gitlab
         types ::Issuable
         condition do
           current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target) &&
-            find_labels.any?
+            has_labels?
         end
         command :label, :labels do |labels_param|
           run_label_command(labels: find_labels(labels_param), command: :label, updates_key: :add_label_ids)
@@ -241,11 +241,7 @@ module Gitlab
           next unless quick_action_target.supports_severity?
 
           if severity
-            if quick_action_target.persisted?
-              ::Issues::UpdateService.new(container: quick_action_target.project, current_user: current_user, params: { severity: severity }).execute(quick_action_target)
-            else
-              quick_action_target.build_issuable_severity(severity: severity)
-            end
+            @updates[:severity] = severity
 
             @execution_message[:severity] = _("Severity updated to %{severity}.") % { severity: severity.capitalize }
           else

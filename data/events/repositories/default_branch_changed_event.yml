@@ -1,0 +1,4 @@
+---
+event: Repositories::DefaultBranchChangedEvent
+description: Published when the default branch of a repository changes.
+feature_category: source_code_management

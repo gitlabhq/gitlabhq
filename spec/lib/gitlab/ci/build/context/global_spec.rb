@@ -13,16 +13,16 @@ RSpec.describe Gitlab::Ci::Build::Context::Global, feature_category: :pipeline_c
   end
 
   shared_examples 'variables collection' do
-    it { is_expected.to include('CI_COMMIT_REF_NAME' => 'main') }
-    it { is_expected.to include('CI_PIPELINE_IID'    => pipeline.iid.to_s) }
-    it { is_expected.to include('CI_PROJECT_PATH'    => pipeline.project.full_path) }
+    it { expect(subject.fetch('CI_COMMIT_REF_NAME')).to eq('main') }
+    it { expect(subject.fetch('CI_PIPELINE_IID')).to eq(pipeline.iid.to_s) }
+    it { expect(subject.fetch('CI_PROJECT_PATH')).to eq(pipeline.project.full_path) }
 
-    it { is_expected.not_to have_key('CI_JOB_NAME') }
+    it { expect(subject.fetch('CI_JOB_NAME', nil)).to be_nil }
 
     shared_examples 'with passed yaml variables' do
       let(:yaml_variables) { [{ key: 'SUPPORTED', value: 'parsed', public: true }] }
 
-      it { is_expected.to include('SUPPORTED' => 'parsed') }
+      it { expect(subject.fetch('SUPPORTED')).to eq('parsed') }
     end
 
     it_behaves_like 'with passed yaml variables'
@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Global, feature_category: :pipeline_c
   describe '#variables_hash' do
     subject { context.variables_hash }
 
-    it { is_expected.to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
+    it { expect(context.variables_hash).to be_instance_of(Gitlab::Ci::Variables::Collection::LazyHash) }
 
     it_behaves_like 'variables collection'
   end

@@ -3,5 +3,7 @@ name: read_dependency
 description: Grants the ability to read dependencies
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - read_dependency

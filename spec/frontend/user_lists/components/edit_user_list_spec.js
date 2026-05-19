@@ -1,23 +1,25 @@
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import { visitUrl } from '~/lib/utils/url_utility';
 import EditUserList from '~/user_lists/components/edit_user_list.vue';
 import UserListForm from '~/user_lists/components/user_list_form.vue';
-import createStore from '~/user_lists/store/edit';
+import { useEditUserList } from '~/user_lists/store/edit';
 import { userList } from 'jest/feature_flags/mock_data';
 
 jest.mock('~/api');
 jest.mock('~/lib/utils/url_utility');
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('user_lists/components/edit_user_list', () => {
   let wrapper;
+  let pinia;
+  let store;
 
   const setInputValue = (value) => wrapper.find('[data-testid="user-list-name"]').setValue(value);
 
@@ -29,8 +31,12 @@ describe('user_lists/components/edit_user_list', () => {
   const factory = () => {
     destroy();
 
+    pinia = createTestingPinia({ stubActions: false });
+    store = useEditUserList();
+    store.$patch({ projectId: '1', userListIid: '2' });
+
     wrapper = mount(EditUserList, {
-      store: createStore({ projectId: '1', userListIid: '2' }),
+      pinia,
       provide: {
         userListsDocsPath: '/docs/user_lists',
       },
@@ -82,6 +88,7 @@ describe('user_lists/components/edit_user_list', () => {
       Api.fetchFeatureFlagUserList.mockResolvedValue({ data: userList });
       factory();
 
+      await waitForPromises();
       await nextTick();
     });
 

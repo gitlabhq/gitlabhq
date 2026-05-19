@@ -33,7 +33,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
   let(:test_model_key) { 'test-model-001' }
   let(:mock_embedding_models) do
     ::ActiveContext::EmbeddingModel.new(
-      model_name: test_model_key,
+      model_key: test_model_key,
       field: 'embeddings_v1',
       llm_class: Test::MockLlmClass,
       llm_params: { model: test_model_key }
@@ -358,6 +358,58 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
             it_behaves_like 'fails to generate embeddings'
           end
         end
+      end
+    end
+  end
+
+  describe 'rate limit error handling' do
+    let(:rate_limit_error) { Class.new(StandardError) }
+
+    before do
+      stub_const('Gitlab::Llm::Concerns::ExponentialBackoff::RateLimitError', rate_limit_error)
+    end
+
+    context 'when RateLimitError is raised' do
+      before do
+        allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(rate_limit_error,
+          '429 Too Many Requests')
+      end
+
+      it 'catches RateLimitError and marks refs as retryable' do
+        result = ActiveContext::Reference.preprocess_references([test_reference])
+
+        expect(result[:successful]).to be_empty
+        expect(result[:failed]).to be_empty
+        expect(result[:retryable]).to eq([test_reference])
+      end
+    end
+
+    context 'when other errors occur' do
+      before do
+        allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(ArgumentError, 'Invalid argument')
+      end
+
+      it 'catches non-rate-limit errors as failed' do
+        result = ActiveContext::Reference.preprocess_references([test_reference])
+
+        expect(result[:successful]).to be_empty
+        expect(result[:failed]).to eq([test_reference])
+        expect(result[:retryable]).to be_empty
+      end
+    end
+
+    context 'when RateLimitError constant is not defined' do
+      before do
+        hide_const('Gitlab::Llm::Concerns::ExponentialBackoff::RateLimitError')
+        allow(mock_embedding_models).to receive(:generate_embeddings).and_return([[1.0, 2.0]])
+      end
+
+      it 'still processes successfully without the constant' do
+        result = ActiveContext::Reference.preprocess_references([test_reference])
+
+        expect(result[:successful]).to eq([test_reference])
+        expect(result[:failed]).to be_empty
+        expect(result[:retryable]).to be_empty
       end
     end
   end

@@ -28,6 +28,12 @@ applications and there are many other available [client implementations](https:/
 GitLab uses the `doorkeeper-openid_connect` gem to provide OIDC service. For more information, see
 the [`doorkeeper-openid_connect` repository](https://github.com/doorkeeper-gem/doorkeeper-openid_connect "Doorkeeper::OpenidConnect repository").
 
+If some users use GitLab only as an OIDC provider and don't need access to
+GitLab projects or groups, consider assigning them the
+[Minimal Access](../user/permissions.md#users-with-minimal-access) role in their
+top-level group.
+Minimal Access users don't consume seats in the subscription, and still have access when [restricted access](../administration/settings/sign_up_restrictions.md#restricted-access) is active and no seats are available.
+
 ## Enable OIDC for OAuth applications
 
 To enable OIDC for an OAuth application, you need to select the `openid` scope in the application

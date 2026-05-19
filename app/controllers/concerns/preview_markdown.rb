@@ -52,13 +52,21 @@ module PreviewMarkdown
     }
   end
 
+  def snippets_filter_params
+    filter_params = { skip_project_check: true }
+
+    filter_params[:user] = current_user if Feature.enabled?(:personal_snippet_reference_filters, current_user)
+
+    filter_params
+  end
+
   def markdown_context_params
     case controller_name
     when 'wikis'
       wiki_page = wiki.find_page(preview_markdown_params[:id])
 
       wikis_filter_params
-    when 'snippets'        then { skip_project_check: true }
+    when 'snippets'        then snippets_filter_params
     when 'groups'          then { group: group, issuable_reference_expansion_enabled: true }
     when 'projects'        then projects_filter_params
     when 'timeline_events' then timeline_events_filter_params

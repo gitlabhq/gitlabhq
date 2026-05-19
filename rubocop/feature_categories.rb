@@ -20,6 +20,7 @@ module RuboCop
     RSPEC_CATEGORIES = %w[
       tooling
       test_platform
+      rails_platform
     ].to_set.freeze
 
     def self.available

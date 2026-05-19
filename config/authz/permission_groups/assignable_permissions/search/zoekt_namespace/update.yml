@@ -3,5 +3,7 @@ name: update_zoekt_namespace
 description: Grants the ability to update zoekt namespaces
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - update_zoekt_namespace

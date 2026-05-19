@@ -25,22 +25,13 @@ export const IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_CATEGORY = 'invite_project_me
 export const IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_LABEL = 'project-members-page';
 export const INVITE_GROUP_MODAL_TRACKING_CATEGORY = 'invite_group_modal';
 export const MEMBERS_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite members');
-export const MEMBERS_MODAL_ROLE_SELECT_LABEL = s__('InviteMembersModal|Select a role');
-export const MEMBERS_MODAL_CELEBRATE_TITLE = s__(
-  'InviteMembersModal|GitLab is better with colleagues!',
-);
-export const MEMBERS_MODAL_CELEBRATE_INTRO = s__(
-  'InviteMembersModal|How about inviting a colleague or two to join you?',
-);
+export const MEMBERS_MODAL_ROLE_SELECT_LABEL = s__('InviteMembersModal|Role');
 export const MEMBERS_TO_GROUP_DEFAULT_INTRO_TEXT = s__(
   "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} group.",
 );
 
 export const MEMBERS_TO_PROJECT_DEFAULT_INTRO_TEXT = s__(
   "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} project.",
-);
-export const MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT = s__(
-  "InviteMembersModal|Congratulations on creating your project, you're almost there!",
 );
 export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|Username, name or email address');
 export const MEMBERS_PLACEHOLDER = s__(
@@ -90,9 +81,7 @@ export const QUEUED_MESSAGE_SUCCESSFUL = s__(
   'InviteMembersModal|Some invitations have been queued for administrator approval.',
 );
 export const INVALID_FEEDBACK_MESSAGE_DEFAULT = s__('InviteMembersModal|Something went wrong');
-export const READ_MORE_TEXT = s__(
-  `InviteMembersModal|Invited members are assigned the selected role or the role they have in the group, whichever is lower. Learn more about %{linkStart}roles%{linkEnd}.`,
-);
+export const READ_MORE_TEXT = s__(`InviteMembersModal|%{linkStart}What are roles?%{linkEnd}`);
 export const READ_MORE_ACCESS_EXPIRATION_TEXT = s__(
   `InviteMembersModal|After this date, the user cannot access the group or project. %{linkStart}Learn more about access%{linkEnd}.`,
 );
@@ -112,10 +101,6 @@ export const MEMBER_MODAL_LABELS = {
     default: {
       title: MEMBERS_MODAL_DEFAULT_TITLE,
     },
-    celebrate: {
-      title: MEMBERS_MODAL_CELEBRATE_TITLE,
-      intro: MEMBERS_MODAL_CELEBRATE_INTRO,
-    },
   },
   toGroup: {
     default: {
@@ -125,9 +110,6 @@ export const MEMBER_MODAL_LABELS = {
   toProject: {
     default: {
       introText: MEMBERS_TO_PROJECT_DEFAULT_INTRO_TEXT,
-    },
-    celebrate: {
-      introText: MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
     },
   },
   searchField: MEMBERS_SEARCH_FIELD,
@@ -159,7 +141,6 @@ export const GROUP_MODAL_LABELS = {
 };
 
 export const ON_SHOW_TRACK_LABEL = 'over_limit_modal_viewed';
-export const ON_CELEBRATION_TRACK_LABEL = 'invite_celebration_modal';
 
 export const WARNING_ALERT_TITLE = s__(
   'InviteMembersModal|You only have space for %{count} more %{members} in %{name}',
@@ -190,3 +171,9 @@ export const BLOCKED_SEAT_OVERAGES_BODY = s__(
 export const BLOCKED_SEAT_OVERAGES_CTA = s__('InviteMembersModal|Purchase more seats');
 export const BLOCKED_SEAT_OVERAGES_CTA_DOCS = s__('InviteMembersModal|Learn how to add seats');
 export const BLOCKED_SEAT_OVERAGES_ERROR_REASON = 'seat_limit_exceeded_error';
+
+export const MEMBERSHIP_RADIO_GROUP_LABEL = s__('InviteMembersModal|Membership');
+export const MEMBERSHIP_THIS_GROUP_OR_PROJECT = s__(`InviteMembersModal|%{sourceName} only`);
+export const MEMBERSHIP_ALL_GROUPS_AND_PROJECTS = s__(
+  'InviteMembersModal|%{groupName} group and all projects in it',
+);

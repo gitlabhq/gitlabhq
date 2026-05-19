@@ -3,5 +3,7 @@ name: update_topic
 description: Grants the ability to update topics
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - update_topic

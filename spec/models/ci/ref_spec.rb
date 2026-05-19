@@ -174,7 +174,8 @@ RSpec.describe Ci::Ref, feature_category: :continuous_integration do
     end
 
     context 'when pipeline does not belong to the ci_ref' do
-      let(:pipeline) { create(:ci_pipeline, :success, ci_ref: create(:ci_ref)) }
+      let(:other_project) { create(:project, namespace: create(:namespace)) }
+      let(:pipeline) { create(:ci_pipeline, :success, ci_ref: create(:ci_ref, project: other_project)) }
 
       it_behaves_like 'no-op'
     end
@@ -182,7 +183,7 @@ RSpec.describe Ci::Ref, feature_category: :continuous_integration do
 
   context 'loose foreign key on ci_refs.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:project) }
+      let!(:parent) { create(:project, namespace: create(:namespace)) }
       let!(:model) { create(:ci_ref, project: parent) }
     end
   end

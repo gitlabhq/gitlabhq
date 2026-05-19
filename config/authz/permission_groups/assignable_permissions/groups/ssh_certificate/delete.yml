@@ -3,5 +3,7 @@ name: delete_ssh_certificate
 description: Grants the ability to delete SSH certificates
 boundaries:
   - group
+available_for:
+  - granular_access_token
 permissions:
   - delete_ssh_certificate

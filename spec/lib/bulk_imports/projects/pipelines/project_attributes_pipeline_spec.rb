@@ -99,13 +99,15 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
   end
 
   describe '#load' do
-    it 'assigns attributes, drops visibility and reconciles shared runner setting' do
+    it 'marks the project as importing and assigns attributes' do
       expect(project).to receive(:assign_attributes).with(project_attributes)
       expect(project).to receive(:reconcile_shared_runners_setting!)
       expect(project).to receive(:drop_visibility_level!)
       expect(project).to receive(:save!)
 
       pipeline.load(context, project_attributes)
+
+      expect(project.importing?).to eq(true)
     end
   end
 

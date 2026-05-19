@@ -52,7 +52,7 @@ module Gitlab
         def self.resolve_type(type)
           return TYPE_MAPPINGS[type] if TYPE_MAPPINGS[type]
           return type unless type.is_a?(String)
-          return 'object' if type.start_with?('API::')
+          return 'object' if type.delete_prefix('::').start_with?('API::')
 
           type
         end

@@ -3,5 +3,7 @@ name: read_service_ping
 description: Grants the ability to view Service Ping data
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - read_service_ping

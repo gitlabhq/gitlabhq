@@ -1215,7 +1215,7 @@ RSpec.shared_examples 'wiki model' do
         )
       end
 
-      it do
+      it 'slugifies title correctly' do
         expect(described_class.preview_slug(title, file_extension)).to eq(expected_slug)
       end
     end

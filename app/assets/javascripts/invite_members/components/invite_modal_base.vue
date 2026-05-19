@@ -300,14 +300,12 @@ export default {
     >
       <template #[$options.DEFAULT_SLOT]>
         <div class="gl-flex" data-testid="modal-base-intro-text">
-          <slot name="intro-text-before"></slot>
           <p>
             <gl-sprintf :message="introText">
               <template #strong="{ content }">
                 <strong>{{ content }}</strong>
               </template>
             </gl-sprintf>
-            <slot name="intro-text-after"></slot>
           </p>
         </div>
 
@@ -343,10 +341,12 @@ export default {
             data-testid="access-level-dropdown"
             :roles="roleDropdownItems"
             :loading="isLoadingRoles"
-            class="gl-max-w-30"
+            class="gl-w-full"
             header-text=""
           />
         </gl-form-group>
+
+        <slot name="membership-selector"></slot>
 
         <div data-testid="temporary-access-section">
           <gl-button

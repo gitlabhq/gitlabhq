@@ -1,7 +1,11 @@
 ---
 name: read_ssh_key
-description: Grants the ability to view SSH keys by ID or fingerprint
+description: Grants the ability to view SSH keys
 boundaries:
   - instance
+  - user
+available_for:
+  - granular_access_token
 permissions:
   - read_ssh_key
+  - read_user_ssh_key

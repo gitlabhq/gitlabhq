@@ -1,0 +1,6 @@
+---
+event: Members::MembersAddedEvent
+description: Published after one or more members are added to a group or project.
+  A single event carries all successfully created user IDs; skipped entirely when
+  every invited user fails validation.
+feature_category: user_management

@@ -3,10 +3,10 @@
 require "spec_helper"
 
 RSpec.describe Projects::RepositoriesController, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
 
   describe 'POST create' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     let(:request) { post :create, params: { namespace_id: project.namespace, project_id: project } }
 
@@ -262,7 +262,7 @@ RSpec.describe Projects::RepositoriesController, feature_category: :source_code_
           end
 
           context 'when user with expired password' do
-            let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+            let_it_be(:user, freeze: false) { create(:user, password_expires_at: 2.minutes.ago) }
 
             it 'redirects to sign in page' do
               get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master', token: user.static_object_token }, format: 'zip'
@@ -274,7 +274,7 @@ RSpec.describe Projects::RepositoriesController, feature_category: :source_code_
 
           context 'when password expiration is not applicable' do
             context 'when ldap user' do
-              let_it_be(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
+              let_it_be(:user, freeze: false) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
 
               it 'calls the action normally' do
                 get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master', token: user.static_object_token }, format: 'zip'
@@ -323,7 +323,7 @@ RSpec.describe Projects::RepositoriesController, feature_category: :source_code_
           end
 
           context 'when user with expired password' do
-            let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+            let_it_be(:user, freeze: false) { create(:user, password_expires_at: 2.minutes.ago) }
 
             it 'redirects to sign in page' do
               request.headers['X-Gitlab-Static-Object-Token'] = user.static_object_token
@@ -336,7 +336,7 @@ RSpec.describe Projects::RepositoriesController, feature_category: :source_code_
 
           context 'when password expiration is not applicable' do
             context 'when ldap user' do
-              let_it_be(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
+              let_it_be(:user, freeze: false) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
 
               it 'calls the action normally' do
                 request.headers['X-Gitlab-Static-Object-Token'] = user.static_object_token
@@ -361,7 +361,7 @@ RSpec.describe Projects::RepositoriesController, feature_category: :source_code_
   end
 
   describe 'HEAD archive' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     before do
       project.add_developer(user)

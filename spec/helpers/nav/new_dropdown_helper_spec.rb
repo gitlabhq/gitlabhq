@@ -126,7 +126,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_organization',
                 title: s_('Organization|New organization'),
-                href: '/-/organizations/new'
+                href: '/o/new'
               )
             )
           )

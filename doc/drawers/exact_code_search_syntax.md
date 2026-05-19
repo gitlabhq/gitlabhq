@@ -23,4 +23,4 @@ title: Syntax options
 | `foo file:\.js$`     | `foo` in files with names that end with `.js`                                   | `foo` in files with names that end with `.js`                                   |
 | `foo.*bar`           | `foo.*bar` (literal)                                                            | `foo.*bar` (regular expression)                                                 |
 | `sym:foo`            | `foo` in symbols like class, method, and variable names                         | `foo` in symbols like class, method, and variable names                         |
-| `test repo:(?i)foo`  | `test` in projects with `foo` in their name (case-insensitive); `repo:` supports regular expressions | `test` in projects with `foo` in their name (case-insensitive); `repo:` supports regular expressions |
+| `test repo:(?i)foo`  | `test` in projects with `foo` in their name (case-insensitive) | `test` in projects with `foo` in their name (case-insensitive) |

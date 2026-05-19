@@ -1,7 +1,9 @@
 ---
 name: create_pipeline
 description: Grants the ability to create pipelines
-permissions:
-  - create_pipeline
 boundaries:
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_pipeline

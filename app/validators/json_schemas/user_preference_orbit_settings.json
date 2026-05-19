@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User preference for Orbit agent settings",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "description": "Killswitch for all Orbit functionality. When false, all Orbit subsettings are ignored.",
+      "type": "boolean"
+    },
+    "orbit_agent_enabled": {
+      "description": "Whether the standalone Orbit agent is enabled for this user. Only applies when enabled is true.",
+      "type": "boolean"
+    },
+    "orbit_agentic_chat_enabled": {
+      "description": "Whether Orbit tools are available in agentic chat for this user. Only applies when enabled is true.",
+      "type": "boolean"
+    },
+    "orbit_other_foundational_agents_enabled": {
+      "description": "Whether Orbit tools are available in non-chat foundational agents for this user. Only applies when enabled is true.",
+      "type": "boolean"
+    },
+    "orbit_custom_agents_enabled": {
+      "description": "Whether Orbit tools are available in user-built custom agents for this user. Only applies when enabled is true.",
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

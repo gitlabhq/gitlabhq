@@ -172,7 +172,7 @@ RSpec.shared_examples 'Debian Distribution for specific behavior' do |factory|
           end
         end
 
-        it do
+        it 'validates distribution based on expected errors' do
           if errors
             expect(new_distribution).not_to be_valid
             expect(new_distribution.errors.to_a).to eq(errors)
@@ -202,7 +202,7 @@ RSpec.shared_examples 'Debian Distribution with project container' do
 
   describe 'project distribution specifics' do
     describe 'relationships' do
-      it do
+      it 'has many publications with correct inverse_of and foreign_key' do
         is_expected.to have_many(:publications).class_name('Packages::Debian::Publication').inverse_of(:distribution)
           .with_foreign_key(:distribution_id)
       end

@@ -23,7 +23,7 @@ RSpec.describe Events::DestroyService, feature_category: :user_profile do
     it 'deletes the events' do
       response = nil
 
-      expect { response = subject.execute }.to change(Event, :count).by(-3)
+      expect { response = subject.execute }.to change { Event.count }.by(-3)
 
       expect(response).to be_success
       expect(unrelated_event.reload).to be_present
@@ -54,7 +54,7 @@ RSpec.describe Events::DestroyService, feature_category: :user_profile do
       end
 
       it 'does not delete events' do
-        expect { subject.execute }.not_to change(Event, :count)
+        expect { subject.execute }.not_to change { Event.count }
       end
     end
   end

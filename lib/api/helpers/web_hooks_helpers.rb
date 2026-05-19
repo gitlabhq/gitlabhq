@@ -27,12 +27,17 @@ module API
         end
       end
 
+      def webhook_signing_token_actor
+        nil
+      end
+
       def find_hook
         hook_scope.find(params.delete(:hook_id))
       end
 
       def create_hook_params
         hook_params = declared_params(include_missing: false)
+        hook_params.delete(:signing_token) unless Feature.enabled?(:webhook_signing_token, webhook_signing_token_actor)
         url_variables = hook_params.delete(:url_variables)
 
         if url_variables.present?
@@ -59,6 +64,9 @@ module API
 
       def update_hook_params(hook)
         update_params = declared_params(include_missing: false)
+        update_params.delete(:signing_token) unless Feature.enabled?(:webhook_signing_token,
+          webhook_signing_token_actor)
+
         url_variables = update_params.delete(:url_variables) || []
         url_variables = url_variables.to_h { [_1[:key], _1[:value]] }
         update_params[:url_variables] = hook.url_variables.merge(url_variables) if url_variables.present?

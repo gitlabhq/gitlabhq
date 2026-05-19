@@ -33,13 +33,13 @@ RSpec.describe Gitlab::LegacyGithubImport::LabelFormatter do
     let(:store) { project.placeholder_reference_store }
 
     it 'creates a new label when label does not exist' do
-      expect { label.create! }.to change(Label, :count).by(1)
+      expect { label.create! }.to change { Label.count }.by(1)
     end
 
     it 'does not create a new label when label exists' do
       Labels::CreateService.new(nil, name: raw[:name]).execute(project: project)
 
-      expect { label.create! }.not_to change(Label, :count)
+      expect { label.create! }.not_to change { Label.count }
     end
 
     it 'does not push any placeholder references because it does not reference a user' do

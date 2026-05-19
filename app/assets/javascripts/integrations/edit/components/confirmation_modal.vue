@@ -6,7 +6,7 @@ export default {
   components: {
     GlModal,
   },
-
+  emits: ['submit'],
   computed: {
     primaryProps() {
       return {

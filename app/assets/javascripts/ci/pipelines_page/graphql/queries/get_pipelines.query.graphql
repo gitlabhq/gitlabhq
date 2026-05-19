@@ -2,6 +2,7 @@
 #import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "~/ci/pipelines_page/graphql/fragments/pipeline_details.fragment.graphql"
+#import "~/ci/pipelines_page/graphql/fragments/pipeline_downstream_item.fragment.graphql"
 
 query getPipelines(
   $fullPath: ID!
@@ -34,25 +35,7 @@ query getPipelines(
         ...PipelineDetails
         downstream(first: 3) {
           nodes {
-            id
-            iid
-            name
-            path
-            detailedStatus {
-              ...CiIcon
-              tooltip
-              label
-            }
-            project {
-              id
-              fullPath
-              name
-            }
-            sourceJob {
-              id
-              name
-              retried
-            }
+            ...PipelineDownstreamItem
           }
         }
         upstream {

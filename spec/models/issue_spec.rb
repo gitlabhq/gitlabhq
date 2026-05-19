@@ -15,7 +15,6 @@ RSpec.describe Issue, feature_category: :team_planning do
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to belong_to(:project) }
-    it { is_expected.to belong_to(:work_item_type).class_name('WorkItems::Type') }
     it { is_expected.to belong_to(:moved_to).class_name('Issue') }
     it { is_expected.to have_one(:moved_from).class_name('Issue') }
     it { is_expected.to belong_to(:duplicated_to).class_name('Issue') }
@@ -149,7 +148,8 @@ RSpec.describe Issue, feature_category: :team_planning do
 
       with_them do
         it 'is possible to change type only between selected types' do
-          issue = create(:issue, old_type, project: reusable_project)
+          traits = old_type == :issue ? [] : [old_type]
+          issue = create(:issue, *traits, project: reusable_project)
 
           issue.assign_attributes(work_item_type_id: build(:work_item_system_defined_type, new_type).id)
 
@@ -250,8 +250,8 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     describe '#ensure_work_item_type' do
-      let_it_be(:issue_type) { create(:work_item_type, :issue) }
-      let_it_be(:incident_type) { create(:work_item_type, :incident) }
+      let(:issue_type) { build(:work_item_system_defined_type, :issue) }
+      let(:incident_type) { build(:work_item_system_defined_type, :incident) }
       let_it_be(:project) { create(:project) }
       let(:provider) { ::WorkItems::TypesFramework::Provider.new(issue.namespace) }
 
@@ -352,7 +352,7 @@ RSpec.describe Issue, feature_category: :team_planning do
       it 'records the creation action after saving' do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_created_action)
 
-        create(:issue)
+        create(:issue, project: reusable_project)
       end
 
       it_behaves_like 'internal event tracking' do
@@ -380,7 +380,7 @@ RSpec.describe Issue, feature_category: :team_planning do
       end
 
       context 'when existing issue is saved' do
-        let(:issue) { create(:issue) }
+        let(:issue) { create(:issue, project: reusable_project) }
 
         before do
           issue.update!(namespace_id: nil)
@@ -473,8 +473,8 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   context 'order by upvotes' do
-    let!(:issue) { create(:issue) }
-    let!(:issue2) { create(:issue) }
+    let!(:issue) { create(:issue, project: reusable_project) }
+    let!(:issue2) { create(:issue, project: reusable_project) }
     let!(:award_emoji) { create(:award_emoji, :upvote, awardable: issue2) }
 
     describe '.order_upvotes_desc' do
@@ -642,10 +642,10 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '.order_title' do
-    let_it_be(:issue1) { create(:issue, title: 'foo') }
-    let_it_be(:issue2) { create(:issue, title: 'bar') }
-    let_it_be(:issue3) { create(:issue, title: 'baz') }
-    let_it_be(:issue4) { create(:issue, title: 'Baz 2') }
+    let_it_be(:issue1) { create(:issue, title: 'foo', project: reusable_project) }
+    let_it_be(:issue2) { create(:issue, title: 'bar', project: reusable_project) }
+    let_it_be(:issue3) { create(:issue, title: 'baz', project: reusable_project) }
+    let_it_be(:issue4) { create(:issue, title: 'Baz 2', project: reusable_project) }
 
     context 'sorting ascending' do
       subject { described_class.order_title_asc }
@@ -676,7 +676,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   context 'order by escalation status' do
     let_it_be(:triggered_incident) { create(:incident_management_issuable_escalation_status, :triggered).issue }
     let_it_be(:resolved_incident) { create(:incident_management_issuable_escalation_status, :resolved).issue }
-    let_it_be(:issue_no_status) { create(:issue) }
+    let_it_be(:issue_no_status) { create(:issue, project: reusable_project) }
 
     describe '.order_escalation_status_asc' do
       subject { described_class.order_escalation_status_asc }
@@ -771,7 +771,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     it 'clears moved_to_id for moved issues' do
-      moved_issue = create(:issue)
+      moved_issue = create(:issue, project: reusable_project)
 
       issue.update!(moved_to_id: moved_issue.id)
 
@@ -779,7 +779,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     it 'clears duplicated_to_id for duplicated issues' do
-      duplicate_issue = create(:issue)
+      duplicate_issue = create(:issue, project: reusable_project)
 
       issue.update!(duplicated_to_id: duplicate_issue.id)
 
@@ -1059,7 +1059,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#can_move?' do
-    let(:issue) { create(:issue) }
+    let(:issue) { create(:issue, project: reusable_project) }
 
     subject { issue.can_move?(user) }
 
@@ -1131,7 +1131,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     context 'issue already duplicated' do
       let(:duplicated_to_issue) { create(:issue, project: reusable_project) }
-      let(:issue) { create(:issue, duplicated_to: duplicated_to_issue) }
+      let(:issue) { create(:issue, project: reusable_project, duplicated_to: duplicated_to_issue) }
 
       it { is_expected.to eq true }
     end
@@ -1230,7 +1230,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   it_behaves_like 'a time trackable' do
-    let(:trackable) { create(:issue) }
+    let(:trackable) { create(:issue, project: reusable_project) }
     let(:timelog) { create(:issue_timelog, issue: trackable) }
   end
 
@@ -1242,7 +1242,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   it_behaves_like 'a Taskable' do
-    let(:subject) { create :issue }
+    let(:subject) { create(:issue, project: reusable_project) }
   end
 
   describe '.to_branch_name' do
@@ -1317,19 +1317,6 @@ RSpec.describe Issue, feature_category: :team_planning do
       let_it_be_with_refind(:issuable) { create(:issue, project: issuable_parent) }
 
       let(:params) { { noteable: issuable, project: issuable_parent } }
-    end
-
-    context 'when optimize_issuable_participants is disabled' do
-      before do
-        stub_feature_flags(optimize_issuable_participants: false)
-      end
-
-      it_behaves_like 'issuable participants' do
-        let_it_be(:issuable_parent) { create(:project, :public) }
-        let_it_be_with_refind(:issuable) { create(:issue, project: issuable_parent) }
-
-        let(:params) { { noteable: issuable, project: issuable_parent } }
-      end
     end
 
     context 'using a private project' do
@@ -1570,7 +1557,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   it_behaves_like 'throttled touch' do
-    subject { create(:issue, updated_at: 1.hour.ago) }
+    subject { create(:issue, project: reusable_project, updated_at: 1.hour.ago) }
   end
 
   context "relative positioning" do
@@ -1603,6 +1590,28 @@ RSpec.describe Issue, feature_category: :team_planning do
 
         expect { described_class.move_nulls_to_end(payload) }.to raise_error(Gitlab::RelativePositioning::IssuePositioningDisabled)
         expect { described_class.move_nulls_to_start(payload) }.to raise_error(Gitlab::RelativePositioning::IssuePositioningDisabled)
+      end
+    end
+
+    describe '.relative_positioning_query_base' do
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:subgroup_project) { create(:project, group: subgroup) }
+      let_it_be(:project_issue) { create(:issue, project: project, relative_position: 100) }
+      let_it_be(:subgroup_project_issue) { create(:issue, project: subgroup_project, relative_position: 200) }
+      let_it_be(:other_group_issue) { create(:issue, relative_position: 300) }
+
+      it 'includes issues from any project under the root namespace hierarchy' do
+        scope = described_class.relative_positioning_query_base(project_issue)
+
+        expect(scope).to include(project_issue, subgroup_project_issue)
+        expect(scope).not_to include(other_group_issue)
+      end
+
+      it 'returns the same scope when called with an issue from a nested project' do
+        scope = described_class.relative_positioning_query_base(subgroup_project_issue)
+
+        expect(scope).to include(project_issue, subgroup_project_issue)
+        expect(scope).not_to include(other_group_issue)
       end
     end
   end
@@ -1706,7 +1715,7 @@ RSpec.describe Issue, feature_category: :team_planning do
       it 'schedules rebalancing if there is no space left' do
         lhs = build_stubbed(:issue, relative_position: 99, project: project)
         to_move = build(:issue, project: project)
-        expect(Issues::RebalancingWorker).to receive(:perform_async).with(nil, project_id, namespace_id)
+        expect(Issues::RebalancingWorker).to receive(:perform_async).with(nil, nil, expected_namespace_id)
 
         expect { to_move.move_between(lhs, issue) }.to raise_error(RelativePositioning::NoSpaceLeft)
       end
@@ -1715,8 +1724,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     context 'when project in user namespace' do
       let(:project_namespace) { build_stubbed(:project_namespace) }
       let(:project) { build_stubbed(:project_empty_repo, project_namespace: project_namespace) }
-      let(:project_id) { project.id }
-      let(:namespace_id) { nil }
+      let(:expected_namespace_id) { project_namespace.id }
 
       it_behaves_like 'schedules issues rebalancing'
     end
@@ -1725,8 +1733,7 @@ RSpec.describe Issue, feature_category: :team_planning do
       let(:group) { create(:group) }
       let(:project_namespace) { build_stubbed(:project_namespace) }
       let(:project) { build_stubbed(:project_empty_repo, group: group, project_namespace: project_namespace) }
-      let(:project_id) { nil }
-      let(:namespace_id) { group.id }
+      let(:expected_namespace_id) { group.id }
 
       it_behaves_like 'schedules issues rebalancing'
     end
@@ -1741,7 +1748,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#issue_type' do
-    let_it_be(:issue) { create(:issue) }
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
 
     it 'gets the type field from the work_item_types table' do
       expect(issue).to receive_message_chain(:work_item_type, :base_type)
@@ -1759,7 +1766,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#issue_type_supports?' do
-    let_it_be(:issue) { create(:issue) }
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
 
     it 'raises error when feature is invalid' do
       expect { issue.issue_type_supports?(:unkown_feature) }.to raise_error(ArgumentError)
@@ -1767,12 +1774,15 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#supports_assignee?' do
-    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter::WIDGETS_FOR_TYPE.each_pair do |base_type, widgets|
+    WorkItems::Type::BASE_TYPES.each_key do |base_type|
       specify do
-        issue = build(:issue, base_type)
-        supports_assignee = widgets.include?(:assignees)
-
         skip if !Gitlab.ee? && [:epic, :requirement, :objective, :test_case, :key_result].include?(base_type)
+
+        traits = base_type == :issue ? [] : [base_type]
+        issue = build(:issue, *traits)
+        widgets = WorkItems::TypesFramework::SystemDefined::Definitions
+          .const_get(base_type.to_s.camelize, false).widgets
+        supports_assignee = widgets.include?('assignees')
 
         expect(issue.supports_assignee?).to eq(supports_assignee)
       end
@@ -1839,7 +1849,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#email_participants_emails' do
-    let_it_be(:issue) { create(:issue) }
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
 
     it 'returns a list of emails' do
       participant1 = issue.issue_email_participants.create!(email: 'a@gitlab.com')
@@ -1867,7 +1877,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#expire_etag_cache' do
-    let_it_be(:issue) { create(:issue) }
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
 
     subject(:expire_cache) { issue.expire_etag_cache }
 
@@ -1907,11 +1917,11 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   context 'order by closed_at' do
-    let!(:issue_a) { create(:issue, closed_at: 1.day.ago) }
-    let!(:issue_b) { create(:issue, closed_at: 5.days.ago) }
-    let!(:issue_c_nil) { create(:issue, closed_at: nil) }
-    let!(:issue_d) { create(:issue, closed_at: 3.days.ago) }
-    let!(:issue_e_nil) { create(:issue, closed_at: nil) }
+    let!(:issue_a) { create(:issue, project: reusable_project, closed_at: 1.day.ago) }
+    let!(:issue_b) { create(:issue, project: reusable_project, closed_at: 5.days.ago) }
+    let!(:issue_c_nil) { create(:issue, project: reusable_project, closed_at: nil) }
+    let!(:issue_d) { create(:issue, project: reusable_project, closed_at: 3.days.ago) }
+    let!(:issue_e_nil) { create(:issue, project: reusable_project, closed_at: nil) }
 
     describe '.order_closed_at_asc' do
       it 'orders on closed at' do
@@ -1952,7 +1962,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
   describe '#update_search_data!' do
     it 'copies namespace_id to search data' do
-      issue = create(:issue)
+      issue = create(:issue, project: reusable_project)
 
       expect(issue.search_data.namespace_id).to eq(issue.namespace_id)
     end
@@ -1985,9 +1995,10 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     with_them do
       it 'uses the issue type as the reference name' do
-        issue = create(:issue, issue_type, project: reusable_project)
-
         skip if !Gitlab.ee? && issue_type == :test_case
+
+        traits = issue_type == :issue ? [] : [issue_type]
+        issue = create(:issue, *traits, project: reusable_project)
 
         expect(issue.gfm_reference).to eq("#{expected_name} #{issue.to_reference}")
       end
@@ -2002,7 +2013,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
       let_it_be(:group_issue) { create(:issue, :group_level, namespace: group) }
       let_it_be(:group_issue2) { create(:issue, :group_level, namespace: group) }
-      let_it_be(:issue) { create(:issue) }
+      let_it_be(:issue) { create(:issue, project: reusable_project) }
 
       it 'uses uses an absolute and full path when referencing a root group' do
         expect(group_issue.gfm_reference(issue.project)).to eq("issue /#{group.full_path}##{group_issue.iid}")
@@ -2030,7 +2041,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     context 'when the work item has the widget' do
-      let(:work_item_type) { create(:work_item_type, :issue) }
+      let(:work_item_type) { build(:work_item_system_defined_type, :issue) }
 
       it { is_expected.to be_truthy }
     end
@@ -2133,12 +2144,16 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe ".invalidate_project_counter_caches" do
-    let(:count_service) { instance_double(Projects::OpenIssuesCountService) }
+    let(:issues_count_service) { instance_double(Projects::OpenIssuesCountService) }
+    let(:work_items_count_service) { instance_double(Projects::OpenWorkItemsCountService) }
 
     context "when the project exists" do
-      it "calls Projects::OpenIssuesCountService" do
-        allow(Projects::OpenIssuesCountService).to receive(:new).with(reusable_project).and_return(count_service)
-        expect(count_service).to receive(:delete_cache)
+      it "deletes the cached counts for open issues and open work items", :aggregate_failures do
+        allow(Projects::OpenIssuesCountService).to receive(:new).with(reusable_project).and_return(issues_count_service)
+        allow(Projects::OpenWorkItemsCountService).to receive(:new).with(reusable_project).and_return(work_items_count_service)
+
+        expect(issues_count_service).to receive(:delete_cache)
+        expect(work_items_count_service).to receive(:delete_cache)
 
         subject.invalidate_project_counter_caches
       end
@@ -2148,8 +2163,9 @@ RSpec.describe Issue, feature_category: :team_planning do
       let_it_be(:group) { create(:group) }
       let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group) }
 
-      it "does not call Projects::OpenIssuesCountService" do
+      it "does not instantiate the project count services", :aggregate_failures do
         expect(Projects::OpenIssuesCountService).not_to receive(:new).with(reusable_project)
+        expect(Projects::OpenWorkItemsCountService).not_to receive(:new).with(reusable_project)
 
         group_work_item.invalidate_project_counter_caches
       end
@@ -2321,6 +2337,49 @@ RSpec.describe Issue, feature_category: :team_planning do
 
         expect(issue.referenced_mentionables).to be_empty
       end
+    end
+  end
+
+  describe '#as_json' do
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
+
+    it 'renames exported_work_item_type to work_item_type' do
+      json = issue.as_json(methods: [:exported_work_item_type])
+
+      expect(json).to have_key('work_item_type')
+      expect(json).not_to have_key('exported_work_item_type')
+      expect(json['work_item_type']).to eq({ 'name' => issue.work_item_type.name })
+    end
+
+    context 'when work_item_configurable_types feature flag is disabled' do
+      before do
+        stub_feature_flags(work_item_configurable_types: false)
+      end
+
+      it 'renames exported_work_item_type using the legacy base_type format' do
+        json = issue.as_json(methods: [:exported_work_item_type])
+
+        expect(json).to have_key('work_item_type')
+        expect(json).not_to have_key('exported_work_item_type')
+        expect(json['work_item_type']).to eq({ 'base_type' => issue.work_item_type.base_type })
+      end
+    end
+
+    it 'does not add work_item_type when exported_work_item_type is not in methods' do
+      json = issue.as_json(only: [:id])
+
+      expect(json).not_to have_key('work_item_type')
+      expect(json).not_to have_key('exported_work_item_type')
+    end
+
+    it 'includes labels when labels option is present' do
+      label = create(:label, project: issue.project)
+      issue.labels << label
+
+      json = issue.as_json(labels: true)
+
+      expect(json[:labels]).to be_present
+      expect(json[:labels].first).to include('title' => label.title)
     end
   end
 end

@@ -11,3 +11,7 @@ Modifications to the following files were made on 2024-08-22 by GitLab:
 - lib/sidekiq/scheduled.rb
 - sidekiq.gemspec
 - test/web_test.rb
+
+Modifications to the following files were made on 2026-04-03 by GitLab:
+- lib/sidekiq/launcher.rb
+- test/launcher_test.rb

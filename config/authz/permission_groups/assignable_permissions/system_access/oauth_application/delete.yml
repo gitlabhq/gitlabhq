@@ -3,5 +3,7 @@ name: delete_oauth_application
 description: Grants the ability to delete OAuth applications
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - delete_oauth_application

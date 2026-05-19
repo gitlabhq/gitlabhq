@@ -1,9 +1,14 @@
 import { GlCollapsibleListbox, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
 import { integrationLevels, overrideDropdownDescriptions } from '~/integrations/constants';
-import { createStore } from '~/integrations/edit/store';
+import { useIntegrationForm } from '~/integrations/edit/store';
+
+Vue.use(PiniaVuePlugin);
 
 describe('OverrideDropdown', () => {
   let wrapper;
@@ -18,11 +23,15 @@ describe('OverrideDropdown', () => {
   };
 
   const createComponent = (props = {}, defaultStateProps = {}) => {
+    const pinia = createTestingPinia({ stubActions: false });
+    const store = useIntegrationForm();
+    Object.assign(store, {
+      defaultState: { ...defaultDefaultStateProps, ...defaultStateProps },
+    });
+
     wrapper = shallowMount(OverrideDropdown, {
       propsData: { ...defaultProps, ...props },
-      store: createStore({
-        defaultState: { ...defaultDefaultStateProps, ...defaultStateProps },
-      }),
+      pinia,
     });
   };
 

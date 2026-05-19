@@ -74,6 +74,7 @@ describe('DynamicValueRenderer', () => {
           },
         });
         expect(findDropdown().exists()).toBe(true);
+        expect(findDropdown().props('multiple')).toBe(false);
         expect(findInput().exists()).toBe(false);
       });
 
@@ -110,7 +111,7 @@ describe('DynamicValueRenderer', () => {
         expect(findInput().exists()).toBe(false);
       });
 
-      it('renders dropdown for array type when options are provided', () => {
+      it('renders multi select dropdown for array type when options are provided', () => {
         createComponent({
           props: {
             item: {
@@ -123,6 +124,7 @@ describe('DynamicValueRenderer', () => {
         });
 
         expect(findDropdown().exists()).toBe(true);
+        expect(findDropdown().props('multiple')).toBe(true);
         expect(findInput().exists()).toBe(false);
 
         const dropdownItems = findDropdown().props('items');
@@ -138,13 +140,28 @@ describe('DynamicValueRenderer', () => {
             item: {
               ...defaultProps.item,
               type: 'ARRAY',
-              value: 'option2',
+              value: ['option2'],
               options: ['option1', 'option2', 'option3'],
             },
           },
         });
 
         expect(findDropdown().props('toggleText')).toBe('option2');
+      });
+
+      it('displays multiple selected values in dropdown toggle text', () => {
+        createComponent({
+          props: {
+            item: {
+              ...defaultProps.item,
+              type: 'ARRAY',
+              value: ['option1', 'option2'],
+              options: ['option1', 'option2', 'option3'],
+            },
+          },
+        });
+
+        expect(findDropdown().props('toggleText')).toBe('2 options selected');
       });
 
       it('displays placeholder in dropdown toggle text when array value is empty', () => {

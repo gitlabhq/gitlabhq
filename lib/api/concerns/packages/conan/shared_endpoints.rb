@@ -37,6 +37,7 @@ module API
 
             helpers ::API::Helpers::PackagesManagerClientsHelpers
             helpers ::API::Helpers::Packages::Conan::ApiHelpers
+            helpers ::API::Helpers::Packages::Conan::ApiErrorFormatter
             helpers ::API::Helpers::RelatedResourcesHelpers
 
             rescue_from ActiveRecord::RecordInvalid do |e|

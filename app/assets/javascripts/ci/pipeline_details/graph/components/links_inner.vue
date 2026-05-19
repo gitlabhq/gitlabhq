@@ -2,15 +2,13 @@
 import { isEmpty } from 'lodash-es';
 import { STAGE_VIEW } from '~/ci/pipeline_details/graph/constants';
 import { createJobsHash, generateJobNeedsDict } from '~/ci/pipeline_details/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { reportToSentry } from '~/ci/utils';
 import { DRAW_FAILURE } from '../../constants';
-import { generateLinksData, generateQuadraticLinksData } from '../../utils/drawing_utils';
+import { generateLinksData } from '../../utils/drawing_utils';
 
 export default {
   name: 'LinksInner',
   STROKE_WIDTH: 2,
-  mixins: [glFeatureFlagsMixin()],
   props: {
     containerId: {
       type: String,
@@ -48,6 +46,7 @@ export default {
       default: STAGE_VIEW,
     },
   },
+  emits: ['error', 'highlighted-jobs-change'],
   data() {
     return {
       links: [],
@@ -93,7 +92,7 @@ export default {
       }
     },
     highlightedJobs(jobs) {
-      this.$emit('highlightedJobsChange', jobs);
+      this.$emit('highlighted-jobs-change', jobs);
     },
     linksData() {
       this.calculateLinkData();
@@ -119,15 +118,7 @@ export default {
     },
     calculateLinkData() {
       try {
-        if (!this.glFeatures.updateVisualLanguage) {
-          this.links = generateLinksData(this.linksData, this.containerId, `-${this.pipelineId}`);
-        } else {
-          this.links = generateQuadraticLinksData(
-            this.linksData,
-            this.containerId,
-            `${this.pipelineId}`,
-          );
-        }
+        this.links = generateLinksData(this.linksData, this.containerId, `-${this.pipelineId}`);
       } catch (err) {
         this.$emit('error', { type: DRAW_FAILURE, reportToSentry: false });
         reportToSentry(this.$options.name, err);

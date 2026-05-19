@@ -27,7 +27,7 @@ module MergeRequests
       # Lease may already be held by another merge with the same source branch.
       # This is safe - the lease protects downstream MRs (via target_branch_pending_deletion_check!),
       # and that protection is already in place from the other process.
-      obtain_branch_deletion_lease(merge_request) if delete_source_branch?
+      obtain_branch_deletion_lease if delete_source_branch?
       jid = merge_jid
 
       validate!
@@ -68,8 +68,6 @@ module MergeRequests
     end
 
     def target_branch_pending_deletion_check!
-      return unless Feature.enabled?(:prevent_merge_race_condition, @merge_request.project)
-
       lease_key = MergeRequests::DeleteSourceBranchWorker.lease_key(@merge_request.target_project_id, @merge_request.target_branch)
       return unless Gitlab::ExclusiveLease.get_uuid(lease_key)
 
@@ -192,9 +190,7 @@ module MergeRequests
       params.with_indifferent_access[:sha] == merge_request.diff_head_sha
     end
 
-    def obtain_branch_deletion_lease(merge_request)
-      return unless Feature.enabled?(:prevent_merge_race_condition, merge_request.project)
-
+    def obtain_branch_deletion_lease
       @branch_deletion_lease_uuid = Gitlab::ExclusiveLease.new(source_branch_deletion_lease_key, timeout: MergeRequests::DeleteSourceBranchWorker::LEASE_TIMEOUT).try_obtain
     end
 

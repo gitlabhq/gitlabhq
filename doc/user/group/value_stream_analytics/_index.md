@@ -292,7 +292,7 @@ Prerequisites:
 To view value stream analytics for your group or project:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Analyze** > **Value stream analytics**.
+1. In the left sidebar, select **Analyze** > **Value stream analytics**.
 1. To view metrics for a particular stage, select a stage below the **Filter results** text box.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
@@ -384,7 +384,7 @@ Prerequisites:
 To view lifecycle metrics:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Analyze** > **Value stream analytics**.
+1. In the left sidebar, select **Analyze** > **Value stream analytics**.
    Lifecycle metrics display below the **Filter results** text box.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
@@ -398,7 +398,7 @@ To view lifecycle metrics:
 To view the [Value Streams Dashboard](../../analytics/value_streams_dashboard.md) and [DORA metrics](../../analytics/dora_metrics.md):
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Analyze** > **Value stream analytics**.
+1. In the left sidebar, select **Analyze** > **Value stream analytics**.
 1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
 1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL
    (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
@@ -410,7 +410,7 @@ Value stream analytics shows the median time spent by issues or merge requests i
 To view the median time spent in each stage by a group:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Analyze** > **Value stream analytics**.
+1. In the left sidebar, select **Analyze** > **Value stream analytics**.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
    1. Select a parameter.
@@ -440,7 +440,7 @@ The chart uses the global page filters to display data based on the selected gro
 To view tasks by type:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Analyze** > **Value stream analytics**.
+1. In the left sidebar, select **Analyze** > **Value stream analytics**.
 1. Below the **Filter results** text box, select **Overview**. The **Tasks by type** chart displays below the **Total time** chart.
 1. Optional. To filter the tasks by type, select **Settings** ({{< icon name="settings" >}}), then **Issues** or **Merge Requests**.
 1. Optional. To filter the tasks by label, select **Settings** ({{< icon name="settings" >}}), then one or more labels. By default the top group labels (maximum 10) are selected. You can select a maximum of 15 labels.
@@ -466,7 +466,7 @@ To view tasks by type:
 To create a value stream with default stages:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Analyze** > **Value Stream analytics**.
+1. In the left sidebar, select **Analyze** > **Value Stream analytics**.
 1. Select **New Value Stream**.
 1. Enter a name for the value stream.
 1. Select **Create from default template**.
@@ -486,7 +486,7 @@ To create a value stream with default stages:
 To create a value stream with custom stages:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Analyze** > **Value Stream analytics**.
+1. In the left sidebar, select **Analyze** > **Value Stream analytics**.
 1. Select **New value stream**.
 1. For each stage:
    - Enter a name for the stage.
@@ -543,7 +543,7 @@ The first value stream uses standard timestamp-based events for defining the sta
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Analyze** > **Value stream analytics**.
+1. In the left sidebar, select **Analyze** > **Value stream analytics**.
 1. From the value stream dropdown list, select the value stream you want to edit.
 1. Next to the value stream dropdown list, select **Edit**.
 1. Optional:
@@ -567,7 +567,7 @@ After you create a value stream, you can customize it to suit your purposes. To 
 To delete a custom value stream:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Analyze** > **Value stream analytics**.
+1. In the left sidebar, select **Analyze** > **Value stream analytics**.
 1. From the value stream dropdown list, select the value stream you want to delete, then **Delete (name of value stream)**.
 1. To confirm, select **Delete**.
 
@@ -584,7 +584,7 @@ The **Total time chart** shows the average number of days it takes for developme
 The chart shows data for the last 500 workflow items.
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Analyze** > **Value stream analytics**.
+1. In the left sidebar, select **Analyze** > **Value stream analytics**.
 1. Above the **Filter results** box, select a stage:
    - To view a summary of the cycle time for all stages, select **Overview**.
    - To view the cycle time for specific stage, select a stage.

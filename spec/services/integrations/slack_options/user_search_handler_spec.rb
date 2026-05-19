@@ -17,7 +17,7 @@ RSpec.describe Integrations::SlackOptions::UserSearchHandler, feature_category: 
     subject(:execute) { described_class.new(chat_name, search_value, view_id).execute }
 
     context 'when user has permissions to read project members' do
-      before do
+      before_all do
         project.add_developer(current_user)
         project.add_guest(user1)
         project.add_reporter(user2)

@@ -186,8 +186,6 @@ The OpenID Connect provider provides you with a client's details and secret for 
        provide any value and it is ignored.
      - `redirect_uri` is the GitLab URL to redirect the user to after successful login
        (for example, `http://example.com/users/auth/openid_connect/callback`).
-     - `end_session_endpoint` (optional) is the URL to the endpoint that ends the
-       session. You can provide this URL if auto-discovery is disabled or unsuccessful.
      - The following `client_options` are optional unless auto-discovery is disabled or unsuccessful:
        - `authorization_endpoint` is the URL to the endpoint that authorizes the end user.
        - `token_endpoint` is the URL to the endpoint that provides Access Token.
@@ -1698,7 +1696,7 @@ Prerequisites:
 To force step-up authentication for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Under Step-up authentication, select an available authentication provider.
 1. Select **Save changes**.

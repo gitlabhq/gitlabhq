@@ -40,7 +40,7 @@ With MCP servers in the AI Catalog, you can:
 - Authenticate with OAuth-enabled MCP servers.
 
 A dedicated **MCP** tab appears in the AI Catalog navigation alongside **Agents** and **Flows**.
-MCP servers associated with agents enabled in your namespace are also available under **Automate** > **MCP servers**
+MCP servers associated with agents enabled in your namespace are also available under **AI** > **MCP servers**
 at both the group and project level.
 
 ## Prerequisites
@@ -138,7 +138,7 @@ fetch new content or perform any actions.
 
 ## View MCP servers for a namespace
 
-The **Automate** > **MCP servers** page shows all MCP servers associated with agents enabled in your namespace.
+The **AI** > **MCP servers** page shows all MCP servers associated with agents enabled in your namespace.
 Each server displays the number of agents that use it, with agent names shown in a tooltip on hover.
 
 This page is available at both the group and project level:
@@ -149,7 +149,7 @@ This page is available at both the group and project level:
 To view MCP servers at the group or project level:
 
 1. In the left sidebar, select **Search or go to** and find your group or project.
-1. Select **Automate** > **MCP servers**.
+1. Select **AI** > **MCP servers**.
 
 For OAuth-enabled servers that you have not yet authenticated with, an option to **Connect** is displayed.
 
@@ -158,7 +158,7 @@ For OAuth-enabled servers that you have not yet authenticated with, an option to
 To authenticate with an OAuth-enabled MCP server:
 
 1. In the left sidebar, select **Search or go to** and find your group or project.
-1. Select **Automate** > **MCP servers**.
+1. Select **AI** > **MCP servers**.
 1. Find the MCP server and select **Connect**.
 1. Review and approve the authorization request on the MCP server's authorization page.
 1. GitLab stores the access token securely for future requests.

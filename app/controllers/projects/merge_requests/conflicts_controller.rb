@@ -87,3 +87,5 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
     MergeRequestSerializer.new(current_user: current_user, project: project)
   end
 end
+
+Projects::MergeRequests::ConflictsController.prepend_mod_with('Projects::MergeRequests::ConflictsController')

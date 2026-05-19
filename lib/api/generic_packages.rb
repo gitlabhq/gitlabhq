@@ -105,8 +105,15 @@ module API
               .execute
 
             if response.error?
-              bad_request!('Duplicate package is not allowed') if response.cause.package_file_already_exists?
-              forbidden!('Package protected.') if response.cause.package_protected?
+              if response.cause.package_file_already_exists?
+                bad_request!('Duplicate package is not allowed')
+              elsif response.cause.package_protected?
+                forbidden!('Package protected.')
+              elsif response.cause.package_already_exists?
+                bad_request!('Package already exists')
+              else
+                bad_request!(response.message)
+              end
             end
 
             if params[:select] == 'package_file'

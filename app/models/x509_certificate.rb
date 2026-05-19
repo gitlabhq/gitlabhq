@@ -20,8 +20,11 @@ class X509Certificate < ApplicationRecord
   validates :subject_key_identifier, presence: true, format: { with: Gitlab::Regex.x509_subject_key_identifier_regex }
   # rfc 5280 - 4.1.2.6  Subject (subjectAltName contains the email address)
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  # rfc 5280 - 4.1.2.2  Serial number
-  validates :serial_number, presence: true, numericality: { only_integer: true }
+  # rfc 5280 - 4.1.2.2  Serial number (20 octets is the maximum)
+  SERIAL_NUMBER_MAX = (2**160) - 1
+
+  validates :serial_number, presence: true,
+    numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: SERIAL_NUMBER_MAX }
 
   validates :x509_issuer_id, presence: true
 

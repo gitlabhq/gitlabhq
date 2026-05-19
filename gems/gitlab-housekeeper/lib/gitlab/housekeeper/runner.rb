@@ -22,12 +22,14 @@ module Gitlab
         keeps: nil,
         filter_identifiers: [],
         push_when_approved: false,
+        push_when_conflict: true,
         target_branch: 'master')
         @max_mrs = max_mrs
         @dry_run = dry_run
         @logger = Logger.new($stdout)
         @target_branch = target_branch
         @push_when_approved = push_when_approved
+        @push_when_conflict = push_when_conflict
         require_keeps
 
         @keeps = if keeps
@@ -131,6 +133,7 @@ module Gitlab
       def setup_merge_request(change, branch_name, keep)
         merge_request = get_existing_merge_request(branch_name) || create(change, branch_name, keep)
         change.mr_web_url = merge_request['web_url']
+        change.has_conflicts = merge_request['has_conflicts'] || false
       end
 
       def git
@@ -181,7 +184,9 @@ module Gitlab
           target_project_id: housekeeper_target_project_id
         )
 
-        git.push(branch_name, change.push_options) if keep.should_push_code?(change, @push_when_approved)
+        if keep.should_push_code?(change, @push_when_approved, push_when_conflict: @push_when_conflict)
+          git.push(branch_name, change.push_options)
+        end
 
         gitlab_client.create_or_update_merge_request(
           change: change,

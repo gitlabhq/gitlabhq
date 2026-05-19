@@ -25,6 +25,8 @@ module Issues
       # initialized when we call #create below
       @issue = @build_service.execute(initialize_callbacks: false)
 
+      return error(@issue.errors.full_messages, 422, pass_back: { issue: @issue }) if @issue.errors.any?
+
       # issue_type and work_item_type are set in BuildService, so we can delete it from params, in later phase
       # it can be set also from quick actions
       [:issue_type, :work_item_type, :work_item_type_id].each { |attribute| params.delete(attribute) }
@@ -171,7 +173,7 @@ module Issues
     def after_commit_tasks(user, issue)
       issue.run_after_commit do
         NewIssueWorker.perform_async(issue.id, user.id, issue.class.to_s)
-        Issues::PlacementWorker.perform_async({ 'namespace_id' => issue.relative_positioning_namespace.id })
+        Issues::PlacementWorker.perform_async({ 'namespace_id' => issue.namespace.work_item_positioning_root.id })
       end
     end
   end

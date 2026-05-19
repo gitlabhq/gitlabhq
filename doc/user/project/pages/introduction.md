@@ -79,7 +79,7 @@ Permanently delete all Pages deployments for a project.
 To delete your pages:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Deploy** > **Pages**.
+1. In the left sidebar, select **Deploy** > **Pages**.
 1. Select **Delete pages**.
 
 Your Pages site is no longer deployed.

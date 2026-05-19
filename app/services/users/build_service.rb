@@ -2,7 +2,7 @@
 
 module Users
   class BuildService < BaseService
-    ALLOWED_USER_TYPES = %i[project_bot security_policy_bot placeholder].freeze
+    ALLOWED_USER_TYPES = %i[project_bot security_policy_bot placeholder service_account].freeze
 
     delegate :user_default_internal_regex_enabled?,
       :user_default_internal_regex_instance,
@@ -113,6 +113,8 @@ module Users
       @user_params[:email_otp_required_after] = Time.current if should_enrol_in_email_otp?
 
       @user_params.delete(:user_type) unless allowed_user_type?
+      @user_params.delete(:provisioned_by_group_id) unless service_account?
+      @user_params.delete(:provisioned_by_project_id) unless service_account?
     end
 
     def set_external_param?
@@ -123,7 +125,7 @@ module Users
       # Email OTP applies only to users who are created with an ability
       # to sign in with a password.
       !@user_params[:password_automatically_set] &&
-        Feature.enabled?(:enrol_new_users_in_email_otp, :instance)
+        Gitlab::CurrentSettings.require_minimum_email_based_otp_for_users_with_passwords?
     end
 
     def user_external?
@@ -132,6 +134,10 @@ module Users
 
     def allowed_user_type?
       ALLOWED_USER_TYPES.include?(user_params[:user_type]&.to_sym)
+    end
+
+    def service_account?
+      user_params[:user_type]&.to_sym == :service_account
     end
 
     def password_reset
@@ -204,13 +210,14 @@ module Users
         :location,
         :name,
         :note,
-        :user_detail_organization,
         :company,
         :password,
         :password_automatically_set,
         :password_expires_at,
         :private_profile,
         :projects_limit,
+        :provisioned_by_group_id,
+        :provisioned_by_project_id,
         :public_email,
         :remember_me,
         :skip_ai_prefix_validation,

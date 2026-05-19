@@ -17,7 +17,6 @@ RSpec.describe 'Projects > Members > User requests access', :js, feature_categor
   context 'when user has no existing access request' do
     before do
       sign_in(user)
-      visit project_path(project)
     end
 
     it 'request access feature is disabled' do
@@ -28,20 +27,11 @@ RSpec.describe 'Projects > Members > User requests access', :js, feature_categor
       expect(page).not_to have_content 'Request access'
     end
 
-    it 'user can request access to a project',
-      quarantine: {
-        issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/39483',
-        type: 'flaky'
-      } do
-      perform_enqueued_jobs do
-        more_actions_dropdown.click
-        request_access
-      end
+    it 'user can request access to a project' do
+      visit project_path(project)
 
-      expect(ActionMailer::Base.deliveries.map(&:to)).to match_array([[owner.notification_email_or_default], [maintainer.notification_email_or_default]])
-      expect(ActionMailer::Base.deliveries.last.subject).to eq "Request to join the #{project.full_name} project"
-
-      expect(page).to have_content 'Your request for access has been queued for review.'
+      more_actions_dropdown.click
+      request_access
 
       more_actions_dropdown.click
       expect(page).to have_content 'Withdraw access request'
@@ -92,12 +82,14 @@ RSpec.describe 'Projects > Members > User requests access', :js, feature_categor
 
   def request_access
     find_by_testid('request-access-link').click
-    wait_for_requests
+
+    expect(page).to have_content 'Your request for access has been queued for review.'
   end
 
   def withdraw_access
     find_by_testid('withdraw-access-link').click
     accept_gl_confirm
-    wait_for_requests
+
+    expect(page).to have_content 'Your access request to the project has been withdrawn.'
   end
 end

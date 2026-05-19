@@ -1,0 +1,13 @@
+---
+table_name: security_policy_schedule_pipelines
+classes:
+  - Security::PolicySchedulePipeline
+feature_categories:
+  - security_policy_management
+description: Join table linking security policies to the CI pipelines created by their schedules
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229986
+milestone: '19.0'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small

@@ -94,6 +94,10 @@ FactoryBot.define do
     project
   end
 
+  factory :slack_slash_commands_integration, class: 'Integrations::SlackSlashCommands' do
+    project
+  end
+
   factory :bamboo_integration, class: 'Integrations::Bamboo' do
     project
     active { true }
@@ -412,13 +416,6 @@ FactoryBot.define do
     project
     active { true }
     type { 'Integrations::Slack' }
-  end
-
-  factory :slack_slash_commands_integration, class: 'Integrations::SlackSlashCommands' do
-    project
-    active { true }
-    token { 'secrettoken' }
-    type { 'Integrations::SlackSlashCommands' }
   end
 
   factory :pipelines_email_integration, class: 'Integrations::PipelinesEmail' do

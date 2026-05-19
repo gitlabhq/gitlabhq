@@ -33,6 +33,16 @@ RSpec.describe Banzai::CrossProjectReference, feature_category: :markdown do
       end
     end
 
+    context 'when no project was referenced in user context' do
+      it 'returns nil' do
+        user = double
+
+        allow(including_class).to receive(:context).and_return({ user: user })
+
+        expect(including_class.parent_from_ref(nil)).to be_nil
+      end
+    end
+
     context 'when referenced project does not exist' do
       it 'returns nil' do
         expect(including_class.parent_from_ref('invalid/reference')).to be_nil

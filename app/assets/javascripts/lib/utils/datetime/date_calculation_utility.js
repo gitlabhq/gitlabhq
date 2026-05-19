@@ -798,15 +798,15 @@ export const getCurrentUtcDate = () => {
   ]
  */
 
-export function getMonthsBetweenDates(startDate, endDate) {
+export function getMonthsBetweenDates(startDate, endDate, { utc = false } = {}) {
   if (startDate > endDate) {
     return [];
   }
 
-  const startMonth = startDate.getMonth();
-  const startYear = startDate.getFullYear();
-  const endMonth = endDate.getMonth();
-  const endYear = endDate.getFullYear();
+  const startMonth = utc ? startDate.getUTCMonth() : startDate.getMonth();
+  const startYear = utc ? startDate.getUTCFullYear() : startDate.getFullYear();
+  const endMonth = utc ? endDate.getUTCMonth() : endDate.getMonth();
+  const endYear = utc ? endDate.getUTCFullYear() : endDate.getFullYear();
 
   const count = (endYear - startYear) * 12 + (1 + endMonth - startMonth);
 
@@ -857,3 +857,61 @@ export const isValidDateString = (dateString) => {
  * @returns {number} The equivalent number of seconds
  */
 export const daysToSeconds = (days) => SECONDS_IN_DAY * days;
+
+export const APPROACHING_DUE_DATE_THRESHOLD_DAYS = 7;
+
+const NEUTRAL_DUE_DATE_STATUS = Object.freeze({
+  isOverdue: false,
+  isApproaching: false,
+  iconName: 'calendar',
+  iconVariant: 'current',
+  statusLabel: null,
+});
+
+/**
+ * Computes the urgency state of a due date relative to today.
+ *
+ * Returns the shared icon name, icon variant, and status label so that
+ * callers render the overdue / approaching / normal states consistently.
+ *
+ * @param {string|Date|null|undefined} dueDate ISO date string or Date.
+ * @param {boolean} isOpen Whether the item is open. Closed items are
+ *   always treated as neutral regardless of the due date.
+ * @returns {{
+ *   isOverdue: boolean,
+ *   isApproaching: boolean,
+ *   iconName: 'calendar' | 'calendar-due' | 'calendar-overdue',
+ *   iconVariant: 'current' | 'warning' | 'danger',
+ *   statusLabel: string | null,
+ * }}
+ */
+export const getDueDateStatus = (dueDate, isOpen) => {
+  if (!dueDate || !isOpen) {
+    return NEUTRAL_DUE_DATE_STATUS;
+  }
+
+  const dueDateObj = newDate(dueDate);
+
+  if (isInPast(dueDateObj)) {
+    return {
+      isOverdue: true,
+      isApproaching: false,
+      iconName: 'calendar-overdue',
+      iconVariant: 'danger',
+      statusLabel: __('overdue'),
+    };
+  }
+
+  const days = getDayDifference(new Date(), dueDateObj);
+  if (days >= 0 && days < APPROACHING_DUE_DATE_THRESHOLD_DAYS) {
+    return {
+      isOverdue: false,
+      isApproaching: true,
+      iconName: 'calendar-due',
+      iconVariant: 'warning',
+      statusLabel: __('due soon'),
+    };
+  }
+
+  return NEUTRAL_DUE_DATE_STATUS;
+};

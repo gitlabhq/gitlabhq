@@ -35,13 +35,7 @@ module Import
             end
           end
 
-          # This step is not yet implemented. We must pass the configuration to
-          # an as-yet-nonexistent worker that handles:
-          # - Downloading the `metadata.json` from object storage
-          # - Ensuring that the requested entities exist in object storage
-          # - Creating the correct BulkImport::Entity records
-          # - Kicking off the BulkImport
-          # See: https://gitlab.com/gitlab-org/gitlab/-/work_items/588517
+          ScheduleImportWorker.perform_async(bulk_import.id, Array.wrap(params[:entities]).map(&:deep_stringify_keys))
 
           ServiceResponse.success(payload: bulk_import)
         end

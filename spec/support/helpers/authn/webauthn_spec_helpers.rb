@@ -24,7 +24,7 @@ module Authn
       )
     end
 
-    # Mimick device response from browser to GitLab after a user completes authentication
+    # Mimic device response from browser to GitLab after a user completes authentication
     #
     def device_response_after_authentication(user, webauthn_credential)
       is_passkey = webauthn_credential.authentication_mode == :passwordless

@@ -1,6 +1,6 @@
-import Vue from 'vue';
+import { observable } from '~/lib/utils/observable';
 
-export const badgeState = Vue.observable({
+export const badgeState = observable('mr_badge_state', {
   state: '',
   updateStatus: null,
 });

@@ -21,7 +21,7 @@ Prerequisites:
 To change the note creation rate limit:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Notes rate limit**.
 1. In the **Maximum requests per minute** box, enter the new value.
 1. Optional. In the **Users to exclude from the rate limit** box, list users allowed to exceed the limit.

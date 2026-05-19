@@ -9,7 +9,7 @@ RSpec.describe Ci::CreatePipelineService,
 
   let(:service) { described_class.new(project, user, { ref: 'refs/heads/master' }) }
   let(:content) do
-    <<~EOY
+    <<~YAML
       ---
       stages:
         - dast
@@ -26,7 +26,7 @@ RSpec.describe Ci::CreatePipelineService,
           GIT_STRATEGY: none
         script:
           - /analyze
-    EOY
+    YAML
   end
 
   describe '#execute' do

@@ -67,6 +67,7 @@ module MergeRequests
 
     def mark_merge_request_as_prepared(merge_request)
       merge_request.update!(prepared_at: Time.current)
+      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
     end
 
     def logger

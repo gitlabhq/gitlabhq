@@ -16,7 +16,7 @@ module Mutations
         Argument 'replacements' on InputObject 'projectTextReplaceInput' does not support 'regex:' or 'glob:' values.
       ERROR
 
-      authorize :owner_access
+      authorize :rewrite_repository_history
 
       argument :project_path, GraphQL::Types::ID,
         required: true,

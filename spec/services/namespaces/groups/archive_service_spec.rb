@@ -33,7 +33,7 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
   end
 
   context 'when ancestor group is already archived' do
-    let_it_be(:parent) { create(:group) }
+    let_it_be(:parent, freeze: false) { create(:group) }
     let_it_be(:group) { create(:group, parent: parent) }
     let_it_be(:user) { create(:user) }
 
@@ -50,11 +50,11 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
   end
 
   context 'when the group is not archived' do
-    let_it_be_with_reload(:subgroup) { create(:group, :archived, parent: group) }
-    let_it_be_with_reload(:sub_subgroup) { create(:group, :archived, parent: subgroup) }
+    let_it_be_with_reload(:subgroup) { create(:group, archived: true, parent: group) }
+    let_it_be_with_reload(:sub_subgroup) { create(:group, archived: true, parent: subgroup) }
 
-    let_it_be_with_reload(:archived_project) { create(:project, :archived, group: group) }
-    let_it_be_with_reload(:archived_subgroup_project) { create(:project, :archived, group: subgroup) }
+    let_it_be_with_reload(:archived_project) { create(:project, archived: true, group: group) }
+    let_it_be_with_reload(:archived_subgroup_project) { create(:project, archived: true, group: subgroup) }
 
     before do
       group.namespace_settings.update!(archived: false)

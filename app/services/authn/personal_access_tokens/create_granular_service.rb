@@ -77,7 +77,8 @@ module Authn
           additional_properties: {
             type: 'granular',
             scopes: scope_names,
-            permissions: permissions_by_access.join(' | ')
+            permissions: permissions_by_access.join(' | '),
+            creation_source: params[:creation_source] || PersonalAccessToken::CREATION_SOURCE_UNKNOWN
           }
         )
       end

@@ -1,3 +1,4 @@
+import ipaddr from 'ipaddr.js';
 import { getGlobalAlerts, setGlobalAlerts } from './global_alerts';
 
 export const DASH_SCOPE = '-';
@@ -898,6 +899,7 @@ export function appendLineRangeHashToUrl(url, hash = window.location.hash) {
  * - has no spaces
  * - has http, git or https protocol
  * - has a domain with at least one dot
+ * - simple local IP checking
  *
  * Does not guarantee the URL is fully valid or reachable.
  *
@@ -915,6 +917,11 @@ export function isReasonableGitUrl(url) {
   }
 
   const pattern = /^(https?|git):\/\/[a-zA-Z0-9.-]+\.[a-zA-Z0-9.-]+/;
+  if (!pattern.test(url)) return false;
 
-  return pattern.test(url);
+  const { hostname } = new URL(url);
+  // If this isn't a IP address, it's a reasonable git URL.
+  if (!ipaddr.isValid(hostname)) return true;
+  // Otherwise, filter out loopback IPs (127.0.0.0/8) and the Linux loopback (0.0.0.0).
+  return !(ipaddr.parse(hostname).range() === 'loopback' || hostname === '0.0.0.0');
 }

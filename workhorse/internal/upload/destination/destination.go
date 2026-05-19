@@ -286,7 +286,11 @@ func (fh *FileHandler) newLocalFile(ctx context.Context, opts *UploadOpts) (cons
 	go func() {
 		<-ctx.Done()
 		if err := os.Remove(file.Name()); err != nil {
-			fmt.Printf("newLocalFile: remove file %q: %v", file.Name(), err)
+			if os.IsNotExist(err) {
+				log.WithContextFields(ctx, log.Fields{"filename": file.Name()}).Warn("newLocalFile: temporary file already removed, likely moved by upload handler")
+			} else {
+				log.WithContextFields(ctx, log.Fields{"filename": file.Name()}).WithError(err).Warn("newLocalFile: failed to remove temporary file")
+			}
 		}
 	}()
 

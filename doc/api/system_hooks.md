@@ -52,12 +52,21 @@ Example response:
     "merge_requests_events": true,
     "repository_update_events": true,
     "enable_ssl_verification":true,
-    "url_variables": []
+    "url_variables": [],
+    "token_present": false,
+    "signing_token_present": false
   }
 ]
 ```
 
 ## Retrieve system hook
+
+{{< history >}}
+
+- `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+- `token_present` and `signing_token_present` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0.
+
+{{< /history >}}
 
 Retrieves a system hook by its ID.
 
@@ -91,11 +100,24 @@ Example response:
   "merge_requests_events": true,
   "repository_update_events": true,
   "enable_ssl_verification": true,
-  "url_variables": []
+  "url_variables": [],
+  "token_present": false,
+  "signing_token_present": false
 }
 ```
 
 ## Add new system hook
+
+{{< history >}}
+
+- `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+- `signing_token` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the `signing_token` attribute is controlled by a feature flag.
+> For more information, see the history.
 
 Adds a new system hook.
 
@@ -107,13 +129,14 @@ POST /hooks
 |-----------------------------|---------|----------|-------------|
 | `url`                       | string  | Yes      | The hook URL. |
 | `branch_filter_strategy`    | string  | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
-| `description`               | string  | No       | Description of the hook. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.) |
+| `description`               | string  | No       | Description of the hook. |
 | `enable_ssl_verification`   | boolean | No       | Do SSL verification when triggering the hook. |
 | `merge_requests_events`     | boolean | No       | Trigger hook on merge request events. |
-| `name`                      | string  | No       | Name of the hook. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.) |
+| `name`                      | string  | No       | Name of the hook. |
 | `push_events`               | boolean | No       | When true, the hook fires on push events. |
 | `push_events_branch_filter` | string  | No       | Trigger hook on push events for matching branches only. |
 | `repository_update_events`  | boolean | No       | Trigger hook on repository update events. |
+| `signing_token`             | string  | No       | HMAC signing token used to compute the `webhook-signature` header. Must be in `whsec_<base64>` format encoding a 32-byte key. Not returned in the response. |
 | `tag_push_events`           | boolean | No       | When true, the hook fires on new tags being pushed. |
 | `token`                     | string  | No       | Secret token to validate received payloads. Not returned in the response. |
 
@@ -140,12 +163,25 @@ Example response:
     "merge_requests_events": true,
     "repository_update_events": true,
     "enable_ssl_verification":true,
-    "url_variables": []
+    "url_variables": [],
+    "token_present": false,
+    "signing_token_present": false
   }
 ]
 ```
 
 ## Update system hook
+
+{{< history >}}
+
+- `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+- `signing_token` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the `signing_token` attribute is controlled by a feature flag.
+> For more information, see the history.
 
 Updates an existing system hook.
 
@@ -157,13 +193,16 @@ PUT /hooks/:hook_id
 |-----------------------------|---------|----------|-------------|
 | `hook_id`                   | integer | Yes      | The ID of the system hook. |
 | `branch_filter_strategy`    | string  | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
+| `description`               | string  | No       | Description of the hook. |
 | `enable_ssl_verification`   | boolean | No       | Do SSL verification when triggering the hook. |
 | `merge_requests_events`     | boolean | No       | Trigger hook on merge request events. |
+| `name`                      | string  | No       | Name of the hook. |
 | `push_events`               | boolean | No       | When true, the hook fires on push events. |
 | `push_events_branch_filter` | string  | No       | Trigger hook on push events for matching branches only. |
 | `repository_update_events`  | boolean | No       | Trigger hook on repository update events. |
+| `signing_token`             | string  | No       | HMAC signing token used to compute the `webhook-signature` header. Must be in `whsec_<base64>` format encoding a 32-byte key. Not returned in the response. |
 | `tag_push_events`           | boolean | No       | When true, the hook fires on new tags being pushed. |
-| `token`                     | string  | No       | Secret token to validate received payloads; this isn't returned in the response. |
+| `token`                     | string  | No       | Secret token to validate received payloads. Not returned in the response. |
 | `url`                       | string  | No       | The hook URL. |
 
 ## Test system hook

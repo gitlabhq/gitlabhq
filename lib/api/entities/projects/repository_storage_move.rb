@@ -4,7 +4,7 @@ module API
   module Entities
     module Projects
       class RepositoryStorageMove < BasicRepositoryStorageMove
-        expose :project, using: Entities::ProjectIdentity
+        expose :project, using: ::API::Entities::ProjectIdentity
       end
     end
   end

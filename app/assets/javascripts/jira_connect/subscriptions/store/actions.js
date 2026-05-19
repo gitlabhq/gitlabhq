@@ -36,6 +36,7 @@ export const fetchSubscriptions = async ({ commit }, subscriptionsPath) => {
 export const loadCurrentUser = async ({ commit }, accessToken) => {
   try {
     const { data: user } = await getCurrentUser({
+      // eslint-disable-next-line @gitlab/require-i18n-strings -- False positive
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 

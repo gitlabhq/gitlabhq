@@ -96,7 +96,10 @@ RSpec.shared_context 'GroupPolicy context' do
   end
 
   let(:security_manager_permissions) do
-    (reporter_permissions + %i[security_manager_access]).uniq
+    (reporter_permissions + %i[
+      read_group_all_available_runners
+      read_runners
+    ]).uniq
   end
 
   let(:developer_permissions) do
@@ -126,6 +129,7 @@ RSpec.shared_context 'GroupPolicy context' do
         create_projects
         destroy_package
         destroy_upload
+        read_group_all_available_runners
         read_runners
         update_cluster
       ]
@@ -151,7 +155,6 @@ RSpec.shared_context 'GroupPolicy context' do
         delete_subgroup
         edit_billing
         manage_merge_request_settings
-        owner_access
         read_billing
         read_statistics
         register_group_runners

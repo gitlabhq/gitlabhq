@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Import::RefreshImportJidWorker, feature_category: :import
 
       before do
         allow(Gitlab::SidekiqStatus)
-          .to receive(:running?)
+          .to receive(:running_or_enqueued?)
           .with('123')
           .and_return(true)
       end
@@ -103,7 +103,7 @@ RSpec.describe Gitlab::Import::RefreshImportJidWorker, feature_category: :import
 
       before do
         allow(Gitlab::SidekiqStatus)
-          .to receive(:running?)
+          .to receive(:running_or_enqueued?)
           .with('123')
           .and_return(false)
       end

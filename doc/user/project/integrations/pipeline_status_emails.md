@@ -34,5 +34,7 @@ To enable pipeline status emails:
    **Notify only broken pipelines**.
 1. Optional. To receive notifications only when a pipeline's status changes, select
    **Notify only when status changes**.
+1. Optional. To receive notifications for parent and child pipelines, select
+   **Notify child pipelines**.
 1. Select the branches to send notifications for.
 1. Select **Save changes**.

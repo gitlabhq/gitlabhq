@@ -95,7 +95,7 @@ module Gitlab
 
       def send_git_archive(
         repository, ref:, format:, append_sha:, path: nil, include_lfs_blobs: true,
-        exclude_paths: [])
+        exclude_paths: [], client_name: nil)
         format ||= 'tar.gz'
         format = format.downcase
 
@@ -116,7 +116,7 @@ module Gitlab
         # workhorse ignores it.
         params['DisableCache'] = true if git_archive_cache_disabled?
         params['UseArchiveCleaner'] = git_archive_cache_cleaner_enabled?
-        params['GitalyServer'] = gitaly_server_hash(repository)
+        params['GitalyServer'] = gitaly_server_hash(repository, client_name: client_name)
 
         [
           SEND_DATA_HEADER,
@@ -152,9 +152,9 @@ module Gitlab
         ]
       end
 
-      def send_changed_paths(repository, requests)
+      def send_changed_paths(repository, requests, client_name: nil)
         params = {
-          'GitalyServer' => gitaly_server_hash(repository),
+          'GitalyServer' => gitaly_server_hash(repository, client_name: client_name),
           'FindChangedPathsRequest' => Gitaly::FindChangedPathsRequest.new(
             repository: repository.gitaly_repository,
             requests: requests
@@ -167,9 +167,9 @@ module Gitlab
         ]
       end
 
-      def send_list_blobs(repository, revisions, bytes_limit:)
+      def send_list_blobs(repository, revisions, bytes_limit:, client_name: nil)
         params = {
-          'GitalyServer' => gitaly_server_hash(repository),
+          'GitalyServer' => gitaly_server_hash(repository, client_name: client_name),
           'ListBlobsRequest' => Gitaly::ListBlobsRequest.new(
             repository: repository.gitaly_repository,
             revisions: revisions,
@@ -384,7 +384,7 @@ module Gitlab
         Base64.encode64(binary)
       end
 
-      def gitaly_server_hash(repository)
+      def gitaly_server_hash(repository, client_name: nil)
         metadata = Feature::Gitaly.server_feature_flags(
           user: ::Feature::Gitaly.user_actor,
           repository: repository,
@@ -392,6 +392,7 @@ module Gitlab
           group: ::Feature::Gitaly.group_actor(repository.container)
         )
         metadata['retry_config'] = retry_config
+        metadata['client_name'] = client_name if client_name.present?
 
         {
           address: Gitlab::GitalyClient.address(repository.shard),
@@ -405,9 +406,17 @@ module Gitlab
       end
 
       def gitaly_diff_or_patch_hash(repository, diff_refs)
+        left_commit_id = diff_refs.base_sha
+
+        # If `base_sha` is a blank ref, it means the commit has no parent (e.g. the
+        # initial commit of a repository or the first commit on an orphaned branch).
+        # We use `empty_tree_id` so Gitaly can compute the diff against an empty tree
+        # instead of returning an empty response.
+        left_commit_id = repository.empty_tree_id if Gitlab::Git.blank_ref?(left_commit_id)
+
         {
           repository: repository.gitaly_repository,
-          left_commit_id: diff_refs.base_sha,
+          left_commit_id: left_commit_id,
           right_commit_id: diff_refs.head_sha
         }
       end

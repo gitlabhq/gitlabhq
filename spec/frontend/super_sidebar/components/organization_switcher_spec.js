@@ -11,7 +11,6 @@ import {
 } from 'jest/organizations/mock_data';
 import organizationsQuery from '~/organizations/shared/graphql/queries/current_user_organizations.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -93,109 +92,73 @@ describe('OrganizationSwitcher', () => {
   });
 
   describe('when dropdown is shown', () => {
-    describe('when `organizationSwitching` feature flag is enabled', () => {
-      beforeEach(() => {
-        window.gon.features = {
-          organizationSwitching: true,
-        };
+    it('calls GraphQL query and renders organizations that are available to switch to', async () => {
+      createComponent();
+      showDropdown();
+
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+
+      await waitForPromises();
+
+      expect(findDropdownItemByIndex(1).text()).toContain(firstOrganization.name);
+      expect(findDropdownItemByIndex(1).find('a').attributes('href')).toBe(
+        firstOrganization.rootPath,
+      );
+      expect(findDropdownItemByIndex(1).findComponent(GlAvatar).props()).toMatchObject({
+        src: firstOrganization.avatarUrl,
+        entityId: getIdFromGraphQLId(firstOrganization.id),
+        entityName: firstOrganization.name,
       });
 
-      it('calls GraphQL query and renders organizations that are available to switch to', async () => {
-        createComponent();
-        showDropdown();
-
-        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-
-        await waitForPromises();
-
-        expect(findDropdownItemByIndex(1).text()).toContain(firstOrganization.name);
-        expect(findDropdownItemByIndex(1).find('a').attributes('href')).toBe(
-          firstOrganization.webUrl,
-        );
-        expect(findDropdownItemByIndex(1).findComponent(GlAvatar).props()).toMatchObject({
-          src: firstOrganization.avatarUrl,
-          entityId: getIdFromGraphQLId(firstOrganization.id),
-          entityName: firstOrganization.name,
-        });
-
-        expect(findDropdownItemByIndex(2).text()).toContain(secondOrganization.name);
-        expect(findDropdownItemByIndex(2).find('a').attributes('href')).toBe(
-          secondOrganization.webUrl,
-        );
-        expect(findDropdownItemByIndex(2).findComponent(GlAvatar).props()).toMatchObject({
-          src: secondOrganization.avatarUrl,
-          entityId: getIdFromGraphQLId(secondOrganization.id),
-          entityName: secondOrganization.name,
-        });
-
-        expect(wrapper.text()).toContain(
-          'Organizations is a new feature. Help us make it better by',
-        );
-        expect(wrapper.findByTestId('feedback-url').attributes('href')).toBe(
-          'https://gitlab.com/gitlab-com/gl-infra/tenant-scale/organizations/organizations-internal-feedback/-/issues/1',
-        );
+      expect(findDropdownItemByIndex(2).text()).toContain(secondOrganization.name);
+      expect(findDropdownItemByIndex(2).find('a').attributes('href')).toBe(
+        secondOrganization.rootPath,
+      );
+      expect(findDropdownItemByIndex(2).findComponent(GlAvatar).props()).toMatchObject({
+        src: secondOrganization.avatarUrl,
+        entityId: getIdFromGraphQLId(secondOrganization.id),
+        entityName: secondOrganization.name,
       });
 
-      describe('when there are no organizations to switch to', () => {
-        beforeEach(async () => {
-          createComponent(
-            jest.fn().mockResolvedValue({
-              data: {
-                currentUser: {
-                  id: 'gid://gitlab/User/1',
-                  organizations: {
-                    nodes: [],
-                    pageInfo: pageInfoEmpty,
-                  },
+      expect(wrapper.text()).toContain('Organizations is a new feature. Help us make it better by');
+      expect(wrapper.findByTestId('feedback-url').attributes('href')).toBe(
+        'https://gitlab.com/gitlab-com/gl-infra/tenant-scale/organizations/organizations-internal-feedback/-/issues/1',
+      );
+    });
+
+    describe('when there are no organizations to switch to', () => {
+      beforeEach(async () => {
+        createComponent(
+          jest.fn().mockResolvedValue({
+            data: {
+              currentUser: {
+                id: 'gid://gitlab/User/1',
+                organizations: {
+                  nodes: [],
+                  pageInfo: pageInfoEmpty,
                 },
               },
-            }),
-          );
-          showDropdown();
-          await waitForPromises();
-        });
-
-        it('renders empty message', () => {
-          expect(findDropdownItemByIndex(1).text()).toBe(
-            'No organizations available to switch to.',
-          );
-        });
+            },
+          }),
+        );
+        showDropdown();
+        await waitForPromises();
       });
 
-      describe('when there is an error fetching organizations', () => {
-        beforeEach(async () => {
-          createComponent(jest.fn().mockRejectedValue());
-          showDropdown();
-          await waitForPromises();
-        });
-
-        it('renders empty message', () => {
-          expect(findDropdownItemByIndex(1).text()).toBe(
-            'No organizations available to switch to.',
-          );
-        });
+      it('renders empty message', () => {
+        expect(findDropdownItemByIndex(1).text()).toBe('No organizations available to switch to.');
       });
     });
 
-    describe('when `organizationSwitching` feature flag is disabled', () => {
-      beforeEach(() => {
-        createComponent();
+    describe('when there is an error fetching organizations', () => {
+      beforeEach(async () => {
+        createComponent(jest.fn().mockRejectedValue());
         showDropdown();
+        await waitForPromises();
       });
 
-      it('does not call GraphQL query', () => {
-        expect(successHandler).not.toHaveBeenCalled();
-      });
-
-      it('displays not supported message and docs link', () => {
-        expect(wrapper.text()).toContain(
-          'Switching between organizations is not currently supported.',
-        );
-        expect(wrapper.findByTestId('switching-docs-link').attributes('href')).toBe(
-          helpPagePath('user/organization/_index.md', {
-            anchor: 'switch-organizations',
-          }),
-        );
+      it('renders empty message', () => {
+        expect(findDropdownItemByIndex(1).text()).toBe('No organizations available to switch to.');
       });
     });
   });

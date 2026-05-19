@@ -1,0 +1,10 @@
+---
+name: recently_viewed_wiki_pages
+description: When enabled, wiki pages are included in the GraphQL recently viewed items response used by the UI.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592834
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233014
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/597889
+milestone: '19.0'
+group: group::knowledge
+type: wip
+default_enabled: false

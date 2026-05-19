@@ -1,4 +1,4 @@
 <%= sprintf(s_("Achievements|%{namespace_full_path} awarded you the %{achievement_name} achievement!"),
   { namespace_full_path: @achievement.namespace.full_path, achievement_name: @achievement.name }) %>
-
-<%= s_("Achievements|View your achievements on your profile.") %>
+<%= s_("Achievements|To show this achievement on your profile, accept it: %{url}") % { url: @accept_url } %>
+<%= s_("Achievements|If you do not wish to accept, simply ignore this email.") %>

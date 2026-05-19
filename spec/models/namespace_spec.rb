@@ -13,7 +13,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   let_it_be(:user_sti_name) { Namespaces::UserNamespace.sti_name }
 
   let_it_be(:organization) { create(:organization) }
-  let!(:namespace) { create(:namespace, :with_namespace_settings) }
+  let(:namespace) { create(:namespace, :with_namespace_settings) }
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:repository_storage) { 'default' }
 
@@ -1009,6 +1009,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:web_based_commit_signing_enabled?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:lock_web_based_commit_signing_enabled).to(:namespace_settings) }
     it { is_expected.to delegate_method(:lock_web_based_commit_signing_enabled?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:granular_tokens_enforced?).to(:namespace_settings).allow_nil }
 
     it do
       is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=).to(:namespace_settings)
@@ -1272,6 +1273,89 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#self_or_ancestors_transfer_scheduled?' do
+    let_it_be(:user) { create(:user) }
+    let(:grandparent) { create(:group) }
+    let(:parent) { create(:group, parent: grandparent) }
+    let(:namespace) { create(:group, parent: parent) }
+
+    where(:namespace_state, :parent_state, :grandparent_state, :expected_result) do
+      :transfer_scheduled   | :ancestor_inherited | :ancestor_inherited | true
+      :ancestor_inherited   | :transfer_scheduled | :ancestor_inherited | true
+      :ancestor_inherited   | :ancestor_inherited | :transfer_scheduled | true
+      :transfer_scheduled   | :transfer_scheduled | :ancestor_inherited | true
+      :ancestor_inherited   | :ancestor_inherited | :ancestor_inherited | false
+      :transfer_in_progress | :ancestor_inherited | :ancestor_inherited | false
+    end
+
+    with_them do
+      before do
+        namespace.update_column(:state, Namespace.states[namespace_state])
+        parent.update_column(:state, Namespace.states[parent_state])
+        grandparent.update_column(:state, Namespace.states[grandparent_state])
+      end
+
+      it 'returns the expected result' do
+        expect(namespace.self_or_ancestors_transfer_scheduled?).to eq(expected_result)
+      end
+    end
+
+    context 'when group has no parent' do
+      let_it_be_with_reload(:root) { create(:group) }
+
+      it 'returns true when transfer_scheduled' do
+        root.schedule_transfer(transition_user: user)
+        expect(root.self_or_ancestors_transfer_scheduled?).to eq(true)
+      end
+
+      it 'returns false when not transfer_scheduled' do
+        expect(root.self_or_ancestors_transfer_scheduled?).to eq(false)
+      end
+    end
+  end
+
+  describe '#self_or_ancestors_transfer_in_progress?' do
+    let_it_be(:user) { create(:user) }
+    let(:grandparent) { create(:group) }
+    let(:parent) { create(:group, parent: grandparent) }
+    let(:namespace) { create(:group, parent: parent) }
+
+    where(:namespace_state, :parent_state, :grandparent_state, :expected_result) do
+      :transfer_in_progress | :ancestor_inherited   | :ancestor_inherited   | true
+      :ancestor_inherited   | :transfer_in_progress | :ancestor_inherited   | true
+      :ancestor_inherited   | :ancestor_inherited   | :transfer_in_progress | true
+      :transfer_in_progress | :transfer_in_progress | :ancestor_inherited   | true
+      :ancestor_inherited   | :ancestor_inherited   | :ancestor_inherited   | false
+      :transfer_scheduled   | :ancestor_inherited   | :ancestor_inherited   | false
+    end
+
+    with_them do
+      before do
+        namespace.update_column(:state, Namespace.states[namespace_state])
+        parent.update_column(:state, Namespace.states[parent_state])
+        grandparent.update_column(:state, Namespace.states[grandparent_state])
+      end
+
+      it 'returns the expected result' do
+        expect(namespace.self_or_ancestors_transfer_in_progress?).to eq(expected_result)
+      end
+    end
+
+    context 'when group has no parent' do
+      let_it_be_with_reload(:root) { create(:group) }
+
+      it 'returns true when transfer_in_progress' do
+        root.schedule_transfer(transition_user: user)
+        root.start_transfer(transition_user: user)
+        expect(root.self_or_ancestors_transfer_in_progress?).to eq(true)
+      end
+
+      it 'returns false when not transfer_in_progress' do
+        expect(root.self_or_ancestors_transfer_in_progress?).to eq(false)
+      end
+    end
+  end
+
   describe '#traversal_ids' do
     let(:namespace) { build(:group) }
 
@@ -1439,18 +1523,18 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it 'creates a Namespaces::SyncEvent using triggers' do
       Namespaces::SyncEvent.delete_all
 
-      expect { namespace1.update!(parent: namespace2) }.to change(namespace1.sync_events, :count).by(1)
+      expect { namespace1.update!(parent: namespace2) }.to change { namespace1.sync_events.count }.by(1)
     end
 
     it 'creates sync_events using database trigger on the table' do
       namespace1.save!
       namespace2.save!
 
-      expect { Group.update_all(traversal_ids: [-1]) }.to change(Namespaces::SyncEvent, :count).by(2)
+      expect { Group.update_all(traversal_ids: [-1]) }.to change { Namespaces::SyncEvent.count }.by(2)
     end
 
     it 'does not create sync_events using database trigger on the table when only the parent_id has changed' do
-      expect { Group.update_all(parent_id: -1) }.not_to change(Namespaces::SyncEvent, :count)
+      expect { Group.update_all(parent_id: -1) }.not_to change { Namespaces::SyncEvent.count }
     end
 
     it 'triggers the callback sync_traversal_ids on the namespace' do
@@ -2318,9 +2402,12 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
     subject(:execute_update) { group.update!(share_with_group_lock: true) }
 
-    before do
+    before_all do
       shared_with_group_one.add_developer(group_one_user)
       shared_with_group_two.add_developer(group_two_user)
+    end
+
+    before do
       create(:project_group_link, group: shared_with_group_one, project: project)
       create(:project_group_link, group: shared_with_group_one, project: another_project)
       create(:project_group_link, group: shared_with_group_two, project: project)
@@ -3093,7 +3180,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       it 'creates a namespaces_sync_event record' do
         expect do
           namespace.update!(parent_id: new_namespace1.id)
-        end.to change(Namespaces::SyncEvent, :count).by(1)
+        end.to change { Namespaces::SyncEvent.count }.by(1)
 
         expect(namespace.sync_events.count).to eq(2)
       end
@@ -3107,7 +3194,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
         expect do
           namespace.update!(parent_id: new_namespace1.id)
-        end.to change(Namespaces::SyncEvent, :count).by(5)
+        end.to change { Namespaces::SyncEvent.count }.by(5)
 
         expected_ids = [namespace.id] + children_namespaces.map(&:id) + grand_children_namespaces.map(&:id)
         expect(Namespaces::SyncEvent.pluck(:namespace_id)).to match_array(expected_ids)
@@ -3124,7 +3211,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       it 'creates a namespaces_sync_event record' do
         expect do
           namespace.update!(name: 'hello')
-        end.not_to change(Namespaces::SyncEvent, :count)
+        end.not_to change { Namespaces::SyncEvent.count }
       end
     end
 
@@ -3136,7 +3223,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
               namespace.update!(parent_id: new_namespace1.id)
               namespace.update!(parent_id: new_namespace2.id)
             end
-          end.to change(Namespaces::SyncEvent, :count).by(2)
+          end.to change { Namespaces::SyncEvent.count }.by(2)
 
           expect(namespace.sync_events.count).to eq(3)
         end
@@ -3149,7 +3236,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
               namespace.update!(parent_id: new_namespace1.id)
               namespace.update!(parent_id: new_namespace1.id)
             end
-          end.to change(Namespaces::SyncEvent, :count).by(1)
+          end.to change { Namespaces::SyncEvent.count }.by(1)
 
           expect(namespace.sync_events.count).to eq(2)
         end
@@ -3339,7 +3426,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let_it_be(:project) { create(:project) }
       let(:project_namespace) { project.project_namespace }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 

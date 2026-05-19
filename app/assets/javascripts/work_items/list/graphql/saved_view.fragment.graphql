@@ -1,5 +1,7 @@
 # @feature_category: portfolio_management
 
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
 fragment SavedView on WorkItemSavedViewType {
   id
   name
@@ -9,6 +11,13 @@ fragment SavedView on WorkItemSavedViewType {
   displaySettings
   filters
   sort
+  updatedAt
+  author {
+    ...User
+  }
+  lastUpdatedBy {
+    ...User
+  }
   userPermissions {
     updateSavedView
     deleteSavedView

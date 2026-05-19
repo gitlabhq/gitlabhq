@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::TerraformController do
+RSpec.describe Projects::TerraformController, feature_category: :infrastructure_as_code do
   let_it_be(:project) { create(:project, :public) }
 
   describe 'GET index' do

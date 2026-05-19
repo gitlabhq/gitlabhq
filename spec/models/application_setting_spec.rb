@@ -91,9 +91,11 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         dependency_proxy_ttl_group_policy_worker_capacity: 2,
         diagramsnet_enabled: true,
         diagramsnet_url: 'https://embed.diagrams.net',
+        diff_max_commits: 1_000_000,
         diff_max_files: Commit::DEFAULT_MAX_DIFF_FILES_SETTING,
         diff_max_lines: Commit::DEFAULT_MAX_DIFF_LINES_SETTING,
         diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
+        diff_max_versions: 1_000,
         disable_admin_oauth_scopes: false,
         disable_feed_token: false,
         disable_invite_members: false,
@@ -238,7 +240,6 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         resource_usage_limits: {},
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
         root_moved_permanently_redirection: false,
-        ropc_without_client_credentials: true,
         rsa_key_restriction: 0,
         runner_jobs_request_api_limit: 2000,
         runner_jobs_patch_trace_api_limit: 200,
@@ -531,7 +532,6 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           ci_max_includes
           ci_max_total_yaml_size_bytes
           container_registry_cleanup_tags_service_max_list_size
-          container_registry_data_repair_detail_worker_max_concurrency
           container_registry_delete_tags_service_timeout
           container_registry_expiration_policies_worker_capacity
           decompress_archive_file_timeout
@@ -619,6 +619,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           concurrent_bitbucket_server_import_jobs_limit
           concurrent_github_import_jobs_limit
           container_registry_token_expire_delay
+          diff_max_commits
+          diff_max_versions
           housekeeping_optimize_repository_period
           max_artifacts_size
           max_artifacts_content_include_size
@@ -2268,6 +2270,33 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         end
       end
     end
+
+    describe 'diff_limits jsonb settings' do
+      context 'for diff_limits json schema validation' do
+        it 'allows valid integer values' do
+          is_expected.to allow_value({ diff_max_versions: 500, diff_max_commits: 100 })
+            .for(:diff_limits)
+        end
+
+        it 'allows empty hash' do
+          is_expected.to allow_value({}).for(:diff_limits)
+        end
+
+        it 'does not allow unknown properties' do
+          is_expected.not_to allow_value({ unknown_key: 1 }).for(:diff_limits)
+        end
+
+        where(:attribute) do
+          %i[diff_max_versions diff_max_commits]
+        end
+
+        with_them do
+          it { is_expected.not_to allow_value({ attribute => -1 }).for(:diff_limits) }
+          it { is_expected.not_to allow_value({ attribute => 0 }).for(:diff_limits) }
+          it { is_expected.not_to allow_value({ attribute => 'abc' }).for(:diff_limits) }
+        end
+      end
+    end
   end
 
   describe '#sourcegraph_url_is_com?' do
@@ -2785,6 +2814,71 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         setting.update!(default_search_scope: 'users')
 
         expect(setting.custom_default_search_scope_set?).to be(true)
+      end
+    end
+  end
+
+  describe '#granular_tokens_enforced?' do
+    subject(:granular_tokens_enforced?) { setting.granular_tokens_enforced? }
+
+    context 'when `granular_personal_access_tokens_enforcement` feature flag is disabled' do
+      before do
+        stub_feature_flags(granular_personal_access_tokens_enforcement: false)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when `granular_personal_access_tokens_enforcement` feature flag is enabled' do
+      before do
+        stub_feature_flags(granular_personal_access_tokens_enforcement: true)
+      end
+
+      context 'when enforce_granular_tokens is false' do
+        before do
+          setting.update!(enforce_granular_tokens: false)
+        end
+
+        it { is_expected.to be false }
+      end
+
+      context 'when enforce_granular_tokens is true' do
+        context 'when granular_token_enforced_after is in the future' do
+          before do
+            setting.update!(
+              enforce_granular_tokens: true,
+              granular_tokens_enforced_after: 1.month.from_now.to_date
+            )
+          end
+
+          it { is_expected.to be false }
+        end
+
+        context 'when granular_token_enforced_after is today' do
+          before do
+            setting.update!(
+              enforce_granular_tokens: true,
+              granular_tokens_enforced_after: Date.current
+            )
+          end
+
+          it { is_expected.to be true }
+        end
+
+        context 'when granular_token_enforced_after is in the past' do
+          before do
+            setting.update_columns(
+              personal_access_token_settings: {
+                enforce_granular_tokens: true,
+                granular_tokens_enforced_after: 1.month.ago.to_date
+              }
+            )
+
+            setting.reload
+          end
+
+          it { is_expected.to be true }
+        end
       end
     end
   end

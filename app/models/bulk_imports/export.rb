@@ -57,7 +57,7 @@ module BulkImports
 
       after_transition any => :finished do |export|
         if export.config.user_contributions_relation?(export.relation)
-          UserContributionsExportMapper.new(export.portable).clear_cache
+          UserContributionsExportMapper.new(export.portable, offline_export_id: export.offline_export_id).clear_cache
         end
       end
 

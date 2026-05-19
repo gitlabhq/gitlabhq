@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SlashCommands::VerifyRequest, feature_category: :integrations do
-  let_it_be(:integration) { create(:slack_slash_commands_integration) }
+  let_it_be(:integration) { create(:mattermost_slash_commands_integration) }
   let_it_be(:chat_name) { create(:chat_name) }
   let(:response_url) { 'http://www.example.com/' }
 

@@ -2,7 +2,7 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { DraggableItemTypes, ListType, WIP_ITEMS, WIP_WEIGHT } from 'ee_else_ce/boards/constants';
-import { DETAIL_VIEW_QUERY_PARAM_NAME, WORK_ITEM_TYPE_ENUM_ISSUE } from '~/work_items/constants';
+import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import { TYPE_ISSUE, NAMESPACE_PROJECT } from '~/issues/constants';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
@@ -274,11 +274,11 @@ describe('Board list component', () => {
           expect(document.addEventListener).toHaveBeenCalledWith('keyup', expect.any(Function));
         });
 
-        it('emits the `dragStart` event with the item type to the parent', () => {
+        it('emits the `dragStart` event with the item id to the parent', () => {
           startDrag();
 
           expect(wrapper.emitted('dragStart')[0]).toEqual([
-            { itemType: WORK_ITEM_TYPE_ENUM_ISSUE },
+            { itemId: 'gid://gitlab/WorkItems::Type/1' },
           ]);
         });
       });
@@ -371,7 +371,7 @@ describe('Board list component', () => {
       beforeEach(async () => {
         ({ wrapper, resolveQuery, resolveMutation } = createComponent({
           componentProps: {
-            draggedType: 'ISSUE',
+            draggedItemId: 'gid://gitlab/WorkItems::Type/1',
           },
         }));
 

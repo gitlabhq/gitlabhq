@@ -34,10 +34,12 @@ module MergeRequests
     end
 
     def perform(project_id, user_id, merge_request_id, params = {})
-      Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464679')
-
       project = Project.find_by_id(project_id)
       return unless project
+
+      if Feature.disabled?(:ci_bulk_insert_pipeline_records, project)
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464679')
+      end
 
       user = User.find_by_id(user_id)
       return unless user
@@ -49,6 +51,7 @@ module MergeRequests
       pipeline_creation_request = params.with_indifferent_access[:pipeline_creation_request]
       push_options = params.with_indifferent_access[:push_options]
       gitaly_context = params.with_indifferent_access[:gitaly_context]
+      defer_request_completion = params.with_indifferent_access[:defer_request_completion]
 
       result = MergeRequests::CreatePipelineService
         .new(
@@ -58,7 +61,8 @@ module MergeRequests
             allow_duplicate: allow_duplicate,
             pipeline_creation_request: pipeline_creation_request,
             push_options: push_options,
-            gitaly_context: gitaly_context
+            gitaly_context: gitaly_context,
+            defer_request_completion: defer_request_completion
           }
         ).execute(merge_request)
 
@@ -66,10 +70,23 @@ module MergeRequests
 
       merge_request.update_head_pipeline
 
+      complete_pipeline_creation_request(result, pipeline_creation_request, merge_request) if defer_request_completion
+
       after_perform(merge_request)
     end
 
     private
+
+    def complete_pipeline_creation_request(result, pipeline_creation_request, merge_request)
+      if result.error?
+        error_message = result.message
+        ::Ci::PipelineCreation::Requests.failed(pipeline_creation_request, error_message)
+      else
+        ::Ci::PipelineCreation::Requests.succeeded(pipeline_creation_request, result.payload.id)
+      end
+
+      GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request)
+    end
 
     def after_perform(_merge_request)
       # overridden in EE

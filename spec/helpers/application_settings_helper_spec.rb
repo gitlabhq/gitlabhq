@@ -72,6 +72,20 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       expect(helper.visible_attributes).to include(:can_create_organization)
     end
 
+    describe ':mcp_server_enabled' do
+      context 'when self-managed' do
+        it 'is included' do
+          expect(helper.visible_attributes).to include(:mcp_server_enabled)
+        end
+      end
+
+      context 'when on SaaS', :saas do
+        it 'is not included' do
+          expect(helper.visible_attributes).not_to include(:mcp_server_enabled)
+        end
+      end
+    end
+
     it 'contains rate limit parameters' do
       expect(helper.visible_attributes).to include(
         *%i[
@@ -162,6 +176,34 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
 
     it 'includes :granular_tokens_enforced_after' do
       expect(helper.visible_attributes).to include(:granular_tokens_enforced_after)
+    end
+  end
+
+  describe '.mcp_server_setting_available?', feature_category: :mcp_server do
+    subject { helper.mcp_server_setting_available? }
+
+    context 'on self-managed with the feature flag enabled' do
+      before do
+        stub_feature_flags(mcp_server_availability_setting: true)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'on SaaS', :saas do
+      before do
+        stub_feature_flags(mcp_server_availability_setting: true)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(mcp_server_availability_setting: false)
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 

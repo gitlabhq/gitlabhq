@@ -12,7 +12,13 @@ describe('Repository blob page component', () => {
 
   beforeEach(() => {
     wrapper = shallowMount(BlobPage, {
-      propsData: { path, projectPath: 'some/path' },
+      propsData: { projectPath: 'some/path' },
+      mocks: {
+        $route: {
+          params: { path },
+          path: `/-/blob/main/${path}`,
+        },
+      },
     });
   });
 

@@ -24,279 +24,71 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
 
   describe "#closed_by_message" do
     context 'with a single reference' do
-      it do
-        message = "Awesome commit (Closes #{reference})"
-        expect(subject.closed_by_message(message)).to eq([issue])
+      where(:message_template) do
+        [
+          ["Awesome commit (Closes %s)"],
+          ["Awesome commit (Closes: %s)"],
+          ["Awesome commit (closes %s)"],
+          ["Awesome commit (closes: %s)"],
+          ["Closed %s"],
+          ["closed %s"],
+          ["closed: %s"],
+          ["Closing %s"],
+          ["Closing: %s"],
+          ["closing %s"],
+          ["closing: %s"],
+          ["Close %s"],
+          ["Close: %s"],
+          ["close %s"],
+          ["close: %s"],
+          ["Awesome commit (Fixes %s)"],
+          ["Awesome commit (fixes: %s)"],
+          ["Awesome commit (fixes %s)"],
+          ["Awesome commit (Fixes: %s)"],
+          ["Fixed %s"],
+          ["Fixed: %s"],
+          ["fixed %s"],
+          ["fixed: %s"],
+          ["Fixing %s"],
+          ["Fixing: %s"],
+          ["fixing %s"],
+          ["fixing: %s"],
+          ["Fix %s"],
+          ["Fix: %s"],
+          ["fix %s"],
+          ["fix: %s"],
+          ["Awesome commit (Resolves %s)"],
+          ["Awesome commit (Resolves: %s)"],
+          ["Awesome commit (resolves %s)"],
+          ["Awesome commit (resolves: %s)"],
+          ["Resolved %s"],
+          ["Resolved: %s"],
+          ["resolved %s"],
+          ["resolved: %s"],
+          ["Resolving %s"],
+          ["Resolving: %s"],
+          ["resolving %s"],
+          ["resolving: %s"],
+          ["Resolve %s"],
+          ["Resolve: %s"],
+          ["resolve %s"],
+          ["resolve: %s"],
+          ["Implement: %s"],
+          ["Implements: %s"],
+          ["Implemented: %s"],
+          ["Implementing: %s"],
+          ["implement: %s"],
+          ["implements: %s"],
+          ["implemented: %s"],
+          ["implementing: %s"]
+        ]
       end
 
-      it do
-        message = "Awesome commit (Closes: #{reference})"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Awesome commit (closes #{reference})"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Awesome commit (closes: #{reference})"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Closed #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "closed #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "closed: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Closing #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Closing: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "closing #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "closing: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Close #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Close: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "close #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "close: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Awesome commit (Fixes #{reference})"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Awesome commit (fixes: #{reference})"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Awesome commit (fixes #{reference})"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Awesome commit (Fixes: #{reference})"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Fixed #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Fixed: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "fixed #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "fixed: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Fixing #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Fixing: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "fixing #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "fixing: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Fix #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Fix: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "fix #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "fix: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Awesome commit (Resolves #{reference})"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Awesome commit (Resolves: #{reference})"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Awesome commit (resolves #{reference})"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Awesome commit (resolves: #{reference})"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Resolved #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Resolved: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "resolved #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "resolved: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Resolving #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Resolving: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "resolving #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "resolving: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Resolve #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Resolve: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "resolve #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "resolve: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Implement: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Implements: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Implemented: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "Implementing: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "implement: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "implements: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "implemented: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
-      end
-
-      it do
-        message = "implementing: #{reference}"
-        expect(subject.closed_by_message(message)).to eq([issue])
+      with_them do
+        it 'extracts the referenced issue' do
+          message = format(message_template, reference)
+          expect(subject.closed_by_message(message)).to eq([issue])
+        end
       end
 
       context 'with an external issue tracker reference' do
@@ -320,14 +112,14 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
     end
 
     context "with a cross-project reference" do
-      it do
+      it 'extracts the cross-project issue reference' do
         message = "Closes #{cross_reference}"
         expect(subject.closed_by_message(message)).to eq([issue2])
       end
     end
 
     context "with a cross-project URL" do
-      it do
+      it 'extracts the cross-project issue URL' do
         message = "Closes #{::Gitlab::UrlBuilder.instance.issue_url(issue2)}"
         expect(subject.closed_by_message(message)).to eq([issue2])
       end
@@ -348,7 +140,7 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
 
       subject { described_class.new(forked_project, forked_project.creator) }
 
-      it do
+      it 'does not extract issues from the source project' do
         message = "Closes #{fork_cross_reference}"
         expect(subject.closed_by_message(message)).to be_empty
       end
@@ -377,14 +169,14 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
     end
 
     context "with an invalid URL" do
-      it do
+      it 'does not extract issues from an invalid URL' do
         message = "Closes https://google.com#{::Gitlab::UrlBuilder.instance.issue_path(issue2)}"
         expect(subject.closed_by_message(message)).to eq([])
       end
     end
 
     context "with an invalid keyword such as suffix insted of fix" do
-      it do
+      it 'does not extract issues with an invalid keyword' do
         message = "suffix #{reference}"
         expect(subject.closed_by_message(message)).to eq([])
       end

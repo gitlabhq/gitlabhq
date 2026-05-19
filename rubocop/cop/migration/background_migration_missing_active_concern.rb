@@ -42,6 +42,8 @@ module RuboCop
           end
         end
 
+        alias_method :on_numblock, :on_block
+
         private
 
         def module_extends_activesupport_concern?(node)

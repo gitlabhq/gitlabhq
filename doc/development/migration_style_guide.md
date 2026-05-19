@@ -48,7 +48,7 @@ work it needs to perform and how long it takes to complete:
    Migrations used to add new models are also part of these regular schema migrations. The only differences are the Rails command used to generate the migrations and the additional generated files, one for the model and one for the model's spec.
 1. [**Post-deployment migrations.**](database/post_deployment_migrations.md) These are Rails migrations in `db/post_migrate` and
    are run independently from the GitLab.com deployments. Pending post migrations are executed on a daily basis at the discretion
-   of release manager through the [post-deploy migration pipeline](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
+   of release manager through the [post-deploy migration pipeline](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/database-migrations/post-deploy-migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
    These migrations can be used for schema changes that aren't critical for the application to operate, or data migrations that take at most a few minutes.
    Common examples for schema changes that should run post-deploy include:
 
@@ -104,11 +104,19 @@ estimated to keep migration duration to a minimum.
 The result of a [database migration pipeline](database/database_migration_pipeline.md)
 includes the timing information for migrations.
 
+For query-level timing limits, including concurrent operations and background
+migrations, see the [query performance guidelines](database/query_performance.md#timing-guidelines-for-queries).
+
 | Migration Type             | Recommended Duration | Notes |
 |----------------------------|----------------------|-------|
 | Regular migrations         | `<= 3 minutes`       | A valid exception are changes without which application functionality or performance would be severely degraded and which cannot be delayed. |
-| Post-deployment migrations | `<= 10 minutes`      | A valid exception are schema changes, since they must not happen in background migrations. |
+| Post-deployment migrations | `<= 10 minutes`      | A valid exception are schema changes, since they must not happen in background migrations. Concurrent operations such as index creation have a separate [`20 minute` limit](database/query_performance.md#timing-guidelines-for-queries). |
 | Background migrations      | `> 10 minutes`       | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](database/query_performance.md#timing-guidelines-for-queries) with cold caches. |
+
+When the `db:gitlabcom-database-testing` pipeline reports an index creation
+taking longer than 20 minutes, [create the index asynchronously](database/adding_database_indexes.md#create-indexes-asynchronously).
+The testing pipeline runs on a database clone that can underestimate actual
+GitLab.com execution times, so this threshold is intentionally conservative.
 
 ## Large Tables Limitations
 

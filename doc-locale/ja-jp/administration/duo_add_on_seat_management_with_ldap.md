@@ -1,9 +1,9 @@
 ---
 stage: Fulfillment
 group: Seat Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: LDAPによるGitLab Duoアドオンシートの管理
-description: 指定されたLDAPグループのユーザーメンバーシップとシートのステータスを同期することで、GitLab Duoアドオンシートの割り当てと削除を自動化します。
+description: 指定したLDAPグループのユーザーメンバーシップとシートのステータスを同期することで、GitLab Duoアドオンシートの割り当てと削除を自動化します。
 ---
 
 {{< details >}}
@@ -19,20 +19,20 @@ description: 指定されたLDAPグループのユーザーメンバーシップ
 
 {{< /history >}}
 
-GitLabの管理者は、LDAPグループメンバーシップに基づいて、GitLab Duoアドオンシートの自動割り当てを設定できます。有効にすると、ユーザーがサインインするときに、LDAPグループメンバーシップに応じて、GitLabはユーザーのアドオンシートを自動的に割り当てまたは削除します。
+GitLab管理者は、LDAPグループメンバーシップに基づいて、GitLab Duoアドオンシートの自動割り当てを設定できます。この機能を有効にすると、LDAPグループメンバーシップに応じて、ユーザーのサインイン時にGitLabはアドオンシートを自動的に割り当てまたは削除します。
 
 ## シート管理ワークフロー {#seat-management-workflow}
 
 1. **設定**: 管理者は、`duo_add_on_groups`の[設定](#configure-gitlab-duo-add-on-seat-management)でLDAPグループを指定します。
-1. **Seat synchronization**: GitLabは、LDAPグループのメンバーシップを次の2つの方法で確認します:
+1. **シートの同期**: GitLabは、次の2つの方法でLDAPグループメンバーシップを確認します:
    - **ユーザーサインイン時**: ユーザーがLDAP経由でサインインすると、GitLabはそのグループメンバーシップを即座にチェックします。
-   - **定刻同期**: GitLabは、ユーザーのサインインがなくても、シートの割り当てが最新の状態になるように、毎日午前2時にすべてのLDAPユーザーを自動的に同期します。
-1. **Seat assignment**:
-   - ユーザーが`duo_add_on_groups`にリストされているグループに属している場合、（まだ割り当てられていない場合は）アドオンシートが割り当てられます。
-   - ユーザーがリストされているグループに属していない場合、（以前に割り当てられている場合は）アドオンシートが削除されます。
-1. **Async processing**: シートの割り当てと削除は非同期で処理されるため、メインのサインインフローが中断されることはありません。
+   - **定刻同期**: GitLabは毎日午前2:00に、すべてのLDAPユーザーを自動的に同期し、ユーザーがサインインしていなくてもシート割り当てが最新の状態に保たれるようにします。
+1. **シートの割り当て**:
+   - ユーザーが`duo_add_on_groups`に指定されているいずれかのグループに属している場合、（未割り当てであれば）アドオンシートが割り当てられます。
+   - ユーザーがこのリストで指定されているグループに属していない場合、（割り当て済みであれば）アドオンシートが削除されます。
+1. **非同期処理**: シートの割り当てと削除は非同期で処理されるため、メインのサインインフローが中断されることはありません。
 
-次の図は、ワークフローを示しています:
+次の図は、このワークフローを示しています:
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -65,13 +65,13 @@ sequenceDiagram
 
 ## GitLab Duoアドオンシート管理を設定する {#configure-gitlab-duo-add-on-seat-management}
 
-LDAPでアドオンシート管理をオンにするには、次の手順に従います:
+LDAPによるアドオンシート管理をオンにするには:
 
 1. [インストール](auth/ldap/ldap_synchronization.md#gitlab-duo-add-on-for-groups)用に編集したGitLab設定ファイルを開きます。
-1. `duo_add_on_groups`設定をLDAPサーバー設定に追加します。
-1. GitLab Duoアドオンシートを持つ必要があるLDAPグループ名の配列を指定します。
+1. LDAPサーバーの設定に`duo_add_on_groups`設定を追加します。
+1. GitLab Duoアドオンシートを割り当てる必要があるLDAPグループ名の配列を指定します。
 
-次の例は、Linuxパッケージインストールの`gitlab.rb`設定です:
+次の例は、Linuxパッケージインストールの場合の`gitlab.rb`設定です:
 
 ```ruby
 gitlab_rails['ldap_servers'] = {

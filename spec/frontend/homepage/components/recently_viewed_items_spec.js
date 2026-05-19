@@ -67,6 +67,16 @@ describe('RecentlyViewedItems', () => {
               webUrl: '/project/-/merge_requests/457',
             },
           },
+          {
+            viewedAt: '2025-06-17T14:30:00Z',
+            itemType: 'WikiPage',
+            item: {
+              __typename: 'WikiPage',
+              id: 'wiki-1',
+              title: 'Getting Started Guide',
+              webUrl: '/project/-/wikis/getting-started',
+            },
+          },
         ],
       },
     },
@@ -89,7 +99,7 @@ describe('RecentlyViewedItems', () => {
       'Your recently viewed items are not available. Please refresh the page to try again.',
     );
   const findEmptyState = () =>
-    wrapper.findByText('Issues and merge requests you visit will appear here.');
+    wrapper.findByText('Issues, merge requests, and wiki pages you visit will appear here.');
   const findItemsList = () => wrapper.find('ul');
   const findListItems = () => findItemsList().findAll('li');
   const findItemsByIconName = (iconName) =>
@@ -165,24 +175,7 @@ describe('RecentlyViewedItems', () => {
       createComponent();
       await waitForPromises();
 
-      expect(findItemLinks()).toHaveLength(4);
-    });
-
-    it('handles empty response gracefully', async () => {
-      const emptyResponse = {
-        data: {
-          currentUser: {
-            id: 123,
-            recentlyViewedItems: [],
-          },
-        },
-      };
-
-      const emptyQueryHandler = jest.fn().mockResolvedValue(emptyResponse);
-      createComponent({ recentlyViewedHandler: emptyQueryHandler });
-      await waitForPromises();
-
-      expect(wrapper.vm.items).toEqual([]);
+      expect(findItemLinks()).toHaveLength(5);
     });
   });
 
@@ -193,7 +186,7 @@ describe('RecentlyViewedItems', () => {
     });
 
     it('renders the correct number of items', () => {
-      expect(findItemLinks()).toHaveLength(4);
+      expect(findItemLinks()).toHaveLength(5);
     });
 
     it('sorts items by viewedAt in descending order (most recent first)', () => {
@@ -205,6 +198,7 @@ describe('RecentlyViewedItems', () => {
       expect(items.at(1).text()).toBe(recentlyViewedItems[1].item.title);
       expect(items.at(2).text()).toBe(recentlyViewedItems[2].item.title);
       expect(items.at(3).text()).toBe(recentlyViewedItems[3].item.title);
+      expect(items.at(4).text()).toBe(recentlyViewedItems[4].item.title);
     });
 
     it('limits items to MAX_ITEMS', async () => {
@@ -240,6 +234,13 @@ describe('RecentlyViewedItems', () => {
       expect(issueItems.at(0).text()).toBe('Fix critical bug in payment processing');
     });
 
+    it('adds correct icon to wiki pages', () => {
+      const wikiItems = findItemsByIconName('book');
+
+      expect(wikiItems).toHaveLength(1);
+      expect(wikiItems.at(0).text()).toBe('Getting Started Guide');
+    });
+
     it('adds correct icon to merge requests', () => {
       const mrItems = findItemsByIconName('merge-request');
 
@@ -254,6 +255,7 @@ describe('RecentlyViewedItems', () => {
       expect(links.at(1).attributes('href')).toBe('/project/-/issues/123');
       expect(links.at(2).attributes('href')).toBe('/project/-/issues/124');
       expect(links.at(3).attributes('href')).toBe('/project/-/merge_requests/457');
+      expect(links.at(4).attributes('href')).toBe('/project/-/wikis/getting-started');
     });
 
     it('renders items with correct icons', () => {
@@ -263,14 +265,16 @@ describe('RecentlyViewedItems', () => {
       expect(icons.at(1).props('name')).toBe('work-item-issue');
       expect(icons.at(2).props('name')).toBe('work-item-issue');
       expect(icons.at(3).props('name')).toBe('merge-request');
+      expect(icons.at(4).props('name')).toBe('book');
     });
 
     it('renders tooltip components for each item', () => {
       const tooltips = findTooltipComponents();
 
-      expect(tooltips).toHaveLength(4);
+      expect(tooltips).toHaveLength(5);
       expect(tooltips.at(0).props('title')).toBe('Implement authentication improvements');
       expect(tooltips.at(2).props('title')).toBe('Add new feature for user management');
+      expect(tooltips.at(4).props('title')).toBe('Getting Started Guide');
     });
   });
 

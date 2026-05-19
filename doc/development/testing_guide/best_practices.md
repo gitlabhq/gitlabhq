@@ -19,7 +19,7 @@ a level that is difficult to manage.
 Test heuristics can help solve this problem. They concisely address many of the common ways bugs
 manifest themselves in our code. When designing our tests, take time to review known test heuristics to inform
 our test design. We can find some helpful heuristics documented in the Handbook in the
-[Test Engineering](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/test-engineering/#test-heuristics) section.
+[Testing Guide](https://handbook.gitlab.com/handbook/engineering/testing/).
 
 ## RSpec
 
@@ -637,6 +637,29 @@ firefox coverage/index.html
 ```
 
 Use the coverage reports to ensure your tests cover 100% of your code.
+
+### View specs
+
+View specs in `spec/views/` and `ee/spec/views/` verify rendered HTML output.
+They must not re-test backend logic or database behavior.
+
+Assertions must target rendered output using matchers such as `have_content`, `have_css`,
+`have_selector`, and `have_link`.
+Do not assert on internal Ruby state or return values of view helper methods.
+
+Setup must use `build_stubbed` instead of `create` unless the spec genuinely requires
+persisted state.
+Use `assign` to pass instance variables and `allow(view).to receive(...)` to stub helper methods.
+Keep setup proportional to what is being asserted.
+A spec that assigns many instance variables and stubs several helpers to assert a single element
+is a signal that the view has too many responsibilities.
+
+**Do not** include the following in view specs:
+
+- `ActiveRecord::QueryRecorder` or `exceed_query_limit` assertions.
+  Query performance belongs in request or controller specs, not view specs.
+- Deep service-object mocking chains such as `receive_message_chain`.
+  If a view requires this kind of stubbing, the view itself contains too much logic.
 
 ### System / Feature tests
 
@@ -1635,6 +1658,12 @@ request, and `expect_no_snowplow_event` will fail if that happens to run
 when no arguments are specified.
 
 ##### View layer with data attributes
+
+> [!note]
+> The `data-track-*` attributes and `have_tracking` matcher shown below are part of
+> the legacy Snowplow tracking system. For new tracking, use `data-event-tracking`
+> attributes instead. For more information, see the
+> [migration guide](../internal_analytics/internal_event_instrumentation/migration.md).
 
 If you are using the data attributes to register tracking at the Haml layer,
 you can use the `have_tracking` matcher method to assert if expected data attributes are assigned.

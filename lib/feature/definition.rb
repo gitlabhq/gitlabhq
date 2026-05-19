@@ -9,7 +9,7 @@ module Feature
 
     VALID_FEATURE_NAME = %r{^#{Gitlab::Regex.sep_by_1('_', /[a-z0-9]+/)}$}
 
-    PARAMS.each do |param|
+    PARAMS.each_key do |param|
       define_method(param) do
         attributes[param]
       end
@@ -26,7 +26,7 @@ module Feature
       @attributes = {}
 
       # assign nil, for all unknown opts
-      PARAMS.each do |param|
+      PARAMS.each_key do |param|
         @attributes[param] = opts[param]
       end
     end

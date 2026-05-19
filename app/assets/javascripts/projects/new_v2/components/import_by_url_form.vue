@@ -11,7 +11,6 @@ import {
 } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { visitUrl, isReasonableGitUrl } from '~/lib/utils/url_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import SharedProjectCreationFields from './shared_project_creation_fields.vue';
@@ -29,7 +28,6 @@ export default {
     GlLink,
     GlMultiStepFormTemplate,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     importByUrlValidatePath: {
       default: null,
@@ -63,11 +61,8 @@ export default {
     };
   },
   computed: {
-    isImportByUrlNewPage() {
-      return this.glFeatures.importByUrlNewPage;
-    },
-    currentStep() {
-      return this.isImportByUrlNewPage ? null : 3;
+    isSubmitDisabled() {
+      return this.urlValidationState !== true;
     },
   },
   methods: {
@@ -97,11 +92,7 @@ export default {
       this.$emit('onSelectNamespace', newNamespace);
     },
     onBack() {
-      if (this.isImportByUrlNewPage) {
-        visitUrl(this.newProjectPath);
-      } else {
-        this.$emit('back');
-      }
+      visitUrl(this.newProjectPath);
     },
     onBlur() {
       this.urlValidationState =
@@ -122,10 +113,7 @@ export default {
 <template>
   <gl-form method="post" :action="newProjectFormPath">
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-    <gl-multi-step-form-template
-      :title="s__('ProjectImportByURL|Import repository by URL')"
-      :current-step="currentStep"
-    >
+    <gl-multi-step-form-template :title="s__('ProjectImportByURL|Import repository by URL')">
       <template #default>
         <gl-form-group
           :label="__('Git repository URL')"
@@ -215,22 +203,13 @@ export default {
 
       <template #next>
         <gl-button
-          v-if="isImportByUrlNewPage"
           type="submit"
           category="primary"
           variant="confirm"
-          data-testid="import-project-by-url-next-button"
+          :disabled="isSubmitDisabled"
+          data-testid="import-project-by-url-button"
         >
           {{ __('Create project') }}
-        </gl-button>
-        <gl-button
-          v-else
-          category="primary"
-          variant="confirm"
-          :disabled="true"
-          data-testid="import-project-by-url-next-button"
-        >
-          {{ __('Next step') }}
         </gl-button>
       </template>
       <template #back>

@@ -3,6 +3,18 @@ import PageNavigationMenu from './page_navigation_menu.vue';
 export default {
   component: PageNavigationMenu,
   title: 'vue_shared/page_navigation_menu',
+  parameters: {
+    a11y: {
+      config: {
+        rules: [
+          {
+            id: 'heading-order',
+            enabled: false,
+          },
+        ],
+      },
+    },
+  },
 };
 
 const Template = (args, { argTypes }) => ({

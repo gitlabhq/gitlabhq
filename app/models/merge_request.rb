@@ -37,7 +37,7 @@ class MergeRequest < ApplicationRecord
     source_project_id_convert_to_bigint
     target_project_id_convert_to_bigint
     updated_by_id_convert_to_bigint
-  ], remove_with: '18.3', remove_after: '2025-07-17'
+  ], remove_with: '19.1', remove_after: '2026-05-21'
 
   extend ::Gitlab::Utils::Override
 
@@ -52,8 +52,6 @@ class MergeRequest < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
   CI_MERGE_REQUEST_DESCRIPTION_MAX_LENGTH = 2700
   MERGE_LEASE_TIMEOUT = 15.minutes.to_i
-  DIFF_VERSION_LIMIT = 1_000
-  DIFF_COMMITS_LIMIT = 1_000_000
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -712,6 +710,14 @@ class MergeRequest < ApplicationRecord
       .where(merge_request_diff_files: { old_path: path })
   end
 
+  # Optimization support, see: https://docs.gitlab.com/development/database/efficient_in_operator_queries/
+  scope :in_optimization_array_mapping_scope, ->(id_expression) {
+    where(arel_table[:target_project_id].eq(id_expression))
+  }
+  scope :in_optimization_finder_query, ->(_created_at_expression, id_expression) {
+    where(arel_table[:id].eq(id_expression))
+  }
+
   scope :with_closed_between, ->(closed_after = nil, closed_before = nil) do
     return all unless closed_after || closed_before
 
@@ -826,7 +832,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def rebase_in_progress?
-    rebase_jid.present? && Gitlab::SidekiqStatus.running?(rebase_jid)
+    rebase_jid.present? && Gitlab::SidekiqStatus.running_or_enqueued?(rebase_jid)
   end
 
   def permits_force_push?
@@ -937,6 +943,12 @@ class MergeRequest < ApplicationRecord
     [:assignees, :reviewers] + super
   end
 
+  def head_pipeline
+    return super unless head_pipeline_id
+
+    association(:head_pipeline).target ||= Ci::Pipeline.find_by_id(head_pipeline_id)
+  end
+
   def recent_commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: false, page: nil, preload_metadata: false)
     if preload_metadata && !load_from_gitaly
       preload_commits_metadata
@@ -1039,8 +1051,10 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  def commit_shas(limit: nil)
-    return merge_request_diff.commit_shas(limit: limit, preload_metadata: true) if merge_request_diff.persisted?
+  def commit_shas(limit: nil, bypass_preloaded: false)
+    mode = bypass_preloaded ? :force_metadata : :preload
+
+    return merge_request_diff.commit_shas(limit: limit, mode: mode) if merge_request_diff.persisted?
 
     shas =
       if compare_commits
@@ -1202,13 +1216,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def changed_paths
-    shas_for_changed_paths = if Feature.enabled?(:optimised_commits_for_mr_changed_paths, project)
-                               commit_shas
-                             else
-                               commits
-                             end
-
-    project.repository.find_changed_paths(shas_for_changed_paths, merge_commit_diff_mode: :all_parents)
+    project.repository.find_changed_paths(commit_shas(bypass_preloaded: true), merge_commit_diff_mode: :all_parents)
   end
   request_cache(:changed_paths) { [id, diff_head_sha] }
 
@@ -1392,7 +1400,6 @@ class MergeRequest < ApplicationRecord
 
   def validate_branch_existence
     return unless source_project && target_project
-    return unless Feature.enabled?(:validate_merge_request_branch_existence, source_project)
 
     if source_branch.present? && !source_branch_exists?
       errors.add(:source_branch, _('does not exist'))
@@ -1429,7 +1436,7 @@ class MergeRequest < ApplicationRecord
     # The unlocking process is handled by StuckMergeJobsWorker scheduled in Cron.
     return true if locked?
 
-    !!merge_jid && !merged? && Gitlab::SidekiqStatus.running?(merge_jid)
+    !!merge_jid && !merged? && Gitlab::SidekiqStatus.running_or_enqueued?(merge_jid)
   end
 
   def closed_or_merged_without_fork?
@@ -1520,7 +1527,7 @@ class MergeRequest < ApplicationRecord
   # rubocop: disable CodeReuse/ServiceClass
   def reload_diff(current_user = nil)
     return unless open?
-    return if stale_replica_state_mismatch?
+    return if state_changed_since_load?
 
     MergeRequests::ReloadDiffsService.new(self, current_user).execute
   end
@@ -2338,23 +2345,6 @@ class MergeRequest < ApplicationRecord
       pipeline_has_report_in_self_or_descendants?(:sast)
   end
 
-  def has_secret_detection_reports?
-    !!diff_head_pipeline&.complete_or_manual? &&
-      pipeline_has_report_in_self_or_descendants?(:secret_detection)
-  end
-
-  def compare_sast_reports(current_user)
-    return missing_report_error("SAST") unless has_sast_reports?
-
-    compare_reports(::Vulnerabilities::CompareSecurityReportsService, current_user, 'sast')
-  end
-
-  def compare_secret_detection_reports(current_user)
-    return missing_report_error("secret detection") unless has_secret_detection_reports?
-
-    compare_reports(::Vulnerabilities::CompareSecurityReportsService, current_user, 'secret_detection')
-  end
-
   def calculate_reactive_cache(identifier, current_user_id = nil, report_type = nil, *args)
     service_class = identifier.constantize
 
@@ -2643,6 +2633,10 @@ class MergeRequest < ApplicationRecord
     project.allows_multiple_merge_request_reviewers?
   end
 
+  def reviewer_auto_assignment_enabled?
+    project.project_setting.reviewer_auto_assignment_enabled?
+  end
+
   def supports_assignee?
     true
   end
@@ -2796,7 +2790,7 @@ class MergeRequest < ApplicationRecord
     # use compare when MR is being created and diffs haven't been persisted yet
     return compare.first_diffs_slice(limit, diff_options) if compare
     # use context commits diff when only_context_commits is requested and context commits exist
-    return context_commits_diff.diffs(diff_options).diff_files.first(limit) if show_context_commits_diff?(diff_options)
+    return context_commits_diff.first_diffs_slice(limit, diff_options) if show_context_commits_diff?(diff_options)
 
     # default: resolve the diff version (handles version comparisons, specific diff_id, etc.)
     diff = resolve_diff_version(diff_options)
@@ -2826,20 +2820,16 @@ class MergeRequest < ApplicationRecord
   end
 
   def reached_versions_limit?
-    return false if Feature.disabled?(:merge_requests_diffs_limit, target_project)
-
-    merge_request_diffs.count >= DIFF_VERSION_LIMIT
+    merge_request_diffs.count >= Gitlab::CurrentSettings.diff_max_versions
   end
 
   def reached_diff_commits_limit?
-    return false if Feature.disabled?(:merge_requests_diff_commits_limit, target_project)
-
     total_commits_count = MergeRequestDiff
       .from(merge_request_diffs.limit(1000), :limited_diffs)
       .pick('SUM(commits_count)')
       .to_i
 
-    total_commits_count >= DIFF_COMMITS_LIMIT
+    total_commits_count >= Gitlab::CurrentSettings.diff_max_commits
   end
 
   def diffs_batch_cache_key
@@ -2952,40 +2942,31 @@ class MergeRequest < ApplicationRecord
     merge_request_diffs
       .viewable
       .order_id_desc
-      .limit(DIFF_VERSION_LIMIT)
+      .limit(Gitlab::CurrentSettings.diff_max_versions)
   end
 
   def find_viewable_diff_by_id(diff_id)
     merge_request_diffs.viewable.find(diff_id)
   end
 
+  def show_context_commits_diff?(diff_options)
+    diff_options[:only_context_commits] && context_commits_diff && !context_commits_diff.empty?
+  end
+
   private
 
-  # Detects a stale replica read where the state from a replica shows
-  # the MR as open, but the primary database has already transitioned it to a
-  # different state (e.g. merged or locked). If a mismatch is detected, we log a
-  # warning and return true so the caller can skip reload_diff preventing an
-  # empty diff from being written on top of a valid merged diff.
-  def stale_replica_state_mismatch?
-    return false unless Feature.enabled?(:mr_refresh_use_primary, target_project)
-
+  # Returns true when the in-memory state_id no longer matches what the primary
+  # database holds. This can happen because the instance was loaded from a
+  # replica that lagged behind primary, or because another process transitioned
+  # the MR (e.g. lock_mr, mark_as_merged) after this instance was loaded. The
+  # caller uses this to skip reload_diff and avoid writing an empty diff on top
+  # of a valid merged diff.
+  def state_changed_since_load?
     primary_state_id = ::Gitlab::Database::LoadBalancing::SessionMap
       .current(self.class.load_balancer)
       .use_primary { self.class.where(id: id).pick(:state_id) }
 
-    return false if primary_state_id == state_id
-
-    Gitlab::AppLogger.warn(
-      message: 'reload_diff skipped: stale replica state detected, MR state on primary differs from replica',
-      merge_request_id: id,
-      merge_request_iid: iid,
-      project_id: target_project_id,
-      replica_state_id: state_id,
-      primary_state_id: primary_state_id,
-      backtrace: Gitlab::BacktraceCleaner.clean_backtrace(caller)
-    )
-
-    true
+    primary_state_id != state_id
   end
 
   def committer_emails_from_diff
@@ -3024,10 +3005,6 @@ class MergeRequest < ApplicationRecord
       .where(dc[:merge_request_diff_id].eq(merge_request_diff.id))
       .where(dc[:merge_request_commits_metadata_id].eq(nil))
       .where(u[:email].not_eq(nil))
-  end
-
-  def show_context_commits_diff?(diff_options)
-    diff_options[:only_context_commits] && context_commits_diff && !context_commits_diff.empty?
   end
 
   def update_cached_closing_issues_from_description!(issues_to_close_ids)
@@ -3156,7 +3133,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def missing_report_error(report_type)
-    { status: :error, status_reason: "This merge request does not have #{report_type} reports" }
+    { status: :error, status_reason: "This merge request does not have #{report_type} reports." }
   end
 
   def with_rebase_lock

@@ -145,7 +145,7 @@ Prerequisites:
 - To create a project deploy token, you must have the Maintainer or Owner role for the project.
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Deploy tokens**.
 1. Select **Add token**.
 1. Complete the fields, and select the desired [scopes](#scope).
@@ -166,7 +166,7 @@ Prerequisites:
 To revoke a deploy token:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Deploy tokens**.
 1. In the **Active Deploy Tokens** section, by the token you want to revoke, select **Revoke**.
 

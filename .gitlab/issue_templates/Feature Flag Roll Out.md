@@ -108,7 +108,7 @@ To do so, follow these steps:
 - [ ] After the default-enabling MR has been deployed, clean up the feature flag from all environments by running these chatops command in the `#production` channel: `/chatops gitlab run feature delete <feature-flag-name> --dev --pre --staging --staging-ref --production`
 - [ ] Close [the feature issue](<feature-issue-link>) to indicate the feature will be released in the current milestone.
 - [ ] Set the next milestone to this rollout issue for scheduling [the flag removal](#release-the-feature).
-- [ ] (Optional) You can [create a separate issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20Flag%20Cleanup) for scheduling the steps below to [Release the feature](#release-the-feature).
+- [ ] (Optional) You can [create a separate issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Feature%20Flag%20Cleanup) for scheduling the steps below to [Release the feature](#release-the-feature).
     - [ ] Set the title to "[FF] `<feature-flag-name>` - Cleanup".
     - [ ] Execute the `/copy_metadata <this-rollout-issue-link>` quick action to copy the labels from this rollout issue.
     - [ ] Link this rollout issue as a related issue.
@@ -123,7 +123,7 @@ the [clean up](https://docs.gitlab.com/development/feature_flags/controls/#clean
 should be done as soon as possible to permanently enable the feature and reduce
 complexity in the codebase.
 
-You can either [create a follow-up issue for Feature Flag Cleanup](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20Flag%20Cleanup)
+You can either [create a follow-up issue for Feature Flag Cleanup](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Feature%20Flag%20Cleanup)
 or use the checklist below in this same issue.
 
 <!-- The checklist here is to help stakeholders keep track of the feature flag status -->

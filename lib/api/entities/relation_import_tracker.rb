@@ -8,7 +8,9 @@ module API
         tracker.project.full_path
       end
       expose :relation, documentation: { type: 'String', example: 'issues' }
-      expose :status, documentation: { type: 'string', example: 'pending' }, &:status_name
+      expose :status, documentation: { type: 'String', example: 'pending' } do |tracker| # rubocop:disable Style/SymbolProc -- using do block to support API/EntityFieldType documentation
+        tracker.status_name
+      end
       expose :created_at, documentation: { type: 'DateTime', example: "2022-01-31T15:10:45.080Z" }
       expose :updated_at, documentation: { type: 'DateTime', example: "2022-01-31T15:10:45.080Z" }
     end

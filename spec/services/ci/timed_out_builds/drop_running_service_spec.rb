@@ -17,7 +17,7 @@ RSpec.describe Ci::TimedOutBuilds::DropRunningService, feature_category: :contin
     let!(:running_build) { create(:ci_running_build, runner: runner, build: job, created_at: created_at) }
     let(:created_at) { job.timeout.seconds.ago - described_class::MINUTE_BUFFER }
 
-    it_behaves_like 'job is dropped with failure reason', 'job_execution_timeout'
+    it_behaves_like 'job is dropped with failure reason', 'server_timeout_running'
     it_behaves_like 'when invalid dooms the job bypassing validations'
 
     context 'when job becomes complete before processing the timeout' do

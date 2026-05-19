@@ -1,10 +1,10 @@
 import { nextTick } from 'vue';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import simplePoll from '~/lib/utils/simple_poll';
 import App from '~/observability/components/app.vue';
-import { MAX_POLLING_ATTEMPTS, POLLING_TIMEOUT } from '~/observability/constants';
+import { MAX_POLLING_ATTEMPTS, POLLING_TIMEOUT, TIMEOUTS } from '~/observability/constants';
 import iframeNavigator from '~/observability/iframe_navigator';
 import * as cryptoModule from '~/observability/utils/nonce';
 import { AuthManager } from '~/observability/utils/auth_manager';
@@ -136,37 +136,14 @@ describe('Observability App Component', () => {
   });
 
   describe('Component Rendering', () => {
-    it('renders iframe with correct observability URL', async () => {
-      await setupComponent({
-        o11yUrl: 'https://custom.observability.com',
-        path: 'custom-path/dashboard',
-      });
+    it.each([
+      ['custom URL and path', 'https://custom.observability.com', 'custom-path/dashboard'],
+      ['nested path', 'https://o11y.gitlab.com', 'metrics/dashboard'],
+      ['default path', 'https://o11y.gitlab.com', 'traces-explorer'],
+    ])('renders iframe with correct src for %s', async (_, o11yUrl, path) => {
+      await setupComponent({ o11yUrl, path });
 
-      expect(wrapper.find('iframe').attributes('src')).toBe(
-        'https://custom.observability.com/custom-path/dashboard',
-      );
-    });
-
-    it('handles different path formats correctly', async () => {
-      await setupComponent({
-        o11yUrl: 'https://o11y.gitlab.com',
-        path: 'metrics/dashboard',
-      });
-
-      expect(wrapper.find('iframe').attributes('src')).toBe(
-        'https://o11y.gitlab.com/metrics/dashboard',
-      );
-    });
-
-    it('handles edge cases in URL construction', async () => {
-      await setupComponent({
-        o11yUrl: 'https://o11y.gitlab.com',
-        path: 'traces-explorer',
-      });
-
-      expect(wrapper.find('iframe').attributes('src')).toBe(
-        'https://o11y.gitlab.com/traces-explorer',
-      );
+      expect(wrapper.find('iframe').attributes('src')).toBe(`${o11yUrl}/${path}`);
     });
 
     it('renders iframe with correct title', async () => {
@@ -270,13 +247,16 @@ describe('Observability App Component', () => {
       axiosGetSpy.mockRestore();
     });
 
-    it('calls simplePoll when tokens are empty', async () => {
+    it.each([
+      ['empty', {}],
+      ['loading status', { status: 'loading' }],
+    ])('calls simplePoll when tokens are %s', async (_, authTokens) => {
       simplePoll.mockClear();
       axiosGetSpy.mockResolvedValueOnce({
         data: { auth_tokens: { access_jwt: 'a', refresh_jwt: 'r' } },
       });
 
-      await setupComponent({ authTokens: {} });
+      await setupComponent({ authTokens });
       await waitForPromises();
 
       expect(simplePoll).toHaveBeenCalledWith(expect.any(Function), {
@@ -306,6 +286,23 @@ describe('Observability App Component', () => {
         { accessJwt: 'access', refreshJwt: 'refresh' },
         expect.any(String),
       );
+    });
+
+    it('shows error after auth timeout when iframe never loads', async () => {
+      axiosGetSpy.mockResolvedValueOnce({
+        data: { auth_tokens: { access_jwt: 'a', refresh_jwt: 'r' } },
+      });
+
+      await setupComponent({ authTokens: {} });
+      await waitForPromises();
+
+      expect(wrapper.findByTestId('o11y-loading-status').exists()).toBe(true);
+
+      jest.advanceTimersByTime(TIMEOUTS.AUTH_TIMEOUT);
+      await nextTick();
+
+      expect(wrapper.findByTestId('o11y-loading-status').exists()).toBe(false);
+      expect(wrapper.findByTestId('o11y-error-status').exists()).toBe(true);
     });
 
     it('updates authTokensStatus when status is present in response', async () => {
@@ -408,49 +405,29 @@ describe('Observability App Component', () => {
     });
   });
 
-  describe('Snapshots', () => {
-    it('matches snapshot while loading', async () => {
-      await setupComponent();
-
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
-    it('matches snapshot on error state', async () => {
-      await setupComponent();
-
-      authCallbacks.onAuthError();
-      await nextTick();
-
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
-    it('matches snapshot on authenticated state', async () => {
-      await setupComponent();
-
-      authCallbacks.onAuthSuccess();
-      await nextTick();
-
-      expect(wrapper.element).toMatchSnapshot();
-    });
-  });
-
   describe('Props Validation', () => {
-    it('rejects invalid auth token structure', () => {
-      const authTokensValidator = App.props.authTokens.validator;
+    const { validator: authTokensValidator } = App.props.authTokens;
 
+    it('rejects invalid auth token structure', () => {
       expect(authTokensValidator({ accessJwt: 'token' })).toBe(false);
       expect(authTokensValidator({ accessJwt: '', refreshJwt: 'refresh' })).toBe(false);
     });
 
     it('accepts valid auth token structure', () => {
-      const authTokensValidator = App.props.authTokens.validator;
-
       expect(
         authTokensValidator({
           accessJwt: 'access-token',
           refreshJwt: 'refresh-token',
         }),
       ).toBe(true);
+    });
+
+    it('accepts auth tokens with loading status', () => {
+      expect(authTokensValidator({ status: 'loading' })).toBe(true);
+    });
+
+    it('rejects auth tokens with non-loading status', () => {
+      expect(authTokensValidator({ status: 'error' })).toBe(false);
     });
   });
 
@@ -506,6 +483,138 @@ describe('Observability App Component', () => {
       expect(axiosGetSpy.mock.calls).toHaveLength(callsAfterFirstCycle);
 
       axiosGetSpy.mockRestore();
+    });
+  });
+
+  describe('Fullscreen toggle', () => {
+    let fullscreenWrapper;
+    let fullscreenAuthCallbacks;
+
+    const findEnterButton = () => fullscreenWrapper.findByTestId('o11y-enter-fullscreen');
+    const findExitButton = () => fullscreenWrapper.findByTestId('o11y-exit-fullscreen');
+    const findAnnouncement = () => fullscreenWrapper.findByTestId('o11y-fullscreen-announcement');
+
+    const clickEnterButton = async () => {
+      await findEnterButton().trigger('click');
+    };
+
+    const clickExitButton = async () => {
+      await findExitButton().trigger('click');
+    };
+
+    const setupFullscreenComponent = async (props = {}) => {
+      fullscreenWrapper = mountExtended(App, {
+        propsData: {
+          o11yUrl: DEFAULTS.O11Y_URL,
+          path: DEFAULTS.PATH,
+          authTokens: DEFAULTS.TOKENS,
+          title: DEFAULTS.TITLE,
+          pollingEndpoint: DEFAULTS.POLLING_ENDPOINT,
+          ...props,
+        },
+      });
+      await nextTick();
+      fullscreenAuthCallbacks = {
+        onAuthSuccess: mockAuthManager.setCallbacks.mock.calls[0]?.[0],
+        onAuthError: mockAuthManager.setCallbacks.mock.calls[0]?.[1],
+      };
+    };
+
+    const setupAuthenticated = async () => {
+      await setupFullscreenComponent();
+      fullscreenAuthCallbacks.onAuthSuccess();
+      await nextTick();
+    };
+
+    it('enter button is visible after auth success', async () => {
+      await setupAuthenticated();
+      expect(findEnterButton().exists()).toBe(true);
+      expect(findExitButton().exists()).toBe(false);
+    });
+
+    it('enter button is not visible while loading', async () => {
+      await setupFullscreenComponent();
+      expect(findEnterButton().exists()).toBe(false);
+    });
+
+    it('enter button is not visible after auth failure', async () => {
+      await setupFullscreenComponent();
+      fullscreenAuthCallbacks.onAuthError();
+      await nextTick();
+      expect(findEnterButton().exists()).toBe(false);
+    });
+
+    it('clicking enter button adds o11y-fullscreen class to documentElement and shows exit button', async () => {
+      await setupAuthenticated();
+      await clickEnterButton();
+      expect(document.documentElement.classList.contains('o11y-fullscreen')).toBe(true);
+      expect(findExitButton().exists()).toBe(true);
+      expect(findEnterButton().exists()).toBe(false);
+    });
+
+    it('clicking exit button removes o11y-fullscreen class from documentElement and shows enter button', async () => {
+      await setupAuthenticated();
+      await clickEnterButton();
+      await clickExitButton();
+      expect(document.documentElement.classList.contains('o11y-fullscreen')).toBe(false);
+      expect(findEnterButton().exists()).toBe(true);
+      expect(findExitButton().exists()).toBe(false);
+    });
+
+    it('Escape key exits fullscreen when fullscreen is active', async () => {
+      await setupAuthenticated();
+      await clickEnterButton();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await nextTick();
+      expect(document.documentElement.classList.contains('o11y-fullscreen')).toBe(false);
+    });
+
+    it('Escape key does nothing when not in fullscreen', async () => {
+      await setupAuthenticated();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await nextTick();
+      expect(document.documentElement.classList.contains('o11y-fullscreen')).toBe(false);
+    });
+
+    it('removes o11y-fullscreen class and keydown listener on beforeUnmount when fullscreen is active', async () => {
+      await setupAuthenticated();
+      await clickEnterButton();
+
+      const removeSpy = jest.spyOn(document, 'removeEventListener');
+      fullscreenWrapper.vm.$options.beforeUnmount.call(fullscreenWrapper.vm);
+
+      expect(document.documentElement.classList.contains('o11y-fullscreen')).toBe(false);
+      expect(removeSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
+      removeSpy.mockRestore();
+    });
+
+    it('does not remove keydown listener on beforeUnmount when not in fullscreen', async () => {
+      const removeSpy = jest.spyOn(document, 'removeEventListener');
+      await setupAuthenticated();
+
+      fullscreenWrapper.vm.$options.beforeUnmount.call(fullscreenWrapper.vm);
+
+      expect(removeSpy).not.toHaveBeenCalledWith('keydown', expect.any(Function));
+      removeSpy.mockRestore();
+    });
+
+    it('announces entering fullscreen for screen readers', async () => {
+      await setupAuthenticated();
+      expect(findAnnouncement().text()).toBe('');
+      await clickEnterButton();
+      expect(findAnnouncement().text()).toContain('Entered full screen mode');
+    });
+
+    it('announces exiting fullscreen for screen readers', async () => {
+      await setupAuthenticated();
+      await clickEnterButton();
+      await clickExitButton();
+      expect(findAnnouncement().text()).toContain('Exited full screen mode');
+    });
+
+    afterEach(() => {
+      document.documentElement.classList.remove('o11y-fullscreen');
+      fullscreenWrapper?.destroy();
     });
   });
 

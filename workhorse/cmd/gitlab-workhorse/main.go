@@ -66,7 +66,12 @@ func main() {
 		os.Exit(0)
 	}
 
-	log.WithError(run(*boot, *cfg)).Fatal("shutting down")
+	if err := run(*boot, *cfg); err != nil {
+		fmt.Fprintf(os.Stderr, "shutting down: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Fprintln(os.Stderr, "shutting down")
+	os.Exit(0)
 }
 
 type alreadyPrintedError struct{ error }
@@ -186,6 +191,83 @@ func initializePprof(listenerAddress string, errors chan error) (*http.Server, e
 	return server, nil
 }
 
+func buildListeners(boot bootConfig, cfg config.Config) ([]net.Listener, error) {
+	listenerFromBootConfig := config.ListenerConfig{
+		Network: boot.listenNetwork,
+		Addr:    boot.listenAddr,
+	}
+
+	var listeners []net.Listener
+	oldUmask := syscall.Umask(boot.listenUmask)
+	defer syscall.Umask(oldUmask)
+
+	for _, listenerCfg := range append(cfg.Listeners, listenerFromBootConfig) {
+		l, err := listener.New("upstream", listenerCfg)
+		if err != nil {
+			return nil, err
+		}
+		listeners = append(listeners, l)
+	}
+
+	return listeners, nil
+}
+
+func gracefulShutdown(
+	srv *http.Server,
+	cfg config.Config,
+	redisKeyWatcher *redis.KeyWatcher,
+	healthCheckServer *healthcheck.Server,
+	shutdownCh chan struct{},
+	upgradedConnsManager *upstream.UpgradedConnsManager,
+) error {
+	if healthCheckServer != nil {
+		healthCheckServer.InitiateShutdown()
+		// Signal upstream to stop accepting long polling requests because
+		// requests can arrive during the graceful shutdown time.
+		close(shutdownCh)
+		// Kick out any long poll requests
+		redisKeyWatcher.Shutdown()
+
+		// Wait for the graceful shutdown delay to complete before shutting down the server
+		gracefulShutdownDelay := healthCheckServer.GetGracefulShutdownDelay()
+		if gracefulShutdownDelay > 0 {
+			log.WithField("shutdown_delay_s", gracefulShutdownDelay.Seconds()).Info("Waiting for graceful shutdown delay")
+
+			go upgradedConnsManager.Shutdown(gracefulShutdownDelay)
+
+			time.Sleep(gracefulShutdownDelay)
+		}
+	} else {
+		redisKeyWatcher.Shutdown()
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout.Duration) // lint:allow context.Background
+	defer cancel()
+
+	return srv.Shutdown(ctx)
+}
+
+func setupMonitoring(cfg config.Config, finalErrors chan<- error) error {
+	monitoringOpts := []monitoring.Option{monitoring.WithBuildInformation(Version, BuildTime)}
+	if cfg.MetricsListener != nil {
+		l, err := listener.New("metrics", *cfg.MetricsListener)
+		if err != nil {
+			return err
+		}
+		monitoringOpts = append(monitoringOpts, monitoring.WithListener(l))
+	}
+
+	go func() {
+		// Unlike http.Serve, which always returns a non-nil error,
+		// monitoring.Start may return nil in which case we should not shut down.
+		if err := monitoring.Start(monitoringOpts...); err != nil {
+			finalErrors <- err
+		}
+	}()
+
+	return nil
+}
+
 // run() lets us use normal Go error handling; there is no log.Fatal in run().
 func run(boot bootConfig, cfg config.Config) error {
 	closer, err := startLogging(boot.logFile, boot.logFormat)
@@ -216,24 +298,9 @@ func run(boot bootConfig, cfg config.Config) error {
 		return err
 	}
 
-	var l net.Listener
-
-	monitoringOpts := []monitoring.Option{monitoring.WithBuildInformation(Version, BuildTime)}
-	if cfg.MetricsListener != nil {
-		l, err = listener.New("metrics", *cfg.MetricsListener)
-		if err != nil {
-			return err
-		}
-		monitoringOpts = append(monitoringOpts, monitoring.WithListener(l))
+	if err = setupMonitoring(cfg, finalErrors); err != nil {
+		return err
 	}
-
-	go func() {
-		// Unlike http.Serve, which always returns a non-nil error,
-		// monitoring.Start may return nil in which case we should not shut down.
-		if err = monitoring.Start(monitoringOpts...); err != nil {
-			finalErrors <- err
-		}
-	}()
 
 	secret.SetPath(boot.secretPath)
 
@@ -277,9 +344,9 @@ func run(boot bootConfig, cfg config.Config) error {
 	if cfg.LoadSheddingConfig != nil && cfg.LoadSheddingConfig.Enabled {
 		cfg.ApplyLoadSheddingDefaults()
 
-		loadSheddingService, shedder, err := loadshedding.NewLoadSheddingService(cfg.LoadSheddingConfig, accessLogger)
-		if err != nil {
-			return fmt.Errorf("failed to create load shedding service: %v", err)
+		loadSheddingService, shedder, loadSheddingErr := loadshedding.NewLoadSheddingService(cfg.LoadSheddingConfig, accessLogger)
+		if loadSheddingErr != nil {
+			return fmt.Errorf("failed to create load shedding service: %v", loadSheddingErr)
 		}
 
 		loadShedder = shedder
@@ -291,20 +358,10 @@ func run(boot bootConfig, cfg config.Config) error {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
 
-	listenerFromBootConfig := config.ListenerConfig{
-		Network: boot.listenNetwork,
-		Addr:    boot.listenAddr,
+	listeners, err := buildListeners(boot, cfg)
+	if err != nil {
+		return err
 	}
-	var listeners []net.Listener
-	oldUmask := syscall.Umask(boot.listenUmask)
-	for _, cfg := range append(cfg.Listeners, listenerFromBootConfig) {
-		l, err := listener.New("upstream", cfg)
-		if err != nil {
-			return err
-		}
-		listeners = append(listeners, l)
-	}
-	syscall.Umask(oldUmask)
 
 	shutdownCh := make(chan struct{})
 	upgradedConnsManager := &upstream.UpgradedConnsManager{}
@@ -329,31 +386,6 @@ func run(boot bootConfig, cfg config.Config) error {
 		return err
 	case sig := <-done:
 		log.WithFields(log.Fields{"shutdown_timeout_s": cfg.ShutdownTimeout.Duration.Seconds(), "signal": sig.String()}).Infof("shutdown initiated")
-
-		if healthCheckServer != nil {
-			healthCheckServer.InitiateShutdown()
-			// Signal upstream to stop accepting long polling requests because
-			// requests can arrive during the graceful shutdown time.
-			close(shutdownCh)
-			// Kick out any long poll requests
-			redisKeyWatcher.Shutdown()
-
-			// Wait for the graceful shutdown delay to complete before shutting down the server
-			gracefulShutdownDelay := healthCheckServer.GetGracefulShutdownDelay()
-			if gracefulShutdownDelay > 0 {
-				log.WithField("shutdown_delay_s", gracefulShutdownDelay.Seconds()).Info("Waiting for graceful shutdown delay")
-
-				go upgradedConnsManager.Shutdown(gracefulShutdownDelay)
-
-				time.Sleep(gracefulShutdownDelay)
-			}
-		} else {
-			redisKeyWatcher.Shutdown()
-		}
-
-		ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout.Duration) // lint:allow context.Background
-		defer cancel()
-
-		return srv.Shutdown(ctx)
+		return gracefulShutdown(srv, cfg, redisKeyWatcher, healthCheckServer, shutdownCh, upgradedConnsManager)
 	}
 }

@@ -79,8 +79,7 @@
       = s_('ClusterIntegration|Migration issue')
     %p.gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3
       - issue_link_name = "#{migration_issue.title} (##{migration_issue.id})"
-      - issue_project = Project.find(migration_issue.project_id)
-      = link_to issue_link_name, project_issue_path(issue_project, migration_issue)
+      = link_to issue_link_name, Gitlab::UrlBuilder.build(migration_issue, only_path: true)
 
       - is_opened = migration_issue.state == 'opened'
       - issue_state_variant = is_opened ? :success : :info

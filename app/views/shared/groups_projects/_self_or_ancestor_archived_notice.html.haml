@@ -2,4 +2,5 @@
 
 = render Pajamas::AlertComponent.new(variant: :info, dismissible: false) do |c|
   = c.with_body do
-    = archived_banner_message(context)
+    %span.gl-hidden{ class: "@md/content-panels:gl-inline" }= archived_banner_message(context)
+    %span{ class: "@md/content-panels:gl-hidden" }= archived_banner_message_mobile(context)

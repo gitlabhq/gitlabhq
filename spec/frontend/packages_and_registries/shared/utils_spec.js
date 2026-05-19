@@ -136,18 +136,22 @@ describe('Packages And Registries shared utils', () => {
   });
 
   describe('getCommitLink', () => {
+    const packageWithPipeline = {
+      ...packageList[0],
+      pipeline: { sha: 'abc123' },
+    };
+
     it('returns a relative link when isGroup is false', () => {
-      const link = getCommitLink(packageList[0], false);
+      const link = getCommitLink(packageWithPipeline, false);
 
       expect(link).toContain('../commit');
     });
 
     describe('when isGroup is true', () => {
       it('returns an absolute link matching project path', () => {
-        const mavenPackage = packageList[0];
-        const link = getCommitLink(mavenPackage, true);
+        const link = getCommitLink(packageWithPipeline, true);
 
-        expect(link).toContain(`/${mavenPackage.project_path}/commit`);
+        expect(link).toContain(`/${packageWithPipeline.project_path}/-/commit`);
       });
     });
   });

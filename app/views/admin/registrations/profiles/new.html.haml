@@ -1,0 +1,39 @@
+- page_title s_('Onboarding|Set up your profile')
+- add_page_specific_style 'page_bundles/registrations'
+- content_for :body_class, '!gl-bg-default'
+
+.row.gl-grow
+  .gl-flex.gl-flex-col.gl-items-center.gl-w-full.gl-px-5.gl-pb-5
+    .new-project.gl-flex.gl-flex-col.gl-items-center.gl-w-full{ class: "@sm/panel:gl-w-auto" }
+      %h2.gl-text-center= s_('Onboarding|Set up your profile')
+
+      .gl-border.gl-rounded-lg.gl-mt-5.gl-p-6.gl-w-full
+        = gitlab_ui_form_with model: @user, url: admin_registrations_profile_path, method: :patch do |f|
+          = form_errors(@user)
+
+          .gl-mb-3
+            = f.label :first_name, s_('Onboarding|First name'), class: 'gl-mb-2 gl-block'
+            = f.text_field :first_name, class: 'gl-form-input form-control', required: true, data: { testid: 'first-name' }
+
+          .gl-mb-3
+            = f.label :last_name, s_('Onboarding|Last name'), class: 'gl-mb-2 gl-block'
+            = f.text_field :last_name, class: 'gl-form-input form-control', required: true, data: { testid: 'last-name' }
+
+          .gl-mb-3
+            = f.label :email, s_('Onboarding|Email'), class: 'gl-mb-2 gl-block'
+            = f.email_field :email, class: 'gl-form-input form-control', required: true, data: { testid: 'email' }
+
+          = f.fields_for :user_detail, @user.user_detail do |udf|
+            .gl-mb-3
+              = udf.label :company, s_('Onboarding|Organization name'), class: 'gl-mb-2 gl-block'
+              = udf.text_field :company, class: 'gl-form-input form-control', required: true, data: { testid: 'organization-name' }
+
+            = render_if_exists 'admin/registrations/profiles/ee_profile_fields', udf: udf
+
+          .gl-flex.gl-justify-end.gl-gap-3
+            = render Pajamas::ButtonComponent.new(href: skip_admin_registrations_profile_path, variant: :default, button_options: { data: { testid: 'skip-button' } }) do
+              = s_('Onboarding|Skip')
+            = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { data: { testid: 'submit-button' } }) do
+              = s_('Onboarding|Continue')
+
+      = render 'devise/shared/terms_of_service_notice', button_text: s_('Onboarding|Continue')

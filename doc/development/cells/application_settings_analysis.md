@@ -81,7 +81,6 @@ title: Application Settings analysis
 | `compliance_frameworks` | `false` | `smallint[]` | `` | `true` | `'{}'::smallint[]` | `false` | `false`| `false` |
 | `container_expiration_policies_enable_historic_entries` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
 | `container_registry_cleanup_tags_service_max_list_size` | `false` | `integer` | `integer` | `true` | `200` | `false` | `false`| `true` |
-| `container_registry_data_repair_detail_worker_max_concurrency` | `false` | `integer` | `` | `true` | `2` | `true` | `false`| `false` |
 | `container_registry_db_enabled` | `false` | `boolean` | `` | `true` | `false` | `true` | `true`| `false` |
 | `container_registry_delete_tags_service_timeout` | `false` | `integer` | `integer` | `true` | `250` | `false` | `false`| `true` |
 | `container_registry_expiration_policies_caching` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |

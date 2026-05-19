@@ -7,8 +7,7 @@ describe('OrganizationUrlField', () => {
   let wrapper;
 
   const defaultProvide = {
-    organizationsPath: '/-/organizations',
-    rootUrl: 'http://127.0.0.1:3000/',
+    organizationsUrl: 'http://127.0.0.1:3000/o/',
   };
 
   const defaultPropsData = {
@@ -39,7 +38,7 @@ describe('OrganizationUrlField', () => {
 
     expect(
       findInputGroup().findComponent(GlInputGroupText).findComponent(GlTruncate).props('text'),
-    ).toBe('http://127.0.0.1:3000/-/organizations/');
+    ).toBe('http://127.0.0.1:3000/o/');
     expect(findInput().attributes('id')).toBe(defaultPropsData.id);
     expect(findInput().vm.$attrs).toMatchObject({
       invalidFeedback: defaultPropsData.validation.invalidFeedback,

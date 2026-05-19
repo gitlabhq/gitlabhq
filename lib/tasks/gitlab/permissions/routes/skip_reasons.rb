@@ -6,6 +6,7 @@ module Tasks
       module Routes
         module SkipReasons
           REASON_LABELS = {
+            ai_workflows_oauth_auth: 'AI workflows OAuth token',
             compliance_external_auth: 'Compliance external control token',
             container_registry_event_auth: 'Container registry event token',
             error_tracking_token_auth: 'Error tracking token',
@@ -19,6 +20,7 @@ module Tasks
             mailroom_token_auth: 'Mailroom token',
             openbao_token_auth: 'OpenBao token',
             external_registry_redirect: 'External registry redirect',
+            ai_workflows_token_auth: 'AI Workflows OAuth token',
             orbit_internal_auth: 'Orbit internal token',
             pages_token_auth: 'GitLab Pages token',
             public_endpoint: 'Public endpoint',

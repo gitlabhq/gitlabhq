@@ -4,6 +4,8 @@ description: Grants the ability to delete members
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
 permissions:
   - delete_billable_member
   - delete_member

@@ -15,7 +15,7 @@ module ClickHouseHelpers
           id: event.id,
           path: path,
           author_id: event.author_id,
-          # The target* getters for Event/PushEvent are overriden. We need to use `read_attribute`
+          # The target* getters for Event/PushEvent are overridden. We need to use `read_attribute`
           # to copy the true value.
           target_id: event.read_attribute(:target_id),
           target_type: event.read_attribute(:target_type),

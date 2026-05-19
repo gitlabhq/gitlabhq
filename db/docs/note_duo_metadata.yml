@@ -1,0 +1,14 @@
+---
+table_name: note_duo_metadata
+classes:
+- Notes::NoteDuoMetadata
+feature_categories:
+- duo_agent_platform
+- duo_code_review
+description: Store any Duo related metadata for notes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233843
+milestone: '19.0'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small

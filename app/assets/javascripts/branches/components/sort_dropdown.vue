@@ -35,7 +35,7 @@ export default {
       return Object.entries(this.sortOptions).map(([value, text]) => ({ value, text }));
     },
   },
-  // contructor or initialization function
+  // constructor or initialization function
   created() {
     this.selectedKey = this.sortedBy;
   },

@@ -4,6 +4,8 @@ description: Grants the ability to read snippets
 boundaries:
   - user
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - read_snippet
   - read_snippet_user_agent_detail

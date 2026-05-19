@@ -3,7 +3,7 @@
 module API
   module Entities
     class ProjectDetails < BasicProjectDetails
-      expose :forked_from_project, using: Entities::BasicProjectDetails, if: ->(project, options) do
+      expose :forked_from_project, using: ::API::Entities::BasicProjectDetails, if: ->(project, options) do
         project.forked? && Ability.allowed?(options[:current_user], :read_project, project.forked_from_project)
       end
 

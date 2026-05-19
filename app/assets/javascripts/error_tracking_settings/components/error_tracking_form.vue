@@ -1,18 +1,24 @@
 <script>
 import { GlFormInput, GlIcon, GlButton } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
+import { useErrorTrackingSettings } from '../store';
 
 export default {
   components: { GlFormInput, GlIcon, GlButton },
   computed: {
-    ...mapState(['apiHost', 'connectError', 'connectSuccessful', 'isLoadingProjects', 'token']),
+    ...mapState(useErrorTrackingSettings, [
+      'apiHost',
+      'connectError',
+      'connectSuccessful',
+      'isLoadingProjects',
+      'token',
+    ]),
     tokenInputState() {
       return this.connectError ? false : null;
     },
   },
   methods: {
-    ...mapActions(['fetchProjects', 'updateApiHost', 'updateToken']),
+    ...mapActions(useErrorTrackingSettings, ['fetchProjects', 'updateApiHost', 'updateToken']),
   },
 };
 </script>

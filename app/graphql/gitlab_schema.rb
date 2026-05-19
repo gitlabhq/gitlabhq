@@ -31,6 +31,7 @@ class GitlabSchema < GraphQL::Schema
   default_max_page_size 100
 
   validate_max_errors 5
+  validate_timeout 0.5.seconds
 
   lazy_resolve ::Gitlab::Graphql::Lazy, :force
 
@@ -38,22 +39,6 @@ class GitlabSchema < GraphQL::Schema
 
   disable_introspection_entry_points if Rails.env.production?
   class << self
-    # Override the getter to make validate_timeout dynamic based on a feature flag.
-    # When called with an argument (as a setter), delegates to super to preserve
-    # the original DSL behavior used by rake tasks and test helpers.
-    # When called without arguments (as a getter), returns the timeout based on
-    # the feature flag state. The gem's ValidationPipeline reads this per-request
-    # via @schema.validate_timeout, so this is thread-safe.
-    def validate_timeout(new_validate_timeout = nil)
-      return super(new_validate_timeout) unless new_validate_timeout.nil?
-
-      if Feature.enabled?(:graphql_increased_validate_timeout, :instance, type: :gitlab_com_derisk)
-        0.5.seconds
-      else
-        0.2.seconds
-      end
-    end
-
     def multiplex(queries, **kwargs)
       kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context]) unless kwargs.key?(:max_complexity)
 

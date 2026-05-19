@@ -1,5 +1,3 @@
-import $ from 'jquery';
-
 /**
  * Instances of SmartInterval extend the functionality of `setInterval`, make it configurable
  * and controllable by a public API.
@@ -123,9 +121,8 @@ export default class SmartInterval {
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
     window.removeEventListener('blur', this.onWindowVisibilityChange);
     window.removeEventListener('focus', this.onWindowVisibilityChange);
+    window.removeEventListener('beforeunload', this.onBeforeUnload);
     this.cancel();
-    // eslint-disable-next-line @gitlab/no-global-event-off
-    $(document).off('visibilitychange').off('beforeunload');
   }
 
   /* private */
@@ -168,7 +165,8 @@ export default class SmartInterval {
   initPageUnloadHandling() {
     // TODO: Consider refactoring in light of turbolinks removal.
     // prevent interval continuing after page change, when kept in cache by Turbolinks
-    $(document).on('beforeunload', () => this.cancel());
+    this.onBeforeUnload = () => this.cancel();
+    window.addEventListener('beforeunload', this.onBeforeUnload);
   }
 
   handleVisibilityChange() {

@@ -42,7 +42,7 @@ Prerequisites:
 To limit the number of pipeline requests:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Pipelines Rate Limits**.
 1. Under **Max requests per minute per project, user, and commit**, enter a value greater than `0` to limit pipelines for the same project, commit, and user combination.
 1. Under **Max requests per minute per user**, enter a value greater than `0` to limit total pipelines created by each user. Set to 0 for unlimited requests per minute.

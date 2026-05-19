@@ -1,0 +1,6 @@
+---
+event: NamespaceSettings::AiRelatedSettingsChangedEvent
+description: Published when a group's AI-related namespace settings (e.g. `experiment_features_enabled`)
+  change, so consumers such as the LLM namespace access cache can be refreshed.
+feature_category: ai_abstraction_layer
+ee_only: true

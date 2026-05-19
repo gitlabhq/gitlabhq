@@ -1,0 +1,14 @@
+---
+table_name: ai_tool_rules
+classes:
+- Ai::ToolRule
+feature_categories:
+- ai_agents
+description: Stores per-tool governance rules for AI agent tool access and approval
+  requirements
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234725
+milestone: '19.0'
+gitlab_schema: gitlab_main_org
+table_size: small
+sharding_key:
+  namespace_id: namespaces

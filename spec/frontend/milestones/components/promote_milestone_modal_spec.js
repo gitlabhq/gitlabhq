@@ -80,6 +80,7 @@ describe('Promote milestone modal', () => {
       await waitForPromises();
 
       expect(urlUtils.visitUrl).toHaveBeenCalledWith(responseURL);
+      expect(wrapper.emitted('promotion-modal-visible')).toEqual([[false]]);
     });
 
     it('displays an error if promoting a milestone failed', async () => {
@@ -94,6 +95,7 @@ describe('Promote milestone modal', () => {
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({ message: dummyError });
+      expect(wrapper.emitted('promotion-modal-visible')).toEqual([[false]]);
     });
   });
 });

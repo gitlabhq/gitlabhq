@@ -8,17 +8,15 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
 
   let_it_be(:user) { create(:user) }
 
-  let_it_be_with_reload(:group) { create(:group, owners: [user]) }
-  let_it_be_with_reload(:project) { create(:project, group: group) }
-
   before do
     sign_in(user)
   end
 
   context 'when group is archived' do
-    before do
-      group.namespace_settings.update!(archived: true)
+    let_it_be(:group) { create(:group, :archived, owners: [user]) }
+    let_it_be(:project) { create(:project, group: group) }
 
+    before do
       visit edit_project_path(project)
     end
 
@@ -36,7 +34,11 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
   end
 
   context 'when group is not archived' do
+    let_it_be(:group) { create(:group, owners: [user]) }
+
     context 'when project is not archived' do
+      let_it_be(:project) { create(:project, group: group) }
+
       before do
         visit edit_project_path(project)
       end
@@ -53,9 +55,9 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
     end
 
     context 'when project is archived' do
-      before do
-        project.update!(archived: true)
+      let_it_be(:project) { create(:project, :archived, group: group) }
 
+      before do
         visit edit_project_path(project)
       end
 

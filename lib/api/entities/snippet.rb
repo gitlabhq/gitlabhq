@@ -3,12 +3,16 @@
 module API
   module Entities
     class Snippet < BasicSnippet
-      expose :author, using: Entities::UserBasic, documentation: { type: 'Entities::UserBasic' }
+      expose :author, using: ::API::Entities::UserBasic, documentation: { type: '::API::Entities::UserBasic' }
       expose :file_name, documentation: { type: 'String', example: 'add.rb' } do |snippet|
         snippet_files.first || snippet.file_name
       end
       expose :files, documentation: {
-        is_array: true, example: 'e0d123e5f316bef78bfdf5a008837577'
+        type: 'Hash',
+        is_array: true, example: [{
+          path: 'file.txt',
+          raw_url: 'https://gitlab.example.com/.../raw'
+        }]
       } do |snippet, options|
         snippet_files.map do |file|
           {

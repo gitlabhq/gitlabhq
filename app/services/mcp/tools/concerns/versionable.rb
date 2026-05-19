@@ -119,7 +119,8 @@ module Mcp
 
         # GraphQL-specific
         def graphql_operation_for_version
-          version_metadata[:graphql_operation] || graphql_operation
+          operation = version_metadata[:graphql_operation] || graphql_operation
+          operation.respond_to?(:call) ? operation.call : operation
         end
 
         def build_variables_for_version

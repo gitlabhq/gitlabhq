@@ -8,8 +8,8 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:reporter) { create(:user) }
 
-  let_it_be(:group)         { create(:group) }
-  let_it_be(:project)       { create(:project, group: group) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, group: group) }
   let_it_be(:other_project) { create(:project, group: group) }
 
   let_it_be(:item1) do
@@ -73,9 +73,9 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
           let_it_be(:issuable1) { create(:work_item, project: project, title: 'first created') }
           let_it_be(:issuable2) { create(:work_item, project: project, title: 'second created', description: 'text 1') }
           let_it_be(:issuable3) { create(:work_item, project: project, title: 'third', description: 'text 2') }
-          let_it_be(:issuable4) { create(:work_item, project: project) }
+          let_it_be(:issuable4, freeze: false) { create(:work_item, project: project) }
 
-          let_it_be(:finder_class) { ::WorkItems::WorkItemsFinder }
+          let_it_be(:finder_class, freeze: false) { ::WorkItems::WorkItemsFinder }
           let_it_be(:optimization_param) { :attempt_project_search_optimizations }
         end
       end
@@ -102,7 +102,7 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
         end
 
         context 'when sorting by title' do
-          let_it_be(:project) { create(:project, :public) }
+          let_it_be(:project, freeze: false) { create(:project, :public) }
           let_it_be(:item1) { create(:work_item, project: project, title: 'foo') }
           let_it_be(:item2) { create(:work_item, project: project, title: 'bar') }
           let_it_be(:item3) { create(:work_item, project: project, title: 'baz') }
@@ -267,10 +267,16 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
       end
 
       describe 'filter by release' do
-        let_it_be(:milestone1) { create(:milestone, project: project, start_date: 1.day.from_now, title: 'Version 1') }
+        let_it_be(:milestone1, freeze: false) do
+          create(:milestone, project: project, start_date: 1.day.from_now, title: 'Version 1')
+        end
+
         let_it_be(:milestone2) { create(:milestone, project: project, start_date: 1.day.from_now, title: 'Version 2') }
         let_it_be(:milestone3) { create(:milestone, project: project, start_date: 1.day.from_now, title: 'Version 3') }
-        let_it_be(:release1) { create(:release, tag: 'v1.0', milestones: [milestone1], project: project) }
+        let_it_be(:release1, freeze: false) do
+          create(:release, tag: 'v1.0', milestones: [milestone1], project: project)
+        end
+
         let_it_be(:release2) { create(:release, tag: 'v2.0', milestones: [milestone2], project: project) }
         let_it_be(:release3) { create(:release, tag: 'v3.0', milestones: [milestone3], project: project) }
         let_it_be(:release_work_item_issue1) { create(:work_item, :issue, project: project, milestone: milestone1) }

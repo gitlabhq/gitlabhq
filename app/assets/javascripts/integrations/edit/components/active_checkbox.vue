@@ -1,7 +1,7 @@
 <script>
 import { GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { useIntegrationForm } from '../store';
 
 export default {
   name: 'ActiveCheckbox',
@@ -9,14 +9,14 @@ export default {
     GlFormGroup,
     GlFormCheckbox,
   },
+  emits: ['toggle-integration-active'],
   data() {
     return {
       activated: false,
     };
   },
   computed: {
-    ...mapGetters(['isInheriting', 'propsSource']),
-    ...mapState(['customState']),
+    ...mapState(useIntegrationForm, ['isInheriting', 'propsSource', 'customState']),
     disabled() {
       return this.isInheriting || this.customState.activateDisabled;
     },

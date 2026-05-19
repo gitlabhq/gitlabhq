@@ -55,7 +55,10 @@ export default {
 
 <template>
   <div>
-    <gl-form-checkbox v-model="pushEventsData">{{ __('Push events') }}</gl-form-checkbox>
+    <gl-form-checkbox v-model="pushEventsData">
+      {{ __('Push events') }}
+      <template #help>{{ s__('WebhooksTrigger|A commit or branch is pushed.') }}</template>
+    </gl-form-checkbox>
     <input v-model="pushEventsData" type="hidden" name="hook[push_events]" />
 
     <div v-if="pushEventsData" class="gl-pl-6">

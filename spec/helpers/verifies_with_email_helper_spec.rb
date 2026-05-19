@@ -7,7 +7,7 @@ RSpec.describe VerifiesWithEmailHelper, feature_category: :system_access do
 
   let(:user_unlock_token) { nil }
   let(:user) { build_stubbed(:user, unlock_token: user_unlock_token) }
-  let(:today) { Time.zone.parse('2025-09-10') }
+  let(:today) { Time.zone.parse('2025-09-10 12:00') }
 
   describe '#trusted_ip_address?' do
     let(:trusted) { false }
@@ -28,6 +28,32 @@ RSpec.describe VerifiesWithEmailHelper, feature_category: :system_access do
       let(:trusted) { true }
 
       it { is_expected.to be true }
+    end
+  end
+
+  describe '#show_email_otp_resend_after', :freeze_time do
+    subject { helper.show_email_otp_resend_after(user) }
+
+    context 'when user is not locked and email_otp_last_sent_at is nil' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when user is not locked and email_otp_last_sent_at is set recently' do
+      let(:user) do
+        build_stubbed(:user, user_detail: build_stubbed(:user_detail, email_otp_last_sent_at: Time.current))
+      end
+
+      it { is_expected.to eq((Time.current + VerifiesWithEmailHelper::RESEND_COOLDOWN_PERIOD).to_i * 1000) }
+    end
+
+    context 'when user is not locked and email_otp_last_sent_at is well in the past' do
+      let(:user) do
+        build_stubbed(:user, user_detail: build_stubbed(:user_detail, email_otp_last_sent_at: 10.minutes.ago))
+      end
+
+      it 'returns a Unix ms timestamp in the past, allowing an immediate resend' do
+        is_expected.to be < Time.current.to_i * 1000
+      end
     end
   end
 
@@ -144,20 +170,26 @@ RSpec.describe VerifiesWithEmailHelper, feature_category: :system_access do
       it { is_expected.to be false }
     end
 
-    context 'when email_otp_required_after equals current date' do
+    context 'when email_otp_required_after equals current time' do
       let(:email_otp_required_after) { today }
 
       it { is_expected.to be false }
     end
 
-    context 'when at the start of warning period (7 days before required_after)' do
+    context 'when email_otp_required_after is almost at the end of the warning period' do
+      let(:email_otp_required_after) { today + 1.minute }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when at the start of warning period' do
       let(:email_otp_required_after) { today + 7.days }
 
       it { is_expected.to be true }
     end
 
-    context 'when before warning period starts (8 days before required_after)' do
-      let(:email_otp_required_after) { today + 8.days }
+    context 'when before warning period starts' do
+      let(:email_otp_required_after) { today + 7.days + 1.hour }
 
       it { is_expected.to be false }
     end

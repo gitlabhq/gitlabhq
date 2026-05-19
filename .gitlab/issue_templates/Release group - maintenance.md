@@ -14,5 +14,5 @@
 /label ~"backend-weight::" ~"frontend-weight::" ~"workflow::ready for development"
 ## Implementation guide
 
-<!-- If the issue clear enough, consider inviting community contributors -->
+<!-- If the issue is clear enough, consider inviting community contributors -->
 /label ~"Seeking community contributions" ~"good for new contributors"

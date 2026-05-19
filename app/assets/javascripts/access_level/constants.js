@@ -73,6 +73,9 @@ const SECURITY_MANAGER_ROLE = {
   description: s__(
     'MemberRole|The Security Manager role is for security team members who need to view and manage security features for the group or project.',
   ),
+  dropdownDescription: s__(
+    'MemberRole|View and manage security features for the group or project.',
+  ),
 };
 
 export const BASE_ROLES = [
@@ -84,6 +87,7 @@ export const BASE_ROLES = [
     description: s__(
       'MemberRole|The Minimal Access role is for users who need the least amount of access into groups and projects. You can assign this role as a default, before giving a user another role with more permissions.',
     ),
+    dropdownDescription: s__('MemberRole|No project access. View limited group information only.'),
   },
   {
     value: 'GUEST',
@@ -93,6 +97,7 @@ export const BASE_ROLES = [
     description: s__(
       'MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders.',
     ),
+    dropdownDescription: s__('MemberRole|No code access. View and comment on issues and epics.'),
   },
   {
     value: 'PLANNER',
@@ -103,6 +108,9 @@ export const BASE_ROLES = [
     description: s__(
       'MemberRole|The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code, such as project managers and scrum masters.',
     ),
+    dropdownDescription: s__(
+      'MemberRole|View code only. Create and manage issues, epics, milestones, and iterations.',
+    ),
   },
   {
     value: 'REPORTER',
@@ -112,6 +120,7 @@ export const BASE_ROLES = [
     description: s__(
       'MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code.',
     ),
+    dropdownDescription: s__('MemberRole|View code only. Create issues and generate reports.'),
   },
   ...(isSecurityManagerEnabled() ? [SECURITY_MANAGER_ROLE] : []),
   {
@@ -122,6 +131,9 @@ export const BASE_ROLES = [
     description: s__(
       'MemberRole|The Developer role gives users access to contribute code while restricting sensitive administrative actions.',
     ),
+    dropdownDescription: s__(
+      'MemberRole|Push code to non-protected branches. Create merge requests and run pipelines. Cannot manage project settings.',
+    ),
   },
   {
     value: 'MAINTAINER',
@@ -130,6 +142,9 @@ export const BASE_ROLES = [
     occupiesSeat: true,
     description: s__(
       'MemberRole|The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships.',
+    ),
+    dropdownDescription: s__(
+      'MemberRole|Push code. Manage branches, merge requests, CI/CD settings, and members. Cannot delete the project.',
     ),
   },
   {
@@ -140,6 +155,7 @@ export const BASE_ROLES = [
     description: s__(
       'MemberRole|The Owner role is typically assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners.',
     ),
+    dropdownDescription: s__('MemberRole|Full control of project settings.'),
   },
 ];
 

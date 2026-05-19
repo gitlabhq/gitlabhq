@@ -27,7 +27,7 @@ Prerequisites:
 To toggle the display of customer experience improvement content and third-party offers:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Customer experience improvement and third-party offers**.
 1. Select **Do not display content for customer experience improvement and offers from third parties**.
 1. Select **Save changes**.

@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::RepoMarkedAsToDeleteEvent
+description: Published when Zoekt repositories that should be deleted are detected,
+  so the subscribed worker can mark them for deletion and remove them from the index.
+feature_category: global_search
+ee_only: true

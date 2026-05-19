@@ -35,19 +35,19 @@ RSpec.describe 'Dashboard Merge Requests', :with_current_organization, :js, feat
   it 'disables target branch filter' do
     visit merge_requests_dashboard_path
 
-    expect(page).not_to have_selector('#js-dropdown-target-branch', visible: false)
+    expect(page).not_to have_selector('#js-dropdown-target-branch', visible: :hidden)
   end
 
   it 'disables releases filter' do
     visit merge_requests_dashboard_path
 
-    expect(page).not_to have_selector('#js-dropdown-release', visible: false)
+    expect(page).not_to have_selector('#js-dropdown-release', visible: :hidden)
   end
 
   it 'disables environments filter' do
     visit merge_requests_dashboard_path
 
-    expect(page).not_to have_selector('#js-dropdown-environment', visible: false)
+    expect(page).not_to have_selector('#js-dropdown-environment', visible: :hidden)
   end
 
   context 'new merge request dropdown' do

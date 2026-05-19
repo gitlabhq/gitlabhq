@@ -2,7 +2,6 @@ import produce from 'immer';
 import VueApollo from 'vue-apollo';
 import { unionBy } from 'lodash-es';
 import { concatPagination } from '@apollo/client/utilities';
-import { makeVar } from '@apollo/client/core';
 import errorQuery from '~/boards/graphql/client/error.query.graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
@@ -23,13 +22,15 @@ import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_ex
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
+import { workItemsRestResolver } from '~/work_items/list/graphql/rest/work_items_rest_resolver';
 import { preserveDetailsState } from '~/work_items/utils';
-
-export const linkedItems = makeVar({});
-export const currentAssignees = makeVar({});
-export const currentReviewers = makeVar([]);
-export const appliedLabels = makeVar([]);
-export const availableStatuses = makeVar({});
+import {
+  linkedItems,
+  currentAssignees,
+  appliedLabels,
+  availableStatuses,
+  supportedConversionTypes,
+} from './issuable_client_state';
 
 export const config = {
   typeDefs,
@@ -50,6 +51,12 @@ export const config = {
           },
           isExpandedHierarchyTreeChild: (_, { variables, toReference }) =>
             toReference({ __typename: 'LocalWorkItemChildIsExpanded', id: variables.id }),
+          namespace: {
+            keyArgs: ['fullPath'],
+            merge(existing, incoming) {
+              return incoming ?? existing;
+            },
+          },
         },
       },
       MergeRequestConnection: {
@@ -441,7 +448,38 @@ export const config = {
         // this prevents child and parent work item types from overriding each other
         fields: {
           supportedConversionTypes: {
-            merge(__, incoming) {
+            merge(existing, incoming, context) {
+              if (context.variables.fullPath) {
+                const existingSupportedConversionTypes = supportedConversionTypes();
+                const cacheNodes = context.cache.extract();
+
+                // Get available work item types for the namespace
+                const workItemTypes = Object.keys(cacheNodes).filter((cacheKey) =>
+                  cacheKey.includes('WorkItemType:'),
+                );
+
+                // Collect available supportedConversionTypes per work item type
+                const conversionTypes = workItemTypes.reduce((acc, currentType) => {
+                  const supportedConversionTypesForThisType =
+                    cacheNodes[currentType].supportedConversionTypes;
+                  if (supportedConversionTypesForThisType) {
+                    // Normalize type ID key name
+                    acc[currentType.split('WorkItemType:').pop()] =
+                      supportedConversionTypesForThisType.map(
+                        // eslint-disable-next-line no-underscore-dangle
+                        (type) => cacheNodes[type.__ref],
+                      );
+                  }
+                  return acc;
+                }, {});
+
+                // Set type-to-supportedConversionTypes map for this namespace in reactive prop
+                supportedConversionTypes({
+                  ...existingSupportedConversionTypes,
+                  [context.variables.fullPath]: conversionTypes,
+                });
+              }
+
               return incoming;
             },
           },
@@ -501,7 +539,13 @@ export const config = {
   },
 };
 
+const namespaceResolvers =
+  window.gon?.features?.workItemRestApiFrontendUsers && window.gon?.features?.workItemRestApi
+    ? { Namespace: { workItems: workItemsRestResolver } }
+    : {};
+
 export const resolvers = {
+  ...namespaceResolvers,
   Mutation: {
     updateIssueState: (_, { issueType = undefined, isDirty = false }, { cache }) => {
       const sourceData = cache.readQuery({ query: getIssueStateQuery });

@@ -110,6 +110,9 @@ export default {
 
 <template>
   <div>
+    <h3 class="gl-sr-only">
+      {{ __('Assets') }}
+    </h3>
     <gl-button
       data-testid="accordion-button"
       variant="link"

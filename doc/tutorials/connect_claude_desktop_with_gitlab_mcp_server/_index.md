@@ -1,5 +1,5 @@
 ---
-stage: none
+stage: Tutorials
 group: Tutorials
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Connect Claude Desktop to the GitLab MCP server and create an issue.

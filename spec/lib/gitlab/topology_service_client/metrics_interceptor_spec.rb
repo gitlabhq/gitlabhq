@@ -301,7 +301,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
     end
   end
 
-  describe '#client_streaming' do
+  describe '#client_streamer' do
     let(:method) { '/proto.CellService/UploadData' }
     let(:requests) { [double('request1'), double('request2')] } # rubocop:disable RSpec/VerifiedDoubles -- No concrete class available
     let(:response) { double('response') } # rubocop:disable RSpec/VerifiedDoubles -- No concrete class available
@@ -328,7 +328,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       allow(metrics).to receive(:observe_request_size)
       allow(metrics).to receive(:observe_response_size)
 
-      result = interceptor.client_streaming(requests: requests, call: call, method: method,
+      result = interceptor.client_streamer(requests: requests, call: call, method: method,
         metadata: metadata) do |enum|
         enum.to_a # Consume the wrapped requests
         response
@@ -367,7 +367,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       error = GRPC::BadStatus.new(GRPC::Core::StatusCodes::UNAVAILABLE, 'Service unavailable')
 
       expect do
-        interceptor.client_streaming(requests: requests, call: call, method: method, metadata: metadata) do
+        interceptor.client_streamer(requests: requests, call: call, method: method, metadata: metadata) do
           raise error
         end
       end.to raise_error(GRPC::BadStatus)
@@ -398,7 +398,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       error = RuntimeError.new('Unexpected error')
 
       expect do
-        interceptor.client_streaming(requests: requests, call: call, method: method, metadata: metadata) do
+        interceptor.client_streamer(requests: requests, call: call, method: method, metadata: metadata) do
           raise error
         end
       end.to raise_error(RuntimeError)
@@ -410,7 +410,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
     end
   end
 
-  describe '#server_streaming' do
+  describe '#server_streamer' do
     let(:method) { '/proto.CellService/StreamData' }
     let(:request) { double('request') } # rubocop:disable RSpec/VerifiedDoubles -- No concrete class available
     let(:responses) { [double('response1'), double('response2'), double('response3')] } # rubocop:disable RSpec/VerifiedDoubles -- No concrete class available
@@ -438,7 +438,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       allow(metrics).to receive(:observe_response_size)
 
       # The method yields responses_enum and we need to consume it
-      result_enum = interceptor.server_streaming(request: request, call: call, method: method, metadata: metadata) do
+      result_enum = interceptor.server_streamer(request: request, call: call, method: method, metadata: metadata) do
         responses.to_enum
       end
       result_enum.to_a # Consume the enumerator to trigger metrics recording
@@ -475,7 +475,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       error = GRPC::BadStatus.new(GRPC::Core::StatusCodes::UNAVAILABLE, 'Service unavailable')
 
       expect do
-        interceptor.server_streaming(request: request, call: call, method: method, metadata: metadata) { raise error }
+        interceptor.server_streamer(request: request, call: call, method: method, metadata: metadata) { raise error }
       end.to raise_error(GRPC::BadStatus)
 
       expect(metrics).to have_received(:increment_failed_calls_total).with(
@@ -504,7 +504,7 @@ RSpec.describe Gitlab::TopologyServiceClient::MetricsInterceptor, feature_catego
       error = RuntimeError.new('Unexpected error')
 
       expect do
-        interceptor.server_streaming(request: request, call: call, method: method, metadata: metadata) { raise error }
+        interceptor.server_streamer(request: request, call: call, method: method, metadata: metadata) { raise error }
       end.to raise_error(RuntimeError)
 
       expect(metrics).to have_received(:increment_failed_calls_total).with(

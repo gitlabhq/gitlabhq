@@ -78,12 +78,12 @@ The feature / functionality will be removed in milestone: ```xx.xx```
 An internal slack post and a release post are not sufficient notification for our customers or internal stakeholders. Plan to communicate proactively and directly with affected customers and the internal stakeholders supporting them.
 
 **Internal Communication Plan**
-This will have been documented in your [breaking change request](https://gitlab.com/gitlab-com/Product/-/issues/new?issuable_template=Breaking-Change-Exception). You can use this checklist to track completion of these items.
+This will have been documented in your [breaking change request](https://gitlab.com/gitlab-com/Product/-/issues/new?description_template=Breaking-Change-Exception). You can use this checklist to track completion of these items.
 - [ ] [Support Preparedness issue](https://gitlab.com/gitlab-com/support/support-team-meta/-/blob/master/.gitlab/issue_templates/Support%20Preparedness.md?ref_type=heads) created
 - [ ] Guidance for Engineering, Product, Security, Customer Success, and Sales created
 
 **External Communication Plan**
-This will have been documented in your [breaking change request](https://gitlab.com/gitlab-com/Product/-/issues/new?issuable_template=Breaking-Change-Exception). You can use this checklist to track completion of these items.
+This will have been documented in your [breaking change request](https://gitlab.com/gitlab-com/Product/-/issues/new?description_template=Breaking-Change-Exception). You can use this checklist to track completion of these items.
 
 - [ ] Customer announcement plan
     - [ ] Document the migration plan for users, clearly outlining the actions they need to take to mitigate the impact of the breaking change.

@@ -318,7 +318,8 @@ Try a different request and contact your administrator.
 You might get an error that states
 `I'm sorry, you have not selected a default GitLab Duo namespace. Please select a default GitLab Duo namespace in your user preferences.`.
 
-This error occurs when you belong to multiple GitLab Duo namespaces, and have not selected a default namespace.
+This error occurs when you belong to multiple GitLab Duo namespaces or work on a project locally
+that does not have a GitLab remote configured.
 
 To resolve this, [set a default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 

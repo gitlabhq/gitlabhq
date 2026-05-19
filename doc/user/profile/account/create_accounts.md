@@ -47,7 +47,7 @@ Prerequisites:
 To create a user:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Users**.
+1. In the left sidebar, select **Overview** > **Users**.
 1. Select **New user**.
 1. In the **Account** section, enter the required account information.
 1. Optional. In the **Access** section, configure any project limits or user type settings.

@@ -149,6 +149,7 @@ describe('CiResourceDetailsPage', () => {
             },
           ],
           initialVersionId: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
+          latestVersionName: '1.1.0',
         });
       });
     });
@@ -202,13 +203,11 @@ describe('CiResourceDetailsPage', () => {
       expect(findDetailsComponent().props('version')).toBe('1.0.0');
     });
 
-    it('removes invalid version from URL and selects latest', async () => {
-      const routerReplaceSpy = jest.spyOn(router, 'replace');
-
+    it('creates an empty version entry when URL version is not in the list', async () => {
       await router.push({
         name: CI_RESOURCE_DETAILS_PAGE_NAME,
         params: { id: defaultSharedData.webPath },
-        query: { version: 'invalid-version' },
+        query: { version: '0.5.0' },
       });
 
       versionsResponse.mockResolvedValue(mockVersionsResponse);
@@ -216,11 +215,87 @@ describe('CiResourceDetailsPage', () => {
       createComponent();
       await waitForPromises();
 
-      expect(routerReplaceSpy).toHaveBeenCalledWith({ query: {} });
+      const headerProps = findHeaderComponent().props();
+
+      expect(headerProps.initialVersionId).toBe('0');
+      expect(headerProps.versions).toEqual([
+        {
+          value: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
+          text: '1.1.0',
+          createdAt: '2026-02-15',
+        },
+        {
+          value: 'gid://gitlab/Ci::Catalog::Resources::Version/1',
+          text: '1.0.0',
+          createdAt: '2024-02-15',
+        },
+        {
+          text: '0.5.0',
+          value: '0',
+        },
+      ]);
+      expect(findDetailsComponent().props('version')).toBe('0.5.0');
+    });
+  });
+
+  describe('version search', () => {
+    beforeEach(async () => {
+      versionsResponse.mockResolvedValue(mockVersionsResponse);
+      sharedDataResponse.mockResolvedValue(catalogSharedDataMock);
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('re-queries versions when header emits version-search', async () => {
+      const initialCallCount = versionsResponse.mock.calls.length;
+
+      findHeaderComponent().vm.$emit('version-search', '1.0');
+      await waitForPromises();
+
+      expect(versionsResponse).toHaveBeenCalledTimes(initialCallCount + 1);
+      expect(versionsResponse).toHaveBeenLastCalledWith(expect.objectContaining({ search: '1.0' }));
+    });
+
+    it('sets `isSearchingVersions` while searching', async () => {
+      expect(findHeaderComponent().props('isSearchingVersions')).toBe(false);
+      findHeaderComponent().vm.$emit('version-search', '2.0');
+
+      await jest.runOnlyPendingTimers();
+      expect(findHeaderComponent().props('isSearchingVersions')).toBe(true);
+
+      await waitForPromises();
+      expect(findHeaderComponent().props('isSearchingVersions')).toBe(false);
+    });
+
+    it('does not reset selectedVersion when search results arrive', async () => {
+      expect(findDetailsComponent().props('version')).toBe('1.1.0');
+
+      const searchResults = {
+        data: {
+          ciCatalogResource: {
+            id: 'gid://gitlab/CiCatalogResource/1',
+            webPath: '/path/to/project',
+            versions: {
+              nodes: [
+                {
+                  id: 'gid://gitlab/Ci::Catalog::Resources::Version/1',
+                  name: '1.0.0',
+                  createdAt: '2024-02-15T00:00:00Z',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      versionsResponse.mockResolvedValue(searchResults);
+      findHeaderComponent().vm.$emit('version-search', '1.0');
+      await waitForPromises();
+
+      expect(findDetailsComponent().props('version')).toBe('1.1.0');
       expect(findHeaderComponent().props('initialVersionId')).toBe(
         'gid://gitlab/Ci::Catalog::Resources::Version/2',
       );
-      expect(findDetailsComponent().props('version')).toBe('1.1.0');
     });
   });
 });

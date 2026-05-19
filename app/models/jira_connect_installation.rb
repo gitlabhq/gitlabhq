@@ -17,6 +17,7 @@ class JiraConnectInstallation < ApplicationRecord
   validates :base_url, presence: true, public_url: true
   validates :display_url, public_url: true, allow_blank: true
   validates :instance_url, public_url: true, allow_blank: true
+  validate :instance_url_parseable_by_uri, if: :instance_url_changed?
 
   scope :for_project, ->(project) {
     distinct
@@ -65,5 +66,20 @@ class JiraConnectInstallation < ApplicationRecord
 
   def proxy?
     instance_url.present?
+  end
+
+  private
+
+  # Ruby's URI.parse is stricter than Addressable (used by the public_url
+  # validator). Downstream code (e.g. atlassian-jwt) calls URI.parse on the
+  # instance_url, so reject values that will blow up there. Only runs on
+  # change so rows already persisted with a bad value don't fail unrelated
+  # updates - runtime use is guarded by ProxyLifecycleEventService.
+  def instance_url_parseable_by_uri
+    return if instance_url.blank?
+
+    URI.parse(instance_url)
+  rescue URI::InvalidURIError
+    errors.add(:instance_url, _('must be a valid URL'))
   end
 end

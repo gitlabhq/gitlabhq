@@ -89,6 +89,55 @@ RSpec.describe 'Gitlab OAuth2 Authorization Code Flow with PKCE', feature_catego
         expect(json_response['error']).to eq('invalid_grant')
       end
     end
+
+    describe 'tracking legacy short PKCE code_verifier' do
+      let(:min_length) { Oauth::TokensController::PKCE_MIN_CODE_VERIFIER_LENGTH }
+      let(:short_verifier) { 'a' * (min_length - 1) }
+
+      subject(:post_token_request) do
+        post oauth_token_path, params: token_params.merge(code: 'irrelevant', code_verifier: verifier)
+      end
+
+      context 'when code_verifier is shorter than the RFC 7636 minimum' do
+        let(:verifier) { short_verifier }
+
+        it 'tracks the oauth_authorize_with_short_pkce_verifier event with application UID' do
+          expect { post_token_request }
+            .to trigger_internal_events('oauth_authorize_with_short_pkce_verifier')
+            .with(user: user, label: application.uid, category: 'Oauth::TokensController')
+            .and increment_usage_metrics('counts.count_total_oauth_authorizations_with_short_pkce_verifier')
+        end
+      end
+
+      context 'when code_verifier meets the RFC 7636 minimum length' do
+        let(:verifier) { 'a' * min_length }
+
+        it 'does not track the event' do
+          expect { post_token_request }
+            .not_to trigger_internal_events('oauth_authorize_with_short_pkce_verifier')
+        end
+      end
+
+      context 'when code_verifier is blank' do
+        let(:verifier) { '' }
+
+        it 'does not track the event' do
+          expect { post_token_request }
+            .not_to trigger_internal_events('oauth_authorize_with_short_pkce_verifier')
+        end
+      end
+
+      context 'when grant_type is not authorization_code' do
+        let(:verifier) { short_verifier }
+
+        it 'does not track the event' do
+          expect do
+            post oauth_token_path,
+              params: token_params.merge(grant_type: 'refresh_token', refresh_token: 'x', code_verifier: verifier)
+          end.not_to trigger_internal_events('oauth_authorize_with_short_pkce_verifier')
+        end
+      end
+    end
   end
 
   describe 'Protected Resource Access with PKCE' do

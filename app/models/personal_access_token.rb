@@ -21,6 +21,10 @@ class PersonalAccessToken < ApplicationRecord
 
   PERSONAL_TOKEN_PREFIX = 'glpat-'
 
+  CREATION_SOURCE_UI = 'ui'
+  CREATION_SOURCE_API = 'api'
+  CREATION_SOURCE_UNKNOWN = 'unknown'
+
   add_authentication_token_field :token,
     digest: true,
     format_with_prefix: :prefix_from_application_current_settings,
@@ -183,6 +187,10 @@ class PersonalAccessToken < ApplicationRecord
 
   def hook_attrs
     Gitlab::HookData::ResourceAccessTokenBuilder.new(self).build
+  end
+
+  def legacy?
+    !granular
   end
 
   protected

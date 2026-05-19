@@ -24,6 +24,13 @@
     "secret_push_protection_enforced": {
       "type": "boolean",
       "default": false
+    },
+    "vac_project_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "default": []
     }
   },
   "additionalProperties": false

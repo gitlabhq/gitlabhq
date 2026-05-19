@@ -1,0 +1,90 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -7580,6 +7580,25 @@
+     if (Ctor !== Vue) {
+       applySingletonPrototype(app, Ctor);
+     }
++    if (options.parent && options.parent.$) {
++      /*! GitLab specific: inherit provide/inject context if `parent` was passed - used for overlays */
++      if (options.parent.$.provides) {
++        app._context.provides = Object.create(
++          options.parent.$.provides
++        );
++      }
++      /*! GitLab specific: inherit globalProperties (for Vuex $store, etc.)
++       * Note: We must copy properties, not use prototype chain, because Vue uses hasOwn() checks */
++      const parentAppContext = options.parent.$.appContext;
++      const parentGlobalProps = parentAppContext && parentAppContext.config && parentAppContext.config.globalProperties;
++      if (parentGlobalProps) {
++        for (const key of Object.keys(parentGlobalProps)) {
++          if (!(key in app.config.globalProperties)) {
++            app.config.globalProperties[key] = parentGlobalProps[key];
++          }
++        }
++      }
++    }
+     const vm = app._createRoot(options);
+     if (options.el) {
+       return vm.$mount(options.el);
+diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+@@ -7562,6 +7562,25 @@
+     if (Ctor !== Vue) {
+       applySingletonPrototype(app, Ctor);
+     }
++    if (options.parent && options.parent.$) {
++      /*! GitLab specific: inherit provide/inject context if `parent` was passed - used for overlays */
++      if (options.parent.$.provides) {
++        app._context.provides = Object.create(
++          options.parent.$.provides
++        );
++      }
++      /*! GitLab specific: inherit globalProperties (for Vuex $store, etc.)
++       * Note: We must copy properties, not use prototype chain, because Vue uses hasOwn() checks */
++      const parentAppContext = options.parent.$.appContext;
++      const parentGlobalProps = parentAppContext && parentAppContext.config && parentAppContext.config.globalProperties;
++      if (parentGlobalProps) {
++        for (const key of Object.keys(parentGlobalProps)) {
++          if (!(key in app.config.globalProperties)) {
++            app.config.globalProperties[key] = parentGlobalProps[key];
++          }
++        }
++      }
++    }
+     const vm = app._createRoot(options);
+     if (options.el) {
+       return vm.$mount(options.el);
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -7489,6 +7489,25 @@
+     if (Ctor !== Vue) {
+       applySingletonPrototype(app, Ctor);
+     }
++    if (options.parent && options.parent.$) {
++      /*! GitLab specific: inherit provide/inject context if `parent` was passed - used for overlays */
++      if (options.parent.$.provides) {
++        app._context.provides = Object.create(
++          options.parent.$.provides
++        );
++      }
++      /*! GitLab specific: inherit globalProperties (for Vuex $store, etc.)
++       * Note: We must copy properties, not use prototype chain, because Vue uses hasOwn() checks */
++      const parentAppContext = options.parent.$.appContext;
++      const parentGlobalProps = parentAppContext && parentAppContext.config && parentAppContext.config.globalProperties;
++      if (parentGlobalProps) {
++        for (const key of Object.keys(parentGlobalProps)) {
++          if (!(key in app.config.globalProperties)) {
++            app.config.globalProperties[key] = parentGlobalProps[key];
++          }
++        }
++      }
++    }
+     const vm = app._createRoot(options);
+     if (options.el) {
+       return vm.$mount(options.el);

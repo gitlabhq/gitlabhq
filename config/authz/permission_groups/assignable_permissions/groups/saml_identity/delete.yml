@@ -1,7 +1,0 @@
----
-name: delete_saml_identity
-description: Grants the ability to delete SAML user identity
-boundaries:
-  - group
-permissions:
-  - delete_saml_identity

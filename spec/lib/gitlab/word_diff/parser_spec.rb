@@ -9,7 +9,7 @@ RSpec.describe Gitlab::WordDiff::Parser do
     subject { parser.parse(diff.lines).to_a }
 
     let(:diff) do
-      <<~EOF
+      <<~DIFF
       @@ -1,14 +1,13 @@
       ~
        Unchanged line
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::WordDiff::Parser do
        end of the line
       ~
       ~
-      EOF
+      DIFF
     end
 
     it 'returns a collection of lines' do

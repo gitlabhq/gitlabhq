@@ -45,7 +45,7 @@
 
     From GitLab 17.10 to 18.6, you can use [migration tooling](https://archives.docs.gitlab.com/18.6/ci/jobs/ci_job_token/#auto-populate-a-projects-allowlist) to automatically populate the CI/CD job token allowlist from the job token authentication log. We encourage you to use this migration tool to populate and use the allowlist before [general enforcement of allowlists in GitLab 18.0](https://docs.gitlab.com/update/deprecations/?removal_milestone=18.0#cicd-job-token-authorized-groups-and-projects-allowlist-enforcement). In GitLab 18.0, automatic population and enforcement of the allowlist will occur on GitLab.com as previously announced.
 
-    This migration tool will be removed in GitLab 18.6.
+    This migration tool [was removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/498305) in GitLab 18.7.
   #
   # OPTIONAL END OF SUPPORT FIELDS
   #

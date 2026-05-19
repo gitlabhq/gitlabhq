@@ -13,7 +13,7 @@ title: Community programs
 {{< /history >}}
 
 GitLab provides different community program subscriptions.
-These subscriptions are eligible for Monthly Commitment Pool and On-Demand [credits](gitlab_credits.md), but do not receive included credits.
+These subscriptions are eligible for Monthly Commitment Pool, On-Demand, and temporary evaluation [credits](gitlab_credits.md), but do not receive included credits.
 You can view your credit usage in the GitLab Credits dashboard.
 
 ## GitLab for Education

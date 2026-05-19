@@ -84,8 +84,15 @@ module Mcp
         return if errors.empty?
 
         validations = errors.map do |error|
-          if error['type'] == 'required'
+          case error['type']
+          when 'required'
             "#{error['details']['missing_keys'].first} is missing"
+          when 'maxItems'
+            field = error['data_pointer'].sub(%r{^/}, '')
+            "#{field} cannot contain more than #{error['schema']['maxItems']} items"
+          when 'enum'
+            field = error['data_pointer'].sub(%r{^/}, '')
+            "Invalid #{field}: '#{error['data']}'. Must be one of: #{error['schema']['enum'].join(', ')}"
           else
             field = error['data_pointer'].sub(%r{^/}, '')
             "#{field} is invalid"

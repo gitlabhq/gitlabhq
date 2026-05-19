@@ -30,10 +30,10 @@ RSpec.describe BulkImports::Common::Extractors::JsonExtractor do
         gz.write '{"name": "Name","description": "Description","avatar":{"url":null}}'
       end
 
-      expect(BulkImports::FileDownloadService).to receive(:new)
+      expect(BulkImports::FileDownloadService).to receive(:for_context)
         .with(
           context: context,
-          relative_url: entity.relation_download_url_path('self'),
+          relation: 'self',
           tmpdir: tmpdir,
           filename: 'self.json.gz')
         .and_return(instance_double(BulkImports::FileDownloadService, execute: nil))

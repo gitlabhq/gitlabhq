@@ -37,8 +37,12 @@ module Gitlab
         job_waiter
       end
 
+      def base_path
+        @base_path ||= client.options[:context_path].to_s
+      end
+
       def process_jira_page(start_at)
-        request = "/rest/api/2/label?maxResults=#{MAX_LABELS}&startAt=#{start_at}"
+        request = "#{base_path}/rest/api/2/label?maxResults=#{MAX_LABELS}&startAt=#{start_at}"
         response = client.get(request)
 
         return true if response['values'].blank?

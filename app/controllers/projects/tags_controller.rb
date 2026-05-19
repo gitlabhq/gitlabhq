@@ -2,6 +2,7 @@
 
 class Projects::TagsController < Projects::ApplicationController
   include SortingHelper
+  include HandlesGitalyErrors
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
 
@@ -14,36 +15,28 @@ class Projects::TagsController < Projects::ApplicationController
   urgency :low, [:new, :show, :index]
 
   def index
-    begin
-      tags_params = params
-        .permit(:search, :sort, :per_page, :page_token, :page)
-        .with_defaults(sort: sort_value_recently_updated)
+    tags_params = params
+      .permit(:search, :sort, :per_page, :page_token, :page)
+      .with_defaults(sort: sort_value_recently_updated)
 
-      @sort = tags_params[:sort]
-      @search = tags_params[:search]
+    @sort = tags_params[:sort]
+    @search = tags_params[:search]
 
-      @tags = TagsFinder.new(@repository, tags_params).execute
+    @tags = TagsFinder.new(@repository, tags_params).execute
 
-      @tags = Kaminari.paginate_array(@tags).page(tags_params[:page])
+    @tags = Kaminari.paginate_array(@tags).page(tags_params[:page])
 
-      TagsFinder.batch_load_tag_signature_data(@tags)
+    TagsFinder.batch_load_tag_signature_data(@tags)
 
-      tag_names = @tags.map(&:name)
+    tag_names = @tags.map(&:name)
 
-      @releases = ReleasesFinder.new(project, current_user, tag: tag_names).execute
-      @tag_pipeline_statuses =
-        Ci::CommitStatusesFinder.new(@project, @repository, current_user, @tags, ref_type: :tags).execute
-    rescue Gitlab::Git::CommandError => e
-      @tags = []
-      @releases = []
-      @tags_loading_error = e
-    end
+    @releases = ReleasesFinder.new(project, current_user, tag: tag_names).execute
+    @tag_pipeline_statuses =
+      Ci::CommitStatusesFinder.new(@project, @repository, current_user, @tags, ref_type: :tags).execute
 
     respond_to do |format|
-      status = @tags_loading_error ? :service_unavailable : :ok
-
-      format.html { render status: status }
-      format.atom { render layout: 'xml', status: status }
+      format.html
+      format.atom { render layout: 'xml' }
     end
   end
 

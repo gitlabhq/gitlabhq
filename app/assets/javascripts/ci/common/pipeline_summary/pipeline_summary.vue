@@ -127,7 +127,7 @@ export default {
     });
   },
   methods: {
-    /** Note: cannot use `toggleQueryPollingByVisibility` because interval is dynamic */
+    /** Note: cannot use `setupQueryPollingByVisibility` because interval is dynamic */
     handlePolling() {
       if (!Visibility.hidden()) {
         this.resetPollInterval();

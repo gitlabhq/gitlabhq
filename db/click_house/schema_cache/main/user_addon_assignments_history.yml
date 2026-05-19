@@ -1,0 +1,32 @@
+---
+name: user_addon_assignments_history
+engine: AggregatingMergeTree
+engine_full: AggregatingMergeTree ORDER BY (namespace_path, user_id, assignment_id)
+  SETTINGS index_granularity = 8192
+primary_key: namespace_path, user_id, assignment_id
+sorting_key: namespace_path, user_id, assignment_id
+settings:
+  index_granularity: '8192'
+columns:
+- name: assignment_id
+  type: UInt64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: namespace_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'0/'"
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: user_id
+  type: UInt64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: purchase_id
+  type: UInt64
+- name: add_on_name
+  type: String
+- name: assigned_at
+  type: AggregateFunction(min, Nullable(DateTime64(6, 'UTC')))
+- name: revoked_at
+  type: AggregateFunction(max, Nullable(DateTime64(6, 'UTC')))

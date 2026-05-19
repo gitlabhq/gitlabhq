@@ -1388,4 +1388,84 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       end
     end
   end
+
+  describe 'IAM federated authentication', :aggregate_failures do
+    let(:extern_uid) { 'iam-uid-123' }
+    let(:iam_provider) { :iam_github }
+    let(:canonical_provider) { 'github' }
+
+    before do
+      stub_feature_flags(iam_svc_login: true)
+      stub_omniauth_setting(
+        allow_single_sign_on: [iam_provider.to_s, canonical_provider],
+        block_auto_created_users: false
+      )
+      mock_auth_hash(iam_provider, extern_uid, 'iam-user@example.com')
+      stub_omniauth_provider(iam_provider, context: request)
+      prepare_provider_route(iam_provider)
+    end
+
+    after do
+      Rails.application.env_config['omniauth.auth'] = @original_env_config_omniauth_auth
+    end
+
+    describe 'login via IAM provider' do
+      it 'authenticates the user and stores the identity under the canonical provider name' do
+        post iam_provider
+
+        expect(request.env['warden']).to be_authenticated
+
+        identity = Identity.find_by(extern_uid: extern_uid)
+        expect(identity).not_to be_nil
+        expect(identity.provider).to eq(canonical_provider)
+      end
+
+      it 'does not store the identity under the iam_ prefixed provider name' do
+        post iam_provider
+
+        expect(Identity.where(extern_uid: extern_uid, provider: iam_provider.to_s)).not_to exist
+      end
+
+      context 'when the iam_svc_login feature flag is disabled' do
+        before do
+          stub_feature_flags(iam_svc_login: false)
+        end
+
+        it 'does not normalize the provider and the flow proceeds with the iam_ name' do
+          post iam_provider
+
+          # Without normalization the provider name is kept as-is by omniauth
+          expect(Identity.where(extern_uid: extern_uid, provider: iam_provider.to_s)).to exist
+        end
+      end
+    end
+
+    describe 'account linking via IAM provider' do
+      let(:user) { create(:user) }
+
+      before do
+        sign_in(user)
+      end
+
+      it 'links the identity under the canonical provider name' do
+        expect { post iam_provider }.to change { user.reload.identities.count }.by(1)
+
+        identity = user.identities.find_by(extern_uid: extern_uid)
+        expect(identity).not_to be_nil
+        expect(identity.provider).to eq(canonical_provider)
+      end
+
+      context 'when the user already has a linked identity for the canonical provider' do
+        before do
+          user.identities.create!(provider: canonical_provider, extern_uid: extern_uid)
+        end
+
+        it 'does not create a duplicate identity' do
+          expect { post iam_provider }.not_to change { user.reload.identities.count }
+
+          expect(user.identities.where(provider: canonical_provider, extern_uid: extern_uid).count).to eq(1)
+        end
+      end
+    end
+  end
 end

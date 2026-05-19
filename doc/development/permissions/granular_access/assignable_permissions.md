@@ -176,48 +176,47 @@ Only remove assignable permissions when the underlying API functionality is also
 
 Renaming an assignable permission is a **breaking change**. Tokens created with the old name lose access because the stored name no longer matches any YAML definition.
 
-This requires a two-step process:
+This requires a three-step process:
 
 1. Create a merge request that:
-   - Adds the new assignable permission YAML file
-   - Adds a `rename_granular_scope_permission` post-deploy batched background migration to update stored names in the database, see below
-   - Marks the old assignable permission as deprecated
-1. After the migration has completed, create a follow-up merge request to remove the deprecated permission
+   - Adds the new assignable permission YAML file.
+   - Adds a `rename_granular_scope_permission` post-deploy batched background migration
+     to update stored names in the database.
+   - Marks the old assignable permission as deprecated.
+1. In a later milestone, [finalize the batched background migration](../../database/batched_background_migrations.md#finalize-a-batched-background-migration)
+   so that any remaining rows are migrated synchronously during upgrade.
+1. After the migration is finalized, create a follow-up merge request to remove the deprecated permission.
 
 <details><summary>Creating the rename migration</summary>
 
-Generate the migration scaffold, replacing `old` and `new` with the actual assignable permission names:
+Generate the migration scaffold with a descriptive name:
 
 ```shell
-bundle exec rails g batched_background_migration rename_granular_scope_permission_<old>_to_<new> --table-name=granular_scopes --feature-category=permissions
+bundle exec rails g batched_background_migration rename_granular_scope_permission_<description> \
+  --table-name=granular_scopes --feature-category=permissions
 ```
 
-Replace the generated migration content with:
+Replace the generated post-deploy migration content with:
 
 ```ruby
 # frozen_string_literal: true
 
-class QueueRenameGranularScopePermissionOldToNew < Gitlab::Database::Migration[2.3]
-  milestone '18.10'
+class QueueRenameGranularScopePermissionDescription < Gitlab::Database::Migration[2.3]
+  milestone '<milestone>'
   restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
-  MIGRATION = 'RenameGranularScopePermissionOldToNew'
-  OLD_PERMISSION = 'old'
-  NEW_PERMISSION = 'new'
+  MIGRATION = 'RenameGranularScopePermissionDescription'
 
   def up
     queue_batched_background_migration(
       MIGRATION,
       :granular_scopes,
-      :id,
-      OLD_PERMISSION,
-      NEW_PERMISSION
+      :id
     )
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :granular_scopes, :id,
-      [OLD_PERMISSION, NEW_PERMISSION])
+    delete_batched_background_migration(MIGRATION, :granular_scopes, :id, [])
   end
 end
 ```
@@ -229,8 +228,13 @@ Replace the generated background migration content with:
 
 module Gitlab
   module BackgroundMigration
-    class RenameGranularScopePermissionOldToNew < BatchedMigrationJob
+    class RenameGranularScopePermissionDescription < BatchedMigrationJob
       include Gitlab::Database::MigrationHelpers::GranularScopePermissions
+
+      RENAMES = {
+        'old_name_one' => 'new_name_one',
+        'old_name_two' => %w[new_name_two_a new_name_two_b]
+      }.freeze
 
       feature_category :permissions
     end
@@ -238,7 +242,10 @@ module Gitlab
 end
 ```
 
-Update `OLD_PERMISSION` and `NEW_PERMISSION` constants, the class names, and the `milestone` to match your rename and target release.
+Update the `RENAMES` hash, the class names, and the `milestone` to match your renames
+and target release. Values in `RENAMES` can be a string (simple rename) or an array
+(split one permission into multiple). Use one entry for a single rename, or several
+to process multiple renames in the same batch pass.
 
 </details>
 

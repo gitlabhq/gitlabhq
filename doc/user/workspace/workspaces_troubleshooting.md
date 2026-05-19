@@ -36,7 +36,7 @@ This error happens when the [personal access token created for authentication](_
 to the newly created workspace has an expiry date that exceeds the instance setting for token expiry.
 
 To resolve this issue, disable the [access token expiry limit for the instance](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
-[Issue 579331)](https://gitlab.com/gitlab-org/gitlab/-/work_items/579331) proposes
+[Issue 579331](https://gitlab.com/gitlab-org/gitlab/-/work_items/579331) proposes
 a configurable limit for workspace-related tokens to address this limitation.
 
 ## Error: `No agents available to create workspaces`
@@ -129,7 +129,7 @@ This error can occur for the following reasons:
 - OAuth application is not configured correctly. To resolve this issue:
   1. Verify your OAuth application redirect URI in GitLab matches your domain.
   1. Update the OAuth application redirect URI. For example: `https://YOUR_DOMAIN/auth/callback`.
-- Workspaces proxy is using outdated OAuth credentials. to resolve this issue:
+- Workspaces proxy is using outdated OAuth credentials. To resolve this issue:
   1. Verify the proxy is using the latest OAuth credentials.
   1. Restart the workspaces proxy:
 

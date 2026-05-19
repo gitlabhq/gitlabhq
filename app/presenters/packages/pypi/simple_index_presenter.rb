@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Display package repository index acording to PyPI
+# Display package repository index according to PyPI
 # Simple API: https://peps.python.org/pep-0503/
 module Packages
   module Pypi

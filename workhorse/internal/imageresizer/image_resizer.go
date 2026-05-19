@@ -340,6 +340,7 @@ func (r *Resizer) tryResizeImage(req *http.Request, f *imageFile, params *resize
 }
 
 func startResizeImageCommand(ctx context.Context, imageReader io.Reader, params *resizeParams) (*exec.Cmd, io.ReadCloser, error) {
+	// #nosec G702 -- The only tainted input is the width, which is forced to be an int
 	cmd := exec.CommandContext(ctx, "gitlab-resize-image")
 	cmd.Stdin = imageReader
 	cmd.Stderr = &strings.Builder{}

@@ -5,3 +5,4 @@ feature_category: webhooks
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215236
 milestone: '18.9'
 queued_migration_version: 20260115175438
+finalized_by: 20260415164819

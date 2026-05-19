@@ -1,0 +1,10 @@
+---
+name: repository_file_accessed_api
+description: Log an audit event when an authenticated user reads a repository file via the API.
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/597263
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234665
+feature_category: source_code_management
+milestone: "19.0"
+saved_to_database: false
+streamed: true
+scope: [Project]

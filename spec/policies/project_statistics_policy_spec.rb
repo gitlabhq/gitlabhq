@@ -2,20 +2,21 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectStatisticsPolicy do
+RSpec.describe ProjectStatisticsPolicy, feature_category: :source_code_management do
   using RSpec::Parameterized::TableSyntax
 
   describe '#rules' do
-    let(:external)   { create(:user, :external) }
-    let(:guest)      { create(:user) }
-    let(:reporter)   { create(:user) }
-    let(:developer)  { create(:user) }
-    let(:maintainer) { create(:user) }
+    let_it_be(:external)   { create(:user, :external) }
+    let_it_be(:guest)      { create(:user) }
+    let_it_be(:reporter)   { create(:user) }
+    let_it_be(:developer)  { create(:user) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:non_member) { create(:user) }
 
     let(:users) do
       {
         unauthenticated: nil,
-        non_member: create(:user),
+        non_member: non_member,
         guest: guest,
         reporter: reporter,
         developer: developer,

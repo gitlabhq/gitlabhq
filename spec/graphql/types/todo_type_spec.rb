@@ -32,6 +32,20 @@ RSpec.describe GitlabSchema.types['Todo'], feature_category: :notifications do
 
   specify { expect(described_class).to require_graphql_authorizations(:read_todo) }
 
+  describe '.authorization_scopes' do
+    it 'allows ai_workflows scope token' do
+      expect(described_class.authorization_scopes).to include(:ai_workflows)
+    end
+  end
+
+  describe 'fields with :ai_workflows scope' do
+    %w[id state createdAt action body targetUrl].each do |field_name|
+      it "includes :ai_workflows scope for the #{field_name} field" do
+        expect(described_class.fields[field_name]).to include_graphql_scopes(:ai_workflows)
+      end
+    end
+  end
+
   subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
 
   describe 'project field' do

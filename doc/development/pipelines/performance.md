@@ -92,3 +92,20 @@ binaries to [save storage and speed-up artifact downloads](https://gitlab.com/gi
 
 To make debugging a crash from stripped binaries easier comment line with
 `strip_executable_binaries` in the `setup_test_env` function in `scripts/gitlab_component_helpers.sh` shell script and start a new pipeline.
+
+## Skip pipelines in merge request titles
+
+When using [merged results pipelines](../../ci/pipelines/merged_results_pipelines.md),
+you can add `[ci skip]` or `[skip ci]` to your merge request title to skip pipelines.
+This works because merged results pipelines create a virtual commit that includes the MR title
+in the commit message, causing the skip flag to be detected.
+
+> [!note]
+> This is an undocumented side effect and only works with merged results pipelines enabled.
+> It does not work with basic merge request pipelines or when there are merge conflicts.
+> This approach is primarily used internally on GitLab.com to reduce pipeline load.
+
+To skip pipelines:
+
+- Add `[ci skip]` or `[skip ci]` to your merge request title. Pipelines are skipped until you remove the flag from the title.
+- Add `[ci skip]` or `[skip ci]` to your commit message. Only the pipeline for that specific commit is skipped.

@@ -9,31 +9,43 @@ RSpec.describe Issuables::ClearGroupsIssueCounterWorker, feature_category: :team
     let_it_be(:root_group) { create(:group, parent: parent_group) }
     let_it_be(:subgroup) { create(:group, parent: root_group) }
 
-    let(:count_service) { Groups::OpenIssuesCountService }
-    let(:instance1) { instance_double(count_service) }
-    let(:instance2) { instance_double(count_service) }
+    let(:issues_count_service) { Groups::OpenIssuesCountService }
+    let(:work_items_count_service) { Groups::OpenWorkItemsCountService }
+
+    let(:issues_instance_root) { instance_double(issues_count_service) }
+    let(:issues_instance_parent) { instance_double(issues_count_service) }
+    let(:work_items_instance_root) { instance_double(work_items_count_service) }
+    let(:work_items_instance_parent) { instance_double(work_items_count_service) }
 
     it_behaves_like 'an idempotent worker' do
       let(:job_args) { [[root_group.id]] }
       let(:exec_times) { IdempotentWorkerHelper::WORKER_EXEC_TIMES }
 
-      it 'clears the cached issue count in given groups and ancestors' do
-        expect(count_service).to receive(:new)
-          .exactly(exec_times).times.with(root_group).and_return(instance1)
-        expect(count_service).to receive(:new)
-          .exactly(exec_times).times.with(parent_group).and_return(instance2)
-        expect(count_service).not_to receive(:new).with(subgroup)
+      it 'clears the cached issue and work item counts in given groups and ancestors', :aggregate_failures do
+        expect(issues_count_service).to receive(:new)
+          .exactly(exec_times).times.with(root_group).and_return(issues_instance_root)
+        expect(issues_count_service).to receive(:new)
+          .exactly(exec_times).times.with(parent_group).and_return(issues_instance_parent)
+        expect(issues_count_service).not_to receive(:new).with(subgroup)
 
-        [instance1, instance2].all? do |instance|
-          expect(instance).to receive(:clear_all_cache_keys).exactly(exec_times).times
-        end
+        expect(work_items_count_service).to receive(:new)
+          .exactly(exec_times).times.with(root_group).and_return(work_items_instance_root)
+        expect(work_items_count_service).to receive(:new)
+          .exactly(exec_times).times.with(parent_group).and_return(work_items_instance_parent)
+        expect(work_items_count_service).not_to receive(:new).with(subgroup)
+
+        expect(issues_instance_root).to receive(:clear_all_cache_keys).exactly(exec_times).times
+        expect(issues_instance_parent).to receive(:clear_all_cache_keys).exactly(exec_times).times
+        expect(work_items_instance_root).to receive(:clear_all_cache_keys).exactly(exec_times).times
+        expect(work_items_instance_parent).to receive(:clear_all_cache_keys).exactly(exec_times).times
 
         subject
       end
     end
 
-    it 'does not call count service or rise error when group_ids is empty' do
-      expect(count_service).not_to receive(:new)
+    it 'does not call count services or raise error when group_ids is empty', :aggregate_failures do
+      expect(issues_count_service).not_to receive(:new)
+      expect(work_items_count_service).not_to receive(:new)
       expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
 
       described_class.new.perform([])

@@ -55,6 +55,16 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder, feature_category: :code_re
       expect(data).to include(*expected_additional_attributes)
     end
 
+    context 'when the MR has a squash commit' do
+      before do
+        merge_request.update_column(:squash_commit_sha, 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
+      end
+
+      it 'includes squash_commit_sha' do
+        expect(data[:squash_commit_sha]).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0')
+      end
+    end
+
     context 'when the MR has an image in the description' do
       let(:mr_with_description) { create(:merge_request, description: 'test![MR_Image](/uploads/abc/MR_Image.png)') }
       let(:builder) { described_class.new(mr_with_description) }

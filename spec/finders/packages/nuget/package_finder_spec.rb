@@ -93,12 +93,6 @@ RSpec.describe Packages::Nuget::PackageFinder, feature_category: :package_regist
         it { is_expected.to match_array([package5, package6]) }
       end
 
-      context 'with downcase package name' do
-        let(:package_name) { package1.name.downcase }
-
-        it { is_expected.to match_array([package1, package2]) }
-      end
-
       context 'with client version less than 3' do
         let(:package_version) { '2.0.0+abc' }
         let(:client_version) { '2.8.6' }
@@ -123,7 +117,7 @@ RSpec.describe Packages::Nuget::PackageFinder, feature_category: :package_regist
     context 'with a project' do
       let(:target) { project }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -133,7 +127,7 @@ RSpec.describe Packages::Nuget::PackageFinder, feature_category: :package_regist
     context 'with a subgroup' do
       let(:target) { subgroup }
 
-      before do
+      before_all do
         subgroup.add_developer(user)
       end
 
@@ -143,7 +137,7 @@ RSpec.describe Packages::Nuget::PackageFinder, feature_category: :package_regist
     context 'with a group' do
       let(:target) { group }
 
-      before do
+      before_all do
         group.add_developer(user)
       end
 

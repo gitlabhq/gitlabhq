@@ -1,0 +1,12 @@
+---
+name: ci_atomic_processing_log_check_mismatch
+description: |
+  Temporary logging to determine if the last pipeline.needs_processing? can be replaced
+  with new_collection.processing_jobs.any? to reduce queries in AtomicProcessingService.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/598584
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235948
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600063
+milestone: '19.0'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

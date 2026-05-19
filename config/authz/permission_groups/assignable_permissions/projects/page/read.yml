@@ -3,6 +3,8 @@ name: read_page
 description: Grants the ability to read pages
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - read_page
   - read_page_deployment

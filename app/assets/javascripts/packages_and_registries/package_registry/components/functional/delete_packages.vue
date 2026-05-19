@@ -33,6 +33,9 @@ export default normalizeRender({
   methods: {
     async deletePackages(packageEntities) {
       const isSinglePackage = packageEntities.length === 1;
+      const defaultErrorMessage = isSinglePackage
+        ? this.$options.i18n.errorMessage
+        : this.$options.i18n.errorMessageMultiple;
       try {
         this.$emit('start');
         const ids = packageEntities.map((packageEntity) => packageEntity.id);
@@ -57,13 +60,13 @@ export default normalizeRender({
             variant: VARIANT_SUCCESS,
           });
         }
+        this.$emit('success');
       } catch (error) {
         createAlert({
-          message: isSinglePackage
-            ? this.$options.i18n.errorMessage
-            : this.$options.i18n.errorMessageMultiple,
+          // String errors are from mutations and are user facing
+          message: typeof error === 'string' ? error : defaultErrorMessage,
           variant: VARIANT_WARNING,
-          captureError: true,
+          captureError: typeof error !== 'string',
           error,
         });
       }

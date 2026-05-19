@@ -3,6 +3,8 @@
 module Namespaces
   module Stateful
     module TransitionValidation
+      include ::Gitlab::TenantContainerLifecycle::Stateful::TransitionValidation
+
       FORBIDDEN_ANCESTOR_STATES = {
         archive: %i[archived deletion_in_progress deletion_scheduled],
         unarchive: %i[deletion_in_progress deletion_scheduled],
@@ -10,13 +12,6 @@ module Namespaces
       }.freeze
 
       private
-
-      def ensure_transition_user(transition)
-        return true if transition_user(transition)
-
-        errors.add(:state, "#{transition.event} transition needs transition_user")
-        false
-      end
 
       def validate_ancestors_state(transition)
         return true if ancestors.empty?

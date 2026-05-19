@@ -9,10 +9,10 @@
 
 <!-- Pre-evaluation tasks are critical and should be completed or confirmed by product managers if available -->
 
-- [ ] Clearly document the topic to evaluated in this issue description
+- [ ] Clearly document the topic to be evaluated in this issue description
 - [ ] Determine specific scope including time-bounds for investigation
 
-### Tasks to  Evaluate
+### Tasks to Evaluate
 
 <!-- Outline the tasks with issues that you need to evaluate as a part of the implementation issue -->
 

@@ -125,6 +125,7 @@ export default {
       default: true,
     },
   },
+  emits: ['pipeline-action-request-complete', 'set-skip-retry-modal'],
   data() {
     return {
       currentSkipModalValue: this.skipRetryModal,
@@ -286,7 +287,7 @@ export default {
   methods: {
     handleConfirmationModalPreferences() {
       if (this.currentSkipModalValue) {
-        this.$emit('setSkipRetryModal');
+        this.$emit('set-skip-retry-modal');
         localStorage.setItem(SKIP_RETRY_MODAL_KEY, String(this.currentSkipModalValue));
       }
     },
@@ -305,7 +306,7 @@ export default {
       this.hideTooltips();
     },
     pipelineActionRequestComplete() {
-      this.$emit('pipelineActionRequestComplete');
+      this.$emit('pipeline-action-request-complete');
 
       if (this.isBridge) {
         this.$toast.show(this.$options.i18n.bridgeRetryText);
@@ -376,9 +377,9 @@ export default {
       class="gl-mr-1"
       :should-trigger-click="shouldTriggerActionClick"
       :with-confirmation-modal="withConfirmationModal"
-      @actionButtonClicked="handleConfirmationModalPreferences"
-      @pipelineActionRequestComplete="pipelineActionRequestComplete"
-      @showActionConfirmationModal="showActionConfirmationModal"
+      @action-button-clicked="handleConfirmationModalPreferences"
+      @pipeline-action-request-complete="pipelineActionRequestComplete"
+      @show-action-confirmation-modal="showActionConfirmationModal"
       @focus.native="hideTooltips"
     />
     <action-component

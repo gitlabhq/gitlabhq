@@ -1,0 +1,16 @@
+---
+table_name: ai_audit_events
+classes:
+- AuditEvents::AiAuditEvent
+feature_categories:
+- audit_events
+description: Stores AI agent audit events (LLM calls, tool invocations, session lifecycle)
+  as fallback when ClickHouse is not available. Used on self-managed instances without
+  ClickHouse.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230603
+milestone: '19.0'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+  namespace_id: namespaces
+table_size: small

@@ -17,6 +17,10 @@ module Gitlab
             apply(query_builder, filter_config)
           end
 
+          def metric?
+            false
+          end
+
           def validate_part(part)
             validate_max_size(part)
           end

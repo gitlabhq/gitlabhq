@@ -1,21 +1,13 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
-import { createTestingPinia } from '@pinia/testing';
-import setWindowLocation from 'helpers/set_window_location_helper';
+import { shallowMount } from '@vue/test-utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import DiffLineDiscussions from '~/rapid_diffs/app/discussions/diff_line_discussions.vue';
-import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
 import DraftNote from '~/rapid_diffs/app/discussions/draft_note.vue';
 import NewLineDiscussionForm from '~/rapid_diffs/app/discussions/new_line_discussion_form.vue';
 import NoteSignedOutWidget from '~/rapid_diffs/app/discussions/note_signed_out_widget.vue';
-import { markAsScrolled } from '~/rapid_diffs/utils/scroll_to_linked_fragment';
 
 jest.mock('~/lib/utils/common_utils');
-jest.mock('~/rapid_diffs/utils/scroll_to_linked_fragment', () => ({
-  hasScrolled: jest.fn(() => false),
-  markAsScrolled: jest.fn(),
-}));
 
 describe('DiffLineDiscussions', () => {
   let wrapper;
@@ -46,21 +38,6 @@ describe('DiffLineDiscussions', () => {
     });
   };
 
-  const mountComponent = (discussions = [], { filePaths } = {}) => {
-    createTestingPinia({ stubActions: false });
-    const store = useDiffDiscussions();
-    wrapper = mount(DiffLineDiscussions, {
-      propsData: { discussions },
-      provide: {
-        store,
-        userPermissions: { can_create_note: true },
-        endpoints: {},
-        ...(filePaths ? { filePaths } : {}),
-      },
-      attachTo: document.body,
-    });
-  };
-
   it('shows regular discussions', () => {
     const discussion = createDiscussion();
     createComponent([discussion]);
@@ -73,67 +50,6 @@ describe('DiffLineDiscussions', () => {
     const form = { id: 'form-1', isForm: true };
     createComponent([form]);
     expect(wrapper.findComponent(NewLineDiscussionForm).props('discussion')).toBe(form);
-  });
-
-  describe('scrollToNoteFragment', () => {
-    let mock;
-
-    const discussions = [
-      createDiscussion({
-        notes: [{ id: 'abc', author: { id: 1 }, created_at: new Date().toDateString() }],
-      }),
-    ];
-
-    const createLinkedComponent = ({ filePaths, linkedFileData } = {}) => {
-      wrapper = shallowMount(DiffLineDiscussions, {
-        propsData: { discussions: [] },
-        provide: {
-          userPermissions: { can_create_note: true },
-          ...(filePaths ? { filePaths } : {}),
-          ...(linkedFileData ? { linkedFileData } : {}),
-        },
-        attachTo: document.body,
-      });
-      const anchor = document.createElement('a');
-      anchor.href = '#note_abc';
-      document.body.appendChild(anchor);
-    };
-
-    beforeEach(() => {
-      mock = jest.fn();
-      jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(mock);
-      markAsScrolled.mockClear();
-      setWindowLocation('#note_abc');
-    });
-
-    it('marks as scrolled after clicking the note anchor', () => {
-      mountComponent(discussions);
-      expect(markAsScrolled).toHaveBeenCalled();
-    });
-
-    it('scrolls when linkedFileData matches filePaths', () => {
-      createLinkedComponent({
-        filePaths: { oldPath: 'foo/bar.rb', newPath: 'foo/bar.rb' },
-        linkedFileData: { old_path: 'foo/bar.rb', new_path: 'foo/bar.rb' },
-      });
-      wrapper.vm.scrollToNoteFragment();
-      expect(markAsScrolled).toHaveBeenCalled();
-    });
-
-    it('does not scroll when linkedFileData does not match filePaths', () => {
-      createLinkedComponent({
-        filePaths: { oldPath: 'foo/bar.rb', newPath: 'foo/bar.rb' },
-        linkedFileData: { old_path: 'other/file.rb', new_path: 'other/file.rb' },
-      });
-      wrapper.vm.scrollToNoteFragment();
-      expect(markAsScrolled).not.toHaveBeenCalled();
-    });
-
-    it('does not scroll when linkedFileData is present but filePaths is not injected', () => {
-      createLinkedComponent({ linkedFileData: { old_path: 'foo/bar.rb', new_path: 'foo/bar.rb' } });
-      wrapper.vm.scrollToNoteFragment();
-      expect(markAsScrolled).not.toHaveBeenCalled();
-    });
   });
 
   describe('line highlighting', () => {

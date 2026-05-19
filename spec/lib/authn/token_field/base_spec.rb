@@ -234,12 +234,14 @@ RSpec.describe Authn::TokenField::Base, feature_category: :system_access do
       let(:options) { super().merge(unique: true, format_with_prefix: :token_prefix) }
 
       context 'when generated token is already in DB' do
-        it 'generates a different token' do
+        it 'generates a different token with uniqueness_check: true' do
           expect(strategy).to receive(:generate_token).and_return('prefix-token1')
-          expect(strategy).to receive(:find_token_authenticatable).with('prefix-token1', true).and_return(true)
+          expect(strategy).to receive(:find_token_authenticatable).with('prefix-token1', true,
+            uniqueness_check: true).and_return(true)
 
           expect(strategy).to receive(:generate_token).and_return('prefix-token2')
-          expect(strategy).to receive(:find_token_authenticatable).with('prefix-token2', true).and_return(false)
+          expect(strategy).to receive(:find_token_authenticatable).with('prefix-token2', true,
+            uniqueness_check: true).and_return(false)
 
           expect(token).to eq('prefix-token2')
         end

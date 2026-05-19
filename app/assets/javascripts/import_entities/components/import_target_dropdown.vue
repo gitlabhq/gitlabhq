@@ -48,6 +48,8 @@ export default {
     },
   },
 
+  emits: ['select'],
+
   MAX_IMPORT_TARGET_LENGTH: 24,
 
   data() {

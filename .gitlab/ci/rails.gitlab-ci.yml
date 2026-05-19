@@ -354,30 +354,6 @@ rspec fast_spec_helper:
     # Load fast_spec_helper as well just in case there are no specs available.
     - rspec_section bin/rspec --dry-run spec/fast_spec_helper.rb ${fast_spec_helper_specs}
 
-rspec unit clickhouse23:
-  extends:
-    - .rspec-base-pg17-clickhouse23
-    - .rails:rules:clickhouse-changes
-  parallel: 2
-
-rspec-ee unit clickhouse23:
-  extends:
-    - .rspec-base-pg17-clickhouse23
-    - .rails:rules:ee-only-clickhouse-changes
-  parallel: 2
-
-rspec unit clickhouse24:
-  extends:
-    - .rspec-base-pg17-clickhouse24
-    - .rails:rules:clickhouse-changes
-  parallel: 2
-
-rspec-ee unit clickhouse24:
-  extends:
-    - .rspec-base-pg17-clickhouse24
-    - .rails:rules:ee-only-clickhouse-changes
-  parallel: 2
-
 rspec unit clickhouse25:
   extends:
     - .rspec-base-pg17-clickhouse25
@@ -402,6 +378,38 @@ rspec-ee integration pg17 clickhouse25:
     - .rails:rules:ee-only-integration
   parallel: 3
 
+rspec unit clickhouse26:
+  extends:
+    - .rspec-base-pg17-clickhouse26
+    - .rails:rules:clickhouse-changes
+  parallel: 2
+
+rspec-ee unit clickhouse26:
+  extends:
+    - .rspec-base-pg17-clickhouse26
+    - .rails:rules:ee-only-clickhouse-changes
+  parallel: 2
+
+rspec system clickhouse25:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
+  extends:
+    - .rspec-base-pg17-clickhouse25
+    - .rails:rules:clickhouse-system-changes
+  variables:
+    DEBUG_GITLAB_TRANSACTION_STACK: "true"
+  parallel: 2
+
+rspec-ee system clickhouse25:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
+  extends:
+    - .rspec-base-pg17-clickhouse25
+    - .rails:rules:ee-only-clickhouse-system-changes
+  variables:
+    DEBUG_GITLAB_TRANSACTION_STACK: "true"
+  parallel: 2
+
 rspec ci-config-validation branch-pipelines:
   extends:
     - .ci-config-validation-base
@@ -423,30 +431,6 @@ rspec ci-config-validation mr-pipelines:
     - !reference [.base-script, script]
     - rspec_section rspec_simple_job "--tag ci_config_validation -- spec/dot_gitlab_ci/ci_configuration_validation/merge_request_pipeline_spec.rb"
 
-gitlab:clickhouse-23:rollback:main:
-  extends:
-    - .rspec-base
-    - .production
-    - .use-pg17-clickhouse23
-    - .rails:rules:clickhouse-changes
-  script:
-    - !reference [.clickhouse-setup, script]
-    - 'sed -i "s|test:$|production:|g" config/click_house.yml'
-    - bundle exec rake gitlab:clickhouse:migrate &&
-      bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
-
-gitlab:clickhouse-24:rollback:main:
-  extends:
-    - .rspec-base
-    - .production
-    - .use-pg17-clickhouse24
-    - .rails:rules:clickhouse-changes
-  script:
-    - !reference [.clickhouse-setup, script]
-    - 'sed -i "s|test:$|production:|g" config/click_house.yml'
-    - bundle exec rake gitlab:clickhouse:migrate &&
-      bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
-
 gitlab:clickhouse-25:rollback:main:
   extends:
     - .rspec-base
@@ -458,6 +442,19 @@ gitlab:clickhouse-25:rollback:main:
     - 'sed -i "s|test:$|production:|g" config/click_house.yml'
     - bundle exec rake gitlab:clickhouse:migrate &&
       bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
+
+gitlab:clickhouse-26:rollback:main:
+  extends:
+    - .rspec-base
+    - .production
+    - .use-pg17-clickhouse26
+    - .rails:rules:clickhouse-changes
+  script:
+    - !reference [.clickhouse-setup, script]
+    - 'sed -i "s|test:$|production:|g" config/click_house.yml'
+    - bundle exec rake gitlab:clickhouse:migrate &&
+      bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
+
 
 gitlab:setup:
   extends: .db-job-base
@@ -496,9 +493,7 @@ rspec:artifact-collector unit:
   needs:
     - job: rspec unit pg17  # 44 jobs
       optional: true
-    - job: rspec unit clickhouse23  # 2 jobs
-      optional: true
-    - job: rspec unit clickhouse24  # 2 jobs
+    - job: rspec unit clickhouse26  # 2 jobs
       optional: true
     - job: rspec unit clickhouse25  # 2 jobs
       optional: true
@@ -511,6 +506,14 @@ rspec:artifact-collector part-a:
     - job: rspec system pg17  # 32 jobs
       optional: true
     - job: rspec background_migration pg17  # 17 jobs
+      optional: true
+
+rspec:artifact-collector part-c:
+  extends:
+    - .artifact-collector
+    - .rails:rules:artifact-collector-part-c
+  needs:
+    - job: rspec system clickhouse25  # 2 jobs
       optional: true
 
 rspec:artifact-collector part-b:
@@ -584,9 +587,7 @@ rspec:artifact-collector ee remainder:
       optional: true
     - job: rspec-ee background_migration pg17  # 6 jobs
       optional: true
-    - job: rspec-ee unit clickhouse23  # 2 jobs
-      optional: true
-    - job: rspec-ee unit clickhouse24  # 2 jobs
+    - job: rspec-ee unit clickhouse26  # 2 jobs
       optional: true
     - job: rspec-ee unit clickhouse25  # 2 jobs
       optional: true
@@ -595,6 +596,8 @@ rspec:artifact-collector ee remainder:
     - job: rspec-ee integration pg17 clickhouse25  # 3 jobs
       optional: true
     - job: rspec-ee system pg17  # 16 jobs
+      optional: true
+    - job: rspec-ee system clickhouse25  # 2 jobs
       optional: true
     - job: rspec fail-fast  # 1 job
       optional: true
@@ -606,6 +609,7 @@ rspec:artifact-collector ee remainder:
     - !reference ['.rails:rules:ee-only-background-migration', rules]
     - !reference ['.rails:rules:ee-only-integration', rules]
     - !reference ['.rails:rules:ee-only-system', rules]
+    - !reference ['.rails:rules:ee-only-clickhouse-system-changes', rules]
 
 rspec:predictive artifact-collector:
   stage: post-test
@@ -840,8 +844,13 @@ rspec-predictive:pipeline-generate:
   extends:
     - .rails:rules:rspec-predictive:pipeline-generate
   stage: prepare
-  needs: ["detect-tests", "retrieve-tests-metadata"]
+  needs:
+    - job: "detect-tests"
+    - job: "retrieve-tests-metadata"
+    - job: "detect-system-tests-duo-experiment"
+      optional: true
   script:
+    - scripts/prepare_predictive_system_pipeline.rb
     - |
       scripts/generate_rspec_pipeline.rb \
         -t "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}" \
@@ -867,6 +876,11 @@ rspec-predictive:pipeline-generate:
     paths:
       - "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}.yml"
       - "${GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML}-ee.yml"
+      - "${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH}"
+      - "${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_EE_PATH}"
+      - "${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH}.orig"
+      - "${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_EE_PATH}.orig"
+      - "${GLCI_PREDICTIVE_RSPEC_SYSTEM_FULL_PIPELINE_YML}"
 
 rspec:predictive:trigger:
   extends:
@@ -936,6 +950,33 @@ rspec-ee:predictive:trigger single-db-ci-connection:
         job: rspec-predictive:pipeline-generate
   variables:
     PIPELINE_NAME: 'rspec-ee:predictive single-db-ci-connection'
+
+rspec:predictive:system-full:trigger:
+  extends:
+    - .rails:rules:rspec-predictive:system-full:trigger
+  stage: test
+  needs:
+    - job: "setup-test-env"
+      artifacts: false
+    - job: "retrieve-tests-metadata"
+      artifacts: false
+    - job: "compile-test-assets"
+      artifacts: false
+    - job: "rspec-predictive:pipeline-generate"
+      artifacts: true
+  variables:
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+    GIT_STRATEGY: $GIT_STRATEGY
+    GLCI_MEDIUM_RUNNER_REQUIRED: $GLCI_MEDIUM_RUNNER_REQUIRED
+    PIPELINE_NAME: 'rspec:predictive system (full)'
+  trigger:
+    strategy: depend
+    forward:
+      yaml_variables: true
+      pipeline_variables: true
+    include:
+      - artifact: "${GLCI_PREDICTIVE_RSPEC_SYSTEM_FULL_PIPELINE_YML}"
+        job: rspec-predictive:pipeline-generate
 
 rspec-ee migration pg17:
   extends:
@@ -1137,6 +1178,7 @@ rspec-ee system pg17 duo_workflow_service:
   parallel: 4
   rules:
     - !reference [".rails:rules:triggered-by-aigw-project", rules]
+    - !reference [".rails:rules:tier-2-with-backend-spec", rules]
     - !reference ['.rails:rules:ee-only-system', rules]
 
 # Integration tests with Elasticsearch and PG production versions

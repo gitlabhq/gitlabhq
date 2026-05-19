@@ -81,7 +81,7 @@ For more information, see:
 Actions an agent takes are tracked in a session with logs.
 Sessions can help aid with debugging, facilitate learning, and support audit requirements.
 
-To view sessions, go to your project and select **Automate** > **Sessions**.
+To view sessions, go to your project and select **AI** > **Sessions**.
 
 For more information, see:
 

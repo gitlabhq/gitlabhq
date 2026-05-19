@@ -143,9 +143,7 @@ function resolveNodeModuleAll(specifier, fromDir = ROOT_PATH) {
       let exportsEntry;
       if (typeof pkg.exports === 'string' || !pkg.exports['.']) {
         exportsEntry =
-          subpath === '.'
-            ? pkg.exports
-            : pkg.exports[subpath] || pkg.exports[`${subpath}/index`];
+          subpath === '.' ? pkg.exports : pkg.exports[subpath] || pkg.exports[`${subpath}/index`];
       } else {
         exportsEntry = pkg.exports[subpath];
       }
@@ -176,7 +174,9 @@ function resolveNodeModuleAll(specifier, fromDir = ROOT_PATH) {
           if (tryFile(esmPath)) results.add(esmPath);
         }
       }
-      const subFile = resolveFile(path.resolve(pkgDir, subpath.startsWith('.') ? subpath : subpath.slice(1)));
+      const subFile = resolveFile(
+        path.resolve(pkgDir, subpath.startsWith('.') ? subpath : subpath.slice(1)),
+      );
       if (subFile) results.add(subFile);
     }
 
@@ -251,7 +251,6 @@ function discoverEntries() {
     coverage_persistence: ['./entrypoints/coverage_persistence.js'],
     performance_bar: ['./entrypoints/performance_bar.js'],
     jira_connect_app: ['./jira_connect/subscriptions/index.js'],
-    sandboxed_mermaid_v10: ['./lib/mermaid_v10.js'],
     sandboxed_mermaid_v11: ['./lib/mermaid_v11.js'],
     redirect_listbox: ['./entrypoints/behaviors/redirect_listbox.js'],
     sandboxed_swagger: ['./lib/swagger.js'],
@@ -295,9 +294,7 @@ function extractScriptContent(source) {
  */
 function detectAppRoot(code) {
   // Strip single-line and multi-line comments to avoid false positives
-  const stripped = code
-    .replace(/\/\/[^\n]*/g, '')
-    .replace(/\/\*[\s\S]*?\*\//g, '');
+  const stripped = code.replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
 
   // Reject if there are any named (non-default) imports from 'vue'
   //   import { computed } from 'vue'
@@ -305,9 +302,7 @@ function detectAppRoot(code) {
   if (/import\s+\{[^}]*\}\s+from\s+['"]vue['"]/.test(stripped)) return false;
 
   // Match a default import from 'vue':  import Foo from 'vue'
-  const defaultImport = stripped.match(
-    /import\s+([A-Za-z_$][\w$]*)\s+from\s+['"]vue['"]/,
-  );
+  const defaultImport = stripped.match(/import\s+([A-Za-z_$][\w$]*)\s+from\s+['"]vue['"]/);
   if (!defaultImport) return false;
 
   const name = defaultImport[1];
@@ -416,12 +411,12 @@ async function buildGraph(entrypoints) {
     }
 
     if (idx % 500 < CONCURRENCY) {
-      process.stderr.write(`\rParsed ${idx}/${total()} files...`);
+      process.stderr.write(`\r[vue3-infection-scanner] Parsed ${idx}/${total()} files...`);
     }
   }
 
-  process.stderr.write(`\rParsed ${total()}/${total()} files. Done.\n`);
-  console.log(`App roots: ${appRootSet.size} files`);
+  process.stderr.write(`\r[vue3-infection-scanner] Parsed ${total()}/${total()} files. Done.\n`);
+  console.log(`[vue3-infection-scanner] App roots: ${appRootSet.size} files`);
   return { graph, appRootSet };
 }
 
@@ -433,7 +428,6 @@ const INFECTION_SPECIFIERS = (() => {
   );
   return Object.keys(CONTEXT_ALIASES);
 })();
-
 
 function getInfectionSourceReason(imports) {
   for (const imp of imports) {
@@ -477,7 +471,9 @@ function computeInfected(graph, appRootSet) {
     }
   }
 
-  console.log(`Infected: ${infectedSet.size} / ${Object.keys(graph).length} files`);
+  console.log(
+    `[vue3-infection-scanner] Infected: ${infectedSet.size} / ${Object.keys(graph).length} files`,
+  );
   return { infectedSet, infectionTriggers };
 }
 
@@ -542,7 +538,7 @@ function writeOutput(entrypoints, graph, appRootSet) {
 
   const output = { entrypoints, graph: annotatedGraph };
   fs.writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
-  console.log(`Written to ${OUTPUT_PATH}`);
+  console.log(`[vue3-infection-scanner] Written to ${OUTPUT_PATH}. Done.`);
   return output;
 }
 
@@ -579,7 +575,8 @@ function buildSubgraph(graph, rootFile) {
         appRoot: entry ? entry.appRoot : false,
         infected: entry ? entry.infected : false,
         infectionSource: entry?.infectionReasons?.some((s) => s.file === file) || false,
-        infectionSourceReason: entry?.infectionReasons?.find((s) => s.file === file)?.reason || null,
+        infectionSourceReason:
+          entry?.infectionReasons?.find((s) => s.file === file)?.reason || null,
         infectionReasons: entry?.infectionReasons
           ? entry.infectionReasons.map((s) => ({ file: getRelPath(s.file), reason: s.reason }))
           : [],
@@ -651,7 +648,9 @@ function computeEntryStats(entrypoints, graph) {
       if (entry) {
         if (!isNm) {
           total += 1;
-          if (entry.appRoot) { appRoots += 1; }
+          if (entry.appRoot) {
+            appRoots += 1;
+          }
           if (entry.infected) {
             infected += 1;
             if (entry.infectionReasons && entry.infectionReasons.some((s) => s.file === f)) {
@@ -737,7 +736,8 @@ function startServer() {
             appRoots.push({ id: f, file: getRelPath(f) });
           }
           if (entry.infected) {
-            const isSrc = entry.infectionReasons && entry.infectionReasons.some((s) => s.file === f);
+            const isSrc =
+              entry.infectionReasons && entry.infectionReasons.some((s) => s.file === f);
             const reason = isSrc ? entry.infectionReasons.find((s) => s.file === f).reason : null;
             const item = { id: f, file: getRelPath(f), reason };
             if (isSrc) {
@@ -770,9 +770,9 @@ function startServer() {
     if (url.pathname === '/' || url.pathname === '/index.html') {
       const template = fs.readFileSync(UI_HTML_PATH, 'utf-8');
       if (!entryStatsCache) {
-        console.log('Computing entry stats...');
+        console.log('[vue3-infection-scanner] Computing entry stats...');
         entryStatsCache = computeEntryStats(analysisResult.entrypoints, analysisResult.graph);
-        console.log('Entry stats computed.');
+        console.log('[vue3-infection-scanner] Entry stats computed.');
       }
       const dataJson = JSON.stringify({
         entrypoints: analysisResult.entrypoints,
@@ -791,11 +791,13 @@ function startServer() {
   });
 
   server.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`[vue3-infection-scanner] Server running at http://localhost:${PORT}`);
     try {
       const openCmd = process.platform === 'darwin' ? 'open' : 'xdg-open';
       execSync(`${openCmd} http://localhost:${PORT}`);
-    } catch { /* ignore if browser open fails */ }
+    } catch {
+      /* ignore if browser open fails */
+    }
   });
 }
 
@@ -803,10 +805,10 @@ function startServer() {
 
 async function runAnalysis() {
   analysisRunning = true;
-  console.log('Discovering entrypoints...');
+  console.log('[vue3-infection-scanner] Discovering entrypoints...');
   const entrypoints = discoverEntries();
-  console.log(`Found ${Object.keys(entrypoints).length} entrypoints`);
-  console.log('Building import graph...');
+  console.log(`[vue3-infection-scanner] Found ${Object.keys(entrypoints).length} entrypoints`);
+  console.log('[vue3-infection-scanner] Building import graph...');
   const { graph, appRootSet } = await buildGraph(entrypoints);
   const result = writeOutput(entrypoints, graph, appRootSet);
   analysisResult = result;

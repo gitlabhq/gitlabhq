@@ -29,6 +29,10 @@ module Gitlab
           raise InvalidEvent, "Event being published is not an instance of Gitlab::EventStore::Event: got #{event.inspect}"
         end
 
+        if event.instance_of?(CloudEvent)
+          raise InvalidEvent, "Event being published is an instance of GitLab::EventStore::CloudEvent"
+        end
+
         subscriptions.fetch(event.class, []).each do |subscription|
           subscription.consume_event(event)
         end

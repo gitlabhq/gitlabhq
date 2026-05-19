@@ -1,0 +1,12 @@
+---
+name: read_webhook
+description: Grants the ability to view webhooks
+boundaries:
+  - group
+  - project
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_webhook
+  - read_webhook_event

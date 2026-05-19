@@ -18,7 +18,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Response do
         description: 'Success',
         content: {
           'application/json' => {
-            schema: { '$ref': '#/components/schemas/TestEntitiesUserEntity' }
+            schema: { '$ref' => '#/components/schemas/TestEntitiesUserEntity' }
           }
         }
       )
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Response do
       result = response.to_h(schema_registry)
 
       expect(result[:content]['application/json'][:schema]).to eq(
-        { '$ref': '#/components/schemas/TestEntitiesUserPersonEntity' }
+        { '$ref' => '#/components/schemas/TestEntitiesUserPersonEntity' }
       )
     end
 

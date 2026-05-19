@@ -1,6 +1,6 @@
-import Vue from 'vue';
+import { observable } from '~/lib/utils/observable';
 
-export const hashState = Vue.observable({
+export const hashState = observable('blob_hash_state', {
   currentHash: window.location.hash,
 });
 

@@ -100,8 +100,8 @@ For this tutorial, suppose you've decided on the following:
 For inspiration, see how we define these at GitLab:
 
 - [Types and subtypes](https://handbook.gitlab.com/handbook/engineering/metrics/#work-type-classification)
-- [Priority](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#priority)
-- [Severity](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#severity)
+- [Priority](https://handbook.gitlab.com/handbook/product-development/how-we-work/issue-triage/#priority)
+- [Severity](https://handbook.gitlab.com/handbook/product-development/how-we-work/issue-triage/#severity)
 
 ## Document your criteria
 
@@ -289,5 +289,5 @@ Next, you can:
 
   ![Diagonal heatmap for issues with "priority" and "severity" labels](img/triage_report_v16_3.png)
 
-To learn more about issue triage at GitLab, see [issue triage](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/)
-and [triage operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).
+To learn more about issue triage at GitLab, see [issue triage](https://handbook.gitlab.com/handbook/product-development/how-we-work/issue-triage/)
+and [triage operations](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/triage-operations/).

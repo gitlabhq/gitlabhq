@@ -197,7 +197,7 @@ The following are required to run Geo:
   Geo sites. If using different operating system versions between Geo sites, you
   **must** [check OS locale data compatibility](replication/troubleshooting/common.md#check-os-locale-data-compatibility)
   across Geo sites to avoid silent corruption of database indexes.
-- [Supported PostgreSQL versions](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/) for your GitLab releases with [Streaming Replication](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION).
+- [Supported PostgreSQL versions](https://handbook.gitlab.com/handbook/engineering/data-engineering/database-excellence/database-frameworks/postgresql-upgrade-cadence/) for your GitLab releases with [Streaming Replication](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION).
   - [PostgreSQL Logical replication](https://www.postgresql.org/docs/16/logical-replication.html) is not supported.
 - All sites must run [the same PostgreSQL versions](setup/database.md#postgresql-replication).
 - Git 2.9 or later
@@ -254,7 +254,7 @@ Prerequisites:
 To update the internal URL of the primary Geo site:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 1. Select **Edit** on the primary site.
 1. Change the **Internal URL**, then select **Save changes**.
 

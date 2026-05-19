@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Releases::CreateEvidenceService, feature_category: :release_orchestration do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   let(:release) { create(:release, project: project) }
   let(:service) { described_class.new(release) }
@@ -28,7 +28,7 @@ RSpec.describe Releases::CreateEvidenceService, feature_category: :release_orche
   end
 
   context 'when the release has associated packages' do
-    let_it_be(:release) { create(:release, project: project, tag: 'v1.0.0') }
+    let_it_be(:release, freeze: false) { create(:release, project: project, tag: 'v1.0.0') }
     let_it_be(:package) { create(:generic_package, project: project, version: '1.0.0') }
 
     it 'includes packages in the evidence summary' do

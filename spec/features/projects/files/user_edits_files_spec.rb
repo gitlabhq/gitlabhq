@@ -49,11 +49,11 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
   context 'when an user has write access', :js do
     before do
       project.add_maintainer(user)
-      visit(project_tree_path_root_ref)
-      wait_for_requests
     end
 
     it 'inserts a content of a file' do
+      visit(project_tree_path_root_ref)
+
       click_link('.gitignore')
       edit_in_single_file_editor
       find('.file-editor', match: :first)
@@ -64,6 +64,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     end
 
     it 'shows ref instead of full path when editing a file' do
+      visit(project_tree_path_root_ref)
+
       click_link('.gitignore')
       edit_in_single_file_editor
 
@@ -74,7 +76,6 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     it 'does not show the edit link if a file is binary' do
       binary_file = File.join(project.repository.root_ref, 'files/images/logo-black.png')
       visit(project_blob_path(project, binary_file))
-      wait_for_requests
 
       page.within '.content' do
         expect(page).not_to have_link('edit')
@@ -82,6 +83,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     end
 
     it 'commits an edited file' do
+      visit(project_tree_path_root_ref)
+
       click_link('.gitignore')
       edit_in_single_file_editor
       find('.file-editor', match: :first)
@@ -103,6 +106,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     end
 
     it 'commits a renamed file' do
+      visit(project_tree_path_root_ref)
+
       click_link('.gitignore')
       edit_in_single_file_editor
       find('.file-editor', match: :first)
@@ -124,6 +129,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     end
 
     it 'displays a flash message with a link when an edited file was committed' do
+      visit(project_tree_path_root_ref)
+
       click_link('.gitignore')
       edit_in_single_file_editor
       find('.file-editor', match: :first)
@@ -147,6 +154,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     end
 
     it 'commits an edited file to a new branch' do
+      visit(project_tree_path_root_ref)
+
       click_link('.gitignore')
       edit_in_single_file_editor
 
@@ -169,6 +178,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     end
 
     it 'shows the diff of an edited file' do
+      visit(project_tree_path_root_ref)
+
       click_link('.gitignore')
       edit_in_single_file_editor
       find('.file-editor', match: :first)
@@ -185,8 +196,6 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
   context 'when an user does not have write access', :js do
     before do
       project2.add_reporter(user)
-      visit(project2_tree_path_root_ref)
-      wait_for_requests
     end
 
     def expect_fork_prompt
@@ -206,6 +215,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     end
 
     it 'inserts a content of a file in a forked project', :sidekiq_might_not_need_inline do
+      visit(project2_tree_path_root_ref)
+
       click_link('.gitignore')
       edit_in_single_file_editor
 
@@ -225,6 +236,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     end
 
     it 'opens the Web IDE in a forked project', :sidekiq_might_not_need_inline do
+      visit(project2_tree_path_root_ref)
+
       click_link('.gitignore')
       click_button 'Edit'
       click_link_or_button 'Web IDE'
@@ -252,6 +265,9 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     end
 
     it 'commits an edited file in a forked project', :sidekiq_might_not_need_inline do
+      visit(project2_tree_path_root_ref)
+      wait_for_requests
+
       click_link('.gitignore')
       edit_in_single_file_editor
 
@@ -281,6 +297,9 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     end
 
     it 'commits a renamed file in a forked project', :sidekiq_might_not_need_inline do
+      visit(project2_tree_path_root_ref)
+      wait_for_requests
+
       click_link('.gitignore')
       edit_in_single_file_editor
 
@@ -307,12 +326,10 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     context 'when the user already had a fork of the project', :js do
       let!(:forked_project) { fork_project(project2, user, namespace: user.namespace, repository: true) }
 
-      before do
+      it 'links to the forked project for editing', :sidekiq_might_not_need_inline do
         visit(project2_tree_path_root_ref)
         wait_for_requests
-      end
 
-      it 'links to the forked project for editing', :sidekiq_might_not_need_inline do
         click_link('.gitignore')
         edit_in_single_file_editor
 

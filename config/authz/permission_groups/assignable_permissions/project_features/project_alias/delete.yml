@@ -1,7 +1,10 @@
 ---
 name: delete_project_alias
 description: Grants the ability to delete project aliases
+deprecated: true
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - delete_project_alias

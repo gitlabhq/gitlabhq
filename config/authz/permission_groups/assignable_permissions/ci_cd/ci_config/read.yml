@@ -1,7 +1,9 @@
 ---
 name: read_ci_config
 description: Grants the ability to read CI/CD configuration for validation
-permissions:
-  - read_ci_config
 boundaries:
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_ci_config

@@ -11,7 +11,7 @@ This document explains how the `GranularTokenAuthorization` field extension work
 
 The granular token authorization system adds fine-grained permission checks to GraphQL fields based on directives applied to types, fields, and mutations. It ensures that granular PATs can only access resources they have explicit permissions for within specific project or group boundaries.
 
-**Feature Flag**: This feature requires both the `granular_personal_access_tokens` and the `granular_personal_access_tokens_for_graphql` feature flags to be enabled for the token's user. When either one is disabled, granular PATs will not work for GraphQL requests.
+**Feature Flag**: This feature requires the `granular_personal_access_tokens` feature flag to be enabled for the token's user. When the flag is disabled, granular PATs do not work for GraphQL requests.
 
 ## Architecture Components
 
@@ -84,19 +84,18 @@ For each field being resolved:
 
 ```ruby
 def authorize_field(object, arguments, context)
-  return unless authorization_enabled?(context)  # Only authorize granular PATs with feature flag enabled
+  return unless authorization_enabled?(context)  # Only authorize granular PATs
   return if SkipRules.new(@field).should_skip?  # Skip certain fields
   # ...
 end
 
 def authorization_enabled?(context)
   token = context[:access_token]
-  token && token.try(:granular?) && Feature.enabled?(:granular_personal_access_tokens_for_graphql, token.user)
+  token && token.try(:granular?)
 end
 ```
 
-- If not using a granular PAT or feature flag is disabled, granular scope authorization is skipped (legacy PATs use existing scope authorization)
-- The feature flag `:granular_personal_access_tokens_for_graphql` must be enabled for the user
+- If not using a granular PAT, granular scope authorization is skipped (legacy PATs use existing scope authorization)
 - Certain fields are automatically skipped:
   - **Mutation response fields** (e.g., `createIssue.issue`) - Authorization happens on the mutation itself, not the response wrapper
   - **Permission metadata fields** (e.g., `issue.userPermissions`) - These return permission information, not actual data
@@ -427,7 +426,6 @@ return if SkipRules.new(@field).should_skip?
 ```
 
 - Non-granular tokens skip the entire system (zero overhead)
-- Feature flag check: `granular_personal_access_tokens_for_graphql` must be enabled
 - Mutation response fields and permission metadata fields are automatically skipped (see Phase 3, Step 1 for details)
 
 ## Error Handling

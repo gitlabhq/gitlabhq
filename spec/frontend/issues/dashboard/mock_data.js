@@ -19,6 +19,7 @@ export const issuesQueryResponse = {
           reference: 'group/project#123456',
           state: 'opened',
           title: 'Issue title',
+          titleHtml: 'Issue title',
           type: 'issue',
           updatedAt: '2021-05-22T04:08:01Z',
           upvotes: 3,
@@ -103,6 +104,24 @@ export const issuesCountsQueryResponse = {
     },
     allIssues: {
       count: 3,
+    },
+  },
+};
+
+export const typesInOrganizationQueryResponse = {
+  data: {
+    organization: {
+      id: 'gid://gitlab/Organizations::Organization/1',
+      workItemTypes: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItems::Type/1',
+            iconName: 'work-item-issue',
+            isFilterableListView: true,
+            name: 'Issue',
+          },
+        ],
+      },
     },
   },
 };

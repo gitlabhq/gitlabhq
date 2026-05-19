@@ -1,8 +1,10 @@
 ---
 name: delete_push_rule
 description: Grants the ability to delete push rules
-permissions:
-  - delete_push_rule
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_push_rule

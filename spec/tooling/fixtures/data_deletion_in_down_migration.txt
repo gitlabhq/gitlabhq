@@ -1,0 +1,17 @@
+@@ -0,0 +1,16 @@
++# frozen_string_literal: true
++
++class CreateGroupUploadStates < Gitlab::Database::Migration[2.3]
++  milestone '19.0'
++
++  def up
++    create_table :group_upload_states do |t|
++      t.bigint :group_id, null: false
++      t.timestamps_with_timezone
++    end
++  end
++
++  def down
++    drop_table :group_upload_states
++  end
++end

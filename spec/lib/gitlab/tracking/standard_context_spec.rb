@@ -81,7 +81,6 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
         allow(Gitlab.config.gitlab).to receive(:host).and_return(hostname)
         allow(Gitlab).to receive(:version_info).and_return(Gitlab::VersionInfo.parse(version))
         allow(Gitlab::GlobalAnonymousId).to receive(:instance_id).and_return(instance_id)
-        allow(::Current).to receive(:organization_assigned).and_return(true)
         stub_current_organization(organization)
       end
 

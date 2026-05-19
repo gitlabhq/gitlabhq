@@ -38,7 +38,7 @@ module Gitlab
         exclusion: { in: STOP_WORDS, message: 'stopword only abusive search detected' }, allow_blank: true
 
       validates :query_string,
-        length: { minimum: Params::MIN_TERM_LENGTH, message: 'abusive tiny search detected' },
+        length: { minimum: ::Search::Params::MIN_TERM_LENGTH, message: 'abusive tiny search detected' },
         unless: :skip_tiny_search_validation?, allow_blank: true
 
       validates :query_string,

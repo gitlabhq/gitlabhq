@@ -24,7 +24,7 @@ import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vue';
-import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
+import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
 import DesignUploadButton from '~/work_items/components//design_management/upload_button.vue';
@@ -137,7 +137,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemDesigns = () => wrapper.findComponent(DesignWidget);
   const findDesignUploadButton = () => wrapper.findComponent(DesignUploadButton);
   const findDetailWrapper = () => wrapper.findByTestId('detail-wrapper');
-  const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
+  const findDetailPanel = () => wrapper.findComponent(WorkItemDetailPanel);
   const findCreateMergeRequestSplitButton = () =>
     wrapper.findComponent(WorkItemCreateBranchMergeRequestSplitButton);
   const findDesignDropzone = () => wrapper.findComponent(DesignDropzone);
@@ -162,6 +162,7 @@ describe('WorkItemDetail component', () => {
     allowedChildrenTypesHandler = allowedChildrenTypesSuccessHandler,
     showSidebar = true,
     lastRealtimeUpdatedAt = new Date('2023-01-01T12:00:00.000Z'),
+    scopedSlots = {},
   } = {}) => {
     mockApollo = createControlledMockApollo([
       [workItemByIidQuery, handler],
@@ -178,7 +179,7 @@ describe('WorkItemDetail component', () => {
       apolloProvider: mockApollo.apolloProvider,
       isLoggedIn: isLoggedIn(),
       propsData: {
-        isDrawer: false,
+        isDetailPanel: false,
         isModal: false,
         workItemFullPath: 'group/project',
         workItemId: '',
@@ -206,6 +207,7 @@ describe('WorkItemDetail component', () => {
         WorkItemHealthStatus: true,
         WorkItemErrorTracking,
       },
+      scopedSlots,
       mocks: {
         $router: router,
       },
@@ -221,11 +223,11 @@ describe('WorkItemDetail component', () => {
   });
 
   it.each`
-    isDrawer | expected
-    ${true}  | ${true}
-    ${false} | ${false}
-  `('passes isDrawer prop to child component props', async ({ isDrawer, expected }) => {
-    createComponent({ props: { isDrawer } });
+    isDetailPanel | expected
+    ${true}       | ${true}
+    ${false}      | ${false}
+  `('passes isDrawer prop to child component props', async ({ isDetailPanel, expected }) => {
+    createComponent({ props: { isDetailPanel } });
     await mockApollo.resolveAll();
 
     expect(findWorkItemDescription().props('hideFullscreenMarkdownButton')).toBe(expected);
@@ -608,6 +610,34 @@ describe('WorkItemDetail component', () => {
     expect(findLinkedResourcesWidget().exists()).toBe(true);
   });
 
+  it('renders the resources widget from features', async () => {
+    const response = workItemByIidResponseFactory({
+      linkedResourcesWidgetPresent: false,
+      features: {
+        linkedResources: {
+          linkedResources: {
+            nodes: [
+              {
+                url: 'http://zoom.example.com/j/1234567890',
+                __typename: 'WorkItemLinkedResource',
+              },
+            ],
+            __typename: 'WorkItemLinkedResourceConnection',
+          },
+          __typename: 'WorkItemWidgetLinkedResources',
+        },
+      },
+    });
+
+    createComponent({
+      handler: jest.fn().mockReturnValue(response),
+      provide: { glFeatures: { workItemFeaturesField: true } },
+    });
+    await mockApollo.resolveAll();
+
+    expect(findLinkedResourcesWidget().exists()).toBe(true);
+  });
+
   it('shows an error message when WorkItemTitle emits an `error` event', async () => {
     createComponent();
     await mockApollo.resolveAll();
@@ -729,7 +759,7 @@ describe('WorkItemDetail component', () => {
         });
         await nextTick();
 
-        expect(findDrawer().props('activeItem')).toEqual(modalWorkItem);
+        expect(findDetailPanel().props('activeItem')).toEqual(modalWorkItem);
       });
 
       it('closes the drawer when `close-drawer` is emitted from the selected work item', async () => {
@@ -753,7 +783,7 @@ describe('WorkItemDetail component', () => {
         });
         await nextTick();
 
-        expect(findDrawer().props('activeItem')).toEqual(null);
+        expect(findDetailPanel().props('activeItem')).toEqual(null);
       });
 
       it('closes the drawer when `show-modal` is emitted with `null`', async () => {
@@ -769,7 +799,7 @@ describe('WorkItemDetail component', () => {
         });
         await nextTick();
 
-        expect(findDrawer().props('activeItem')).toEqual(modalWorkItem);
+        expect(findDetailPanel().props('activeItem')).toEqual(modalWorkItem);
 
         findHierarchyTree().vm.$emit('show-modal', {
           event,
@@ -777,7 +807,7 @@ describe('WorkItemDetail component', () => {
         });
         await nextTick();
 
-        expect(findDrawer().props('activeItem')).toEqual(null);
+        expect(findDetailPanel().props('activeItem')).toEqual(null);
       });
 
       describe('work item is rendered in a modal and has children', () => {
@@ -864,7 +894,7 @@ describe('WorkItemDetail component', () => {
         });
         await nextTick();
 
-        expect(findDrawer().props('activeItem')).toEqual(modalWorkItem);
+        expect(findDetailPanel().props('activeItem')).toEqual(modalWorkItem);
       });
 
       describe('linked work item is rendered in a modal and has linked items', () => {
@@ -1078,7 +1108,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('renders if within a drawer', async () => {
-      createComponent({ props: { isDrawer: true } });
+      createComponent({ props: { isDetailPanel: true } });
       await mockApollo.resolveAll();
 
       expect(findWorkItemDesigns().exists()).toBe(true);
@@ -1173,6 +1203,24 @@ describe('WorkItemDetail component', () => {
       await nextTick();
 
       expect(findWorkItemDesigns().props('canPasteDesign')).toBe(true);
+    });
+  });
+
+  describe('widgets slot', () => {
+    it('provides workItem data through the widgets scoped slot', async () => {
+      let slotProps;
+      createComponent({
+        scopedSlots: {
+          widgets(props) {
+            slotProps = props;
+            return this.$createElement('div');
+          },
+        },
+      });
+      await mockApollo.resolveAll();
+
+      expect(slotProps).toBeDefined();
+      expect(slotProps.workItem.id).toBe('gid://gitlab/WorkItem/1');
     });
   });
 
@@ -1271,7 +1319,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('sticky header is visible in drawer view', async () => {
-      createComponent({ props: { isDrawer: true } });
+      createComponent({ props: { isDetailPanel: true } });
       await mockApollo.resolveAll();
 
       expect(findStickyHeader().exists()).toBe(true);
@@ -1547,7 +1595,7 @@ describe('WorkItemDetail component', () => {
   });
 
   it('applied correct classes to refetch error banner in the drawer', async () => {
-    createComponent({ props: { isDrawer: true } });
+    createComponent({ props: { isDetailPanel: true } });
     await mockApollo.resolveAll();
 
     // refetch triggers a new query through the mock link, creating a pending operation

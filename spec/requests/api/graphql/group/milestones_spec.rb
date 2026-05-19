@@ -20,6 +20,21 @@ RSpec.describe 'Milestones through GroupQuery', feature_category: :team_planning
 
     let(:milestone_data) { graphql_data['group']['milestones']['edges'] }
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_group, :read_milestone] do
+      let(:boundary_object) { group }
+      let(:request) do
+        post_graphql(
+          graphql_query_for(:group, { full_path: group.full_path },
+            query_graphql_field(:milestones, {}, query_graphql_field(:nodes, nil, 'id title'))),
+          token: { personal_access_token: pat }
+        )
+      end
+
+      before do
+        group.add_developer(user)
+      end
+    end
+
     context 'when the request is correct' do
       before do
         fetch_milestones(user)

@@ -107,19 +107,19 @@ export default {
 
 <template>
   <div
-    class="gl-items-center"
+    class="gl-flex-wrap gl-items-center gl-gap-x-3 gl-gap-y-2"
     :class="hideOnNarrowScreen ? 'gl-hidden @md/panel:gl-flex' : 'gl-flex'"
   >
-    <template v-if="hasChanges">
-      <diff-stats
-        v-if="diffsCount !== ''"
-        class="inline-parallel-buttons !gl-ml-auto"
-        :diffs-count="diffsCount"
-        :added-lines="addedLines"
-        :removed-lines="removedLines"
-        :hide-on-narrow-screen="hideOnNarrowScreen"
-      />
-      <gl-button-group class="gl-mr-3">
+    <diff-stats
+      v-if="hasChanges && diffsCount !== ''"
+      class="inline-parallel-buttons !gl-ml-auto gl-p-0"
+      :diffs-count="diffsCount"
+      :added-lines="addedLines"
+      :removed-lines="removedLines"
+      :hide-on-narrow-screen="hideOnNarrowScreen"
+    />
+    <div class="gl-ml-auto gl-flex gl-items-center">
+      <gl-button-group v-if="hasChanges" class="gl-mr-3">
         <gl-button
           v-gl-tooltip.html="expandButtonInfo.tooltip"
           icon="expand"
@@ -139,15 +139,15 @@ export default {
           @click="$emit('collapseAllFiles')"
         />
       </gl-button-group>
-    </template>
-    <settings-dropdown
-      :show-whitespace="showWhitespace"
-      :view-diffs-file-by-file="viewDiffsFileByFile"
-      :diff-view-type="diffViewType"
-      :file-by-file-supported="fileByFileSupported"
-      @updateDiffViewType="$emit('updateDiffViewType', $event)"
-      @toggleWhitespace="$emit('toggleWhitespace', $event)"
-      @toggleFileByFile="$emit('toggleFileByFile', $event)"
-    />
+      <settings-dropdown
+        :show-whitespace="showWhitespace"
+        :view-diffs-file-by-file="viewDiffsFileByFile"
+        :diff-view-type="diffViewType"
+        :file-by-file-supported="fileByFileSupported"
+        @updateDiffViewType="$emit('updateDiffViewType', $event)"
+        @toggleWhitespace="$emit('toggleWhitespace', $event)"
+        @toggleFileByFile="$emit('toggleFileByFile', $event)"
+      />
+    </div>
   </div>
 </template>

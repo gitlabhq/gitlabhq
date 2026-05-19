@@ -122,7 +122,7 @@ RSpec.describe GroupDescendantsFinder, feature_category: :groups_and_projects do
         end
 
         context 'when matched descendant has inactive ancestor' do
-          let_it_be(:inactive_descendant) { create(:group, :archived, parent: inactive_subgroup) }
+          let_it_be(:inactive_descendant) { create(:group, parent: inactive_subgroup) }
 
           # Filter and page size params ensure only the leaf descendant matches the query,
           # so any ancestors must be there due to preloading, not because they happen to be

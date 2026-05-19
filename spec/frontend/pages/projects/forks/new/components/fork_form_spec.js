@@ -89,10 +89,10 @@ describe('ForkForm component', () => {
         },
       });
 
-      let overridenFormData = {};
+      let overriddenFormData = {};
 
       if (data.form) {
-        overridenFormData = {
+        overriddenFormData = {
           form: merge({}, ForkForm.data().form, data.form || {}),
         };
       }
@@ -106,7 +106,7 @@ describe('ForkForm component', () => {
         data() {
           return {
             ...data,
-            ...overridenFormData,
+            ...overriddenFormData,
           };
         },
         stubs: {

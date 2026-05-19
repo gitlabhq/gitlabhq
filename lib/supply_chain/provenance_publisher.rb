@@ -58,10 +58,15 @@ module SupplyChain
       false
     end
 
-    def cosign_attest_blob(blob_name:, hash:)
+    def cosign_attest_blob(hash:, blob_name: nil)
       validate_id_token!(id_token)
-      validate_blob_name!(blob_name)
       validate_hash!(hash)
+
+      if blob_name
+        validate_blob_name!(blob_name)
+      else
+        blob_name = hash
+      end
 
       attestation = nil
       result = nil
@@ -76,6 +81,7 @@ module SupplyChain
           '--identity-token', id_token,
           '--oidc-issuer', ci_server_url,
           '--yes',
+          '--use-signing-config=false',
           '--bundle', bundle_file.path
         ]
 
@@ -113,6 +119,15 @@ module SupplyChain
       attestation.save!
 
       attestation
+    end
+
+    def persist_error_attestation(subject_digest:)
+      persist_attestation!(status: :error, subject_digest: subject_digest)
+
+    rescue StandardError => e
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, project_id: @build.project.id)
+
+      nil
     end
 
     def validate_id_token!(id_token)

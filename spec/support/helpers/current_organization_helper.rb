@@ -2,6 +2,9 @@
 
 module StubCurrentOrganization
   def stub_current_organization(organization)
-    allow(::Current).to receive(:organization).and_return(organization)
+    # Preload isolation state: this mimics behaviour of Gitlab::Current::Organization class
+    organization&.isolated?
+
+    allow(::Current).to receive_messages(organization: organization, organization_assigned: true)
   end
 end

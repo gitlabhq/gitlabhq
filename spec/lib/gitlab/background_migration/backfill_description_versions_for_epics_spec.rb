@@ -20,17 +20,16 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDescriptionVersionsForEpics,
       organization_id: organization.id)
   end
 
-  let(:work_item_type) do
-    # spec_helper seeds these using `TestEnv.seed_db`
-    table(:work_item_types).where(base_type: 0).first
-  end
+  # Work item type IDs are fixed now and only exist in memory.
+  let(:issue_type_id) { 1 }
+  let(:epic_type_id) { 8 }
 
   let!(:epic_work_item) do
     issues.create!(
       title: 'Epic Work Item',
       iid: 1,
       namespace_id: group_namespace.id,
-      work_item_type_id: work_item_type.id
+      work_item_type_id: epic_type_id
     )
   end
 
@@ -39,7 +38,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDescriptionVersionsForEpics,
       title: 'Other Issue',
       iid: 2,
       namespace_id: group_namespace.id,
-      work_item_type_id: work_item_type.id
+      work_item_type_id: issue_type_id
     )
   end
 

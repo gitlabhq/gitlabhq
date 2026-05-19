@@ -166,39 +166,11 @@ module MergeRequests
       merge_requests_array = merge_requests.to_a + merge_requests_from_forks.to_a
       filtered_merge_requests = filter_merge_requests(merge_requests_array)
 
-      if Feature.enabled?(:batch_merge_status_updates, @project)
-        recheck_merge_requests_batched(filtered_merge_requests)
-      else
-        recheck_merge_requests_individually(filtered_merge_requests)
-      end
+      recheck_merge_requests_batched(filtered_merge_requests)
 
       # Upcoming method calls need the refreshed version of
       # @source_merge_requests diffs (for MergeRequest#commit_shas for instance).
       merge_requests_for_source_branch(reload: true)
-    end
-
-    def recheck_merge_requests_individually(filtered_merge_requests)
-      filtered_merge_requests.each do |merge_request|
-        skip_merge_status_trigger = true
-
-        if branch_and_project_match?(merge_request) || @push.force_push?
-          merge_request.reload_diff(current_user)
-          schedule_duo_code_review(merge_request)
-          # Clear existing merge error if the push were directed at the
-          # source branch. Clearing the error when the target branch
-          # changes will hide the error from the user.
-          merge_request.merge_error = nil
-
-          # Don't skip trigger since we need to update the MR's merge status in real-time
-          # when the push is for the MR's source branch and project.
-          skip_merge_status_trigger = false
-        elsif merge_request.merge_request_diff.includes_any_commits?(push_commit_ids)
-          merge_request.reload_diff(current_user)
-        end
-
-        merge_request.skip_merge_status_trigger = skip_merge_status_trigger
-        merge_request.mark_as_unchecked
-      end
     end
 
     def recheck_merge_requests_batched(filtered_merge_requests)
@@ -228,8 +200,6 @@ module MergeRequests
     end
 
     def enqueue_auto_merge_for_unchecked(merge_requests)
-      return unless Feature.enabled?(:auto_merge_on_mark_as_unchecked, @project)
-
       auto_merge_mrs = merge_requests.select(&:auto_merge_enabled?)
       return if auto_merge_mrs.empty?
 
@@ -376,11 +346,6 @@ module MergeRequests
           draft_commit
         )
       end
-    end
-
-    # Call merge request webhook with update branches
-    def execute_mr_web_hooks(merge_request)
-      execute_hooks(merge_request, 'update', old_rev: @push.oldrev)
     end
 
     # If the merge requests closes any issues, save this information in the

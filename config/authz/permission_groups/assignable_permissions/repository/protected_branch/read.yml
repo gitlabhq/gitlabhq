@@ -4,5 +4,7 @@ description: Grants the ability to read protected branches
 boundaries:
   - project
   - group
+available_for:
+  - granular_access_token
 permissions:
   - read_protected_branch

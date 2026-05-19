@@ -6,7 +6,7 @@
       = f.label :diff_max_patch_bytes, _('Maximum diff patch size (bytes)'), class: 'label-light'
       = f.number_field :diff_max_patch_bytes, class: 'form-control gl-form-input'
       %span.form-text.gl-text-subtle
-        = _("Diff files surpassing this limit will be presented as 'too large' and won't be expandable.")
+        = _("Files larger than this limit are shown as 'too large' and cannot be expanded.")
 
         = link_to sprite_icon('question-o'),
           help_page_path('administration/diff_limits.md')
@@ -14,7 +14,7 @@
       = f.label :diff_max_files, _('Maximum files in a diff'), class: 'label-light'
       = f.number_field :diff_max_files, class: 'form-control gl-form-input'
       %span.form-text.gl-text-subtle
-        = _("Diff files surpassing this limit will be presented as 'too large' and won't be expandable.")
+        = _("Diffs with more files than this limit are shown as 'too large' and cannot be expanded.")
 
         = link_to sprite_icon('question-o'),
           help_page_path('administration/diff_limits.md')
@@ -22,7 +22,23 @@
       = f.label :diff_max_lines, _('Maximum lines in a diff'), class: 'label-light'
       = f.number_field :diff_max_lines, class: 'form-control gl-form-input'
       %span.form-text.gl-text-subtle
-        = _("Diff files surpassing this limit will be presented as 'too large' and won't be expandable.")
+        = _("Diffs with more lines than this limit are shown as 'too large' and cannot be expanded.")
+
+        = link_to sprite_icon('question-o'),
+          help_page_path('administration/diff_limits.md')
+
+      = f.label :diff_max_versions, _('Maximum diff versions per merge request'), class: 'label-light'
+      = f.number_field :diff_max_versions, class: 'form-control gl-form-input'
+      %span.form-text.gl-text-subtle
+        = _("Merge requests that reach this diff version limit cannot be updated.")
+
+        = link_to sprite_icon('question-o'),
+          help_page_path('administration/diff_limits.md')
+
+      = f.label :diff_max_commits, _('Maximum diff commits per merge request'), class: 'label-light'
+      = f.number_field :diff_max_commits, class: 'form-control gl-form-input'
+      %span.form-text.gl-text-subtle
+        = _("Merge requests that reach this diff commits limit cannot be updated.")
 
         = link_to sprite_icon('question-o'),
           help_page_path('administration/diff_limits.md')

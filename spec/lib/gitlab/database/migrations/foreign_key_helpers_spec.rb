@@ -40,6 +40,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
           expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
+          expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
           expect(model).to receive(:execute).with(/REFERENCES users \(id\)/)
 
           model.add_concurrent_foreign_key(:projects, :users,
@@ -54,6 +55,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
           expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
+          expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
           expect(model).to receive(:execute).with(/REFERENCES users \(id_convert_to_bigint\)/)
 
           model.add_concurrent_foreign_key(:projects, :users,
@@ -72,6 +74,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
             expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
+            expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
             expect(model).to receive(:execute).with(/ON DELETE SET NULL/)
 
             model.add_concurrent_foreign_key(:projects, :users,
@@ -89,6 +92,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
             expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
+            expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
             expect(model).to receive(:execute).with(/ON DELETE CASCADE/)
 
             model.add_concurrent_foreign_key(:projects, :users,
@@ -106,6 +110,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
             expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
+            expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
             expect(model).not_to receive(:execute).with(/ON DELETE/)
 
             model.add_concurrent_foreign_key(:projects, :users,
@@ -125,6 +130,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
             expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
+            expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
             expect(model).to receive(:execute).with(/ON UPDATE SET NULL/)
 
             model.add_concurrent_foreign_key(:projects, :users,
@@ -142,6 +148,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
             expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
+            expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
             expect(model).to receive(:execute).with(/ON UPDATE CASCADE/)
 
             model.add_concurrent_foreign_key(:projects, :users,
@@ -159,6 +166,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
             expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
+            expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
             expect(model).not_to receive(:execute).with(/ON UPDATE/)
 
             model.add_concurrent_foreign_key(:projects, :users,
@@ -176,6 +184,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
             expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
 
+            expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
             expect(model).not_to receive(:execute).with(/ON UPDATE/)
 
             model.add_concurrent_foreign_key(:projects, :users,
@@ -190,6 +199,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
           expect(model).to receive(:disable_statement_timeout).and_call_original
           expect(model).to receive(:statement_timeout_disabled?).and_return(false)
           expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+          expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
           expect(model).to receive(:execute).ordered.with(/NOT VALID/)
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
           expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
@@ -220,6 +230,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:statement_timeout_disabled?).and_return(false)
             expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+            expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
             expect(model).to receive(:execute).ordered.with(/NOT VALID/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT.+foo/)
             expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
@@ -251,6 +262,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
               expect(model).to receive(:disable_statement_timeout).and_call_original
               expect(model).to receive(:statement_timeout_disabled?).and_return(false)
               expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+              expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
               expect(model).to receive(:execute).ordered.with(/NOT VALID/)
               expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT.+bar/)
               expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
@@ -287,6 +299,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
           it "drops the constraint and raises an error", :aggregate_failures do
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
             expect(model).to receive(:execute).with(
               "ALTER TABLE projects ADD CONSTRAINT fk_projects_users_id FOREIGN KEY (user_id) REFERENCES users (id) " \
                 "ON DELETE CASCADE NOT VALID;"
@@ -304,8 +317,8 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
         end
       end
 
-      context 'when the reverse_lock_order flag is set' do
-        it 'explicitly locks the tables in target-source order', :aggregate_failures do
+      context 'when reverse_lock_order is default' do
+        it 'explicitly locks the tables in target-source order by default', :aggregate_failures do
           expect(model).to receive(:with_lock_retries).and_call_original
           expect(model).to receive(:disable_statement_timeout).and_call_original
           expect(model).to receive(:statement_timeout_disabled?).and_return(false)
@@ -316,13 +329,30 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
           expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
           expect(model).to receive(:execute).with(/REFERENCES users \(id\)/)
 
-          model.add_concurrent_foreign_key(:projects, :users, column: :user_id, reverse_lock_order: true)
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
+      end
+
+      context 'when reverse_lock_order is false' do
+        it 'does not lock the tables in target-source order', :aggregate_failures do
+          expect(model).to receive(:with_lock_retries).and_call_original
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+          expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+          expect(model).not_to receive(:execute).with(/LOCK TABLE/)
+          expect(model).to receive(:execute).with(/REFERENCES users \(id\)/)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id, reverse_lock_order: false)
         end
       end
 
       context 'when creating foreign key for a group of columns' do
         it 'references the custom target columns when provided', :aggregate_failures do
           expect(model).to receive(:with_lock_retries).and_yield
+          expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
           expect(model).to receive(:execute).with(
             "ALTER TABLE projects " \
               "ADD CONSTRAINT fk_multiple_columns " \
@@ -431,8 +461,8 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
             .to raise_error ArgumentError, /use add_concurrent_partitioned_foreign_key/
         end
 
-        context 'when the reverse_lock_order flag is set' do
-          it 'explicitly locks the tables in target-source order', :aggregate_failures do
+        context 'when reverse_lock_order is default' do
+          it 'explicitly locks the tables in target-source order by default', :aggregate_failures do
             expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:statement_timeout_disabled?).and_return(false)
@@ -443,7 +473,23 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
             expect(model).to receive(:execute).with("LOCK TABLE #{dest}, #{source} IN ACCESS EXCLUSIVE MODE")
             expect(model).to receive(:execute).with(/REFERENCES #{dest} \(partition_id, id\)/)
 
-            model.add_concurrent_foreign_key(*args, reverse_lock_order: true, allow_partitioned: true, **options)
+            model.add_concurrent_foreign_key(*args, allow_partitioned: true, **options)
+          end
+        end
+
+        context 'when reverse_lock_order is false' do
+          it 'does not lock the tables in target-source order', :aggregate_failures do
+            expect(model).to receive(:with_lock_retries).and_call_original
+            expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+            expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+            expect(model).not_to receive(:execute).with(/LOCK TABLE/)
+            expect(model).to receive(:execute).with(/REFERENCES #{dest} \(partition_id, id\)/)
+
+            model.add_concurrent_foreign_key(*args, reverse_lock_order: false, allow_partitioned: true, **options)
           end
         end
       end
@@ -654,6 +700,7 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
       end
 
       it 'removes the foreign key' do
+        allow(model).to receive(:transaction_open?).and_return(false)
         expect(model).to receive(:remove_foreign_key).with(:projects, :users, { column: :user_id })
 
         model.remove_foreign_key_if_exists(:projects, :users, column: :user_id)
@@ -667,13 +714,13 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
         end
       end
 
-      context 'when the reverse_lock_order option is given' do
+      context 'when reverse_lock_order is default' do
         it 'requests for lock before removing the foreign key' do
           expect(model).to receive(:transaction_open?).and_return(true)
           expect(model).to receive(:execute).with(/LOCK TABLE users, projects/)
           expect(model).not_to receive(:remove_foreign_key).with(:projects, :users)
 
-          model.remove_foreign_key_if_exists(:projects, :users, column: :user_id, reverse_lock_order: true)
+          model.remove_foreign_key_if_exists(:projects, :users, column: :user_id)
         end
 
         context 'when not inside a transaction' do
@@ -682,8 +729,17 @@ RSpec.describe Gitlab::Database::Migrations::ForeignKeyHelpers, feature_category
             expect(model).not_to receive(:execute).with(/LOCK TABLE users, projects/)
             expect(model).to receive(:remove_foreign_key).with(:projects, :users, { column: :user_id })
 
-            model.remove_foreign_key_if_exists(:projects, :users, column: :user_id, reverse_lock_order: true)
+            model.remove_foreign_key_if_exists(:projects, :users, column: :user_id)
           end
+        end
+      end
+
+      context 'when reverse_lock_order is false' do
+        it 'does not lock' do
+          expect(model).not_to receive(:execute).with(/LOCK TABLE/)
+          expect(model).to receive(:remove_foreign_key).with(:projects, :users, { column: :user_id })
+
+          model.remove_foreign_key_if_exists(:projects, :users, column: :user_id, reverse_lock_order: false)
         end
       end
     end

@@ -1368,7 +1368,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
         it 'contains a link to issue author' do
           is_expected.to have_body_text(issue.author_name)
-          is_expected.to have_body_text 'created an issue:'
+          is_expected.to have_body_text 'Issue created by'
           is_expected.to have_link(issue.to_reference, href: Gitlab::UrlBuilder.build(issue))
         end
 
@@ -1797,6 +1797,25 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
 
       it_behaves_like 'mailer for an issue', true
+    end
+
+    context 'when work item is a task' do
+      let_it_be_with_reload(:issue) do
+        create(
+          :issue,
+          :task,
+          author: current_user,
+          assignees: [assignee],
+          project: project,
+          description: 'My awesome description!'
+        )
+      end
+
+      subject { described_class.new_issue_email(issue.assignees.first.id, issue.id) }
+
+      it 'uses the work item type name in the email body' do
+        is_expected.to have_body_text 'Task created by'
+      end
     end
   end
 

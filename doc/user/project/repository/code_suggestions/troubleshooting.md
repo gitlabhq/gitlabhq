@@ -56,6 +56,15 @@ specifically the token system. To resolve the issue:
 1. Reauthorize your GitLab account using OAuth.
 1. Test the Code Suggestions feature with different file extensions to verify if the issue is resolved.
 
+## Error 422: No default GitLab Duo namespace
+
+You might get an error that states `Code Suggestions cannot detect a namespace for this project. To continue, please set a default GitLab Duo namespace in your user preferences.`
+
+This issue occurs when you belong to multiple GitLab Duo namespaces or work on a project locally
+that does not have a GitLab remote configured.
+
+To resolve this, [set a default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+
 ## VS Code troubleshooting
 
 The following documentation is for Code Suggestions-specific troubleshooting for

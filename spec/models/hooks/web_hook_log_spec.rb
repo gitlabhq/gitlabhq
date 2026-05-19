@@ -198,7 +198,7 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
       it 'deletes min(batch_size, total) records' do
         deleted = [batch_size, 3].min
 
-        expect { subject }.to change(described_class, :count).by(-deleted)
+        expect { subject }.to change { described_class.count }.by(-deleted)
       end
     end
 
@@ -296,6 +296,23 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
       let(:request_headers) { {} }
 
       it { expect(web_hook_log.request_headers['X-Gitlab-Token']).to be_nil }
+    end
+
+    context 'with webhook-signature header' do
+      let(:request_headers) { { 'webhook-signature' => 'v1,abc123def456==' } }
+
+      it 'preserves the signature value' do
+        expect(web_hook_log.request_headers['webhook-signature']).to eq('v1,abc123def456==')
+      end
+    end
+
+    context 'with both X-Gitlab-Token and webhook-signature headers' do
+      let(:request_headers) { { 'X-Gitlab-Token' => 'secret', 'webhook-signature' => 'v1,abc123==' } }
+
+      it 'redacts X-Gitlab-Token but preserves webhook-signature' do
+        expect(web_hook_log.request_headers['X-Gitlab-Token']).to eq(_('[REDACTED]'))
+        expect(web_hook_log.request_headers['webhook-signature']).to eq('v1,abc123==')
+      end
     end
   end
 

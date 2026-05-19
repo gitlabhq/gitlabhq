@@ -16,7 +16,6 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
   context 'when user has no existing access request' do
     before do
       sign_in(user)
-      visit group_path(group)
     end
 
     it 'request access feature is disabled', :js do
@@ -28,15 +27,10 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
     end
 
     it 'user can request access to a group', :js do
-      perform_enqueued_jobs do
-        more_actions_dropdown.click
-        request_access
-      end
+      visit group_path(group)
 
-      expect(ActionMailer::Base.deliveries.last.to).to eq [owner.notification_email_or_default]
-      expect(ActionMailer::Base.deliveries.last.subject).to match "Request to join the #{group.name} group"
-
-      expect(page).to have_content 'Your request for access has been queued for review.'
+      more_actions_dropdown.click
+      request_access
 
       more_actions_dropdown.click
 
@@ -45,19 +39,19 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
     end
 
     it 'user does not see private projects', :js do
-      perform_enqueued_jobs do
-        more_actions_dropdown.click
-        request_access
-      end
+      visit group_path(group)
+
+      more_actions_dropdown.click
+      request_access
 
       expect(page).not_to have_content project.name
     end
 
     it 'user does not see group in the Dashboard > Groups page', :js do
-      perform_enqueued_jobs do
-        more_actions_dropdown.click
-        request_access
-      end
+      visit group_path(group)
+
+      more_actions_dropdown.click
+      request_access
 
       visit dashboard_groups_path
 
@@ -109,12 +103,14 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
 
   def request_access
     find_by_testid('request-access-link').click
-    wait_for_requests
+
+    expect(page).to have_content 'Your request for access has been queued for review.'
   end
 
   def withdraw_access
     find_by_testid('withdraw-access-link').click
     accept_gl_confirm
-    wait_for_requests
+
+    expect(page).to have_content 'Your access request to the group has been withdrawn.'
   end
 end

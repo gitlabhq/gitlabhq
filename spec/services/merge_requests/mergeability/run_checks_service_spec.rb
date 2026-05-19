@@ -157,6 +157,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
         expect(MergeRequests::Mergeability::CheckCiStatusService).to receive(:new).and_return(merge_check)
         expect(merge_check).to receive(:skip?).and_return(false)
         allow(merge_check).to receive(:cacheable?).and_return(cacheable)
+        allow(merge_check).to receive(:cache_ttl).and_return(6.hours)
         allow(merge_check).to receive(:execute).and_return(success_result)
       end
 
@@ -200,7 +201,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
             before do
               expect_next_instance_of(Gitlab::MergeRequests::Mergeability::ResultsStore) do |service|
                 expect(service).to receive(:read).with(merge_check: merge_check).and_return(nil)
-                expect(service).to receive(:write).with(merge_check: merge_check, result_hash: success_result.to_hash).and_return(true)
+                expect(service).to receive(:write).with(merge_check: merge_check, result_hash: success_result.to_hash, ttl: 6.hours).and_return(true)
               end
             end
 

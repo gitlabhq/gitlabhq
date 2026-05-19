@@ -26,6 +26,7 @@ export default {
       required: true,
     },
   },
+  emits: ['cancel', 'submit-email'],
   data() {
     return {
       email: '',

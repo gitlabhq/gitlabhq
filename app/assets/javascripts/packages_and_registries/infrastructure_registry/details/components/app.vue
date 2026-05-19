@@ -89,10 +89,12 @@ export default {
     },
     async confirmPackageDeletion() {
       this.track(TRACKING_ACTIONS.DELETE_PACKAGE);
-      await this.deletePackage();
-      const returnTo = this.projectListUrl;
-      const modalQuery = objectToQuery({ [SHOW_DELETE_SUCCESS_ALERT]: true });
-      window.location.replace(`${returnTo}?${modalQuery}`);
+      const result = await this.deletePackage();
+      if (result) {
+        const returnTo = this.projectListUrl;
+        const modalQuery = objectToQuery({ [SHOW_DELETE_SUCCESS_ALERT]: true });
+        window.location.replace(`${returnTo}?${modalQuery}`);
+      }
     },
     handleFileDelete(file) {
       this.track(TRACKING_ACTIONS.REQUEST_DELETE_PACKAGE_FILE);

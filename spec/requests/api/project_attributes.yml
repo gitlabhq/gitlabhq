@@ -96,11 +96,13 @@ ci_cd_settings:
     - project_id
     - merge_trains_enabled
     - merge_trains_skip_train_allowed
+    - max_pipelines_per_merge_train
     - merge_pipelines_enabled
     - auto_rollback_enabled
     - inbound_job_token_scope_enabled
     - restrict_pipeline_cancellation_role
     - push_repository_for_job_token_allowed
+    - cross_project_push_for_job_token_allowed
     - id_token_sub_claim_components
     - delete_pipelines_in_seconds
     - allow_composite_identities_to_run_pipelines
@@ -172,7 +174,6 @@ project_setting:
     - updated_at
     - cve_id_request_enabled
     - mr_default_target_self
-    - mr_default_title_template
     - target_platforms
     - selective_code_owner_removals
     - suggested_reviewers_enabled
@@ -216,6 +217,7 @@ project_setting:
     - pipeline_execution_policy_bot_access_enabled
     - pipeline_execution_policy_bot_access_file_patterns
     - pipeline_execution_policy_bot_access_group_id
+    - tool_approval_for_session_enabled
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:
     - project_id

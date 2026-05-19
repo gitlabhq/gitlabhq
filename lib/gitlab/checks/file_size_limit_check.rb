@@ -11,7 +11,7 @@ module Gitlab
 
       private
 
-      # rubocop:disable Gitlab/NoCodeCoverageComment -- This is fully overriden in EE,Lint/MissingCopEnableDirective
+      # rubocop:disable Gitlab/NoCodeCoverageComment -- This is fully overridden in EE,Lint/MissingCopEnableDirective
       # :nocov:
       def file_size_limit
         nil

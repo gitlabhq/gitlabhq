@@ -6,12 +6,12 @@ module SystemCheck
 
     def multi_check
       Gitlab::HealthChecks::GitalyCheck.readiness.each do |result|
-        $stdout.print "#{result.labels[:shard]} ... "
+        print "#{result.labels[:shard]} ... " # rubocop:disable Rails/Output -- system check CLI output
 
         if result.success
-          $stdout.puts Rainbow('OK').green
+          say Rainbow('OK').green
         else
-          $stdout.puts Rainbow("FAIL: #{result.message}").red
+          say Rainbow("FAIL: #{result.message}").red
         end
       end
     end

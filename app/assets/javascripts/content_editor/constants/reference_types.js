@@ -14,5 +14,6 @@ export const REFERENCE_TYPES = {
   WIKI: 'wiki',
   ITERATION: 'iteration',
   STATUS: 'status',
+  TYPE: 'type',
   EMOJI: 'emoji',
 };

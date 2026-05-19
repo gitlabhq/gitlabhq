@@ -55,11 +55,15 @@ module API
       optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Determine if developers can push to default branch'
       optional :default_branch_protection_defaults, type: Hash, desc: 'Determine if developers can push to default branch' do
         optional :allowed_to_push, type: Array, desc: 'An array of access levels allowed to push' do
+          # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
           requires :access_level, type: Integer, values: ProtectedBranch::PushAccessLevel.allowed_access_levels, desc: 'A valid access level'
+          # rubocop:enable API/AccessLevelStringType
         end
         optional :allow_force_push, type: Boolean, desc: 'Allow force push for all users with push access.'
         optional :allowed_to_merge, type: Array, desc: 'An array of access levels allowed to merge' do
+          # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
           requires :access_level, type: Integer, values: ProtectedBranch::MergeAccessLevel.allowed_access_levels, desc: 'A valid access level'
+          # rubocop:enable API/AccessLevelStringType
         end
         optional :code_owner_approval_required, type: Boolean, desc: "Require approval from code owners"
         optional :developer_can_initial_push, type: Boolean, desc: 'Allow developers to initial push'
@@ -255,7 +259,6 @@ module API
       optional :ai_action_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per 8 hours to aiAction endpoint'
       optional :code_suggestions_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per minute to code suggestions endpoint'
       optional :resource_usage_limits, type: JSON, desc: 'Definition for resource usage limits enforced in Sidekiq workers'
-      optional :ropc_without_client_credentials, type: Boolean, desc: 'Allows the use of Oauth ROPC flow without client credentials'
       optional :vscode_extension_marketplace, type: Hash, desc: 'Settings for VS Code Extension Marketplace' do
         optional :enabled, type: Boolean, desc: 'Enables VS Code Extension Marketplace for Web IDE and Workspaces'
         optional :preset, type: String, desc: "The preset configuration of URL's for the VS Code Extension Marketplace"

@@ -9,13 +9,16 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import * as autosave from '~/lib/utils/autosave';
 import { ESC_KEY, ENTER_KEY } from '~/lib/utils/keys';
-import { STATE_OPEN, i18n } from '~/work_items/constants';
+import { STATE_OPEN, STATE_CLOSED, i18n } from '~/work_items/constants';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import workItemLinkedItemsQuery from '~/work_items/graphql/work_item_linked_items.query.graphql';
+import workItemOpenChildCountQuery from '~/work_items/graphql/open_child_count.query.graphql';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import workItemEmailParticipantsByIidQuery from '~/work_items/graphql/notes/work_item_email_participants_by_iid.query.graphql';
 import * as confirmViaGlModal from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
+import WorkItemCloseConfirmModal from '~/work_items/components/work_item_close_confirm_modal.vue';
 import WorkItemCommentForm from '~/work_items/components/notes/work_item_comment_form.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
@@ -23,6 +26,10 @@ import {
   workItemByIidResponseFactory,
   workItemEmailParticipantsResponse,
   workItemEmailParticipantsEmptyResponse,
+  workItemBlockedByLinkedItemsResponse,
+  workItemNoBlockedByLinkedItemsResponse,
+  mockOpenChildrenCount,
+  mockNoOpenChildrenCount,
 } from 'ee_else_ce_jest/work_items/mock_data';
 
 Vue.use(VueApollo);
@@ -62,6 +69,11 @@ describe('Work item comment form component', () => {
     .mockResolvedValue(workItemEmailParticipantsEmptyResponse);
   const errorHandler = jest.fn().mockRejectedValue('Error');
 
+  const noBlockedByHandler = jest.fn().mockResolvedValue(workItemNoBlockedByLinkedItemsResponse);
+  const blockedByHandler = jest.fn().mockResolvedValue(workItemBlockedByLinkedItemsResponse);
+  const noOpenChildrenHandler = jest.fn().mockResolvedValue(mockNoOpenChildrenCount);
+  const openChildrenHandler = jest.fn().mockResolvedValue(mockOpenChildrenCount);
+
   beforeEach(() => {
     detectAndConfirmSensitiveTokens.mockReturnValue(true);
   });
@@ -78,6 +90,7 @@ describe('Work item comment form component', () => {
   const findInternalNoteTooltipIcon = () => wrapper.findComponent(HelpIcon);
   const findWorkItemToggleStateButton = () => wrapper.findComponent(WorkItemStateToggle);
   const findToggleResolveCheckbox = () => wrapper.findByTestId('toggle-resolve-checkbox');
+  const findCloseConfirmModal = () => wrapper.findComponent(WorkItemCloseConfirmModal);
 
   const createComponent = ({
     isSubmitting = false,
@@ -95,6 +108,8 @@ describe('Work item comment form component', () => {
     parentId = null,
     hideFullscreenMarkdownButton,
     isGroupWorkItem = false,
+    workItemLinkedItemsHandler = noBlockedByHandler,
+    workItemOpenChildCountHandler = noOpenChildrenHandler,
   } = {}) => {
     workItemResponse = workItemByIidResponseFactory({
       canMarkNoteAsInternal,
@@ -107,6 +122,8 @@ describe('Work item comment form component', () => {
       apolloProvider: createMockApollo([
         [workItemEmailParticipantsByIidQuery, emailParticipantsResponseHandler],
         [workItemByIidQuery, workItemResponseHandler],
+        [workItemLinkedItemsQuery, workItemLinkedItemsHandler],
+        [workItemOpenChildCountQuery, workItemOpenChildCountHandler],
       ]),
       propsData: {
         fullPath,
@@ -606,5 +623,153 @@ describe('Work item comment form component', () => {
     findMarkdownEditor().vm.$emit('blur');
 
     expect(wrapper.emitted('blur')).toHaveLength(1);
+  });
+
+  describe('/close quick action confirmation', () => {
+    const closeText = '/close';
+
+    describe('when work item has no blockers and no open children', () => {
+      it('submits form directly without showing any modal', async () => {
+        createComponent();
+        findMarkdownEditor().vm.$emit('input', closeText);
+        await waitForPromises();
+
+        findConfirmButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findCloseConfirmModal().exists()).toBe(false);
+        expect(wrapper.emitted('submit-form')).toHaveLength(1);
+      });
+    });
+
+    describe('when work item is closed', () => {
+      it('does not show any confirmation modal', async () => {
+        createComponent({
+          workItemState: STATE_CLOSED,
+          workItemLinkedItemsHandler: blockedByHandler,
+        });
+        findMarkdownEditor().vm.$emit('input', closeText);
+        await waitForPromises();
+
+        findConfirmButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findCloseConfirmModal().exists()).toBe(false);
+        expect(wrapper.emitted('submit-form')).toHaveLength(1);
+      });
+    });
+
+    describe('when /close is part of a longer word', () => {
+      it('does not trigger the confirmation modal', async () => {
+        createComponent({ workItemLinkedItemsHandler: blockedByHandler });
+        findMarkdownEditor().vm.$emit('input', '/closet');
+        await waitForPromises();
+
+        findConfirmButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findCloseConfirmModal().exists()).toBe(false);
+        expect(wrapper.emitted('submit-form')).toHaveLength(1);
+      });
+    });
+
+    describe('when work item is blocked by open items', () => {
+      beforeEach(async () => {
+        createComponent({ workItemLinkedItemsHandler: blockedByHandler });
+        findMarkdownEditor().vm.$emit('input', closeText);
+        await waitForPromises();
+      });
+
+      it('shows the confirm modal with isBlockedByOpenItems=true instead of submitting', async () => {
+        findConfirmButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findCloseConfirmModal().exists()).toBe(true);
+        expect(findCloseConfirmModal().props('isBlockedByOpenItems')).toBe(true);
+        expect(wrapper.emitted('submit-form')).toBeUndefined();
+      });
+
+      it('passes the blocking items to the modal', async () => {
+        findConfirmButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findCloseConfirmModal().props('blockerItems').length).toBeGreaterThan(0);
+      });
+
+      it('submits the form when the modal proceed action is confirmed', async () => {
+        findConfirmButton().vm.$emit('click');
+        await waitForPromises();
+
+        findCloseConfirmModal().vm.$emit('proceed');
+        await waitForPromises();
+
+        expect(wrapper.emitted('submit-form')).toHaveLength(1);
+      });
+
+      it('does not submit the form when the modal is cancelled', async () => {
+        findConfirmButton().vm.$emit('click');
+        await waitForPromises();
+
+        findCloseConfirmModal().vm.$emit('hide');
+        await waitForPromises();
+
+        expect(wrapper.emitted('submit-form')).toBeUndefined();
+      });
+    });
+
+    describe('when work item has open child items', () => {
+      beforeEach(async () => {
+        createComponent({ workItemOpenChildCountHandler: openChildrenHandler });
+        findMarkdownEditor().vm.$emit('input', closeText);
+        await waitForPromises();
+      });
+
+      it('shows the confirm modal with isBlockedByOpenItems=false instead of submitting', async () => {
+        findConfirmButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findCloseConfirmModal().exists()).toBe(true);
+        expect(findCloseConfirmModal().props('isBlockedByOpenItems')).toBe(false);
+        expect(wrapper.emitted('submit-form')).toBeUndefined();
+      });
+
+      it('submits the form when the modal proceed action is confirmed', async () => {
+        findConfirmButton().vm.$emit('click');
+        await waitForPromises();
+
+        findCloseConfirmModal().vm.$emit('proceed');
+        await waitForPromises();
+
+        expect(wrapper.emitted('submit-form')).toHaveLength(1);
+      });
+
+      it('does not submit the form when the modal is cancelled', async () => {
+        findConfirmButton().vm.$emit('click');
+        await waitForPromises();
+
+        findCloseConfirmModal().vm.$emit('hide');
+        await waitForPromises();
+
+        expect(wrapper.emitted('submit-form')).toBeUndefined();
+      });
+    });
+
+    describe('when work item is both blocked and has open children', () => {
+      it('shows the confirm modal with isBlockedByOpenItems=true', async () => {
+        createComponent({
+          workItemLinkedItemsHandler: blockedByHandler,
+          workItemOpenChildCountHandler: openChildrenHandler,
+        });
+        findMarkdownEditor().vm.$emit('input', closeText);
+        await waitForPromises();
+        await waitForPromises();
+
+        findConfirmButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findCloseConfirmModal().exists()).toBe(true);
+        expect(findCloseConfirmModal().props('isBlockedByOpenItems')).toBe(true);
+      });
+    });
   });
 });

@@ -2,8 +2,8 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Sign commits in your GitLab repository with GPG (GNU Privacy Guard) keys.
-title: Sign commits with GPG
+description: Sign commits and tags in your GitLab repository with GPG (GNU Privacy Guard) keys.
+title: Sign commits and tags with GPG
 ---
 
 {{< details >}}
@@ -33,8 +33,6 @@ For GitLab to consider a commit verified:
 
 GitLab uses its own keyring to verify the GPG signature. It does not access any
 public key server.
-
-GPG verified tags are not supported.
 
 For more details about GPG, refer to the [related topics list](#related-topics).
 
@@ -221,6 +219,41 @@ Prerequisites:
 
    [commit]
    gpgsign = true
+   ```
+
+## Sign and verify tags
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19260) in GitLab 18.3 [with a flag](../../../../administration/feature_flags/_index.md) named `render_gpg_signed_tags_verification_status`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/560619) in GitLab 19.0.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+After you [associate your GPG key with Git](#associate-your-gpg-key-with-git),
+you can sign your tags:
+
+1. When you create a Git tag, add the `-s` flag:
+
+   ```shell
+   git tag -s v1.1.1 -m "My signed tag"
+   ```
+
+1. Push your tag to GitLab.
+1. To verify the signature locally, run:
+
+   ```shell
+   git tag --verify v1.1.1
+   ```
+
+1. Optional. To sign all tags automatically, run:
+
+   ```shell
+   git config --global tag.gpgsign true
    ```
 
 ## Revoke a GPG key

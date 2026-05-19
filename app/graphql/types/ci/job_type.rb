@@ -16,6 +16,8 @@ module Types
 
       expose_permissions Types::PermissionTypes::Ci::Job
 
+      authorize_granular_token permissions: :read_job, boundary: :project, boundary_type: :project
+
       field :allow_failure, ::GraphQL::Types::Boolean, null: false,
         description: 'Whether the job is allowed to fail.'
       field :duration, GraphQL::Types::Int, null: true,

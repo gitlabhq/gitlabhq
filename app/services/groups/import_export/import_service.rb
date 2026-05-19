@@ -41,6 +41,8 @@ module Groups
             extra: { user_role: user_role, import_type: 'import_group_from_file' }
           )
 
+          schedule_work_item_placement
+
           group
         else
           notify_error!
@@ -52,6 +54,12 @@ module Groups
       end
 
       private
+
+      def schedule_work_item_placement
+        ::Issues::PlacementWorker.perform_async(
+          { 'namespace_id' => group.work_item_positioning_root.id }
+        )
+      end
 
       def user_role
         # rubocop:disable Style/MultilineTernaryOperator

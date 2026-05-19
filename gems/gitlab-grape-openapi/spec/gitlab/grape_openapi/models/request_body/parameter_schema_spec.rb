@@ -80,6 +80,24 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call[:nullable]).to be true
         end
       end
+
+      context 'when parameter has multiple types (oneOf schema)' do
+        let(:param_options) { { type: '[String, Integer]', required: false } }
+
+        it 'adds nullable: true to each oneOf member instead of the top level' do
+          expect(method_call[:nullable]).to be_nil
+          expect(method_call[:oneOf]).to all(include(nullable: true))
+        end
+      end
+
+      context 'when parameter has multiple types and allow_blank: false' do
+        let(:param_options) { { type: '[String, Integer]', allow_blank: false, required: false } }
+
+        it 'omits nullable from all oneOf members' do
+          expect(method_call[:nullable]).to be_nil
+          expect(method_call[:oneOf]).to all(satisfy { |s| !s.key?(:nullable) })
+        end
+      end
     end
 
     describe 'limit validation behaviour' do
@@ -225,10 +243,9 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         it 'generates complete oneOf schema' do
           expect(method_call).to eq(
             oneOf: [
-              { type: 'string' },
-              { type: 'integer' }
-            ],
-            nullable: true
+              { type: 'string', nullable: true },
+              { type: 'integer', nullable: true }
+            ]
           )
         end
       end
@@ -840,7 +857,29 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'string',
             description: 'Username',
-            pattern: '^[a-z0-9_]+$',
+            pattern: '(?<=^|\n(?!$))[a-z0-9_]+(?=$|\n)',
+            nullable: true
+          )
+        end
+      end
+
+      context 'with regex validation using Ruby-only constructs' do
+        let(:param_options) { { type: 'String', desc: 'Distribution', required: true } }
+        let(:validations) do
+          [
+            {
+              attributes: [:field],
+              options: /\A(?i-mx:[a-z0-9][a-z0-9.-]*)\z/,
+              validator_class: Grape::Validations::Validators::RegexpValidator
+            }
+          ]
+        end
+
+        it 'converts the pattern to ECMA-262 syntax with case-folding baked in' do
+          expect(method_call).to eq(
+            type: 'string',
+            description: 'Distribution',
+            pattern: '^(?:[0-9A-Za-z\u017F\u212A][\x2D.0-9A-Za-z\u017F\u212A]*)$',
             nullable: true
           )
         end
@@ -873,7 +912,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
             default: 'guest',
             description: 'Username',
             example: 'john_doe',
-            pattern: '^[a-z_]+$',
+            pattern: '(?<=^|\n(?!$))[a-z_]+(?=$|\n)',
             nullable: true
           )
         end
@@ -1017,7 +1056,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             {
               type: "object",
-              additional_properties: { type: "integer" },
+              additionalProperties: { type: "integer" },
               description: "Counts by category",
               nullable: true
             }
@@ -1104,7 +1143,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         end
 
         it "falls back to default schema generation with pattern" do
-          expect(method_call).to eq({ type: "string", description: "A name", pattern: "^[a-z]+$", nullable: true })
+          expect(method_call).to eq({ type: "string", description: "A name", pattern: "(?<=^|\\n(?!$))[a-z]+(?=$|\\n)",
+nullable: true })
         end
       end
 
@@ -1157,6 +1197,54 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         it "falls back to default schema generation (array for bracket notation)" do
           expect(method_call).to eq(
             { type: "array", items: { type: "string" }, description: "Labels", nullable: true }
+          )
+        end
+      end
+    end
+
+    describe 'fail_fast annotation' do
+      let(:key) { :name }
+
+      context 'with fail_fast: true in validations' do
+        let(:param_options) { { type: 'String', required: true, desc: 'A name' } }
+        let(:validations) do
+          [{ attributes: [:name], opts: { fail_fast: true },
+             validator_class: Grape::Validations::Validators::PresenceValidator }]
+        end
+
+        it 'appends annotation to description' do
+          expect(method_call).to eq(
+            type: 'string',
+            description: 'A name (validation stops on first error)',
+            nullable: true
+          )
+        end
+      end
+
+      context 'with fail_fast: true in validations and annotation already present' do
+        let(:param_options) { { type: 'String', required: true, desc: 'A name (validation stops on first error)' } }
+        let(:validations) do
+          [{ attributes: [:name], opts: { fail_fast: true },
+             validator_class: Grape::Validations::Validators::PresenceValidator }]
+        end
+
+        it 'does not duplicate the annotation' do
+          expect(method_call).to eq(
+            type: 'string',
+            description: 'A name (validation stops on first error)',
+            nullable: true
+          )
+        end
+      end
+
+      context 'without fail_fast' do
+        let(:param_options) { { type: 'String', required: true, desc: 'A name' } }
+
+        it 'leaves description unchanged' do
+          expect(method_call).to eq(
+            type: 'string',
+            description: 'A name',
+            nullable: true
           )
         end
       end

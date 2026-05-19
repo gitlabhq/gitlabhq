@@ -11,10 +11,18 @@ module Gitlab
         end
       end
 
+      def self.pending_indexes_to_create
+        PostgresAsyncIndex.to_create
+      end
+
       def self.drop_pending_indexes!(how_many: DEFAULT_INDEXES_PER_INVOCATION)
         PostgresAsyncIndex.to_drop.queued.limit(how_many).each do |async_index|
           IndexDestructor.new(async_index).perform
         end
+      end
+
+      def self.pending_indexes_to_drop
+        PostgresAsyncIndex.to_drop
       end
 
       def self.execute_pending_actions!(how_many: DEFAULT_INDEXES_PER_INVOCATION)

@@ -9,7 +9,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:organization) { create(:organization) }
-  let!(:group) { create(:group) }
+  let_it_be_with_refind(:group) { create(:group) }
 
   let(:developer_access) { Gitlab::Access::DEVELOPER_PROJECT_ACCESS }
   let(:maintainer_access) { Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
@@ -105,10 +105,10 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     describe '#namespace_members' do
-      let(:requester) { create(:user) }
-      let(:developer) { create(:user) }
+      let_it_be(:requester) { create(:user) }
+      let_it_be(:developer) { create(:user) }
 
-      before do
+      before_all do
         group.request_access(requester)
         group.add_developer(developer)
       end
@@ -128,10 +128,10 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     describe '#namespace_requesters' do
-      let(:requester) { create(:user) }
-      let(:developer) { create(:user) }
+      let_it_be(:requester) { create(:user) }
+      let_it_be(:developer) { create(:user) }
 
-      before do
+      before_all do
         group.request_access(requester)
         group.add_developer(developer)
       end
@@ -156,7 +156,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:developer) { create(:user) }
       let_it_be(:invited_member) { create(:group_member, :invited, :owner, group: group) }
 
-      before do
+      before_all do
         group.request_access(requester)
         group.add_developer(developer)
       end
@@ -246,7 +246,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:requester) { create(:user) }
       let_it_be(:developer) { create(:user) }
 
-      before do
+      before_all do
         group.request_access(requester)
         group.add_developer(developer)
       end
@@ -347,11 +347,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     describe '#notification_settings' do
-      let(:user) { create(:user) }
-      let(:group) { create(:group) }
-      let(:sub_group) { create(:group, parent_id: group.id) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:sub_group) { create(:group, parent_id: group.id) }
 
-      before do
+      before_all do
         group.add_developer(user)
         sub_group.add_maintainer(user)
       end
@@ -1216,6 +1216,21 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    describe 'preload_owners' do
+      let_it_be(:owner) { create(:user) }
+
+      before_all do
+        private_group.add_owner(owner)
+      end
+
+      subject { described_class.preload_owners }
+
+      it 'preloads the owners association' do
+        associations = subject.map { |group| group.association(:owners) }
+        expect(associations).to all(be_loaded)
+      end
+    end
+
     describe 'with_non_invite_group_members' do
       let_it_be(:group_member) { create(:group_member, member_namespace: private_group, requested_at: nil, invite_token: nil, access_level: Gitlab::Access::DEVELOPER) }
 
@@ -1540,12 +1555,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
 
       context 'when user is present' do
-        let(:user) { create(:user) }
+        let_it_be(:user) { create(:user) }
 
         it { is_expected.to match_array([group, internal_group, public_group]) }
 
         context 'when user has access to accessible group' do
-          before do
+          before_all do
             accessible_group.add_developer(user)
           end
 
@@ -2063,6 +2078,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#service_accounts' do
+    let!(:service_account) { create(:service_account, provisioned_by_group: group) }
+    let!(:service_account_another_group) { create(:service_account, provisioned_by_group: create(:group)) }
+    let!(:provisioned_user) { create(:user, provisioned_by_group: group) }
+
+    it 'returns only the group service accounts' do
+      expect(group.service_accounts).to eq([service_account])
+    end
+  end
+
   describe '#member_owners_excluding_project_bots_and_service_accounts' do
     let_it_be(:user) { create(:user) }
 
@@ -2426,7 +2451,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'when user is a member of the group' do
-      before do
+      before_all do
         group.add_guest(user)
       end
 
@@ -2456,7 +2481,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let_it_be(:group_user) { create(:user) }
 
     context 'with user in the group' do
-      before do
+      before_all do
         group.add_owner(group_user)
       end
 
@@ -2546,7 +2571,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:shared_group) { create(:group, :private, parent: shared_group_parent) }
       let_it_be(:shared_group_child) { create(:group, :private, parent: shared_group) }
 
-      before do
+      before_all do
         group_parent.add_owner(parent_group_user)
         group.add_owner(group_user)
         group_child.add_owner(child_group_user)
@@ -2621,12 +2646,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'multiple groups shared with group' do
-      let(:user) { create(:user) }
-      let(:group) { create(:group, :private) }
-      let(:shared_group_parent) { create(:group, :private) }
-      let(:shared_group) { create(:group, :private, parent: shared_group_parent) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:group) { create(:group, :private) }
+      let_it_be(:shared_group_parent) { create(:group, :private) }
+      let_it_be(:shared_group) { create(:group, :private, parent: shared_group_parent) }
 
-      before do
+      before_all do
         group.add_owner(user)
 
         create(:group_group_link, { shared_with_group: group,
@@ -2829,7 +2854,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let_it_be(:parent_group_user) { create(:user) }
     let_it_be(:group_user) { create(:user) }
 
-    before do
+    before_all do
       group.parent.add_maintainer(parent_group_user)
       group.add_developer(group_user)
     end
@@ -2856,7 +2881,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let_it_be(:parent_group_user) { create(:user) }
     let_it_be(:group_user) { create(:user) }
 
-    before do
+    before_all do
       group.parent.add_maintainer(parent_group_user)
       group.add_developer(group_user)
     end
@@ -2900,7 +2925,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:group_user) { create(:user) }
       let_it_be(:shared_group) { create(:group) }
 
-      before do
+      before_all do
         group.add_developer(group_user)
         create(:group_group_link, shared_group: shared_group, shared_with_group: group)
       end
@@ -2917,7 +2942,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:shared_with_group) { create(:group) }
       let_it_be(:other_subgroup_user) { create(:user) }
 
-      before do
+      before_all do
         create(:group_group_link, shared_group: subgroup, shared_with_group: shared_with_group)
         subgroup.add_maintainer(other_subgroup_user)
 
@@ -2955,7 +2980,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
 
       context 'when the user is a member of the group' do
-        before do
+        before_all do
           group.add_developer(user)
         end
 
@@ -2974,7 +2999,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         end
 
         context 'when the user is a member of the subgroup' do
-          before do
+          before_all do
             subgroup.add_developer(user)
           end
 
@@ -3209,9 +3234,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#highest_group_member' do
-    let(:nested_group) { create(:group, parent: group) }
-    let(:nested_group_2) { create(:group, parent: nested_group) }
-    let(:user) { create(:user) }
+    let_it_be(:nested_group) { create(:group, parent: group) }
+    let_it_be(:nested_group_2) { create(:group, parent: nested_group) }
+    let_it_be(:user) { create(:user) }
 
     subject(:highest_group_member) { nested_group_2.highest_group_member(user) }
 
@@ -3228,7 +3253,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'when the user is only a member of one group in the hierarchy' do
-      before do
+      before_all do
         nested_group.add_developer(user)
       end
 
@@ -3238,7 +3263,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'when the user is a member of several groups in the hierarchy' do
-      before do
+      before_all do
         group.add_owner(user)
         nested_group.add_developer(user)
         nested_group_2.add_maintainer(user)
@@ -4028,7 +4053,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let_it_be(:internal_group_group_link) { create(:group_group_link, shared_group: shared_group, shared_with_group: shared_with_internal_group) }
     let_it_be(:public_group_group_link) { create(:group_group_link, shared_group: shared_group, shared_with_group: shared_with_public_group) }
 
-    before do
+    before_all do
       shared_with_private_group.add_developer(user_with_access)
       parent_group.add_developer(user_with_parent_access)
     end
@@ -4322,13 +4347,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :enforce_locked_labels_on_merge }
       let(:feature_flag_method) { :supports_lock_on_merge? }
-    end
-  end
-
-  describe '#use_mermaid_v11_feature_flag_enabled?' do
-    it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :use_mermaid_v11 }
-      let(:feature_flag_method) { :use_mermaid_v11_feature_flag_enabled? }
     end
   end
 
@@ -4648,9 +4666,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
   describe '#unarchive_descendants!' do
     let_it_be_with_reload(:parent_group) { create(:group) }
-    let_it_be_with_reload(:group) { create(:group, :archived, parent: parent_group) }
-    let_it_be_with_reload(:subgroup) { create(:group, :archived, parent: group) }
+    let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
     let_it_be_with_reload(:sub_subgroup) { create(:group, :archived, parent: subgroup) }
+
+    before do
+      subgroup.namespace_settings.update!(archived: true)
+      group.namespace_settings.update!(archived: true)
+    end
 
     it 'does not unarchive the group itself' do
       group.unarchive_descendants!
@@ -4731,6 +4754,87 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       expect { group.unarchive_all_projects! }
         .to not_change { non_archived_project.reload.project_namespace.state }
           .and not_change { subgroup_non_archived_project.reload.project_namespace.state }
+    end
+  end
+
+  describe 'state transitions' do
+    it { is_expected.to reject_events :unarchive, when: :ancestor_inherited }
+    it { is_expected.to reject_events :cancel_deletion, when: :ancestor_inherited }
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(remove_group_ancestor_inherited_transitions: false)
+      end
+
+      it { is_expected.to handle_events :unarchive, when: :ancestor_inherited }
+      it { is_expected.to handle_events :cancel_deletion, when: :ancestor_inherited }
+    end
+  end
+
+  describe '#mcp_server_setting_available?', feature_category: :mcp_server do
+    it 'returns false in FOSS' do
+      expect(create(:group).mcp_server_setting_available?).to be(false)
+    end
+  end
+
+  describe '#mcp_server_enabled?', feature_category: :mcp_server do
+    context 'when group is root' do
+      let_it_be_with_reload(:group) { create(:group) }
+
+      it 'returns true when namespace_settings has mcp_server_enabled set to true' do
+        group.namespace_settings.update!(mcp_server_enabled: true)
+
+        expect(group.mcp_server_enabled?).to be true
+      end
+
+      it 'returns false when namespace_settings has mcp_server_enabled set to false' do
+        group.namespace_settings.update!(mcp_server_enabled: false)
+
+        expect(group.mcp_server_enabled?).to be false
+      end
+    end
+
+    context 'when group is a subgroup' do
+      let(:group) { build(:group, parent: build(:group)) }
+
+      it { expect(group.mcp_server_enabled?).to be false }
+    end
+
+    context 'when namespace_settings is nil' do
+      let(:group) { build(:group) }
+
+      before do
+        allow(group).to receive(:namespace_settings).and_return(nil)
+      end
+
+      it { expect(group.mcp_server_enabled?).to be false }
+    end
+  end
+
+  describe '#mcp_server_enabled', feature_category: :mcp_server do
+    let_it_be(:group) { create(:group) }
+
+    it 'delegates to namespace_settings' do
+      group.namespace_settings.update!(mcp_server_enabled: true)
+      expect(group.mcp_server_enabled).to be true
+    end
+  end
+
+  describe '.with_mcp_server_enabled', feature_category: :mcp_server do
+    let_it_be(:group_on) { create(:group) }
+    let_it_be(:group_off) { create(:group) }
+    let_it_be(:group_nil) { create(:group) }
+
+    before do
+      group_on.namespace_settings.update!(mcp_server_enabled: true)
+      group_off.namespace_settings.update!(mcp_server_enabled: false)
+    end
+
+    it 'returns only groups with mcp_server_enabled = true' do
+      result = described_class.with_mcp_server_enabled
+      expect(result).to include(group_on)
+      expect(result).not_to include(group_off)
+      expect(result).not_to include(group_nil)
     end
   end
 end

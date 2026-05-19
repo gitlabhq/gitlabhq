@@ -54,7 +54,7 @@ module Issues
       Issues::PlacementWorker.perform_async({ 'namespace_id' => namespace.id }) if leftover.present?
     rescue RelativePositioning::NoSpaceLeft => e
       Gitlab::ErrorTracking.log_exception(e, namespace_id: namespace.id)
-      Issues::RebalancingWorker.perform_async(nil, *issue.project.self_or_root_group_ids)
+      Issues::RebalancingWorker.perform_async(nil, nil, issue.namespace.work_item_positioning_root.id)
     end
 
     private
@@ -69,13 +69,7 @@ module Issues
     end
 
     def find_representative_issue(namespace)
-      projects = if namespace.project_namespace?
-                   [namespace.project]
-                 else
-                   namespace.all_projects
-                 end
-
-      Issue.in_projects(projects).take
+      Issue.find_by(namespace_id: namespace.self_and_descendant_ids(skope: Namespace))
     end
     # rubocop: enable CodeReuse/ActiveRecord
   end

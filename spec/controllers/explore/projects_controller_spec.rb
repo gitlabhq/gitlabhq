@@ -91,7 +91,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
       end
 
       context 'when topic exists' do
-        let_it_be(:topic) { create(:topic, name: 'topic1', organization: current_organization) }
+        let_it_be(:topic, freeze: false) { create(:topic, name: 'topic1', organization: current_organization) }
 
         let_it_be(:older_project) { create(:project, :public, updated_at: 1.day.ago, namespace: namespace, topic_list: 'topic1') }
         let_it_be(:newer_project) { create(:project, :public, updated_at: 2.days.ago, namespace: namespace, topic_list: 'topic1') }
@@ -166,8 +166,8 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
   end
 
   context 'when user is signed in' do
-    let_it_be(:namespace) { create(:namespace, organization: current_organization) }
-    let_it_be(:user) { create(:user, namespace: namespace) }
+    let_it_be(:namespace, freeze: false) { create(:namespace, organization: current_organization) }
+    let_it_be(:user, freeze: false) { create(:user, namespace: namespace) }
     let_it_be(:project) { create(:project, name: 'Project 1', namespace: namespace) }
     let_it_be(:project2) { create(:project, name: 'Project 2', namespace: namespace) }
 
@@ -209,7 +209,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
   end
 
   context 'when user is not signed in' do
-    let_it_be(:namespace) { create(:namespace, organization: current_organization) }
+    let_it_be(:namespace, freeze: false) { create(:namespace, organization: current_organization) }
 
     include_examples 'explore projects'
     include_examples 'avoids N+1 queries'

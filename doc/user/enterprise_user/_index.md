@@ -59,7 +59,7 @@ Prerequisites:
 To add a custom domain for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Domain Verification**.
+1. In the left sidebar, select **Settings** > **Domain Verification**.
 1. In the upper-right corner, select **Add Domain**.
 1. Configure the domain settings:
    - **Domain**: Enter the domain name.
@@ -99,14 +99,14 @@ After successful verification, the domain status changes to **Verified** and can
 To view all custom domains for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Domain Verification**.
+1. In the left sidebar, select **Settings** > **Domain Verification**.
 
 ### Edit group domains
 
 To edit a custom domain for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Domain Verification**.
+1. In the left sidebar, select **Settings** > **Domain Verification**.
 1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 
 From here, you can:
@@ -127,7 +127,7 @@ Deleting a group domain can impact enterprise users in your group. After you del
 To delete a custom domain for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Domain Verification**.
+1. In the left sidebar, select **Settings** > **Domain Verification**.
 1. Next to the domain name, select **Remove domain** ({{< icon name="remove" >}}).
 1. When prompted, select **Delete domain**.
 
@@ -221,7 +221,7 @@ Prerequisites:
 To view an enterprise user's email address:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Hover over the enterprise user's name.
 
 You can also use the [group members API](../../api/group_members.md) and [project members API](../../api/project_members.md)
@@ -278,6 +278,41 @@ enterprise user functionality.
 Allowing group Owners to change primary emails is proposed in
 [issue 412966](https://gitlab.com/gitlab-org/gitlab/-/issues/412966).
 
+### Dormant enterprise user reactivation
+
+When [automatic removal of dormant members](../group/moderate_users.md#automatically-remove-dormant-members)
+is active, dormant enterprise users are deactivated instead of being removed
+from the group. When these users sign back in, their accounts are reactivated.
+
+However, when [restricted access](../group/manage.md#restricted-access) is
+active on the enterprise group and no seats are available, the user is set to
+pending approval instead of being reactivated. Their existing group and project
+memberships are preserved.
+
+### Hide email addresses for enterprise users
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197475) in GitLab 18.3.
+
+{{< /history >}}
+
+Group Owners can hide the public email address from profile pages for all enterprise users in their
+group. Owners can still [view email addresses from the members page](#view-the-email-addresses-for-an-enterprise-user).
+
+Prerequisites:
+
+- You must have the Owner role for a top-level group.
+- The group must have [domain verification](#manage-group-domains) configured.
+
+To hide email addresses for enterprise users:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Permissions and group features**.
+1. Under **Enterprise users**, select the **Hide email address from public profile** checkbox.
+1. Select **Save changes**.
+
 ### Enable the Extension Marketplace for enterprise users
 
 {{< history >}}
@@ -303,9 +338,9 @@ Prerequisites:
 To enable the Extension Marketplace for enterprise users:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
-1. Under **Web IDE and workspaces**, select the **Enable extension marketplace** checkbox.
+1. Under **Enterprise users**, select the **Enable extension marketplace** checkbox.
 1. Select **Save changes**.
 
 ## Troubleshooting

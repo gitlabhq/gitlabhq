@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module RegistrationsHelper
+  def unified_registration?
+    false
+  end
+
   def signup_username_data_attributes
     {
       min_length: User::MIN_USERNAME_LENGTH,

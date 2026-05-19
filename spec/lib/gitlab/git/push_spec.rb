@@ -9,14 +9,14 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
   let(:newrev) { project.commit.id }
   let(:ref) { 'refs/heads/some-branch' }
 
-  subject { described_class.new(project, oldrev, newrev, ref) }
+  subject(:push) { described_class.new(project, oldrev, newrev, ref) }
 
   describe '#branch_name' do
     context 'when it is a branch push' do
       let(:ref) { 'refs/heads/my-branch' }
 
       it 'returns branch name' do
-        expect(subject.branch_name).to eq 'my-branch'
+        expect(push.branch_name).to eq 'my-branch'
       end
     end
 
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
       let(:ref) { 'refs/tags/my-branch' }
 
       it 'returns nil' do
-        expect(subject.branch_name).to be_nil
+        expect(push.branch_name).to be_nil
       end
     end
   end
@@ -93,7 +93,7 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
         expect(Gitlab::Checks::ForcePush).to receive(:force_push?).once
 
         2.times do
-          subject.force_push?
+          push.force_push?
         end
       end
     end
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
       let(:oldrev) { '281d3a7' }
 
       it 'returns modified paths' do
-        expect(subject.modified_paths).to eq ['bar/branch-test.txt',
+        expect(push.modified_paths).to eq ['bar/branch-test.txt',
           'files/js/commit.coffee',
           'with space/README.md']
       end
@@ -139,7 +139,7 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
       let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it 'raises an error' do
-        expect { subject.modified_paths }.to raise_error(ArgumentError)
+        expect { push.modified_paths }.to raise_error(ArgumentError)
       end
     end
   end
@@ -150,7 +150,7 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
       let(:oldrev) { '281d3a7' }
 
       it 'returns changed paths' do
-        expect(subject.changed_paths.as_json).to eq [Gitlab::Git::ChangedPath.new(
+        expect(push.changed_paths.as_json).to eq [Gitlab::Git::ChangedPath.new(
           new_blob_id: "93e123ac8a3e6a0b600953d7598af629dec7b735",
           new_mode: "100644",
           old_blob_id: "0000000000000000000000000000000000000000",
@@ -197,7 +197,7 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
       let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it 'raises an error' do
-        expect { subject.changed_paths }.to raise_error(ArgumentError)
+        expect { push.changed_paths }.to raise_error(ArgumentError)
       end
     end
   end
@@ -205,7 +205,7 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
   describe '#oldrev' do
     context 'when a valid oldrev is provided' do
       it 'returns oldrev' do
-        expect(subject.oldrev).to eq oldrev
+        expect(push.oldrev).to eq oldrev
       end
     end
 
@@ -213,7 +213,7 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
       let(:oldrev) { nil }
 
       it 'returns blank SHA' do
-        expect(subject.oldrev).to eq Gitlab::Git::SHA1_BLANK_SHA
+        expect(push.oldrev).to eq Gitlab::Git::SHA1_BLANK_SHA
       end
     end
   end
@@ -221,7 +221,7 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
   describe '#newrev' do
     context 'when valid newrev is provided' do
       it 'returns newrev' do
-        expect(subject.newrev).to eq newrev
+        expect(push.newrev).to eq newrev
       end
     end
 
@@ -229,7 +229,7 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
       let(:newrev) { nil }
 
       it 'returns blank SHA' do
-        expect(subject.newrev).to eq Gitlab::Git::SHA1_BLANK_SHA
+        expect(push.newrev).to eq Gitlab::Git::SHA1_BLANK_SHA
       end
     end
   end

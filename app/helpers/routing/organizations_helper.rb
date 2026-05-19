@@ -23,9 +23,11 @@ module Routing
 
         url_helpers = Gitlab::Application.routes.url_helpers
 
-        # Preserve the original root_url and root_path for use in specific circumstances.
-        url_helpers.alias_method :unscoped_root_url, :root_url if url_helpers.respond_to?(:root_url)
-        url_helpers.alias_method :unscoped_root_path, :root_path if url_helpers.respond_to?(:root_path)
+        # Preserve original paths for use in specific circumstances.
+        alias_unscoped(url_helpers, :root_url)
+        alias_unscoped(url_helpers, :root_path)
+        alias_unscoped(url_helpers, :group_canonical_url)
+        alias_unscoped(url_helpers, :group_canonical_path)
 
         # Override URL helpers to be Organization context aware.
         route_pairs = find_route_pairs
@@ -33,6 +35,13 @@ module Routing
         url_helpers.prepend(override_module)
 
         self.already_installed = true
+      end
+
+      def self.alias_unscoped(url_helpers, existing_method)
+        unscoped_method = "unscoped_#{existing_method}"
+        return unless url_helpers.respond_to?(existing_method)
+
+        url_helpers.alias_method(unscoped_method, existing_method)
       end
 
       def self.current_organization

@@ -15,11 +15,6 @@ title: Code Owners
 
 Use the Code Owners feature to define who has expertise for specific parts of your project's codebase.
 
-> [!note]
-> Code Owners is a workflow tool, not a security or compliance control. In certain conditions,
-> merges can proceed without Code Owner approvals. For strict security or compliance requirements,
-> use [merge request approval policies](../../application_security/policies/merge_request_approval_policies.md).
-
 Define the owners of files and directories in a repository to:
 
 - Require owners to approve changes. Combine protected branches with Code Owners to require

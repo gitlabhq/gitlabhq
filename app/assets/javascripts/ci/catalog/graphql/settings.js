@@ -15,7 +15,7 @@ export const cacheConfig = {
           });
         },
         ciCatalogResources: {
-          keyArgs: ['scope', 'search', 'sort', 'minAccessLevel'],
+          keyArgs: ['scope', 'search', 'sort', 'minAccessLevel', 'verificationLevel', 'topics'],
         },
       },
     },

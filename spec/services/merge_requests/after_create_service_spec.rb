@@ -177,6 +177,17 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
       end
     end
 
+    it 'triggers merge status subscription after prepared_at is set' do
+      merge_request.update!(prepared_at: nil)
+
+      allow(GraphqlTriggers).to receive(:merge_request_merge_status_updated)
+
+      execute_service
+
+      expect(GraphqlTriggers).to have_received(:merge_request_merge_status_updated)
+        .with(merge_request).at_least(:once)
+    end
+
     it_behaves_like 'internal event tracking' do
       let(:user) { merge_request.author }
       let(:event) { 'create_merge_request' }

@@ -31,9 +31,7 @@ module RuboCop
         def on_send(node)
           if httparty_node?(node)
             add_offense(node, message: MSG_SEND) do |corrector|
-              _, method_name, *arg_nodes = *node
-
-              replacement = "Gitlab::HTTP.#{method_name}(#{arg_nodes.map(&:source).join(', ')})"
+              replacement = "Gitlab::HTTP.#{node.method_name}(#{node.arguments.map(&:source).join(', ')})"
 
               corrector.replace(node, replacement)
             end

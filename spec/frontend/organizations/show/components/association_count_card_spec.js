@@ -9,7 +9,7 @@ describe('AssociationCountCard', () => {
     title: 'Groups',
     iconName: 'group',
     count: '1000+',
-    linkHref: '/-/organizations/default/groups_and_projects?display=groups',
+    linkHref: '/o/default/-/groups_and_projects?display=groups',
   };
 
   const createComponent = ({ propsData = {} } = {}) => {

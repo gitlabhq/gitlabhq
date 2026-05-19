@@ -17,8 +17,12 @@ module Gitlab
           CheckResult.from_hash(result_hash)
         end
 
-        def write(merge_check:, result_hash:)
-          interface.save_check(merge_check: merge_check, result_hash: result_hash)
+        def write(merge_check:, result_hash:, ttl:)
+          interface.save_check(merge_check: merge_check, result_hash: result_hash, ttl: ttl)
+        end
+
+        def delete(merge_check:)
+          interface.delete_check(cache_key: merge_check.cache_key)
         end
 
         private

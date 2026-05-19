@@ -6,3 +6,7 @@
   = safe_format(s_("Achievements|%{namespace_link} awarded you the %{bold_start}%{achievement_name}%{bold_end} achievement!"), bold_tag_pair, namespace_link: namespace_link, achievement_name: @achievement.name)
 %p
   = safe_format(s_("Achievements|View your achievements on your %{link_start}profile%{link_end}."), profile_link_tag_pair)
+
+- accept_link = link_to(s_("Achievements|Accept this achievement"), @accept_url)
+%p
+  = html_escape(s_("Achievements|%{accept_link} to show it on your profile. If you do not wish to accept, simply ignore this email.")) % { accept_link: accept_link }

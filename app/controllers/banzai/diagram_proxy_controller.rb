@@ -30,7 +30,14 @@ module Banzai
           ::Banzai::Filter::KrokiFilter.kroki_image_src(request_diagram_type, request_diagram_source)
         end
 
-      headers.store(*Gitlab::Workhorse.send_url(url, allow_redirects: true, ssrf_filter: true))
+      headers.store(*Gitlab::Workhorse.send_url(
+        url,
+        allow_redirects: true,
+        ssrf_filter: true,
+        # rubocop:disable Naming/InclusiveLanguage -- existing setting
+        allowed_endpoints: Gitlab::CurrentSettings.outbound_local_requests_whitelist
+        # rubocop:enable Naming/InclusiveLanguage
+      ))
       head :ok
     end
 

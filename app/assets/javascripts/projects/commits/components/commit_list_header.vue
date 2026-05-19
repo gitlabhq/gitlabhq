@@ -37,6 +37,13 @@ export default {
     'browseFilesPath',
     'commitsFeedPath',
   ],
+  props: {
+    initialFilterTokens: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
   computed: {
     currentPath() {
       return this.$route.params.path || '';
@@ -130,6 +137,9 @@ export default {
       </div>
     </div>
 
-    <commit-filtered-search @filter="$emit('filter', $event)" />
+    <commit-filtered-search
+      :initial-filter-tokens="initialFilterTokens"
+      @filter="$emit('filter', $event)"
+    />
   </div>
 </template>

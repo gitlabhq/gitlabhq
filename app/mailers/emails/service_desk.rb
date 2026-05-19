@@ -26,11 +26,12 @@ module Emails
         sender_email: service_desk_sender_email_address
       )
 
+      @custom_template_body = template_content('thank_you')
+
       options = {
         from: email_sender,
         to: @work_item.external_author,
-        subject: "Re: #{subject_base}",
-        **service_desk_template_content_options('thank_you')
+        subject: "Re: #{subject_base}"
       }
 
       mail_new_thread(@work_item, options)
@@ -50,11 +51,12 @@ module Emails
         sender_email: service_desk_sender_email_address
       )
 
+      @custom_template_body = template_content('new_note')
+
       options = {
         from: email_sender,
         to: recipient.email,
-        subject: subject_base,
-        **service_desk_template_content_options('new_note')
+        subject: subject_base
       }
 
       mail_answer_thread(@work_item, options)
@@ -74,11 +76,12 @@ module Emails
         sender_email: service_desk_sender_email_address
       )
 
+      @custom_template_body = template_content('new_participant')
+
       options = {
         from: email_sender,
         to: recipient.email,
-        subject: "Re: #{subject_base}",
-        **service_desk_template_content_options('new_participant')
+        subject: "Re: #{subject_base}"
       }
 
       mail_new_thread(@work_item, options)
@@ -157,15 +160,6 @@ module Emails
       @sent_notification = SentNotification.record(@work_item, @support_bot.id, {
         issue_email_participant: issue_email_participant
       })
-    end
-
-    def service_desk_template_content_options(email_type)
-      return {} unless template_body = template_content(email_type)
-
-      {
-        body: template_body,
-        content_type: 'text/html; charset=UTF-8'
-      }
     end
 
     def inject_service_desk_custom_email(force: false)

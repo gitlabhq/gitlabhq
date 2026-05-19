@@ -31,6 +31,27 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
         .is_at_most(Project::MAX_MR_TITLE_TEMPLATE_LENGTH)
     end
 
+    context 'for mr_default_title_template single-line validation' do
+      it 'rejects values containing newlines' do
+        setting = build(:project_setting, mr_default_title_template: "first line\nsecond line")
+        setting.valid?
+        expect(setting.errors[:mr_default_title_template]).to include('must be a single line')
+        expect(setting.errors.full_messages)
+          .to include('Merge request default title template must be a single line')
+      end
+
+      it 'rejects values containing carriage returns' do
+        setting = build(:project_setting, mr_default_title_template: "first line\rsecond line")
+        setting.valid?
+        expect(setting.errors[:mr_default_title_template]).to include('must be a single line')
+      end
+
+      it 'allows a single-line value' do
+        setting = build(:project_setting, mr_default_title_template: '%{source_branch} - %{first_commit}')
+        expect(setting).to be_valid
+      end
+    end
+
     it 'validates the length of merge_request_title_regex_description' do
       is_expected.to validate_length_of(:merge_request_title_regex_description)
         .is_at_most(Project::MAX_MERGE_REQUEST_TITLE_REGEX_DESCRIPTION)
@@ -280,45 +301,11 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
       settings_attribute_name: :web_based_commit_signing_enabled
   end
 
-  describe '#automatic_rebase_available?', feature_category: :code_review_workflow do
-    let(:project) { create(:project) }
-    let(:project_setting) { project.project_setting }
+  describe '#reviewer_auto_assignment_available?', feature_category: :code_review_workflow do
+    let_it_be(:project) { create(:project) }
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(rebase_on_merge_automatic: false)
-        project_setting.update!(automatic_rebase_enabled: true)
-      end
-
-      it 'returns false' do
-        expect(project_setting.automatic_rebase_available?).to be(false)
-      end
-    end
-
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(rebase_on_merge_automatic: project)
-      end
-
-      context 'when automatic_rebase_enabled is false' do
-        before do
-          project_setting.update!(automatic_rebase_enabled: false)
-        end
-
-        it 'returns false' do
-          expect(project_setting.automatic_rebase_available?).to be(false)
-        end
-      end
-
-      context 'when automatic_rebase_enabled is true' do
-        before do
-          project_setting.update!(automatic_rebase_enabled: true)
-        end
-
-        it 'returns true' do
-          expect(project_setting.automatic_rebase_available?).to be(true)
-        end
-      end
+    it 'returns false' do
+      expect(project.project_setting.reviewer_auto_assignment_available?).to be(false)
     end
   end
 
@@ -326,41 +313,10 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
     let_it_be(:project) { create(:project) }
     let(:project_setting) { project.project_setting }
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(auto_assign_code_owner_reviewers: false)
-        project_setting.update!(reviewer_assignment_strategy: 'code_owners')
-      end
+    it 'returns false regardless of strategy' do
+      project_setting.update!(reviewer_assignment_strategy: 'code_owners')
 
-      it 'returns false' do
-        expect(project_setting.reviewer_auto_assignment_enabled?).to be(false)
-      end
-    end
-
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(auto_assign_code_owner_reviewers: true)
-      end
-
-      context 'when strategy is disabled' do
-        before do
-          project_setting.update!(reviewer_assignment_strategy: 'disabled')
-        end
-
-        it 'returns false' do
-          expect(project_setting.reviewer_auto_assignment_enabled?).to be(false)
-        end
-      end
-
-      context 'when strategy is code_owners' do
-        before do
-          project_setting.update!(reviewer_assignment_strategy: 'code_owners')
-        end
-
-        it 'returns true' do
-          expect(project_setting.reviewer_auto_assignment_enabled?).to be(true)
-        end
-      end
+      expect(project_setting.reviewer_auto_assignment_enabled?).to be(false)
     end
   end
 end

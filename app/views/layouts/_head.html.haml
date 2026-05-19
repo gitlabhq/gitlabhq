@@ -13,7 +13,11 @@
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
   -# Prevent iOS auto-zoom on input focus while allowing manual pinch-to-zoom
   %meta{ name: 'viewport', content: "width=device-width, initial-scale=1#{', maximum-scale=1' if browser.device.iphone? }" }
+
   %title= page_title(site_name)
+
+  = render 'layouts/loading_hints'
+
   = Gon::Base.render_data(nonce: content_security_policy_nonce)
   = yield :project_javascripts
 
@@ -57,7 +61,6 @@
   = universal_stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 
   = render 'layouts/snowplow'
-  = render 'layouts/loading_hints'
 
   = render_if_exists 'layouts/header/translations'
   - if Gitlab::CurrentSettings.sentry_enabled

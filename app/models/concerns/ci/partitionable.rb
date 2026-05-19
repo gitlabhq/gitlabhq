@@ -29,11 +29,21 @@ module Ci
         where(partition_id: (id.respond_to?(partition_foreign_key) ? id.try(partition_foreign_key) : id))
       end
 
+      scope :id_and_partition_in, ->(pairs) do
+        return none if pairs.empty?
+
+        where([:id, :partition_id] => pairs)
+      end
+
       def set_partition_id
         return if partition_id_changed? && partition_id.present?
         return unless partition_scope_value
 
         self.partition_id = partition_scope_value
+      end
+
+      def id_and_partition_pair
+        [[id, partition_id]]
       end
     end
 

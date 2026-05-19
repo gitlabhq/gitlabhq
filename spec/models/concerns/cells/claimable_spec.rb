@@ -56,6 +56,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
     let(:transaction_record) { instance_double(Cells::TransactionRecord) }
 
     before do
+      stub_config_cell(enabled: true)
       allow(Cells::TransactionRecord)
         .to receive(:current_transaction).with(instance.connection).and_return(transaction_record)
     end
@@ -193,6 +194,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
     let(:transaction_record) { instance_double(Cells::TransactionRecord) }
 
     before do
+      stub_config_cell(enabled: true)
       conditional_klass.cells_claims_attribute :path,
         type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
         feature_flag: :cells_claims_organizations,
@@ -272,19 +274,31 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
     end
 
     describe '#cells_claims_destroy_changes' do
-      context 'when if: returns false' do
-        it 'still sends destroy (unconditional)' do
-          record = conditional_klass.create!(path: 'group/subpath')
+      context 'when if: returns true' do
+        it 'destroys the claim' do
+          claimable_instance = conditional_klass.create!(path: 'claimable')
 
           allow(Cells::TransactionRecord)
-            .to receive(:current_transaction).with(record.connection).and_return(transaction_record)
+            .to receive(:current_transaction).with(claimable_instance.connection).and_return(transaction_record)
           expect(transaction_record).to receive(:destroy_record).with(
             a_hash_including(bucket: {
-              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'group/subpath'
+              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'claimable'
             })
           )
 
-          record.destroy!
+          claimable_instance.destroy!
+        end
+      end
+
+      context 'when if: returns false' do
+        it 'does not destroy the claim' do
+          non_claimable_instance = conditional_klass.create!(path: 'group/project')
+
+          allow(Cells::TransactionRecord)
+            .to receive(:current_transaction).with(non_claimable_instance.connection).and_return(transaction_record)
+          expect(transaction_record).not_to receive(:destroy_record)
+
+          non_claimable_instance.destroy!
         end
       end
     end
@@ -311,8 +325,33 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
   end
 
   describe '.cells_claims_scope' do
-    it 'returns all by default' do
-      expect(test_klass.cells_claims_scope).to eq(test_klass.all)
+    it 'narrows SELECT to claim-relevant columns by default' do
+      columns = test_klass.cells_claims_scope.select_values.map(&:to_s)
+      expect(columns).to contain_exactly('id', 'updated_at', 'path')
+    end
+
+    it 'returns results scoped to the full table by default' do
+      instance
+      expect(test_klass.cells_claims_scope.to_a).to contain_exactly(instance)
+    end
+
+    context 'when subject_key is a Proc' do
+      let(:subject_key) { -> { id } }
+
+      it 'skips narrowing because Proc column access cannot be introspected' do
+        expect(test_klass.cells_claims_scope.select_values).to be_empty
+      end
+    end
+
+    context 'when the table has no updated_at column' do
+      before do
+        allow(test_klass).to receive(:column_names).and_return(%w[id path])
+      end
+
+      it 'omits updated_at from the select list' do
+        columns = test_klass.cells_claims_scope.select_values.map(&:to_s)
+        expect(columns).not_to include('updated_at')
+      end
     end
 
     context 'when overridden' do
@@ -347,9 +386,13 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         top_level = scoped_klass.create!(path: 'toplevel')
         scoped_klass.create!(path: 'group/sub')
 
-        result = scoped_klass.cells_claims_scope
-        expect(result).to include(top_level)
-        expect(result.count).to eq(1)
+        result = scoped_klass.cells_claims_scope.to_a
+        expect(result).to contain_exactly(top_level)
+      end
+
+      it 'narrows SELECT on top of the custom block' do
+        columns = scoped_klass.cells_claims_scope.select_values.map(&:to_s)
+        expect(columns).to contain_exactly('id', 'updated_at', 'path')
       end
     end
   end
@@ -529,28 +572,105 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
   end
 
   describe '.cells_claims_enabled_for_attribute?' do
+    context 'when attribute is not configured' do
+      it 'returns false' do
+        expect(test_klass.cells_claims_enabled_for_attribute?(:nonexistent)).to be(false)
+      end
+    end
+
     context 'when feature_flag is nil' do
-      it 'returns true' do
-        config = { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, feature_flag: nil, if: nil }
-        expect(test_klass.cells_claims_enabled_for_attribute?(config)).to be(true)
-      end
-    end
-
-    context 'when feature flag is enabled' do
-      it 'returns true' do
-        config = test_klass.cells_claims_attributes[:path]
-        expect(test_klass.cells_claims_enabled_for_attribute?(config)).to be(true)
-      end
-    end
-
-    context 'when feature flag is disabled' do
       before do
-        stub_feature_flags(cells_claims_organizations: false)
+        stub_config_cell(enabled: true)
+      end
+
+      it 'returns true' do
+        test_klass.cells_claims_attribute :no_flag_attr,
+          type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH
+
+        expect(test_klass.cells_claims_enabled_for_attribute?(:no_flag_attr)).to be(true)
+      end
+    end
+
+    context 'when cell config is disabled' do
+      before do
+        stub_config_cell(enabled: false)
       end
 
       it 'returns false' do
-        config = test_klass.cells_claims_attributes[:path]
-        expect(test_klass.cells_claims_enabled_for_attribute?(config)).to be(false)
+        expect(test_klass.cells_claims_enabled_for_attribute?(:path)).to be(false)
+      end
+    end
+
+    context 'when cell config is enabled' do
+      before do
+        stub_config_cell(enabled: true)
+      end
+
+      context 'when feature flag is enabled' do
+        it 'returns true' do
+          expect(test_klass.cells_claims_enabled_for_attribute?(:path)).to be(true)
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(cells_claims_organizations: false)
+        end
+
+        it 'returns false' do
+          expect(test_klass.cells_claims_enabled_for_attribute?(:path)).to be(false)
+        end
+      end
+    end
+  end
+
+  describe '#build_destroy_metadata_for_worker' do
+    context 'when attribute is not configured' do
+      it 'returns nil' do
+        expect(instance.build_destroy_metadata_for_worker(:nonexistent)).to be_nil
+      end
+    end
+
+    context 'when attribute is configured and claimable' do
+      it 'returns a JSON-serializable hash with all metadata' do
+        metadata = instance.build_destroy_metadata_for_worker(:path)
+
+        expect(metadata).to eq({
+          'bucket_type' => Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+          'bucket_value' => instance.path,
+          'subject_type' => Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
+          'subject_id' => instance.id,
+          'source_type' => Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
+          'primary_key' => instance.id
+        })
+      end
+    end
+
+    context 'when if: condition returns false' do
+      let(:conditional_klass) do
+        Class.new(ActiveRecord::Base) do
+          self.table_name = 'organizations'
+          include Cells::Claimable
+        end
+      end
+
+      let(:conditional_instance) { conditional_klass.create!(path: 'group/nested') }
+
+      before do
+        conditional_klass.cells_claims_attribute :path,
+          type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+          feature_flag: :cells_claims_organizations,
+          if: ->(record) { record.path.exclude?('/') }
+        conditional_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
+          subject_key: :id
+      end
+
+      after do
+        described_class.models_with_claims.delete(conditional_klass)
+      end
+
+      it 'returns nil' do
+        expect(conditional_instance.build_destroy_metadata_for_worker(:path)).to be_nil
       end
     end
   end

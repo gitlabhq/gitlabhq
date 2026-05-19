@@ -171,6 +171,195 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
     }
   end
 
+  describe '#preallocate_iids!' do
+    let(:last_response) { double(rels: { next: nil }) } # -- Sawyer::Response rels interface
+
+    before do
+      allow(project).to receive(:import_data).and_return(double(credentials: credentials, user_mapping_enabled?: false))
+    end
+
+    it 'pre-allocates IIDs for issues, merge requests, and milestones' do
+      allow_next_instance_of(Octokit::Client) do |client|
+        allow(client).to receive(:rate_limit!)
+        allow(client).to receive_messages(
+          issues: [{ number: 10 }],
+          pull_requests: [{ number: 7 }],
+          milestones: [{ id: 5 }, { id: 3 }],
+          last_response: last_response
+        )
+      end
+
+      preallocator = instance_double(Gitlab::Import::IidPreallocator)
+      expect(Gitlab::Import::IidPreallocator).to receive(:new).with(
+        project, { issues: 10, merge_requests: 7, project_milestones: 5 }
+      ).and_return(preallocator)
+      expect(preallocator).to receive(:execute)
+
+      importer.preallocate_iids!
+    end
+
+    context 'when there are no issues on the source' do
+      it 'does not include issues in max_iids' do
+        allow_next_instance_of(Octokit::Client) do |client|
+          allow(client).to receive(:rate_limit!)
+          allow(client).to receive_messages(
+            issues: [],
+            pull_requests: [{ number: 4 }],
+            milestones: [{ id: 2 }],
+            last_response: last_response
+          )
+        end
+
+        preallocator = instance_double(Gitlab::Import::IidPreallocator)
+        expect(Gitlab::Import::IidPreallocator).to receive(:new).with(
+          project, { merge_requests: 4, project_milestones: 2 }
+        ).and_return(preallocator)
+        expect(preallocator).to receive(:execute)
+
+        importer.preallocate_iids!
+      end
+    end
+
+    context 'when there are no pull requests on the source' do
+      it 'does not include merge_requests in max_iids' do
+        allow_next_instance_of(Octokit::Client) do |client|
+          allow(client).to receive(:rate_limit!)
+          allow(client).to receive_messages(
+            issues: [{ number: 8 }],
+            pull_requests: [],
+            milestones: [{ id: 3 }],
+            last_response: last_response
+          )
+        end
+
+        preallocator = instance_double(Gitlab::Import::IidPreallocator)
+        expect(Gitlab::Import::IidPreallocator).to receive(:new).with(
+          project, { issues: 8, project_milestones: 3 }
+        ).and_return(preallocator)
+        expect(preallocator).to receive(:execute)
+
+        importer.preallocate_iids!
+      end
+    end
+
+    context 'when there are no milestones on the source' do
+      it 'does not include milestones in max_iids' do
+        allow_next_instance_of(Octokit::Client) do |client|
+          allow(client).to receive(:rate_limit!)
+          allow(client).to receive_messages(
+            issues: [{ number: 10 }],
+            pull_requests: [{ number: 5 }],
+            milestones: [],
+            last_response: last_response
+          )
+        end
+
+        preallocator = instance_double(Gitlab::Import::IidPreallocator)
+        expect(Gitlab::Import::IidPreallocator).to receive(:new).with(
+          project, { issues: 10, merge_requests: 5 }
+        ).and_return(preallocator)
+        expect(preallocator).to receive(:execute)
+
+        importer.preallocate_iids!
+      end
+    end
+
+    context 'when the source has no issues, pull requests, or milestones' do
+      it 'does not call IidPreallocator' do
+        allow_next_instance_of(Octokit::Client) do |client|
+          allow(client).to receive(:rate_limit!)
+          allow(client).to receive_messages(
+            issues: [],
+            pull_requests: [],
+            milestones: [],
+            last_response: last_response
+          )
+        end
+
+        expect(Gitlab::Import::IidPreallocator).not_to receive(:new)
+
+        importer.preallocate_iids!
+      end
+    end
+
+    context 'when retrying and IIDs have already been allocated' do
+      it 'does not make API calls or re-allocate IIDs' do
+        allow(InternalId).to receive(:exists?)
+          .with(namespace: project.project_namespace, usage: :issues).and_return(true)
+        allow(InternalId).to receive(:exists?)
+          .with(project: project, usage: :merge_requests).and_return(true)
+        allow(InternalId).to receive(:exists?)
+          .with(project: project, usage: :milestones).and_return(true)
+
+        allow_next_instance_of(Octokit::Client) do |client|
+          allow(client).to receive(:rate_limit!)
+          expect(client).not_to receive(:issues)
+          expect(client).not_to receive(:pull_requests)
+          expect(client).not_to receive(:milestones)
+        end
+
+        expect(Gitlab::Import::IidPreallocator).not_to receive(:new)
+
+        importer.preallocate_iids!
+      end
+    end
+
+    context 'when retrying and only some IIDs have been allocated' do
+      it 'only fetches and allocates remaining resources' do
+        allow(InternalId).to receive(:exists?)
+          .with(namespace: project.project_namespace, usage: :issues).and_return(true)
+        allow(InternalId).to receive(:exists?)
+          .with(project: project, usage: :merge_requests).and_return(false)
+        allow(InternalId).to receive(:exists?)
+          .with(project: project, usage: :milestones).and_return(true)
+
+        allow_next_instance_of(Octokit::Client) do |client|
+          allow(client).to receive(:rate_limit!)
+          expect(client).not_to receive(:issues)
+          expect(client).not_to receive(:milestones)
+          allow(client).to receive_messages(
+            pull_requests: [{ number: 6 }],
+            last_response: last_response
+          )
+        end
+
+        preallocator = instance_double(Gitlab::Import::IidPreallocator)
+        expect(Gitlab::Import::IidPreallocator).to receive(:new).with(
+          project, { merge_requests: 6 }
+        ).and_return(preallocator)
+        expect(preallocator).to receive(:execute)
+
+        importer.preallocate_iids!
+      end
+    end
+
+    context 'when milestones span multiple pages' do
+      it 'finds the max milestone id across all pages' do
+        # The no-block form of the legacy client auto-paginates and
+        # concatenates all pages into a single array.
+        all_milestones = [{ id: 2 }, { id: 8 }, { id: 5 }, { id: 3 }]
+
+        allow_next_instance_of(Octokit::Client) do |client|
+          allow(client).to receive(:rate_limit!)
+          allow(client).to receive_messages(
+            issues: [{ number: 1 }],
+            pull_requests: [{ number: 1 }],
+            milestones: all_milestones,
+            last_response: last_response
+          )
+        end
+
+        preallocator = instance_double(Gitlab::Import::IidPreallocator)
+        expect(Gitlab::Import::IidPreallocator).to receive(:new).with(
+          project, { issues: 1, merge_requests: 1, project_milestones: 8 }
+        ).and_return(preallocator)
+        expect(preallocator).to receive(:execute)
+
+        importer.preallocate_iids!
+      end
+    end
+  end
+
   describe '#execute' do
     before do
       allow(Import::PlaceholderReferences::Store).to receive(:new).and_return(store)

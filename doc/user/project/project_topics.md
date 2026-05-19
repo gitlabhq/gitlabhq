@@ -87,7 +87,7 @@ Prerequisites:
 To assign topics to a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Naming, description, topics**.
 1. In the **Project topics** text box, search for a topic. Popular topics are suggested as you type.
 1. Select **Save changes**.

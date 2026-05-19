@@ -3,6 +3,7 @@
 class Projects::BranchesController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include SortingHelper
+  include HandlesGitalyErrors
 
   # Authorize
   before_action :require_non_empty_project, except: :create
@@ -41,9 +42,6 @@ class Projects::BranchesController < Projects::ApplicationController
         Gitlab::GitalyClient.allow_n_plus_1_calls do
           render
         end
-      rescue Gitlab::Git::CommandError
-        @gitaly_unavailable = true
-        render status: :service_unavailable
       end
       format.json do
         branches = BranchesFinder.new(@repository, branches_params).execute

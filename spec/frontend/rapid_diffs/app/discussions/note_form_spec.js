@@ -1,6 +1,6 @@
 import { merge } from 'lodash-es';
 import { createTestingPinia } from '@pinia/testing';
-import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
@@ -138,12 +138,34 @@ describe('NoteForm', () => {
         new KeyboardEvent('keydown', { key: ENTER_KEY, shiftKey, metaKey, ctrlKey }),
       );
       await nextTick();
-      expect(defaultProps.saveNote).toHaveBeenCalledWith('edit', shiftKey);
+      expect(defaultProps.saveNote).toHaveBeenCalledWith('edit', false);
       expect(trackSavedUsingEditor).toHaveBeenCalledWith(
         true,
         `${defaultProvisions.noteableType}_note`,
       );
       expect(findEditor().props('value')).toBe('');
+    });
+
+    it('forces saveNote on shift+cmd+enter', async () => {
+      const saveDraft = jest.fn().mockResolvedValue();
+      createComponent({ saveDraft, noteBody: 'text' }, undefined, {
+        MarkdownEditor: stubComponent(MarkdownEditor, {
+          template: '<div></div>',
+          computed: {
+            isContentEditorActive() {
+              return false;
+            },
+          },
+        }),
+      });
+      findEditor().vm.$emit('input', 'text');
+      findEditor().vm.$emit(
+        'keydown',
+        new KeyboardEvent('keydown', { key: ENTER_KEY, shiftKey: true, metaKey: true }),
+      );
+      await nextTick();
+      expect(defaultProps.saveNote).toHaveBeenCalledWith('text', false);
+      expect(saveDraft).not.toHaveBeenCalled();
     });
 
     it('cancels form on escape keydown', () => {
@@ -417,10 +439,10 @@ describe('NoteForm', () => {
         });
         await findAddToReviewButton().vm.$emit('click');
         await nextTick();
-        expect(saveDraft).toHaveBeenCalledWith('draft text');
+        expect(saveDraft).toHaveBeenCalledWith('draft text', false);
       });
 
-      it('calls saveDraft on shift+cmd+enter', async () => {
+      it('calls saveDraft on cmd+enter', async () => {
         createComponent({ saveDraft, noteBody: 'draft text' }, undefined, {
           MarkdownEditor: stubComponent(MarkdownEditor, {
             template: '<div></div>',
@@ -434,10 +456,10 @@ describe('NoteForm', () => {
         findEditor().vm.$emit('input', 'draft text');
         findEditor().vm.$emit(
           'keydown',
-          new KeyboardEvent('keydown', { key: ENTER_KEY, shiftKey: true, metaKey: true }),
+          new KeyboardEvent('keydown', { key: ENTER_KEY, metaKey: true }),
         );
         await nextTick();
-        expect(saveDraft).toHaveBeenCalledWith('draft text');
+        expect(saveDraft).toHaveBeenCalledWith('draft text', false);
         expect(defaultProps.saveNote).not.toHaveBeenCalled();
       });
 
@@ -459,5 +481,98 @@ describe('NoteForm', () => {
         expect(createAlert).toHaveBeenCalled();
       });
     });
+  });
+
+  describe('resolve discussion toggle', () => {
+    const findResolveCheckbox = () => wrapper.findByTestId('resolve-checkbox');
+    const findUnresolveCheckbox = () => wrapper.findByTestId('unresolve-checkbox');
+    const findDraftButton = () => wrapper.findByTestId('add-to-review-button');
+
+    const markdownEditorStub = {
+      MarkdownEditor: stubComponent(MarkdownEditor, {
+        template: '<div></div>',
+        computed: {
+          isContentEditorActive() {
+            return false;
+          },
+        },
+      }),
+    };
+
+    it('does not show resolve checkbox by default', () => {
+      createComponent();
+      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(false);
+    });
+
+    it.each`
+      discussionResolved | resolveVisible | unresolveVisible
+      ${false}           | ${true}        | ${false}
+      ${true}            | ${false}       | ${true}
+    `(
+      'shows correct checkbox when discussionResolved=$discussionResolved',
+      ({ discussionResolved, resolveVisible, unresolveVisible }) => {
+        createComponent({ showResolveDiscussionToggle: true, discussionResolved });
+        expect(findResolveCheckbox().exists()).toBe(resolveVisible);
+        expect(findUnresolveCheckbox().exists()).toBe(unresolveVisible);
+      },
+    );
+
+    it.each`
+      scenario                         | discussionResolved | toggleCheckbox | expectedResolve
+      ${'unchecked resolve (default)'} | ${false}           | ${null}        | ${false}
+      ${'checked resolve'}             | ${false}           | ${'resolve'}   | ${true}
+      ${'checked unresolve (default)'} | ${true}            | ${null}        | ${true}
+      ${'unchecked unresolve'}         | ${true}            | ${'unresolve'} | ${false}
+    `(
+      'passes shouldResolve=$expectedResolve to saveNote with $scenario',
+      async ({ discussionResolved, toggleCheckbox, expectedResolve }) => {
+        createComponent(
+          { showResolveDiscussionToggle: true, discussionResolved, noteBody: 'test' },
+          undefined,
+          markdownEditorStub,
+        );
+        if (toggleCheckbox === 'resolve') {
+          findResolveCheckbox().vm.$emit('input', true); // Vue 2
+          findResolveCheckbox().vm.$emit('update:modelValue', true); // Vue 3
+        } else if (toggleCheckbox === 'unresolve') {
+          findUnresolveCheckbox().vm.$emit('input', false); // Vue 2
+          findUnresolveCheckbox().vm.$emit('update:modelValue', false); // Vue 3
+        }
+        await findSaveButton().vm.$emit('click');
+        await nextTick();
+        await nextTick();
+        expect(defaultProps.saveNote).toHaveBeenCalledWith('test', expectedResolve);
+      },
+    );
+
+    it.each`
+      scenario             | discussionResolved | toggleCheckbox | showToggle | expectedResolve
+      ${'resolving'}       | ${false}           | ${'resolve'}   | ${true}    | ${true}
+      ${'reopening'}       | ${true}            | ${null}        | ${true}    | ${false}
+      ${'no toggle shown'} | ${false}           | ${null}        | ${false}   | ${false}
+    `(
+      'passes resolve state to saveDraft when $scenario',
+      async ({ discussionResolved, toggleCheckbox, showToggle, expectedResolve }) => {
+        const saveDraft = jest.fn().mockResolvedValue();
+        createComponent(
+          {
+            saveDraft,
+            showResolveDiscussionToggle: showToggle,
+            discussionResolved,
+            noteBody: 'test',
+          },
+          undefined,
+          markdownEditorStub,
+        );
+        if (toggleCheckbox === 'resolve') {
+          findResolveCheckbox().vm.$emit('input', true); // Vue 2
+          findResolveCheckbox().vm.$emit('update:modelValue', true); // Vue 3
+        }
+        await findDraftButton().vm.$emit('click');
+        await nextTick();
+        await nextTick();
+        expect(saveDraft).toHaveBeenCalledWith('test', expectedResolve);
+      },
+    );
   });
 });

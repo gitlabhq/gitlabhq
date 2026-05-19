@@ -44,7 +44,7 @@ Events:
 * **Name:** Primary identifier of the event, format: \<**action**\>\_\<**target_of_action**\>\_\<**where/when**\>
    * **Example event name:** click_save_button_in_issue_description_within_15s_of_page_load (**action** = click ; **target** = save button; **where** = in issue description ; **when** = within 15s
 * **Additional properties: Besides user/project/namespace, what other details should be tracked, if any? ex) status, type, object id, etc.
-* **Feature:** What feature is being instrumented? Please use the feature title that is used in features.yml if thats already available.
+* **Feature:** What feature is being instrumented? Please use the feature title that is used in features.yml if that's already available.
 
 Metrics:
 * **Description:** What quantitative measurements derived from either event data or database columns would you like to track? eg: Weekly count of unique users who update an issue
@@ -59,7 +59,7 @@ Metrics:
 ## Next steps
 
 * [ ] Assign an engineering counterpart from your group to add instrumentation to the code
-* [ ] Explore instrumented data with the help of our [data discovery guide](https://docs.gitlab.com/development/internal_analytics/#data-discovery). You can also [reach out to product data insights team](https://gitlab.com/gitlab-data/product-analytics/-/issues/new?issuable_template=PI%20Chart%20Help) for help with generating Tableau reports/dashboards.
+* [ ] Explore instrumented data with the help of our [data discovery guide](https://docs.gitlab.com/development/internal_analytics/#data-discovery). You can also [reach out to product data insights team](https://gitlab.com/gitlab-data/product-analytics/-/issues/new?description_template=PI%20Chart%20Help) for help with generating Tableau reports/dashboards.
 * [ ] Your feedback is valuable to us. Please leave us feedback in the comment section of this issue and tag @tjayaramaraju.
 
 # Important links

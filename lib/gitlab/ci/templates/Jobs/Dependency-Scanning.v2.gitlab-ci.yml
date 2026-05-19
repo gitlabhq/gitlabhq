@@ -30,7 +30,7 @@ spec:
       description: "The repository of the analyzer image used by the dependency-scanning job."
     analyzer_image_version:
       type: string
-      default: "1"
+      default: "2"
       description: "The version of the analyzer image used by the dependency-scanning job."
 
     # Settings for DS analyzer behavior.
@@ -38,6 +38,14 @@ spec:
       type: string
       default: ""
       description: "CA certificate bundle to trust. The CA bundle provided here is added to the system's certificates and also used by other tools during the scanning process."
+    pip_manifest_file_name_pattern:
+      type: string
+      default: ""
+      description: "Custom pip manifest file name pattern to use for dependency resolution and manifest scanning. The pattern should match file names only, not directory paths. See https://github.com/bmatcuk/doublestar/tree/v1#patterns for syntax details."
+    pipcompile_lockfile_file_name_pattern:
+      type: string
+      default: ""
+      description: "Custom pipcompile lockfile file name pattern to use when analyzing. The pattern should match file names only, not directory paths. See https://github.com/bmatcuk/doublestar/tree/v1#patterns for syntax details."
     pipcompile_requirements_file_name_pattern:
       type: string
       default: ""
@@ -74,6 +82,10 @@ spec:
       type: number
       default: 3
       description: "Vulnerability scanning API initial delay in seconds before downloading scan results."
+    enable_manifest_fallback:
+      type: boolean
+      default: true
+      description: "Enable manifest fallback for dependency scanning."
 
     # Settings for all dependency resolution jobs.
     resolution_jobs_stage:
@@ -98,6 +110,10 @@ spec:
       type: string
       default: "registry.gitlab.com/security-products/dependency-resolution/ubi9/openjdk-21:1"
       description: "The image used by the maven dependency resolution job."
+    maven_dependency_plugin_version:
+      type: string
+      default: "3.7.0"
+      description: "Version of maven-dependency-plugin used during resolution. Must be >= 3.7.0. Override when using a custom resolution image that does not have 3.7.0 available."
 
     # Settings for python resolution job.
     python_resolution_job_name:
@@ -109,6 +125,16 @@ spec:
       default: "registry.gitlab.com/security-products/dependency-resolution/ubi9/python-312-minimal-with-piptools-7:9"
       description: "The image used by the python dependency resolution job."
 
+    # Settings for gradle resolution job.
+    gradle_resolution_job_name:
+      type: string
+      default: "dependency-scanning:gradle-resolution"
+      description: "The name of the job for gradle dependency resolution."
+    gradle_resolution_image:
+      type: string
+      default: "registry.gitlab.com/security-products/dependency-resolution/ubi9/openjdk-17-with-gradle-8:1"
+      description: "The image used by the gradle dependency resolution job."
+
 ---
 
 variables:
@@ -118,12 +144,13 @@ variables:
   # Variable used to track the template/component introducing DS analyzer. Please do not override.
   # This is an internal variable.
   INTERNAL_DS_ANALYZER_CI_INTEGRATION: "template::v2"
-  # Temporary override for feature rollout. This will be removed when releasing the feature.
-  DS_DISABLED_RESOLUTION_JOBS: "maven, python, gradle"
 
 # ----------------------------------------------------------------
 # Main Dependency Scanning job
 # This job is mandatory and responsible for doing the complete dependency analysis
+
+.ds-supported-files: &ds_supported_files
+  - '**/{*.csproj,*.vbproj,build.gradle,build.gradle.kts,build.sbt,Cargo.lock,composer.lock,conan.lock,conda-lock.yml,dependencies-compile.dot,dependencies.lock,Gemfile.lock,gems.locked,go.graph,go.mod,gradle.lockfile,ivy-report.xml,maven.graph.json,npm-shrinkwrap.json,package-lock.json,Package.resolved,Pipfile,Pipfile.lock,pipenv.graph.json,pipdeptree.json,pnpm-lock.yaml,Podfile.lock,poetry.lock,pom.xml,pubspec.lock,requirements.pip,requirements.txt,requires.txt,setup.py,uv.lock,yarn.lock}'
 
 "$[[ inputs.job_name ]]":
   variables:
@@ -136,6 +163,8 @@ variables:
     # Variable fallback for legacy variables used by version 1 of the Dependency Scanning template.
     - export ADDITIONAL_CA_CERT_BUNDLE="${ADDITIONAL_CA_CERT_BUNDLE:-$[[ inputs.additional_ca_cert_bundle ]]}"
     - export DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN="${DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN:-$[[ inputs.pipcompile_requirements_file_name_pattern ]]}"
+    - export DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN="${DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN:-$[[ inputs.pipcompile_lockfile_file_name_pattern ]]}"
+    - export DS_PIP_MANIFEST_FILE_NAME_PATTERN="${DS_PIP_MANIFEST_FILE_NAME_PATTERN:-$[[ inputs.pip_manifest_file_name_pattern ]]}"
     - export DS_MAX_DEPTH="${DS_MAX_DEPTH:-$[[ inputs.max_scan_depth ]]}"
     - export DS_EXCLUDED_PATHS="${DS_EXCLUDED_PATHS:-$[[ inputs.excluded_paths ]]}"
     - export DS_INCLUDE_DEV_DEPENDENCIES="${DS_INCLUDE_DEV_DEPENDENCIES:-$[[ inputs.include_dev_dependencies ]]}"
@@ -144,6 +173,7 @@ variables:
     - export DS_ENABLE_VULNERABILITY_SCAN="${DS_ENABLE_VULNERABILITY_SCAN:-$[[ inputs.enable_vulnerability_scan ]]}"
     - export DS_API_TIMEOUT="${DS_API_TIMEOUT:-$[[ inputs.vulnerability_scan_api_timeout ]]}"
     - export DS_API_SCAN_DOWNLOAD_DELAY="${DS_API_SCAN_DOWNLOAD_DELAY:-$[[ inputs.vulnerability_scan_api_download_delay ]]}"
+    - export DS_ENABLE_MANIFEST_FALLBACK="${DS_ENABLE_MANIFEST_FALLBACK:-$[[ inputs.enable_manifest_fallback ]]}"
     - /analyzer run
   artifacts:
     access: "developer"
@@ -154,19 +184,35 @@ variables:
       cyclonedx: "**/gl-sbom-*.cdx.json"
       dependency_scanning: 'gl-dependency-scanning-report.json'
   rules:
-      # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
+      when: never
+
+    # The following 3 blocks of rules define whether the job runs in an *MR pipeline* or a *branch pipeline*
     # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
     # to cover both the *MR pipeline* and the *branch pipeline* workflows.
 
     # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
-    - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event"'
+    # 1.1. When a custom file pattern is configured, run the job
+    - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          ($DS_PIP_MANIFEST_FILE_NAME_PATTERN || $PIP_REQUIREMENTS_FILE || $DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN)'
+    # 1.2 When $DS_SKIP_IF_NO_SUPPORTED_FILES is set, only run the job when a compatible file is found
+    - if: '$DS_SKIP_IF_NO_SUPPORTED_FILES == "true" && ($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event"'
+      exists: *ds_supported_files
+    # 1.3 Otherwise, always run the job.
+    - if: '$DS_SKIP_IF_NO_SUPPORTED_FILES != "true" && ($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event"'
 
     # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
     - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_OPEN_MERGE_REQUESTS'
       when: never
 
     # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
-    - if: $CI_COMMIT_BRANCH
+    # 3.1. When a custom file pattern is configured, run the job
+    - if: $CI_COMMIT_BRANCH && ($DS_PIP_MANIFEST_FILE_NAME_PATTERN || $PIP_REQUIREMENTS_FILE || $DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN)
+    # 3.2 When $DS_SKIP_IF_NO_SUPPORTED_FILES is set, only run the job when a compatible file is found
+    - if: '$DS_SKIP_IF_NO_SUPPORTED_FILES == "true" && $CI_COMMIT_BRANCH'
+      exists: *ds_supported_files
+    # 3.3 Otherwise, always run the job.
+    - if: '$DS_SKIP_IF_NO_SUPPORTED_FILES != "true" && $CI_COMMIT_BRANCH'
 
 # ----------------------------------------------------------------
 # Dependency Resolution jobs
@@ -179,7 +225,7 @@ variables:
     DS_ANALYZER_IMAGE: $[[ inputs.analyzer_image_prefix ]]/$[[ inputs.analyzer_image_name ]]:$[[ inputs.analyzer_image_version ]]
     DS_MAVEN_RESOLUTION_IMAGE: $[[ inputs.maven_resolution_image ]]
     # List of variables exported to the service container (DS analyzer image) that are useful for dependency file detection and dependency resolution commands generation
-    DS_MAVEN_RESOLUTION_EXPORTED_VARS: ADDITIONAL_CA_CERT_BUNDLE DS_MAX_DEPTH DS_EXCLUDED_PATHS DS_INCLUDE_DEV_DEPENDENCIES SECURE_LOG_LEVEL
+    DS_MAVEN_RESOLUTION_EXPORTED_VARS: ADDITIONAL_CA_CERT_BUNDLE DS_MAX_DEPTH DS_EXCLUDED_PATHS DS_INCLUDE_DEV_DEPENDENCIES SECURE_LOG_LEVEL DS_MAVEN_DEPENDENCY_PLUGIN_VERSION MAVEN_ARGS
   image: $DS_MAVEN_RESOLUTION_IMAGE
   stage: $[[ inputs.resolution_jobs_stage ]]
   allow_failure: $[[ inputs.resolution_jobs_allow_failure ]]
@@ -195,6 +241,9 @@ variables:
     - export DS_EXCLUDED_PATHS="${DS_EXCLUDED_PATHS:-$[[ inputs.excluded_paths ]]}"
     - export DS_INCLUDE_DEV_DEPENDENCIES="${DS_INCLUDE_DEV_DEPENDENCIES:-$[[ inputs.include_dev_dependencies ]]}"
     - export SECURE_LOG_LEVEL="${SECURE_LOG_LEVEL:-$[[ inputs.analyzer_log_level ]]}"
+    - export DS_MAVEN_DEPENDENCY_PLUGIN_VERSION="${DS_MAVEN_DEPENDENCY_PLUGIN_VERSION:-$[[ inputs.maven_dependency_plugin_version ]]}"
+    # MAVEN_ARGS fallback to MAVEN_CLI_OPTS which is a deprecated variable from the legacy Gemnasium analyzer.
+    - export MAVEN_ARGS="${MAVEN_ARGS:-$MAVEN_CLI_OPTS}"
 
     # Create the shared directory to communicate with service container.
     # World-write needed as main container and service container may run as different UIDs
@@ -228,6 +277,9 @@ variables:
       - '**/maven.graph.json'
     when: always
   rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
+      when: never
+
     - if: '"$[[ inputs.disabled_resolution_jobs ]]" =~ /\bmaven\b/ || $DS_DISABLED_RESOLUTION_JOBS =~ /\bmaven\b/'
       when: never
 
@@ -236,7 +288,7 @@ variables:
     # to cover both the *MR pipeline* and the *branch pipeline* workflows.
 
     # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
-    # With default file detection
+    # Only run the job when a compatible file is found
     - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event"'
       exists:
         - '**/pom.xml'
@@ -244,7 +296,7 @@ variables:
     - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_OPEN_MERGE_REQUESTS'
       when: never
     # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
-    # With default file detection
+    # Only run the job when a compatible file is found
     - if: $CI_COMMIT_BRANCH
       exists:
         - '**/pom.xml'
@@ -256,7 +308,7 @@ variables:
     DS_ANALYZER_IMAGE: $[[ inputs.analyzer_image_prefix ]]/$[[ inputs.analyzer_image_name ]]:$[[ inputs.analyzer_image_version ]]
     DS_PYTHON_RESOLUTION_IMAGE: $[[ inputs.python_resolution_image ]]
     # List of variables exported to the service container (DS analyzer image) that are useful for dependency file detection and dependency resolution commands generation
-    DS_PYTHON_RESOLUTION_EXPORTED_VARS: ADDITIONAL_CA_CERT_BUNDLE DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN PIP_REQUIREMENTS_FILE DS_PIP_DEPENDENCY_PATH DS_MAX_DEPTH DS_EXCLUDED_PATHS DS_INCLUDE_DEV_DEPENDENCIES SECURE_LOG_LEVEL
+    DS_PYTHON_RESOLUTION_EXPORTED_VARS: ADDITIONAL_CA_CERT_BUNDLE DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN DS_PIP_MANIFEST_FILE_NAME_PATTERN DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN PIP_REQUIREMENTS_FILE DS_PIP_DEPENDENCY_PATH DS_MAX_DEPTH DS_EXCLUDED_PATHS DS_INCLUDE_DEV_DEPENDENCIES SECURE_LOG_LEVEL
   image: $DS_PYTHON_RESOLUTION_IMAGE
   stage: $[[ inputs.resolution_jobs_stage ]]
   allow_failure: $[[ inputs.resolution_jobs_allow_failure ]]
@@ -269,6 +321,8 @@ variables:
     # These export statements only affect the main container, update DS_PYTHON_RESOLUTION_EXPORTED_VARS to expose them to the service container if necessary.
     - export ADDITIONAL_CA_CERT_BUNDLE="${ADDITIONAL_CA_CERT_BUNDLE:-$[[ inputs.additional_ca_cert_bundle ]]}"
     - export DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN="${DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN:-$[[ inputs.pipcompile_requirements_file_name_pattern ]]}"
+    - export DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN="${DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN:-$[[ inputs.pipcompile_lockfile_file_name_pattern ]]}"
+    - export DS_PIP_MANIFEST_FILE_NAME_PATTERN="${DS_PIP_MANIFEST_FILE_NAME_PATTERN:-$[[ inputs.pip_manifest_file_name_pattern ]]}"
     - export DS_MAX_DEPTH="${DS_MAX_DEPTH:-$[[ inputs.max_scan_depth ]]}"
     - export DS_EXCLUDED_PATHS="${DS_EXCLUDED_PATHS:-$[[ inputs.excluded_paths ]]}"
     - export DS_INCLUDE_DEV_DEPENDENCIES="${DS_INCLUDE_DEV_DEPENDENCIES:-$[[ inputs.include_dev_dependencies ]]}"
@@ -306,6 +360,9 @@ variables:
       - '**/pipcompile.lock.txt'
     when: always
   rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
+      when: never
+
     - if: '"$[[ inputs.disabled_resolution_jobs ]]" =~ /\bpython\b/ || $DS_DISABLED_RESOLUTION_JOBS =~ /\bpython\b/'
       when: never
 
@@ -314,22 +371,104 @@ variables:
     # to cover both the *MR pipeline* and the *branch pipeline* workflows.
 
     # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
-    # With default file detection
+    # 1.1. When a custom file pattern is configured, run the job
+    - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          ($DS_PIP_MANIFEST_FILE_NAME_PATTERN || $PIP_REQUIREMENTS_FILE)'
+    # 1.2 Otherwise, only run the job when a compatible file is found
     - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event"'
       exists:
         - '**/{requirements.txt,requirements.in,requirements.pip,requires.txt,setup.py,setup.cfg,pyproject.toml}'
-    # When $PIP_REQUIREMENTS_FILE is set
-    - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event" &&
-          $PIP_REQUIREMENTS_FILE'
 
     # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
     - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_OPEN_MERGE_REQUESTS'
       when: never
 
     # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
-    # With default file detection
+    # 3.1. When a custom file pattern is configured, run the job
+    - if: $CI_COMMIT_BRANCH && ($DS_PIP_MANIFEST_FILE_NAME_PATTERN || $PIP_REQUIREMENTS_FILE)
+    # 3.2 Otherwise, only run the job when a compatible file is found
     - if: $CI_COMMIT_BRANCH
       exists:
         - '**/{requirements.txt,requirements.in,requirements.pip,requires.txt,setup.py,setup.cfg,pyproject.toml}'
-    # When $PIP_REQUIREMENTS_FILE is set
-    - if: $CI_COMMIT_BRANCH && $PIP_REQUIREMENTS_FILE
+
+# ----------------------------------------------------------------
+# Dependency Resolution for Gradle
+"$[[ inputs.gradle_resolution_job_name ]]":
+  variables:
+    DS_ANALYZER_IMAGE: $[[ inputs.analyzer_image_prefix ]]/$[[ inputs.analyzer_image_name ]]:$[[ inputs.analyzer_image_version ]]
+    DS_GRADLE_RESOLUTION_IMAGE: $[[ inputs.gradle_resolution_image ]]
+    # List of variables exported to the service container (DS analyzer image) that are useful for dependency file detection and dependency resolution commands generation
+    DS_GRADLE_RESOLUTION_EXPORTED_VARS: ADDITIONAL_CA_CERT_BUNDLE DS_MAX_DEPTH DS_EXCLUDED_PATHS DS_INCLUDE_DEV_DEPENDENCIES GRADLE_CLI_OPTS SECURE_LOG_LEVEL
+  image: $DS_GRADLE_RESOLUTION_IMAGE
+  stage: $[[ inputs.resolution_jobs_stage ]]
+  allow_failure: $[[ inputs.resolution_jobs_allow_failure ]]
+  services:
+    - name: $DS_ANALYZER_IMAGE
+      alias: ds-analyzer
+      command: ["/analyzer", "dependency-resolution-service", "--project-types", "gradle"]
+  script:
+    # Variable fallback for legacy variables used by version 1 of the Dependency Scanning template.
+    # These export statements only affect the main container, update DS_GRADLE_RESOLUTION_EXPORTED_VARS to expose them to the service container if necessary.
+    - export ADDITIONAL_CA_CERT_BUNDLE="${ADDITIONAL_CA_CERT_BUNDLE:-$[[ inputs.additional_ca_cert_bundle ]]}"
+    - export DS_MAX_DEPTH="${DS_MAX_DEPTH:-$[[ inputs.max_scan_depth ]]}"
+    - export DS_EXCLUDED_PATHS="${DS_EXCLUDED_PATHS:-$[[ inputs.excluded_paths ]]}"
+    - export DS_INCLUDE_DEV_DEPENDENCIES="${DS_INCLUDE_DEV_DEPENDENCIES:-$[[ inputs.include_dev_dependencies ]]}"
+    - export SECURE_LOG_LEVEL="${SECURE_LOG_LEVEL:-$[[ inputs.analyzer_log_level ]]}"
+
+    # Create the shared directory to communicate with service container.
+    # World-write needed as main container and service container may run as different UIDs
+    - mkdir -p .gitlab_ds && chmod 777 .gitlab_ds
+    - touch .gitlab_ds/env && chmod 666 .gitlab_ds/env
+    # Explicitly expose relevant variables to the service container via an env file
+    - for var in $DS_GRADLE_RESOLUTION_EXPORTED_VARS; do printf '%s=%s\n' "$var" "$(printenv "$var")"; done > .gitlab_ds/env
+    # Signal readiness for service to start
+    - touch ".gitlab_ds/ready_${CI_JOB_ID}" && chmod 666 ".gitlab_ds/ready_${CI_JOB_ID}"
+
+    # Wait for dependency_resolution.sh to be generated by the service container
+    - |
+      TIMEOUT=60
+      ELAPSED=0
+      while [ ! -f .gitlab_ds/dependency_resolution.sh ] && [ $ELAPSED -lt $TIMEOUT ]; do
+        sleep 1
+        ELAPSED=$((ELAPSED + 1))
+      done
+
+      # Display service container logs in main job logs
+      cat .gitlab_ds/service.log || echo "WARNING: no service logs found"
+
+      if [ ! -f .gitlab_ds/dependency_resolution.sh ]; then
+        echo "ERROR: .gitlab_ds/dependency_resolution.sh script not found after $TIMEOUT seconds"
+        exit 1
+      fi
+    - sh .gitlab_ds/dependency_resolution.sh
+
+  artifacts:
+    paths:
+      - '**/gradle.graph.txt'
+    when: always
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
+      when: never
+
+    - if: '"$[[ inputs.disabled_resolution_jobs ]]" =~ /\bgradle\b/ || $DS_DISABLED_RESOLUTION_JOBS =~ /\bgradle\b/'
+      when: never
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
+    # Only run the job when a compatible file is found
+    - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event"'
+      exists:
+        - '**/{build.gradle,build.gradle.kts,settings.gradle,settings.gradle.kts}'
+
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    # Only run the job when a compatible file is found
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/{build.gradle,build.gradle.kts,settings.gradle,settings.gradle.kts}'

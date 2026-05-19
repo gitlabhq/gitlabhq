@@ -71,7 +71,7 @@ RSpec.describe Groups::GroupLinks::CreateService, '#execute', feature_category: 
       let_it_be(:child_group_user) { create(:user) }
       let_it_be(:parent_group_user) { create(:user) }
 
-      before do
+      before_all do
         shared_with_group_parent.add_owner(parent_group_user)
         shared_with_group.add_owner(group_user)
         shared_with_group_child.add_owner(child_group_user)

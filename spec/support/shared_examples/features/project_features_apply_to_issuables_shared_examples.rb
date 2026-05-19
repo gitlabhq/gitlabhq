@@ -21,11 +21,14 @@ RSpec.shared_examples 'project features apply to issuables' do |klass|
   before do
     _ = issuable
     sign_in(user) if user
-    visit path
   end
 
   context 'public access level' do
     let(:access_level) { ProjectFeature::ENABLED }
+
+    before do
+      visit path
+    end
 
     context 'group member' do
       let(:user) { user_in_group }
@@ -42,6 +45,10 @@ RSpec.shared_examples 'project features apply to issuables' do |klass|
 
   context 'private access level' do
     let(:access_level) { ProjectFeature::PRIVATE }
+
+    before do
+      visit path
+    end
 
     context 'group member' do
       let(:user) { user_in_group }

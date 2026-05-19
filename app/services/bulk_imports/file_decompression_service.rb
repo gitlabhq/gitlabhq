@@ -10,7 +10,7 @@ module BulkImports
 
     ServiceError = Class.new(StandardError)
 
-    def initialize(tmpdir:, filename:, context:)
+    def initialize(tmpdir:, filename:, context: nil)
       @tmpdir = tmpdir
       @filename = filename
       @filepath = File.join(@tmpdir, @filename)
@@ -50,7 +50,7 @@ module BulkImports
     end
 
     def validate_decompressed_file_size
-      return if size_validator.valid? || context.override_file_size_limit?
+      return if size_validator.valid? || context&.override_file_size_limit?
 
       raise(ServiceError, 'File decompression error')
     end

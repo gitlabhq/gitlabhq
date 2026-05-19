@@ -15,6 +15,44 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
   end
 
   describe 'class methods' do
+    describe '.filter_definitions' do
+      it 'returns CE filter definitions' do
+        keys = described_class.filter_definitions.pluck(:key)
+
+        expect(keys).to include(
+          'assigneeUsernames', 'assigneeWildcardId', 'authorUsername',
+          'confidential', 'labelName', 'milestoneTitle', 'milestoneWildcardId',
+          'myReactionEmoji', 'types', 'state', 'not', 'or',
+          'closedAfter', 'closedBefore', 'createdAfter', 'createdBefore',
+          'dueAfter', 'dueBefore', 'updatedAfter', 'updatedBefore',
+          'subscribed', 'releaseTag', 'releaseTagWildcardId',
+          'crmContactId', 'crmOrganizationId'
+        )
+      end
+
+      it 'includes correct types for date range and CRM/release filters' do
+        type_map = described_class.filter_definitions.to_h { |f| [f[:key], f[:type]] }
+
+        expect(type_map['closedAfter']).to eq('Time')
+        expect(type_map['closedBefore']).to eq('Time')
+        expect(type_map['createdAfter']).to eq('Time')
+        expect(type_map['createdBefore']).to eq('Time')
+        expect(type_map['dueAfter']).to eq('Time')
+        expect(type_map['dueBefore']).to eq('Time')
+        expect(type_map['updatedAfter']).to eq('Time')
+        expect(type_map['updatedBefore']).to eq('Time')
+        expect(type_map['subscribed']).to eq('SubscriptionStatus')
+        expect(type_map['releaseTag']).to eq('[String!]')
+        expect(type_map['releaseTagWildcardId']).to eq('ReleaseTagWildcardId')
+        expect(type_map['crmContactId']).to eq('String')
+        expect(type_map['crmOrganizationId']).to eq('String')
+      end
+
+      it 'includes type information for each filter' do
+        expect(described_class.filter_definitions).to all(include(key: a_kind_of(String), type: a_kind_of(String)))
+      end
+    end
+
     describe '.build_query' do
       it 'returns the work items GraphQL query string' do
         query = described_class.build_query
@@ -23,6 +61,25 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
         expect(query).to include('$fullPath: ID!')
         expect(query).to include('namespace(fullPath: $fullPath)')
         expect(query).to include('workItems(')
+      end
+
+      it 'includes filter variables derived from filter_definitions' do
+        query = described_class.build_query
+
+        described_class.filter_definitions.each do |f|
+          expect(query).to include("$#{f[:key]}: #{f[:type]}")
+          expect(query).to include("#{f[:key]}: $#{f[:key]}")
+        end
+      end
+
+      it 'includes structural variables' do
+        query = described_class.build_query
+
+        expect(query).to include('$sort: WorkItemSort')
+        expect(query).to include('$includeDescendants: Boolean')
+        expect(query).to include('$excludeProjects: Boolean')
+        expect(query).to include('$afterCursor: String')
+        expect(query).to include('$firstPageSize: Int')
       end
 
       it 'includes pagination fields' do
@@ -37,21 +94,6 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
 
         work_item_fields = %w[nodes id iid title state webUrl workItemType]
         work_item_fields.each { |field| expect(query).to include(field) }
-      end
-
-      it 'includes filter variables' do
-        query = described_class.build_query
-
-        expect(query).to include('$sort: WorkItemSort')
-        expect(query).to include('$state: IssuableState')
-        expect(query).to include('$search: String')
-        expect(query).to include('$in: [IssuableSearchableField!]')
-        expect(query).to include('$assigneeUsernames: [String!]')
-        expect(query).to include('$labelName: [String!]')
-        expect(query).to include('$milestoneTitle: [String!]')
-        expect(query).to include('$authorUsername: String')
-        expect(query).to include('$types: [IssueType!]')
-        expect(query).to include('$hierarchyFilters: HierarchyFilterInput')
       end
 
       it 'includes widget fragments' do
@@ -77,9 +119,10 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
 
     it 'has correct GraphQL operation for version 0.1.0' do
       operation = tool.graphql_operation
+      query = operation.respond_to?(:call) ? operation.call : operation
 
-      expect(operation).to include('query GetWorkItemsFull')
-      expect(operation).to include('namespace(fullPath: $fullPath)')
+      expect(query).to include('query GetWorkItemsFull')
+      expect(query).to include('namespace(fullPath: $fullPath)')
     end
   end
 
@@ -201,8 +244,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
           group_id: group.id.to_s,
           filters: {
             'labelName' => ['bug'],
-            'healthStatusFilter' => 'onTrack',
-            'iterationId' => ['gid://gitlab/Iteration/1']
+            'unsupportedFilter' => 'keyword'
           },
           sort: nil
         }
@@ -211,7 +253,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
       it 'detects unsupported filters' do
         tool.build_variables
 
-        expect(tool.unsupported_filters).to contain_exactly('healthStatusFilter', 'iterationId')
+        expect(tool.unsupported_filters).to contain_exactly('unsupportedFilter')
       end
 
       it 'still maps supported filters correctly' do
@@ -256,6 +298,118 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
 
         expect(variables[:firstPageSize]).to eq(50)
         expect(variables[:afterCursor]).to eq('cursor123')
+      end
+    end
+
+    context 'with date range filters' do
+      let(:params) do
+        {
+          group_id: group.id.to_s,
+          filters: {
+            'closedAfter' => '2026-01-01T00:00:00Z',
+            'closedBefore' => '2026-02-01T00:00:00Z',
+            'createdAfter' => '2026-01-01T00:00:00Z',
+            'createdBefore' => '2026-02-01T00:00:00Z',
+            'dueAfter' => '2026-01-01T00:00:00Z',
+            'dueBefore' => '2026-02-01T00:00:00Z',
+            'updatedAfter' => '2026-01-01T00:00:00Z',
+            'updatedBefore' => '2026-02-01T00:00:00Z'
+          },
+          sort: nil
+        }
+      end
+
+      it 'maps all date range filters to GraphQL variables' do
+        variables = tool.build_variables
+
+        expect(variables[:closedAfter]).to eq('2026-01-01T00:00:00Z')
+        expect(variables[:closedBefore]).to eq('2026-02-01T00:00:00Z')
+        expect(variables[:createdAfter]).to eq('2026-01-01T00:00:00Z')
+        expect(variables[:createdBefore]).to eq('2026-02-01T00:00:00Z')
+        expect(variables[:dueAfter]).to eq('2026-01-01T00:00:00Z')
+        expect(variables[:dueBefore]).to eq('2026-02-01T00:00:00Z')
+        expect(variables[:updatedAfter]).to eq('2026-01-01T00:00:00Z')
+        expect(variables[:updatedBefore]).to eq('2026-02-01T00:00:00Z')
+      end
+
+      it 'does not report date range filters as unsupported' do
+        tool.build_variables
+
+        expect(tool.unsupported_filters).to be_empty
+      end
+    end
+
+    context 'with subscribed filter' do
+      let(:params) do
+        {
+          group_id: group.id.to_s,
+          filters: { 'subscribed' => 'EXPLICITLY_SUBSCRIBED' },
+          sort: nil
+        }
+      end
+
+      it 'maps subscribed filter to GraphQL variables' do
+        variables = tool.build_variables
+
+        expect(variables[:subscribed]).to eq('EXPLICITLY_SUBSCRIBED')
+      end
+
+      it 'does not report subscribed as unsupported' do
+        tool.build_variables
+
+        expect(tool.unsupported_filters).not_to include('subscribed')
+      end
+    end
+
+    context 'with release filters' do
+      let(:params) do
+        {
+          group_id: group.id.to_s,
+          filters: {
+            'releaseTag' => %w[v1.0 v1.1],
+            'releaseTagWildcardId' => 'NONE'
+          },
+          sort: nil
+        }
+      end
+
+      it 'maps release filters to GraphQL variables' do
+        variables = tool.build_variables
+
+        expect(variables[:releaseTag]).to eq(%w[v1.0 v1.1])
+        expect(variables[:releaseTagWildcardId]).to eq('NONE')
+      end
+
+      it 'does not report release filters as unsupported' do
+        tool.build_variables
+
+        expect(tool.unsupported_filters).not_to include('releaseTag', 'releaseTagWildcardId')
+      end
+    end
+
+    context 'with CRM filters' do
+      let(:params) do
+        {
+          group_id: group.id.to_s,
+          filters: {
+            'crmContactId' => 'gid://gitlab/CustomerRelations::Contact/1',
+            'crmOrganizationId' => 'gid://gitlab/CustomerRelations::Organization/2'
+          },
+          sort: nil
+        }
+      end
+
+      it 'maps CRM filters to GraphQL variables' do
+        variables = tool.build_variables
+
+        expect(variables[:crmContactId]).to eq('gid://gitlab/CustomerRelations::Contact/1')
+        expect(variables[:crmOrganizationId]).to eq('gid://gitlab/CustomerRelations::Organization/2')
+      end
+
+      it 'does not report CRM filters as unsupported' do
+        tool.build_variables
+
+        expect(tool.unsupported_filters).not_to include('crmContactId', 'crmOrganizationId')
       end
     end
   end

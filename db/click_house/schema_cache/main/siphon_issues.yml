@@ -1,0 +1,102 @@
+---
+name: siphon_issues
+engine: 'Null'
+engine_full: "`Null`"
+columns:
+- name: id
+  type: Int64
+- name: title
+  type: String
+- name: author_id
+  type: Nullable(Int64)
+- name: project_id
+  type: Nullable(Int64)
+- name: created_at
+  type: DateTime64(6, 'UTC')
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+- name: description
+  type: String
+- name: milestone_id
+  type: Nullable(Int64)
+- name: iid
+  type: Int64
+- name: updated_by_id
+  type: Nullable(Int64)
+- name: weight
+  type: Nullable(Int64)
+- name: confidential
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: due_date
+  type: Nullable(Date32)
+- name: moved_to_id
+  type: Nullable(Int64)
+- name: time_estimate
+  type: Nullable(Int64)
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: relative_position
+  type: Nullable(Int64)
+- name: service_desk_reply_to
+  type: Nullable(String)
+- name: cached_markdown_version
+  type: Nullable(Int64)
+- name: last_edited_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: last_edited_by_id
+  type: Nullable(Int64)
+- name: discussion_locked
+  type: Nullable(Bool)
+- name: closed_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: closed_by_id
+  type: Nullable(Int64)
+- name: state_id
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '1'
+- name: duplicated_to_id
+  type: Nullable(Int64)
+- name: promoted_to_epic_id
+  type: Nullable(Int64)
+- name: health_status
+  type: Nullable(Int16)
+- name: sprint_id
+  type: Nullable(Int64)
+- name: blocking_issues_count
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: upvotes_count
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: work_item_type_id
+  type: Int64
+- name: namespace_id
+  type: Int64
+- name: start_date
+  type: Nullable(Date32)
+- name: imported_from
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: namespace_traversal_ids
+  type: Array(Int64)
+  default_kind: DEFAULT
+  default_expression: "[]"
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(namespace_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.namespace_traversal_paths_dict',
+    'traversal_path', namespace_id, '0/'), '0/')
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'

@@ -25,7 +25,7 @@ module Gitlab
           run_untagged
           access_level
           tag_list
-          allowed_plan_ids
+          allowed_plan_name_uids
         ].freeze
 
         attr_reader(*ATTRIBUTES)

@@ -204,7 +204,7 @@ module Gitlab
 
       # API::Internal::Coverage
       def verify_coverage
-        # requests to this endpoint should never contain any params or body
+        # requests to this endpoing should never contain any params or body
         request.env['rack.input'] = StringIO.new('{}')
         true
       end

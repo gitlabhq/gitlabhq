@@ -13,7 +13,7 @@ FactoryBot.define do
     color_mode_id { 1 }
 
     after(:build) do |user, evaluator|
-      owner_of = [evaluator.owner_of].grep(Organizations::Organization).first
+      org_owner_of = Array(evaluator.owner_of).grep(Organizations::Organization).first
       overrides = evaluator.instance_variable_get(:@overrides) || {}
 
       if overrides.key?(:organizations)
@@ -24,12 +24,12 @@ FactoryBot.define do
         user.organization ||= user.organizations.first
       end
 
-      user.organization ||= owner_of || create(:common_organization)
+      user.organization ||= org_owner_of || create(:common_organization)
 
       # Ensure user.organization will be added to user.organizations
       # except when the organizations is explicitly overridden
       # except when 'owner_of' is set
-      unless owner_of || overrides.key?(:organizations) || user.organizations.include?(user.organization)
+      unless org_owner_of || overrides.key?(:organizations) || user.organizations.include?(user.organization)
         user.organizations << user.organization
       end
 
@@ -199,7 +199,7 @@ FactoryBot.define do
     trait :two_factor_via_otp do
       before(:create) do |user|
         user.otp_required_for_login = true
-        user.otp_secret = User.generate_otp_secret(32)
+        user.otp_secret = User.generate_otp_secret(User::OTP_SECRET_LENGTH)
         user.otp_grace_period_started_at = Time.now
         user.generate_otp_backup_codes!
       end
@@ -251,7 +251,16 @@ FactoryBot.define do
       Array.wrap(evaluator.security_manager_of).each { |target| target.add_security_manager(user) }
       Array.wrap(evaluator.developer_of).each { |target| target.add_developer(user) }
       Array.wrap(evaluator.maintainer_of).each { |target| target.add_maintainer(user) }
-      Array.wrap(evaluator.owner_of).each { |target| target.add_owner(user) }
+      Array.wrap(evaluator.owner_of).each do |target|
+        if target.is_a?(Organizations::Organization)
+          # OrganizationUser might already exist at this point with default access (model callback)
+          Organizations::OrganizationUser
+            .find_or_initialize_by(organization: target, user: user)
+            .update!(access_level: Gitlab::Access::OWNER)
+        else
+          target.add_owner(user)
+        end
+      end
     end
 
     factory :omniauth_user do
@@ -298,6 +307,7 @@ FactoryBot.define do
     end
 
     factory :admin, traits: [:admin]
+    factory :service_account, traits: [:service_account]
 
     factory :support_bot do
       user_type { :support_bot }

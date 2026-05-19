@@ -14,6 +14,8 @@ additional_properties:
   property:
     description: search term
 product_group: global_search
+product_categories:
+- global_search
 milestone: '17.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156499
 tiers:

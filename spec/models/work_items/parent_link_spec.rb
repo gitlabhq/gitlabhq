@@ -8,6 +8,7 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
   describe 'associations' do
     it { is_expected.to belong_to(:work_item) }
     it { is_expected.to belong_to(:work_item_parent).class_name('WorkItem') }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'validations' do
@@ -172,11 +173,11 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
 
   describe 'scopes' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:issue1) { build(:work_item, project: project) }
-    let_it_be(:issue2) { build(:work_item, project: project) }
-    let_it_be(:issue3) { build(:work_item, project: project) }
-    let_it_be(:task1) { build(:work_item, :task, project: project) }
-    let_it_be(:task2) { build(:work_item, :task, project: project) }
+    let_it_be(:issue1) { create(:work_item, project: project) }
+    let_it_be(:issue2) { create(:work_item, project: project) }
+    let_it_be(:issue3) { create(:work_item, project: project) }
+    let_it_be(:task1) { create(:work_item, :task, project: project) }
+    let_it_be(:task2) { create(:work_item, :task, project: project) }
     let_it_be(:link1) { create(:parent_link, work_item_parent: issue1, work_item: task1) }
     let_it_be(:link2) { create(:parent_link, work_item_parent: issue2, work_item: task2) }
 

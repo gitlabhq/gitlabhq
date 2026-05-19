@@ -1,0 +1,40 @@
+---
+name: create_work_item
+description: Grants the ability to create work items
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - clone_issue
+  - create_work_item
+  - create_epic
+  - create_epic_award_emoji
+  - create_epic_discussion
+  - create_epic_discussion_note
+  - create_epic_issue
+  - create_epic_link
+  - create_epic_note
+  - create_epic_note_award_emoji
+  - create_issue
+  - create_issue_award_emoji
+  - create_issue_board
+  - create_issue_board_list
+  - create_issue_discussion
+  - create_issue_discussion_note
+  - create_issue_link
+  - create_issue_note
+  - create_issue_note_award_emoji
+  - create_iteration_cadence
+  - create_merge_request_award_emoji
+  - create_merge_request_note
+  - create_merge_request_note_award_emoji
+  - create_milestone
+  - create_related_epic_link
+  - create_snippet_award_emoji
+  - create_snippet_discussion
+  - create_snippet_discussion_note
+  - create_snippet_note
+  - create_snippet_note_award_emoji
+  - create_wiki_page_meta_note

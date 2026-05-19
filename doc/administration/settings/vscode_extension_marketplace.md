@@ -17,7 +17,7 @@ The VS Code Extension Marketplace provides access to extensions that enhance the
 Web IDE and Workspaces. Administrators can configure access to the marketplace for the entire instance.
 
 > [!note]
-> To access the VS Code Extension Marketplace, your browser must be able to access the `.cdn.web-ide.gitlab-static.net` assets host.
+> To access the VS Code Extension Marketplace, your browser must be able to access the `*.cdn.web-ide.gitlab-static.net` assets host.
 > This security requirement ensures that third-party extensions run in isolation and cannot access your account.
 
 ## Access VS Code Extension Marketplace settings
@@ -29,7 +29,7 @@ Prerequisites:
 To access the VS Code Extension Marketplace settings:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **VS Code Extension Marketplace**.
 
 ## Enable the extension registry
@@ -41,10 +41,10 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
-1. Expand **VS Code Extension Marketplace**.
-1. Toggle on **Enable Extension Marketplace** to enable the extension marketplace across the GitLab instance.
+To enable the extension marketplace:
+
+1. Go to the [VS Code Extension Marketplace settings](#access-vs-code-extension-marketplace-settings).
+1. Turn on the **Enable Extension Marketplace** toggle.
 
 ## Modify the extension registry
 
@@ -54,11 +54,9 @@ Prerequisites:
 
 To modify the extension registry:
 
-1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
-1. Expand **VS Code Extension Marketplace**.
+1. Go to the [VS Code Extension Marketplace settings](#access-vs-code-extension-marketplace-settings).
 1. Expand **Extension registry settings**.
-1. Toggle off **Use Open VSX extension registry**.
+1. Turn off the **Use Open VSX extension registry** toggle.
 1. Enter full URLs for a VS Code extension registry's **Service URL**, **Item URL**, and **Resource URL Template**.
 1. Select **Save changes**.
 

@@ -1,0 +1,10 @@
+---
+name: ref_cache_verbose_logging
+description: Enables verbose info-level logging for the rebuildable ref cache to aid debugging cache rebuild operations
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20516
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235769
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/599971
+milestone: '19.0'
+group: group::source code
+type: beta
+default_enabled: false

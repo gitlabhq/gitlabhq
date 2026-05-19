@@ -1,0 +1,7 @@
+---
+name: _cancel_restricted_ci
+description: Private permission that gates the ability to cancel CI pipelines
+  and builds when the project restricts cancellation to maintainers only.
+  The project policy combines this permission with the cancellation
+  restriction setting to conditionally prevent cancel_pipeline and
+  cancel_build. Must not be checked directly at enforcement points.

@@ -6,8 +6,8 @@ RSpec.describe Resolvers::Ml::FindExperimentsResolver, feature_category: :mlops 
   include GraphqlHelpers
 
   describe '#resolve' do
-    let_it_be(:project) { build(:project) }
-    let_it_be(:experiments) { create_list(:ml_experiments, 2, project: project) }
+    let_it_be(:project, freeze: false) { build(:project) }
+    let_it_be(:experiments, freeze: false) { create_list(:ml_experiments, 2, project: project) }
     let_it_be(:experiment_in_another_project) { create(:ml_experiments) }
     let_it_be(:owner) { project.owner }
 

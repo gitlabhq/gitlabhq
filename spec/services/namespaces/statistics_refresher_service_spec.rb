@@ -12,7 +12,7 @@ RSpec.describe Namespaces::StatisticsRefresherService, '#execute', feature_categ
     it 'creates one' do
       expect do
         service.execute(group)
-      end.to change(Namespace::RootStorageStatistics, :count).by(1)
+      end.to change { Namespace::RootStorageStatistics.count }.by(1)
 
       expect(group.reload.root_storage_statistics).to be_present
     end
@@ -42,7 +42,7 @@ RSpec.describe Namespaces::StatisticsRefresherService, '#execute', feature_categ
     it 'does not create one' do
       expect do
         service.execute(group)
-      end.not_to change(Namespace::RootStorageStatistics, :count)
+      end.not_to change { Namespace::RootStorageStatistics.count }
     end
 
     it 'recalculate the namespace statistics' do

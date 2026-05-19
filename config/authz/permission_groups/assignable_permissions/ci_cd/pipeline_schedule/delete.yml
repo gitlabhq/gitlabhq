@@ -1,7 +1,9 @@
 ---
 name: delete_pipeline_schedule
 description: Grants the ability to delete pipeline schedules
-permissions:
-  - delete_pipeline_schedule
 boundaries:
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_pipeline_schedule

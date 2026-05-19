@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin sees unconfirmed user', feature_category: :user_management do
+RSpec.describe 'Admin sees unconfirmed user', :enable_admin_mode, feature_category: :user_management do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
@@ -10,7 +10,6 @@ RSpec.describe 'Admin sees unconfirmed user', feature_category: :user_management
 
   before do
     sign_in(current_user)
-    enable_admin_mode!(current_user, use_ui: true)
   end
 
   context 'when user has an unconfirmed email', :js do

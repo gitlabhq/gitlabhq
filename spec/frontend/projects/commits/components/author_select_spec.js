@@ -133,6 +133,38 @@ describe('Author Select', () => {
 
       expect(visitUrl).toHaveBeenCalledWith(redirectPath);
     });
+
+    describe('date filter forwarding', () => {
+      it('preserves committed_after param when selecting an author', () => {
+        setWindowLocation('?committed_after=2025-01-01');
+
+        findListbox().vm.$emit('select', currentAuthor);
+
+        expect(visitUrl).toHaveBeenCalledWith(
+          `${commitsPath}?committed_after=2025-01-01&author=${currentAuthor}`,
+        );
+      });
+
+      it('preserves committed_before param when selecting an author', () => {
+        setWindowLocation('?committed_before=2025-12-31');
+
+        findListbox().vm.$emit('select', currentAuthor);
+
+        expect(visitUrl).toHaveBeenCalledWith(
+          `${commitsPath}?committed_before=2025-12-31&author=${currentAuthor}`,
+        );
+      });
+
+      it('preserves both date params when clearing the author selection', () => {
+        setWindowLocation('?committed_after=2025-01-01&committed_before=2025-12-31');
+
+        findListbox().vm.$emit('select', '');
+
+        expect(visitUrl).toHaveBeenCalledWith(
+          `${commitsPath}?committed_after=2025-01-01&committed_before=2025-12-31`,
+        );
+      });
+    });
   });
 
   describe('listbox search box', () => {

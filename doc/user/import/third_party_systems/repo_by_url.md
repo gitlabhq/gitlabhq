@@ -1,0 +1,96 @@
+---
+stage: Create
+group: Import
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: Migrate through a Git URL
+description: "Import repositories to GitLab by using a Git URL."
+---
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+Import your existing repositories by using the Git URL. Imports performed this way do not include GitLab issues or merge
+requests.
+
+## Prerequisites
+
+{{< history >}}
+
+- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
+{{< /history >}}
+
+- [Repository by URL import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
+  enabled. If not enabled, ask your GitLab administrator to enable it. The Repository by URL import source is enabled
+  by default on GitLab.com.
+- The Maintainer or Owner role on the destination group to import to.
+- If importing a private repository, an access token for authenticated access to the source repository might be required
+  instead of a password.
+
+## Import a repository through the UI
+
+To import a repository through the UI:
+
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. Select **Import project**.
+1. Select **Repository by URL**.
+1. Enter a **Git repository URL**.
+1. Complete the remaining fields. A username and password (or access token) is required for imports from private
+   repositories.
+1. Select **Create project**.
+
+Your newly created project is displayed.
+
+## Import a repository through the API
+
+You can use the [Projects API](../../../api/projects.md#create-a-project) to import a Git repository:
+
+```shell
+curl --location "https://gitlab.example.com/api/v4/projects/" \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <your-token>' \
+--data-raw '{
+    "description": "New project description",
+    "path": "new_project_path",
+    "import_url": "https://username:password@example.com/group/project.git"
+}'
+```
+
+Some providers do not allow a password and instead require an access token.
+
+## Import a timed-out repository
+
+Imports of large repositories might time out after three hours.
+To import a timed-out repository:
+
+1. Clone the repository:
+
+   ```shell
+   git clone --mirror https://example.com/group/project.git
+   ```
+
+   The `--mirror` option ensures all branches, tags, and refs are copied.
+
+1. Add the new remote repository:
+
+   ```shell
+   cd repository.git
+   git remote add new-origin https://gitlab.com/group/project.git
+   ```
+
+1. Push everything to the new remote repository:
+
+   ```shell
+   git push --mirror new-origin
+   ```
+
+## Related topics
+
+- [Import and export settings](../../../administration/settings/import_and_export_settings.md).
+- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md).
+- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).

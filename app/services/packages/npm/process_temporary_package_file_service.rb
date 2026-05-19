@@ -62,7 +62,9 @@ module Packages
       end
 
       def mark_package_for_destruction
-        ::Packages::MarkPackageForDestructionService.new(container: package, current_user: current_user).execute
+        ::Packages::MarkPackageForDestructionService
+          .new(container: package, current_user: current_user, skip_protection_check: true)
+          .execute
       end
 
       def handle_creation(json_doc)

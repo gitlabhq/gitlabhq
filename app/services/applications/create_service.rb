@@ -4,16 +4,6 @@ module Applications
   class CreateService
     attr_reader :current_user, :request, :params
 
-    ## Overridden in EE
-    def self.disable_ropc_available?
-      false
-    end
-
-    ## Overridden in EE
-    def self.disable_ropc_for_all_applications?
-      false
-    end
-
     # EE would override and use `request` arg
     def initialize(current_user, request, params)
       @current_user = current_user
@@ -30,7 +20,6 @@ module Applications
         return @application
       end
 
-      @application.ropc_enabled = false if self.class.disable_ropc_available?
       @application.save
       @application
     end

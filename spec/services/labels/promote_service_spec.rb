@@ -69,8 +69,8 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
         end
 
         it 'removes all project labels with that title within the group' do
-          expect { service.execute(project_label_1_1) }.to change(project_2.labels, :count).by(-1).and \
-            change(project_3.labels, :count).by(-1)
+          expect { service.execute(project_label_1_1) }.to change { project_2.labels.count }.by(-1).and \
+            change { project_3.labels.count }.by(-1)
         end
 
         it 'keeps users\' subscriptions' do
@@ -117,7 +117,7 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
         end
 
         it 'does not remove untouched labels from issue' do
-          expect { service.execute(project_label_1_1) }.not_to change(issue_1_1.labels, :count)
+          expect { service.execute(project_label_1_1) }.not_to change { issue_1_1.labels.count }
         end
 
         it 'does not relink untouched label in issue' do
@@ -177,7 +177,7 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
 
         it 'uses the existing group label' do
           expect { service.execute(project_label_1_1) }
-            .to change(project_1.labels, :count).by(-1)
+            .to change { project_1.labels.count }.by(-1)
             .and not_change(group_1.labels, :count)
           expect(new_label).not_to be_nil
         end
@@ -194,8 +194,8 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
 
         it 'recreates the label as a group label' do
           expect { service.execute(project_label_1_1) }
-            .to change(project_1.labels, :count).by(-1)
-            .and change(group_1.labels, :count).by(1)
+            .to change { project_1.labels.count }.by(-1)
+            .and change { group_1.labels.count }.by(1)
           expect(new_label).not_to be_nil
         end
 

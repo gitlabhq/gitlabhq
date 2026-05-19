@@ -55,7 +55,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer, :clean_g
     end
 
     it 'creates expected system note metadata' do
-      expect { importer.execute(issue_event) }.to change(SystemNoteMetadata, :count)
+      expect { importer.execute(issue_event) }.to change { SystemNoteMetadata.count }
         .from(0).to(1)
 
       expect(SystemNoteMetadata.last)

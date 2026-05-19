@@ -6,10 +6,6 @@ module Gitlab
       module Strategies
         module Arel
           class Scope
-            def initialize(sharding_key_value_override = nil)
-              @sharding_key_value_override = sharding_key_value_override
-            end
-
             def add_scope(ast)
               return ast if Context.disabled?
 
@@ -60,8 +56,7 @@ module Gitlab
             end
 
             def resolve_value(type)
-              @sharding_key_value_override ||
-                Gitlab::Database::DataIsolation.configuration.current_sharding_key_value.call(type)
+              Gitlab::Database::DataIsolation.configuration.current_sharding_key_value.call(type)
             end
 
             def extract_from_tables(ast)

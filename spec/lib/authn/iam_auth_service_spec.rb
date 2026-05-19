@@ -76,6 +76,15 @@ RSpec.describe Authn::IamAuthService, feature_category: :system_access do
     end
   end
 
+  describe '.jwt_issuer' do
+    it 'returns the jwt_issuer from config' do
+      stub_config(iam_auth_service: { enabled: true, http: {}, grpc: {}, jwt_audience: 'gitlab-rails',
+                                      jwt_issuer: 'https://iam.example.com' })
+
+      expect(described_class.jwt_issuer).to eq('https://iam.example.com')
+    end
+  end
+
   describe '.secret' do
     after do
       described_class.clear_memoization(:secret)

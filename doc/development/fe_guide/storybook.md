@@ -62,83 +62,65 @@ For instructions on how to write stories, refer to the [official Storybook instr
 > If the component is located in the `ee/` directory, make sure to prefix the story's title with `ee/` as well.
 > This will ensure the Storybook navigation maps closely to our internal directory structure.
 
-## Using GitLab REST and GraphQL APIs
+## Mocking GraphQL queries and mutations
 
-You can write stories for components that use either the GitLab [REST](../../api/rest/_index.md) or
-[GraphQL](../../api/graphql/_index.md) APIs.
-
-### Set up API access token and GitLab instance URL
-
-To add a story with API access:
-
-1. Create a [personal access token](../../user/profile/personal_access_tokens.md) in your GitLab instance.
-
-   > [!note]
-   > If you test against `gitlab.com`, make sure to use a token with `read_api` if possible and to make the token short-lived.
-1. Create an `.env` file in the `storybook` directory. Use the `storybook/.env.template` file as
-   a starting point.
-1. Set the `API_ACCESS_TOKEN` variable to the access token that you created.
-1. Set the `GITLAB_URL` variable to the GitLab instance's domain URL, for example: `http://gdk.test:3000`.
-1. Start or restart your storybook.
-
-You can also use the GitLab API Access panel in the Storybook UI to set the GitLab instance URL and access token.
-
-### Set up API access in your stories
-
-You should apply the `withGitLabAPIAccess` decorator to the stories that will consume GitLab APIs. This decorator
-will display a badge indicating that the story won't work without providing the API access parameters:
+To write a story for a component that uses Apollo Client for GraphQL, use `createMockApollo` from `helpers/mock_apollo_helper`.
+Pass it an array of `[query, handlerFn]` tuples — each handler receives the query variables and must return a `Promise` resolving to the expected response shape.
 
 ```javascript
-import { withGitLabAPIAccess } from 'storybook_addons/gitlab_api_access';
-import Api from '~/api';
-import { ContentEditor } from './index';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import myQuery from './graphql/my_query.query.graphql';
+import MyComponent from './my_component.vue';
+
+const MOCK_DATA = [{ id: '1', name: 'Example' }];
 
 export default {
-  component: ContentEditor,
-  title: 'ce/content_editor/content_editor',
-  decorators: [withGitLabAPIAccess],
-};
-```
-
-#### Using REST API
-
-The Storybook sets up `~/lib/utils/axios_utils` in `storybook/config/preview.js`. Components that use the REST API
-should work out of the box as long as you provide a valid GitLab instance URL and access token.
-
-#### Using GraphQL
-
-To write a story for a component that uses the GraphQL API, use the `createVueApollo` method provided in
-the Story context.
-
-```javascript
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
-import { withGitLabAPIAccess } from 'storybook_addons/gitlab_api_access';
-import WorkspacesList from './list.vue';
-
-Vue.use(VueApollo);
-
-const Template = (_, { argTypes, createVueApollo }) => {
-  return {
-    components: { WorkspacesList },
-    apolloProvider: createVueApollo(),
-    provide: {
-      emptyStateSvgPath: '',
-    },
-    props: Object.keys(argTypes),
-    template: '<workspaces-list />',
-  };
+  component: MyComponent,
+  title: 'path/to/my_component',
 };
 
-export default {
-  component: WorkspacesList,
-  title: 'ee/workspaces/workspaces_list',
-  decorators: [withGitLabAPIAccess],
-};
+const Template = (args, { argTypes }) => ({
+  components: { MyComponent },
+  apolloProvider: createMockApollo([
+    [
+      myQuery,
+      () =>
+        Promise.resolve({
+          data: {
+            currentUser: {
+              id: 'gid://gitlab/User/1',
+              items: { nodes: MOCK_DATA },
+            },
+          },
+        }),
+    ],
+  ]),
+  props: Object.keys(argTypes),
+  template: '<my-component v-bind="$props" />',
+});
 
 export const Default = Template.bind({});
-
 Default.args = {};
+```
+
+Each story variant can pass a different handler to simulate distinct states such as loading, empty, or error:
+
+```javascript
+export const Empty = (args, { argTypes }) => ({
+  components: { MyComponent },
+  apolloProvider: createMockApollo([
+    [myQuery, () => Promise.resolve({ data: { currentUser: { id: '1', items: { nodes: [] } } } })],
+  ]),
+  props: Object.keys(argTypes),
+  template: '<my-component v-bind="$props" />',
+});
+
+export const LoadingState = (args, { argTypes }) => ({
+  components: { MyComponent },
+  apolloProvider: createMockApollo([[myQuery, () => new Promise(() => {})]]),
+  props: Object.keys(argTypes),
+  template: '<my-component v-bind="$props" />',
+});
 ```
 
 ## Using a Vuex store

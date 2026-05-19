@@ -12,7 +12,7 @@ RSpec.describe CleanupContainerRepositoryWorker, :clean_gitlab_redis_shared_stat
   describe '#perform' do
     let(:service) { instance_double(Projects::ContainerRepository::CleanupTagsService) }
 
-    context 'bulk delete api' do
+    context 'with bulk delete api' do
       let(:params) { { key: 'value' } }
 
       it 'executes the destroy service' do

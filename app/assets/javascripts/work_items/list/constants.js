@@ -100,10 +100,6 @@ export const ALTERNATIVE_FILTER = 'alternativeFilter';
 
 export const HIERARCHY_FILTERS = 'hierarchyFilters';
 
-export const ISSUES_VIEW_TYPE_KEY = 'issuesViewType';
-export const ISSUES_LIST_VIEW_KEY = 'List';
-export const ISSUES_GRID_VIEW_KEY = 'Grid';
-
 export const CLOSED = __('Closed');
 export const CLOSED_MOVED = __('Closed (moved)');
 
@@ -752,6 +748,10 @@ export const savedViewFilters = {
     operator: OPERATOR_IS,
   },
   types: {
+    type: TOKEN_TYPE_TYPE,
+    operator: OPERATOR_IS,
+  },
+  workItemTypeIds: {
     type: TOKEN_TYPE_TYPE,
     operator: OPERATOR_IS,
   },

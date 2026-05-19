@@ -5,3 +5,4 @@ feature_category: portfolio_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228246
 milestone: '18.11'
 queued_migration_version: 20260319092250
+finalized_by: 20260410105839

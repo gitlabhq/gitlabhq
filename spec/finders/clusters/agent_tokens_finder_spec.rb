@@ -6,7 +6,7 @@ RSpec.describe Clusters::AgentTokensFinder do
   describe '#execute' do
     let_it_be(:project) { create(:project) }
     let_it_be(:agent) { create(:cluster_agent, project: project) }
-    let(:user) { create(:user, maintainer_of: project) }
+    let_it_be(:user) { create(:user, maintainer_of: project) }
 
     let_it_be(:active_agent_tokens) do
       Array.new(2) { create(:cluster_agent_token, agent: agent) }
@@ -45,9 +45,9 @@ RSpec.describe Clusters::AgentTokensFinder do
     end
 
     context 'when user does not have permission' do
-      let(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
-      before do
+      before_all do
         project.add_reporter(user)
       end
 

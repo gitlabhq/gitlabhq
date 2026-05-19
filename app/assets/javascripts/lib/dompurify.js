@@ -1,5 +1,6 @@
 import DOMPurify from 'dompurify';
 import { getNormalizedURL, getBaseURL, relativePathToAbsolute } from '~/lib/utils/url_utility';
+import { GFM_POPOVER_SELECTOR } from '~/behaviors/markdown/constants';
 
 const { sanitize: dompurifySanitize, addHook, isValidAttribute } = DOMPurify;
 
@@ -96,15 +97,37 @@ const sanitizeSvgIcon = (node) => {
   removeUnsafeHref(node, 'xlink:href');
 };
 
-addHook('afterSanitizeAttributes', (node) => {
-  if (node.tagName.toLowerCase() === 'use') {
-    sanitizeSvgIcon(node);
-  }
-});
-
 const TEMPORARY_ATTRIBUTE = 'data-temp-href-target';
 
+// DOMPurify's SAFE_FOR_XML check strips any attribute whose value contains
+// '-->' (the HTML comment close sequence). This is safe in title attributes
+// since they are tooltip text and never parsed as HTML. We preserve them by
+// temporarily removing the attribute before sanitization and restoring it after.
+const preservedTitles = new WeakMap();
+
+const preserveTitles = (node) => {
+  if (node.tagName && node.matches?.(GFM_POPOVER_SELECTOR)) {
+    const title = node.getAttribute('title');
+    if (title?.includes('-->')) {
+      preservedTitles.set(node, title);
+      node.removeAttribute('title');
+    }
+  }
+};
+
+const restoreTitles = (node) => {
+  if (preservedTitles.has(node)) {
+    const title = preservedTitles.get(node);
+    preservedTitles.delete(node);
+    if (title?.includes('-->')) {
+      node.setAttribute('title', title);
+    }
+  }
+};
+
 addHook('beforeSanitizeAttributes', (node, _, config) => {
+  preserveTitles(node);
+
   if (node.tagName === 'A' && node.hasAttribute('target')) {
     node.setAttribute(TEMPORARY_ATTRIBUTE, node.getAttribute('target'));
   }
@@ -138,6 +161,12 @@ addHook('uponSanitizeAttribute', (node, hookEvent) => {
 });
 
 addHook('afterSanitizeAttributes', (node, _, config) => {
+  restoreTitles(node);
+
+  if (node.tagName.toLowerCase() === 'use') {
+    sanitizeSvgIcon(node);
+  }
+
   if (node.tagName === 'A' && node.hasAttribute(TEMPORARY_ATTRIBUTE)) {
     node.setAttribute('target', node.getAttribute(TEMPORARY_ATTRIBUTE));
     node.removeAttribute(TEMPORARY_ATTRIBUTE);

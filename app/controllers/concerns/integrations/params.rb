@@ -74,6 +74,7 @@ module Integrations
       :mock_service_url,
       :namespace,
       :new_issue_url,
+      :notify_child_pipelines,
       :notify_only_broken_pipelines,
       :notify_only_when_pipeline_status_changes,
       :package_name,

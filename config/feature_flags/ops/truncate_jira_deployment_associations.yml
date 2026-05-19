@@ -1,0 +1,9 @@
+---
+name: truncate_jira_deployment_associations
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/470092
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231117
+rollout_issue_url:
+milestone: '19.0'
+group: group::project management
+type: ops
+default_enabled: true

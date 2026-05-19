@@ -651,7 +651,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
               .and_call_original
           end
 
-          expect { subject }.to change(JiraConnect::SyncBranchWorker.jobs, :size).by(1)
+          expect { subject }.to change { JiraConnect::SyncBranchWorker.jobs.size }.by(1)
         end
       end
     end
@@ -659,7 +659,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
     shared_examples 'does not enqueue Jira sync worker' do
       specify do
         Sidekiq::Testing.fake! do
-          expect { subject }.not_to change(JiraConnect::SyncBranchWorker.jobs, :size)
+          expect { subject }.not_to change { JiraConnect::SyncBranchWorker.jobs.size }
         end
       end
     end

@@ -385,7 +385,7 @@ First, as part of [Restore object storage data](#restore-object-storage-data), y
 
    If there's a GitLab version mismatch between your backup tar file and the installed version of
    GitLab, the restore command aborts with an error message.
-   Install the [correct GitLab version](https://packages.gitlab.com/gitlab/), and then try again.
+   Install the [correct GitLab version](https://packages.gitlab.com/ui/browse/gitlab), and then try again.
 
 1. Reconfigure, start, and [check](../raketasks/maintenance.md#check-gitlab-configuration) GitLab:
 
@@ -450,7 +450,7 @@ First, as part of [Restore object storage data](#restore-object-storage-data), y
 
    If there's a GitLab version mismatch between your backup tar file and the installed version of
    GitLab, the restore command aborts with an error message.
-   Install the [correct GitLab version](https://packages.gitlab.com/gitlab/), and then try again.
+   Install the [correct GitLab version](https://packages.gitlab.com/ui/browse/gitlab), and then try again.
 
 1. Restart and [check](../raketasks/maintenance.md#check-gitlab-configuration) GitLab:
 

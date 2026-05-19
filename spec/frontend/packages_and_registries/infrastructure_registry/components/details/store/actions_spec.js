@@ -83,13 +83,36 @@ describe('Actions Package details store', () => {
         packageEntity.id,
       );
     });
-    it('should create alert on API error', async () => {
-      Api.deleteProjectPackage = jest.fn().mockRejectedValue();
 
-      await testAction(deletePackage, undefined, { packageEntity }, [], []);
-      expect(createAlert).toHaveBeenCalledWith({
-        message: DELETE_PACKAGE_ERROR_MESSAGE,
-        variant: VARIANT_WARNING,
+    describe('on API error', () => {
+      beforeEach(() => {
+        Api.deleteProjectPackage = jest.fn().mockRejectedValue(new Error('error'));
+      });
+
+      it('creates alert with the default error message', async () => {
+        await testAction(deletePackage, undefined, { packageEntity }, [], []);
+        expect(createAlert).toHaveBeenCalledWith({
+          message: DELETE_PACKAGE_ERROR_MESSAGE,
+          variant: VARIANT_WARNING,
+        });
+      });
+    });
+
+    describe('when the server returns an error message', () => {
+      const serverMessage = 'Package is deletion protected.';
+
+      beforeEach(() => {
+        const apiError = new Error('error');
+        apiError.response = { data: { message: serverMessage } };
+        Api.deleteProjectPackage = jest.fn().mockRejectedValue(apiError);
+      });
+
+      it('displays the server error message', async () => {
+        await testAction(deletePackage, undefined, { packageEntity }, [], []);
+        expect(createAlert).toHaveBeenCalledWith({
+          message: serverMessage,
+          variant: VARIANT_WARNING,
+        });
       });
     });
   });
@@ -118,12 +141,35 @@ describe('Actions Package details store', () => {
       });
     });
 
-    it('should create alert on API error', async () => {
-      Api.deleteProjectPackageFile = jest.fn().mockRejectedValue();
-      await testAction(deletePackageFile, fileId, { packageEntity }, [], []);
-      expect(createAlert).toHaveBeenCalledWith({
-        message: DELETE_PACKAGE_FILE_ERROR_MESSAGE,
-        variant: VARIANT_WARNING,
+    describe('on API error', () => {
+      beforeEach(() => {
+        Api.deleteProjectPackageFile = jest.fn().mockRejectedValue();
+      });
+
+      it('creates alert with the default error message', async () => {
+        await testAction(deletePackageFile, fileId, { packageEntity }, [], []);
+        expect(createAlert).toHaveBeenCalledWith({
+          message: DELETE_PACKAGE_FILE_ERROR_MESSAGE,
+          variant: VARIANT_WARNING,
+        });
+      });
+    });
+
+    describe('when the server returns an error message', () => {
+      const serverMessage = '403 Forbidden - Package is deletion protected.';
+
+      beforeEach(() => {
+        const apiError = new Error('error');
+        apiError.response = { data: { message: serverMessage } };
+        Api.deleteProjectPackageFile = jest.fn().mockRejectedValue(apiError);
+      });
+
+      it('displays the server error message', async () => {
+        await testAction(deletePackageFile, fileId, { packageEntity }, [], []);
+        expect(createAlert).toHaveBeenCalledWith({
+          message: serverMessage,
+          variant: VARIANT_WARNING,
+        });
       });
     });
   });

@@ -4,23 +4,23 @@ module API
   module Entities
     class Todo < Grape::Entity
       expose :id, documentation: { type: 'Integer' }
-      expose :project, using: Entities::ProjectIdentity, if: ->(todo, _) { todo.project_id }
+      expose :project, using: ::API::Entities::ProjectIdentity, if: ->(todo, _) { todo.project_id }
       expose :group, using: ::API::Entities::NamespaceBasic, if: ->(todo, _) { todo.group_id }
-      expose :author, using: Entities::UserBasic
-      expose :action_name
-      expose :target_type
+      expose :author, using: ::API::Entities::UserBasic
+      expose :action_name, documentation: { type: 'String', example: 'assigned' }
+      expose :target_type, documentation: { type: 'String', example: 'Issue' }
 
-      expose :target do |todo, options|
+      expose :target, documentation: { type: 'Hash' } do |todo, options|
         todo_options = options.fetch(todo.target_type, {})
         todo_target_class(todo.target_type).represent(todo.target, todo_options)
       end
 
-      expose :target_url
+      expose :target_url, documentation: { type: 'String', example: 'http://example.com/foo/bar/-/issues/1' }
 
-      expose :body
-      expose :state
-      expose :created_at
-      expose :updated_at
+      expose :body, documentation: { type: 'String', example: 'Task description' }
+      expose :state, documentation: { type: 'String', example: 'pending' }
+      expose :created_at, documentation: { type: 'DateTime', example: '2016-06-17T07:52:35.225Z' }
+      expose :updated_at, documentation: { type: 'DateTime', example: '2016-06-17T07:52:35.225Z' }
 
       def todo_target_class(target_type)
         # Ensure the `Key` type properly maps to the `SSHKey` entity

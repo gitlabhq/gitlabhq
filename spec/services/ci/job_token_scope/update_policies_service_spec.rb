@@ -141,7 +141,7 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
     context 'when policies need to be updated for a target project' do
       let(:target) { target_project }
 
-      let_it_be(:scope) do
+      let_it_be(:scope, freeze: false) do
         create(
           :ci_job_token_project_scope_link,
           source_project: project,
@@ -228,7 +228,7 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
     context 'when policies need to be updated for a target group' do
       let(:target) { target_group }
 
-      let_it_be(:scope) do
+      let_it_be(:scope, freeze: false) do
         create(
           :ci_job_token_group_scope_link,
           source_project: project,

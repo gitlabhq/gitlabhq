@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::Aggregation::QueryPlan::Order, feature_category: :database do
   let(:part_definition) { Gitlab::Database::Aggregation::PartDefinition.new(:count, :integer) }
   let(:part_configuration) { {} }
-  let(:plan_part) { Gitlab::Database::Aggregation::QueryPlan::Metric.new(part_definition, part_configuration) }
+  let(:plan_part) do
+    Gitlab::Database::Aggregation::QueryPlan::Metric.new(part_definition, part_configuration, query_plan: nil)
+  end
 
   describe '#definition' do
     it 'returns part_definition' do
@@ -48,7 +50,8 @@ RSpec.describe Gitlab::Database::Aggregation::QueryPlan::Order, feature_category
 
     let(:part_configuration) { { granularity: 'daily' } }
     let(:plan_part) do
-      Gitlab::Database::Aggregation::QueryPlan::Dimension.new(date_bucket_definition, part_configuration)
+      Gitlab::Database::Aggregation::QueryPlan::Dimension.new(date_bucket_definition, part_configuration,
+        query_plan: nil)
     end
 
     it 'returns the dimension definition, unique instance key including parameters, and direction' do

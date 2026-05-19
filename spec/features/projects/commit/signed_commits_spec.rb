@@ -10,20 +10,16 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
     ref = GpgHelpers::SIGNED_AND_AUTHORED_SHA
     user = create(:user, email: 'unrelated.user@example.org')
 
-    perform_enqueued_jobs do
-      create :gpg_key, key: GpgHelpers::User1.public_key, user: user
-      user.reload # necessary to reload the association with gpg_keys
-    end
+    create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+    user.reload # necessary to reload the association with gpg_keys
 
     visit project_commit_path(project, ref)
 
     expect(page).to have_selector('.gl-badge', text: 'Unverified')
 
     # user changes their email which makes the gpg key verified
-    perform_enqueued_jobs do
-      user.skip_reconfirmation!
-      user.update!(email: GpgHelpers::User1.emails.first)
-    end
+    user.skip_reconfirmation!
+    user.update!(email: GpgHelpers::User1.emails.first)
 
     visit project_commit_path(project, ref)
 
@@ -39,9 +35,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
     expect(page).to have_selector('.gl-badge', text: 'Unverified')
 
     # user adds the gpg key which makes the signature valid
-    perform_enqueued_jobs do
-      create :gpg_key, key: GpgHelpers::User1.public_key, user: user
-    end
+    create :gpg_key, key: GpgHelpers::User1.public_key, user: user
 
     visit project_commit_path(project, ref)
 
@@ -54,9 +48,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
     end
 
     let(:user_1_key) do
-      perform_enqueued_jobs do
-        create :gpg_key, key: GpgHelpers::User1.public_key, user: user_1
-      end
+      create :gpg_key, key: GpgHelpers::User1.public_key, user: user_1
     end
 
     let(:user_2) do
@@ -72,9 +64,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
     end
 
     let(:user_2_key) do
-      perform_enqueued_jobs do
-        create :gpg_key, key: GpgHelpers::User2.public_key, user: user_2
-      end
+      create :gpg_key, key: GpgHelpers::User2.public_key, user: user_2
     end
 
     it 'unverified signature', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16790' do

@@ -22,6 +22,7 @@ import {
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import IssuesDashboardApp from '~/issues/dashboard/components/issues_dashboard_app.vue';
 import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/work_items/list/constants';
+import getTypesInOrganization from '~/issues/dashboard/queries/get_types_in_organization.query.graphql';
 import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import { getSortKey, getSortOptions } from '~/work_items/list/utils';
 import axios from '~/lib/utils/axios_utils';
@@ -47,6 +48,7 @@ import {
   emptyIssuesQueryResponse,
   issuesCountsQueryResponse,
   issuesQueryResponse,
+  typesInOrganizationQueryResponse,
 } from '../mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -86,6 +88,12 @@ describe('IssuesDashboardApp component', () => {
     defaultQueryResponse.data.issues.nodes[0].blockingCount = 1;
     defaultQueryResponse.data.issues.nodes[0].healthStatus = null;
     defaultQueryResponse.data.issues.nodes[0].weight = 5;
+    defaultQueryResponse.data.issues.nodes[0].workItemType = {
+      id: 'gid://gitlab/WorkItemType/1',
+      name: 'Issue',
+      iconName: 'issue-type-issue',
+      __typename: 'WorkItemType',
+    };
     defaultQueryResponse.data.issues.nodes[0].status = {
       category: 'canceled',
       color: '#DD2B0E',
@@ -110,12 +118,14 @@ describe('IssuesDashboardApp component', () => {
     props = {},
     issuesQueryHandler = jest.fn().mockResolvedValue(defaultQueryResponse),
     issuesCountsQueryHandler = jest.fn().mockResolvedValue(issuesCountsQueryResponse),
+    typesInOrganizationQueryHandler = jest.fn().mockResolvedValue(typesInOrganizationQueryResponse),
     sortPreferenceMutationHandler = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
   } = {}) => {
     wrapper = shallowMountExtended(IssuesDashboardApp, {
       apolloProvider: createMockApollo([
         [getIssuesQuery, issuesQueryHandler],
         [getIssuesCountsQuery, issuesCountsQueryHandler],
+        [getTypesInOrganization, typesInOrganizationQueryHandler],
         [setSortPreferenceMutation, sortPreferenceMutationHandler],
       ]),
       provide: {
@@ -449,8 +459,9 @@ describe('IssuesDashboardApp component', () => {
       };
     });
 
-    it('renders all tokens alphabetically', () => {
+    it('renders all tokens alphabetically', async () => {
       mountComponent();
+      await waitForPromises();
       const preloadedUsers = [{ ...mockCurrentUser, id: mockCurrentUser.id }];
 
       expect(findIssuableList().props('searchTokens')).toMatchObject([
@@ -468,9 +479,10 @@ describe('IssuesDashboardApp component', () => {
       ]);
     });
 
-    it('adds additional EE search tokens', () => {
+    it('adds additional EE search tokens', async () => {
       const eeSearchTokens = [{ type: TOKEN_TYPE_STATUS, title: TOKEN_TITLE_STATUS }];
       mountComponent({ props: { eeSearchTokens } });
+      await waitForPromises();
       const preloadedUsers = [{ ...mockCurrentUser, id: mockCurrentUser.id }];
 
       expect(findIssuableList().props('searchTokens')).toMatchObject([
@@ -486,6 +498,27 @@ describe('IssuesDashboardApp component', () => {
         { type: TOKEN_TYPE_STATUS },
         { type: TOKEN_TYPE_SUBSCRIBED },
         { type: TOKEN_TYPE_TYPE },
+      ]);
+    });
+
+    it('does not render type token when workItemTypes query fails', async () => {
+      mountComponent({
+        typesInOrganizationQueryHandler: jest.fn().mockRejectedValue(new Error('no organization')),
+      });
+      await waitForPromises();
+      const preloadedUsers = [{ ...mockCurrentUser, id: mockCurrentUser.id }];
+
+      expect(findIssuableList().props('searchTokens')).toMatchObject([
+        { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
+        { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
+        { type: TOKEN_TYPE_CLOSED },
+        { type: TOKEN_TYPE_CONFIDENTIAL },
+        { type: TOKEN_TYPE_CREATED },
+        { type: TOKEN_TYPE_LABEL },
+        { type: TOKEN_TYPE_MILESTONE },
+        { type: TOKEN_TYPE_MY_REACTION },
+        { type: TOKEN_TYPE_SEARCH_WITHIN },
+        { type: TOKEN_TYPE_SUBSCRIBED },
       ]);
     });
   });

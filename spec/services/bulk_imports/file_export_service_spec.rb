@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::FileExportService, feature_category: :importers do
   let_it_be(:project) { create(:project) }
-
+  let(:export) { build(:bulk_import_export, project: project) }
   let(:relations) do
     {
       'uploads' => BulkImports::UploadsExportService,
@@ -18,7 +18,8 @@ RSpec.describe BulkImports::FileExportService, feature_category: :importers do
     it 'executes export service and archives exported data for each file relation' do
       relations.each do |relation, klass|
         Dir.mktmpdir do |export_path|
-          service = described_class.new(project, export_path, relation, nil)
+          export.relation = relation
+          service = described_class.new(export, export_path, nil)
 
           expect_next_instance_of(klass) do |service|
             expect(service).to receive(:execute)
@@ -33,9 +34,10 @@ RSpec.describe BulkImports::FileExportService, feature_category: :importers do
 
     context 'when unsupported relation is passed' do
       it 'raises an error' do
-        service = described_class.new(project, nil, 'unsupported', nil)
+        export.relation = 'issues'
+        service = described_class.new(export, nil, nil)
 
-        expect { service.execute }.to raise_error(BulkImports::Error, 'Unsupported relation export type')
+        expect { service.execute }.to raise_error(BulkImports::Error, 'Unsupported file relation export type')
       end
     end
   end
@@ -44,7 +46,8 @@ RSpec.describe BulkImports::FileExportService, feature_category: :importers do
     it 'calls execute with provided array of record ids' do
       relations.each do |relation, klass|
         Dir.mktmpdir do |export_path|
-          service = described_class.new(project, export_path, relation, nil)
+          export.relation = relation
+          service = described_class.new(export, export_path, nil)
 
           expect_next_instance_of(klass) do |service|
             expect(service).to receive(:execute).with({ batch_ids: [1, 2, 3] })
@@ -58,7 +61,8 @@ RSpec.describe BulkImports::FileExportService, feature_category: :importers do
 
   describe '#exported_filename' do
     it 'returns filename of the exported file' do
-      service = described_class.new(project, nil, 'uploads', nil)
+      export.relation = 'uploads'
+      service = described_class.new(export, nil, nil)
 
       expect(service.exported_filename).to eq('uploads.tar')
     end
@@ -68,7 +72,8 @@ RSpec.describe BulkImports::FileExportService, feature_category: :importers do
     context 'when relation is a collection' do
       it 'returns a number of exported relations' do
         %w[uploads lfs_objects].each do |relation|
-          service = described_class.new(project, nil, relation, nil)
+          export.relation = relation
+          service = described_class.new(export, nil, nil)
 
           allow(service).to receive_message_chain(:export_service, :exported_objects_count).and_return(10)
 
@@ -80,7 +85,8 @@ RSpec.describe BulkImports::FileExportService, feature_category: :importers do
     context 'when relation is a repository' do
       it 'returns 1' do
         %w[repository design].each do |relation|
-          service = described_class.new(project, nil, relation, nil)
+          export.relation = relation
+          service = described_class.new(export, nil, nil)
 
           expect(service.exported_objects_count).to eq(1)
         end

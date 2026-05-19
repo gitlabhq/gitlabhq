@@ -13,14 +13,27 @@ module Ci
 
       def initialize(pipeline)
         @pipeline = pipeline
-        @collection = AtomicProcessingService::StatusCollection.new(pipeline)
+        @observe_processing_delay = Feature.enabled?(:ci_observe_job_processing_delay, :current_request)
+        @collection = AtomicProcessingService::StatusCollection.new(
+          pipeline, observe_processing_delay: @observe_processing_delay
+        )
       end
 
       def execute
-        return unless pipeline.needs_processing?
+        # rubocop: disable Style/SoleNestedConditional -- Temporary for FF readability
+        if Feature.disabled?(:ci_atomic_processing_check_inside_lease, project)
+          return unless pipeline.needs_processing?
+        end
 
         # Run the process only if we can obtain an exclusive lease; returns nil if lease is unavailable
-        success = try_obtain_lease { process! }
+        success = try_obtain_lease do
+          if Feature.enabled?(:ci_atomic_processing_check_inside_lease, project)
+            next unless pipeline.needs_processing?
+          end
+
+          process!
+        end
+        # rubocop: enable Style/SoleNestedConditional
 
         if success
           # If any jobs changed from stopped to alive status during pipeline processing, we must
@@ -31,8 +44,11 @@ module Ci
             ResetSkippedJobsService.new(project, user).execute(jobs)
           end
 
+          needs_processing = pipeline.needs_processing?
+          log_processing_check_mismatch(needs_processing)
+
           # Re-schedule if we need further processing
-          PipelineProcessWorker.perform_async(pipeline.id) if pipeline.needs_processing?
+          PipelineProcessWorker.perform_async(pipeline.id) if needs_processing
         end
 
         success
@@ -98,7 +114,7 @@ module Ci
       end
 
       def update_pipeline!
-        pipeline.set_status(@collection.status_of_all)
+        pipeline.set_status(@collection.status_of_all, skip_cache_expiration: true)
       end
 
       def update_jobs_processed!
@@ -116,21 +132,16 @@ module Ci
 
         ::Deployments::CreateForJobService.new.execute(job)
 
-        if Feature.enabled?(:ci_pipeline_processing_atomic_processing_service_plain_retry_lock, project)
-          Gitlab::OptimisticLocking.retry_lock(job, name: 'atomic_processing_update_job') do |subject|
-            Ci::ProcessBuildService.new(project, subject.user)
-              .execute(subject, previous_status)
-          end
-        else
-          Gitlab::OptimisticLocking.retry_lock_with_transaction(job, name: 'atomic_processing_update_job') do |subject|
-            Ci::ProcessBuildService.new(project, subject.user)
-              .execute(subject, previous_status)
-          end
+        Gitlab::OptimisticLocking.retry_lock(job, name: 'atomic_processing_update_job') do |subject|
+          Ci::ProcessBuildService.new(project, subject.user)
+            .execute(subject, previous_status)
         end
+
+        observe_processing_delay(job) if @observe_processing_delay
 
         # update internal representation of job
         # to make the status change of job to be taken into account during further processing
-        @collection.set_job_status(job.id, job.status, job.lock_version)
+        @collection.set_job_status(job.id, job.status, job.lock_version, job.finished_at)
       end
 
       def status_of_previous_jobs(job)
@@ -143,6 +154,18 @@ module Ci
         end
       end
 
+      def observe_processing_delay(job)
+        ready_at = if job.scheduling_type_dag?
+                     @collection.max_finished_at_of_jobs(job.aggregated_needs_names.to_a)
+                   else
+                     @collection.max_finished_at_prior_to_stage(job.stage_idx.to_i)
+                   end
+
+        ready_at ||= pipeline.created_at
+
+        Labkit::UserExperienceSli.observed(:ci_job_processing_delay, start_time: ready_at)
+      end
+
       # Gets the jobs that changed from stopped to alive status since the initial status collection
       # was evaluated. We determine this by checking if their current status is no longer stopped.
       def new_alive_jobs
@@ -150,8 +173,9 @@ module Ci
 
         return [] if initial_stopped_job_names.empty?
 
-        new_collection = AtomicProcessingService::StatusCollection.new(pipeline)
-        new_alive_job_names = initial_stopped_job_names - new_collection.stopped_job_names
+        # Change @new_collection back to local var if FF `ci_atomic_processing_log_check_mismatch` reverted
+        @new_collection = AtomicProcessingService::StatusCollection.new(pipeline)
+        new_alive_job_names = initial_stopped_job_names - @new_collection.stopped_job_names
 
         return [] if new_alive_job_names.empty?
 
@@ -186,6 +210,26 @@ module Ci
           pipeline_id: pipeline.id,
           user_id: jobs.first.user.id,
           jobs_count: jobs.count
+        )
+      end
+
+      # Temporary monitoring to determine if the last pipeline.needs_processing?
+      # can be replaced with new_collection.processing_jobs.any?.
+      # See https://gitlab.com/gitlab-org/gitlab/-/work_items/598584.
+      def log_processing_check_mismatch(needs_processing)
+        return unless Feature.enabled?(:ci_atomic_processing_log_check_mismatch, project)
+        return unless @new_collection # Populated via new_alive_jobs
+
+        processing_jobs_any = @new_collection.processing_jobs.any?
+        return if needs_processing == processing_jobs_any
+
+        Gitlab::AppJsonLogger.info(
+          class: self.class.name,
+          message: 'needs_processing? differs from new_collection.processing_jobs.any?',
+          project_id: project.id,
+          pipeline_id: pipeline.id,
+          needs_processing: needs_processing,
+          processing_jobs_any: processing_jobs_any
         )
       end
     end

@@ -30,6 +30,11 @@ module Packages
 
     ORIGINATOR_TYPES = %i[user deploy_token guest].freeze
 
+    # Event scopes whose legacy HLL counters (e.g. i_package_<scope>_user) have
+    # been removed and are no longer registered as known events. Tracking these
+    # would raise UnknownEvent in HLLRedisCounter.
+    REMOVED_UNIQUE_EVENT_SCOPES = %w[golang tag container].freeze
+
     # Remove some of the events, for now, so we don't hammer Redis too hard.
     # See: https://gitlab.com/gitlab-org/gitlab/-/issues/280770
     def self.event_allowed?(event_type)
@@ -42,6 +47,7 @@ module Packages
     def self.unique_counters_for(event_scope, event_type, originator_type)
       return [] unless event_allowed?(event_type)
       return [] if originator_type.to_s == 'guest'
+      return [] if REMOVED_UNIQUE_EVENT_SCOPES.include?(event_scope.to_s)
 
       ["#{EVENT_PREFIX}_#{event_scope}_#{originator_type}"]
     end

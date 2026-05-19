@@ -1,0 +1,11 @@
+{
+  "feature": {
+    "network": {
+      "outgoing": {
+        "ignore_localhost": true
+      }
+    },
+    "fs": "local",
+    "env": false
+  }
+}

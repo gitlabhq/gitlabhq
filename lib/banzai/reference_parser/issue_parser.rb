@@ -27,7 +27,6 @@ module Banzai
 
       def node_includes
         includes = [
-          :work_item_type,
           :namespace,
           :author,
           :assignees,

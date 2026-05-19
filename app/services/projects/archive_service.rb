@@ -30,7 +30,7 @@ module Projects
         after_archive
         ServiceResponse.success
       else
-        errors = project.errors.full_messages.to_sentence
+        errors = collect_errors
         return ServiceResponse.error(message: errors) if errors.presence
 
         ArchivingFailedError
@@ -41,9 +41,15 @@ module Projects
 
     def archive_project
       ApplicationRecord.transaction do
-        (project.state == 'archived' || project.archive(transition_user: current_user)) &&
-          project.update(archived: true)
+        project.archive(transition_user: current_user) && project.update(archived: true)
       end
+    end
+
+    def collect_errors
+      [
+        project.errors.full_messages,
+        project.project_namespace&.errors&.full_messages
+      ].flatten.compact.uniq.to_sentence
     end
 
     def after_archive

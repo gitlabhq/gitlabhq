@@ -22,6 +22,7 @@ module Sidebars
             add_item(messaging_queues_menu_item)
             add_item(api_monitoring_menu_item)
             add_item(notification_channels_menu_item)
+            add_item(api_keys_menu_item)
           end
 
           add_item(setup_menu_item)
@@ -218,6 +219,18 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :notification_channels,
             container_html_options: { class: 'shortcuts-notification-channels js-observability-nav' }
+          )
+        end
+
+        def api_keys_menu_item
+          link = group_observability_path(context.group, 'settings/api-keys')
+          ::Sidebars::MenuItem.new(
+            title: s_('Observability|API keys'),
+            link: link,
+            active_routes: { page: link },
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
+            item_id: :api_keys,
+            container_html_options: { class: 'shortcuts-api-keys js-observability-nav' }
           )
         end
 

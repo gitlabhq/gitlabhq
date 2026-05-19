@@ -1,0 +1,48 @@
+---
+name: ci_finished_pipelines_daily
+engine: AggregatingMergeTree
+engine_full: AggregatingMergeTree ORDER BY (started_at_bucket, path, status, source,
+  ref) SETTINGS index_granularity = 8192
+primary_key: started_at_bucket, path, status, source, ref
+sorting_key: started_at_bucket, path, status, source, ref
+settings:
+  index_granularity: '8192'
+columns:
+- name: path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'0/'"
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: status
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: source
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: ref
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: started_at_bucket
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: count_pipelines
+  type: AggregateFunction(count)
+- name: duration_quantile
+  type: AggregateFunction(quantile, UInt64)
+- name: name
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"

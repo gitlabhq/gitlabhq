@@ -9,6 +9,7 @@ import { clearDraft } from '~/lib/utils/autosave';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 import { ASC, DESC } from '~/notes/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { updateCacheAfterCreatingNote } from '../../graphql/cache_utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
 import workItemNotesByIidQuery from '../../graphql/notes/work_item_notes_by_iid.query.graphql';
@@ -20,6 +21,7 @@ import WorkItemCommentLocked from './work_item_comment_locked.vue';
 import WorkItemCommentForm from './work_item_comment_form.vue';
 
 export default {
+  name: 'WorkItemAddNote',
   constantOptions: {
     avatarUrl: window.gon.current_user_avatar_url,
   },
@@ -31,7 +33,7 @@ export default {
     WorkItemCommentForm,
     ResolveDiscussionButton,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   inject: {
     viewContext: { default: VIEW_CONTEXT.fullScreen },
   },
@@ -158,6 +160,7 @@ export default {
         return {
           fullPath: this.fullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
         };
       },
       update(data) {
@@ -291,12 +294,36 @@ export default {
         clearDraft(this.autosaveKeyInternalNote);
         this.cancelEditing();
         this.doFullPageReloadIfUnsupportedTypeChange(commentText);
+        this.refetchTimeTrackingIfQuickActionApplied(commentText, {
+          errorMessages,
+          messages,
+        });
       } catch (error) {
         this.$emit('error', error.message);
         Sentry.captureException(error);
       } finally {
         this.isSubmitting = false;
       }
+    },
+    // The time tracking widget is loaded via its own dedicated query and isn't part of
+    // the main work item query. When a time-tracking-related quick action runs successfully,
+    // refetch the dedicated query so the widget reflects the latest values.
+    refetchTimeTrackingIfQuickActionApplied(commentText, { errorMessages, messages }) {
+      const timeTrackingQuickActionRegex =
+        /\/(spend|spent|estimate|remove_estimate|remove_time_spent)(?!\S)/im;
+      const quickActionRanSuccessfully =
+        (!errorMessages || errorMessages.length === 0) && messages?.length > 0;
+
+      if (!quickActionRanSuccessfully || !timeTrackingQuickActionRegex.test(commentText)) {
+        return;
+      }
+
+      this.$apollo
+        .getClient()
+        .refetchQueries({
+          include: ['workItemTimeTracking'],
+        })
+        .catch((error) => Sentry.captureException(error));
     },
     // Until incidents and Service Desk issues are fully migrated to work items
     // we need to browse to the detail page again

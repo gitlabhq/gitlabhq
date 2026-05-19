@@ -13,6 +13,11 @@ export default {
       type: Object,
       required: true,
     },
+    selected: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     isStaleUploadedMedia() {
@@ -29,7 +34,7 @@ export default {
     :class="`media-container ${node.type.name}-container`"
   >
     <node-view-content
-      :class="{ 'gl-rounded-lg': node.type.name == 'video' }"
+      :class="{ 'gl-rounded-lg': node.type.name == 'video', 'ProseMirror-selectednode': selected }"
       :as="node.type.name"
       :src="node.attrs.src"
       controls="true"

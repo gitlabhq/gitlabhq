@@ -1,3 +1,4 @@
+import { __ } from '~/locale';
 import { OAUTH_CALLBACK_MESSAGE_TYPE } from '~/jira_connect/subscriptions/constants';
 
 function getOriginURL() {
@@ -16,6 +17,13 @@ function postMessageToJiraConnectApp(data) {
 }
 
 function initOAuthCallbacks() {
+  if (!window.opener) {
+    document.body.textContent = __(
+      'This page must be opened from the GitLab for Jira Cloud app. You can close this window.',
+    );
+    return;
+  }
+
   const params = new URLSearchParams(window.location.search);
   if (params.has('code') && params.has('state')) {
     postMessageToJiraConnectApp({

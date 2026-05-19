@@ -3,5 +3,7 @@ name: update_environment
 description: Grants the ability to modify environments in a project
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - update_environment

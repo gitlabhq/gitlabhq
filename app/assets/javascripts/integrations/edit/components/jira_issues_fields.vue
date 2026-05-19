@@ -1,7 +1,7 @@
 <script>
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
+import { useIntegrationForm } from '../store';
 
 export default {
   name: 'JiraIssuesFields',
@@ -64,6 +64,7 @@ export default {
       default: false,
     },
   },
+  emits: ['request-jira-issue-types'],
   data() {
     return {
       enableJiraIssues: this.initialEnableJiraIssues,
@@ -71,7 +72,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isInheriting']),
+    ...mapState(useIntegrationForm, ['isInheriting']),
 
     checkboxDisabled() {
       return !this.showJiraIssuesIntegration || this.isInheriting;

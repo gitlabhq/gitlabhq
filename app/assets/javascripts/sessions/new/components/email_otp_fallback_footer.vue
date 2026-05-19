@@ -21,6 +21,7 @@ export default {
       required: true,
     },
   },
+  emits: ['error', 'success'],
   data() {
     return {
       isSendingEmailOtp: false,
@@ -31,13 +32,13 @@ export default {
       this.isSendingEmailOtp = true;
 
       try {
-        await axios.post(this.sendEmailOtpPath, {
+        const response = await axios.post(this.sendEmailOtpPath, {
           user: { login: this.username },
         });
 
         document.querySelector('.js-2fa-form').classList.add('hidden');
 
-        this.$emit('success');
+        this.$emit('success', response.data.show_resend_after ?? null);
       } catch (error) {
         const message = __(
           'Failed to send email OTP. Please try again. If the problem persists, refresh your page or sign in again.',

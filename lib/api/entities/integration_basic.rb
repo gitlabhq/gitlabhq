@@ -5,7 +5,7 @@ module API
     class IntegrationBasic < Grape::Entity
       expose :id, documentation: { type: 'Integer', example: 75 }
       expose :title, documentation: { type: 'String', example: 'Jenkins CI' }
-      expose :slug, documentation: { type: 'Integer', example: 'jenkins' } do |integration|
+      expose :slug, documentation: { type: 'String', example: 'jenkins' } do |integration|
         integration.to_param.dasherize
       end
       expose :created_at, documentation: { type: 'DateTime', example: '2019-11-20T11:20:25.297Z' }

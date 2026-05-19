@@ -9,6 +9,7 @@ import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
 import GroupDeleteModal from '~/groups/components/delete_modal.vue';
 import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list/group_list_item_prevent_delete_modal.vue';
+import TransferModal from '~/groups/components/transfer_modal.vue';
 import {
   ACTION_COPY_ID,
   ACTION_ARCHIVE,
@@ -17,6 +18,7 @@ import {
   ACTION_EDIT,
   ACTION_LEAVE,
   ACTION_RESTORE,
+  ACTION_TRANSFER,
   ACTION_UNARCHIVE,
   ACTION_REQUEST_ACCESS,
   ACTION_WITHDRAW_ACCESS_REQUEST,
@@ -30,6 +32,7 @@ import {
   renderRestoreSuccessToast,
   renderUnarchiveSuccessToast,
   renderDeleteSuccessToast,
+  renderTransferSuccessToast,
   deleteParams,
 } from './utils';
 
@@ -41,6 +44,7 @@ export default {
     GroupListItemLeaveModal,
     GroupListItemPreventDeleteModal,
     GroupDeleteModal,
+    TransferModal,
   },
   mixins: [InternalEvents.mixin()],
   inject: ['triggerRestoreLocation'],
@@ -57,6 +61,7 @@ export default {
       isDeleteModalVisible: false,
       isDeleteModalLoading: false,
       isLeaveModalVisible: false,
+      isTransferModalVisible: false,
       leaveModalId: uniqueId('groups-list-item-leave-modal-id-'),
       deleteModalId: uniqueId('groups-list-item-delete-modal-id-'),
     };
@@ -115,6 +120,9 @@ export default {
             class: 'js-leave-link',
           },
         },
+        [ACTION_TRANSFER]: {
+          action: this.onActionTransfer,
+        },
       };
 
       if (this.group.requestAccessPath) {
@@ -155,6 +163,9 @@ export default {
     },
     hasActionLeave() {
       return this.group.availableActions?.includes(ACTION_LEAVE);
+    },
+    hasActionTransfer() {
+      return this.group.availableActions?.includes(ACTION_TRANSFER);
     },
   },
   methods: {
@@ -245,6 +256,13 @@ export default {
     onActionLeave() {
       this.isLeaveModalVisible = true;
     },
+    onActionTransfer() {
+      this.isTransferModalVisible = true;
+    },
+    onTransferSuccess() {
+      this.$emit('action', ACTION_TRANSFER);
+      renderTransferSuccessToast(this.group);
+    },
   },
 };
 </script>
@@ -285,6 +303,14 @@ export default {
         :modal-id="leaveModalId"
         :group="group"
         @success="onLeaveSuccess"
+      />
+    </template>
+
+    <template v-if="hasActionTransfer">
+      <transfer-modal
+        v-model="isTransferModalVisible"
+        :group="group"
+        @success="onTransferSuccess"
       />
     </template>
   </div>

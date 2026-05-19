@@ -1261,7 +1261,9 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Name of the secret. Only letters, digits, and underscores are allowed.",
+                  "pattern": "^[a-zA-Z0-9_]+$"
                 },
                 "source": {
                   "type": "string",

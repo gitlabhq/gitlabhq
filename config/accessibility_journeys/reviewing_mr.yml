@@ -1,0 +1,35 @@
+# Accessibility Journey Configuration: Reviewing MR
+# Stage: Create
+# Groups: Code Review
+
+stage: create
+journey_name: reviewing_mr
+feature_category: code_review_workflow
+description: 'Golden user journey for reviewing merge requests in GitLab'
+
+feature_test_hints:
+  - merge_request
+
+e2e_test_files:
+  # Reviewing & commenting
+  - path: qa/qa/specs/features/browser_ui/3_create/merge_request/add_batch_comments_in_merge_request_spec.rb
+    description: Adds batch comments to an MR; core for review discussions
+    focus_area: Reviewing & commenting
+    has_ui: true
+
+  - path: qa/qa/specs/features/browser_ui/3_create/merge_request/suggestions/batch_suggestion_spec.rb
+    description: Applies batch suggestions in MR discussions
+    focus_area: Reviewing & commenting
+    has_ui: true
+
+  # Diff navigation
+  - path: qa/qa/specs/features/browser_ui/3_create/merge_request/view_merge_request_diff_patch_spec.rb
+    description: Views the MR diff as a patch; exercises diff view UI
+    focus_area: Diff navigation
+    has_ui: true
+
+  # Merging actions
+  - path: qa/qa/specs/features/browser_ui/3_create/merge_request/merge_request_set_to_auto_merge_spec.rb
+    description: Sets an MR to auto-merge once conditions are met
+    focus_area: Merging actions
+    has_ui: true

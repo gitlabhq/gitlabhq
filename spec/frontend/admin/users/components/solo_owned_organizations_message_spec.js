@@ -41,13 +41,13 @@ describe('SoloOwnedOrganizationsMessage', () => {
 
     const links = findLinks();
 
-    expect(links.at(0).attributes('href')).toBe('http://gdk.test:3000/-/organizations/foo-0');
+    expect(links.at(0).attributes('href')).toBe('http://gdk.test:3000/o/foo-0/-/overview');
     expect(links.at(0).text()).toBe('Foo 0');
 
-    expect(links.at(1).attributes('href')).toBe('http://gdk.test:3000/-/organizations/foo-1');
+    expect(links.at(1).attributes('href')).toBe('http://gdk.test:3000/o/foo-1/-/overview');
     expect(links.at(1).text()).toBe('Foo 1');
 
-    expect(links.at(2).attributes('href')).toBe('http://gdk.test:3000/-/organizations/foo-2');
+    expect(links.at(2).attributes('href')).toBe('http://gdk.test:3000/o/foo-2/-/overview');
     expect(links.at(2).text()).toBe('Foo 2');
   });
 });

@@ -3,5 +3,7 @@ name: log_ml_flow_run
 description: Grants the ability to log MLflow runs
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - log_ml_flow_run

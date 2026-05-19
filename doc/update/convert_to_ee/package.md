@@ -54,9 +54,8 @@ To convert a Linux package CE instance to EE:
 
    {{< /tabs >}}
 
-1. Add the `gitlab-ee` [Apt or Yum repository](https://packages.gitlab.com/gitlab/gitlab-ee/install). These commands
-   find your OS version and automatically set up the repository. If you are not comfortable installing the repository
-   through a piped script, you can first [check the script's contents](https://packages.gitlab.com/gitlab/gitlab-ee/install).
+1. Add the `gitlab-ee` [Apt or Yum repository](https://packages.gitlab.com/ui/browse/gitlab/gitlab-ee). These commands
+   find your OS version and automatically set up the repository.
 
    {{< tabs >}}
 

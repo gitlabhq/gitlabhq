@@ -1,0 +1,6 @@
+---
+event: Vulnerabilities::BulkRedetectedEvent
+description: Published when previously resolved vulnerabilities are transitioned back
+  to detected during security finding ingestion.
+feature_category: vulnerability_management
+ee_only: true

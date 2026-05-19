@@ -60,7 +60,7 @@ RSpec.describe Members::PendingInvitationsFinder, feature_category: :groups_and_
     end
 
     context 'with an uppercase version of the email matches another member' do
-      let_it_be(:project_member_invite) { create(:project_member, :invited, invite_email: user.email) }
+      let_it_be(:project_member_invite, freeze: false) { create(:project_member, :invited, invite_email: user.email) }
       let_it_be(:upper_case_existing_invite) do
         create(:project_member, :invited, source: project_member_invite.project, invite_email: user.email.upcase)
       end

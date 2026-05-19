@@ -1546,7 +1546,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
       it 'returns edit path scoped to organization' do
         expect(organization_edit_path).to eq(
-          "/-/organizations/#{organization.path}/projects/#{project.path_with_namespace}/edit"
+          "/o/#{organization.path}/-/projects/#{project.path_with_namespace}/edit"
         )
       end
     end

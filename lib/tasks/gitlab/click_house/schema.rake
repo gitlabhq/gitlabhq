@@ -132,6 +132,8 @@ namespace :gitlab do
       else
         puts "File #{path_to_sql} is not writeable, skipping writing #{database}.sql"
       end
+
+      ClickHouse::SchemaCache.dump(connection, database)
     end
   end
 end

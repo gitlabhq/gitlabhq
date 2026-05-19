@@ -128,6 +128,21 @@ describe('moreActionsDropdown', () => {
       });
     });
 
+    it('hides confirm modal when it emits "promotion-modal-visible" with false', async () => {
+      createComponent({
+        provideData,
+      });
+
+      findPromoteItem().trigger('click');
+      await nextTick();
+      expect(findPromoteMilestoneModal().props('visible')).toBe(true);
+
+      findPromoteMilestoneModal().vm.$emit('promotion-modal-visible', false);
+      await nextTick();
+
+      expect(findPromoteMilestoneModal().props('visible')).toBe(false);
+    });
+
     it('does not render if `promoteUrl` is false', () => {
       createComponent({
         provideData: {
@@ -252,6 +267,19 @@ describe('moreActionsDropdown', () => {
         milestoneTitle: provideData.milestoneTitle,
         milestoneUrl: provideData.milestoneUrl,
       });
+    });
+
+    it('hides confirm modal when it emits "delete-modal-visible" with false', async () => {
+      createComponent();
+
+      findDeleteItem().trigger('click');
+      await nextTick();
+      expect(findDeleteMilestoneModal().props('visible')).toBe(true);
+
+      findDeleteMilestoneModal().vm.$emit('delete-modal-visible', false);
+      await nextTick();
+
+      expect(findDeleteMilestoneModal().props('visible')).toBe(false);
     });
   });
 

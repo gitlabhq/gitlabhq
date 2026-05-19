@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
@@ -133,7 +134,7 @@ RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
     context 'user is both a member of the project and a member of the parent group' do
       let_it_be(:user) { create(:user) }
 
-      before do
+      before_all do
         group.add_developer(user)
         project.add_maintainer(user)
       end
@@ -154,7 +155,7 @@ RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
       let_it_be(:shared_with_group) { create(:group) }
       let_it_be(:user_from_shared_with_group) { create(:user) }
 
-      before do
+      before_all do
         shared_with_group.add_guest(user_from_shared_with_group)
         create(:group_group_link, :developer, shared_group: project.group, shared_with_group: shared_with_group)
       end
@@ -171,7 +172,7 @@ RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
       end
 
       context 'when the project also has the same user as a member, but with a different access level' do
-        before do
+        before_all do
           project.add_maintainer(user_from_shared_with_group)
         end
 
@@ -188,7 +189,7 @@ RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
       end
 
       context "when the project's ancestor also has the same user as a member, but with a different access level" do
-        before do
+        before_all do
           project.group.add_maintainer(user_from_shared_with_group)
         end
 
@@ -211,7 +212,7 @@ RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
     let_it_be(:user_from_shared_with_group) { create(:user) }
     let_it_be(:project) { create(:project, group: create(:group)) }
 
-    before do
+    before_all do
       create(:project_group_link, :developer, project: project, group: shared_with_group)
       shared_with_group.add_maintainer(user_from_shared_with_group)
     end
@@ -265,10 +266,9 @@ RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:shared_with_group) { create(:group) }
 
-    before do
+    before_all do
       create(:project_group_link, :maintainer, project: project, group: shared_with_group)
       create(:group_group_link, :reporter, shared_group: project.group, shared_with_group: shared_with_group)
-
       shared_with_group.add_maintainer(user)
       group.add_guest(user)
       project.add_developer(user)

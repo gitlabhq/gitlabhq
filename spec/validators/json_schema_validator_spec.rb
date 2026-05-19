@@ -119,7 +119,7 @@ RSpec.describe JsonSchemaValidator, feature_category: :shared do
         described_class.new(
           attributes: [:run],
           base_directory: 'app/validators/json_schemas',
-          filename: 'run_steps',
+          filename: 'ci_run_steps',
           hash_conversion: true,
           detail_errors: true
         )

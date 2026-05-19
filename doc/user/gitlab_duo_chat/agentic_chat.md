@@ -2,12 +2,13 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Use GitLab Duo Agentic Chat to answer complex questions and create or edit files autonomously.
 title: GitLab Duo Agentic Chat
 ---
 
 {{< details >}}
 
-- Tier: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
+- Tier: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -253,16 +254,16 @@ reflect your coding style, team practices, and project requirements.
 
 GitLab Duo Chat supports two approaches:
 
-- [Custom rules](../gitlab_duo/customize_duo/custom_rules.md) in `chat-rules.md`: For GitLab only.
+- [Custom rules](../duo_agent_platform/customize/custom_rules.md) in `chat-rules.md`: For GitLab only.
   Best for personal preferences and team standards.
-- [Shared rules in `AGENTS.md`](../gitlab_duo/customize_duo/agents_md.md): For GitLab and other AI
+- [Shared rules in `AGENTS.md`](../duo_agent_platform/customize/agents_md.md): For GitLab and other AI
   tools that support the `AGENTS.md` specification. Best for project context, monorepo organization,
   and directory-specific conventions.
 
 You can use both files simultaneously. GitLab Duo Chat applies instructions from all available rule
 files.
 
-Learn more about how to [customize GitLab Duo](../gitlab_duo/customize_duo/_index.md).
+Learn more about how to [customize GitLab Duo](../duo_agent_platform/customize/_index.md).
 
 ## Select a model
 
@@ -385,6 +386,118 @@ in the GitLab Duo settings, depending on the offering:
 
 This also turns off prompt caching for Code Suggestions.
 
+## Tool approvals
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20519) in GitLab 19.0
+  - Introduced in [GitLab for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.72.0) 6.72.0
+  - Introduced in [GitLab Duo plugin for JetBrains IDEs](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.33.0) 3.33.0
+  - Introduced in [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.80.0) 8.80.0.
+
+{{< /history >}}
+
+Before Agentic Chat can use a tool on your behalf, it requires your approval.
+By default, each tool invocation requires approval.
+
+If you trust a tool and want to streamline your workflow, you can approve it
+once for the entire session instead.
+
+Session approvals apply to Chat only, not to flows.
+
+### Manage tool approvals
+
+Owners and administrators can control whether users can approve tools for a session. Settings cascade from instance to group to project.
+
+Configure one of the following options for a group or instance:
+
+- **On by default**: Users can approve tools once for a session. Groups and subgroups can turn this off.
+- **Off by default**: (default) Users must approve each tool invocation. Groups and subgroups can turn this on.
+- **Always off**: Users cannot approve tools for a session. Groups and subgroups cannot override this setting.
+
+#### Manage default settings
+
+Configure the default tool approval setting for your instance or top-level group.
+
+{{< tabs >}}
+
+{{< tab title="GitLab.com" >}}
+
+Prerequisites:
+
+- The Owner role for the top-level group.
+
+To configure default tool approval settings:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **GitLab Duo**.
+1. From the **Tool approval for session** dropdown list, select your preferred option.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed" >}}
+
+Prerequisites:
+
+- Administrator access.
+
+To configure default tool approval settings:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **GitLab Duo**.
+1. From the **Tool approval for session** dropdown list, select your preferred option.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Dedicated" >}}
+
+Prerequisites:
+
+- Administrator access.
+
+To configure default tool approval settings:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **GitLab Duo**.
+1. From the **Tool approval for session** dropdown list, select your preferred option.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+#### Manage group or project settings
+
+Configure tool approval settings for a specific group or project.
+
+Prerequisites:
+
+- The Owner role for the group, or the Maintainer role for the project.
+
+To configure tool approval settings:
+
+1. In the top bar, select **Search or go to** and find your group or project.
+1. Select **Settings** > **GitLab Duo**.
+1. For groups, from the **Tool approval for session** dropdown list, select your preferred option.
+1. For projects, select or clear the **Allow tool approval for session** checkbox.
+
+### Approve tools in your local environment
+
+Prerequisites:
+
+- Tool approvals are turned on for your group or instance.
+- For GitLab Duo Chat in your local environment, install and configure one of the following:
+  - [GitLab for VS Code](../../editor_extensions/visual_studio_code/setup.md) 6.72.0 or later.
+  - [GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md) 3.33.0 or later.
+  - [GitLab Duo CLI](../gitlab_duo_cli/_index.md) 8.80.0 or later.
+
+To approve a tool for your current session:
+
+1. When a tool approval prompt appears, select the dropdown next to the approval button.
+1. Select **Approve for Session**.
+
+The approval persists for the remainder of the Chat session and resets when
+you start a new conversation.
+
 ## Chat feature comparison
 
 | Capability                                              | GitLab Duo Non-Agentic Chat |                                                         GitLab Duo Agentic Chat                                                                                                           |
@@ -404,6 +517,7 @@ This also turns off prompt caching for Code Suggestions.
 | Use Git write commands |                                                 No |                                                            Yes, UI only                                                  |
 | Run Shell commands |                                      No |                                                            Yes, IDEs only                                                                                                        |
 | Run MCP tools |                                      No |                                                            Yes, IDEs only                                                                                                          |
+| Approve tools for a session |                        No |                                                            Yes, IDEs only                                                                                                          |
 
 **Footnotes**:
 

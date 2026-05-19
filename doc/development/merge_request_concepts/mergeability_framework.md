@@ -47,8 +47,8 @@ The mergeability checks live under `app/services/merge_requests/mergeability/`.
          end
 
          def skip?
-           # Here we can check for the param or return false if its not skippable
-           # Skippablility of an MR is related to merge when checks pass functionality
+           # Here we can check for the param or return false if it's not skippable
+           # Skippability of an MR is related to merge when checks pass functionality
            params[:skip_ci_check].present?
          end
 

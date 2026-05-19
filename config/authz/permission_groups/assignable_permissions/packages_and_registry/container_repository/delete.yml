@@ -3,6 +3,8 @@ name: delete_container_repository
 description: Grants the ability to delete container repositories
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - delete_container_repository
   - delete_container_repository_tag

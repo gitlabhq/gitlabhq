@@ -87,6 +87,11 @@ module Namespaces
     def max_member_access_for_user(user)
       project.max_member_access_for_user(user)
     end
+
+    override :remove_ancestor_inherited_transitions?
+    def remove_ancestor_inherited_transitions?
+      Feature.enabled?(:remove_project_ancestor_inherited_transitions, project)
+    end
   end
 end
 

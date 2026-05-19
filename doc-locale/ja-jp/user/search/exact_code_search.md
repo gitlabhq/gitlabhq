@@ -2,6 +2,7 @@
 stage: AI-powered
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: "特定のプロジェクトまたはGitLab全体でコードを検索するために、完全一致コードの検索を使用できます。"
 title: 完全一致コードの検索
 ---
 
@@ -93,22 +94,23 @@ GitLabには2つの検索モードがあります。
 
 次の表は、完全一致モードと正規表現モードのクエリの例を示しています。
 
-| クエリ                | 完全一致モード                                        | 正規表現モード |
-| -------------------- | ------------------------------------------------------- | ----------------------- |
-| `"foo"`              | `"foo"`                                                 | `foo` |
-| `foo file:^doc/`     | `/doc`で始まるディレクトリ内の`foo`             | `/doc`で始まるディレクトリ内の`foo` |
-| `"class foo"`        | `"class foo"`                                           | `class foo` |
-| `class foo`          | `class foo`                                             | `class`と`foo` |
-| `foo or bar`         | `foo or bar`                                            | `foo`または`bar` |
-| `class Foo`          | `class Foo`（大文字と小文字を区別）                            | `class`（大文字と小文字を区別しない）と`Foo`（大文字と小文字を区別する） |
-| `class Foo case:yes` | `class Foo`（大文字と小文字を区別）                            | `class`と`Foo`（どちらも大文字と小文字を区別） |
-| `foo -bar`           | `foo -bar`                                              | `foo`だが`bar`ではない |
-| `foo file:js`        | `js`を含む名前のファイル内の`foo`             | `js`を含む名前のファイル内の`foo` |
-| `foo -file:test`     | `test`を含まない名前のファイル内の`foo`    | `test`を含まない名前のファイル内の`foo` |
-| `foo lang:ruby`      | Rubyのソースコード内の`foo`                               | Rubyのソースコード内の`foo` |
-| `foo file:\.js$`     | `.js`で終わる名前のファイル内の`foo`           | `.js`で終わる名前のファイル内の`foo` |
-| `foo.*bar`           | `foo.*bar`（リテラル）                                    | `foo.*bar`（正規表現） |
-| `sym:foo`            | クラス、メソッド、変数名などのシンボル内の`foo` | クラス、メソッド、変数名などのシンボル内の`foo` |
+| クエリ                | 完全一致モード                                                                | 正規表現モード                                                         |
+|----------------------|---------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| `"foo"`              | `"foo"`                                                                         | `foo`                                                                           |
+| `foo file:^doc/`     | `/doc`で始まるディレクトリ内の`foo`                                     | `/doc`で始まるディレクトリ内の`foo`                                     |
+| `"class foo"`        | `"class foo"`                                                                   | `class foo`                                                                     |
+| `class foo`          | `class foo`                                                                     | `class`と`foo`                                                               |
+| `foo or bar`         | `foo or bar`                                                                    | `foo`または`bar`                                                                  |
+| `class Foo`          | `class Foo`（大文字と小文字を区別）                                                    | `class`（大文字と小文字を区別しない）と`Foo`（大文字と小文字を区別する）                           |
+| `class Foo case:yes` | `class Foo`（大文字と小文字を区別）                                                    | `class`と`Foo`（どちらも大文字と小文字を区別）                                         |
+| `foo -bar`           | `foo -bar`                                                                      | `foo`だが`bar`ではない                                                             |
+| `foo file:js`        | `js`を含む名前のファイル内の`foo`                                     | `js`を含む名前のファイル内の`foo`                                     |
+| `foo -file:test`     | `test`を含まない名前のファイル内の`foo`                            | `test`を含まない名前のファイル内の`foo`                            |
+| `foo lang:ruby`      | Rubyのソースコード内の`foo`                                                       | Rubyのソースコード内の`foo`                                                       |
+| `foo file:\.js$`     | `.js`で終わる名前のファイル内の`foo`                                   | `.js`で終わる名前のファイル内の`foo`                                   |
+| `foo.*bar`           | `foo.*bar`（リテラル）                                                            | `foo.*bar`（正規表現）                                                 |
+| `sym:foo`            | クラス、メソッド、変数名などのシンボル内の`foo`                         | クラス、メソッド、変数名などのシンボル内の`foo`                         |
+| `test repo:(?i)foo`  | 名前に`foo`を含むプロジェクト（大文字と小文字を区別しない）で`test`を検索します。`repo:`は正規表現をサポートします。 | 名前に`foo`を含むプロジェクト（大文字と小文字を区別しない）で`test`を検索します。`repo:`は正規表現をサポートします。 |
 
 ## 既知の問題 {#known-issues}
 

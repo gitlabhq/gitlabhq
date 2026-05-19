@@ -13,12 +13,12 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
     let(:paths) { ['app/user.rb'] }
 
     let(:cobertura) do
-      <<~EOF
+      <<~XML
         <coverage>
           #{sources_xml}
           #{classes_xml}
         </coverage>
-      EOF
+      XML
     end
 
     context 'when data is Cobertura style XML' do
@@ -36,11 +36,11 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
         context 'when there is a single <class>' do
           context 'with no lines' do
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <packages><package name="app"><classes>
                   <class filename="app.rb"></class>
                 </classes></package></packages>
-              EOF
+              XML
             end
 
             it 'parses XML and returns empty coverage' do
@@ -52,13 +52,13 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
           context 'with a single line' do
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <packages><package name="app"><classes>
                   <class filename="app.rb"><lines>
                     <line number="1" hits="2"/>
                   </lines></class>
                 </classes></package></packages>
-              EOF
+              XML
             end
 
             it 'parses XML and returns a single file with coverage' do
@@ -70,13 +70,13 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
           context 'without a package parent' do
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <packages>
                   <class filename="app.rb"><lines>
                     <line number="1" hits="2"/>
                   </lines></class>
                 </packages>
-              EOF
+              XML
             end
 
             it 'parses XML and returns a single file with coverage' do
@@ -88,14 +88,14 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
           context 'with multiple lines and methods info' do
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <packages><package name="app"><classes>
                   <class filename="app.rb"><methods/><lines>
                     <line number="1" hits="2"/>
                     <line number="2" hits="0"/>
                   </lines></class>
                 </classes></package></packages>
-              EOF
+              XML
             end
 
             it 'parses XML and returns a single file with coverage' do
@@ -108,7 +108,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
         context 'when there are multiple packages' do
           let(:cobertura) do
-            <<~EOF
+            <<~XML
               <coverage>
                 <packages><package name="app1"><classes>
                   <class filename="app1.rb"><lines>
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                   </lines></class>
                 </classes></package></packages>
               </coverage>
-            EOF
+            XML
           end
 
           it 'parses XML and returns coverage information per class' do
@@ -134,7 +134,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
         context 'when there are multiple <class>' do
           context 'without a package parent' do
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <packages>
                   <class filename="app.rb"><methods/><lines>
                     <line number="1" hits="2"/>
@@ -143,7 +143,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                     <line number="6" hits="1"/>
                   </lines></class>
                 </packages>
-              EOF
+              XML
             end
 
             it 'parses XML and returns coverage information per class' do
@@ -155,7 +155,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
           context 'with the same filename and different lines' do
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <packages><package name="app"><classes>
                   <class filename="app.rb"><methods/><lines>
                     <line number="1" hits="2"/>
@@ -166,7 +166,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                     <line number="7" hits="1"/>
                   </lines></class>
                 </classes></package></packages>
-              EOF
+              XML
             end
 
             it 'parses XML and returns a single file with merged coverage' do
@@ -178,7 +178,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
           context 'with the same filename and lines' do
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <packages><package name="app"><classes>
                   <class filename="app.rb"><methods/><lines>
                     <line number="1" hits="2"/>
@@ -189,7 +189,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                     <line number="2" hits="1"/>
                   </lines></class>
                 </classes></package></packages>
-              EOF
+              XML
             end
 
             it 'parses XML and returns a single file with summed-up coverage' do
@@ -201,7 +201,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
           context 'with missing filename' do
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <packages><package name="app"><classes>
                   <class filename="app.rb"><methods/><lines>
                     <line number="1" hits="2"/>
@@ -212,7 +212,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                     <line number="7" hits="1"/>
                   </lines></class>
                 </classes></package></packages>
-              EOF
+              XML
             end
 
             it 'parses XML and ignores class with missing name' do
@@ -224,7 +224,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
           context 'with invalid line information' do
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <packages><package name="app"><classes>
                   <class filename="app.rb"><methods/><lines>
                     <line number="1" hits="2"/>
@@ -235,7 +235,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                     <line number="7" hits="1"/>
                   </lines></class>
                 </classes></package></packages>
-              EOF
+              XML
             end
 
             it 'raises an error' do
@@ -261,11 +261,11 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
         context 'and has a single source with a pattern for Go projects' do
           let(:project_path) { 'local/go' } # Make sure we're not making false positives
           let(:sources_xml) do
-            <<~EOF
+            <<~XML
               <sources>
                 <source>/usr/local/go/src</source>
               </sources>
-            EOF
+            XML
           end
 
           it_behaves_like 'ignoring sources, project_path, and worktree_paths'
@@ -273,23 +273,23 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
         context 'and has Windows-style paths' do
           let(:sources_xml) do
-            <<~EOF_WIN
+            <<~XML_WIN
               <sources>
                 <source>D:\\builds\\#{windows_path}\\app</source>
               </sources>
-            EOF_WIN
+            XML_WIN
           end
 
           context 'when there is a single <class>' do
             context 'with a single line' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages><package name="app"><classes>
                     <class filename="user.rb"><lines>
                       <line number="1" hits="2"/>
                     </lines></class>
                   </classes></package></packages>
-                EOF
+                XML
               end
 
               it 'parses XML and returns a single file with the filename relative to project root' do
@@ -305,13 +305,13 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
             context 'with a single line' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages><package name="app"><classes>
                     <class filename="subfolder\\user.rb"><lines>
                       <line number="1" hits="2"/>
                     </lines></class>
                   </classes></package></packages>
-                EOF
+                XML
               end
 
               it 'parses XML and returns a single file with the filename relative to project root' do
@@ -326,12 +326,12 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
         context 'and has multiple sources with a pattern for Go projects' do
           let(:project_path) { 'local/go' } # Make sure we're not making false positives
           let(:sources_xml) do
-            <<~EOF
+            <<~XML
               <sources>
                 <source>/usr/local/go/src</source>
                 <source>/go/src</source>
               </sources>
-            EOF
+            XML
           end
 
           it_behaves_like 'ignoring sources, project_path, and worktree_paths'
@@ -339,11 +339,11 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
         context 'and has a single source but already is at the project root path' do
           let(:sources_xml) do
-            <<~EOF
+            <<~XML
               <sources>
                 <source>builds/#{project_path}</source>
               </sources>
-            EOF
+            XML
           end
 
           it_behaves_like 'ignoring sources, project_path, and worktree_paths'
@@ -351,12 +351,12 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
         context 'and has multiple sources but already are at the project root path' do
           let(:sources_xml) do
-            <<~EOF
+            <<~XML
               <sources>
                 <source>builds/#{project_path}/</source>
                 <source>builds/somewhere/#{project_path}</source>
               </sources>
-            EOF
+            XML
           end
 
           it_behaves_like 'ignoring sources, project_path, and worktree_paths'
@@ -364,11 +364,11 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
         context 'and has a single source that is not at the project root path' do
           let(:sources_xml) do
-            <<~EOF
+            <<~XML
               <sources>
                 <source>builds/#{project_path}/app</source>
               </sources>
-            EOF
+            XML
           end
 
           context 'when there is no <class>' do
@@ -384,11 +384,11 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
           context 'when there is a single <class>' do
             context 'with no lines' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages><package name="app"><classes>
                     <class filename="user.rb"></class>
                   </classes></package></packages>
-                EOF
+                XML
               end
 
               it 'parses XML and returns empty coverage' do
@@ -400,13 +400,13 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
             context 'with a single line but the filename cannot be determined based on extracted source and worktree paths' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages><package name="app"><classes>
                     <class filename="member.rb"><lines>
                       <line number="1" hits="2"/>
                     </lines></class>
                   </classes></package></packages>
-                EOF
+                XML
               end
 
               it 'parses XML and returns empty coverage' do
@@ -418,13 +418,13 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
             context 'with a single line' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages><package name="app"><classes>
                     <class filename="user.rb"><lines>
                       <line number="1" hits="2"/>
                     </lines></class>
                   </classes></package></packages>
-                EOF
+                XML
               end
 
               it 'parses XML and returns a single file with the filename relative to project root' do
@@ -436,14 +436,14 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
             context 'with multiple lines and methods info' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages><package name="app"><classes>
                     <class filename="user.rb"><methods/><lines>
                       <line number="1" hits="2"/>
                       <line number="2" hits="0"/>
                     </lines></class>
                   </classes></package></packages>
-                EOF
+                XML
               end
 
               it 'parses XML and returns a single file with the filename relative to project root' do
@@ -457,7 +457,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
           context 'when there are multiple <class>' do
             context 'with the same filename but the filename cannot be determined based on extracted source and worktree paths' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages><package name="app"><classes>
                     <class filename="member.rb"><methods/><lines>
                       <line number="1" hits="2"/>
@@ -468,7 +468,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                       <line number="7" hits="1"/>
                     </lines></class>
                   </classes></package></packages>
-                EOF
+                XML
               end
 
               it 'parses XML and returns empty coverage' do
@@ -480,7 +480,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
             context 'without a parent package' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages>
                     <class filename="user.rb"><methods/><lines>
                       <line number="1" hits="2"/>
@@ -491,7 +491,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                       <line number="7" hits="1"/>
                     </lines></class>
                   </packages>
-                EOF
+                XML
               end
 
               it 'parses XML and returns coverage information with the filename relative to project root' do
@@ -503,7 +503,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
             context 'with the same filename and different lines' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages><package name="app"><classes>
                     <class filename="user.rb"><methods/><lines>
                       <line number="1" hits="2"/>
@@ -514,7 +514,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                       <line number="7" hits="1"/>
                     </lines></class>
                   </classes></package></packages>
-                EOF
+                XML
               end
 
               it 'parses XML and returns a single file with merged coverage, and with the filename relative to project root' do
@@ -526,7 +526,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
             context 'with the same filename and lines' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages><package name="app"><classes>
                     <class filename="user.rb"><methods/><lines>
                       <line number="1" hits="2"/>
@@ -537,7 +537,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                       <line number="2" hits="1"/>
                     </lines></class>
                   </classes></package></packages>
-                EOF
+                XML
               end
 
               it 'parses XML and returns a single file with summed-up coverage, and with the filename relative to project root' do
@@ -549,7 +549,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
             context 'with missing filename' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages><package name="app"><classes>
                     <class filename="user.rb"><methods/><lines>
                       <line number="1" hits="2"/>
@@ -560,7 +560,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                       <line number="7" hits="1"/>
                     </lines></class>
                   </classes></package></packages>
-                EOF
+                XML
               end
 
               it 'parses XML and ignores class with missing name' do
@@ -572,7 +572,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
             context 'with filename that cannot be determined based on extracted source and worktree paths' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages><package name="app"><classes>
                     <class filename="user.rb"><methods/><lines>
                       <line number="1" hits="2"/>
@@ -583,7 +583,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                       <line number="7" hits="1"/>
                     </lines></class>
                   </classes></package></packages>
-                EOF
+                XML
               end
 
               it 'parses XML and ignores class with undetermined filename' do
@@ -595,7 +595,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
             context 'with invalid line information' do
               let(:classes_xml) do
-                <<~EOF
+                <<~XML
                   <packages><package name="app"><classes>
                     <class filename="user.rb"><methods/><lines>
                       <line number="1" hits="2"/>
@@ -606,7 +606,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                       <line number="7" hits="1"/>
                     </lines></class>
                   </classes></package></packages>
-                EOF
+                XML
               end
 
               it 'raises an error' do
@@ -618,19 +618,19 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
         context 'and has multiple sources that are not at the project root path' do
           let(:sources_xml) do
-            <<~EOF
+            <<~XML
               <sources>
                 <source>builds/#{project_path}/app1/</source>
                 <source>builds/#{project_path}/app2/</source>
               </sources>
-            EOF
+            XML
           end
 
           context 'and a class filename is available under multiple extracted sources' do
             let(:paths) { ['app1/user.rb', 'app2/user.rb'] }
 
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <package name="app1">
                   <classes>
                     <class filename="user.rb"><lines>
@@ -645,7 +645,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                     </lines></class>
                   </classes>
                 </package>
-              EOF
+              XML
             end
 
             it 'parses XML and returns the files with the filename relative to project root' do
@@ -662,13 +662,13 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
             let(:paths) { ['app1/member.rb', 'app2/user.rb', 'app2/pet.rb'] }
 
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <packages><package name="app"><classes>
                   <class filename="user.rb"><lines>
                     <line number="1" hits="2"/>
                   </lines></class>
                 </classes></package></packages>
-              EOF
+              XML
             end
 
             it 'parses XML and returns a single file with the filename relative to project root using the extracted source where it is first found under' do
@@ -682,13 +682,13 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
             let(:paths) { ['app1/member.rb', 'app2/pet.rb'] }
 
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <packages><package name="app"><classes>
                   <class filename="user.rb"><lines>
                     <line number="1" hits="2"/>
                   </lines></class>
                 </classes></package></packages>
-              EOF
+              XML
             end
 
             it 'parses XML and returns empty coverage' do
@@ -702,7 +702,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
             let(:paths) { ['app2/user.rb'] }
 
             let(:classes_xml) do
-              <<~EOF
+              <<~XML
                 <packages><package name="app"><classes>
                   <class filename="record.rb"><lines>
                     <line number="1" hits="2"/>
@@ -711,7 +711,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
                     <line number="1" hits="2"/>
                   </lines></class>
                 </classes></package></packages>
-              EOF
+              XML
             end
 
             before do
@@ -729,21 +729,21 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
 
       shared_examples_for 'non-smart parsing' do
         let(:sources_xml) do
-          <<~EOF
+          <<~XML
             <sources>
               <source>builds/foo/bar/app</source>
             </sources>
-          EOF
+          XML
         end
 
         let(:classes_xml) do
-          <<~EOF
+          <<~XML
             <packages><package name="app"><classes>
               <class filename="user.rb"><lines>
                 <line number="1" hits="2"/>
               </lines></class>
             </classes></package></packages>
-          EOF
+          XML
         end
 
         it 'parses XML and returns filenames unchanged just as how they are found in the class node' do

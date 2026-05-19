@@ -333,12 +333,9 @@ Merge requests enforce these maximums:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `merge_requests_diffs_limit`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/537447) in GitLab 19.0. Feature flag `merge_requests_diffs_limit` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 GitLab limits each merge request to 1000 [diff versions](../project/merge_requests/versions.md).
 Merge requests that reach this limit cannot be updated further. Instead,
@@ -349,12 +346,9 @@ close the affected merge request and create a new merge request.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/527036) in GitLab 17.11 [with a flag](../../administration/feature_flags/_index.md) named `merge_requests_diff_commits_limit`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/537446) in GitLab 19.0. Feature flag `merge_requests_diff_commits_limit` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 GitLab limits each merge request to 1,000,000 (one million) diff commits.
 Merge requests that reach this limit cannot be updated further. Instead,
@@ -460,6 +454,8 @@ The following table describes the rate limits for GitLab.com:
 | Unauthenticated traffic from an IP address                       | 500 requests each minute        |
 | Authenticated API traffic for a user                             | 2,000 requests each minute      |
 | Authenticated non-API HTTP traffic for a user                    | 1,000 requests each minute      |
+| Authenticated Git HTTPS traffic for a user                       | 10,000 requests each minute     |
+| Unauthenticated Git HTTPS traffic from an IP address             | 15,000 requests each minute     |
 | All traffic from an IP address                                   | 2,000 requests each minute      |
 | Issue creation                                                   | 200 requests each minute        |
 | Note creation on issues and merge requests                       | 60 requests each minute         |

@@ -1,0 +1,9 @@
+---
+name: automerge_skip_mergeability_cache
+description: Skip mergeability cache when auto-merge process checks if MR is mergeable
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231445
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/596786
+milestone: '19.0'
+type: development
+group: group::code review
+default_enabled: false

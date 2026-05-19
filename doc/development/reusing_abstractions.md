@@ -124,6 +124,27 @@ Everything in `app/controllers`.
 Controllers should not do much work on their own, instead they pass input
 to other classes and present the results.
 
+### Views
+
+Everything in `app/views` and `ee/app/views`.
+
+Views are responsible for presentation only.
+They receive data through instance variables assigned by the controller and render it as HTML, XML, Markdown, or text.
+
+Views must not:
+
+- Execute database queries.
+  Move all data retrieval into the controller or a [presenter](#presenters), and pass the result
+  as an instance variable.
+  Queries in views bypass caching layers, are invisible to query-analysis tools,
+  and make N+1 problems hard to detect.
+- Contain business logic.
+  Avoid conditionals that evaluate model state beyond `nil?`, `present?`, or boolean
+  attribute checks.
+  Avoid service object instantiation and multi-step computations.
+  Extract this logic into a [helper](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/helpers),
+  [presenter](#presenters), or [ViewComponent](fe_guide/view_component.md).
+
 ### API endpoints
 
 Everything in `lib/api` (the REST API) and `app/graphql` (the GraphQL API).

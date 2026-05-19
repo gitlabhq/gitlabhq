@@ -48,6 +48,17 @@ RSpec.describe PasswordsController, :with_current_organization, type: :request, 
         expect(flash[:alert]).to eq('Your password reset token has expired.')
       end
     end
+
+    context 'with a blocked user' do
+      it 'redirects to the root_path with a blocked user failure message' do
+        user.block!
+
+        perform_request
+
+        expect(response).to redirect_to(new_user_session_path)
+        expect(flash[:alert]).to include(I18n.t('devise.failure.blocked'))
+      end
+    end
   end
 
   describe '#update' do
@@ -72,35 +83,64 @@ RSpec.describe PasswordsController, :with_current_organization, type: :request, 
 
     include_examples 'set_current_context'
 
-    it 'updates the password' do
-      expect { perform_request }.to change { user.reload.encrypted_password }
-
-      expect(response).to redirect_to(new_user_session_path)
-    end
-
-    context 'when reset_password_token is expired' do
-      before do
-        travel_to 100.days.ago do
-          reset_password_token
-        end
-      end
-
-      it 'does not update the password' do
-        expect { perform_request }.not_to change { user.reload.encrypted_password }
-      end
-    end
-
-    context 'when user cannot be found because incorrect organization specified' do
-      let(:another_organization) { create(:organization) }
-
-      before do
-        stub_current_organization(another_organization)
-      end
+    context 'when a user is not found' do
+      let(:reset_password_token) { 'invalid_token' }
 
       it 'does not update the password' do
         expect { perform_request }.not_to change { user.reload.encrypted_password }
 
         expect(response.body).to include('errors prohibited this user from being saved')
+      end
+    end
+
+    context 'when a user is found' do
+      it 'updates the password' do
+        expect { perform_request }.to change { user.reload.encrypted_password }
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+
+      context 'when reset_password_token is expired' do
+        before do
+          travel_to 100.days.ago do
+            reset_password_token
+          end
+        end
+
+        it 'does not update the password' do
+          expect { perform_request }.not_to change { user.reload.encrypted_password }
+        end
+      end
+
+      context 'when user cannot be found because incorrect organization specified' do
+        let(:another_organization) { create(:organization) }
+
+        before do
+          stub_current_organization(another_organization)
+        end
+
+        it 'does not update the password' do
+          expect { perform_request }.not_to change { user.reload.encrypted_password }
+
+          expect(response.body).to include('errors prohibited this user from being saved')
+        end
+      end
+
+      context 'with a blocked user' do
+        before do
+          user.block!
+        end
+
+        it 'does not update the password' do
+          expect { perform_request }.not_to change { user.reload.encrypted_password }
+        end
+
+        it 'redirects to the root_path with a blocked user failure message' do
+          perform_request
+
+          expect(response).to redirect_to(new_user_session_path)
+          expect(flash[:alert]).to include(I18n.t('devise.failure.blocked'))
+        end
       end
     end
   end

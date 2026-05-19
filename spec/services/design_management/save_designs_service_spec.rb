@@ -125,7 +125,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
           -> { run_service(unique_files) }
         end
 
-        expect { run_parallel(blocks) }.to change(DesignManagement::Version, :count).by(parellism)
+        expect { run_parallel(blocks) }.to change { DesignManagement::Version.count }.by(parellism)
       end
 
       context 'when the design collection is in the process of being copied', :clean_gitlab_redis_shared_state do

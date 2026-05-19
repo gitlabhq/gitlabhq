@@ -7,6 +7,7 @@ export default {
   components: {
     GlModal,
   },
+  emits: ['reset'],
   primaryProps: {
     text: __('Reset'),
     attributes: { variant: 'danger', category: 'primary' },

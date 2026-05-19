@@ -1,0 +1,9 @@
+---
+name: delete_gpg_key
+description: Grants the ability to delete GPG keys
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - delete_user_gpg_key

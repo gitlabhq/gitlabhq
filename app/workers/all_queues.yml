@@ -322,8 +322,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :cronjob_child
+  :tags: []
   :queue_namespace: :container_repository
 - :name: container_repository_delete:container_registry_delete_container_repository
   :worker_name: ContainerRegistry::DeleteContainerRepositoryWorker
@@ -1629,136 +1628,6 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :deployment
-- :name: gcp_cluster:cluster_configure_istio
-  :worker_name: ClusterConfigureIstioWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:cluster_install_app
-  :worker_name: ClusterInstallAppWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:cluster_patch_app
-  :worker_name: ClusterPatchAppWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:cluster_provision
-  :worker_name: ClusterProvisionWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:cluster_update_app
-  :worker_name: ClusterUpdateAppWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:cluster_upgrade_app
-  :worker_name: ClusterUpgradeAppWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:cluster_wait_for_app_installation
-  :worker_name: ClusterWaitForAppInstallationWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:cluster_wait_for_app_update
-  :worker_name: ClusterWaitForAppUpdateWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:cluster_wait_for_ingress_ip_address
-  :worker_name: ClusterWaitForIngressIpAddressWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:clusters_applications_activate_integration
-  :worker_name: Clusters::Applications::ActivateIntegrationWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:clusters_applications_deactivate_integration
-  :worker_name: Clusters::Applications::DeactivateIntegrationWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:clusters_applications_uninstall
-  :worker_name: Clusters::Applications::UninstallWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:clusters_applications_wait_for_uninstall_app
-  :worker_name: Clusters::Applications::WaitForUninstallAppWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:clusters_cleanup_project_namespace
   :worker_name: Clusters::Cleanup::ProjectNamespaceWorker
   :feature_category: :deployment_management
@@ -1781,16 +1650,6 @@
   :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:clusters_migration_install_agent
   :worker_name: Clusters::Migration::InstallAgentWorker
-  :feature_category: :deployment_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :gcp_cluster
-- :name: gcp_cluster:wait_for_cluster_creation
-  :worker_name: WaitForClusterCreationWorker
   :feature_category: :deployment_management
   :has_external_dependencies: false
   :urgency: :low
@@ -3115,6 +2974,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :repository_check
+- :name: snowplow:analytics_snowplow_emitter
+  :worker_name: Analytics::SnowplowEmitterWorker
+  :feature_category: :product_analytics
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :snowplow
 - :name: terraform:terraform_states_destroy
   :worker_name: Terraform::States::DestroyWorker
   :feature_category: :infrastructure_as_code
@@ -3698,6 +3567,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: cells_bulk_claims
+  :worker_name: Cells::BulkClaimsWorker
+  :feature_category: :cell
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: cells_claims_verification
   :worker_name: Cells::ClaimsVerificationWorker
   :feature_category: :cell
@@ -3895,6 +3774,16 @@
   :worker_name: Ci::Slsa::PublishProvenanceWorker
   :feature_category: :artifact_security
   :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: ci_track_first_pipeline_succeeded
+  :worker_name: Ci::TrackFirstPipelineSucceededWorker
+  :feature_category: :pipeline_composition
+  :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -4412,6 +4301,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: import_offline_imports_schedule_import
+  :worker_name: Import::Offline::Imports::ScheduleImportWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: import_reassign_placeholder_user_records
   :worker_name: Import::ReassignPlaceholderUserRecordsWorker
   :feature_category: :importers
@@ -4873,6 +4772,16 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+  :queue_namespace:
+- :name: namespaces_invalidate_descendants_cache
+  :worker_name: Namespaces::InvalidateDescendantsCacheWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
   :queue_namespace:
 - :name: namespaces_process_sync_events

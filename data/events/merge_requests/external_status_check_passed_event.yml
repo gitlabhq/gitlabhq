@@ -1,0 +1,6 @@
+---
+event: MergeRequests::ExternalStatusCheckPassedEvent
+description: Published when an external status check response transitions to the passed
+  state for a merge request.
+feature_category: compliance_management
+ee_only: true

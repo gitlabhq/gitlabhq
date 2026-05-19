@@ -68,6 +68,17 @@ module Feature
     end
   end
 
+  # Represents a code execution path as defined by the GitLab caller_id context.
+  # Generates flipper_id from caller_id (e.g., "ApplicationController#index" or "GET /api/v4/projects")
+  class Endpoint
+    attr_reader :caller_id, :flipper_id
+
+    def initialize(caller_id)
+      @caller_id = caller_id
+      @flipper_id = "Endpoint:#{caller_id}".freeze
+    end
+  end
+
   # To enable EE overrides
   class ActiveSupportCacheStoreAdapter < Flipper::Adapters::ActiveSupportCacheStore
   end
@@ -278,6 +289,13 @@ module Feature
 
     def gitlab_instance
       @flipper_gitlab_instance ||= FlipperGitlabInstance.new
+    end
+
+    def current_endpoint
+      caller_id = Gitlab::ApplicationContext.current_context_attribute(:caller_id)
+      return unless caller_id
+
+      Endpoint.new(caller_id)
     end
 
     def logger
@@ -505,11 +523,11 @@ module Feature
     end
 
     def gate_specified?
-      %i[user project group feature_group namespace repository runner].any? { |key| params.key?(key) }
+      %i[user project group feature_group namespace repository runner endpoint].any? { |key| params.key?(key) }
     end
 
     def targets
-      [feature_group, users, projects, groups, namespaces, repositories, runners].flatten.compact
+      [feature_group, users, projects, groups, namespaces, repositories, runners, endpoints].flatten.compact
     end
 
     private
@@ -551,6 +569,14 @@ module Feature
 
     def runners
       find_targets(:runner) { |arg| ::Ci::Runner.find_by_id(arg) }
+    end
+
+    def endpoints
+      return unless params.key?(:endpoint)
+
+      params[:endpoint].split(',').map do |arg|
+        Feature::Endpoint.new(arg.strip)
+      end
     end
 
     def find_targets(param_key)

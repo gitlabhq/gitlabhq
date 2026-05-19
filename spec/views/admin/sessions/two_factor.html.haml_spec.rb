@@ -7,7 +7,7 @@ RSpec.describe 'admin/sessions/two_factor.html.haml', feature_category: :system_
     assign(:user, user)
   end
 
-  context 'user has otp active' do
+  context 'when user has otp active' do
     let(:user) { create(:admin, :two_factor) }
 
     it 'shows enter otp form' do
@@ -17,7 +17,7 @@ RSpec.describe 'admin/sessions/two_factor.html.haml', feature_category: :system_
     end
   end
 
-  context 'user has WebAuthn active' do
+  context 'when user has WebAuthn active' do
     let(:user) { create(:admin, :two_factor_via_webauthn) }
 
     it 'renders the WebAuthn authentication vue root elements' do

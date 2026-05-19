@@ -310,6 +310,7 @@ module Gitlab
         }
 
         token_info[:token_application_id] = access_token.application_id if access_token.respond_to?(:application_id)
+        token_info[:pat_type] = access_token.granular? ? 'granular' : 'legacy' if access_token.is_a?(PersonalAccessToken)
 
         ::Current.token_info = token_info
       end

@@ -74,7 +74,7 @@ RSpec.describe IncidentManagement::ProcessAlertWorkerV2, feature_category: :inci
         end
       end
 
-      context 'prometheus alert' do
+      context 'with prometheus alert' do
         let_it_be(:alert) { create(:alert_management_alert, :prometheus, project: project, started_at: started_at) }
 
         it_behaves_like 'creates issue successfully'

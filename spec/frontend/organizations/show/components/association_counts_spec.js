@@ -11,8 +11,8 @@ describe('AssociationCounts', () => {
       projects: '5',
       users: '1000+',
     },
-    groupsAndProjectsOrganizationPath: '/-/organizations/default/groups_and_projects',
-    usersOrganizationPath: '/-/organizations/default/users',
+    groupsAndProjectsOrganizationPath: '/o/default/-/groups_and_projects',
+    usersOrganizationPath: '/o/default/-/users',
   };
 
   const createComponent = ({ propsData = {} } = {}) => {
@@ -32,7 +32,7 @@ describe('AssociationCounts', () => {
       iconName: 'group',
       count: defaultPropsData.associationCounts.groups,
       linkText: 'View all',
-      linkHref: '/-/organizations/default/groups_and_projects?display=groups',
+      linkHref: '/o/default/-/groups_and_projects?display=groups',
     });
   });
 
@@ -44,7 +44,7 @@ describe('AssociationCounts', () => {
       iconName: 'project',
       count: defaultPropsData.associationCounts.projects,
       linkText: 'View all',
-      linkHref: '/-/organizations/default/groups_and_projects?display=projects',
+      linkHref: '/o/default/-/groups_and_projects?display=projects',
     });
   });
 
@@ -56,7 +56,7 @@ describe('AssociationCounts', () => {
       iconName: 'users',
       count: defaultPropsData.associationCounts.users,
       linkText: 'Manage',
-      linkHref: '/-/organizations/default/users',
+      linkHref: '/o/default/-/users',
     });
   });
 });

@@ -5,17 +5,22 @@ module ActiveContext
     def self.queues
       register_all_queues!
 
-      Set.new(@queues ||= [])
+      Set.new(@queue_classes_map.keys)
     end
 
     def self.raw_queues
       register_all_queues!
-
-      @raw_queues ||= []
+      build_raw_queues
     end
 
     def self.configured_queue_classes
       ActiveContext::Config.queue_classes
+    end
+
+    def self.build_raw_queues
+      @queue_classes_map.each_value.flat_map do |queue_class|
+        (0...queue_class.number_of_shards).map { |shard| queue_class.new(shard) }
+      end
     end
 
     def self.register_all_queues!
@@ -33,18 +38,11 @@ module ActiveContext
     def self.register!(queue_class)
       key = queue_class.redis_key
 
-      @raw_queues ||= []
-      @queues = Set.new(@queues || [])
+      @queue_classes_map ||= {}
 
-      return if @queues.include?(key)
+      return if @queue_classes_map.key?(key)
 
-      @queues.add(key)
-
-      queue_class.number_of_shards.times do |shard|
-        unless @raw_queues.any? { |q| q.instance_of?(queue_class) && q.shard == shard }
-          @raw_queues << queue_class.new(shard)
-        end
-      end
+      @queue_classes_map[key] = queue_class
     end
 
     def self.all_queued_items

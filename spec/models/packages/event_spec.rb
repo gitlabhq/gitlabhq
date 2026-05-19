@@ -33,5 +33,15 @@ RSpec.describe Packages::Event, feature_category: :package_registry do
 
       it { is_expected.to eq([]) }
     end
+
+    context 'when the event scope has had its unique HLL counter removed' do
+      Packages::Event::REMOVED_UNIQUE_EVENT_SCOPES.each do |removed_scope|
+        context "for #{removed_scope}" do
+          let(:event_scope) { removed_scope.to_sym }
+
+          it { is_expected.to eq([]) }
+        end
+      end
+    end
   end
 end

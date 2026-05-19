@@ -47,6 +47,8 @@ module AiHarness
             dirs = Set.new
 
             # Use git ls-files for tracked files (fast on large repos)
+            # Keep in sync: if you change these patterns, update .ai-harness-doctor-patterns
+            # in .gitlab/ci/rules.gitlab-ci.yml so the CI job triggers on the right paths.
             stdout, stderr, status = Open3.capture3(
               'git', '-C', repo_root, 'ls-files', 'AGENTS.md', '**/AGENTS.md', 'CLAUDE.md', '**/CLAUDE.md'
             )

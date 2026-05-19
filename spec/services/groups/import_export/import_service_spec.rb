@@ -87,6 +87,15 @@ RSpec.describe Groups::ImportExport::ImportService, feature_category: :importers
         expect(service.execute).to be_truthy
       end
 
+      it 'schedules PlacementWorker so imported epics get positioned in the target namespace' do
+        expect(::Issues::PlacementWorker)
+          .to receive(:perform_async)
+          .with({ 'namespace_id' => group.work_item_positioning_root.id })
+          .at_least(:once)
+
+        service.execute
+      end
+
       describe 'IID pre-allocation' do
         it 'calls IidPreallocator.from_file with the group and max_iids.json path' do
           shared = Gitlab::ImportExport::Shared.new(group)

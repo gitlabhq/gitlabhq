@@ -5,18 +5,24 @@ module SystemCheck
   module Helpers
     include ::Gitlab::TaskHelpers
 
+    # Write a line to stdout. Wraps +puts+ so that callers do not trigger
+    # the +Rails/Output+ cop.
+    def say(message = '')
+      puts message # rubocop:disable Rails/Output -- system check CLI output
+    end
+
     # Display a message telling to fix and rerun the checks
     def fix_and_rerun
-      $stdout.puts Rainbow('  Please fix the error above and rerun the checks.').red
+      say Rainbow('  Please fix the error above and rerun the checks.').red
     end
 
     # Display a formatted list of references (documentation or links) where to find more information
     #
     # @param [Array<String>] sources one or more references (documentation or links)
     def for_more_information(*sources)
-      $stdout.puts Rainbow('  For more information see:').blue
+      say Rainbow('  For more information see:').blue
       sources.each do |source|
-        $stdout.puts "  #{source}"
+        say "  #{source}"
       end
     end
 
@@ -26,15 +32,15 @@ module SystemCheck
 
     # @deprecated This will no longer be used when all checks were executed using SystemCheck
     def finished_checking(component)
-      $stdout.puts ''
-      $stdout.puts "Checking #{Rainbow(component).yellow} ... #{Rainbow('Finished').green}"
-      $stdout.puts ''
+      say ''
+      say "Checking #{Rainbow(component).yellow} ... #{Rainbow('Finished').green}"
+      say ''
     end
 
     # @deprecated This will no longer be used when all checks were executed using SystemCheck
     def start_checking(component)
-      $stdout.puts "Checking #{Rainbow(component).yellow} ..."
-      $stdout.puts ''
+      say "Checking #{Rainbow(component).yellow} ..."
+      say ''
     end
 
     # Display a formatted list of instructions on how to fix the issue identified by the #check?
@@ -43,9 +49,9 @@ module SystemCheck
     def try_fixing_it(*steps)
       steps = steps.shift if steps.first.is_a?(Array)
 
-      $stdout.puts Rainbow('  Try fixing it:').blue
+      say Rainbow('  Try fixing it:').blue
       steps.each do |step|
-        $stdout.puts "  #{step}"
+        say "  #{step}"
       end
     end
 

@@ -48,6 +48,22 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
       )
     end
 
+    it 'searches for a file and navigates to it from the search panel' do
+      within('.file-tree-browser') do
+        input = find_by_testid('file-tree-search-input')
+        input.click
+        input.set('contributing')
+
+        wait_for_requests
+        expect(page).to have_css('.file-tree-search-result-item')
+        find('.file-tree-search-result-item', match: :first).click
+      end
+
+      expect(page).to have_current_path(
+        project_blob_path(project, "#{project.default_branch}/CONTRIBUTING.md", ref_type: :heads)
+      )
+    end
+
     it 'expands and collapses directories' do
       within('.file-tree-browser') do
         click_button('Expand files directory')
@@ -77,25 +93,13 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
     end
   end
 
-  describe 'global search integration' do
-    it 'opens global search modal when search button is clicked' do
-      within('.file-tree-browser') do
-        click_button 'Search files (*.vue, *.rb...)'
-      end
-
-      expect(page.find('#super-sidebar-search-modal')).to be_visible
-
-      within('#super-sidebar-search-modal') do
-        expect(find('#search').value).to eq('~')
-      end
-    end
-  end
-
   describe 'keyboard shortcuts' do
-    it 'opens global search with f key' do
+    it 'focuses on file tree search input with f key' do
       send_keys('f')
 
-      expect(page.find('#super-sidebar-search-modal')).to be_visible
+      within('.file-tree-search-wrapper') do
+        expect(page).to have_css('[data-testid="file-tree-search-input"]:focus')
+      end
     end
 
     it 'toggles visibility with Shift+f' do

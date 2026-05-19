@@ -7,17 +7,16 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
-import {
-  TODO_DONE_ICON,
-  TODO_ADD_ICON,
-  TODO_PENDING_STATE,
-  TODO_DONE_STATE,
-} from '~/work_items/constants';
+import { TODO_DONE_ICON, TODO_ADD_ICON, TODO_PENDING_STATE } from '~/work_items/constants';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
 import createWorkItemTodosMutation from '~/work_items/graphql/create_work_item_todos.mutation.graphql';
-import markDoneWorkItemTodosMutation from '~/work_items/graphql/mark_done_work_item_todos.mutation.graphql';
+import updateWorkItemCurrentUserTodosMutation from '~/work_items/graphql/update_work_item_current_user_todos.mutation.graphql';
 
-import { workItemResponseFactory, getTodosMutationResponse } from '../../mock_data';
+import {
+  workItemResponseFactory,
+  getTodosMutationResponse,
+  getMarkAllDoneTodosMutationResponse,
+} from '../../mock_data';
 
 jest.mock('~/sidebar/utils');
 
@@ -36,22 +35,31 @@ describe('WorkItemTodo component', () => {
   const createTodoSuccessHandler = jest
     .fn()
     .mockResolvedValue(getTodosMutationResponse(TODO_PENDING_STATE));
-  const markDoneTodoSuccessHandler = jest
+  const markAllDoneTodoSuccessHandler = jest
     .fn()
-    .mockResolvedValue(getTodosMutationResponse(TODO_DONE_STATE));
+    .mockResolvedValue(getMarkAllDoneTodosMutationResponse());
   const failureHandler = jest.fn().mockRejectedValue(new Error(errorMessage));
 
   const inputVariablesCreateTodos = {
     targetId: 'gid://gitlab/WorkItem/1',
   };
 
-  const inputVariablesMarkDoneTodos = {
-    id: 'gid://gitlab/Todo/1',
+  const inputVariablesMarkAllDoneTodos = {
+    id: 'gid://gitlab/WorkItem/1',
+    currentUserTodosWidget: {
+      action: 'MARK_AS_DONE',
+    },
   };
 
   const mockCurrentUserTodos = {
     id: 'gid://gitlab/Todo/1',
   };
+
+  const mockMultipleCurrentUserTodos = [
+    { id: 'gid://gitlab/Todo/1' },
+    { id: 'gid://gitlab/Todo/2' },
+    { id: 'gid://gitlab/Todo/3' },
+  ];
 
   const createComponent = ({
     mutation = createWorkItemTodosMutation,
@@ -84,7 +92,7 @@ describe('WorkItemTodo component', () => {
     expect(findTodoWidget().props('category')).toBe('tertiary');
   });
 
-  it('renders mark as done button when there is pending item', () => {
+  it('renders mark to-do items done button when there is pending item', () => {
     createComponent({
       currentUserTodos: [mockCurrentUserTodos],
     });
@@ -94,33 +102,86 @@ describe('WorkItemTodo component', () => {
     expect(findAnimatedTodoIcon().classes('!gl-text-status-info')).toBe(true);
   });
 
-  it.each`
-    assertionName  | mutation                         | currentUserTodosHandler       | currentUserTodos          | inputVariables                 | todos
-    ${'create'}    | ${createWorkItemTodosMutation}   | ${createTodoSuccessHandler}   | ${[]}                     | ${inputVariablesCreateTodos}   | ${[{ id: expect.anything() }]}
-    ${'mark done'} | ${markDoneWorkItemTodosMutation} | ${markDoneTodoSuccessHandler} | ${[mockCurrentUserTodos]} | ${inputVariablesMarkDoneTodos} | ${[]}
-  `(
-    'calls $assertionName todos mutation when to do button is toggled',
-    async ({ mutation, currentUserTodosHandler, currentUserTodos, inputVariables, todos }) => {
-      createComponent({
-        mutation,
-        currentUserTodosHandler,
-        currentUserTodos,
-      });
+  it('calls create todos mutation when to do button is toggled and no pending todos', async () => {
+    createComponent({
+      mutation: createWorkItemTodosMutation,
+      currentUserTodosHandler: createTodoSuccessHandler,
+      currentUserTodos: [],
+    });
 
-      findTodoWidget().vm.$emit('click');
+    findTodoWidget().vm.$emit('click');
 
-      await waitForPromises();
+    await waitForPromises();
 
-      expect(currentUserTodosHandler).toHaveBeenCalledWith({
-        input: inputVariables,
-      });
-      expect(wrapper.emitted('todosUpdated')[0][0]).toMatchObject({
-        cache: expect.anything(),
-        todos,
-      });
-      expect(updateGlobalTodoCount).toHaveBeenCalled();
-    },
-  );
+    expect(createTodoSuccessHandler).toHaveBeenCalledWith({
+      input: inputVariablesCreateTodos,
+    });
+    expect(wrapper.emitted('todosUpdated')[0][0]).toMatchObject({
+      cache: expect.anything(),
+      todos: [{ id: expect.anything() }],
+    });
+    expect(updateGlobalTodoCount).toHaveBeenCalledWith(1);
+  });
+
+  it('calls mark all done mutation when to do button is toggled and has pending todo', async () => {
+    const mockApolloProvider = createMockApollo([
+      [createWorkItemTodosMutation, createTodoSuccessHandler],
+      [updateWorkItemCurrentUserTodosMutation, markAllDoneTodoSuccessHandler],
+    ]);
+
+    wrapper = shallowMountExtended(TodosToggle, {
+      apolloProvider: mockApolloProvider,
+      propsData: {
+        itemId: mockWorkItemId,
+        currentUserTodos: [mockCurrentUserTodos],
+        todosButtonType: 'tertiary',
+      },
+      stubs: {
+        GlAnimatedTodoIcon,
+      },
+    });
+
+    findTodoWidget().vm.$emit('click');
+
+    await waitForPromises();
+
+    expect(markAllDoneTodoSuccessHandler).toHaveBeenCalledWith({
+      input: inputVariablesMarkAllDoneTodos,
+    });
+    expect(wrapper.emitted('todosUpdated')[0][0]).toMatchObject({
+      cache: expect.anything(),
+      todos: [],
+    });
+    expect(updateGlobalTodoCount).toHaveBeenCalledWith(-1);
+  });
+
+  it('decrements global todo count by correct amount when marking multiple todos done', async () => {
+    const mockApolloProvider = createMockApollo([
+      [createWorkItemTodosMutation, createTodoSuccessHandler],
+      [updateWorkItemCurrentUserTodosMutation, markAllDoneTodoSuccessHandler],
+    ]);
+
+    wrapper = shallowMountExtended(TodosToggle, {
+      apolloProvider: mockApolloProvider,
+      propsData: {
+        itemId: mockWorkItemId,
+        currentUserTodos: mockMultipleCurrentUserTodos,
+        todosButtonType: 'tertiary',
+      },
+      stubs: {
+        GlAnimatedTodoIcon,
+      },
+    });
+
+    findTodoWidget().vm.$emit('click');
+
+    await waitForPromises();
+
+    expect(markAllDoneTodoSuccessHandler).toHaveBeenCalledWith({
+      input: inputVariablesMarkAllDoneTodos,
+    });
+    expect(updateGlobalTodoCount).toHaveBeenCalledWith(-3);
+  });
 
   it('renders secondary button when `todosButtonType` is secondary', () => {
     createComponent({

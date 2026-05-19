@@ -87,9 +87,17 @@ module Gitlab
             # Regular arguments
             sub_method_arity == super_method_arity
           else
-            # It's too complex to check this case, just allow sub-method having negative arity
-            # But we don't allow sub_method_arity > 0 yet super_method_arity < 0
-            sub_method_arity < 0
+            # A negative arity means the method accepts variable arguments.
+            # If the sub-method has negative arity, it can handle anything
+            # the super-method requires. If the super-method has negative
+            # arity (e.g. a `def execute(...)` forwarding wrapper), it
+            # accepts any call signature, so any sub-method arity is
+            # compatible.
+            #
+            # Note: this also permits fixed-arity sub-methods to override
+            # splat-based super-methods that are not forwarding wrappers.
+            # Those cases are accepted as a pragmatic trade-off.
+            sub_method_arity < 0 || super_method_arity < 0
           end
         end
 

@@ -45,9 +45,9 @@ To learn more, see [GitLab Dedicated architecture](architecture.md).
 |------------|-------------|-----------------|
 | [Data encryption](encryption.md) | GitLab encrypts your data both at rest and in transit through infrastructure provided by AWS. | Available by <br>default |
 | [Customer-managed encryption keys](encryption.md#customer-managed-encryption) | You can provide your own AWS KMS keys for encryption instead of using GitLab-managed AWS KMS keys. GitLab integrates these keys with your instance to encrypt data at rest. | Onboarding |
-| [SAML SSO](configure_instance/authentication/saml.md) | You configure the connection to your SAML identity providers. GitLab handles the authentication flow. | Switchboard |
-| [IP allowlists](configure_instance/network_security.md#ip-allowlist) | You specify approved IP addresses. GitLab blocks unauthorized access attempts. | Switchboard |
-| [Custom certificates](configure_instance/network_security.md#custom-certificate-authorities-for-external-services) | You import your SSL certificates. GitLab maintains secure connections to your private services. | Switchboard |
+| [GitLab SAML SSO](configure_instance/authentication/saml.md) | You configure the connection to your SAML identity providers. GitLab handles the authentication flow. | Switchboard |
+| [IP allowlist](configure_instance/network_security.md#ip-allowlist) | You specify approved IP addresses. GitLab blocks unauthorized access attempts. | Switchboard |
+| [Custom certificate authorities](configure_instance/network_security.md#custom-certificate-authorities-for-external-services) | You import your SSL certificates. GitLab maintains secure connections to your private services. | Switchboard |
 | [Compliance frameworks](../../subscriptions/gitlab_dedicated/_index.md#monitoring) | GitLab maintains compliance with SOC 2, ISO 27001, and other frameworks. You can access reports through the [Trust Center](https://trust.gitlab.com/?product=gitlab-dedicated). | Available by <br>default |
 | [Emergency access protocols](../../subscriptions/gitlab_dedicated/_index.md#access-controls) | GitLab provides controlled break-glass procedures for urgent situations. | Available by <br>default |
 
@@ -56,8 +56,8 @@ To learn more, see [GitLab Dedicated architecture](architecture.md).
 | Feature | Description | Set up with |
 |------------|-------------|-----------------|
 | [Custom domains](configure_instance/network_security.md#custom-domains) | You provide a domain name and configure DNS records. GitLab manages SSL certificates through Let's Encrypt. | Support ticket |
-| [Inbound private link](configure_instance/network_security.md#inbound-private-link) | GitLab creates an endpoint service. You create VPC endpoints in your AWS account to connect to your GitLab instance. | Switchboard |
-| [Outbound private link](configure_instance/network_security.md#outbound-private-link) | You create an endpoint service in your AWS account. GitLab creates VPC endpoints to connect to your services. | Switchboard |
+| [Inbound PrivateLink connections](configure_instance/network_security.md#inbound-privatelink-connections) | GitLab creates an endpoint service. You create VPC endpoints in your AWS account to connect to your GitLab instance. | Switchboard |
+| [Outbound PrivateLink connections](configure_instance/network_security.md#outbound-privatelink-connections) | You create an endpoint service in your AWS account. GitLab creates VPC endpoints to connect to your services. | Switchboard |
 | [Private hosted zones](configure_instance/network_security.md#private-hosted-zones) | You define internal DNS requirements. GitLab configures DNS resolution in your instance network. | Switchboard |
 
 ## Use platform tools

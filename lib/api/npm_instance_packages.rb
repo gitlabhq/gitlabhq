@@ -14,7 +14,7 @@ module API
     end
 
     def self.authorization_boundary_options
-      { boundary_type: :project, boundary: -> { project } }
+      { boundary_type: :project, boundary: -> { project_or_nil } }
     end
 
     namespace 'packages/npm' do

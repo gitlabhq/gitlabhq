@@ -4,7 +4,7 @@
 # Support for delayed deletion is provided.
 #
 # The #self_deletion_in_progress? method needs to be defined.
-# The #ancestors_scheduled_for_deletion method can be overriden.
+# The #ancestors_scheduled_for_deletion method can be overridden.
 module Namespaces
   module AdjournedDeletable
     extend ActiveSupport::Concern
@@ -15,7 +15,7 @@ module Namespaces
     end
 
     # Returns an array of the record's ancestors that are scheduled for deletion.
-    # This method can be overriden.
+    # This method can be overridden.
     def ancestors_scheduled_for_deletion
       []
     end

@@ -22,22 +22,15 @@ packages so you can only focus on configuration. Pick the one that suits your ne
 
 ## Use Valkey instead of Redis
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/9113) in GitLab 18.9 as a [beta](../../policy/development_stages_support.md#beta).
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585839) in GitLab 19.0.
 
 {{< /history >}}
 
 [Valkey](https://valkey.io/) is an open source high-performance key/value datastore that is
-fully compatible with Redis. GitLab supports Valkey as an opt-in alternative to Redis.
-
-Using Valkey instead of Redis is a [beta](../../policy/development_stages_support.md#beta) feature.
+fully compatible with Redis. GitLab supports Valkey as an alternative to Redis.
 
 When enabled, Valkey uses the same user, group, data directory, and log directory conventions
 as Redis by default.

@@ -1,0 +1,9 @@
+---
+name: read_support_pin
+description: Grants the ability to read support PINs
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_user_support_pin

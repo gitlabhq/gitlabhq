@@ -4,7 +4,9 @@ module ContainerRegistry
   class Tag
     include Gitlab::Utils::StrongMemoize
 
-    attr_reader :repository, :name, :updated_at, :referrers, :published_at
+    MANIFEST_ARCHS_TO_SKIP = [nil, 'unknown'].freeze
+
+    attr_reader :repository, :name, :updated_at, :referrers, :published_at, :platform, :manifests
     attr_writer :created_at, :manifest_digest, :revision, :total_size
     attr_accessor :media_type
 
@@ -175,6 +177,18 @@ module ContainerRegistry
       protection_rule.delete_restricted?(max_access)
     end
 
+    def manifests=(tag_references)
+      return unless tag_references
+
+      @manifests = tag_references
+        .reject { |ref| ref.dig('config', 'platform', 'architecture').in?(MANIFEST_ARCHS_TO_SKIP) }
+        .map { |ref| create_manifest_from_tag_reference(ref) }
+    end
+
+    def platform=(platform_hash)
+      @platform = ImagePlatform.from_hash(self, platform_hash)
+    end
+
     private
 
     def from_api?
@@ -195,6 +209,18 @@ module ContainerRegistry
           rule.method(:"#{attribute}_before_type_cast").call
         ].max
       end
+    end
+
+    def create_manifest_from_tag_reference(ref)
+      manifest = ImageManifest.new(
+        tag: self,
+        digest: ref.dig('manifest', 'digest'),
+        media_type: ref.dig('manifest', 'media_type'),
+        size: ref['size_bytes']
+      )
+      manifest.platform = ImagePlatform.from_hash(manifest, ref.dig('config', 'platform'))
+
+      manifest
     end
   end
 end

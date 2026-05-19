@@ -436,7 +436,7 @@ func buildTLSConfig(tlsCfg *config.TLSConfig, errs TLSErrorMessages) (*tls.Confi
 	if tlsCfg.CACertificate != "" {
 		certPool := x509.NewCertPool()
 
-		certs, err := os.ReadFile(tlsCfg.CACertificate)
+		certs, err := os.ReadFile(tlsCfg.CACertificate) // #nosec G703 - tlsCfg is from a config file
 		if err != nil {
 			return nil, err
 		}

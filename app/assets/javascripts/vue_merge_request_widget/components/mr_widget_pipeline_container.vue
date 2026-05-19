@@ -3,7 +3,6 @@ import { reportToSentry } from '~/ci/utils';
 import { sanitize } from '~/lib/dompurify';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MrPipelineUpdated from '../subscriptions/mr_pipeline_updated.subscription.graphql';
 import ArtifactsApp from './artifacts_list_app.vue';
 import DeploymentList from './deployment/deployment_list.vue';
@@ -28,7 +27,6 @@ export default {
     MergeTrainPositionIndicator: () =>
       import('ee_component/vue_merge_request_widget/components/merge_train_position_indicator.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     mr: {
       type: Object,
@@ -53,7 +51,7 @@ export default {
           };
         },
         skip() {
-          return !this.pipeline?.id || !this.glFeatures.mrWidgetPipelineSubscription;
+          return !this.pipeline?.id;
         },
         result({ data }) {
           if (!data.ciPipelineStatusUpdated) return;
@@ -109,6 +107,7 @@ export default {
       :iid="mr.iid"
       :target-project-full-path="mr.targetProjectFullPath"
       :is-post-merge="isPostMerge"
+      :mr-id="mr.id"
     />
     <template #footer>
       <div v-if="mr.exposedArtifactsPath" class="js-exposed-artifacts">

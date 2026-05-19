@@ -20,7 +20,6 @@ import {
   listIssuablesQueries,
   ListType,
   WIP_WEIGHT,
-  INCIDENT,
 } from 'ee_else_ce/boards/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import {
@@ -85,7 +84,7 @@ export default {
       type: Number,
       required: true,
     },
-    draggedType: {
+    draggedItemId: {
       type: String,
       required: false,
       default: null,
@@ -332,7 +331,7 @@ export default {
       return shouldCloneCard(this.list.listType, this.toList.listType);
     },
     isInapplicable() {
-      if (!this.draggedType || !this.list?.status?.id) {
+      if (!this.draggedItemId || !this.list?.status?.id) {
         return false;
       }
 
@@ -343,13 +342,8 @@ export default {
 
       const listStatusId = this.list.status.id;
 
-      // Incidents are always inapplicable for status lists
-      if (this.draggedType === INCIDENT) {
-        return true;
-      }
-
       // Check if the dragged work item type supports the current list status
-      const allowedStatuses = this.workItemTypeAllowedStatusMap[this.draggedType] || [];
+      const allowedStatuses = this.workItemTypeAllowedStatusMap[this.draggedItemId] || [];
       const hasMatchingStatus = allowedStatuses.some((status) => status.id === listStatusId);
 
       return !hasMatchingStatus;
@@ -405,7 +399,7 @@ export default {
         return;
       }
       const draggedItem = this.boardListItems.find((item) => item.id === itemId);
-      this.$emit('dragStart', { itemType: draggedItem?.type || null });
+      this.$emit('dragStart', { itemId: draggedItem?.workItemType?.id || null });
 
       // Reset dragCancelled flag
       this.dragCancelled = false;

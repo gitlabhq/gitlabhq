@@ -54,10 +54,10 @@ RSpec.describe 'File blob', :js, feature_category: :source_code_management do
       file_actions_selector = '.file-actions'
 
       resize_screen_sm
-      expect(page).to have_selector(file_actions_selector, visible: true)
+      expect(page).to have_selector(file_actions_selector, visible: :visible)
 
       resize_screen_xs
-      expect(page).to have_selector(file_actions_selector, visible: true)
+      expect(page).to have_selector(file_actions_selector, visible: :visible)
     end
   end
 

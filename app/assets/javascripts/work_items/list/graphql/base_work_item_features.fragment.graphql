@@ -1,3 +1,4 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
 #import "~/work_items/graphql/milestone.fragment.graphql"
 
 fragment BaseWorkItemFeatures on WorkItemFeatures {
@@ -20,6 +21,7 @@ fragment BaseWorkItemFeatures on WorkItemFeatures {
   }
   assignees {
     allowsMultipleAssignees
+    canInviteMembers
     assignees {
       nodes {
         id
@@ -41,13 +43,12 @@ fragment BaseWorkItemFeatures on WorkItemFeatures {
     }
   }
   startAndDueDate {
+    type
     startDate
     dueDate
   }
   timeTracking {
-    humanReadableAttributes {
-      timeEstimate
-    }
+    type
   }
   notes {
     discussionLocked
@@ -61,6 +62,12 @@ fragment BaseWorkItemFeatures on WorkItemFeatures {
     parent {
       id
     }
+  }
+  errorTracking {
+    identifier
+  }
+  notifications {
+    subscribed
   }
   crmContacts {
     contactsAvailable
@@ -78,6 +85,21 @@ fragment BaseWorkItemFeatures on WorkItemFeatures {
           description
           defaultRate
         }
+      }
+    }
+  }
+  linkedResources {
+    linkedResources {
+      nodes {
+        url
+      }
+    }
+  }
+  labels {
+    allowsScopedLabels
+    labels {
+      nodes {
+        ...Label
       }
     }
   }

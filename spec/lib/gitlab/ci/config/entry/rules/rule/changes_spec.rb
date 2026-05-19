@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Changes do
     end
 
     context 'when clause is empty' do
-      let(:config) {}
+      let(:config) { nil }
 
       it { is_expected.to be_valid }
     end

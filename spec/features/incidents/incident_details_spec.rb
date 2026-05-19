@@ -170,6 +170,8 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
   end
 
   it 'routes the user to the incident details page when the issue is converted to an incident' do
+    stub_feature_flags(page_breadcrumbs_in_top_bar: false)
+
     visit project_issue_path(project, issue)
 
     fill_in 'Add a reply', with: '/promote_to_incident'

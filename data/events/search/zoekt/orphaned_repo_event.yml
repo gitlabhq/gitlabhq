@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::OrphanedRepoEvent
+description: Published when Zoekt repositories with no parent project (or otherwise
+  dangling) are detected, so the subscribed worker can mark them as orphaned for cleanup.
+feature_category: global_search
+ee_only: true

@@ -94,7 +94,7 @@ Prerequisites:
 To enable or disable Git LFS for your project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Select the **Git Large File Storage (LFS)** toggle.
 1. Select **Save changes**.

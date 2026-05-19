@@ -3,7 +3,6 @@ query parentWorkItems(
   $search: String
   $fullPath: ID!
   $groupPath: ID!
-  $types: [IssueType!]
   $workItemTypeIds: [WorkItemsTypeID!]
   $in: [IssuableSearchableField!]
   $ids: [WorkItemID!]
@@ -15,7 +14,6 @@ query parentWorkItems(
     id
     workItems(
       search: $search
-      types: $types
       workItemTypeIds: $workItemTypeIds
       in: $in
       includeAncestors: $includeAncestors
@@ -30,13 +28,7 @@ query parentWorkItems(
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
     id
-    workItems(
-      search: $search
-      types: $types
-      workItemTypeIds: $workItemTypeIds
-      in: $in
-      ids: $ids
-    ) {
+    workItems(search: $search, workItemTypeIds: $workItemTypeIds, in: $in, ids: $ids) {
       nodes {
         id
         iid

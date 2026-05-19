@@ -1,0 +1,10 @@
+---
+name: lock_duo_features_enabled_updated
+description: Added when lock_duo_features_enabled is changed.
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/598658
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235370
+feature_category: duo_agent_platform
+milestone: '19.0'
+saved_to_database: true
+streamed: true
+scope: [Group]

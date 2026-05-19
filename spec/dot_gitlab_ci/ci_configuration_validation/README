@@ -42,6 +42,7 @@
 #
 # Automated MR
 #   MR Created from release-tools/update-gitaly Source Branch Changing GITALY_SERVER_VERSION
+#   MR Created from release-tools/update-gitlab-pages Source Branch Changing GITLAB_PAGES_VERSION
 #
 # Stable Branch
 #   MR Targeting a Stable Branch Changing app/models/user.rb

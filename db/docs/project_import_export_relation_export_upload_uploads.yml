@@ -1,6 +1,7 @@
 ---
 table_name: project_import_export_relation_export_upload_uploads
 classes:
+- Geo::ProjectImportExportRelationExportUploadUpload
 - Projects::ImportExport::RelationExportUpload
 - Upload
 feature_categories:

@@ -30,7 +30,6 @@ export const i18n = {
     'PipelineEditor|Configuration content has changed. Re-run validation for updated results.',
   ),
   cta: s__('PipelineEditor|Validate pipeline'),
-  lint: s__('PipelineEditor|Lint CI/CD sample'),
   ctaDisabledTooltip: s__('PipelineEditor|Waiting for CI content to load…'),
   errorAlertTitle: s__('PipelineEditor|Pipeline simulation completed with errors'),
   loading: s__('PipelineEditor|Validating pipeline… It can take up to a minute.'),
@@ -38,7 +37,7 @@ export const i18n = {
   pipelineSourceHeader: s__('PipelineEditor|Select branch'),
   title: s__('PipelineEditor|Validate pipeline under selected conditions'),
   contentNote: s__(
-    'PipelineEditor|Current content in the Edit tab will be used for the simulation.',
+    'PipelineEditor|Current content in the Edit tab will be used for the simulation or %{linkStart}lint CI/CD sample%{linkEnd}.',
   ),
   simulationNote: s__(
     'PipelineEditor|Pipeline behavior will be simulated including the %{codeStart}rules%{codeEnd} %{codeStart}only%{codeEnd} %{codeStart}except%{codeEnd} and %{codeStart}needs%{codeEnd} job dependencies.',
@@ -235,14 +234,6 @@ export default {
           {{ $options.i18n.cta }}
         </gl-button>
       </div>
-      <gl-button
-        v-if="ciLintPath"
-        class="@md/panel:gl-ml-auto"
-        :href="ciLintPath"
-        data-testid="lint-button"
-      >
-        {{ $options.i18n.lint }}
-      </gl-button>
       <gl-tooltip
         v-if="isInitialCiContentLoading"
         :target="() => $refs.simulatePipelineButton"
@@ -256,7 +247,13 @@ export default {
       :title="$options.i18n.title"
     >
       <template #description>
-        <p>{{ $options.i18n.contentNote }}</p>
+        <p>
+          <gl-sprintf :message="$options.i18n.contentNote">
+            <template #link="{ content }">
+              <gl-link :href="ciLintPath" data-testid="lint-link">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </p>
         <p>
           <gl-sprintf :message="$options.i18n.simulationNote">
             <template #code="{ content }">
@@ -264,16 +261,6 @@ export default {
             </template>
           </gl-sprintf>
         </p>
-      </template>
-      <template #actions>
-        <gl-button
-          v-if="ciLintPath"
-          class="gl-ml-3 gl-mt-3"
-          :href="ciLintPath"
-          data-testid="lint-button"
-        >
-          {{ $options.i18n.lint }}
-        </gl-button>
       </template>
     </gl-empty-state>
     <div v-else-if="isSimulationLoading" :class="$options.BASE_CLASSES">

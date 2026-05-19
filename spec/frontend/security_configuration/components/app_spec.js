@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlTab, GlTabs, GlLink } from '@gitlab/ui';
+import { GlBadge, GlTab, GlTabs, GlLink } from '@gitlab/ui';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import stubChildren from 'helpers/stub_children';
@@ -40,8 +40,10 @@ describe('~/security_configuration/components/app', () => {
     vulnerabilitiesAcrossContexts = true,
     glFeatures = {},
     mergeRequestsEnabled = true,
+    licensedFeatures = {},
     ...propsData
   } = {}) => {
+    window.gon = { licensed_features: licensedFeatures };
     userCalloutDismissSpy = jest.fn();
 
     wrapper = mountExtended(SecurityConfigurationApp, {
@@ -92,6 +94,7 @@ describe('~/security_configuration/components/app', () => {
   const findAutoDevopsEnabledAlert = () => wrapper.findComponent(AutoDevopsEnabledAlert);
   const findMergeRequestsDisabledAlert = () => wrapper.findComponent(MergeRequestsDisabledAlert);
   const findVulnerabilityManagementTab = () => wrapper.findByTestId('vulnerability-management-tab');
+  const findUpgradeHintBadge = () => wrapper.findComponent(GlBadge);
 
   describe('basic structure', () => {
     beforeEach(() => {
@@ -404,6 +407,47 @@ describe('~/security_configuration/components/app', () => {
 
     it('does not render refs tracking section', () => {
       expect(findRefsTrackingSection().exists()).toBe(false);
+    });
+  });
+
+  describe('scan profile upgrade hint', () => {
+    describe('when scan profiles feature is enabled but unlicensed', () => {
+      beforeEach(() => {
+        createComponent({
+          glFeatures: { securityScanProfilesFeature: true },
+          licensedFeatures: {},
+        });
+      });
+
+      it('shows an "Ultimate" tier badge', () => {
+        expect(findUpgradeHintBadge().text()).toBe('Ultimate');
+      });
+    });
+
+    describe('when scan profiles feature is enabled and licensed', () => {
+      beforeEach(() => {
+        createComponent({
+          glFeatures: { securityScanProfilesFeature: true },
+          licensedFeatures: { securityScanProfiles: true },
+        });
+      });
+
+      it('does not show the upgrade hint badge', () => {
+        expect(findUpgradeHintBadge().exists()).toBe(false);
+      });
+    });
+
+    describe('when scan profiles feature is disabled and licensed', () => {
+      beforeEach(() => {
+        createComponent({
+          glFeatures: { securityScanProfilesFeature: false },
+          licensedFeatures: { securityScanProfiles: true },
+        });
+      });
+
+      it('does not show the upgrade hint badge', () => {
+        expect(findUpgradeHintBadge().exists()).toBe(false);
+      });
     });
   });
 

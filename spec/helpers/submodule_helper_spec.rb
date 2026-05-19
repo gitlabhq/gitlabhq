@@ -413,6 +413,18 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
       end
     end
 
+    context 'submodule with empty url' do
+      it 'returns no links for empty string url' do
+        stub_url('')
+        expect(subject).to be_nil
+      end
+
+      it 'returns no links for whitespace-only url' do
+        stub_url('   ')
+        expect(subject).to be_nil
+      end
+    end
+
     context 'unknown submodule' do
       before do
         # When there is no `.gitmodules` file, or if `.gitmodules` does not

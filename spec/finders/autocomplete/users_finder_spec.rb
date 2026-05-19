@@ -69,7 +69,7 @@ RSpec.describe Autocomplete::UsersFinder do
       context 'searching with less than 3 characters' do
         let(:params) { { search: 'zz' } }
 
-        before do
+        before_all do
           project.add_guest(user1)
         end
 

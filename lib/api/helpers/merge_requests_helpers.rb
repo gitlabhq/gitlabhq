@@ -92,7 +92,10 @@ module API
           documentation: { example: 'title,description' }
         optional :wip, type: String,
           values: %w[yes no],
-          desc: 'Filter merge requests against their `wip` status. `yes` to return only draft merge requests, `no` to return non-draft merge requests.'
+          desc: 'Deprecated. Use `draft` instead. Filter merge requests against their `wip` status. `yes` to return only draft merge requests, `no` to return non-draft merge requests.'
+        optional :draft, type: Boolean,
+          desc: 'Filter merge requests against their `draft` status. `true` to return only draft merge requests, `false` to return non-draft merge requests.'
+        mutually_exclusive :draft, :wip
         optional :not, type: Hash, desc: 'Returns merge requests that do not match the parameters supplied' do
           use :merge_requests_negatable_params, prefix: '`<Negated>` '
 
@@ -106,9 +109,6 @@ module API
           documentation: { example: '2019-03-15T08:00:00Z' }
         optional :environment, desc: 'Returns merge requests deployed to the given environment',
           documentation: { example: '2019-03-15T08:00:00Z' }
-        optional :approved, type: String,
-          values: %w[yes no],
-          desc: 'Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests.'
         optional :merge_user_id, type: Integer,
           desc: "Returns merge requests which have been merged by the user with the given user `id`. Mutually exclusive with `merge_user_username`."
         optional :merge_user_username, type: String,

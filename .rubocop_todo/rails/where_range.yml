@@ -18,7 +18,6 @@ Rails/WhereRange:
     - 'app/models/concerns/schedulable.rb'
     - 'app/models/concerns/ttl_expirable.rb'
     - 'app/models/concerns/users/visitable.rb'
-    - 'app/models/container_registry/data_repair_detail.rb'
     - 'app/models/container_repository.rb'
     - 'app/models/deployment.rb'
     - 'app/models/deployment_merge_request.rb'

@@ -11,8 +11,12 @@ greatly simplifies access to a database clone, with support for:
 - Access to all database clones listed in the [Postgres.ai instances page](https://console.postgres.ai/gitlab/instances);
 - Multiple `psql` sessions on the same clone.
 
-If you have `AllFeaturesUser` [`psql` access](database_lab.md#access-database-lab-engine),
-you can follow the steps below to configure the `pgai` Gem:
+## Prerequisites
+
+- `AllFeaturesUser` [`psql` access](database_lab.md#access-database-lab-engine) to Database Lab.
+- [1Password CLI (`op`)](https://developer.1password.com/docs/cli/get-started/) installed and signed in to your 1Password account.
+
+To configure the `pgai` gem:
 
 1. To get started, you need to gather some values from the [Postgres.ai instances page](https://console.postgres.ai/gitlab/instances):
 
@@ -34,6 +38,9 @@ you can follow the steps below to configure the `pgai` Gem:
 
    ```shell
    gem install pgai
+
+   # Generate an encryption key and store it in 1Password
+   pgai enc keygen
 
    # Before running the following command,
    # grab an access token from https://console.postgres.ai/gitlab/tokens

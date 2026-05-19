@@ -1,7 +1,11 @@
 - page_title _('Contributor analytics')
-- graph_path = project_graph_path(@project, current_ref, ref_type: @ref_type, format: :json)
-- commits_path = project_commits_path(@project, current_ref, ref_type: @ref_type)
 
 = render ::Layouts::PageHeadingComponent.new( _('Contributor analytics'))
 
-.js-contributors-graph{ class: container_class, data: { project_graph_path: graph_path, project_branch: current_ref, default_branch: @project.default_branch, project_id: @project.id, commits_path: commits_path } }
+- if @gitaly_unavailable
+  = render 'shared/errors/gitaly_unavailable', reason: s_('Graphs|Unable to load contributor analytics')
+- else
+  - graph_path = project_graph_path(@project, current_ref, ref_type: @ref_type, format: :json)
+  - commits_path = project_commits_path(@project, current_ref, ref_type: @ref_type)
+
+  .js-contributors-graph{ class: container_class, data: { project_graph_path: graph_path, project_branch: current_ref, default_branch: @project.default_branch, project_id: @project.id, commits_path: commits_path } }

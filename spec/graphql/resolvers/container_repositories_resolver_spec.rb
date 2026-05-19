@@ -12,7 +12,7 @@ RSpec.describe Resolvers::ContainerRepositoriesResolver do
 
   let(:args) { {} }
 
-  describe '#resolve' do
+  describe '#resolve', feature_category: :container_registry do
     let(:object) { project }
 
     subject do

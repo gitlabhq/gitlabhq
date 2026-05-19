@@ -29,7 +29,7 @@ module AtomicInternalId
   MissingValueError = Class.new(StandardError)
 
   class_methods do
-    def has_internal_id( # rubocop:disable Naming/PredicateName
+    def has_internal_id( # rubocop:disable Naming/PredicatePrefix
       column, scope:, init: :not_given, ensure_if: nil, track_if: nil, presence: true, hook_names: :create)
       raise "has_internal_id init must not be nil if given." if init.nil?
       raise "has_internal_id needs to be defined on association." unless self.reflect_on_association(scope)

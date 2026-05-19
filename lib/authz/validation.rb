@@ -11,6 +11,8 @@ module Authz
       delete: 'Removes a resource'
     }.freeze
 
+    BOUNDARIES = %w[instance group project user].freeze
+
     DISALLOWED_ACTIONS = {
       admin: 'a granular action',
       change: 'update',

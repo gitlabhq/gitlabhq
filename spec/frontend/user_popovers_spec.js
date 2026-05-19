@@ -137,17 +137,6 @@ describe('User Popovers', () => {
       expect(findPopovers()).toHaveLength(0);
     });
 
-    // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/18442
-    // Remove as @all is deprecated.
-    it('does not initialize the popovers for @all references', () => {
-      const [projectLink] = Array.from(document.querySelectorAll('.js-user-link[data-project]'));
-
-      triggerEvent('mouseover', projectLink);
-      jest.runOnlyPendingTimers();
-
-      expect(findPopovers()).toHaveLength(0);
-    });
-
     it('does not initialize the user popovers twice for the same element', () => {
       const [firstUserLink] = findFixtureLinks();
 

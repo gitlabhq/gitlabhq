@@ -45,7 +45,7 @@ describe('OrganizationsListItem', () => {
         entityName: organization.name,
         src: organization.avatarUrl,
         label: organization.name,
-        labelLink: organization.webUrl,
+        labelLink: organization.webPath,
       });
     });
   });

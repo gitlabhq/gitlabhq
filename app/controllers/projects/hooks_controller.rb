@@ -2,6 +2,7 @@
 
 class Projects::HooksController < Projects::ApplicationController
   include ::WebHooks::HookActions
+  extend ::Gitlab::Utils::Override
 
   # Authorize
   before_action :authorize_read_hook!, only: [:index, :show]
@@ -35,6 +36,11 @@ class Projects::HooksController < Projects::ApplicationController
 
   def trigger_values
     ProjectHook.triggers.values
+  end
+
+  override :webhook_signing_token_actor
+  def webhook_signing_token_actor
+    project
   end
 
   def authorize_admin_hook!

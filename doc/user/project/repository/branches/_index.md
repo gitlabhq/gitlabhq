@@ -114,7 +114,7 @@ Prerequisites:
 To create a branch from an issue:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. Below the issue description, select **Create merge request** {{< icon name="chevron-down" >}} to display the dropdown list.
 1. Select **Create branch**.
 1. In the dialog, from the **Source (branch or tag)** dropdown list, select a source branch or tag.
@@ -139,7 +139,7 @@ Prerequisites:
 To create a branch directly from a task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. Below the task description, select **Create merge request** {{< icon name="chevron-down" >}} to display the dropdown list.
 1. Select **Create branch**.
 1. In the dialog, from the **Source branch or tag** dropdown list, select a source branch or tag.
@@ -226,7 +226,7 @@ Prerequisites:
 To change the default pattern for branches created from issues:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Branch defaults**.
 1. Scroll to **Branch name template** and enter a value. The field supports these variables:
    - `%{id}`: The numeric ID of the issue.
@@ -380,7 +380,7 @@ Prerequisites:
 To create a target branch workflow:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. Scroll down to **Merge request branch workflow**
 1. Select **Add branch target**.
 1. For **Branch name pattern**, provide a string or wild card to compare against branch names.
@@ -419,7 +419,7 @@ Prerequisites:
 To do this:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. Select **Delete** on the branch target you want to delete.
 
 ## Related topics

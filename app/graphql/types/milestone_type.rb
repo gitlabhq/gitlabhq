@@ -8,6 +8,11 @@ module Types
     present_using MilestonePresenter
 
     authorize :read_milestone
+    authorize_granular_token permissions: :read_milestone,
+      boundaries: [
+        { boundary: :project, boundary_type: :project },
+        { boundary: :group, boundary_type: :group }
+      ]
 
     alias_method :milestone, :object
 

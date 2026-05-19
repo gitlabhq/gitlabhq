@@ -46,7 +46,7 @@ If you are having issues setting up your identity provider, see the
 To set up SSO with Azure as your identity provider:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **SAML SSO**.
+1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. Go to Azure, [create a non-gallery application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/overview-application-gallery#create-your-own-application), and [configure SSO for an application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/add-application-portal-setup-sso). The following GitLab settings correspond to the Azure fields.
 
@@ -70,7 +70,7 @@ To set up SSO with Azure as your identity provider:
    group claim to match the required attribute.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-View a demo of [SCIM provisioning on Azure using SAML SSO for groups](https://youtu.be/24-ZxmTeEBU). The `objectID` mapping is outdated in this video. Follow the [SCIM documentation](scim_setup.md#configure-microsoft-entra-id-formerly-azure-active-directory) instead.
+View a demo of [SCIM provisioning on Azure using SAML SSO for groups](https://youtu.be/24-ZxmTeEBU). The `objectID` mapping is outdated in this video. Follow the instructions for [configuring Microsoft Entra ID for SCIM documentation](scim_setup.md#configure-microsoft-entra-id) instead.
 
 For more information, see the [Azure configuration example](example_saml_config.md#azure-active-directory).
 
@@ -79,7 +79,7 @@ For more information, see the [Azure configuration example](example_saml_config.
 To set up Google Workspace as your identity provider:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **SAML SSO**.
+1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. Follow the instructions for [setting up SSO with Google as your identity provider](https://support.google.com/a/answer/6087519?hl=en). The following GitLab settings correspond to the Google Workspace fields.
 
@@ -115,7 +115,7 @@ View a demo of [how to configure SAML with Google Workspaces and set up Group Sy
 To set up SSO with Okta as your identity provider:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **SAML SSO**.
+1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. Follow the instructions for [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/).
 
@@ -153,7 +153,7 @@ OneLogin supports its own [GitLab.com application](https://onelogin.service-now.
 To set up OneLogin as your identity provider:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **SAML SSO**.
+1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. If you use the OneLogin generic
    [SAML Test Connector (Advanced)](https://onelogin.service-now.com/support?id=kb_article&sys_id=b2c19353dbde7b8024c780c74b9619fb&kb_category=93e869b0db185340d5505eea4b961934),
@@ -181,7 +181,7 @@ For more information, see the [OneLogin configuration example](example_saml_conf
 To set up Keycloak as your identity provider:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **SAML SSO**.
+1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. Follow the instructions to [create a SAML client in Keycloack](https://www.keycloak.org/docs/latest/server_admin/index.html#_client-saml-configuration).
 
@@ -264,7 +264,7 @@ To set up SSO with AWS IAM Identity Center as your identity provider:
 
 1. Under **IAM Identity Center SAML metadata**, copy the **IAM Identity Center sign-in URL**
    and download the certificate.
-   
+
 1. On your terminal, generate a SHA1 fingerprint from the
    downloaded certificate:
 
@@ -321,7 +321,7 @@ To configure some identity providers, you need a GitLab metadata URL.
 To find this URL:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **SAML SSO**.
+1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. Copy the provided **GitLab metadata URL**.
 1. Follow your identity provider's documentation and paste the metadata URL when it's requested.
 
@@ -365,7 +365,7 @@ If the **NameID** is configured with the email address, [change the **NameID** f
 After you set up your identity provider to work with GitLab, you must configure GitLab to use it for authentication:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **SAML SSO**.
+1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. Complete the fields:
    - In the **Identity provider single sign-on URL** field, enter the SSO URL from your identity provider.
    - In the **Certificate fingerprint** field, enter the fingerprint for the SAML token signing certificate.
@@ -628,7 +628,7 @@ You can disable password authentication for all [enterprise users](../../enterpr
 To disable password and passkey authentication for enterprise users:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **SAML SSO**.
+1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. Under **Configuration**, select **Disable password and passkey authentication for enterprise users**.
 1. Select **Save changes**.
 
@@ -782,10 +782,10 @@ For example:
 ## Related topics
 
 - [SAML SSO for GitLab Self-Managed](../../../integration/saml.md)
-- [Glossary](../../../integration/saml.md#glossary)
+- [Glossary](../../../auth/auth_glossary.md)
 - [Blog post: The ultimate guide to enabling SAML and SSO on GitLab.com](https://about.gitlab.com/blog/the-ultimate-guide-to-enabling-saml/)
 - [Authentication comparison between GitLab.com and GitLab Self-Managed](../../../administration/auth/_index.md#gitlabcom-compared-to-gitlab-self-managed)
-- [Passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md)
+- [Passwords for users created through integrated authentication](../../profile/user_passwords.md)
 - [SAML Group Sync](group_sync.md)
 
 ## Troubleshooting

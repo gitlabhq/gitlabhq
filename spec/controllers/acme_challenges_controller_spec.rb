@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe AcmeChallengesController do
   describe '#show' do
-    let!(:acme_order) { create(:pages_domain_acme_order) }
+    let_it_be(:acme_order) { create(:pages_domain_acme_order) }
 
     def make_request(domain, token)
       get(:show, params: { domain: domain, token: token })

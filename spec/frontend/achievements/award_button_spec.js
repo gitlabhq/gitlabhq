@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlModal, GlSprintf } from '@gitlab/ui';
 import awardAchievementResponse from 'test_fixtures/graphql/award_achievement_response.json';
 import getGroupAchievementsResponse from 'test_fixtures/graphql/get_group_achievements_response.json';
 import awardAchievementMutation from '~/achievements/components/graphql/award_achievement.mutation.graphql';
@@ -68,11 +68,23 @@ describe('Award button', () => {
       expect(modalStub.show).toHaveBeenCalled();
     });
 
-    it('shows the correct message', () => {
+    it('shows the correct achievement message', () => {
       expect(wrapper.findComponent(GlSprintf).attributes('message')).toBe(
         "You're awarding users the %{achievementName} achievement",
       );
       expect(wrapper.findComponent(GlSprintf).html()).toContain('<b>Legend</b>');
+    });
+
+    it('renders a labelled form group for user selection', () => {
+      const formGroup = wrapper.findComponent(GlFormGroup);
+
+      expect(formGroup.exists()).toBe(true);
+      expect(formGroup.attributes('label')).toBe('Users');
+      expect(formGroup.attributes('label-for')).toBe('global_users_input');
+    });
+
+    it('passes input-id to GlobalUserSelect', () => {
+      expect(wrapper.findComponent(GlobalUserSelect).props('inputId')).toBe('global_users_input');
     });
 
     it('calls mutation with expected users', async () => {

@@ -180,7 +180,7 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
       metrics_queries_with_values.each do |key_path, query, value|
         metric_definition = metric_definitions[key_path.join('.')]
 
-        # Skip broken metrics since they are usually overriden to return -1
+        # Skip broken metrics since they are usually overridden to return -1
         next if metric_definition&.broken?
 
         value = type_cast_to_defined_type(value, metric_definition)

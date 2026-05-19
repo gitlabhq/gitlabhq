@@ -3,5 +3,7 @@ name: read_saml_user
 description: Grants the ability to read SAML users
 boundaries:
   - group
+available_for:
+  - granular_access_token
 permissions:
   - read_saml_user

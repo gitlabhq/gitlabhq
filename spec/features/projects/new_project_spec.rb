@@ -7,7 +7,6 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
   before do
     stub_application_setting(import_sources: Gitlab::ImportSources.values)
-    stub_feature_flags(import_by_url_new_page: false)
   end
 
   shared_examples 'shows correct navigation' do
@@ -36,7 +35,6 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
     let_it_be(:user) { create(:user) }
 
     before do
-      stub_feature_flags(import_by_url_new_page: false)
       sign_in(user)
     end
 
@@ -50,15 +48,6 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
       page.within('#blank-project-pane') do
         expect(page).not_to have_content(description_label)
-      end
-
-      visit new_project_path
-      click_link 'Import project'
-
-      page.within('#import-project-pane') do
-        click_on 'Repository by URL'
-
-        expect(page).to have_content(description_label)
       end
 
       visit new_project_path
@@ -106,10 +95,6 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
     it_behaves_like 'shows correct navigation'
     shared_examples '"New project" page' do
-      before do
-        stub_feature_flags(import_by_url_new_page: false)
-      end
-
       it 'shows "New project" page', :js do
         visit new_project_path
         click_link 'Create blank project'
@@ -123,7 +108,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
         expect(page).to have_link('GitHub')
         expect(page).to have_link('Bitbucket')
-        expect(page).to have_button('Repository by URL')
+        expect(page).to have_link('Repository by URL')
         expect(page).to have_link('GitLab export')
       end
     end
@@ -300,17 +285,6 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
           expect(page).not_to have_content('Initialize repository with a README')
         end
       end
-
-      it 'does not show the initialize with Readme checkbox on "Import project" tab' do
-        visit new_project_path
-        click_link 'Import project'
-        click_on 'Repository by URL'
-
-        page.within '#import-project-pane' do
-          expect(page).not_to have_css('input#project_initialize_with_readme')
-          expect(page).not_to have_content('Initialize repository with a README')
-        end
-      end
     end
 
     context 'Namespace selector' do
@@ -422,78 +396,47 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
       context 'from git repository url, "Repository by URL"' do
         before do
-          click_button 'Repository by URL'
+          click_link 'Repository by URL'
+          wait_for_requests
         end
 
         it 'does not autocomplete sensitive git repo URL' do
-          autocomplete = find('#project_import_url')['autocomplete']
+          autocomplete = find('[name="project[import_url]"]')['autocomplete']
 
           expect(autocomplete).to eq('off')
         end
 
-        it 'shows import instructions' do
-          git_import_instructions = first('.js-toggle-content')
-
-          expect(git_import_instructions).to be_visible
-          expect(git_import_instructions).to have_content 'Git repository URL'
-        end
-
-        it 'reports error if repo URL is not an accessible Git repository' do
-          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('example.com').and_return(false)
-
-          fill_in 'project_import_url', with: 'example.com'
+        it 'reports error if repo URL is not a valid Git repository' do
+          fill_in 'project[import_url]', with: 'example.com'
           send_keys(:tab)
 
-          expect(page).to have_text('Unable to access repository with the URL and credentials provided')
+          expect(page).to have_text('Enter a valid URL')
         end
 
         it 'reports error if repo URL is a localhost url' do
-          fill_in 'project_import_url', with: 'http://127.0.0.1'
+          fill_in 'project[import_url]', with: 'http://127.0.0.1'
           send_keys(:tab)
 
-          expect(page).to have_text('Requests to localhost are not allowed')
+          expect(page).to have_text('Enter a valid URL')
         end
 
         it 'reports error for invalid URL format' do
           # we intentionally use a generic error message for all validation failures to avoid
           # leaking information about what makes a URL valid or invalid
-          fill_in 'project_import_url', with: 'not-a-valid-url'
-          send_keys(:tab)
-
-          expect(page).to have_text('Unable to access repository with the URL and credentials provided')
-        end
-
-        it 'reports error if repo URL is not a accessible Git repository and submit button is clicked immediately' do
-          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(false)
-
-          fill_in 'project_import_url', with: 'http://foo/bar'
-          click_on 'Create project'
-
+          fill_in 'project[import_url]', with: 'not-a-valid-url'
+          click_on 'Check connection'
           wait_for_requests
 
-          expect(page).to have_text('Unable to access repository with the URL and credentials provided')
+          expect(page).to have_text('Enter a valid URL')
         end
 
-        it 'keeps "Import project" tab open after form validation error' do
-          collision_project = create(:project, name: 'test-name-collision', namespace: user.namespace)
-
-          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(true)
-
-          fill_in 'project_import_url', with: 'http://foo/bar'
-          fill_in 'project_name', with: collision_project.name
-
-          click_on 'Create project'
-
-          expect(page).to have_content(
-            s_('ProjectsNew|Pick a group or namespace where you want to create this project.')
-          )
-
-          click_on 'Pick a group or namespace'
-          select_listbox_item user.username
-          click_on 'Create project'
-
-          expect(page).to have_css('#import-project-pane.active')
-          expect(page).not_to have_css('.toggle-import-form.hide')
+        it 'prevents submission when repo URL is invalid' do
+          fill_in 'project[import_url]', with: 'http://foo/bar'
+          send_keys(:tab)
+          wait_for_requests
+          fill_in 'project[name]', with: 'required-project-name'
+          expect(page).to have_button('Create project', disabled: true)
+          expect(page).to have_text('Enter a valid URL')
         end
       end
 
@@ -570,7 +513,6 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
   shared_examples 'has instructions to enable OAuth' do
     context 'when OAuth is not configured' do
       before do
-        stub_feature_flags(import_by_url_new_page: false)
         sign_in(user)
 
         allow(Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original

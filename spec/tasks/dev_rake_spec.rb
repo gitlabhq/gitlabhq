@@ -139,43 +139,51 @@ RSpec.describe 'dev rake tasks' do
     end
 
     context 'with a valid database' do
-      describe 'copy_db:ci' do
-        before do
-          allow(Rake::Task['dev:terminate_all_connections']).to receive(:invoke)
+      described_class = Gitlab::Database.all_database_connections.select { |_, db| db.fallback_database }.keys
 
-          configurations = instance_double(ActiveRecord::DatabaseConfigurations)
-          allow(ActiveRecord::Base).to receive(:configurations).and_return(configurations)
-          allow(configurations).to receive(:configs_for).with(env_name: Rails.env, name: 'ci').and_return(ci_configuration)
-        end
+      described_class.each do |db_name|
+        describe "copy_db:#{db_name}" do
+          before do
+            allow(Rake::Task['dev:terminate_all_connections']).to receive(:invoke)
 
-        subject(:load_task) { run_rake_task('dev:copy_db:ci') }
+            configurations = instance_double(ActiveRecord::DatabaseConfigurations)
+            allow(ActiveRecord::Base).to receive(:configurations).and_return(configurations)
+            allow(configurations).to receive(:configs_for).with(env_name: Rails.env, name: db_name).and_return(db_configuration)
+          end
 
-        let(:ci_configuration) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'ci', database: '__test_db_ci') }
+          subject(:load_task) { run_rake_task("dev:copy_db:#{db_name}") }
 
-        it 'creates the database from main' do
-          expect(ApplicationRecord.connection).to receive(:create_database).with(
-            ci_configuration.database,
-            template: ApplicationRecord.connection_db_config.database
-          )
+          let(:db_configuration) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: db_name, database: "__test_db_#{db_name}") }
 
-          expect(Rake::Task['dev:terminate_all_connections']).to receive(:invoke)
+          it 'creates the database from main' do
+            expect(ApplicationRecord.connection).to receive(:create_database).with(
+              db_configuration.database,
+              template: ApplicationRecord.connection_db_config.database
+            )
 
-          load_task
-        end
+            expect(Rake::Task['dev:terminate_all_connections']).to receive(:invoke)
 
-        context 'when the database already exists' do
-          it 'prints out a warning' do
-            expect(ApplicationRecord.connection).to receive(:create_database).and_raise(ActiveRecord::DatabaseAlreadyExists)
+            load_task
+          end
 
-            expect { load_task }.to output(/Database '#{ci_configuration.database}' already exists/).to_stderr
+          context 'when the database already exists' do
+            it 'prints out a warning' do
+              expect(ApplicationRecord.connection).to receive(:create_database).and_raise(ActiveRecord::DatabaseAlreadyExists)
+
+              expect { load_task }.to output(/Database '#{db_configuration.database}' already exists/).to_stderr
+            end
           end
         end
       end
     end
 
     context 'with an invalid database' do
-      it 'raises an error' do
+      it 'raises an error for an unknown database name' do
         expect { run_rake_task('dev:copy_db:foo') }.to raise_error(RuntimeError, /Don't know how to build task/)
+      end
+
+      it 'raises an error for a real database without fallback_database (e.g. main)' do
+        expect { run_rake_task('dev:copy_db:main') }.to raise_error(RuntimeError, /Don't know how to build task/)
       end
     end
   end

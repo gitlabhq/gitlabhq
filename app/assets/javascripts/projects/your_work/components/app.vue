@@ -1,5 +1,9 @@
 <script>
+import { GlButton } from '@gitlab/ui';
+import { exploreProjectsPath } from '~/lib/utils/path_helpers/explore';
+import { newProjectPath } from '~/lib/utils/path_helpers/routes';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
@@ -52,6 +56,8 @@ export default {
   tabCountsQuery: projectCountsQuery,
   name: 'YourWorkProjectsApp',
   components: {
+    GlButton,
+    IndexLayout,
     TabsWithList,
   },
   props: {
@@ -63,24 +69,51 @@ export default {
       type: Array,
       required: true,
     },
+    canCreateProject: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  methods: {
+    newProjectPath,
+    exploreProjectsPath,
   },
 };
 </script>
 
 <template>
-  <tabs-with-list
-    :tabs="$options.PROJECT_DASHBOARD_TABS"
-    :filtered-search-supported-tokens="$options.filteredSearchSupportedTokens"
-    :filtered-search-term-key="$options.FILTERED_SEARCH_TERM_KEY"
-    :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"
-    :filtered-search-recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY_PROJECTS"
-    :timestamp-type-map="$options.timestampTypeMap"
-    :first-tab-route-names="$options.FIRST_TAB_ROUTE_NAMES"
-    :initial-sort="initialSort"
-    :programming-languages="programmingLanguages"
-    :event-tracking="$options.eventTracking"
-    :tab-counts-query="$options.tabCountsQuery"
-    :tab-counts-query-error-message="__('An error occurred loading the project counts.')"
-    sort-storage-key="projects"
-  />
+  <index-layout :heading="__('Projects')">
+    <template #actions>
+      <gl-button
+        :href="exploreProjectsPath()"
+        variant="confirm"
+        category="tertiary"
+        data-event-tracking="click_explore_projects_on_your_work_projects"
+        >{{ __('Explore projects') }}</gl-button
+      >
+      <gl-button
+        v-if="canCreateProject"
+        :href="newProjectPath()"
+        variant="confirm"
+        data-testid="new-project-button"
+        data-event-tracking="click_new_project_on_your_work_projects"
+        >{{ __('New project') }}</gl-button
+      >
+    </template>
+    <tabs-with-list
+      :tabs="$options.PROJECT_DASHBOARD_TABS"
+      :filtered-search-supported-tokens="$options.filteredSearchSupportedTokens"
+      :filtered-search-term-key="$options.FILTERED_SEARCH_TERM_KEY"
+      :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"
+      :filtered-search-recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY_PROJECTS"
+      :timestamp-type-map="$options.timestampTypeMap"
+      :first-tab-route-names="$options.FIRST_TAB_ROUTE_NAMES"
+      :initial-sort="initialSort"
+      :programming-languages="programmingLanguages"
+      :event-tracking="$options.eventTracking"
+      :tab-counts-query="$options.tabCountsQuery"
+      :tab-counts-query-error-message="__('An error occurred loading the project counts.')"
+      sort-storage-key="projects"
+    />
+  </index-layout>
 </template>

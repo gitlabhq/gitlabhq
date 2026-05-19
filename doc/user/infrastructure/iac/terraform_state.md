@@ -365,7 +365,7 @@ To read the OpenTofu state in the target project, you need the Developer, Mainta
 To view OpenTofu state files:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Terraform states**.
+1. In the left sidebar, select **Operate** > **Terraform states**.
 
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4563) to track improvements to this UI.
 

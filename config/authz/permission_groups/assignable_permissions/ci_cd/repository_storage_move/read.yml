@@ -1,9 +1,11 @@
 ---
 name: read_repository_storage_move
 description: Grants the ability to read repository storage moves
-permissions:
-  - read_repository_storage_move
 boundaries:
   - group
   - instance
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_repository_storage_move

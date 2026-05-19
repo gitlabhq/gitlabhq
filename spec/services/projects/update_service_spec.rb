@@ -47,9 +47,22 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       end
 
       context 'with insufficient permissions' do
-        it 'prevents maintainer from elevating to owner role' do
-          project.ci_cd_settings.update!(pipeline_variables_minimum_override_role: :owner)
+        it 'prevents developer from modifying settings' do
+          result = update_project(project, developer, restrict_user_defined_variables: true)
 
+          expect(result[:status]).to eq(:api_error)
+          expect(result[:message]).to include(
+            'Changing the restrict_user_defined_variables or ci_pipeline_variables_minimum_override_role is not allowed'
+          )
+        end
+      end
+
+      context 'when at owner role' do
+        before do
+          project.ci_cd_settings.pipeline_variables_minimum_override_role_owner!
+        end
+
+        it 'prevents maintainer from changing settings' do
           result = update_project(project, maintainer, restrict_user_defined_variables: false)
 
           expect(result[:status]).to eq(:api_error)
@@ -58,13 +71,68 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
           )
         end
 
-        it 'prevents developer from modifying settings' do
-          result = update_project(project, developer, restrict_user_defined_variables: true)
+        it 'allows owner to change settings' do
+          result = update_project(project, owner,
+            ci_pipeline_variables_minimum_override_role: 'maintainer')
+
+          expect(result[:status]).to eq(:success)
+        end
+      end
+
+      context 'when at no_one_allowed role' do
+        before do
+          project.ci_cd_settings.pipeline_variables_minimum_override_role_no_one_allowed!
+        end
+
+        it 'prevents maintainer from changing settings' do
+          result = update_project(project, maintainer,
+            ci_pipeline_variables_minimum_override_role: 'maintainer')
 
           expect(result[:status]).to eq(:api_error)
           expect(result[:message]).to include(
             'Changing the restrict_user_defined_variables or ci_pipeline_variables_minimum_override_role is not allowed'
           )
+        end
+
+        it 'allows owner to change settings' do
+          result = update_project(project, owner,
+            ci_pipeline_variables_minimum_override_role: 'maintainer')
+
+          expect(result[:status]).to eq(:success)
+        end
+      end
+
+      context 'when maintainer sets a privileged role' do
+        it 'allows maintainer to set role to owner' do
+          result = update_project(project, maintainer,
+            ci_pipeline_variables_minimum_override_role: 'owner')
+
+          expect(result[:status]).to eq(:success)
+        end
+
+        it 'allows maintainer to set role to no_one_allowed' do
+          result = update_project(project, maintainer,
+            ci_pipeline_variables_minimum_override_role: 'no_one_allowed')
+
+          expect(result[:status]).to eq(:success)
+        end
+
+        it 'prevents maintainer from undoing the change after self-lockout' do
+          update_project(project, maintainer, ci_pipeline_variables_minimum_override_role: 'owner')
+
+          result = update_project(project, maintainer,
+            ci_pipeline_variables_minimum_override_role: 'maintainer')
+
+          expect(result[:status]).to eq(:api_error)
+        end
+      end
+
+      context 'when owner sets a privileged role' do
+        it 'allows owner to set role to no_one_allowed' do
+          result = update_project(project, owner,
+            ci_pipeline_variables_minimum_override_role: 'no_one_allowed')
+
+          expect(result[:status]).to eq(:success)
         end
       end
     end

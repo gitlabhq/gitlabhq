@@ -17,8 +17,8 @@ title: Secure GitLab
 
 This section covers general information and recommendations about the platform.
 
-- [Password and OAuth token storage](password_storage.md)
-- [Password generation for users created through integrated authentication](passwords_for_integrated_authentication_methods.md)
+- [Password and OAuth token storage](../user/profile/user_passwords.md)
+- [Password generation for users created through integrated authentication](../user/profile/user_passwords.md)
 - [CRIME vulnerability management](crime_vulnerability.md)
 - [Secret rotation for third-party integrations](rotate_integrations_secrets.md)
 

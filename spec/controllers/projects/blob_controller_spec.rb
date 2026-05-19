@@ -202,6 +202,54 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
     end
   end
 
+  describe 'GET show audit event' do
+    let(:user) { create(:user) }
+    let(:id) { 'master/README.md' }
+
+    before do
+      project.add_developer(user)
+      sign_in(user)
+    end
+
+    it 'creates a streaming audit event for repository file access' do
+      expect(::Gitlab::Audit::Auditor).to receive(:audit).with(
+        hash_including(
+          name: 'repository_file_accessed_web',
+          author: user,
+          scope: project,
+          target: project,
+          message: "User accessed repository file 'README.md' at ref 'master' via Web UI",
+          additional_details: hash_including(
+            file_path: 'README.md',
+            ref: 'master',
+            project_path: project.full_path,
+            project_id: project.id
+          )
+        )
+      )
+
+      get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
+    end
+
+    it 'does not emit an audit event for JSON requests' do
+      expect(::Gitlab::Audit::Auditor).not_to receive(:audit).with(
+        hash_including(name: 'repository_file_accessed_web')
+      )
+
+      get :show, params: { namespace_id: project.namespace, project_id: project, id: id }, format: :json
+    end
+
+    it 'does not emit an audit event for unauthenticated requests' do
+      sign_out(user)
+
+      expect(::Gitlab::Audit::Auditor).not_to receive(:audit).with(
+        hash_including(name: 'repository_file_accessed_web')
+      )
+
+      get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
+    end
+  end
+
   describe 'GET diff' do
     let(:user) { create(:user) }
 

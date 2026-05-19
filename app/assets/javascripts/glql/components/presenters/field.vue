@@ -6,6 +6,7 @@ import HealthPresenter from 'ee_else_ce/glql/components/presenters/health.vue';
 import IssuablePresenter from './issuable.vue';
 import MilestonePresenter from './milestone.vue';
 import UserPresenter from './user.vue';
+import UserAvatarPresenter from './user_avatar.vue';
 import LabelPresenter from './label.vue';
 import TypePresenter from './type.vue';
 import StatePresenter from './state.vue';
@@ -22,6 +23,8 @@ import LinkPresenter from './link.vue';
 import TimePresenter from './time.vue';
 import TextPresenter from './text.vue';
 import UrlPresenter from './url.vue';
+import PercentagePresenter from './percentage.vue';
+import NumberPresenter from './number.vue';
 
 const presentersByObjectType = {
   MergeRequest: IssuablePresenter,
@@ -45,9 +48,11 @@ const presentersByObjectType = {
 };
 
 // Maps field keys to presenters. Values can be:
-// - A presenter component (used for all parent types)
-// - An object mapping parent __typename to a presenter (type-scoped),
-//   with an optional `default` key as fallback for unmatched types
+// - A presenter component (used for all parent types and variants)
+// - An object whose keys can mix variant names (lowercase, e.g. `compact`)
+//   and parent __typename (PascalCase, e.g. `CiJob`), with an optional
+//   `default` key as the fallback. Variant matches take precedence over
+//   typename matches.
 const presentersByFieldKey = {
   health: HealthPresenter,
   healthStatus: HealthPresenter,
@@ -71,6 +76,18 @@ const presentersByFieldKey = {
   shortSha: CodePresenter,
   refPath: { CiJob: UrlPresenter, default: CodePresenter },
   type: TypePresenter,
+  user: {
+    DuoCodeSuggestionsAggregationResponseDimensions: UserAvatarPresenter,
+    default: UserPresenter,
+    compact: UserPresenter,
+  },
+  acceptanceRate: PercentagePresenter,
+  acceptedCount: NumberPresenter,
+  rejectedCount: NumberPresenter,
+  shownCount: NumberPresenter,
+  totalCount: NumberPresenter,
+  usersCount: NumberPresenter,
+  suggestionSizeSum: NumberPresenter,
 };
 
 export default {
@@ -84,6 +101,11 @@ export default {
       required: false,
       type: String,
       default: '',
+    },
+    variant: {
+      required: false,
+      type: String,
+      default: 'default',
     },
   },
   methods: {
@@ -101,8 +123,12 @@ export default {
       const byKey = presentersByFieldKey[fieldKey];
       if (!byKey) return null;
       if (byKey.name) return byKey;
-      // eslint-disable-next-line no-underscore-dangle
-      return byKey[this.item?.__typename] || byKey.default;
+      return (
+        (this.variant !== 'default' && byKey[this.variant]) ||
+        // eslint-disable-next-line no-underscore-dangle
+        byKey[this.item?.__typename] ||
+        byKey.default
+      );
     },
     presenterByPrimitiveType(field) {
       if (typeof field === 'boolean') return BoolPresenter;
@@ -115,8 +141,8 @@ export default {
       const field = this.dataForField(item, fieldKey);
       return (
         this.nullPresenter(field) ||
-        this.presenterByObjectType(field) ||
         this.presenterByFieldKey(fieldKey) ||
+        this.presenterByObjectType(field) ||
         this.presenterByPrimitiveType(field)
       );
     },
@@ -129,5 +155,6 @@ export default {
     :item="item"
     :field-key="fieldKey"
     :data="dataForField(item, fieldKey)"
+    :variant="variant"
   />
 </template>

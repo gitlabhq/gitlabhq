@@ -25,7 +25,7 @@ RSpec.describe Banzai::Pipeline::WikiPipeline, feature_category: :wiki do
       aggregate_failures do
         expect(result[:output].text).not_to include '[['
         expect(result[:output].text).not_to include 'TOC'
-        expect(result[:output].to_html).to include(result[:toc])
+        expect(result[:output].css('ul.section-nav')).not_to be_empty
       end
     end
 
@@ -40,7 +40,7 @@ RSpec.describe Banzai::Pipeline::WikiPipeline, feature_category: :wiki do
 
       result = described_class.call(markdown, project: project, wiki: wiki)
 
-      expect(result[:output].to_html).to include(result[:toc])
+      expect(result[:output].css('ul.section-nav')).not_to be_empty
     end
 
     it 'works with alternative [toc] tag' do
@@ -53,7 +53,7 @@ RSpec.describe Banzai::Pipeline::WikiPipeline, feature_category: :wiki do
       MD
 
       result = described_class.call(markdown, project: project, wiki: wiki)
-      expect(result[:output].to_html).to include(result[:toc])
+      expect(result[:output].css('ul.section-nav')).not_to be_empty
     end
 
     it 'handles an empty pipeline result' do

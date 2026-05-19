@@ -53,6 +53,17 @@ RSpec.describe 'DeleteProjectCustomAttribute', feature_category: :groups_and_pro
         create(:project_custom_attribute, project: project, key: 'department', value: 'engineering')
       end
 
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_custom_attribute do
+        let(:user) { admin }
+        let(:boundary_object) { project }
+        let(:mutation) do
+          graphql_mutation(:delete_project_custom_attribute,
+            { project_path: project.full_path, key: key }, 'errors')
+        end
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+
       it 'deletes the custom attribute' do
         expect { post_graphql_mutation(mutation, current_user: current_user) }
           .to change { project.custom_attributes.count }.by(-1)

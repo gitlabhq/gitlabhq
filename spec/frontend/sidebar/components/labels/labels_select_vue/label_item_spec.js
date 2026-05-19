@@ -43,7 +43,7 @@ describe('LabelItem', () => {
 
     it.each`
       isLabelSet | isLabelIndeterminate | testId                  | iconName
-      ${true}    | ${false}             | ${'checked-icon'}       | ${'mobile-issue-close'}
+      ${true}    | ${false}             | ${'checked-icon'}       | ${'check'}
       ${false}   | ${true}              | ${'indeterminate-icon'} | ${'dash'}
     `(
       'renders visible gl-icon component when `isLabelSet` prop is $isLabelSet and `isLabelIndeterminate` is $isLabelIndeterminate',

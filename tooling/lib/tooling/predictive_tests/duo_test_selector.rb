@@ -21,9 +21,10 @@ module Tooling
       MAX_CHANGED_FILES = 50
       # Conservative byte limit for the raw diff passed via env var.
       # macOS ARG_MAX is ~1 MB; Linux is ~2 MB (args + env combined).
-      # 200 KB leaves ample headroom for the JSON wrapper, other env vars, and
-      # the CLI arguments, so we skip Duo rather than risk Errno::E2BIG.
-      MAX_DIFF_BYTES = 200_000
+      # The diff is JSON-wrapped before being set as DUO_WORKFLOW_ADDITIONAL_CONTEXT_CONTENT,
+      # and ARG_MAX applies to the combined size of all env vars + CLI arguments.
+      # 100 KB (~1,250 lines at 80 chars/line) leaves headroom for inherited env and the JSON wrapper.
+      MAX_DIFF_BYTES = 100_000
 
       def initialize(git_diff: nil, changed_files: nil, logger: nil)
         @git_diff = git_diff

@@ -17,7 +17,8 @@ RSpec.describe 'gitlab:artifacts namespace rake task', :silence_stdout do
     subject { run_rake_task('gitlab:artifacts:migrate') }
 
     let!(:artifact) { create(:ci_job_artifact, :archive, file_store: store) }
-    let!(:job_log) { create(:ci_job_artifact, :trace, file_store: store) }
+    let!(:job_trace) { create(:ci_job_artifact, :trace, file_store: store) }
+    let!(:pipeline_artifact) { create(:ci_pipeline_artifact, file_store: store) }
 
     context 'when local storage is used' do
       let(:store) { ObjectStorage::Store::LOCAL }
@@ -29,7 +30,8 @@ RSpec.describe 'gitlab:artifacts namespace rake task', :silence_stdout do
           subject
 
           expect(artifact.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
-          expect(job_log.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
+          expect(job_trace.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
+          expect(pipeline_artifact.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
         end
       end
 
@@ -38,7 +40,8 @@ RSpec.describe 'gitlab:artifacts namespace rake task', :silence_stdout do
           subject
 
           expect(artifact.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
-          expect(job_log.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
+          expect(job_trace.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
+          expect(pipeline_artifact.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
         end
       end
     end
@@ -51,17 +54,19 @@ RSpec.describe 'gitlab:artifacts namespace rake task', :silence_stdout do
         subject
 
         expect(artifact.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
-        expect(job_log.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
+        expect(job_trace.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
+        expect(pipeline_artifact.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
       end
     end
   end
 
   describe 'gitlab:artifacts:migrate_to_local' do
+    subject { run_rake_task('gitlab:artifacts:migrate_to_local') }
+
     let(:object_storage_enabled) { true }
     let!(:artifact) { create(:ci_job_artifact, :archive, file_store: store) }
-    let!(:job_log) { create(:ci_job_artifact, :trace, file_store: store) }
-
-    subject { run_rake_task('gitlab:artifacts:migrate_to_local') }
+    let!(:job_trace) { create(:ci_job_artifact, :trace, file_store: store) }
+    let!(:pipeline_artifact) { create(:ci_pipeline_artifact, file_store: store) }
 
     context 'when remote storage is used' do
       let(:store) { ObjectStorage::Store::REMOTE }
@@ -71,7 +76,8 @@ RSpec.describe 'gitlab:artifacts namespace rake task', :silence_stdout do
           subject
 
           expect(artifact.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
-          expect(job_log.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
+          expect(job_trace.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
+          expect(pipeline_artifact.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
         end
       end
     end
@@ -83,7 +89,8 @@ RSpec.describe 'gitlab:artifacts namespace rake task', :silence_stdout do
         subject
 
         expect(artifact.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
-        expect(job_log.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
+        expect(job_trace.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
+        expect(pipeline_artifact.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
       end
     end
   end

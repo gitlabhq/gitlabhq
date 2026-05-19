@@ -51,7 +51,7 @@ module Gitlab
       def valid_date?
         string_date = @spend_arg.match(DATE_REGEX)[0]
         date = begin
-          Date.parse(string_date)
+          Date.parse(string_date).in_time_zone(@timezone)
         rescue StandardError
           nil
         end

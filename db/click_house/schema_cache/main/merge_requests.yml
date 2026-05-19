@@ -1,0 +1,202 @@
+---
+name: merge_requests
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (traversal_path, id) ORDER BY (traversal_path, id) SETTINGS index_granularity =
+  2048, deduplicate_merge_projection_mode = 'rebuild'
+primary_key: traversal_path, id
+sorting_key: traversal_path, id
+settings:
+  index_granularity: '2048'
+  deduplicate_merge_projection_mode: "'rebuild'"
+columns:
+- name: id
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: target_branch
+  type: String
+- name: source_branch
+  type: String
+- name: source_project_id
+  type: Nullable(Int64)
+- name: author_id
+  type: Nullable(Int64)
+- name: assignee_id
+  type: Nullable(Int64)
+- name: title
+  type: String
+  compression_codec: CODEC(ZSTD(1))
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: milestone_id
+  type: Nullable(Int64)
+- name: merge_status
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "'unchecked'"
+- name: target_project_id
+  type: Int64
+- name: iid
+  type: Int64
+- name: description
+  type: String
+  compression_codec: CODEC(ZSTD(3))
+- name: updated_by_id
+  type: Nullable(Int64)
+- name: merge_error
+  type: Nullable(String)
+- name: merge_params
+  type: Nullable(String)
+- name: merge_when_pipeline_succeeds
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: merge_user_id
+  type: Nullable(Int64)
+- name: merge_commit_sha
+  type: Nullable(String)
+- name: approvals_before_merge
+  type: Nullable(Int64)
+- name: rebase_commit_sha
+  type: Nullable(String)
+- name: in_progress_merge_commit_sha
+  type: Nullable(String)
+- name: time_estimate
+  type: Nullable(Int64)
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: squash
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: cached_markdown_version
+  type: Nullable(Int64)
+- name: last_edited_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: last_edited_by_id
+  type: Nullable(Int64)
+- name: merge_jid
+  type: String
+- name: discussion_locked
+  type: Nullable(Bool)
+  compression_codec: CODEC(ZSTD(1))
+- name: latest_merge_request_diff_id
+  type: Nullable(Int64)
+- name: allow_maintainer_to_push
+  type: Nullable(Bool)
+  default_kind: DEFAULT
+  default_expression: 'true'
+  compression_codec: CODEC(ZSTD(1))
+- name: state_id
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '1'
+- name: rebase_jid
+  type: Nullable(String)
+- name: squash_commit_sha
+  type: Nullable(String)
+- name: merge_ref_sha
+  type: Nullable(String)
+- name: draft
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: prepared_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: merged_commit_sha
+  type: Nullable(String)
+- name: override_requested_changes
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: head_pipeline_id
+  type: Nullable(Int64)
+- name: imported_from
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: retargeted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
+    'traversal_path', target_project_id, '0/'), '0/')
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: metric_latest_build_started_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: metric_latest_build_finished_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: metric_first_deployed_to_production_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: metric_merged_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: metric_merged_by_id
+  type: Nullable(Int64)
+- name: metric_latest_closed_by_id
+  type: Nullable(Int64)
+- name: metric_latest_closed_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: metric_first_comment_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: metric_first_commit_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: metric_last_commit_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: metric_diff_size
+  type: Nullable(Int64)
+- name: metric_modified_paths_size
+  type: Nullable(Int64)
+- name: metric_commits_count
+  type: Nullable(Int64)
+- name: metric_first_approved_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: metric_first_reassigned_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: metric_added_lines
+  type: Nullable(Int64)
+- name: metric_removed_lines
+  type: Nullable(Int64)
+- name: metric_first_contribution
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: metric_pipeline_id
+  type: Nullable(Int64)
+- name: metric_reviewer_first_assigned_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: reviewers
+  type: Array(Tuple(user_id UInt64, state Int16, created_at DateTime64(6, 'UTC')))
+- name: assignees
+  type: Array(Tuple(user_id UInt64, created_at DateTime64(6, 'UTC')))
+- name: approvals
+  type: Array(Tuple(user_id UInt64, created_at DateTime64(6, 'UTC')))
+- name: label_ids
+  type: Array(Tuple(label_id UInt64, created_at DateTime64(6, 'UTC')))
+- name: award_emojis
+  type: Array(Tuple(name String, user_id UInt64, created_at DateTime64(6, 'UTC')))

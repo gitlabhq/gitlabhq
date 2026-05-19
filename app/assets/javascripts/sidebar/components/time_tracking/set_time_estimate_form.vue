@@ -4,7 +4,8 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { issuableTypeText, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { s__, __, sprintf } from '~/locale';
-import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import updateWorkItemTimeTrackingMutation from '~/work_items/graphql/update_work_item_time_tracking.mutation.graphql';
 import issueSetTimeEstimateMutation from '../../queries/issue_set_time_estimate.mutation.graphql';
 import mergeRequestSetTimeEstimateMutation from '../../queries/merge_request_set_time_estimate.mutation.graphql';
 import { SET_TIME_ESTIMATE_MODAL_ID } from './constants';
@@ -22,6 +23,7 @@ export default {
     GlAlert,
     GlLink,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     issuableType: {
       default: null,
@@ -156,7 +158,7 @@ export default {
       if (this.workItemId) {
         return this.$apollo
           .mutate({
-            mutation: updateWorkItemMutation,
+            mutation: updateWorkItemTimeTrackingMutation,
             variables: {
               input: {
                 id: this.workItemId,
@@ -167,6 +169,7 @@ export default {
                       : timeEstimate,
                 },
               },
+              useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
             },
           })
           .then(({ data }) => {

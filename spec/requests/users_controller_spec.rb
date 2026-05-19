@@ -96,6 +96,34 @@ RSpec.describe UsersController, feature_category: :user_management do
         expect(Gitlab::Json.parse(response.body)['message']).to include('This endpoint is deprecated.')
       end
     end
+
+    context 'when user has a profile README with relative links' do
+      let(:user_project) do
+        create(:project, :public, :repository, namespace: user.namespace, path: user.username)
+      end
+
+      before do
+        stub_feature_flags(profile_tabs_vue: false)
+
+        user_project.repository.update_file(
+          user,
+          'README.md',
+          '![avatar](avatar.png)',
+          message: 'Update README with relative image',
+          branch_name: user_project.default_branch_or_main
+        )
+
+        sign_in(user)
+      end
+
+      it 'resolves relative links in the rendered README' do
+        get user_url user.username
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include("#{user_project.full_path}/-/blob/")
+        expect(response.body).to include('avatar.png')
+      end
+    end
   end
 
   describe 'GET /users/:username (deprecated user top)' do

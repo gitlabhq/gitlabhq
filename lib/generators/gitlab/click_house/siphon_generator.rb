@@ -17,6 +17,7 @@ module Gitlab
 
         This will create:
           db/clickhouse/migrate/main/TIMESTAMP_create_siphon_PG_TABLE_NAME.rb
+          db/clickhouse/migrate/main/TIMESTAMP_create_siphon_PG_TABLE_NAME_pg_pkey_ordered.rb (only with --with-traversal-path)
           db/siphon/tables/PG_TABLE_NAME.yml
       DESC
 
@@ -103,11 +104,20 @@ module Gitlab
       end
 
       def generate_ch_table
-        timestamp = Time.current.strftime('%Y%m%d%H%M%S')
-
-        migration_path = "db/click_house/migrate/main/#{timestamp}_create_siphon_#{table_name}.rb"
+        migration_path = "db/click_house/migrate/main/#{base_timestamp}_create_siphon_#{table_name}.rb"
 
         template 'siphon_table.rb.template', migration_path
+      end
+
+      def generate_pg_pkey_ordered_migration
+        return unless hierarchy_denormalization?
+        return if null_engine?
+
+        timestamp = (base_time + 1).strftime('%Y%m%d%H%M%S')
+        migration_path =
+          "db/click_house/migrate/main/#{timestamp}_create_#{pg_pkey_ordered_table_name}.rb"
+
+        template 'siphon_pg_pkey_ordered.rb.template', migration_path
       end
 
       def generate_siphon_yml
@@ -131,8 +141,7 @@ module Gitlab
         definitions = [
           *table_columns,
           "_siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1))",
-          "_siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))",
-          *table_projection
+          "_siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))"
         ].flatten.compact.join(",\n        ")
 
         settings_str = table_settings.any? ? "\n      SETTINGS #{table_settings.join(', ')}" : ""
@@ -188,10 +197,13 @@ CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
         target = {
           'name' => 'clickhouse_main',
           'target' => clickhouse_table_name,
-          'dedup_by_table' => table_name,
           'dedup_by' => pg_primary_keys
         }
-        target['reconcile'] = siphon_reconcile if hierarchy_denormalization?
+
+        if hierarchy_denormalization?
+          target['dedup_by_columns_lookup_table'] = pg_pkey_ordered_table_name
+          target['reconcile'] = siphon_reconcile
+        end
 
         hash['replication_targets'] = [target]
         hash.to_yaml
@@ -240,18 +252,9 @@ CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
         cols
       end
 
-      def table_projection
-        return unless hierarchy_denormalization?
-        return if null_engine?
-
-        [primary_key_projection]
-      end
-
       def table_settings
         # Lower value is faster for IN queries doing primary key lookups (default: 8192)
-        @table_settings ||= ['index_granularity = 2048'].tap do |array|
-          array << "deduplicate_merge_projection_mode = 'rebuild'" if hierarchy_denormalization?
-        end
+        @table_settings ||= ['index_granularity = 2048']
       end
 
       def ch_type_for(pg_field)
@@ -327,13 +330,69 @@ CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
         options['use_null_engine']
       end
 
-      def primary_key_projection
-        primary_keys = pg_primary_keys.join(', ')
+      def base_time
+        @base_time ||= Time.current
+      end
+
+      def base_timestamp
+        base_time.strftime('%Y%m%d%H%M%S')
+      end
+
+      def pg_pkey_ordered_table_name
+        "#{clickhouse_table_name}_pg_pkey_ordered"
+      end
+
+      def pg_pkey_ordered_mv_name
+        "#{pg_pkey_ordered_table_name}_mv"
+      end
+
+      def pg_pkey_ordered_primary_keys
+        pg_primary_keys + (primary_keys - pg_primary_keys)
+      end
+
+      def pg_pkey_ordered_columns
+        cols = pg_primary_keys.map do |pkey|
+          field = pg_fields_metadata.find { |f| f['field_name'] == pkey }
+          [field['field_name'], ch_type_for(field), compression_for(field)].compact.join(' ')
+        end
+
+        cols << "traversal_path String DEFAULT '0/' CODEC(ZSTD(3))" if hierarchy_denormalization?
+
+        cols
+      end
+
+      def pg_pkey_ordered_table_definition
+        definitions = [
+          *pg_pkey_ordered_columns,
+          "_siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1))",
+          "_siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))"
+        ].join(",\n        ")
+
+        keys = pg_pkey_ordered_primary_keys.join(', ')
+
         <<-TEXT.chomp
-PROJECTION pg_pkey_ordered (
-          SELECT *
-          ORDER BY #{primary_keys}
-        )
+CREATE TABLE IF NOT EXISTS #{pg_pkey_ordered_table_name}
+      (
+        #{definitions}
+      )
+      ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+      PRIMARY KEY (#{keys})
+      ORDER BY (#{keys})
+      SETTINGS index_granularity = 1024
+        TEXT
+      end
+
+      def pg_pkey_ordered_mv_definition
+        select_cols = (pg_pkey_ordered_primary_keys + %w[_siphon_replicated_at _siphon_deleted])
+          .join(",\n        ")
+
+        <<-TEXT.chomp
+CREATE MATERIALIZED VIEW IF NOT EXISTS #{pg_pkey_ordered_mv_name}
+      TO #{pg_pkey_ordered_table_name}
+      AS
+      SELECT
+        #{select_cols}
+      FROM #{clickhouse_table_name}
         TEXT
       end
 

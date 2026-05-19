@@ -9,6 +9,7 @@ RSpec.describe ProjectStatistics, feature_category: :source_code_management do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:namespace) }
+    it { is_expected.to belong_to(:root_namespace).optional }
   end
 
   describe 'scopes' do

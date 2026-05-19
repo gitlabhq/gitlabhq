@@ -1,5 +1,9 @@
+<% if @custom_template_body %>
+<%= CGI.unescapeHTML(strip_tags(@custom_template_body)) %>
+<% else %>
 <%= _("New response for issue #%{issue_iid}:") % { issue_iid: @work_item.iid } %>
 
 <%= _("Author: %{author_name}") % { author_name: sanitize_name(@note.author_name) } %>
 
 <%= @note.note %>
+<% end %>

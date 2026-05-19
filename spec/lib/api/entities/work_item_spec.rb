@@ -27,31 +27,5 @@ RSpec.describe API::Entities::WorkItem, feature_category: :team_planning do
         expect(entity[:type]).to be_nil
       end
     end
-
-    context 'when work_item_type exists but base_type is nil' do
-      let(:work_item_type_without_base) do
-        instance_double(
-          WorkItems::Type,
-          base_type: nil,
-          incident?: false,
-          task?: false,
-          issue?: false,
-          test_case?: false,
-          requirement?: false,
-          objective?: false,
-          key_result?: false,
-          epic?: false,
-          ticket?: false
-        )
-      end
-
-      before do
-        allow(work_item).to receive(:work_item_type).and_return(work_item_type_without_base)
-      end
-
-      it 'returns nil' do
-        expect(entity[:type]).to be_nil
-      end
-    end
   end
 end

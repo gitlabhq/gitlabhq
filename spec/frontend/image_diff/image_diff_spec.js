@@ -60,8 +60,8 @@ describe('ImageDiff', () => {
       expect(imageDiff.renderCommentBadge).toEqual(true);
     });
 
-    it('should set $noteContainer', () => {
-      expect(imageDiff.$noteContainer[0]).toEqual(element.querySelector('.note-container'));
+    it('should set noteContainer', () => {
+      expect(imageDiff.noteContainer).toEqual(element.querySelector('.note-container'));
     });
 
     describe('default', () => {

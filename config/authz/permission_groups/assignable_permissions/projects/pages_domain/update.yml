@@ -3,5 +3,7 @@ name: update_pages_domain
 description: Grants the ability to update pages domains
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - update_pages_domain

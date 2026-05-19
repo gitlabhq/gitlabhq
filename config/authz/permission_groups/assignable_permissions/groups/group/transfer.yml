@@ -3,5 +3,7 @@ name: transfer_group
 description: Grants the ability to transfer a group
 boundaries:
   - group
+available_for:
+  - granular_access_token
 permissions:
   - transfer_group

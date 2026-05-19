@@ -2,12 +2,10 @@ package circuitbreaker
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
-	"os"
 	"strings"
 	"testing"
 	"time"
@@ -17,8 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-
-	configRedis "gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 // mockRoundTripper implements http.RoundTripper for testing
@@ -353,16 +350,10 @@ func TestBodyRecreationAfterCircuitBreakerRead(t *testing.T) {
 	resp2.Body.Close()
 }
 
+// testRedisDB is the Redis database number used by this package's tests.
+// Each package uses a unique number to avoid interference when tests run in parallel.
+const testRedisDB = 2
+
 func InitRdb(t *testing.T) *redis.Client {
-	buf, err := os.ReadFile("../../config.toml")
-	require.NoError(t, err)
-	cfg, err := config.LoadConfig(string(buf))
-	require.NoError(t, err)
-	rdb, err := configRedis.Configure(cfg)
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		rdb.FlushAll(context.Background())
-		assert.NoError(t, rdb.Close())
-	})
-	return rdb
+	return testhelper.SetupRedis(t, testRedisDB)
 }

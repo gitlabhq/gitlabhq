@@ -36,7 +36,7 @@ export default {
 
 <template>
   <div class="gl-contents">
-    <span data-testid="release-name">
+    <span data-testid="release-name" class="gl-heading-2 gl-my-0">
       <gl-link v-if="selfLink" class="gl-self-center gl-text-default" :href="selfLink">
         {{ release.name }}
       </gl-link>

@@ -5,11 +5,13 @@ import CreatePersonalAccessTokenDropdown from '~/personal_access_tokens/componen
 describe('CreatePersonalAccessTokenDropdown', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const createComponent = (provide = {}) => {
     wrapper = shallowMountExtended(CreatePersonalAccessTokenDropdown, {
       provide: {
         accessTokenGranularNewUrl: '/granular/new',
         accessTokenLegacyNewUrl: '/legacy/new',
+        granularTokensEnforced: false,
+        ...provide,
       },
     });
   };
@@ -71,6 +73,20 @@ describe('CreatePersonalAccessTokenDropdown', () => {
 
     it('displays the correct link', () => {
       expect(findLegacyTokenOption().href).toBe('/legacy/new');
+    });
+  });
+
+  describe('when granular token enforcement is active', () => {
+    beforeEach(() => {
+      createComponent({ granularTokensEnforced: true });
+    });
+
+    it('includes only fine-grained token option', () => {
+      expect(findDropdown().props('items')).toHaveLength(1);
+
+      expect(findFineGrainedTokenOption()).toMatchObject({
+        href: '/granular/new',
+      });
     });
   });
 });

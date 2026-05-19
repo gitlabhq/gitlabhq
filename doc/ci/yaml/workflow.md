@@ -143,15 +143,18 @@ This example assumes that your default branch or other long-lived branches are [
 
 ### Skip pipelines for draft merge requests
 
-You can use `workflow: rules` to skip pipelines for draft merge requests. With these rules, you can avoid using compute minutes until development is complete.
+You can use `workflow: rules` to skip pipelines for draft merge requests.
+This approach saves compute resources until development is complete.
 
-For example, the following rules will disable CI builds for merge requests with `[Draft]`, `(Draft)`, or `Draft:` in the title:
+Use the `CI_MERGE_REQUEST_DRAFT` variable to check if a merge request is in draft state.
+This variable automatically detects all draft formats that GitLab supports.
 
 ```yaml
 workflow:
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TITLE =~ /^(\[Draft\]|\(Draft\)|Draft:)/
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_DRAFT == "true"
       when: never
+    - when: always
 
 stages:
   - build
@@ -161,6 +164,10 @@ build-job:
   script:
     - echo "Testing"
 ```
+
+> [!note]
+> The `CI_MERGE_REQUEST_DRAFT` variable was introduced in GitLab 17.10.
+> For earlier versions, use `CI_MERGE_REQUEST_TITLE` with a regular expression instead.
 
 ## Troubleshooting
 

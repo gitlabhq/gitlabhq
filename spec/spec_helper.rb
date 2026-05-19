@@ -21,6 +21,7 @@ CrystalballEnv.start!
 ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 ENV["GITLAB_SECURITY_MANAGER_ROLE"] = 'true'
+ENV["GITLAB_LOAD_WIP_CUSTOM_ABILITIES"] = 'true'
 
 require_relative '../config/environment'
 
@@ -214,8 +215,6 @@ RSpec.configure do |config|
     # Enable all features by default for testing
     # Reset any changes in after hook.
     stub_all_feature_flags
-
-    TestEnv.seed_db
   end
 
   config.after(:all) do
@@ -353,6 +352,15 @@ RSpec.configure do |config|
 
       # This feature is wip and should not be enabled in tests by default
       stub_feature_flags(iam_svc_login: false)
+
+      # Work items list REST API is still in development and not compatible with
+      # all filters yet.
+      # Please see https://gitlab.com/gitlab-org/gitlab/-/work_items/594636 for tracking progress.
+      stub_feature_flags(work_item_rest_api_frontend_users: false)
+
+      # This middleware fires use_pat for every PAT-authenticated request
+      # enabling it by default breaks existing specs that use strict receive(:track_event) expectations
+      stub_feature_flags(track_api_request_from_personal_access_token: false)
     else
       unstub_all_feature_flags
     end
@@ -406,6 +414,21 @@ RSpec.configure do |config|
     stub_snowplow unless example.metadata[:do_not_stub_snowplow_by_default]
   end
 
+  # WIP custom abilities are enabled by default via ENV var so that all specs
+  # see the full set of permissions (column accessors, Grape params, and
+  # GraphQL enum values are registered at class load time). Tests tagged with
+  # :disable_wip_custom_abilities exercise the runtime wip-filter behavior
+  # (matching production where the env var is unset). Definition memoizes the
+  # filtered set, so flipping the env var requires reloading.
+  config.around(:example, :disable_wip_custom_abilities) do |example|
+    ENV['GITLAB_LOAD_WIP_CUSTOM_ABILITIES'] = 'false'
+    Gitlab::CustomRoles::Definition.load_abilities!
+    example.run
+  ensure
+    ENV['GITLAB_LOAD_WIP_CUSTOM_ABILITIES'] = 'true'
+    Gitlab::CustomRoles::Definition.load_abilities!
+  end
+
   config.around(:example, :quarantine) do |example|
     # Skip tests in quarantine unless we explicitly focus on them or not in CI
     example.run if config.inclusion_filter[:quarantine] || !ENV['CI']
@@ -435,6 +458,12 @@ RSpec.configure do |config|
   # previous test runs may have left some resources throttled
   config.before do
     ::Gitlab::ExclusiveLease.reset_all!("el:throttle:*")
+    # data_isolation is checked on every organizations query, causing it to appear in exception
+    # payloads via feature_flag_states. Suppress it to avoid polluting exception log assertions.
+    # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226037
+    RequestStore.delete(:feature_flag_events)
+    allow(Feature).to receive(:log_feature_flag_states?).and_call_original
+    allow(Feature).to receive(:log_feature_flag_states?).with(:data_isolation).and_return(false)
   end
 
   config.before(:example, :assume_throttled) do |example|

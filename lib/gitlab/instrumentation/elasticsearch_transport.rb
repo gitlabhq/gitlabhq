@@ -18,6 +18,10 @@ module Gitlab
           ::Gitlab::ErrorTracking.track_exception(e)
 
           raise ::Gitlab::Search::Client::AuthorizationError, e.message
+        rescue *::Gitlab::Search::Client::TIMEOUT_ERRORS => e
+          ::Gitlab::ErrorTracking.track_exception(e)
+
+          raise ::Elastic::TimeoutError, e.message
         rescue *::Gitlab::Search::Client::TRANSPORT_ERRORS => e
           ::Gitlab::ErrorTracking.track_exception(e)
 

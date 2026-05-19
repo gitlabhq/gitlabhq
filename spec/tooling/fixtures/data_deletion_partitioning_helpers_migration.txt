@@ -1,0 +1,16 @@
+@@ -0,0 +1,16 @@
++# frozen_string_literal: true
++
++class DropPartitionedTables < Gitlab::Database::Migration[2.3]
++  milestone '19.0'
++
++  def up
++    drop_partitioned_table_for(:merge_request_diff_commits)
++    drop_nonpartitioned_archive_table(:project_daily_statistics_archived)
++    Gitlab::Database::Partitioning.drop_detached_partitions
++  end
++
++  def down
++    # not reversible
++  end
++end

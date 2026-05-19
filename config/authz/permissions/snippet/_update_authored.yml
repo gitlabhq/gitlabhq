@@ -1,0 +1,6 @@
+---
+name: _update_authored_snippet
+description: Grants the ability to update a project snippet that the user
+  authored. Used by the project snippet policy to gate :update_snippet on the
+  author's own snippets, separate from the broader update_snippet capability
+  that applies to all snippets in the project.

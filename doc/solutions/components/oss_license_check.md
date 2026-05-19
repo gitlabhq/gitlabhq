@@ -406,7 +406,7 @@ Ensure the security policy project you modified is correctly linked to your grou
 
 ### Dependency scan not running
 
-Check that dependency scanning is enabled in your CI/CD configuration, and there is a dependency file present. See [Troubleshooting dependency scanning](../../user/application_security/dependency_scanning/troubleshooting_dependency_scanning.md) for more.
+Check that dependency scanning is enabled in your CI/CD configuration, and there is a dependency file present. See [Troubleshooting dependency scanning](../../user/application_security/dependency_scanning/dependency_scanning_sbom/troubleshooting_ds_sbom_analyzer.md) for more.
 
 ## Additional Resources
 

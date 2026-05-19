@@ -90,6 +90,7 @@ module Groups
       end
 
       update_two_factor_requirement_for_subgroups
+      publish_path_changed_event if group.path_previously_changed?
     end
 
     def update_two_factor_requirement_for_subgroups
@@ -190,6 +191,11 @@ module Groups
 
     def non_assignable_group_params
       []
+    end
+
+    def publish_path_changed_event
+      event = Namespaces::Groups::GroupPathChangedEvent.new(data: { group_id: group.id })
+      group.run_after_commit_or_now { Gitlab::EventStore.publish(event) }
     end
   end
 end

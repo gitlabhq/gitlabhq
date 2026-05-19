@@ -17,7 +17,7 @@ module Gitlab
           ::Gitlab::SidekiqMiddleware::PauseControl::Client,
           # NOTE: Everything from DuplicateJobs::Client to DuplicateJobs::Server must yield
           # no returning or job interception as it will leave the duplicate job redis key
-          # dangling and errorneously deduplicating future jobs until key expires.
+          # dangling and erroneously deduplicating future jobs until key expires.
           ::Gitlab::SidekiqMiddleware::DuplicateJobs::Client,
           # ConcurrencyLimit::Client runs after DuplicateJobs::Client so that subsequent duplicate jobs
           # are properly deduplicated even while the original job waits in the concurrency limit queue.
@@ -81,7 +81,7 @@ module Gitlab
           # so we can compare the latest WAL location against replica
           # NOTE: Everything from DuplicateJobs::Client to DuplicateJobs::Server must yield
           # no returning or job interception as it will leave the duplicate job redis key
-          # dangling and errorneously deduplicating future jobs until key expires.
+          # dangling and erroneously deduplicating future jobs until key expires.
           # Any middlewares after DuplicateJobs::Server can return/intercept jobs.
           ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server,
           ::Gitlab::SidekiqMiddleware::PauseControl::Server,

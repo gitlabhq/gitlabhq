@@ -1,7 +1,12 @@
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { InternalEvents } from '~/tracking';
-import { sensitiveMessages, nonSensitiveMessages, secretDetectionFindings } from './mock_data';
+import {
+  sensitiveMessages,
+  nonSensitiveMessages,
+  secretDetectionFindings,
+  sensitiveMessagesWithInstancePrefix,
+} from './mock_data';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 
@@ -84,6 +89,48 @@ describe('detectAndConfirmSensitiveTokens', () => {
         });
       });
     });
+
+    describe('when instance token prefix is set', () => {
+      describe.each(sensitiveMessagesWithInstancePrefix)(
+        'for message with instance prefix: %s',
+        (message) => {
+          beforeEach(() => {
+            gon.instance_token_prefix = 'instanceprefix';
+          });
+
+          afterEach(() => {
+            delete gon.instance_token_prefix;
+          });
+
+          it('should show warning', async () => {
+            await detectAndConfirmSensitiveTokens({ content: message });
+            expect(confirmAction).toHaveBeenCalled();
+          });
+
+          it('should contain token including instance prefix', async () => {
+            await detectAndConfirmSensitiveTokens({ content: message });
+
+            const confirmActionArgs = confirmAction.mock.calls[0][1];
+            expect(confirmActionArgs.modalHtmlMessage).toContain(`instanceprefix-`);
+          });
+
+          it('should return true when confirmed is true', async () => {
+            mockConfirmAction({ confirmed: true });
+
+            const result = await detectAndConfirmSensitiveTokens({ content: message });
+
+            expect(result).toBe(true);
+          });
+
+          it('should return false when confirmed is false', async () => {
+            mockConfirmAction({ confirmed: false });
+
+            const result = await detectAndConfirmSensitiveTokens({ content: message });
+            expect(result).toBe(false);
+          });
+        },
+      );
+    });
   });
 
   describe('when custom pat prefix is set', () => {
@@ -91,17 +138,77 @@ describe('detectAndConfirmSensitiveTokens', () => {
       gon.pat_prefix = 'specpat-';
     });
 
-    const validTokenMessage = 'token: specpat-mGYFaXBmNLvLmrEb7xdf';
-    const invalidTokenMessage = 'token: glpat-mGYFaXBmNLvLmrEb7xdf';
+    afterEach(() => {
+      delete gon.pat_prefix;
+    });
 
-    it('should detect the valid token', async () => {
-      await detectAndConfirmSensitiveTokens({ content: validTokenMessage });
+    const validPatPrefixTokenMessage = 'token: specpat-cgyKc1k_AsnEpmP-5fRL';
+    const validDefaultPrefixTokenMessage = 'token: glpat-cgyKc1k_AsnEpmP-5fRL';
+    const invalidTokenMessage = 'token: invalid-token';
+
+    it('should detect the valid token with a custom pat prefix', async () => {
+      await detectAndConfirmSensitiveTokens({ content: validPatPrefixTokenMessage });
+      expect(confirmAction).toHaveBeenCalled();
+    });
+
+    it('should detect the valid token with the bare glpat- prefix', async () => {
+      await detectAndConfirmSensitiveTokens({ content: validDefaultPrefixTokenMessage });
       expect(confirmAction).toHaveBeenCalled();
     });
 
     it('should not detect the invalid token', async () => {
       await detectAndConfirmSensitiveTokens({ content: invalidTokenMessage });
       expect(confirmAction).not.toHaveBeenCalled();
+    });
+
+    describe('when custom pat prefix contains character that needs escaping', () => {
+      beforeEach(() => {
+        gon.pat_prefix = 'specpat*-';
+      });
+
+      const validTokenMessageWithSpecialCharacter = 'token: specpat*-cgyKc1k_AsnEpmP-5fRL';
+
+      it('should escape the regex and detect the valid token', async () => {
+        await detectAndConfirmSensitiveTokens({ content: validTokenMessageWithSpecialCharacter });
+        expect(confirmAction).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('when both instance token prefix and custom pat prefix are set', () => {
+    beforeEach(() => {
+      gon.instance_token_prefix = 'instanceprefix';
+      gon.pat_prefix = 'custompat-';
+    });
+
+    afterEach(() => {
+      delete gon.instance_token_prefix;
+      delete gon.pat_prefix;
+    });
+
+    const getModalHtmlMessage = () => confirmAction.mock.calls[0][1].modalHtmlMessage;
+
+    it('should detect token with instance prefix and hardcoded glpat-', async () => {
+      await detectAndConfirmSensitiveTokens({
+        content: 'token: instanceprefix-glpat-cgyKc1k_AsnEpmP-5fRL',
+      });
+
+      expect(getModalHtmlMessage()).toContain('instanceprefix-glpat-cgyKc1k_AsnEpmP-5fRL');
+    });
+
+    it('should detect token with custom pat prefix', async () => {
+      await detectAndConfirmSensitiveTokens({
+        content: 'token: custompat-cgyKc1k_AsnEpmP-5fRL',
+      });
+
+      expect(getModalHtmlMessage()).toContain('custompat-cgyKc1k_AsnEpmP-5fRL');
+    });
+
+    it('should detect token with bare glpat- prefix', async () => {
+      await detectAndConfirmSensitiveTokens({
+        content: 'token: glpat-cgyKc1k_AsnEpmP-5fRL',
+      });
+      expect(getModalHtmlMessage()).toContain('glpat-cgyKc1k_AsnEpmP-5fRL');
     });
   });
 

@@ -1,0 +1,69 @@
+---
+name: siphon_deployments
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (traversal_path, id) ORDER BY (traversal_path, id) SETTINGS deduplicate_merge_projection_mode
+  = 'rebuild', index_granularity = 2048
+primary_key: traversal_path, id
+sorting_key: traversal_path, id
+settings:
+  deduplicate_merge_projection_mode: "'rebuild'"
+  index_granularity: '2048'
+columns:
+- name: id
+  type: Int64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: iid
+  type: Int64
+- name: project_id
+  type: Int64
+- name: environment_id
+  type: Int64
+- name: ref
+  type: String
+- name: tag
+  type: Bool
+- name: sha
+  type: String
+- name: user_id
+  type: Nullable(Int64)
+- name: deployable_type
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: on_stop
+  type: Nullable(String)
+- name: status
+  type: Int8
+- name: finished_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: deployable_id
+  type: Nullable(Int64)
+- name: archived
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
+    'traversal_path', project_id, '0/'), '0/')
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'

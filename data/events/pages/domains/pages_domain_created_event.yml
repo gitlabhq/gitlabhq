@@ -1,0 +1,5 @@
+---
+event: Pages::Domains::PagesDomainCreatedEvent
+description: Published when a custom domain is successfully added to a GitLab Pages
+  site.
+feature_category: pages

@@ -37,11 +37,16 @@ RSpec.describe Achievements::AwardService, feature_category: :user_profile do
 
       it 'creates an achievement and sends an e-mail' do
         allow(NotificationService).to receive(:new).and_return(notification_service)
-        expect(notification_service).to receive(:new_achievement_email).with(recipient, achievement)
+        expect(notification_service).to receive(:new_achievement_email)
+          .with(recipient, achievement, an_instance_of(Achievements::UserAchievement))
           .and_return(mail_message)
         expect(mail_message).to receive(:deliver_later)
 
         expect(response).to be_success
+      end
+
+      it 'awards the achievement with show_on_profile set to false' do
+        expect(response.payload.show_on_profile).to be(false)
       end
 
       context 'when the achievement is not persisted' do

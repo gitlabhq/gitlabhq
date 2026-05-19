@@ -1,0 +1,10 @@
+---
+name: defer_mr_pipeline_creation_request_completion
+description: Defers MR pipeline creation request completion until after head_pipeline_id is written to the database, preventing a race condition with schedule_policy_synchronization.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/578352
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230759
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596293
+milestone: '18.11'
+group: group::security policies
+type: gitlab_com_derisk
+default_enabled: false

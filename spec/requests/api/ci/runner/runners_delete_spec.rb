@@ -90,14 +90,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
 
         it_behaves_like 'storing arguments in the application context for the API' do
-          # TODO: remove this expectation once the following issue is resolved
-          # https://gitlab.com/gitlab-org/gitlab/-/work_items/594564
-          before do
-            expect(Gitlab::AppLogger).to receive(:info).with(a_hash_including( # rubocop:disable RSpec/ExpectInHook -- to be removed in the near future
-              class: "Ci::Runners::PartitionedTokenFinder"
-            )).at_least(:once)
-          end
-
           let(:expected_params) { { client_id: "runner/#{runner.id}" } }
         end
 
@@ -138,14 +130,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
 
         it_behaves_like 'storing arguments in the application context for the API' do
-          # TODO: remove this expectation once the following issue is resolved
-          # https://gitlab.com/gitlab-org/gitlab/-/work_items/594564
-          before do
-            expect(Gitlab::AppLogger).to receive(:info).with(a_hash_including( # rubocop:disable RSpec/ExpectInHook -- to be removed in the near future
-              class: "Ci::Runners::PartitionedTokenFinder"
-            )).at_least(:once)
-          end
-
           let(:expected_params) { { client_id: "runner/#{runner.id}" } }
         end
 

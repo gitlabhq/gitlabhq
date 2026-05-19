@@ -21,7 +21,7 @@ RSpec.describe Ci::CreatePipelineService,
       let(:files) { { 'some-file' => '' } }
 
       let(:config) do
-        <<~EOY
+        <<~YAML
         job:
           script:
             - ls
@@ -29,7 +29,7 @@ RSpec.describe Ci::CreatePipelineService,
             key: 'a-key'
             paths: ['logs/', 'binaries/']
             untracked: true
-        EOY
+        YAML
       end
 
       it 'uses the provided key' do
@@ -50,7 +50,7 @@ RSpec.describe Ci::CreatePipelineService,
 
     context 'with cache:key:files' do
       let(:config) do
-        <<~EOY
+        <<~YAML
         job:
           script:
             - ls
@@ -61,7 +61,7 @@ RSpec.describe Ci::CreatePipelineService,
               files:
                 - file.lock
                 - missing-file.lock
-        EOY
+        YAML
       end
 
       context 'when file.lock exists' do
@@ -103,7 +103,7 @@ RSpec.describe Ci::CreatePipelineService,
 
     context 'with cache:key:files and prefix' do
       let(:config) do
-        <<~EOY
+        <<~YAML
         job:
           script:
             - ls
@@ -114,7 +114,7 @@ RSpec.describe Ci::CreatePipelineService,
               files:
                 - file.lock
               prefix: '$ENV_VAR'
-        EOY
+        YAML
       end
 
       context 'when file.lock exists' do
@@ -158,7 +158,7 @@ RSpec.describe Ci::CreatePipelineService,
       let(:files) { { 'some-file' => '' } }
 
       let(:config) do
-        <<~EOY
+        <<~YAML
         job:
           script:
             - ls
@@ -171,7 +171,7 @@ RSpec.describe Ci::CreatePipelineService,
                 - other-file.lock
                 - extra-file.lock
               prefix: 'some-prefix'
-        EOY
+        YAML
       end
 
       it 'has errors' do

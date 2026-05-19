@@ -30,22 +30,6 @@ This does not mitigate the problem on GitLab.com. New GraphQL fields still need 
 
 You can use the `@gl_introduced` directive on any field, for example:
 
-<table>
-<thead>
-  <tr>
-    <td>
-      Query
-    </td>
-    <td>
-      Response
-    </td>
-  </tr>
-</thead>
-
-<tbody>
-<tr>
-<td>
-
 ```graphql
 fragment otherFieldsWithFuture on Namespace {
   webUrl
@@ -62,8 +46,7 @@ query namespaceWithFutureFields {
 }
 ```
 
-</td>
-<td>
+Response:
 
 ```json
 {
@@ -79,32 +62,11 @@ query namespaceWithFutureFields {
 }
 ```
 
-</td>
-</tr>
-</tbody>
-</table>
-
 You shouldn't use the directive with:
 
 - Arguments: Executable directives don't support arguments.
 - Fragments: Instead, use the directive in the fragment nodes.
-- Single future fields, in the query or in objects:
-
-<table>
-<thead>
-  <tr>
-    <td>
-      Query
-    </td>
-    <td>
-      Response
-    </td>
-  </tr>
-</thead>
-
-<tbody>
-<tr>
-<td>
+- Single future fields, in the query or in objects, for example:
 
   ```graphql
   query fetchData {
@@ -112,8 +74,7 @@ You shouldn't use the directive with:
   }
   ```
 
-</td>
-<td>
+  Response:
 
   ```json
   {
@@ -147,11 +108,7 @@ You shouldn't use the directive with:
   }
   ```
 
-</td>
-</tr>
-
-<tr>
-<td>
+  Query:
 
   ```graphql
   query fetchData {
@@ -161,8 +118,7 @@ You shouldn't use the directive with:
   }
   ```
 
-</td>
-<td>
+  Response:
 
   ```json
   {
@@ -195,12 +151,8 @@ You shouldn't use the directive with:
     ]
   }
   ```
-
-</td>
-</tr>
-
-<tr>
-<td>
+  
+  Query:
 
   ```graphql
   query fetchData {
@@ -210,8 +162,7 @@ You shouldn't use the directive with:
   }
   ```
 
-</td>
-<td>
+  Response:
 
   ```json
   {
@@ -245,12 +196,6 @@ You shouldn't use the directive with:
     ]
   }
   ```
-
-</td>
-</tr>
-
-</tbody>
-</table>
 
 ##### Non-nullable fields
 
@@ -2062,10 +2007,13 @@ Alternatively, we can add a `find_object` method that loads the
 object on the mutation. This would allow you to use the
 `authorized_find!` helper method.
 
-When a user is not allowed to perform the action, or an object is not
-found, we should raise a
+When a user is not allowed to perform the action, or a resource is not
+found due to authorization (the user cannot access it), we should raise a
 `Gitlab::Graphql::Errors::ResourceNotAvailable` by calling `raise_resource_not_available_error!`
-from in the `resolve` method.
+from in the `resolve` method. For user-input validation errors (for example, an invalid
+project path or malformed identifier), return errors in the mutation payload `errors`
+array instead, so the client can display a meaningful message to the user. See
+[Errors in mutations](#errors-in-mutations) for details.
 
 ### Errors in mutations
 

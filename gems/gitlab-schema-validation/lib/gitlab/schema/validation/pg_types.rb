@@ -66,7 +66,8 @@ module Gitlab
           'jsonpath' => 'jsonpath',
           'txid_snapshot' => 'txid_snapshot',
           'pg_snapshot' => 'pg_snapshot',
-          'daterange' => 'daterange'
+          'daterange' => 'daterange',
+          'int8range' => 'int8range'
         }.freeze
       end
     end

@@ -1,0 +1,21 @@
+---
+description: Tracks when a user toggles Rapid Diffs on or off via the opt-in toggle
+internal_events: true
+status: active
+action: toggle_rapid_diffs
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: "Whether Rapid Diffs was toggled 'enabled' or 'disabled'"
+product_group: code_review
+product_categories:
+- code_review_workflow
+milestone: '19.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231357
+tiers:
+- free
+- premium
+- ultimate

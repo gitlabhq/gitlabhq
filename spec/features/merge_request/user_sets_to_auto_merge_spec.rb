@@ -49,11 +49,11 @@ RSpec.describe 'Merge request > User sets to auto-merge', :js, feature_category:
       create(:ci_build, pipeline: pipeline)
 
       sign_in(user)
-
-      visit project_merge_request_path(project, merge_request)
     end
 
     it 'allows to cancel the auto-merge' do
+      visit project_merge_request_path(project, merge_request)
+
       click_button "Set to auto-merge"
 
       wait_for_requests
@@ -66,6 +66,8 @@ RSpec.describe 'Merge request > User sets to auto-merge', :js, feature_category:
     end
 
     it 'changes the source branch text' do
+      visit project_merge_request_path(project, merge_request)
+
       check('Delete source branch')
       click_button "Set to auto-merge"
 
@@ -76,6 +78,8 @@ RSpec.describe 'Merge request > User sets to auto-merge', :js, feature_category:
 
     context 'when it allows enabling after it was previously canceled' do
       before do
+        visit project_merge_request_path(project, merge_request)
+
         click_button "Set to auto-merge"
 
         wait_for_requests

@@ -117,6 +117,12 @@ const alias = {
   vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
   jquery$: 'jquery/dist/jquery.slim.js',
   lodash: 'lodash-es',
+
+  // `raphael/raphael.no-deps` declares `eve` as an external dependency
+  // (the package was renamed to `eve-raphael` years ago, but Raphael's
+  // UMD wrapper still does `require("eve")`). Alias the bare name to
+  // the actual installed package so both webpack and Vite resolve it.
+  eve$: 'eve-raphael',
   shared_queries: path.join(ROOT_PATH, 'app/graphql/queries'),
 
   // Mermaid v11's transitive deps use package.json "exports" without "main"
@@ -342,7 +348,6 @@ module.exports = {
       coverage_persistence: './entrypoints/coverage_persistence.js',
       performance_bar: './entrypoints/performance_bar.js',
       jira_connect_app: './jira_connect/subscriptions/index.js',
-      sandboxed_mermaid_v10: './lib/mermaid_v10.js',
       sandboxed_mermaid_v11: './lib/mermaid_v11.js',
       redirect_listbox: './entrypoints/behaviors/redirect_listbox.js',
       sandboxed_swagger: './lib/swagger.js',
@@ -467,6 +472,24 @@ module.exports = {
       },
       {
         test: /@swagger-api\/apidom-.*\.[mc]?js$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          plugins: ['@babel/plugin-transform-class-properties'],
+          ...defaultJsOptions,
+        },
+      },
+      {
+        test: /swagger-client\/.*\.m?js$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          plugins: ['@babel/plugin-transform-class-properties'],
+          ...defaultJsOptions,
+        },
+      },
+      {
+        test: /@swaggerexpert\/json-pointer\/.*\.[mc]?js$/,
         include: /node_modules/,
         loader: 'babel-loader',
         options: {
@@ -801,7 +824,11 @@ module.exports = {
      Webpack 4 doesn't have support for it, while vite does.
      See also: https://github.com/webpack/webpack/issues/9509
      */
-    ...['@swagger-api/apidom-reference'].map((packageName) => {
+    ...[
+      '@swagger-api/apidom-reference',
+      '@swagger-api/apidom-json-pointer',
+      '@swaggerexpert/json-pointer',
+    ].map((packageName) => {
       const packageJSON = fs.readFileSync(
         path.join(ROOT_PATH, 'node_modules', packageName, 'package.json'),
         'utf-8',
@@ -817,6 +844,14 @@ module.exports = {
               packageName,
               exports[relative]?.browser?.import || exports[relative]?.import,
             );
+            console.log(`[exports-replacer]: ${request} => ${newRequest}`);
+            // eslint-disable-next-line no-param-reassign
+            resource.request = newRequest;
+          } else if (
+            packageName === '@swaggerexpert/json-pointer' &&
+            relative === './evaluate/realms/apidom'
+          ) {
+            const newRequest = path.join(packageName, 'es/evaluate/realms/apidom/index.mjs');
             console.log(`[exports-replacer]: ${request} => ${newRequest}`);
             // eslint-disable-next-line no-param-reassign
             resource.request = newRequest;

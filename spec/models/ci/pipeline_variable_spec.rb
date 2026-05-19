@@ -24,7 +24,7 @@ RSpec.describe Ci::PipelineVariable, feature_category: :continuous_integration d
       let(:variable) { build(:ci_pipeline_variable, pipeline: pipeline, partition_id: nil) }
 
       it 'copies the partition_id from pipeline' do
-        expect { variable.valid? }.to change(variable, :partition_id).from(nil).to(123)
+        expect { variable.valid? }.to change { variable.partition_id }.from(nil).to(123)
       end
     end
   end

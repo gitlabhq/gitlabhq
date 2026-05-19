@@ -89,6 +89,19 @@ RSpec.describe Gitlab::JsRoutes, feature_category: :tooling do
             JS
           )
         end
+
+        it 'generates organizations path helpers as unscoped' do
+          file_path = File.join(expected_base_path, 'organizations.js')
+          expect(File).to exist(file_path)
+
+          file_contents = File.read(file_path)
+          expect(file_contents).to include("import { __jsr } from '~/lib/utils/path_helpers/core';")
+          expect(file_contents).not_to include('hasOrganizationScopedPaths')
+          expect(file_contents).not_to include('splitProjectFullPath')
+          expect(file_contents).to include(
+            "export const organizationPath = /*#__PURE__*/ __jsr.r("
+          )
+        end
       end
     end
 

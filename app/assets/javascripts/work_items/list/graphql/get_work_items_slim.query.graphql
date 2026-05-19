@@ -30,6 +30,7 @@ query getWorkItemsSlim(
   $types: [IssueType!]
   $updatedAfter: Time
   $updatedBefore: Time
+  $workItemTypeIds: [WorkItemsTypeID!]
   $crmOrganizationId: String
   $crmContactId: String
   $releaseTag: [String!]
@@ -73,6 +74,7 @@ query getWorkItemsSlim(
       types: $types
       updatedAfter: $updatedAfter
       updatedBefore: $updatedBefore
+      workItemTypeIds: $workItemTypeIds
       crmContactId: $crmContactId
       crmOrganizationId: $crmOrganizationId
       releaseTag: $releaseTag
@@ -103,6 +105,7 @@ query getWorkItemsSlim(
         }
         reference(full: true)
         title
+        titleHtml
         updatedAt
         webUrl
         webPath

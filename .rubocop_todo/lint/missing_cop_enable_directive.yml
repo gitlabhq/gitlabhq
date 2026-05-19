@@ -107,7 +107,6 @@ Lint/MissingCopEnableDirective:
     - 'lib/gitlab/gon_helper.rb'
     - 'lib/gitlab/graphql/standard_graphql_error.rb'
     - 'lib/gitlab/metrics/methods.rb'
-    - 'lib/gitlab/patch/prependable.rb'
     - 'lib/gitlab/testing/request_blocker_middleware.rb'
     - 'lib/gitlab/testing/request_inspector_middleware.rb'
     - 'lib/gitlab/testing/robots_blocker_middleware.rb'

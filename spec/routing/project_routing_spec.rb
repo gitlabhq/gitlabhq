@@ -143,6 +143,43 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
     end
   end
 
+  describe Projects::LegacyArchiveController, 'routing' do
+    specify 'legacy archive URL with tar.gz format' do
+      expect(get('/gitlab/gitlabhq/repository/archive.tar.gz')).to route_to(
+        'projects/legacy_archive#show',
+        namespace_id: 'gitlab',
+        project_id: 'gitlabhq',
+        format: 'tar.gz'
+      )
+    end
+
+    specify 'legacy archive URL with zip format' do
+      expect(get('/gitlab/gitlabhq/repository/archive.zip')).to route_to(
+        'projects/legacy_archive#show',
+        namespace_id: 'gitlab',
+        project_id: 'gitlabhq',
+        format: 'zip'
+      )
+    end
+
+    specify 'legacy archive URL with tar.bz2 format' do
+      expect(get('/gitlab/gitlabhq/repository/archive.tar.bz2')).to route_to(
+        'projects/legacy_archive#show',
+        namespace_id: 'gitlab',
+        project_id: 'gitlabhq',
+        format: 'tar.bz2'
+      )
+    end
+
+    specify 'legacy archive URL without format does not match' do
+      expect(get('/gitlab/gitlabhq/repository/archive')).to route_to_route_not_found
+    end
+
+    specify 'legacy archive URL with invalid format does not match' do
+      expect(get('/gitlab/gitlabhq/repository/archive.html')).to route_to_route_not_found
+    end
+  end
+
   describe Projects::BranchesController, 'routing' do
     specify 'to #branches' do
       expect(get('/gitlab/gitlabhq/-/branches')).to route_to('projects/branches#index', namespace_id: 'gitlab', project_id: 'gitlabhq')

@@ -302,6 +302,317 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
         expect(response['requestBody']).to be_a(Hash)
       end
     end
+
+    context 'when deployment has more than 500 total association values' do
+      let(:issue_keys) { (1..600).map { |i| "JIRA-#{i}" } }
+      let(:success_response) do
+        double(code: 202,
+          parsed_response: { 'acceptedDeployments' => [], 'rejectedDeployments' => [], 'unknownIssueKeys' => [] },
+          request: double(raw_body: '{}'))
+      end
+
+      before do
+        allow_next_instances_of(Atlassian::JiraConnect::Serializers::DeploymentEntity, nil) do |entity|
+          allow(entity).to receive(:issue_keys).and_return(issue_keys)
+          allow(entity).to receive(:service_ids_from_integration_configuration).and_return([])
+        end
+
+        allow(subject).to receive(:post).and_return(success_response)
+      end
+
+      context 'when truncate_jira_deployment_associations is enabled' do
+        before do
+          stub_feature_flags(truncate_jira_deployment_associations: true)
+        end
+
+        it 'makes a single API request with at most the limit of association values' do
+          subject.send(:store_deploy_info, project: project, deployments: deployments)
+
+          expect(subject).to have_received(:post).once do |_path, payload|
+            deployment = payload[:deployments].first
+            total = (deployment[:associations] || []).sum { |a| a[:values]&.size || 0 }
+            expect(total).to eq(Atlassian::JiraConnect::Client::ASSOCIATION_VALUES_LIMIT)
+          end
+        end
+      end
+
+      context 'when truncate_jira_deployment_associations is disabled' do
+        before do
+          stub_feature_flags(truncate_jira_deployment_associations: false)
+        end
+
+        it 'sends the full payload without truncation' do
+          subject.send(:store_deploy_info, project: project, deployments: deployments)
+
+          expect(subject).to have_received(:post).once do |_path, payload|
+            deployment = payload[:deployments].first
+            total = (deployment[:associations] || []).sum { |a| a[:values]&.size || 0 }
+            expect(total).to be > Atlassian::JiraConnect::Client::ASSOCIATION_VALUES_LIMIT
+          end
+        end
+
+        it 'does not track a truncation exception' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_exception).with(
+            instance_of(Atlassian::JiraConnect::Client::AssociationsTruncatedError),
+            anything
+          )
+
+          subject.send(:store_deploy_info, project: project, deployments: deployments)
+        end
+      end
+    end
+
+    context 'when deployment has 500 or fewer total association values' do
+      let(:issue_keys) { (1..100).map { |i| "JIRA-#{i}" } }
+
+      before do
+        allow_next_instances_of(Atlassian::JiraConnect::Serializers::DeploymentEntity, nil) do |entity|
+          allow(entity).to receive(:issue_keys).and_return(issue_keys)
+          allow(entity).to receive(:service_ids_from_integration_configuration).and_return([])
+        end
+      end
+
+      it 'makes a single API request' do
+        allow(subject).to receive(:post).and_return(
+          double(code: 202,
+            parsed_response: { 'acceptedDeployments' => [], 'rejectedDeployments' => [], 'unknownIssueKeys' => [] },
+            request: double(raw_body: '{}'))
+        )
+
+        subject.send(:store_deploy_info, project: project, deployments: deployments)
+
+        expect(subject).to have_received(:post).once
+      end
+
+      it 'does not track a truncation exception' do
+        allow(subject).to receive(:post).and_return(
+          double(code: 202,
+            parsed_response: { 'acceptedDeployments' => [], 'rejectedDeployments' => [], 'unknownIssueKeys' => [] },
+            request: double(raw_body: '{}'))
+        )
+
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception).with(
+          instance_of(Atlassian::JiraConnect::Client::AssociationsTruncatedError),
+          anything
+        )
+
+        subject.send(:store_deploy_info, project: project, deployments: deployments)
+      end
+    end
+  end
+
+  describe '#truncate_associations_if_needed' do
+    subject(:client) { described_class.new('https://gitlab-test.atlassian.net', 'sample_secret') }
+
+    context 'when total values are within the limit' do
+      let(:deployment_hash) do
+        {
+          associations: [
+            { associationType: :issueKeys, values: %w[JIRA-1 JIRA-2] },
+            { associationType: :commit, values: [{ commitHash: 'abc', repositoryId: '1' }] }
+          ],
+          deploymentSequenceNumber: 1
+        }
+      end
+
+      it 'returns the deployment unchanged' do
+        expect(client.send(:truncate_associations_if_needed, deployment_hash)).to eq(deployment_hash)
+      end
+
+      it 'does not track an exception' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        client.send(:truncate_associations_if_needed, deployment_hash)
+      end
+    end
+
+    context 'when associations are absent' do
+      let(:deployment_hash) { { deploymentSequenceNumber: 1 } }
+
+      it 'returns the deployment unchanged' do
+        expect(client.send(:truncate_associations_if_needed, deployment_hash)).to eq(deployment_hash)
+      end
+    end
+
+    context 'when an association has nil values' do
+      let(:deployment_hash) do
+        {
+          associations: [
+            { associationType: :issueKeys, values: %w[JIRA-1 JIRA-2] },
+            { associationType: :commit, values: nil }
+          ],
+          deploymentSequenceNumber: 1
+        }
+      end
+
+      it 'treats nil values as zero and returns the deployment unchanged' do
+        expect(client.send(:truncate_associations_if_needed, deployment_hash)).to eq(deployment_hash)
+      end
+    end
+
+    context 'when total values are exactly at the limit' do
+      let(:deployment_hash) do
+        {
+          associations: [
+            { associationType: :issueKeys, values: (1..500).map { |i| "JIRA-#{i}" } }
+          ],
+          deploymentSequenceNumber: 1
+        }
+      end
+
+      it 'returns the deployment unchanged' do
+        expect(client.send(:truncate_associations_if_needed, deployment_hash)).to eq(deployment_hash)
+      end
+    end
+
+    context 'when total values exceed the limit' do
+      let(:issue_keys) { (1..700).map { |i| "JIRA-#{i}" } }
+      let(:deployment_hash) do
+        {
+          associations: [
+            { associationType: :issueKeys, values: issue_keys }
+          ],
+          deploymentSequenceNumber: 1,
+          pipeline: { id: 'pipeline-9' }
+        }
+      end
+
+      it 'truncates to the limit preserving the first values' do
+        result = client.send(:truncate_associations_if_needed, deployment_hash)
+
+        expect(result[:associations].sum { |a| a[:values].size }).to eq(500)
+        expect(result[:associations].first[:values]).to eq(issue_keys.first(500))
+      end
+
+      it 'preserves the deployment metadata' do
+        result = client.send(:truncate_associations_if_needed, deployment_hash)
+
+        expect(result[:deploymentSequenceNumber]).to eq(1)
+        expect(result[:pipeline]).to eq({ id: 'pipeline-9' })
+      end
+
+      it 'tracks an exception with the dropped count and Sentry tags' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(Atlassian::JiraConnect::Client::AssociationsTruncatedError),
+          extra: {
+            deployment_sequence_number: 1,
+            pipeline_id: 'pipeline-9',
+            total_values: 700,
+            dropped_values: 200
+          },
+          tags: { dropped_bucket: '100-499', truncation_severity: 'normal' }
+        )
+
+        client.send(:truncate_associations_if_needed, deployment_hash)
+      end
+    end
+
+    context 'when bucketing dropped values into Sentry tags' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:dropped, :expected_bucket, :expected_severity) do
+        1    | '<100'    | 'normal'
+        99   | '<100'    | 'normal'
+        100  | '100-499' | 'normal'
+        499  | '100-499' | 'normal'
+        500  | '500-999' | 'normal'
+        799  | '500-999' | 'normal'
+        800  | '500-999' | 'high'
+        999  | '500-999' | 'high'
+        1000 | '>=1000'  | 'high'
+        1500 | '>=1000'  | 'high'
+      end
+
+      with_them do
+        let(:deployment_hash) do
+          {
+            associations: [
+              { associationType: :issueKeys, values: (1..(500 + dropped)).map { |i| "JIRA-#{i}" } }
+            ],
+            deploymentSequenceNumber: 1
+          }
+        end
+
+        it 'maps dropped count to the expected tags' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(Atlassian::JiraConnect::Client::AssociationsTruncatedError),
+            hash_including(tags: { dropped_bucket: expected_bucket, truncation_severity: expected_severity })
+          )
+
+          client.send(:truncate_associations_if_needed, deployment_hash)
+        end
+      end
+    end
+
+    context 'with mixed association types' do
+      let(:issue_keys) { (1..400).map { |i| "JIRA-#{i}" } }
+      let(:commits) { (1..200).map { |i| { commitHash: "sha#{i}", repositoryId: '1' } } }
+      let(:deployment_hash) do
+        {
+          associations: [
+            { associationType: 'issueKeys', values: issue_keys },
+            { associationType: 'commit', values: commits }
+          ],
+          deploymentSequenceNumber: 1
+        }
+      end
+
+      before do
+        allow(Gitlab::ErrorTracking).to receive(:track_exception)
+      end
+
+      it 'fills the budget from issueKeys first, then from remaining types' do
+        result = client.send(:truncate_associations_if_needed, deployment_hash)
+
+        expect(result[:associations].sum { |a| a[:values].size }).to eq(500)
+        expect(result[:associations][0]).to eq({ associationType: 'issueKeys', values: issue_keys })
+        expect(result[:associations][1][:associationType]).to eq('commit')
+        expect(result[:associations][1][:values].size).to eq(100)
+      end
+
+      it 'drops association entries that end up empty after truncation' do
+        deployment = deployment_hash.deep_dup
+        deployment[:associations].first[:values] = (1..500).map { |i| "JIRA-#{i}" }
+
+        result = client.send(:truncate_associations_if_needed, deployment)
+
+        expect(result[:associations].size).to eq(1)
+        expect(result[:associations].first[:associationType]).to eq('issueKeys')
+      end
+
+      it 'prioritises issueKeys even when they are emitted last' do
+        deployment = {
+          associations: [
+            { associationType: 'commit', values: (1..400).map { |i| "sha#{i}" } },
+            { associationType: 'issueKeys', values: (1..400).map { |i| "JIRA-#{i}" } }
+          ],
+          deploymentSequenceNumber: 1
+        }
+
+        result = client.send(:truncate_associations_if_needed, deployment)
+
+        expect(result[:associations][0][:associationType]).to eq('issueKeys')
+        expect(result[:associations][0][:values].size).to eq(400)
+        expect(result[:associations][1][:associationType]).to eq('commit')
+        expect(result[:associations][1][:values].size).to eq(100)
+      end
+
+      it 'skips empty-value associations without consuming budget' do
+        deployment = {
+          associations: [
+            { associationType: 'commit', values: [] },
+            { associationType: 'issueKeys', values: (1..600).map { |i| "JIRA-#{i}" } }
+          ],
+          deploymentSequenceNumber: 1
+        }
+
+        result = client.send(:truncate_associations_if_needed, deployment)
+
+        expect(result[:associations].size).to eq(1)
+        expect(result[:associations].first[:associationType]).to eq('issueKeys')
+        expect(result[:associations].first[:values].size).to eq(500)
+      end
+    end
   end
 
   describe '#store_ff_info' do

@@ -16,6 +16,8 @@ module Gitlab
     # The circuit breaker is implemented as a result of the ADR: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/decisions/021_claims_in_database_transaction/#decision
 
     class ConcurrencyLimitInterceptor < GRPC::ClientInterceptor
+      extend ::Gitlab::Utils::Override
+
       # Only track concurrency for these RPCs that hold database transactions
       TRACKED_RPCS = %w[BeginUpdate CommitUpdate RollbackUpdate].freeze
 
@@ -23,18 +25,22 @@ module Gitlab
       TRACKED_METHOD_CACHE = Concurrent::Map.new
 
       # rubocop:disable Lint/UnusedMethodArgument -- gRPC interceptor interface requires these parameters
+      override :request_response
       def request_response(request: nil, call: nil, method: nil, metadata: nil)
         intercept(method) { yield }
       end
 
-      def client_streaming(requests: nil, call: nil, method: nil, metadata: nil)
+      override :client_streamer
+      def client_streamer(requests: nil, call: nil, method: nil, metadata: nil)
         intercept(method) { yield }
       end
 
-      def server_streaming(request: nil, call: nil, method: nil, metadata: nil)
+      override :server_streamer
+      def server_streamer(request: nil, call: nil, method: nil, metadata: nil)
         intercept(method, streaming: true) { yield }
       end
 
+      override :bidi_streamer
       def bidi_streamer(requests: nil, call: nil, method: nil, metadata: nil)
         intercept(method, streaming: true) { yield }
       end

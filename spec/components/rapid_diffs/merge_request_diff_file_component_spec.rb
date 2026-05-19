@@ -40,6 +40,23 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
         expect(options_menu_items[1]['text']).to eq('Edit in single-file editor')
         expect(options_menu_items[1]['href']).to include("#{edit_path_base}#{merge_request.iid}")
       end
+
+      context 'when merge request is from a fork' do
+        let(:source_project) { build(:project) }
+        let(:fork_merge_request) do
+          build(:merge_request, source_project: source_project, target_project: project).tap do |mr|
+            allow(mr).to receive_messages(source_branch: 'feature-branch', iid: 123)
+          end
+        end
+
+        it 'uses source_project for the edit path, not the target project' do
+          render_inline(described_class.new(diff_file: diff_file, merge_request: fork_merge_request, plain_view: true))
+
+          options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+
+          expect(options_menu_items[1]['href']).to include(source_project.full_path)
+        end
+      end
     end
   end
 

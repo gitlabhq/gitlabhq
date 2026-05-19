@@ -51,7 +51,7 @@ You can configure single sign-on (SSO) using the supported providers for authent
 Two connectivity options are available:
 
 - Public connectivity with IP allowlists: By default, your instance is publicly accessible. You can [configure an IP allowlist](../../administration/dedicated/configure_instance/network_security.md#ip-allowlist) to restrict access to specified IP addresses.
-- Private connectivity with AWS PrivateLink: You can configure [AWS PrivateLink](https://aws.amazon.com/privatelink/) for [inbound](../../administration/dedicated/configure_instance/network_security.md#inbound-private-link) and [outbound](../../administration/dedicated/configure_instance/network_security.md#outbound-private-link) connections.
+- Private connectivity with AWS PrivateLink: You can configure [AWS PrivateLink](https://aws.amazon.com/privatelink/) for [inbound](../../administration/dedicated/configure_instance/network_security.md#inbound-privatelink-connections) and [outbound](../../administration/dedicated/configure_instance/network_security.md#outbound-privatelink-connections) PrivateLink connections.
 
 For private connections to internal resources using non-public certificates, you can also [specify trusted certificates](../../administration/dedicated/configure_instance/network_security.md#custom-certificate-authorities-for-external-services).
 
@@ -64,11 +64,13 @@ it cannot directly connect to local IP addresses in your network.
 To set up private connectivity for your internal services:
 
 1. Assign hostnames to your internal services.
-1. Configure your Private Hosted Zone (PHZ) records to route to these hostnames through outbound private links.
-1. Plan for the 10-endpoint limit on outbound private links.
+1. Configure your Private Hosted Zone (PHZ) records to route to these hostnames through outbound PrivateLink connections.
+1. Plan for the 10-endpoint limit on outbound PrivateLink connections.
 
-If you need to connect to more than 10 endpoints, implement a reverse proxy or TLS passthrough on your infrastructure.
-This approach routes multiple services through fewer private link connections.
+If you need to connect to more than 10 endpoints, you can use the
+[`terraform-outbound-proxy`](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/customer-tools/terraform-outbound-proxy)
+Terraform module to deploy a reverse proxy in your VPC. This approach routes multiple
+services through fewer PrivateLink connections.
 
 #### Data encryption
 
@@ -203,6 +205,12 @@ Your website uses the domain `tenant_name.gitlab-dedicated.site`, where `tenant_
 > Custom domains are not supported. If you add a custom domain like `gitlab.my-company.com`,
 > you still access your website at `tenant_name.gitlab-dedicated.site`.
 
+If you migrate from GitLab Self-Managed and want to preserve a legacy wildcard domain
+(for example, `*.gitlab-pages.company.com`), you can use the
+[`terraform-gitlab-pages-redirect`](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/customer-tools/terraform-gitlab-pages-redirect)
+Terraform module to issue 301 redirects from your existing wildcard domain to your
+`tenant_name.gitlab-dedicated.site` URLs.
+
 Control access to your website with:
 
 - [GitLab Pages access control](../../user/project/pages/pages_access_control.md)
@@ -264,6 +272,12 @@ These limits prevent any single user or automation from degrading performance fo
 
 For more information about how rate limits work in GitLab Dedicated,
 see [authenticated user rate limits](../../administration/dedicated/user_rate_limits.md).
+
+### Gitaly storage weights
+
+GitLab configures storage weights to distribute new repositories evenly across Gitaly nodes.
+If you modify storage weights in the Admin area, GitLab overwrites your changes during the
+next deployment.
 
 ## Unavailable features
 

@@ -37,7 +37,7 @@ Prerequisites:
 To configure GitLab SAML SSO SCIM:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **SAML SSO**.
+1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. Select **Generate a SCIM token**.
 1. For configuration of your identity provider, save the:
    - Token from the **Your SCIM token** field.
@@ -45,15 +45,47 @@ To configure GitLab SAML SSO SCIM:
 
 ## Configure an identity provider
 
-You can configure one of the following as an identity provider:
+GitLab supports SCIM with several identity providers. Other identity providers might still work with
+GitLab, but they have not been tested and are not supported. For help with an unsupported provider,
+contact the provider directly. GitLab Support can help review related log entries.
 
-- [Azure Active Directory](#configure-microsoft-entra-id-formerly-azure-active-directory).
-- [Okta](#configure-okta).
+### Configure Okta
 
-> [!note]
-> Other providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
+The SAML application created during [single sign-on](_index.md) set up for Okta must be set up for SCIM.
 
-### Configure Microsoft Entra ID (formerly Azure Active Directory)
+Prerequisites:
+
+- You must use the Okta [Lifecycle Management](https://www.okta.com/products/lifecycle-management/) product. This
+  product tier is required to use SCIM on Okta.
+- [GitLab is configured](#configure-gitlab).
+- SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) set up as
+  described in the [Okta setup notes](_index.md#okta).
+- Your Okta SAML setup matches the [configuration steps exactly](_index.md), especially the NameID configuration.
+
+To configure Okta for SCIM:
+
+1. Sign in to Okta.
+1. In the upper-right corner, select **Admin**. The button is not visible from the **Admin** area.
+1. In the **Application** tab, select **Browse App Catalog**.
+1. Search for **GitLab**, find and select the **GitLab** application.
+1. On the GitLab application overview page, select **Add**.
+1. Under **Application Visibility** select both checkboxes. Currently the GitLab application does not support SAML
+   authentication so the icon should not be shown to users.
+1. Select **Done** to finish adding the application.
+1. In the **Provisioning** tab, select **Configure API integration**.
+1. Select **Enable API integration**.
+   - For **Base URL**, paste the URL you copied from **SCIM API endpoint URL** on the GitLab SCIM configuration page.
+   - For **API Token**, paste the SCIM token you copied from **Your SCIM token** on the GitLab SCIM
+     configuration page.
+1. To verify the configuration, select **Test API Credentials**.
+1. Select **Save**.
+1. After saving the API integration details, new settings tabs appear on the left. Select **To App**.
+1. Select **Edit**.
+1. Select the **Enable** checkbox for both **Create Users** and **Deactivate Users**.
+1. Select **Save**.
+1. Assign users in the **Assignments** tab. Assigned users are created and managed in your GitLab group.
+
+### Configure Microsoft Entra ID
 
 {{< history >}}
 
@@ -143,7 +175,7 @@ After you have configured the mappings and the settings, return to the app overv
 > While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
 > your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
 
-While [configuring Entra ID for SCIM](#configure-microsoft-entra-id-formerly-azure-active-directory), you configure
+While [configuring Entra ID for SCIM](#configure-microsoft-entra-id), you configure
 attribute mappings. For an example, see [example configuration](example_saml_config.md#scim-mapping).
 
 The following table provides attribute mappings that are required for GitLab.
@@ -179,42 +211,6 @@ target attribute must match the attribute used for the SAML `NameID`.
 
 If a mapping is not listed in the table, use the Microsoft Entra ID defaults. For a list of required attributes,
 refer to the [internal group SCIM API](../../../development/internal_api/_index.md#group-scim-api) documentation.
-
-### Configure Okta
-
-The SAML application created during [single sign-on](_index.md) set up for Okta must be set up for SCIM.
-
-Prerequisites:
-
-- You must use the Okta [Lifecycle Management](https://www.okta.com/products/lifecycle-management/) product. This
-  product tier is required to use SCIM on Okta.
-- [GitLab is configured](#configure-gitlab).
-- SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) set up as
-  described in the [Okta setup notes](_index.md#okta).
-- Your Okta SAML setup matches the [configuration steps exactly](_index.md), especially the NameID configuration.
-
-To configure Okta for SCIM:
-
-1. Sign in to Okta.
-1. In the upper-right corner, select **Admin**. The button is not visible from the **Admin** area.
-1. In the **Application** tab, select **Browse App Catalog**.
-1. Search for **GitLab**, find and select the **GitLab** application.
-1. On the GitLab application overview page, select **Add**.
-1. Under **Application Visibility** select both checkboxes. Currently the GitLab application does not support SAML
-   authentication so the icon should not be shown to users.
-1. Select **Done** to finish adding the application.
-1. In the **Provisioning** tab, select **Configure API integration**.
-1. Select **Enable API integration**.
-   - For **Base URL**, paste the URL you copied from **SCIM API endpoint URL** on the GitLab SCIM configuration page.
-   - For **API Token**, paste the SCIM token you copied from **Your SCIM token** on the GitLab SCIM
-     configuration page.
-1. To verify the configuration, select **Test API Credentials**.
-1. Select **Save**.
-1. After saving the API integration details, new settings tabs appear on the left. Select **To App**.
-1. Select **Edit**.
-1. Select the **Enable** checkbox for both **Create Users** and **Deactivate Users**.
-1. Select **Save**.
-1. Assign users in the **Assignments** tab. Assigned users are created and managed in your GitLab group.
 
 ## User access
 
@@ -275,7 +271,7 @@ For role information, see the [Group SAML](_index.md#user-access-and-management)
 GitLab requires passwords for all user accounts. For users created using SCIM provisioning, GitLab automatically
 generates a random password, and users do not need to set one during their first sign-in. For more information on how
 GitLab generates passwords for users created through SCIM for GitLab groups, see
-[generated passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md).
+[generated passwords for users created through integrated authentication](../../profile/user_passwords.md).
 
 ### Link SCIM and SAML identities
 

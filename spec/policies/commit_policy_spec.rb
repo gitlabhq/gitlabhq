@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe CommitPolicy do
   describe '#rules' do
-    let(:group) { create(:group, :public) }
-    let(:user) { create(:user) }
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:user) { create(:user) }
     let(:commit) { project.repository.head_commit }
     let(:policy) { described_class.new(user, commit) }
 
@@ -30,14 +30,14 @@ RSpec.describe CommitPolicy do
     end
 
     context 'when project is public' do
-      let(:project) { create(:project, :public, :repository, group: group) }
+      let_it_be(:project) { create(:project, :public, :repository, group: group) }
 
       context 'when the user is not a project member' do
         it_behaves_like 'can read commit and create a note'
       end
 
       context 'when repository access level is private' do
-        let(:project) { create(:project, :public, :repository, :repository_private, group: group) }
+        let_it_be(:project) { create(:project, :public, :repository, :repository_private, group: group) }
 
         context 'when the user is not a project member' do
           it_behaves_like 'cannot read commit nor create a note'
@@ -45,7 +45,7 @@ RSpec.describe CommitPolicy do
 
         context 'when the user is a direct project member' do
           context 'and the user is a developer' do
-            before do
+            before_all do
               project.add_developer(user)
             end
 
@@ -55,7 +55,7 @@ RSpec.describe CommitPolicy do
 
         context 'when the user is an inherited member from the group' do
           context 'and the user is a guest' do
-            before do
+            before_all do
               group.add_guest(user)
             end
 
@@ -63,7 +63,7 @@ RSpec.describe CommitPolicy do
           end
 
           context 'and the user is a reporter' do
-            before do
+            before_all do
               group.add_reporter(user)
             end
 
@@ -71,7 +71,7 @@ RSpec.describe CommitPolicy do
           end
 
           context 'and the user is a developer' do
-            before do
+            before_all do
               group.add_developer(user)
             end
 
@@ -82,7 +82,7 @@ RSpec.describe CommitPolicy do
     end
 
     context 'when project is private' do
-      let(:project) { create(:project, :private, :repository, group: group) }
+      let_it_be(:project) { create(:project, :private, :repository, group: group) }
 
       context 'when the user is not a project member' do
         it_behaves_like 'cannot read commit nor create a note'
@@ -90,7 +90,7 @@ RSpec.describe CommitPolicy do
 
       context 'when the user is a direct project member' do
         context 'and the user is a developer' do
-          before do
+          before_all do
             project.add_developer(user)
           end
 
@@ -98,7 +98,7 @@ RSpec.describe CommitPolicy do
         end
 
         context 'and the user is a guest' do
-          before do
+          before_all do
             project.add_guest(user)
           end
 
@@ -112,7 +112,7 @@ RSpec.describe CommitPolicy do
 
       context 'when the user is an inherited member from the group' do
         context 'and the user is a guest' do
-          before do
+          before_all do
             group.add_guest(user)
           end
 
@@ -120,7 +120,7 @@ RSpec.describe CommitPolicy do
         end
 
         context 'and the user is a reporter' do
-          before do
+          before_all do
             group.add_reporter(user)
           end
 
@@ -128,7 +128,7 @@ RSpec.describe CommitPolicy do
         end
 
         context 'and the user is a developer' do
-          before do
+          before_all do
             group.add_developer(user)
           end
 

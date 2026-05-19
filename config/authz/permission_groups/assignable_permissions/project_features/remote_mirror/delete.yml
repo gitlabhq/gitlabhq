@@ -3,5 +3,7 @@ name: delete_remote_mirror
 description: Grants the ability to delete remote mirrors
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - delete_remote_mirror

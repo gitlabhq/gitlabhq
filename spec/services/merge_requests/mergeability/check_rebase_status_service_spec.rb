@@ -19,8 +19,6 @@ RSpec.describe MergeRequests::Mergeability::CheckRebaseStatusService, feature_ca
       allow(project)
         .to receive(:ff_merge_must_be_possible?)
         .and_return(ff_merge_must_be_possible?)
-
-      stub_feature_flags(rebase_on_merge_automatic: false)
     end
 
     context 'when ff_merge_must_be_possible is true' do
@@ -40,7 +38,7 @@ RSpec.describe MergeRequests::Mergeability::CheckRebaseStatusService, feature_ca
 
         context 'when automatic rebase is available' do
           before do
-            allow(project.project_setting).to receive(:automatic_rebase_available?).and_return(true)
+            allow(project.project_setting).to receive(:automatic_rebase_enabled?).and_return(true)
           end
 
           # When automatic rebase is available, the check is always inactive
@@ -62,7 +60,7 @@ RSpec.describe MergeRequests::Mergeability::CheckRebaseStatusService, feature_ca
 
         context 'when automatic rebase is not available' do
           before do
-            allow(project.project_setting).to receive(:automatic_rebase_available?).and_return(false)
+            allow(project.project_setting).to receive(:automatic_rebase_enabled?).and_return(false)
           end
 
           it 'returns a check result with status failed' do

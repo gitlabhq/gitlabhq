@@ -68,6 +68,14 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
       end
     end
 
+    it 'passes creation_source ui to the service' do
+      expect(::PersonalAccessTokens::CreateService).to receive(:new)
+        .with(hash_including(params: hash_including(creation_source: PersonalAccessToken::CREATION_SOURCE_UI)))
+        .and_call_original
+
+      create_token
+    end
+
     context 'when personal access tokens are disabled' do
       before do
         allow(::Gitlab::CurrentSettings).to receive_messages(personal_access_tokens_disabled?: true)
@@ -322,26 +330,62 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
         stub_feature_flags(granular_personal_access_tokens: true)
       end
 
-      it 'renders the legacy_new template' do
-        get_legacy_new
+      context 'when `granular_personal_access_tokens_enforcement` feature flag is enabled' do
+        before do
+          stub_feature_flags(granular_personal_access_tokens_enforcement: true)
+        end
 
-        expect(response).to render_template(:legacy_new)
+        context 'when granular token enforcement is active' do
+          before do
+            allow(Gitlab::CurrentSettings).to receive(:granular_tokens_enforced?).and_return(true)
+          end
+
+          it 'returns 404' do
+            get_legacy_new
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when granular token enforcement is inactive' do
+          before do
+            allow(Gitlab::CurrentSettings).to receive(:granular_tokens_enforced?).and_return(false)
+          end
+
+          it 'renders the legacy_new template' do
+            get_legacy_new
+
+            expect(response).to render_template(:legacy_new)
+          end
+        end
       end
 
-      context 'with query parameters' do
-        let(:name) { 'My Token' }
-        let(:scopes) { 'api,read_user,invalid' }
-        let(:description) { 'My token descripion' }
-        let(:params) { { name: name, scopes: scopes, description: description } }
+      context 'when `granular_personal_access_tokens_enforcement` feature flag is disabled' do
+        before do
+          stub_feature_flags(granular_personal_access_tokens_enforcement: false)
+        end
 
-        it 'sets access_token_params from query parameters' do
+        it 'renders the legacy_new template' do
           get_legacy_new
 
-          expect(assigns(:access_token_params)).to include(
-            name: eq(name),
-            description: eq(description),
-            scopes: contain_exactly(:api, :read_user)
-          )
+          expect(response).to render_template(:legacy_new)
+        end
+
+        context 'with query parameters' do
+          let(:name) { 'My Token' }
+          let(:scopes) { 'api,read_user,invalid' }
+          let(:description) { 'My token descripion' }
+          let(:params) { { name: name, scopes: scopes, description: description } }
+
+          it 'sets access_token_params from query parameters' do
+            get_legacy_new
+
+            expect(assigns(:access_token_params)).to include(
+              name: eq(name),
+              description: eq(description),
+              scopes: contain_exactly(:api, :read_user)
+            )
+          end
         end
       end
     end

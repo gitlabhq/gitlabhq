@@ -39,9 +39,7 @@ import {
   WORK_ITEM_TYPE_NAME_EPIC,
   WIDGET_TYPE_DEVELOPMENT,
   STATE_OPEN,
-  WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_ITERATION,
-  WIDGET_TYPE_LINKED_RESOURCES,
   WIDGET_TYPE_MILESTONE,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   VIEW_CONTEXT,
@@ -56,6 +54,8 @@ import workspacePermissionsQuery from '../graphql/workspace_permissions.query.gr
 import {
   findAssigneesWidget,
   findAwardEmojiWidget,
+  findErrorTrackingWidget,
+  findLinkedResourcesWidget,
   findHierarchyWidgetDefinition,
   activeWorkItemIds,
 } from '../utils';
@@ -89,7 +89,7 @@ import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemLoading from './work_item_loading.vue';
 import WorkItemAbuseModal from './work_item_abuse_modal.vue';
-import WorkItemDrawer from './work_item_drawer.vue';
+import WorkItemDetailPanel from './work_item_detail_panel.vue';
 import DesignWidget from './design_management/design_management_widget.vue';
 import DesignUploadButton from './design_management/upload_button.vue';
 import WorkItemDevelopment from './work_item_development/work_item_development.vue';
@@ -126,6 +126,8 @@ export default {
     GlSprintf,
     LocalStorageSync,
     WorkItemActions,
+    WorkItemAgentSessions: () =>
+      import('ee_component/work_items/components/agent_sessions/index.vue'),
     TodosToggle,
     WorkItemNotificationsWidget,
     WorkItemCreatedUpdated,
@@ -142,7 +144,7 @@ export default {
     WorkItemTitle,
     WorkItemLoading,
     WorkItemAbuseModal,
-    WorkItemDrawer,
+    WorkItemDetailPanel,
     WorkItemDevelopment,
     WorkItemCreateBranchMergeRequestSplitButton,
     WorkItemVulnerabilities: () =>
@@ -188,7 +190,7 @@ export default {
       required: false,
       default: '',
     },
-    isDrawer: {
+    isDetailPanel: {
       type: Boolean,
       required: false,
       default: false,
@@ -281,7 +283,7 @@ export default {
           this.refetchError = null;
         }
 
-        if (!(this.isModal || this.isDrawer) && this.workItem.namespace) {
+        if (!(this.isModal || this.isDetailPanel) && this.workItem.namespace) {
           const path = this.workItem.namespace.fullPath
             ? ` · ${this.workItem.namespace.fullPath}`
             : '';
@@ -423,10 +425,10 @@ export default {
       return findAwardEmojiWidget(this.workItem);
     },
     workItemErrorTracking() {
-      return this.findWidget(WIDGET_TYPE_ERROR_TRACKING) ?? {};
+      return findErrorTrackingWidget(this.workItem) ?? {};
     },
     workItemLinkedResources() {
-      return this.findWidget(WIDGET_TYPE_LINKED_RESOURCES)?.linkedResources.nodes ?? [];
+      return findLinkedResourcesWidget(this.workItem)?.linkedResources?.nodes ?? [];
     },
     workItemHierarchy() {
       return this.findWidget(WIDGET_TYPE_HIERARCHY);
@@ -537,8 +539,8 @@ export default {
     hasChildren() {
       return this.workItemHierarchy?.hasChildren;
     },
-    isModalOrDrawer() {
-      return this.isModal || this.isDrawer;
+    isModalOrDetailPanel() {
+      return this.isModal || this.isDetailPanel;
     },
     workItemActionProps() {
       return {
@@ -559,7 +561,7 @@ export default {
         workItemReference: this.workItem.reference,
         workItemWebUrl: this.workItem.webUrl,
         workItemCreateNoteEmail: this.workItem.createNoteEmail,
-        isModal: this.isModalOrDrawer,
+        isModal: this.isModalOrDetailPanel,
         workItemState: this.workItem.state,
         hasChildren: this.hasChildren,
         hasParent: this.shouldShowAncestors,
@@ -585,6 +587,20 @@ export default {
     },
     agentPrivileges() {
       return [1, 2, 3, 4, 5];
+    },
+    duoWorkflowGoal() {
+      const username = window.gon?.current_username || '';
+      const resourceName = this.workItemType?.toLowerCase() || 'issue';
+      const resourceUrl = this.workItem.webUrl || '';
+      /* eslint-disable @gitlab/require-i18n-strings -- LLM prompt content sent to Duo Developer agent, not user-facing UI */
+      return [
+        `@${username} assigned you to solve the following ${resourceName}: ${resourceUrl}`,
+        '',
+        'Fetch the details and understand the problem thoroughly before writing any code. Consider what might be causing the issue and where in the codebase the relevant logic lives. If there are multiple possible approaches, reason about the tradeoffs and pick the simplest one that fully addresses the issue. Implement your solution, verify it works, then create a merge request with your changes.',
+        '',
+        `When you have completed your work, @mention @${username} in a comment on the issue to notify them. And assign them to the merge request unless told differently.`,
+      ].join('\n');
+      /* eslint-enable @gitlab/require-i18n-strings */
     },
     confidentialityToggledText() {
       return this.workItem.confidential
@@ -688,7 +704,7 @@ export default {
         return;
       }
 
-      if (modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT || this.isDrawer) {
+      if (modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT || this.isDetailPanel) {
         return;
       }
       if (event) {
@@ -871,11 +887,9 @@ export default {
         return;
       }
 
-      // Dragging image resize handles in RTE do not require repositioning like text does
-      // so we return early after preventing default behaviour, this fixes
-      // a problem as mentioned in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217708#note_2987427072
-      if (event.target.classList.contains('image-resize')) {
-        event.preventDefault();
+      // Allow the rich-text editor (ProseMirror) to handle its own node drags
+      // (images, videos, iframes, etc.) without interference.
+      if (event.target.closest('.ProseMirror')) {
         return;
       }
 
@@ -961,7 +975,7 @@ export default {
       <!-- Do not remove the element below, it allows for scrolling to top on click of sticky header -->
       <div id="top"></div>
       <section class="work-item-view">
-        <component :is="isModalOrDrawer ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">{{
+        <component :is="isModalOrDetailPanel ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">{{
           s__('WorkItem|Edit work item')
         }}</component>
         <gl-alert
@@ -980,7 +994,9 @@ export default {
         </section>
         <section
           v-if="refetchError"
-          :class="isDrawer ? 'gl-sticky gl-top-0' : 'flash-container flash-container-page sticky'"
+          :class="
+            isDetailPanel ? 'gl-sticky gl-top-0' : 'flash-container flash-container-page sticky'
+          "
           :style="{ zIndex: 100 }"
           data-testid="work-item-refetch-alert"
         >
@@ -1028,7 +1044,7 @@ export default {
                   v-if="workItem.title"
                   ref="title"
                   :is-editing="editMode"
-                  :is-modal="isModalOrDrawer"
+                  :is-modal="isModalOrDetailPanel"
                   :title="workItem.title"
                   :title-html="workItem.titleHtml"
                   @updateWorkItem="updateWorkItem"
@@ -1094,7 +1110,7 @@ export default {
                 v-if="workItem.title && shouldShowAncestors"
                 ref="title"
                 :is-editing="editMode"
-                :is-modal="isModalOrDrawer"
+                :is-modal="isModalOrDetailPanel"
                 :class="titleClassComponent"
                 :title="workItem.title"
                 :title-html="workItem.titleHtml"
@@ -1132,7 +1148,7 @@ export default {
               :parent-work-item-confidentiality="parentWorkItemConfidentiality"
               :full-path="workItemFullPath"
               :is-modal="isModal"
-              :is-drawer="isDrawer"
+              :is-drawer="isDetailPanel"
               :work-item="workItem"
               :is-sticky-header-showing="isStickyHeaderShowing"
               :archived="workItem.archived"
@@ -1186,8 +1202,8 @@ export default {
                   :work-item-id="workItem.id"
                   :work-item-iid="workItem.iid"
                   :update-in-progress="updateInProgress"
-                  :without-heading-anchors="isDrawer"
-                  :hide-fullscreen-markdown-button="isDrawer"
+                  :without-heading-anchors="isDetailPanel"
+                  :hide-fullscreen-markdown-button="isDetailPanel"
                   :truncation-enabled="truncationEnabled"
                   @updateWorkItem="updateWorkItem"
                   @updateDraft="updateDraft('description', $event)"
@@ -1233,7 +1249,7 @@ export default {
                         v-if="duoRemoteFlowsAvailability"
                         :project-path="workItemFullPath"
                         :hover-message="__('Generate merge request with Duo')"
-                        :goal="workItem.webUrl"
+                        :goal="duoWorkflowGoal"
                         workflow-definition="developer/v1"
                         :agent-privileges="agentPrivileges"
                         :work-item-id="workItem.iid"
@@ -1255,7 +1271,7 @@ export default {
               >
                 <h2 class="gl-sr-only">{{ s__('WorkItem|Attributes') }}</h2>
                 <work-item-attributes-wrapper
-                  :class="{ 'gl-top-9': isDrawer }"
+                  :class="{ 'gl-top-9': isDetailPanel }"
                   :full-path="workItemFullPath"
                   :work-item="workItem"
                   :group-path="groupPath"
@@ -1278,7 +1294,7 @@ export default {
 
               <design-widget
                 v-if="hasDesignWidget"
-                :class="{ 'gl-mt-0': isDrawer }"
+                :class="{ 'gl-mt-0': isDetailPanel }"
                 :work-item-id="workItem.id"
                 :work-item-iid="iid"
                 :work-item-full-path="workItemFullPath"
@@ -1312,6 +1328,10 @@ export default {
                 </template>
               </design-widget>
 
+              <slot name="widgets" :work-item="workItem"></slot>
+
+              <work-item-agent-sessions v-if="workItem" :work-item-id="workItem.id" />
+
               <work-item-tree
                 v-if="showWorkItemTree"
                 :full-path="workItemFullPath"
@@ -1327,7 +1347,7 @@ export default {
                 :can-update-children="canUpdateChildren"
                 :confidential="workItem.confidential"
                 :allowed-child-types="allowedChildTypes"
-                :is-drawer="isDrawer"
+                :is-drawer="isDetailPanel"
                 contextual-view-enabled
                 @show-modal="openContextualView"
                 @add-child="$emit('add-child')"
@@ -1369,7 +1389,7 @@ export default {
                 :work-item-type="workItemType"
                 :work-item-type-id="workItemTypeId"
                 :is-modal="isModal"
-                :is-drawer="isDrawer"
+                :is-drawer="isDetailPanel"
                 :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
                 :can-set-work-item-metadata="canAssignUnassignUser"
                 :can-summarize-comments="canSummarizeComments"
@@ -1378,10 +1398,10 @@ export default {
                 :is-work-item-confidential="workItem.confidential"
                 :new-comment-template-paths="workItem.commentTemplatesPaths"
                 class="gl-pt-5"
-                :use-h2="!isModalOrDrawer"
+                :use-h2="!isModalOrDetailPanel"
                 :small-header-style="isModal"
                 :parent-id="parentWorkItemId"
-                :hide-fullscreen-markdown-button="isDrawer"
+                :hide-fullscreen-markdown-button="isDetailPanel"
                 @error="updateError = $event"
                 @openReportAbuse="openReportAbuseModal"
                 @start-editing="isAddingNotes = true"
@@ -1393,8 +1413,8 @@ export default {
           </div>
         </section>
       </section>
-      <work-item-drawer
-        v-if="!isDrawer"
+      <work-item-detail-panel
+        v-if="!isDetailPanel"
         :active-item="activeChildItem"
         :open="isItemSelected"
         :issuable-type="activeChildItemType"

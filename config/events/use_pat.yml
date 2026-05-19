@@ -1,0 +1,22 @@
+---
+description: API request authenticated using a Personal Access Token
+internal_events: true
+action: use_pat
+identifiers:
+  - user
+additional_properties:
+  label:
+    description: API endpoint identifier
+  pat_type:
+    description: Type of Personal Access Token used ("legacy" or "granular")
+  response_code:
+    description: HTTP response status code after PAT usage
+product_group: authorization
+product_categories:
+  - permissions
+milestone: '19.0'
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230954'
+tiers:
+  - free
+  - premium
+  - ultimate

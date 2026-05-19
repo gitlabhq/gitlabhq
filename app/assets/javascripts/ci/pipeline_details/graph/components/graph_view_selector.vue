@@ -26,6 +26,7 @@ export default {
       required: true,
     },
   },
+  emits: ['dismissHoverTip', 'updateShowLinksState', 'updateViewType'],
   data() {
     return {
       hoverTipDismissed: false,

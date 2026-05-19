@@ -1,0 +1,69 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -6536,11 +6536,16 @@
+     return hyphenate(eventKeyName) !== key;
+   }
+ }
++/*! patch-package: normalizeKeyForComparison added for case-insensitive keycode check */
++function normalizeKeyForComparison(key) {
++  return typeof key === "string" ? key.toLowerCase() : key;
++}
+ function isKeyNotMatch(expect, actual) {
++  const normalizedActual = normalizeKeyForComparison(actual);
+   if (isArray(expect)) {
+-    return !expect.includes(actual);
++    return !expect.map(normalizeKeyForComparison).includes(normalizedActual);
+   } else {
+-    return expect !== actual;
++    return normalizeKeyForComparison(expect) !== normalizedActual;
+   }
+ }
+ function legacyMarkOnce(tree) {
+diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+@@ -6516,11 +6516,16 @@
+     return hyphenate(eventKeyName) !== key;
+   }
+ }
++/*! patch-package: normalizeKeyForComparison added for case-insensitive keycode check */
++function normalizeKeyForComparison(key) {
++  return typeof key === "string" ? key.toLowerCase() : key;
++}
+ function isKeyNotMatch(expect, actual) {
++  const normalizedActual = normalizeKeyForComparison(actual);
+   if (isArray(expect)) {
+-    return !expect.includes(actual);
++    return !expect.map(normalizeKeyForComparison).includes(normalizedActual);
+   } else {
+-    return expect !== actual;
++    return normalizeKeyForComparison(expect) !== normalizedActual;
+   }
+ }
+ function legacyMarkOnce(tree) {
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -6443,11 +6443,16 @@
+     return hyphenate(eventKeyName) !== key;
+   }
+ }
++/*! patch-package: normalizeKeyForComparison added for case-insensitive keycode check */
++function normalizeKeyForComparison(key) {
++  return typeof key === "string" ? key.toLowerCase() : key;
++}
+ function isKeyNotMatch(expect, actual) {
++  const normalizedActual = normalizeKeyForComparison(actual);
+   if (isArray(expect)) {
+-    return !expect.includes(actual);
++    return !expect.map(normalizeKeyForComparison).includes(normalizedActual);
+   } else {
+-    return expect !== actual;
++    return normalizeKeyForComparison(expect) !== normalizedActual;
+   }
+ }
+ function legacyMarkOnce(tree) {

@@ -13,9 +13,9 @@ RSpec.describe GitlabSchema.types['TimelogConnection'], feature_category: :team_
     let_it_be(:current_user) { create(:user) }
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :empty_repo, :public, group: group) }
-    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: project) }
 
-    let_it_be(:timelog1) { create(:issue_timelog, issue: issue, time_spent: 1000) }
+    let_it_be(:timelog1, freeze: false) { create(:issue_timelog, issue: issue, time_spent: 1000) }
     let_it_be(:timelog2) { create(:issue_timelog, issue: issue, time_spent: 1500) }
     let_it_be(:timelog3) { create(:issue_timelog, issue: issue, time_spent: 2564) }
 

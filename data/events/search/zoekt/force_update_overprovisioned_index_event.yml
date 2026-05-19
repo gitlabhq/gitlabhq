@@ -1,0 +1,7 @@
+---
+event: Search::Zoekt::ForceUpdateOverprovisionedIndexEvent
+description: Published when overprovisioned, ready Zoekt indices with up-to-date used-storage
+  stats are detected, signaling that their watermark levels should be recalculated
+  and corrected.
+feature_category: global_search
+ee_only: true

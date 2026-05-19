@@ -179,7 +179,8 @@ RSpec.describe JiraConnect::InstallationsController, :with_current_organization,
             expect(json_response).to eq({
               'errors' => {
                 'instance_url' => [
-                  'is blocked: Only allowed schemes are http, https'
+                  'is blocked: Only allowed schemes are http, https',
+                  'must be a valid URL'
                 ]
               }
             })

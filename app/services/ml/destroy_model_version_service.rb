@@ -10,7 +10,7 @@ module Ml
     def execute
       if model_version.package.present?
         result = ::Packages::MarkPackageForDestructionService
-                   .new(container: model_version.package, current_user: @user)
+                   .new(container: model_version.package, current_user: @user, skip_protection_check: true)
                    .execute
 
         return ServiceResponse.error(message: result.message, payload: payload) unless result.success?

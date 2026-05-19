@@ -7,6 +7,7 @@ module Sidebars
         override :configure_menu_items
         def configure_menu_items
           add_item(general_settings_menu_item)
+          add_item(service_accounts_menu_item)
           add_item(search_menu_item)
           add_item(integrations_menu_item)
           add_item(repository_menu_item)
@@ -41,6 +42,21 @@ module Sidebars
         end
 
         private
+
+        def service_accounts_menu_item
+          return ::Sidebars::NilMenuItem.new(item_id: :service_accounts) unless service_accounts_available?
+
+          ::Sidebars::MenuItem.new(
+            title: _('Service accounts'),
+            link: admin_application_settings_service_accounts_path,
+            active_routes: { controller: :service_accounts },
+            item_id: :service_accounts
+          )
+        end
+
+        def service_accounts_available?
+          can?(current_user, :admin_service_accounts)
+        end
 
         def general_settings_menu_item
           ::Sidebars::MenuItem.new(

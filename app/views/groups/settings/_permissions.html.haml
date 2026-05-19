@@ -31,6 +31,16 @@
     = render 'groups/settings/lfs', f: f
     = render_if_exists 'groups/settings/product_analytics_settings', f: f, group: @group
     = render 'groups/settings/git_access_protocols', f: f, group: @group
+
+    - if @group.mcp_server_setting_available?
+      .form-group
+        %h5= s_('GroupSettings|MCP client access')
+
+        = f.gitlab_ui_checkbox_component :mcp_server_enabled,
+            s_("GroupSettings|Allow connection to GitLab"),
+            checkbox_options: { checked: @group.mcp_server_enabled? },
+            help_text: s_('GroupSettings|When you turn on this setting, the GitLab Duo Agent Platform and external applications can access your data through MCP clients.')
+
     = render 'groups/settings/project_creation_level', f: f, group: @group
     = render 'groups/settings/subgroup_creation_level', f: f, group: @group
     = render_if_exists 'groups/settings/prevent_forking', f: f, group: @group

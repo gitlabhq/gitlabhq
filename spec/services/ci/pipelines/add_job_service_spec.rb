@@ -33,7 +33,7 @@ RSpec.describe Ci::Pipelines::AddJobService, feature_category: :continuous_integ
     end
 
     it 'assigns partition_id to job' do
-      expect { execute }.to change(job, :partition_id).to(pipeline.partition_id)
+      expect { execute }.to change { job.partition_id }.to(pipeline.partition_id)
     end
 
     it 'returns a service response with the job as payload' do

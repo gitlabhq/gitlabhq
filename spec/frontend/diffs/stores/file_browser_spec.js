@@ -39,8 +39,17 @@ describe('FileBrowser store', () => {
       lib: { type: 'tree', path: 'lib' },
     };
 
-    const mockTree = [{ path: 'app' }, { path: 'lib' }, { path: 'root_file.txt' }];
-    const sortedTree = [mockTree[2], ...mockTree.slice(0, 2)];
+    const appAssetsBranch = {
+      path: 'app/assets',
+      type: 'tree',
+      tree: [mockFiles[0], mockFiles[1]],
+    };
+    const appBranch = { path: 'app', type: 'tree', tree: [appAssetsBranch] };
+    const libBranch = { path: 'lib', type: 'tree', tree: [mockFiles[2]] };
+    // mockTree mimics generateTreeList output (insertion order from input files).
+    const mockTree = [appBranch, libBranch, mockFiles[3]];
+    // sortedTree mimics sortTree output (folders first, then top-level files).
+    const sortedTree = [libBranch, appBranch, mockFiles[3]];
 
     beforeEach(() => {
       localStorage.clear();
@@ -185,17 +194,29 @@ describe('FileBrowser store', () => {
       });
 
       describe('flatBlobsList', () => {
-        it('returns an empty array if treeEntries is null', () => {
-          useFileBrowser().treeEntries = null;
+        it('returns an empty array when the tree is empty', () => {
+          useFileBrowser().tree = [];
           expect(useFileBrowser().flatBlobsList).toEqual([]);
         });
 
-        it('returns only the entries with type "blob"', () => {
-          const blobs = useFileBrowser().flatBlobsList;
+        it('returns blobs in tree-walk order', () => {
+          // sortedTree walked depth-first: lib branch first, then app branch
+          expect(useFileBrowser().flatBlobsList).toEqual([
+            mockFiles[2],
+            mockFiles[0],
+            mockFiles[1],
+            mockFiles[3],
+          ]);
+        });
 
-          expect(blobs).toHaveLength(mockFiles.length);
-          expect(blobs.every((f) => f.type === 'blob')).toBe(true);
-          expect(blobs).toEqual(mockFiles);
+        it('returns blobs in original tree order when shouldSort is false', () => {
+          useFileBrowser().setTreeData(mockFiles, false);
+          expect(useFileBrowser().flatBlobsList).toEqual([
+            mockFiles[0],
+            mockFiles[1],
+            mockFiles[2],
+            mockFiles[3],
+          ]);
         });
       });
 
@@ -219,8 +240,8 @@ describe('FileBrowser store', () => {
           expect(rootGroup.tree).toEqual([mockFiles[3]]);
         });
 
-        it('returns an empty array if treeEntries is null', () => {
-          useFileBrowser().treeEntries = null;
+        it('returns an empty array when the tree is empty', () => {
+          useFileBrowser().tree = [];
           expect(useFileBrowser().allBlobs).toEqual([]);
         });
       });

@@ -5,6 +5,9 @@ require 'digest'
 module Ci
   module Slsa
     class PublishProvenanceService < ::BaseService
+      ATTESTATION_PUBLISHERS = [SupplyChain::ArtifactProvenancePublisher,
+        SupplyChain::ContainerProvenancePublisher].freeze
+
       def initialize(build)
         @build = build
       end
@@ -16,17 +19,33 @@ module Ci
           return ServiceResponse.error(message: "Attestation is only enabled for public projects")
         end
 
-        attest_artifacts
-      end
+        all_attestations = []
+        all_succeeded = true
+        ATTESTATION_PUBLISHERS.each do |publisher_class|
+          next unless publisher_class.should_publish?(@build)
 
-      private
+          begin
+            publisher = publisher_class.new(@build)
+            attestations, success = publisher.publish
 
-      def attest_artifacts
-        artifact_publisher = SupplyChain::ArtifactProvenancePublisher.new(@build)
+            all_attestations += attestations
+            all_succeeded = false unless success
+          rescue SupplyChain::ProvenancePublisher::Error => e
+            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, project_id: @build.project.id)
 
-        return artifact_publisher.publish if artifact_publisher.should_publish?
+            all_succeeded = false
+          end
+        end
 
-        ServiceResponse.error(message: "No attestations performed")
+        if all_succeeded
+          message = all_attestations.any? ? "Attestations persisted" : "No attestations performed"
+
+          ServiceResponse.success(message: message,
+            payload: { attestations: all_attestations })
+        else
+          ServiceResponse.error(message: "Error occurred when publishing attestations",
+            payload: { attestations: all_attestations })
+        end
       end
     end
   end

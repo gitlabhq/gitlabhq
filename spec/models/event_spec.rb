@@ -477,13 +477,13 @@ RSpec.describe Event, feature_category: :user_profile do
     subject { described_class.new(project: target.project, target: target) }
 
     context 'issue note event' do
-      let(:target) { create(:note_on_issue) }
+      let(:target) { build(:note_on_issue) }
 
       it { is_expected.to be_note }
     end
 
     context 'merge request diff note event' do
-      let(:target) { create(:legacy_diff_note_on_merge_request) }
+      let(:target) { build(:legacy_diff_note_on_merge_request) }
 
       it { is_expected.to be_note }
     end
@@ -520,9 +520,18 @@ RSpec.describe Event, feature_category: :user_profile do
       described_class.new(project: project, target: target, author_id: author.id)
     end
 
-    before do
-      project.add_developer(member)
-      project.add_guest(guest)
+    before_all do
+      public_project.add_developer(member)
+      public_project.add_guest(guest)
+      private_project.add_developer(member)
+      private_project.add_guest(guest)
+    end
+
+    shared_context 'with member and guest added to project' do
+      before_all do
+        project.add_developer(member)
+        project.add_guest(guest)
+      end
     end
 
     def visible_to_all
@@ -573,15 +582,19 @@ RSpec.describe Event, feature_category: :user_profile do
     end
 
     context 'commit note event' do
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be(:project) { create(:project, :public, :repository) }
       let(:target) { note_on_commit }
+
+      include_context 'with member and guest added to project'
 
       include_examples 'visibility examples' do
         let(:visibility) { visible_to_all }
       end
 
       context 'private project' do
-        let(:project) { create(:project, :private, :repository) }
+        let_it_be(:project) { create(:project, :private, :repository) }
+
+        include_context 'with member and guest added to project'
 
         context 'when admin mode enabled', :enable_admin_mode do
           include_examples 'visibility examples' do
@@ -732,7 +745,9 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'on public project with private issue tracker and merge requests' do
-        let(:project) { create(:project, :public, :issues_private, :merge_requests_private) }
+        let_it_be(:project) { create(:project, :public, :issues_private, :merge_requests_private) }
+
+        include_context 'with member and guest added to project'
 
         context 'when admin mode enabled', :enable_admin_mode do
           include_examples 'visibility examples' do
@@ -748,7 +763,9 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'on private project' do
-        let(:project) { create(:project, :private) }
+        let_it_be(:project) { create(:project, :private) }
+
+        include_context 'with member and guest added to project'
 
         context 'when admin mode enabled', :enable_admin_mode do
           include_examples 'visibility examples' do
@@ -768,7 +785,9 @@ RSpec.describe Event, feature_category: :user_profile do
       let(:event) { create(:wiki_page_event, project: project) }
 
       context 'on private project', :aggregate_failures do
-        let(:project) { create(:project, :wiki_repo) }
+        let_it_be(:project) { create(:project, :wiki_repo) }
+
+        include_context 'with member and guest added to project'
 
         context 'when admin mode enabled', :enable_admin_mode do
           include_examples 'visibility examples' do
@@ -784,7 +803,9 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'wiki-page event on public project', :aggregate_failures do
-        let(:project) { create(:project, :public, :wiki_repo) }
+        let_it_be(:project) { create(:project, :public, :wiki_repo) }
+
+        include_context 'with member and guest added to project'
 
         include_examples 'visibility examples' do
           let(:visibility) { visible_to_all }
@@ -796,7 +817,9 @@ RSpec.describe Event, feature_category: :user_profile do
       let(:event) { create(:event, :for_wiki_page_note, project: project) }
 
       context 'on private project', :aggregate_failures do
-        let(:project) { create(:project, :wiki_repo) }
+        let_it_be(:project) { create(:project, :wiki_repo) }
+
+        include_context 'with member and guest added to project'
 
         context 'when admin mode enabled', :enable_admin_mode do
           include_examples 'visibility examples' do
@@ -812,7 +835,9 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'wiki-page event on public project', :aggregate_failures do
-        let(:project) { create(:project, :public, :wiki_repo) }
+        let_it_be(:project) { create(:project, :public, :wiki_repo) }
+
+        include_context 'with member and guest added to project'
 
         include_examples 'visibility examples' do
           let(:visibility) { visible_to_all }
@@ -828,7 +853,9 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'on public project with private snippets' do
-        let(:project) { create(:project, :public, :snippets_private) }
+        let_it_be(:project) { create(:project, :public, :snippets_private) }
+
+        include_context 'with member and guest added to project'
 
         context 'when admin mode enabled', :enable_admin_mode do
           include_examples 'visibility examples' do
@@ -849,7 +876,9 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'on private project' do
-        let(:project) { create(:project, :private) }
+        let_it_be(:project) { create(:project, :private) }
+
+        include_context 'with member and guest added to project'
 
         context 'when admin mode enabled', :enable_admin_mode do
           include_examples 'visibility examples' do
@@ -1091,8 +1120,8 @@ RSpec.describe Event, feature_category: :user_profile do
   end
 
   describe '.limit_recent' do
-    let!(:event1) { create(:closed_issue_event) }
-    let!(:event2) { create(:closed_issue_event) }
+    let_it_be(:event1) { create(:closed_issue_event) }
+    let_it_be(:event2) { create(:closed_issue_event) }
 
     describe 'without an explicit limit' do
       subject { described_class.limit_recent }

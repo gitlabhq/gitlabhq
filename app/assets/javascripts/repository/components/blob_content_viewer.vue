@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
+import { mapActions } from 'pinia';
 import { computed } from 'vue';
 import { logError } from '~/lib/logger';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
@@ -12,7 +13,9 @@ import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 import { visitUrl, getLocationHash } from '~/lib/utils/url_utility';
+import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
@@ -42,8 +45,15 @@ export default {
     GlButton,
     CodeIntelligence,
     AiGenie: () => import('ee_component/ai/components/ai_genie.vue'),
+    OrbitCodePanel: () => import('ee_component/orbit/components/orbit_code_panel.vue'),
   },
-  mixins: [getRefMixin, highlightMixin, glFeatureFlagMixin(), trackingMixin],
+  mixins: [
+    getRefMixin,
+    highlightMixin,
+    glFeatureFlagMixin(),
+    glLicensedFeaturesMixin(),
+    trackingMixin,
+  ],
   inject: {
     originalBranch: {
       default: '',
@@ -146,6 +156,7 @@ export default {
   },
   data() {
     return {
+      orbitPanelOpen: false,
       forkTarget: null,
       legacyRichViewer: null,
       legacySimpleViewer: null,
@@ -275,6 +286,9 @@ export default {
     isBlameAvailable() {
       return this.glFeatures.inlineBlame && !this.isBinaryFileType && this.showBlame;
     },
+    isOrbitCodeIntelligenceAvailable() {
+      return this.glFeatures.orbitCodeIntelligence && this.glLicensedFeatures.orbit;
+    },
   },
   watch: {
     // Watch the URL 'plain' query value to know if the viewer needs changing.
@@ -383,6 +397,7 @@ export default {
     setForkTarget(target) {
       this.forkTarget = target;
     },
+    ...mapActions(useFileTreeBrowserVisibility, ['collapseForBlame']),
     onCopy() {
       // eslint-disable-next-line no-restricted-properties
       navigator.clipboard.writeText(this.blobInfo.rawTextBlob);
@@ -399,6 +414,7 @@ export default {
       }
     },
     setShowBlame(showBlame) {
+      if (showBlame) this.collapseForBlame();
       this.showBlame = showBlame;
       const { blame, ...queryWithoutBlame } = this.$route?.query || {};
       const isAlreadySynced = showBlame ? blame === '1' : !blame;
@@ -432,66 +448,91 @@ export default {
 <template>
   <div class="gl-relative">
     <gl-loading-icon v-if="isLoading" size="sm" />
-    <div v-if="blobInfo && !isLoading" id="fileHolder" class="file-holder">
-      <blob-header
-        is-blob-page
-        :blob="blobInfo"
-        :hide-viewer-switcher="shouldHideViewerSwitcher"
-        :is-binary="isBinaryFileType"
-        :active-viewer-type="activeViewerType"
-        :has-render-error="hasRenderError"
-        :show-path="false"
-        :override-copy="true"
-        :show-fork-suggestion="showSingleFileEditorForkSuggestion"
-        :show-web-ide-fork-suggestion="showWebIdeForkSuggestion"
-        :show-blame-toggle="glFeatures.inlineBlame"
-        :show-blame-info="isBlameAvailable"
-        :project-path="projectPath"
-        :project-id="projectId"
-        :is-using-lfs="isUsingLfs"
-        :current-ref="currentRef"
-        @viewer-changed="handleViewerChanged"
-        @copy="onCopy"
-        @edit="editBlob"
-        @error="displayError"
-        @preload-blame="shouldPreloadBlame = true"
-        @blame="handleToggleBlame"
-      />
-      <blob-content
-        v-if="!blobViewer"
-        class="js-syntax-highlight"
-        :rich-viewer="legacyRichViewer"
-        :blob="blobInfo"
-        :content="legacySimpleViewer"
-        :is-raw-content="true"
-        :active-viewer="viewer"
-        :should-preload-blame="shouldPreloadBlame"
-        :show-blame="showBlame && glFeatures.inlineBlame"
-        :current-ref="currentRef"
-        :loading="isLoadingLegacyViewer"
-        :project-path="projectPath"
-        :data-loading="isRenderingLegacyTextViewer"
-      />
-      <component
-        :is="blobViewer"
-        v-else
-        ref="blobViewerComponent"
-        :blob="blobInfo"
-        :chunks="chunks"
-        :show-blame="showBlame && glFeatures.inlineBlame"
-        :project-path="projectPath"
-        :current-ref="currentRef"
-        :should-preload-blame="shouldPreloadBlame"
-        class="blob-viewer"
-        @error="onError"
-      />
-      <code-intelligence
-        v-if="blobViewer || legacyViewerLoaded"
-        :code-navigation-path="blobInfo.codeNavigationPath"
-        :blob-path="blobInfo.path"
-        :path-prefix="blobInfo.projectBlobPathRoot"
-        :wrap-text-nodes="true"
-      />
+    <div v-if="blobInfo && !isLoading" :class="{ 'gl-flex gl-gap-3': orbitPanelOpen }">
+      <div id="fileHolder" class="file-holder" :class="{ 'gl-min-w-0 gl-flex-1': orbitPanelOpen }">
+        <blob-header
+          is-blob-page
+          :blob="blobInfo"
+          :hide-viewer-switcher="shouldHideViewerSwitcher"
+          :is-binary="isBinaryFileType"
+          :active-viewer-type="activeViewerType"
+          :has-render-error="hasRenderError"
+          :show-path="false"
+          :override-copy="true"
+          :show-fork-suggestion="showSingleFileEditorForkSuggestion"
+          :show-web-ide-fork-suggestion="showWebIdeForkSuggestion"
+          :show-blame-toggle="glFeatures.inlineBlame"
+          :show-blame-info="isBlameAvailable"
+          :project-path="projectPath"
+          :project-id="projectId"
+          :is-using-lfs="isUsingLfs"
+          :current-ref="currentRef"
+          @viewer-changed="handleViewerChanged"
+          @copy="onCopy"
+          @edit="editBlob"
+          @error="displayError"
+          @preload-blame="shouldPreloadBlame = true"
+          @blame="handleToggleBlame"
+        >
+          <template #actions>
+            <gl-button
+              v-if="isOrbitCodeIntelligenceAvailable && (blobViewer || legacyViewerLoaded)"
+              category="secondary"
+              size="small"
+              icon="earth"
+              @click="orbitPanelOpen = !orbitPanelOpen"
+              >{{ __('Code Intelligence') }}</gl-button
+            >
+          </template>
+        </blob-header>
+        <blob-content
+          v-if="!blobViewer"
+          class="js-syntax-highlight"
+          :rich-viewer="legacyRichViewer"
+          :blob="blobInfo"
+          :content="legacySimpleViewer"
+          :is-raw-content="true"
+          :active-viewer="viewer"
+          :should-preload-blame="shouldPreloadBlame"
+          :show-blame="showBlame && glFeatures.inlineBlame"
+          :current-ref="currentRef"
+          :loading="isLoadingLegacyViewer"
+          :project-path="projectPath"
+          :data-loading="isRenderingLegacyTextViewer"
+        />
+        <component
+          :is="blobViewer"
+          v-else
+          ref="blobViewerComponent"
+          :blob="blobInfo"
+          :chunks="chunks"
+          :show-blame="showBlame && glFeatures.inlineBlame"
+          :project-path="projectPath"
+          :current-ref="currentRef"
+          :should-preload-blame="shouldPreloadBlame"
+          class="blob-viewer"
+          @error="onError"
+        />
+        <code-intelligence
+          v-if="blobViewer || legacyViewerLoaded"
+          :code-navigation-path="blobInfo.codeNavigationPath"
+          :blob-path="blobInfo.path"
+          :path-prefix="blobInfo.projectBlobPathRoot"
+          :wrap-text-nodes="true"
+        />
+      </div>
+      <div
+        v-if="isOrbitCodeIntelligenceAvailable && orbitPanelOpen"
+        class="orbit-panel gl-sticky gl-shrink-0 gl-self-start gl-overflow-y-auto"
+      >
+        <orbit-code-panel
+          :project-id="projectId"
+          :project-path="projectPath"
+          :current-ref="currentRef"
+          :file-path="blobInfo.path"
+          @close="orbitPanelOpen = false"
+        />
+      </div>
     </div>
     <ai-genie
       v-if="shouldRenderAiGenie"
@@ -501,3 +542,11 @@ export default {
     />
   </div>
 </template>
+
+<style scoped>
+.orbit-panel {
+  width: 30%;
+  top: calc(var(--header-height, 56px) + 8px);
+  max-height: calc(100vh - var(--header-height, 56px) - 8px);
+}
+</style>

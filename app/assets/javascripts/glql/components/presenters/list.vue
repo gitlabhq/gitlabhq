@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlIntersperse, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
+import { GlIntersperse, GlSkeletonLoader } from '@gitlab/ui';
 import FieldPresenter from './field.vue';
 
 const DEFAULT_PAGE_SIZE = 5;
@@ -7,10 +7,7 @@ const DEFAULT_PAGE_SIZE = 5;
 export default {
   name: 'ListPresenter',
   components: {
-    GlIcon,
     GlIntersperse,
-    GlLink,
-    GlSprintf,
     GlSkeletonLoader,
     FieldPresenter,
   },
@@ -38,11 +35,14 @@ export default {
     },
   },
   computed: {
+    hasTitle() {
+      return this.fields?.some((field) => field.key === 'title');
+    },
+    visibleFields() {
+      return this.hasTitle ? this.fields.filter((field) => field.key !== 'title') : this.fields;
+    },
     items() {
       return this.data.nodes || [];
-    },
-    fieldsExceptTitle() {
-      return this.fields?.filter((item) => item.key !== 'title');
     },
     pageSize() {
       return typeof this.loading === 'number' ? this.loading : DEFAULT_PAGE_SIZE;
@@ -62,13 +62,13 @@ export default {
       :data-testid="`list-item-${itemIndex}`"
     >
       <div class="gl-inline-block gl-max-w-[calc(100%-40px)] gl-pl-2 gl-pt-1 gl-align-top">
-        <h3 class="!gl-heading-5 !gl-mb-1 gl-truncate">
+        <h3 v-if="hasTitle" class="!gl-heading-5 !gl-mb-1 gl-truncate">
           <field-presenter :item="item" field-key="title" />
         </h3>
         <div>
           <gl-intersperse separator=" · ">
-            <span v-for="field in fieldsExceptTitle" :key="field.key">
-              <field-presenter :item="item" :field-key="field.key" />
+            <span v-for="field in visibleFields" :key="field.key">
+              <field-presenter :item="item" :field-key="field.key" variant="compact" />
             </span>
           </gl-intersperse>
         </div>

@@ -14,6 +14,12 @@ module Ci
       partition_foreign_key: :partition_id
     belongs_to :runner, class_name: 'Ci::Runner'
 
+    has_one :runner_manager_build, # rubocop: disable Rails/InverseOf -- Relation not present on Ci::RunnerManagerBuild
+      class_name: 'Ci::RunnerManagerBuild',
+      foreign_key: [:build_id, :partition_id],
+      primary_key: [:build_id, :partition_id],
+      autosave: false
+
     enum :runner_type, ::Ci::Runner.runner_types
 
     def self.upsert_build!(build)

@@ -141,7 +141,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         end
 
         context 'when the forked project has higher visibility than the root project' do
-          let_it_be(:root_project) { create(:project, :public) }
+          let_it_be(:root_project, freeze: false) { create(:project, :public) }
 
           it 'successfully creates a fork of the fork with correct visibility' do
             fork_response = described_class.new(root_project, user, params).execute
@@ -294,7 +294,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
 
           context 'when the namespace has a lower visibility level than the project' do
             let_it_be(:namespace) { create(:group, :private, owners: user) }
-            let_it_be(:project) { create(:project, :public) }
+            let_it_be(:project, freeze: false) { create(:project, :public) }
 
             it 'creates the project with the lower visibility level' do
               is_expected.to be_success
@@ -328,7 +328,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         end
 
         context 'when an unknown visibility is requested' do
-          let_it_be(:project) { create(:project, :public) }
+          let_it_be(:project, freeze: false) { create(:project, :public) }
 
           let(:params) { super().merge(visibility: 'unknown') }
 
@@ -341,7 +341,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         end
 
         context 'when requested visibility level is greater than allowed' do
-          let_it_be(:project) { create(:project, :internal) }
+          let_it_be(:project, freeze: false) { create(:project, :internal) }
 
           let(:params) { super().merge(visibility: 'public') }
 
@@ -354,7 +354,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         end
 
         context 'when target namespace has lower visibility than a project' do
-          let_it_be(:project) { create(:project, :public) }
+          let_it_be(:project, freeze: false) { create(:project, :public) }
           let_it_be(:namespace) { create(:group, :private, owners: user) }
 
           it 'sets visibility level to target namespace visibility level' do
@@ -366,7 +366,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         end
 
         context 'when project has custom visibility settings' do
-          let_it_be(:project) { create(:project, :public) }
+          let_it_be(:project, freeze: false) { create(:project, :public) }
 
           let(:attrs) do
             ProjectFeature::FEATURES.to_h do |f|
@@ -388,7 +388,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
       end
 
       context 'when a project is already forked' do
-        let_it_be(:project) { create(:project, :public, :repository) }
+        let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
         let_it_be(:group) { create(:group, owners: user) }
 
         before do
@@ -432,7 +432,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
       end
 
       context 'when forking with object pools' do
-        let_it_be(:project) { create(:project, :public, :repository) }
+        let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
 
         context 'when no pool exists' do
           it 'creates a new object pool' do
@@ -443,7 +443,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           end
 
           context 'when project is private' do
-            let_it_be(:project) { create(:project, :private, :repository) }
+            let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
 
             it 'does not create an object pool' do
               expect { response }.not_to change { PoolRepository.count }
@@ -528,7 +528,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           end
 
           context 'if the fork is not allowed' do
-            let_it_be(:project) { create(:project, :private) }
+            let_it_be(:project, freeze: false) { create(:project, :private) }
 
             it 'does not delete the LFS objects' do
               create(:lfs_objects_project, project: unlinked_fork)

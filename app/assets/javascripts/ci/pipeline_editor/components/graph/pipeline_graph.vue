@@ -1,22 +1,16 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DRAW_FAILURE, DEFAULT } from '~/ci/pipeline_details/constants';
 import LinksLayer from '~/ci/common/private/job_links_layer.vue';
-import JobPill from './job_pill.vue';
 import JobRow from './job_row.vue';
-import StageName from './stage_name.vue';
 
 export default {
   components: {
     GlAlert,
-    JobPill,
     JobRow,
     LinksLayer,
-    StageName,
   },
-  mixins: [glFeatureFlagsMixin()],
   CONTAINER_REF: 'PIPELINE_GRAPH_CONTAINER_REF',
   BASE_CONTAINER_ID: 'pipeline-graph-container',
   PIPELINE_ID: 0,
@@ -74,9 +68,6 @@ export default {
     },
     pipelineStages() {
       return this.pipelineData?.stages || [];
-    },
-    updateVisualLanguageEnabled() {
-      return this.glFeatures?.updateVisualLanguage;
     },
   },
   watch: {
@@ -146,26 +137,31 @@ export default {
       class="gl-overflow-auto gl-bg-subtle"
       data-testid="graph-container"
     >
-      <template v-if="!updateVisualLanguageEnabled">
-        <links-layer
-          :pipeline-data="pipelineStages"
-          :pipeline-id="$options.PIPELINE_ID"
-          :container-id="containerId"
-          :container-measurements="measurements"
-          :highlighted-job="highlightedJob"
-          @highlightedJobsChange="updateHighlightedJobs"
-          @error="onError"
-        >
+      <links-layer
+        :pipeline-data="pipelineStages"
+        :pipeline-id="$options.PIPELINE_ID"
+        :container-id="containerId"
+        :container-measurements="measurements"
+        :highlighted-job="highlightedJob"
+        @highlighted-jobs-change="updateHighlightedJobs"
+        @error="onError"
+      >
+        <div class="gl-relative gl-flex gl-p-8">
           <div
             v-for="(stage, index) in pipelineStages"
             :key="`${stage.name}-${index}`"
-            class="gl-flex-col"
+            :class="$options.cardClasses"
           >
-            <div class="gl-mb-5 gl-flex gl-w-full gl-items-center gl-px-9 gl-py-4">
-              <stage-name :stage-name="stage.name" />
+            <!--Card header and separator-->
+            <div class="gl-flex gl-items-center gl-justify-center gl-px-5 gl-pb-3">
+              <div class="gl-ml-5 gl-flex gl-grow-2 gl-flex-col" data-testid="card-header">
+                <strong>{{ stage.name }}</strong>
+                <p class="gl-m-0 gl-text-subtle">{{ numberOfJobsSubheader(stage.groups) }}</p>
+              </div>
             </div>
-            <div :class="$options.jobWrapperClasses">
-              <job-pill
+            <div class="gl-border-b gl-border-solid gl-border-default"></div>
+            <div class="gl-flex gl-flex-col gl-pt-3">
+              <job-row
                 v-for="group in stage.groups"
                 :key="group.name"
                 :job-name="group.name"
@@ -177,48 +173,8 @@ export default {
               />
             </div>
           </div>
-        </links-layer>
-      </template>
-      <template v-else>
-        <links-layer
-          :pipeline-data="pipelineStages"
-          :pipeline-id="$options.PIPELINE_ID"
-          :container-id="containerId"
-          :container-measurements="measurements"
-          :highlighted-job="highlightedJob"
-          @highlightedJobsChange="updateHighlightedJobs"
-          @error="onError"
-        >
-          <div class="gl-relative gl-flex gl-p-8">
-            <div
-              v-for="(stage, index) in pipelineStages"
-              :key="`${stage.name}-${index}`"
-              :class="$options.cardClasses"
-            >
-              <!--Card header and separator-->
-              <div class="gl-flex gl-items-center gl-justify-center gl-px-5 gl-pb-3">
-                <div class="gl-ml-5 gl-flex gl-grow-2 gl-flex-col" data-testid="card-header">
-                  <strong>{{ stage.name }}</strong>
-                  <p class="gl-m-0 gl-text-subtle">{{ numberOfJobsSubheader(stage.groups) }}</p>
-                </div>
-              </div>
-              <div class="gl-border-b gl-border-solid gl-border-default"></div>
-              <div class="gl-flex gl-flex-col gl-pt-3">
-                <job-row
-                  v-for="group in stage.groups"
-                  :key="group.name"
-                  :job-name="group.name"
-                  :pipeline-id="$options.PIPELINE_ID"
-                  :is-hovered="highlightedJob === group.name"
-                  :is-faded-out="isFadedOut(group.name)"
-                  @on-mouse-enter="setHoveredJob"
-                  @on-mouse-leave="removeHoveredJob"
-                />
-              </div>
-            </div>
-          </div>
-        </links-layer>
-      </template>
+        </div>
+      </links-layer>
     </div>
   </div>
 </template>

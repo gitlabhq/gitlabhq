@@ -27,11 +27,9 @@ RSpec.describe 'Topic show page', :with_current_organization, feature_category: 
   end
 
   context 'when topic exists' do
-    before do
-      visit topic_explore_projects_path(topic_name: topic.name)
-    end
-
     it 'shows title, avatar and description as markdown' do
+      visit topic_explore_projects_path(topic_name: topic.name)
+
       expect(page).to have_content(topic.title)
       expect(page).not_to have_content(topic.name)
       expect(page).to have_selector('.gl-avatar.gl-avatar-s48')
@@ -53,6 +51,8 @@ RSpec.describe 'Topic show page', :with_current_organization, feature_category: 
 
     context 'without associated projects' do
       it 'shows correct empty state message' do
+        visit topic_explore_projects_path(topic_name: topic.name)
+
         expect(page).to have_content('Explore public groups to find projects to contribute to')
       end
     end

@@ -66,6 +66,12 @@ module Types
       null: false,
       description: 'Display settings for the work item lists.'
 
+    field :orbit_settings,
+      type: GraphQL::Types::JSON,
+      null: false,
+      description: 'Orbit agent settings for the user.',
+      experiment: { milestone: '19.0' }
+
     field :wiki_use_auto_commit_message,
       GraphQL::Types::Boolean,
       null: false,

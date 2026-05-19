@@ -1,0 +1,28 @@
+include:
+  - component: $CI_SERVER_FQDN/gitlab-org/analytics-section/analytics-instrumentation/ci-components/internal_events_validation@v1.1.0
+    inputs:
+      job_name: "internal-events-definitions-validation"
+      stage: "lint"
+      events_path: "config/events"
+  - component: $CI_SERVER_FQDN/gitlab-org/analytics-section/analytics-instrumentation/ci-components/internal_events_validation@v1.1.0
+    inputs:
+      job_name: "internal-events-definitions-validation-ee"
+      stage: "lint"
+      events_path: "ee/config/events"
+
+internal-events-definitions-validation:
+  rules:
+    - if: '$CI_MERGE_REQUEST_IID'
+      changes:
+        - config/events/**/*.yml
+        - .gitlab/ci/includes/gitlab-com/events-validation.gitlab-ci.yml
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+internal-events-definitions-validation-ee:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - if: '$CI_MERGE_REQUEST_IID'
+      changes:
+        - ee/config/events/**/*.yml
+        - .gitlab/ci/includes/gitlab-com/events-validation.gitlab-ci.yml
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'

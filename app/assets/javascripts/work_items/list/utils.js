@@ -1,8 +1,14 @@
 import produce from 'immer';
 import { camelCase, capitalize } from 'lodash-es';
-import { TYPENAME_ITERATIONS_CADENCE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
+import { createAlert, VARIANT_INFO } from '~/alert';
+import {
+  TYPENAME_ITERATIONS_CADENCE,
+  TYPENAME_WORK_ITEM,
+  TYPENAME_WORK_ITEMS_TYPE,
+} from '~/graphql_shared/constants';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
+import { capitalizeFirstCharacter, convertEachWordToTitleCase } from '~/lib/utils/text_utility';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import {
@@ -34,16 +40,10 @@ import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
   WORK_ITEM_TO_ISSUABLE_MAP,
   WIDGET_TYPE_MILESTONE,
-  WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_TIME_TRACKING,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_TASK,
-  WORK_ITEM_TYPE_ENUM_TICKET,
 } from '~/work_items/constants';
-import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 import { BoardType } from '~/boards/constants';
 import { STATUS_CLOSED, STATUS_OPEN, TYPE_EPIC } from '~/issues/constants';
 import {
@@ -101,25 +101,6 @@ import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_sa
 import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_view.query.graphql';
 import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
 import workItemSavedViewReorder from '~/work_items/graphql/reorder_saved_view.mutation.graphql';
-
-/**
- * Get the types of work items that should be displayed on issues lists.
- * This should be consistent with `TYPES_FOR_LIST` in the backend.
- *
- * @returns {Array<string>}
- */
-export const getDefaultWorkItemTypes = () => [
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_TASK,
-  WORK_ITEM_TYPE_ENUM_TICKET,
-];
-
-export const getTypeTokenOptions = () => [
-  { icon: 'work-item-issue', title: s__('WorkItem|Issue'), value: 'issue' },
-  { icon: 'work-item-incident', title: s__('WorkItem|Incident'), value: 'incident' },
-  { icon: 'work-item-task', title: s__('WorkItem|Task'), value: 'task' },
-];
 
 export const getInitialPageParams = (
   pageSize,
@@ -384,6 +365,78 @@ export const getFilterTokens = (locationSearch, options = {}) => {
   return tokens;
 };
 
+/**
+ * Converts `type` URL param old enum value to new gid value
+ * i.e. `type[]=KEY_RESULT`/`type[]=epic` to `type[]=1`
+ *
+ * @param {Object[]} tokens - Array of filter tokens
+ * @param {Object} workItemTypesConfiguration - Work item types configuration
+ * @returns {Object[]} Array of filter tokens, with the type token value converted
+ */
+export const convertOldTypeTokenEnumToGid = (tokens, workItemTypesConfiguration) => {
+  const isTypeEnum = /^[a-zA-Z_]+$/;
+
+  const getGidFromTypeTokenEnum = (typeEnum) => {
+    // typeEnum can either be lowercase (epic) or screaming snake case (KEY_RESULT).
+    // The system type name is in title case (Key Result)
+    const typeName = typeEnum.toLowerCase().split('_').map(capitalizeFirstCharacter).join(' ');
+    const typeConfig = workItemTypesConfiguration.find((type) => type.name === typeName);
+    if (typeConfig) {
+      createAlert({
+        message: s__(
+          'WorkItems|The Type filter URL has been changed. Please update any bookmarks or links that reference the old URL.',
+        ),
+        variant: VARIANT_INFO,
+      });
+      return String(getIdFromGraphQLId(typeConfig.id));
+    }
+    return undefined;
+  };
+
+  return tokens
+    .map((token) => {
+      // Only process TYPE tokens and return early
+      if (token.type !== TOKEN_TYPE_TYPE) {
+        return token;
+      }
+
+      const { data } = token.value;
+
+      // Handle array of type values
+      if (Array.isArray(data)) {
+        const convertedData = data
+          .map((item) => (isTypeEnum.test(item) ? getGidFromTypeTokenEnum(item) : item))
+          .filter((item) => item !== undefined);
+
+        return {
+          ...token,
+          value: {
+            ...token.value,
+            data: convertedData.length > 0 ? convertedData : undefined,
+          },
+        };
+      }
+
+      if (isTypeEnum.test(data)) {
+        return {
+          ...token,
+          value: {
+            ...token.value,
+            data: getGidFromTypeTokenEnum(data),
+          },
+        };
+      }
+
+      // Return unchanged if already in correct format (numeric ID)
+      return token;
+    })
+    .filter((token) => {
+      // Only filter out TYPE tokens with undefined data
+      // Preserve all other token types
+      return token.type !== TOKEN_TYPE_TYPE || token.value.data !== undefined;
+    });
+};
+
 const trueYesFalseNo = (value) => {
   if (value) {
     return 'yes';
@@ -406,9 +459,6 @@ const wildcardTokens = [
 const isWildcardValue = (tokenType, value) =>
   wildcardTokens.includes(tokenType) && wildcardFilterValues.includes(value);
 
-const requiresUpperCaseValue = (tokenType, value) =>
-  tokenType === TOKEN_TYPE_TYPE || isWildcardValue(tokenType, value);
-
 const convertToTokenValue = (token, baseValue) => {
   switch (token) {
     case TOKEN_TYPE_CONFIDENTIAL:
@@ -417,8 +467,8 @@ const convertToTokenValue = (token, baseValue) => {
     case TOKEN_TYPE_TYPE:
       return baseValue.toUpperCase();
     case TOKEN_TYPE_HEALTH:
-      if (requiresUpperCaseValue(token, capitalize(baseValue))) {
-        return baseValue.toUpperCase();
+      if (isWildcardValue(token, capitalize(baseValue))) {
+        return capitalize(baseValue);
       }
       return camelCase(baseValue);
     case TOKEN_TYPE_STATUS:
@@ -439,7 +489,8 @@ export const getSavedViewFilterTokens = (filterObject, options = {}) => {
   const tokens = Object.entries(filterObject)
     .filter(
       ([key]) =>
-        (apiParamKeys.includes(key) || ['not', 'or', 'in', HIERARCHY_FILTERS].includes(key)) &&
+        (apiParamKeys.concat('workItemTypeIds').includes(key) ||
+          ['not', 'or', 'in', HIERARCHY_FILTERS].includes(key)) &&
         (options.includeStateToken || key !== TOKEN_TYPE_STATE),
     )
     .reduce((acc, [key, value]) => {
@@ -548,6 +599,70 @@ export const getSavedViewFilterTokens = (filterObject, options = {}) => {
   return tokens;
 };
 
+const getIdFromEnum = (value, getWorkItemTypeConfiguration) => {
+  const typeName = convertEachWordToTitleCase(value.split('_').join(' '));
+  return String(getIdFromGraphQLId(getWorkItemTypeConfiguration(typeName)?.id));
+};
+
+const convertEnumToId = (value, getWorkItemTypeConfiguration) => {
+  return Array.isArray(value)
+    ? value.map((val) => getIdFromEnum(val, getWorkItemTypeConfiguration))
+    : getIdFromEnum(value, getWorkItemTypeConfiguration);
+};
+
+const convertGidToId = (value) => {
+  return Array.isArray(value)
+    ? value.map((val) => String(getIdFromGraphQLId(val.toLowerCase())))
+    : String(getIdFromGraphQLId(value.toLowerCase()));
+};
+
+export const convertNumberToGid = (value) => {
+  return Array.isArray(value)
+    ? value.map((val) => convertToGraphQLId(TYPENAME_WORK_ITEMS_TYPE, val))
+    : convertToGraphQLId(TYPENAME_WORK_ITEMS_TYPE, value);
+};
+
+/**
+ * For an array of tokens with a Type token, we convert the data from:
+ *
+ * - An enum (e.g. `ISSUE`)
+ * - A gid (e.g. `gid://gitlab/WorkItems::Type/1`)
+ *
+ * To a number:
+ *
+ * - `1`
+ *
+ * @param {Object[]} tokens
+ * @param {Function} getWorkItemTypeConfiguration
+ * @returns {Object[]} tokens
+ */
+export const convertLegacyTypeFormat = (tokens, getWorkItemTypeConfiguration) => {
+  const enumRegex = /^[a-z_]+$/i;
+
+  tokens.forEach((token) => {
+    if (token.type !== TOKEN_TYPE_TYPE) {
+      return;
+    }
+    if (!token?.value?.data) {
+      return;
+    }
+
+    const testValue = Array.isArray(token.value.data) ? token.value.data.at(0) : token.value.data;
+
+    if (token && enumRegex.test(testValue)) {
+      // eslint-disable-next-line no-param-reassign
+      token.value.data = convertEnumToId(token.value.data, getWorkItemTypeConfiguration);
+    }
+
+    if (token && testValue.toLowerCase().startsWith('gid')) {
+      // eslint-disable-next-line no-param-reassign
+      token.value.data = convertGidToId(token.value.data);
+    }
+  });
+
+  return tokens;
+};
+
 export function groupMultiSelectFilterTokens(filterTokensToGroup, tokenDefs) {
   const groupedTokens = [];
 
@@ -602,14 +717,6 @@ export const isParentIdParam = (type) => {
   return type === TOKEN_TYPE_PARENT;
 };
 
-export const isSubscribedParam = (type) => {
-  return type === TOKEN_TYPE_SUBSCRIBED;
-};
-
-export const isHealthStatusParam = (type) => {
-  return type === TOKEN_TYPE_HEALTH;
-};
-
 const getFilterType = ({ type, value: { data, operator } }) => {
   const isUnionedAuthor = type === TOKEN_TYPE_AUTHOR && operator === OPERATOR_OR;
   const isUnionedLabel = type === TOKEN_TYPE_LABEL && operator === OPERATOR_OR;
@@ -638,11 +745,17 @@ const formatData = (token) => {
     return data.map((item) => formatData({ ...token, value: { ...token.value, data: item } }));
   }
 
-  if (requiresUpperCaseValue(token.type, data)) {
+  if (isWildcardValue(token.type, data)) {
     return data.toUpperCase();
   }
   if ([TOKEN_TYPE_CONFIDENTIAL, TOKEN_TYPE_DRAFT].includes(token.type)) {
     return data === 'yes';
+  }
+  if (token.type === TOKEN_TYPE_TYPE) {
+    return data.toUpperCase();
+  }
+  if (token.type === TOKEN_TYPE_HEALTH) {
+    return camelCase(data);
   }
 
   return data;
@@ -713,10 +826,6 @@ export const convertToApiParams = (filterTokens) => {
           includeDescendantWorkItems: true,
         });
       }
-    } else if (isSubscribedParam(token.type)) {
-      obj.set(apiField, data.toUpperCase());
-    } else if (isHealthStatusParam(token.type)) {
-      obj.set(apiField, isWildcardValue(token.type, capitalize(data)) ? data : camelCase(data));
     } else {
       obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
     }
@@ -818,30 +927,6 @@ export function mapWorkItemWidgetsToIssuableFields({
     activeItem.title = workItem.title;
     activeItem.confidential = workItem.confidential;
     activeItem.type = workItem?.workItemType?.name?.toUpperCase();
-  });
-}
-
-export function updateUpvotesCount({ list, workItem, namespace = BoardType.project }) {
-  const type = WIDGET_TYPE_AWARD_EMOJI;
-  const property = WORK_ITEM_TO_ISSUABLE_MAP[type];
-
-  return produce(list, (draftData) => {
-    const activeItem = draftData[namespace].issues.nodes.find(
-      (issue) => issue.iid === workItem.iid,
-    );
-
-    const currentWidget = findWidget(type, workItem);
-    if (!currentWidget) {
-      return;
-    }
-
-    const upvotesCount =
-      currentWidget[property].nodes.filter((emoji) => emoji.name === EMOJI_THUMBS_UP)?.length ?? 0;
-    const downvotesCount =
-      currentWidget[property].nodes.filter((emoji) => emoji.name === EMOJI_THUMBS_DOWN)?.length ??
-      0;
-    activeItem.upvotes = upvotesCount;
-    activeItem.downvotes = downvotesCount;
   });
 }
 
@@ -1110,6 +1195,9 @@ export const saveSavedView = async ({
             ...commonSavedViewResponse,
             userPermissions,
             subscribed,
+            updatedAt: '',
+            author: {},
+            lastUpdatedBy: {},
           }
         : {
             id: NEW_SAVED_VIEWS_GID,

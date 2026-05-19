@@ -29,13 +29,11 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
           # disable by clicking toggle
           toggle_feature_off(tool_name)
           click_save_changes
-          wait_for_requests
           expect(page).not_to have_selector(".shortcuts-#{shortcut_name}", **visibility_all)
 
           # re-enable by clicking toggle again
           toggle_feature_on(tool_name)
           click_save_changes
-          wait_for_requests
           expect(page).to have_selector(".shortcuts-#{shortcut_name}", **visibility_all)
         end
       end
@@ -196,7 +194,6 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
       toggle_feature_off('wiki')
 
       click_save_changes
-      wait_for_requests
 
       visit project_path(project)
       wait_for_requests
@@ -210,7 +207,6 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
       toggle_feature_off('wiki')
 
       click_save_changes
-      wait_for_requests
 
       visit activity_project_path(project)
       wait_for_requests
@@ -252,7 +248,6 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
 
     def save_changes_and_check_activity_tab
       click_save_changes
-      wait_for_requests
 
       visit activity_project_path(project)
       wait_for_requests
@@ -290,5 +285,8 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
     within_testid('visibility-features-permissions-content') do
       click_button 'Save changes'
     end
+
+    expect(page)
+      .to have_content format(_("Project '%{project_name}' was successfully updated."), project_name: project.name)
   end
 end

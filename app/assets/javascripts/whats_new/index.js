@@ -1,12 +1,13 @@
 import Vue from 'vue';
+import { pinia } from '~/pinia/instance';
 import WhatsNewApp from './components/app.vue';
-import store from './store';
+import { useWhatsNew } from './store';
 
 let whatsNewApp;
 
 export default (dataset = {}, withClose, updateHelpMenuUnreadBadge) => {
   if (whatsNewApp) {
-    store.dispatch('openDrawer');
+    useWhatsNew().openDrawer();
   } else {
     const { versionDigest, initialReadArticles, markAsReadPath, mostRecentReleaseItemsCount } =
       dataset;
@@ -15,7 +16,7 @@ export default (dataset = {}, withClose, updateHelpMenuUnreadBadge) => {
     whatsNewApp = new Vue({
       el,
       name: 'WhatsNewAppRoot',
-      store,
+      pinia,
       render(createElement) {
         return createElement(WhatsNewApp, {
           props: {

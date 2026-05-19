@@ -6,14 +6,6 @@ module QA
       module GroupsFilter
         extend QA::Page::PageConcern
 
-        def self.included(base)
-          super
-
-          base.view 'app/assets/javascripts/groups/components/groups.vue' do
-            element 'nested-groups-projects-list'
-          end
-        end
-
         private
 
         # Check if a group exists in private or public tab

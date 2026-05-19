@@ -6,7 +6,7 @@ RSpec.describe Mutations::Achievements::UpdateUserAchievement, feature_category:
   include GraphqlHelpers
 
   let_it_be(:owner) { create(:user) }
-  let_it_be(:user_achievement) { create(:user_achievement, user: owner) }
+  let_it_be(:user_achievement) { create(:user_achievement, user: owner, show_on_profile: true) }
 
   let(:mutation) { graphql_mutation(:user_achievements_update, params) }
   let(:user_achievement_id) { user_achievement&.to_global_id }

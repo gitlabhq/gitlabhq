@@ -15,3 +15,11 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  type:
+    description: Type of the rotated Personal Access Token ("legacy" or "granular")
+  creation_source:
+    description: >-
+      Source that rotated the token ("ui" for tokens rotated via Rails controllers; "api" for REST or
+      GraphQL requests, including UI actions that use those transports; "unknown" when the service
+      caller did not identify the source)

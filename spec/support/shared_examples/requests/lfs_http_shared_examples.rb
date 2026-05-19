@@ -49,10 +49,10 @@ RSpec.shared_examples 'LFS http 404 response' do
 end
 
 RSpec.shared_examples 'LFS http expected response code and message' do
-  let(:response_code) {}
+  let(:response_code) { nil }
   let(:response_headers) { {} }
   let(:content_type) { LfsRequest::CONTENT_TYPE }
-  let(:message) {}
+  let(:message) { nil }
 
   specify do
     expect(response).to have_gitlab_http_status(response_code)
@@ -66,9 +66,9 @@ RSpec.shared_examples 'LFS http requests' do
   include LfsHttpHelpers
 
   let(:lfs_enabled) { true }
-  let(:authorize_guest) {}
-  let(:authorize_download) {}
-  let(:authorize_upload) {}
+  let(:authorize_guest) { nil }
+  let(:authorize_download) { nil }
+  let(:authorize_upload) { nil }
 
   let(:lfs_object) { create(:lfs_object, :with_file) }
   let(:sample_oid) { lfs_object.oid }

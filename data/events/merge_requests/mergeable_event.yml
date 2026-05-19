@@ -1,0 +1,6 @@
+---
+event: MergeRequests::MergeableEvent
+description: Published when an asynchronous mergeability check completes with both
+  auto_merge_enabled? and mergeability_checks_pass? true (typically after approvals
+  become sufficient).
+feature_category: code_review_workflow

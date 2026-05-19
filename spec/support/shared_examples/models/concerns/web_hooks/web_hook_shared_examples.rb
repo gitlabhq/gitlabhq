@@ -404,6 +404,10 @@ RSpec.shared_examples 'a webhook' do |factory:|
     it { is_expected.to contain_exactly(:token, :url, :url_variables, :custom_headers) }
   end
 
+  describe 'rails-native encrypted attributes' do
+    it { expect(described_class.encrypted_attributes).to include(:signing_token) }
+  end
+
   describe 'execute' do
     let(:data) { { key: 'value' } }
     let(:hook_name) { 'the hook name' }
@@ -583,6 +587,52 @@ RSpec.shared_examples 'a webhook' do |factory:|
       let(:hook) { build(factory, :token) }
 
       it { expect(hook.masked_token).to eq described_class::SECRET_MASK }
+    end
+  end
+
+  describe 'signing_token validations' do
+    let(:valid_signing_token) { "whsec_#{Base64.strict_encode64('a' * 32)}" }
+
+    it 'allows a nil signing token' do
+      hook.signing_token = nil
+
+      expect(hook).to be_valid
+    end
+
+    it 'accepts a valid whsec_ signing key' do
+      hook.signing_token = valid_signing_token
+
+      expect(hook).to be_valid
+    end
+
+    it 'rejects a token without the whsec_ prefix' do
+      hook.signing_token = Base64.strict_encode64('a' * 32)
+
+      expect(hook).not_to be_valid
+      expect(hook.errors[:signing_token]).to be_present
+    end
+
+    it 'rejects a token with an incorrect base64 payload length' do
+      hook.signing_token = 'whsec_tooshort='
+
+      expect(hook).not_to be_valid
+      expect(hook.errors[:signing_token]).to be_present
+    end
+
+    it 'rejects a plain hex token' do
+      hook.signing_token = 'a' * 64
+
+      expect(hook).not_to be_valid
+      expect(hook.errors[:signing_token]).to be_present
+    end
+
+    it 'rejects a token whose base64 payload cannot be decoded' do
+      # 'B' (value 1) in the last position has non-zero trailing bits, making it invalid base64
+      invalid_base64 = "#{'A' * 42}B="
+      hook.signing_token = "whsec_#{invalid_base64}"
+
+      expect(hook).not_to be_valid
+      expect(hook.errors[:signing_token]).to include('is not a valid base64-encoded string')
     end
   end
 

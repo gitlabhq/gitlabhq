@@ -35,8 +35,7 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
     end
 
     let(:field_instance) do
-      ::Types::BaseField.from_options(
-        'field_value',
+      ::Types::BaseField.new(
         name: 'commits',
         owner: resolver_parent,
         resolver_class: described_class,
@@ -56,7 +55,7 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
         expect(commits).to eq(repository.list_commits(ref: ref).commits)
       end
 
-      it 'returns externally paginated array with nil cursors on last page' do
+      it 'returns an externally paginated array with nil cursors on last page' do
         is_expected.to be_a(Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection)
         expect(resolved.start_cursor).to be_nil
         expect(resolved.end_cursor).to be_nil
@@ -78,6 +77,34 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
         end
       end
 
+      describe 'path' do
+        let(:arguments) { { ref: ref, path: 'files/ruby/popen.rb' } }
+
+        it 'returns only commits that touch the given path' do
+          expect(commits).to all satisfy { |c|
+            c.deltas.any? { |d| d.new_path == 'files/ruby/popen.rb' || d.old_path == 'files/ruby/popen.rb' }
+          }
+        end
+
+        it 'returns fewer commits than the unfiltered list' do
+          all_commits = repository.list_commits(ref: ref).commits
+          expect(commits.length).to be < all_commits.length
+          expect(commits.length).to be > 0
+        end
+
+        context 'when path is an empty string' do
+          let(:arguments) { { ref: ref, path: '' } }
+
+          it 'normalizes empty string to nil' do
+            expect(repository).to receive(:list_commits)
+              .with(hash_including(path: nil))
+              .and_call_original
+
+            commits
+          end
+        end
+      end
+
       describe 'pagination params' do
         before do
           allow(repository).to receive(:list_commits).and_call_original
@@ -89,22 +116,22 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
           context 'with a valid limit' do
             let(:first) { max_page_size - 1 }
 
-            it 'requests limit + 1 to detect next page' do
+            it 'uses the passed value' do
               resolved
               expect(repository)
                 .to have_received(:list_commits)
-                .with(a_hash_including(pagination_params: { limit: first + 1 }))
+                .with(a_hash_including(pagination_params: { limit: first }))
             end
           end
 
           context 'with a limit exceeding the max_page_size' do
             let(:first) { max_page_size + 1 }
 
-            it 'respects the max_page_size and requests limit + 1' do
+            it 'respects the max_page_size' do
               resolved
               expect(repository)
                 .to have_received(:list_commits)
-                .with(a_hash_including(pagination_params: { limit: max_page_size + 1 }))
+                .with(a_hash_including(pagination_params: { limit: max_page_size }))
             end
           end
         end
@@ -121,32 +148,32 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
           context 'with a valid limit' do
             let(:first) { default_max_page_size - 1 }
 
-            it 'requests limit + 1 to detect next page' do
+            it 'uses the passed value' do
               resolved
               expect(repository)
                 .to have_received(:list_commits)
-                .with(a_hash_including(pagination_params: { limit: first + 1 }))
+                .with(a_hash_including(pagination_params: { limit: first }))
             end
           end
 
           context 'with a limit exceeding the default_max_page_size' do
             let(:first) { default_max_page_size + 1 }
 
-            it 'respects the default_max_page_size and requests limit + 1' do
+            it 'respects the default_max_page_size' do
               resolved
               expect(repository)
                 .to have_received(:list_commits)
-                .with(a_hash_including(pagination_params: { limit: default_max_page_size + 1 }))
+                .with(a_hash_including(pagination_params: { limit: default_max_page_size }))
             end
           end
         end
 
         context 'with no limit' do
-          it 'picks the fields max_page_size and requests limit + 1' do
+          it 'picks the fields max_page_size' do
             resolved
             expect(repository)
               .to have_received(:list_commits)
-              .with(a_hash_including(pagination_params: { limit: max_page_size + 1 }))
+              .with(a_hash_including(pagination_params: { limit: max_page_size }))
           end
         end
 
@@ -156,11 +183,11 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
           # encode/decode step
           let(:after) { Base64.encode64('page_token') }
 
-          it 'passes the decoded page_token with limit + 1' do
+          it 'passes the decoded page_token' do
             resolved
             expect(repository)
               .to have_received(:list_commits)
-              .with(a_hash_including(pagination_params: { limit: max_page_size + 1,
+              .with(a_hash_including(pagination_params: { limit: max_page_size,
                                                           page_token: Base64.decode64(after) }))
           end
         end
@@ -236,49 +263,19 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
         context 'when more commits exist than the requested limit' do
           let(:max_page_size) { 2 }
 
-          it 'returns hasNextPage true, end_cursor present, and exactly limit commits' do
+          it 'returns hasNextPage true and end_cursor present' do
             expect(resolved.has_next_page).to be(true)
             expect(resolved.end_cursor).to be_present
             expect(commits.size).to eq(max_page_size)
           end
-
-          it 'returns end_cursor based on the last returned commit, not the extra fetched one' do
-            expected_cursor = Base64.encode64(commits.last.sha)
-            expect(resolved.end_cursor).to eq(expected_cursor)
-          end
         end
 
         context 'when on the last page of results' do
-          # Use a limit larger than total commits to ensure we're on the last page
           let(:max_page_size) { 1000 }
 
           it 'returns hasNextPage false and nil end_cursor' do
             expect(resolved.has_next_page).to be(false)
             expect(resolved.end_cursor).to be_nil
-          end
-        end
-
-        context 'when exactly limit commits are returned (last page boundary)' do
-          let(:max_page_size) { 5 }
-          let(:mock_commits) { build_list(:commit, max_page_size, project: project) }
-          let(:mock_response) do
-            instance_double(
-              Repositories::CommitCollectionWithNextCursor,
-              commits: mock_commits,
-              next_cursor: 'some_cursor'
-            )
-          end
-
-          before do
-            allow(repository).to receive(:list_commits).and_return(mock_response)
-          end
-
-          it 'returns hasNextPage false, nil end_cursor, and all commits without trimming' do
-            # When exactly `limit` commits are returned (meaning `limit + 1` was requested
-            # but only `limit` came back), there's no next page
-            expect(resolved.has_next_page).to be(false)
-            expect(resolved.end_cursor).to be_nil
-            expect(commits.size).to eq(max_page_size)
           end
         end
       end
@@ -357,8 +354,7 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
     end
 
     it 'returns commits when searching by the original git author name' do
-      field = ::Types::BaseField.from_options(
-        'field_value',
+      field = ::Types::BaseField.new(
         name: 'commits',
         owner: resolver_parent,
         resolver_class: described_class,
@@ -379,8 +375,7 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
     end
 
     it 'returns commits when searching by the updated display name' do
-      field = ::Types::BaseField.from_options(
-        'field_value',
+      field = ::Types::BaseField.new(
         name: 'commits',
         owner: resolver_parent,
         resolver_class: described_class,

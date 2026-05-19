@@ -3,5 +3,7 @@ name: delete_container_registry_protection_tag_rule
 description: Grants the ability to delete container registry protection tag rules
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
- - delete_container_registry_protection_tag_rule
+  - delete_container_registry_protection_tag_rule

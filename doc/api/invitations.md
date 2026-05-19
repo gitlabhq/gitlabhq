@@ -22,7 +22,7 @@ Prerequisites:
 
 - For groups, you must have the Owner role for the group.
 - For projects:
-  - You must have the Owner or Maintainer role for the project.
+  - You must have the Maintainer or Owner role for the project.
   - [Group membership lock](../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) must be disabled.
 - For GitLab Self-Managed instances:
   - If [new user accounts are not allowed](../administration/settings/sign_up_restrictions.md#disable-new-user-account-creation), an administrator must add the user.
@@ -63,7 +63,7 @@ When all emails were successfully sent:
 {  "status":  "success"  }
 ```
 
-When there was any error sending the email:
+When there were any errors sending the email:
 
 ```json
 {

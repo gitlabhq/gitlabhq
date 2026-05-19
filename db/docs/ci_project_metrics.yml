@@ -1,0 +1,13 @@
+---
+table_name: ci_project_metrics
+classes:
+- Ci::ProjectMetric
+feature_categories:
+- pipeline_composition
+description: Stores per-project CI pipeline metrics such as time-to-first-successful-pipeline.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230152
+milestone: '19.0'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: small

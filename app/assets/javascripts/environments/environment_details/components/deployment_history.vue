@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlSorting } from '@gitlab/ui';
 import { logError } from '~/lib/logger';
-import { toggleQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
+import { setupQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
 import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
 import { FINISHED_STATUSES } from '~/deployments/utils';
 import environmentDetailsQuery from '../../graphql/queries/environment_details.query.graphql';
@@ -167,11 +167,14 @@ export default {
   },
   mounted() {
     if (this.graphqlEtagKey) {
-      toggleQueryPollingByVisibility(
+      this.pollingVisibilityCleanup = setupQueryPollingByVisibility(
         this.$apollo.queries.project,
         ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL,
       );
     }
+  },
+  beforeDestroy() {
+    this.pollingVisibilityCleanup?.();
   },
   methods: {
     resetPage() {

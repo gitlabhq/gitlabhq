@@ -1,0 +1,94 @@
+---
+name: siphon_duo_workflows_workflows
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (traversal_path, created_at, id) ORDER BY (traversal_path, created_at, id) SETTINGS
+  index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild'
+primary_key: traversal_path, created_at, id
+sorting_key: traversal_path, created_at, id
+settings:
+  index_granularity: '2048'
+  deduplicate_merge_projection_mode: "'rebuild'"
+columns:
+- name: id
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: user_id
+  type: Int64
+- name: project_id
+  type: Nullable(Int64)
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: status
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: goal
+  type: Nullable(String)
+- name: agent_privileges
+  type: Array(Int16)
+  default_kind: DEFAULT
+  default_expression: "[]"
+- name: workflow_definition
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'software_development'"
+- name: allow_agent_to_request_user
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'true'
+- name: pre_approved_agent_privileges
+  type: Array(Int16)
+  default_kind: DEFAULT
+  default_expression: "[]"
+- name: image
+  type: Nullable(String)
+- name: environment
+  type: Nullable(Int16)
+- name: namespace_id
+  type: Nullable(Int64)
+- name: ai_catalog_item_version_id
+  type: Nullable(Int64)
+- name: issue_id
+  type: Nullable(Int64)
+- name: merge_request_id
+  type: Nullable(Int64)
+- name: service_account_id
+  type: Nullable(Int64)
+- name: tool_call_approvals
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'{}'"
+- name: ai_catalog_item_id
+  type: Nullable(Int64)
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
+    'traversal_path', project_id, '0/'), coalesce(namespace_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.namespace_traversal_paths_dict',
+    'traversal_path', namespace_id, '0/'), '0/')
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: messaging_callback_context
+  type: Nullable(String)
+- name: summary
+  type: Nullable(String)

@@ -84,7 +84,14 @@ class Snippet < ApplicationRecord
   scope :inc_projects_namespace_route, -> { includes(project: [:route, :namespace]) }
 
   scope :in_organization, ->(organization_id) do
-    where.not(project_id: nil).or(where(project_id: nil, organization_id: organization_id))
+    project_snippets_in_org = only_project_snippets
+      .joins(:project)
+      .where(projects: { organization_id: organization_id })
+
+    personal_snippets_in_org = only_personal_snippets
+      .where(organization_id: organization_id)
+
+    from_union([project_snippets_in_org, personal_snippets_in_org], remove_duplicates: false)
   end
 
   scope :without_created_by_banned_user, -> do

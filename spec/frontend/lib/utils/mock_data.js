@@ -77,6 +77,28 @@ export const sensitiveMessages = [
   'token: glptt-dfc184477c9d3987c7b837e541063577f2ad6426',
 ];
 
+export const sensitiveMessagesWithInstancePrefix = [
+  'token: instanceprefix-glpat-cgyKc1k_AsnEpmP-5fRL', // gitleaks:allow"
+  'token: instanceprefix-GlPat-abcdefghijklmnopqrstuvwxyz', // gitleaks:allow"
+  'token: feed_token=instanceprefix-ABCDEFGHIJKLMNOPQRSTUVWXYZ', // gitleaks:allow"
+  'token: feed_token=instanceprefix-glft-ABCDEFGHIJKLMNOPQRSTUVWXYZ', // gitleaks:allow"
+  'instanceprefix-glft-ABCDEFGHIJKLMNOPQRSTUVWXYZ', // gitleaks:allow"
+  'token: feed_token=instanceprefix-glft-a8cc74ccb0de004d09a968705ba49099229b288b3de43f26c473a9d8d7fb7693-1234', // gitleaks:allow"
+  'instanceprefix-glft-a8cc74ccb0de004d09a968705ba49099229b288b3de43f26c473a9d8d7fb7693-1234', // gitleaks:allow"
+  'token: instanceprefix-gloas-a8cc74ccb0de004d09a968705ba49099229b288b3de43f26c473a9d8d7fb7693', // gitleaks:allow"
+  'https://example.com/feed?feed_token=instanceprefix-123456789_abcdefghij', // gitleaks:allow"
+  'instanceprefix-glpat-1234567890 and feed_token=instanceprefix-ABCDEFGHIJKLMNOPQRSTUVWXYZ', // gitleaks:allow"
+  'token: instanceprefix-gldt-cgyKc1k_AsnEpmP-5fRL', // gitleaks:allow"
+  'curl "https://gitlab.example.com/api/v4/groups/33/scim/identities" --header "PRIVATE-TOKEN: instanceprefix-glsoat-cgyKc1k_AsnEpmP-5fRL', // gitleaks:allow"
+  'CI_JOB_TOKEN=instanceprefix-glcbt-FFFF_cgyKc1k_AsnEpmP-5fRL', // gitleaks:allow"
+  'Use this secret job token: instanceprefix-glcbt-1_cgyKc1k_AsnEpmP-5fRL', // gitleaks:allow"
+  'token: instanceprefix-glffct-cgyKc1k_AsnEpmP-5fRL', // gitleaks:allow"
+  'Here is the runner token for this job:instanceprefix-glrt-t1_abc123_x-yzABCDEF01234', // gitleaks:allow"
+  'token: instanceprefix-glimt-abde52f19d2e53e987d14c8ea', // gitleaks:allow"
+  'token: instanceprefix-glagent-3ed828e723deff468979daf3bf007f9f528c959911bdeea90f', // gitleaks:allow"
+  'token: instanceprefix-glptt-dfc184477c9d3987c7b837e541063577f2ad6426', // gitleaks:allow"
+];
+
 export const secretDetectionFindings = [
   {
     message: 'Hello world! glpat-mGYFaXBmNLvLmrEb7xdf',

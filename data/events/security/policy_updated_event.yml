@@ -1,0 +1,7 @@
+---
+event: Security::PolicyUpdatedEvent
+description: Published when a security policy's attributes or rules change during
+  synchronization of a security policy project's configuration. Carries a diff and
+  a rules_diff payload describing the changes.
+feature_category: security_policy_management
+ee_only: true

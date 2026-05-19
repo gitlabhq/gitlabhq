@@ -977,7 +977,9 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
       let(:source) { project }
 
       before do
-        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
+        # Extra queries from has_approval_policy_rules? checking approval_policy_rules
+        # when deprecate_scan_result_policies feature flag is enabled
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(109)
       end
     end
 

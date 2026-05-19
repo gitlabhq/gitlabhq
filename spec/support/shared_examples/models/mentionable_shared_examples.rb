@@ -232,49 +232,16 @@ RSpec.shared_examples 'mentions in description' do |mentionable_type|
       let(:mentionable_desc) { "#{user.to_reference} #{user2.to_reference} #{user.to_reference} some description #{group.to_reference(full: true)} and #{user2.to_reference} @all" }
       let(:mentionable) { create(mentionable_type, description: mentionable_desc) }
 
-      context 'when `disable_all_mention` FF is disabled' do
-        before do
-          stub_feature_flags(disable_all_mention: false)
-
-          mentionable.store_mentions!
-        end
-
-        it 'stores mentions' do
-          add_member(user)
-
-          expect(mentionable.user_mentions.count).to eq 1
-          expect(mentionable.referenced_users).to match_array([user, user2])
-          expect(mentionable.referenced_groups(user)).to match_array([group])
-
-          # NOTE: https://gitlab.com/gitlab-org/gitlab/-/issues/18442
-          #
-          # We created `Mentions` concern to track every note in which usernames are mentioned
-          # However, we never got to the point of utilizing the concern and its DB tables.
-          # See: https://gitlab.com/gitlab-org/gitlab/-/issues/21801
-          #
-          # The following test is checking `@all`, a type of user mention, is recording
-          # the id of the project for the mentionable that has the `@all` mention.
-          # It's _surmised_ that the original intent was
-          # the project id would be useful to store so everyone (@all) in the project -
-          # could be notified using its mention record only.
-          expect(mentionable.referenced_projects(user)).to match_array([mentionable.project].compact) # epic.project is nil, and we want empty []
-        end
+      before do
+        mentionable.store_mentions!
       end
 
-      context 'when `disable_all_mention` FF is enabled' do
-        before do
-          stub_feature_flags(disable_all_mention: true)
+      it 'stores mentions' do
+        add_member(user)
 
-          mentionable.store_mentions!
-        end
-
-        it 'stores mentions' do
-          add_member(user)
-
-          expect(mentionable.user_mentions.count).to eq 1
-          expect(mentionable.referenced_users).to match_array([user, user2])
-          expect(mentionable.referenced_groups(user)).to match_array([group])
-        end
+        expect(mentionable.user_mentions.count).to eq 1
+        expect(mentionable.referenced_users).to match_array([user, user2])
+        expect(mentionable.referenced_groups(user)).to match_array([group])
       end
     end
   end
@@ -288,37 +255,16 @@ RSpec.shared_examples 'mentions in notes' do |mentionable_type|
     let(:note_desc) { "#{user.to_reference} #{user2.to_reference} #{user.to_reference} and #{group.to_reference(full: true)} and #{user2.to_reference} @all" }
     let!(:mentionable) { note.noteable }
 
-    context 'when `disable_all_mention` FF is enabled' do
-      before do
-        stub_feature_flags(disable_all_mention: true)
-
-        note.update!(note: note_desc)
-        note.store_mentions!
-        add_member(user)
-      end
-
-      it 'returns all mentionable mentions' do
-        expect(mentionable.user_mentions.count).to eq 1
-        expect(mentionable.referenced_users).to match_array([user, user2])
-        expect(mentionable.referenced_groups(user)).to eq [group]
-      end
+    before do
+      note.update!(note: note_desc)
+      note.store_mentions!
+      add_member(user)
     end
 
-    context 'when `disable_all_mention` FF is disabled' do
-      before do
-        stub_feature_flags(disable_all_mention: false)
-
-        note.update!(note: note_desc)
-        note.store_mentions!
-        add_member(user)
-      end
-
-      it 'returns all mentionable mentions' do
-        expect(mentionable.user_mentions.count).to eq 1
-        expect(mentionable.referenced_users).to match_array([user, user2])
-        expect(mentionable.referenced_groups(user)).to eq [group]
-        expect(mentionable.referenced_projects(user)).to eq [mentionable.project].compact # epic.project is nil, and we want empty []
-      end
+    it 'returns all mentionable mentions' do
+      expect(mentionable.user_mentions.count).to eq 1
+      expect(mentionable.referenced_users).to match_array([user, user2])
+      expect(mentionable.referenced_groups(user)).to eq [group]
     end
 
     if [:epic, :issue].include?(mentionable_type)
@@ -346,15 +292,13 @@ RSpec.shared_examples 'mentions in notes' do |mentionable_type|
 end
 
 RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
-  context 'load stored mentions (when `disable_all_mention` is disabled)' do
+  context 'load stored mentions' do
     let_it_be(:user) { create(:user) }
     let_it_be(:mentioned_user) { create(:user) }
     let_it_be(:group) { create(:group) }
     let_it_be(:note_desc) { "#{mentioned_user.to_reference} and #{group.to_reference(full: true)} and @all" }
 
     before do
-      stub_feature_flags(disable_all_mention: false)
-
       note.update!(note: note_desc)
       note.store_mentions!
       add_member(user)
@@ -365,7 +309,6 @@ RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
         user_mention = note.user_mentions.first
         mention_ids = {
           mentioned_users_ids: user_mention.mentioned_users_ids.to_a << non_existing_record_id,
-          mentioned_projects_ids: user_mention.mentioned_projects_ids.to_a << non_existing_record_id,
           mentioned_groups_ids: user_mention.mentioned_groups_ids.to_a << non_existing_record_id
         }
         user_mention.update!(mention_ids)
@@ -373,7 +316,7 @@ RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
 
       it 'filters out inexistent mentions' do
         expect(mentionable.referenced_users).to match_array([mentioned_user])
-        expect(mentionable.referenced_projects(user)).to match_array([mentionable.project].compact) # epic.project is nil, and we want empty []
+        expect(mentionable.referenced_projects(user)).to be_empty
         expect(mentionable.referenced_groups(user)).to match_array([group])
       end
     end
@@ -406,123 +349,33 @@ RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
       let(:group_member) { create(:group_member, user: create(:user), group: private_group) }
 
       before do
-        stub_feature_flags(disable_all_mention: false)
         user_mention = note.user_mentions.first
         mention_ids = {
           mentioned_projects_ids: user_mention.mentioned_projects_ids.to_a << private_project.id,
           mentioned_groups_ids: user_mention.mentioned_groups_ids.to_a << private_group.id
         }
         user_mention.update!(mention_ids)
-
-        add_member(mega_user)
-        private_project.add_developer(mega_user)
-        private_group.add_developer(mega_user)
       end
 
       context 'when user has no access to some mentions' do
         it 'filters out inaccessible mentions' do
-          expect(mentionable.referenced_projects(user)).to match_array([mentionable.project].compact) # epic.project is nil, and we want empty []
-          expect(mentionable.referenced_groups(user)).to match_array([group])
-        end
-      end
-
-      context 'when user has access to all mentions' do
-        it 'returns all mentions' do
-          expect(mentionable.referenced_projects(mega_user)).to match_array([mentionable.project, private_project].compact) # epic.project is nil, and we want empty []
-          expect(mentionable.referenced_groups(mega_user)).to match_array([group, private_group])
-        end
-      end
-    end
-  end
-
-  context 'when `disable_all_mention` is enabled' do
-    context 'load stored mentions' do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:mentioned_user) { create(:user) }
-      let_it_be(:group) { create(:group) }
-      let_it_be(:note_desc) { "#{mentioned_user.to_reference} and #{group.to_reference(full: true)} and @all" }
-
-      before do
-        stub_feature_flags(disable_all_mention: true)
-
-        note.update!(note: note_desc)
-        note.store_mentions!
-        add_member(user)
-      end
-
-      context 'when stored user mention contains ids of inexistent records' do
-        before do
-          user_mention = note.user_mentions.first
-          mention_ids = {
-            mentioned_users_ids: user_mention.mentioned_users_ids.to_a << non_existing_record_id,
-            mentioned_groups_ids: user_mention.mentioned_groups_ids.to_a << non_existing_record_id
-          }
-          user_mention.update!(mention_ids)
-        end
-
-        it 'filters out inexistent mentions' do
-          expect(mentionable.referenced_users).to match_array([mentioned_user])
           expect(mentionable.referenced_projects(user)).to be_empty
           expect(mentionable.referenced_groups(user)).to match_array([group])
         end
       end
 
-      if [:epic, :issue].include?(mentionable_type)
-        context 'and note is confidential' do
-          let_it_be(:guest) { create(:user) }
-
-          let(:note_desc) { "#{guest.to_reference} and #{mentioned_user.to_reference}" }
-
-          before do
-            note.resource_parent.add_reporter(mentioned_user)
-            note.resource_parent.add_guest(guest)
-            # Bypass :confidential update model validation for testing purposes
-            note.update_attribute(:confidential, true)
-            note.store_mentions!
-          end
-
-          it 'stores only mentioned users that has permissions' do
-            expect(mentionable.referenced_users).to contain_exactly(mentioned_user)
-          end
-        end
-      end
-
-      context 'when private projects and groups are mentioned' do
-        let(:mega_user) { create(:user) }
-        let(:private_project) { create(:project, :private) }
-        let(:project_member) { create(:project_member, user: create(:user), project: private_project) }
-        let(:private_group) { create(:group, :private) }
-        let(:group_member) { create(:group_member, user: create(:user), group: private_group) }
+      context 'when user has access to the private project and group mentions' do
+        let(:user) { mega_user }
 
         before do
-          user_mention = note.user_mentions.first
-          mention_ids = {
-            mentioned_projects_ids: user_mention.mentioned_projects_ids.to_a << private_project.id,
-            mentioned_groups_ids: user_mention.mentioned_groups_ids.to_a << private_group.id
-          }
-          user_mention.update!(mention_ids)
+          add_member(user)
+          private_project.add_developer(user)
+          private_group.add_developer(user)
         end
 
-        context 'when user has no access to some mentions' do
-          it 'filters out inaccessible mentions' do
-            expect(mentionable.referenced_projects(user)).to be_empty
-            expect(mentionable.referenced_groups(user)).to match_array([group])
-          end
-        end
-
-        context 'when user has access to the private project and group mentions' do
-          let(:user) { mega_user }
-
-          before do
-            add_member(user)
-            private_project.add_developer(user)
-            private_group.add_developer(user)
-          end
-
-          it 'returns all mentions' do
-            expect(mentionable.referenced_projects(user)).to match_array([private_project])
-            expect(mentionable.referenced_groups(user)).to match_array([group, private_group])
-          end
+        it 'returns all mentions' do
+          expect(mentionable.referenced_projects(user)).to match_array([private_project])
+          expect(mentionable.referenced_groups(user)).to match_array([group, private_group])
         end
       end
     end

@@ -3,5 +3,7 @@ name: approve_deployment
 description: Grants the ability to approve or reject blocked deployments
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - approve_deployment

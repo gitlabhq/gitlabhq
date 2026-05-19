@@ -10,45 +10,21 @@ class ProjectSnippetPolicy < BasePolicy
   condition(:public_project, scope: :subject) { @subject.project.public? }
   condition(:hidden, scope: :subject) { @subject.hidden_due_to_author_ban? }
   condition(:is_author) { @user && @subject.author == @user }
-
-  # We have to check both project feature visibility and a snippet visibility and take the stricter one
-  # This will be simplified - check https://gitlab.com/gitlab-org/gitlab-foss/issues/27573
-  rule { ~can?(:read_project) }.policy do
-    prevent :read_snippet
-    prevent :update_snippet
-    prevent :admin_snippet
+  condition(:private_to_user) do
+    private_snippet? || (internal_snippet? && external_user?)
   end
 
-  # we have to use this complicated prevent because the delegated project
-  # policy is overly greedy in allowing :read_snippet, since it doesn't have
-  # any information about the snippet. However, :read_snippet on the *project*
-  # is used to hide/show various snippet-related controls, so we can't just
-  # move all of the handling here.
-  rule do
-    all?(
-      private_snippet | (internal_snippet & external_user),
-      ~project.guest,
-      ~is_author,
-      ~can?(:read_all_resources)
-    )
-  end.prevent :read_snippet
-
-  rule { internal_snippet & ~is_author & ~admin & ~project.maintainer }.policy do
-    prevent :update_snippet
-    prevent :admin_snippet
+  rule { ~is_author }.policy do
+    prevent :_admin_authored_snippet
+    prevent :_read_authored_snippet
+    prevent :_update_authored_snippet
   end
 
-  rule { public_snippet }.enable :read_snippet
+  rule { private_to_user & ~can?(:_read_private_snippet) }.prevent :read_snippet
 
-  rule { is_author & ~project.reporter & ~admin }.policy do
-    prevent :admin_snippet
-  end
-
-  rule { is_author | admin | project.maintainer }.policy do
-    enable :read_snippet
-    enable :update_snippet
-    enable :admin_snippet
-  end
+  rule { can?(:_read_authored_snippet) }.enable :_read_private_snippet
+  rule { can?(:_update_authored_snippet) }.enable :update_snippet
+  rule { can?(:_admin_authored_snippet) }.enable :admin_snippet
 
   rule { hidden & ~can?(:read_all_resources) }.policy do
     prevent :read_snippet

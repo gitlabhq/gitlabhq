@@ -173,10 +173,11 @@ module Types
 
       def job_execution_status
         BatchLoader::GraphQL.for(runner.id).batch(key: :running_builds_exist) do |runner_ids, loader|
-          statuses = ::Ci::Runner.id_in(runner_ids).with_executing_builds.index_by(&:id)
+          # We ignore `canceling` builds because they're short-lived
+          active_ids = ::Ci::Runner.ids_with_running_builds(runner_ids).to_set
 
           runner_ids.each do |runner_id|
-            loader.call(runner_id, statuses[runner_id] ? :active : :idle)
+            loader.call(runner_id, active_ids.include?(runner_id) ? :active : :idle)
           end
         end
       end

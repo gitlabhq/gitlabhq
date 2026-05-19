@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'search/_results', feature_category: :global_search do
+RSpec.describe 'search/_results', :with_current_organization, feature_category: :global_search do
   let_it_be(:user) { create(:user) }
 
   let(:search_objects) { Issue.page(1).per(2) }

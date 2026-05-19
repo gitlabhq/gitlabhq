@@ -64,7 +64,7 @@ home page users see when viewing the wiki. This page requires a specific path
 to be used as your wiki's home page. To create it:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Select **Create your first page**.
 1. Optional. Change the **Title** of the home page.
 1. GitLab requires this first page to have path `home`. The page on this
@@ -98,7 +98,7 @@ To create a new wiki page from a project or group:
 Alternatively:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **New page** on this page, or any other wiki page.
 
 After opening the new page form, complete the following steps:
@@ -134,7 +134,7 @@ Prerequisites:
 {{< tab title="From template list" >}}
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Select **Templates** to view all available templates.
 1. Next to the template you want to use, select **Create from template**.
 1. The new page form opens with:
@@ -149,7 +149,7 @@ Prerequisites:
 {{< tab title="From template page" >}}
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Select **Templates** to view all available templates.
 1. Choose and select the template you want to use.
 1. In the page header, select **Create from template**.
@@ -163,7 +163,7 @@ Prerequisites:
 {{< tab title="From new page form" >}}
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Select **New page**.
 1. In the **Choose a template** dropdown list, select your desired template.
 1. The template content is automatically loaded into the content area.
@@ -182,7 +182,7 @@ them like you would do with every other Git repository. To clone a wiki reposito
 locally:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Clone repository**.
 1. Follow the on-screen instructions.
 
@@ -252,7 +252,7 @@ Prerequisites:
 - You must have the Developer, Maintainer, or Owner role.
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Go to the page you want to edit, and either:
    - Use the <kbd>e</kbd> wiki [keyboard shortcut](../../shortcuts.md#wiki-pages).
    - Select **Edit**.
@@ -286,7 +286,7 @@ Prerequisites:
 - You must have the Developer, Maintainer, or Owner role.
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Go to the page you want to delete.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Delete page**.
 1. Confirm the deletion.
@@ -310,7 +310,7 @@ Prerequisites:
 - You must have the Developer, Maintainer, or Owner role.
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Go to the page you want to move or rename.
 1. Select **Edit**.
 1. To move the page, add the new path to the **Path** field. For example,
@@ -332,7 +332,7 @@ Prerequisites:
 You can export a wiki page as a PDF file:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Go to the page you want to export.
 1. In the upper right, select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then select **Print as PDF**.
 
@@ -372,7 +372,7 @@ Prerequisites:
 - You must have the Developer, Maintainer, or Owner role.
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Templates**.
 1. Select **New Template**.
 1. Enter template title, format and content, as if creating a regular wiki page.
@@ -412,7 +412,7 @@ Prerequisites:
 To restore a wiki page template to a previous version:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Templates**.
 1. Select a template.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Template history**.
@@ -468,7 +468,7 @@ The history page shows:
 To view the changes for a wiki page:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Go to the page you want to view history for.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Page history**.
 
@@ -477,7 +477,7 @@ To view the changes for a wiki page:
 You can see the changes made in a version of a wiki page, similar to versioned diff file views:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Go to the wiki page you're interested in.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Page history** to see all page versions.
 1. Select the commit message in the **Diff** column for the version you're interested in.
@@ -500,7 +500,7 @@ Prerequisites:
 To restore a wiki page to a previous version:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Go to the page you want to restore.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Page history**.
 1. Select the version you want to restore.
@@ -546,7 +546,7 @@ This process creates a wiki page named `_sidebar` which fully
 replaces the default sidebar navigation:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. In the upper-left corner of the page, select **Add custom sidebar** ({{< icon name="settings" >}}).
 1. When complete, select **Save changes**.
 
@@ -580,7 +580,7 @@ You can disable group wikis from the [group settings](group.md#configure-group-w
 To add a link to an external wiki from a project's left sidebar:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **External wiki**.
 1. Add the URL to your external wiki.
 1. Optional. Select **Test settings**.
@@ -596,7 +596,7 @@ To hide the internal wiki from the sidebar, [disable the project's wiki](#disabl
 To hide the link to an external wiki:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **External wiki**.
 1. Under **Enable integration**, clear the **Active** checkbox.
 1. Select **Save changes**.
@@ -606,7 +606,7 @@ To hide the link to an external wiki:
 To disable a project's internal wiki:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll down to find and turn off the **Wiki** toggle (in gray).
 1. Select **Save changes**.

@@ -1,0 +1,9 @@
+# @feature_category: team_planning
+mutation issuableTodosMarkAllDone($input: TodosMarkAllDoneInput!) {
+  todoMutation: todosMarkAllDone(input: $input) {
+    todos {
+      id
+    }
+    errors
+  }
+}

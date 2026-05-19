@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlModal, GlSprintf } from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import GlobalUserSelect from '~/vue_shared/components/user_select/global_user_select.vue';
@@ -13,6 +13,7 @@ export default {
   name: 'AwardButton',
   components: {
     GlButton,
+    GlFormGroup,
     GlModal,
     GlSprintf,
     GlobalUserSelect,
@@ -83,10 +84,9 @@ export default {
           </template>
         </gl-sprintf>
       </div>
-      <div class="gl-mb-2">
-        <b>{{ __('Users') }}</b>
-      </div>
-      <global-user-select v-model="usersToAward" class="gl-mb-2" />
+      <gl-form-group :label="__('Users')" class="gl-mb-2" label-for="global_users_input">
+        <global-user-select v-model="usersToAward" input-id="global_users_input" class="gl-mb-2" />
+      </gl-form-group>
     </gl-modal>
   </span>
 </template>

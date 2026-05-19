@@ -10,8 +10,11 @@ module BulkImports
     end
 
     def execute
+      return unless @offline_export_id
+
       # Set up query to get cached users and set it as user_contributions on the portable model
-      @portable.user_contributions = UserContributionsExportMapper.new(@portable).get_contributing_users
+      @portable.user_contributions = UserContributionsExportMapper.new(@portable, offline_export_id: @offline_export_id)
+        .get_contributing_users
       relation = BulkImports::FileTransfer::BaseConfig::USER_CONTRIBUTIONS_RELATION
 
       RelationExportService.new(@user, @portable, relation, @jid, offline_export_id: @offline_export_id).execute

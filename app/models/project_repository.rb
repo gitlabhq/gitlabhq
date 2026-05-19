@@ -10,6 +10,8 @@ class ProjectRepository < ApplicationRecord
 
   belongs_to :project, inverse_of: :project_repository
 
+  delegate :track_project_repository, to: :project
+
   class << self
     def find_project(disk_path)
       find_by(disk_path: disk_path)&.project

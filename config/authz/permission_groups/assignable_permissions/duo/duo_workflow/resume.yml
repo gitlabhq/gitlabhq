@@ -1,0 +1,9 @@
+---
+name: resume_duo_workflow
+description: Grants the ability to resume duo workflows that are awaiting user input
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - resume_duo_workflow

@@ -232,11 +232,11 @@ func TestValidUploadConfiguration(t *testing.T) {
 		}, {
 			desc: "with overridden url",
 			uploadConfig: &uploadConfig{
-				URL: "http://test.org/overriden/upload",
+				URL: "http://test.org/overridden/upload",
 			},
 			expectedConfig: uploadConfig{
 				Method: http.MethodPost,
-				URL:    "http://test.org/overriden/upload",
+				URL:    "http://test.org/overridden/upload",
 			},
 			serveHTTPUsed: true,
 		}, {

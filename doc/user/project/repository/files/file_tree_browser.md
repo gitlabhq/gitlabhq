@@ -64,7 +64,7 @@ directories and highlights the current file.
 
 ## Search files
 
-Use the global search to find files by name in your repository.
+Use the search panel to find files by name in your repository.
 
 To search files:
 
@@ -73,7 +73,7 @@ To search files:
    - In the upper-left corner, select the file tree browser icon ({{< icon name="file-tree" >}}).
    - Press <kbd>Shift</kbd>+<kbd>F</kbd>.
 
-1. To open the global search dialog, select **Search files** or press <kbd>F</kbd>.
+1. To open the search panel, select **Search files** or press <kbd>F</kbd>.
 1. Enter part of the filename you want to find.
    The results list shows matching files and their parent directories.
 1. Select or use the arrow keys and press <kbd>Enter</kbd> to go to a file.
@@ -87,7 +87,7 @@ The file tree browser supports these keyboard shortcuts:
 | Shortcut                      | Action |
 |-------------------------------|--------|
 | <kbd>Shift</kbd>+<kbd>F</kbd> | Show or hide the file tree browser. |
-| <kbd>F</kbd>                  | Open the global search dialog. |
+| <kbd>F</kbd>                  | Open the search panel. |
 
 For the full list of available keyboard shortcuts, see [GitLab keyboard shortcuts](../../../shortcuts.md).
 

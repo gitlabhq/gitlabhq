@@ -8,7 +8,7 @@ module Test
     # as that logic is for the actual embedding_model_selector class
     def self.for(model_metadata, search: false)
       ::ActiveContext::EmbeddingModel.new(
-        model_name: model_metadata[:model_ref],
+        model_key: model_metadata[:model_ref],
         field: model_metadata[:field],
         llm_class: Test::MockLlmClass,
         llm_params: { model: model_metadata[:model_ref], search: search }

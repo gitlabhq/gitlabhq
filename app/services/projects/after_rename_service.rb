@@ -141,15 +141,23 @@ module Projects
     end
 
     def publish_event
-      event = Projects::ProjectPathChangedEvent.new(data: {
-        project_id: project.id,
-        namespace_id: project.namespace_id,
-        root_namespace_id: project.root_namespace.id,
-        old_path: full_path_before,
-        new_path: full_path_after
-      })
+      old_path = full_path_before
+      new_path = full_path_after
+      project_id = project.id
+      namespace_id = project.namespace_id
+      root_namespace_id = project.root_namespace.id
 
-      Gitlab::EventStore.publish(event)
+      project.run_after_commit_or_now do
+        event = Projects::ProjectPathChangedEvent.new(data: {
+          project_id: project_id,
+          namespace_id: namespace_id,
+          root_namespace_id: root_namespace_id,
+          old_path: old_path,
+          new_path: new_path
+        })
+
+        Gitlab::EventStore.publish(event)
+      end
     end
   end
 end

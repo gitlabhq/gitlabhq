@@ -109,7 +109,6 @@ module IssuableCollections
     @preload_for_collection ||= case collection_type
                                 when 'Issue'
                                   common_attributes + [
-                                    :work_item_type,
                                     :project, { project: :namespace }
                                   ]
                                 when 'MergeRequest'

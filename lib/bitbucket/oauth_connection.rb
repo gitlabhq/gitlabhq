@@ -18,9 +18,9 @@ module Bitbucket
     end
 
     def get(path, extra_query = {})
-      refresh! if expired?
-
       response = retry_with_exponential_backoff do
+        refresh! if expired?
+
         connection.get(build_url(path), params: @default_query.merge(extra_query))
       end
 

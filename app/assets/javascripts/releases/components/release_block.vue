@@ -11,7 +11,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __, sprintf } from '~/locale';
 import EvidenceBlock from './evidence_block.vue';
 import ReleaseBlockAssets from './release_block_assets.vue';
-import ReleaseBlockFooter from './release_block_footer.vue';
+import ReleaseBlockDetails from './release_block_details.vue';
 import ReleaseBlockTitle from './release_block_title.vue';
 import ReleaseBlockMilestoneInfo from './release_block_milestone_info.vue';
 import ReleaseBlockDeployments from './release_block_deployments.vue';
@@ -23,10 +23,10 @@ export default {
     CrudComponent,
     EvidenceBlock,
     ReleaseBlockAssets,
-    ReleaseBlockFooter,
     ReleaseBlockTitle,
     ReleaseBlockMilestoneInfo,
     ReleaseBlockDeployments,
+    ReleaseBlockDetails,
   },
   directives: {
     SafeHtml,
@@ -46,6 +46,16 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    previousReleaseSha: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    comparePath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -70,6 +80,9 @@ export default {
     milestones() {
       return this.release.milestones || [];
     },
+    links() {
+      return this.release._links || {};
+    },
     shouldRenderAssets() {
       return Boolean(
         this.assets.links.length || (this.assets.sources && this.assets.sources.length),
@@ -79,12 +92,12 @@ export default {
       return Boolean(!isEmpty(this.release.milestones));
     },
     editLink() {
-      if (this.release._links?.editUrl) {
+      if (this.links.editUrl) {
         const queryParams = {
           [BACK_URL_PARAM]: window.location.href,
         };
 
-        return setUrlParams(queryParams, { url: this.release._links.editUrl });
+        return setUrlParams(queryParams, { url: this.links.editUrl });
       }
 
       return undefined;
@@ -94,6 +107,9 @@ export default {
     },
     shouldApplyAssetsBlockCss() {
       return Boolean(this.hasEvidence || this.release.descriptionHtml);
+    },
+    isFutureRelease() {
+      return new Date() < new Date(this.release.releasedAt);
     },
   },
 
@@ -120,7 +136,7 @@ export default {
     editButton: __('Edit release'),
     editButtonAriaLabel: (title) => sprintf(__('Edit release (%{title})'), { title }),
   },
-  commonCssClasses: 'gl-border-b-1 gl-pb-5 gl-border-b-solid',
+  commonCssClasses: 'gl-border-b-1 gl-pb-5 gl-border-b-solid gl-border-default',
 };
 </script>
 <template>
@@ -133,7 +149,17 @@ export default {
     data-testid="release-block"
   >
     <template #title>
-      <release-block-title :release="release" />
+      <release-block-title
+        :release="release"
+        :commit="release.commit"
+        :commit-path="release.commitPath"
+        :tag-name="release.tagName"
+        :tag-path="release.tagPath"
+        :author="release.author"
+        :released-at="release.releasedAt"
+        :created-at="release.createdAt"
+        :sort="sort"
+      />
     </template>
 
     <template #actions>
@@ -150,61 +176,63 @@ export default {
       </gl-button>
     </template>
 
-    <div class="gl-mx-5 gl-my-4 gl-flex gl-flex-col gl-gap-5">
-      <div
-        v-if="shouldRenderMilestoneInfo"
-        class="gl-border-b-1 gl-border-default gl-border-b-solid"
-      >
-        <!-- TODO: Switch open* links to opened* once fields have been updated in GraphQL -->
-        <release-block-milestone-info
-          :milestones="milestones"
-          :opened-issues-path="release._links.openedIssuesUrl"
-          :closed-issues-path="release._links.closedIssuesUrl"
-          :opened-merge-requests-path="release._links.openedMergeRequestsUrl"
-          :merged-merge-requests-path="release._links.mergedMergeRequestsUrl"
-          :closed-merge-requests-path="release._links.closedMergeRequestsUrl"
-        />
-      </div>
-
-      <release-block-deployments
-        v-if="deployments.length"
-        :class="{
-          [`${$options.commonCssClasses} gl-border-gray-100`]: shouldApplyDeploymentsBlockCss,
-        }"
-        :deployments="deployments"
-      />
-
-      <release-block-assets
-        v-if="shouldRenderAssets"
-        :assets="assets"
-        :expanded="!deployments.length"
-        :class="{
-          [`${$options.commonCssClasses} gl-border-default`]: shouldApplyAssetsBlockCss,
-        }"
-      />
-      <evidence-block v-if="hasEvidence" :release="release" />
-
-      <div v-if="release.descriptionHtml" ref="gfm-content">
-        <h3 class="gl-heading-5 !gl-mb-2">{{ __('Release notes') }}</h3>
-        <div
-          v-safe-html:[$options.safeHtmlConfig]="release.descriptionHtml"
-          class="md"
-          data-testid="release-description"
-        ></div>
-      </div>
-    </div>
-
-    <template #footer>
-      <release-block-footer
-        :commit="release.commit"
+    <div class="gl-flex gl-flex-col gl-gap-5 gl-px-5 gl-py-4 @md:gl-flex-row">
+      <release-block-details
+        :author="release.author"
         :commit-path="release.commitPath"
+        :commit="release.commit"
+        :compare-path="comparePath"
+        :created-at="release.createdAt"
+        :previous-release-sha="previousReleaseSha"
+        :released-at="release.releasedAt"
+        :sort="sort"
         :tag-name="release.tagName"
         :tag-path="release.tagPath"
-        :author="release.author"
-        :released-at="release.releasedAt"
-        :created-at="release.createdAt"
-        :sort="sort"
       />
-    </template>
+      <div class="gl-flex gl-grow gl-flex-col gl-gap-5">
+        <div v-if="release.descriptionHtml" ref="gfm-content" :class="$options.commonCssClasses">
+          <h3 class="gl-heading-3 !gl-mb-2 gl-mt-0">{{ __('Release notes') }}</h3>
+          <div
+            v-safe-html:[$options.safeHtmlConfig]="release.descriptionHtml"
+            class="md"
+            data-testid="release-description"
+          ></div>
+        </div>
+
+        <div
+          v-if="shouldRenderMilestoneInfo"
+          class="gl-border-b-1 gl-border-default gl-border-b-solid"
+        >
+          <!-- TODO: Switch open* links to opened* once fields have been updated in GraphQL -->
+          <release-block-milestone-info
+            :milestones="milestones"
+            :show-details="isFutureRelease"
+            :opened-issues-path="links.openedIssuesUrl"
+            :closed-issues-path="links.closedIssuesUrl"
+            :opened-merge-requests-path="links.openedMergeRequestsUrl"
+            :merged-merge-requests-path="links.mergedMergeRequestsUrl"
+            :closed-merge-requests-path="links.closedMergeRequestsUrl"
+          />
+        </div>
+
+        <release-block-deployments
+          v-if="deployments.length"
+          :class="{
+            [`${$options.commonCssClasses}`]: shouldApplyDeploymentsBlockCss,
+          }"
+          :deployments="deployments"
+        />
+
+        <release-block-assets
+          v-if="shouldRenderAssets"
+          :assets="assets"
+          :expanded="!deployments.length"
+          :class="{
+            [`${$options.commonCssClasses}`]: shouldApplyAssetsBlockCss,
+          }"
+        />
+        <evidence-block v-if="hasEvidence" :release="release" />
+      </div>
+    </div>
   </crud-component>
 </template>

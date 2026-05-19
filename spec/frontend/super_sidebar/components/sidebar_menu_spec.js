@@ -10,7 +10,11 @@ import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
-import { PANELS_WITH_PINS, PINNED_NAV_STORAGE_KEY } from '~/super_sidebar/constants';
+import {
+  PANELS_WITH_PINS,
+  PINNED_NAV_STORAGE_KEY,
+  MAX_OPEN_WORK_ITEMS_COUNT,
+} from '~/super_sidebar/constants';
 import { sidebarData, sidebarDataCountResponse } from 'ee_else_ce_jest/super_sidebar/mock_data';
 import { userCounts } from '~/super_sidebar/user_counts_manager';
 
@@ -389,6 +393,105 @@ describe('Sidebar Menu', () => {
         expect(findPinnedSection().props('asyncCount')).toMatchObject({
           openIssuesCount: '8',
           openMergeRequestsCount: '236.5k',
+        });
+      });
+
+      describe('when showWorkItemsSidebarCount feature flag is enabled', () => {
+        it('formats openWorkItemsCount as "10k+" when it equals the max limit', async () => {
+          handler = jest
+            .fn()
+            .mockResolvedValue(
+              sidebarDataCountResponse({ openWorkItemsCount: MAX_OPEN_WORK_ITEMS_COUNT }),
+            );
+
+          createWrapper({
+            items: menuItems,
+            panelType: 'project',
+            provide: { currentPath: 'group', glFeatures: { showWorkItemsSidebarCount: true } },
+          });
+
+          await waitForPromises();
+
+          expect(findPinnedSection().props('asyncCount')).toMatchObject({
+            openWorkItemsCount: '10k+',
+          });
+        });
+
+        it('formats openWorkItemsCount normally when below the max limit', async () => {
+          handler = jest
+            .fn()
+            .mockResolvedValue(sidebarDataCountResponse({ openWorkItemsCount: 9999 }));
+
+          createWrapper({
+            items: menuItems,
+            panelType: 'project',
+            provide: { currentPath: 'group' },
+          });
+
+          await waitForPromises();
+
+          expect(findPinnedSection().props('asyncCount')).toMatchObject({
+            openWorkItemsCount: '10k',
+          });
+        });
+
+        it('does not append "+" to openIssuesCount even when it equals the max limit', async () => {
+          handler = jest
+            .fn()
+            .mockResolvedValue(
+              sidebarDataCountResponse({ openIssuesCount: MAX_OPEN_WORK_ITEMS_COUNT }),
+            );
+
+          createWrapper({
+            items: menuItems,
+            panelType: 'project',
+            provide: { currentPath: 'group' },
+          });
+
+          await waitForPromises();
+
+          expect(findPinnedSection().props('asyncCount')).toMatchObject({
+            openIssuesCount: '10k',
+          });
+        });
+
+        it('includes openWorkItemsCount in asyncCount', async () => {
+          handler = jest
+            .fn()
+            .mockResolvedValue(sidebarDataCountResponse({ openWorkItemsCount: 5 }));
+
+          createWrapper({
+            items: menuItems,
+            panelType: 'project',
+            provide: {
+              currentPath: 'group',
+              glFeatures: { showWorkItemsSidebarCount: true },
+            },
+          });
+
+          await waitForPromises();
+
+          expect(findPinnedSection().props('asyncCount')).toMatchObject({
+            openWorkItemsCount: '5',
+          });
+        });
+      });
+
+      describe('when showWorkItemsSidebarCount feature flag is disabled', () => {
+        it('does not show openWorkItemsCount', async () => {
+          handler = jest
+            .fn()
+            .mockResolvedValue(sidebarDataCountResponse({ openWorkItemsCount: null }));
+
+          createWrapper({
+            items: menuItems,
+            panelType: 'project',
+            provide: { currentPath: 'group', glFeatures: { showWorkItemsSidebarCount: false } },
+          });
+
+          await waitForPromises();
+
+          expect(findPinnedSection().props('asyncCount')).not.toHaveProperty('openWorkItemsCount');
         });
       });
     });

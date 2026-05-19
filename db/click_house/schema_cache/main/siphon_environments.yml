@@ -1,0 +1,77 @@
+---
+name: siphon_environments
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (traversal_path, id) ORDER BY (traversal_path, id) SETTINGS deduplicate_merge_projection_mode
+  = 'rebuild', index_granularity = 2048
+primary_key: traversal_path, id
+sorting_key: traversal_path, id
+settings:
+  deduplicate_merge_projection_mode: "'rebuild'"
+  index_granularity: '2048'
+columns:
+- name: id
+  type: Int64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: project_id
+  type: Int64
+- name: name
+  type: String
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: external_url
+  type: Nullable(String)
+- name: environment_type
+  type: Nullable(String)
+- name: state
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'available'"
+- name: slug
+  type: String
+- name: auto_stop_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: auto_delete_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: tier
+  type: Nullable(Int8)
+- name: merge_request_id
+  type: Nullable(Int64)
+- name: cluster_agent_id
+  type: Nullable(Int64)
+- name: kubernetes_namespace
+  type: Nullable(String)
+- name: flux_resource_path
+  type: Nullable(String)
+- name: description
+  type: Nullable(String)
+- name: description_html
+  type: Nullable(String)
+- name: cached_markdown_version
+  type: Nullable(Int64)
+- name: auto_stop_setting
+  type: Int8
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
+    'traversal_path', project_id, '0/'), '0/')
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'

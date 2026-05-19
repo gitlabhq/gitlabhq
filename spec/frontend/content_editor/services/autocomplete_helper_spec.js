@@ -3,6 +3,7 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from '~/lib/utils/axios_utils';
 import AutocompleteHelper, {
   defaultSorter,
+  commandSorter,
   customSorter,
   createDataSource,
 } from '~/content_editor/services/autocomplete_helper';
@@ -30,7 +31,7 @@ jest.mock('~/emoji', () => ({
   getAllEmoji: () => [{ name: 'thumbsup' }],
 }));
 
-jest.mock('~/graphql_shared/issuable_client', () => ({
+jest.mock('~/graphql_shared/issuable_client_state', () => ({
   currentAssignees: jest.fn().mockReturnValue({
     1: [
       {
@@ -135,6 +136,27 @@ jest.mock('~/graphql_shared/issuable_client', () => ({
       ],
     },
   }),
+  supportedConversionTypes: jest.fn().mockReturnValue({
+    'gitlab-org/gitlab-test': {
+      'gid://gitlab/WorkItems::Type/1': [
+        {
+          id: 'gid://gitlab/WorkItems::Type/2',
+          name: 'Task',
+          iconName: 'issue-type-task',
+        },
+        {
+          id: 'gid://gitlab/WorkItems::Type/3',
+          name: 'Incident',
+          iconName: 'issue-type-incident',
+        },
+        {
+          id: 'gid://gitlab/WorkItems::Type/4',
+          name: 'Issue',
+          iconName: 'issue-type-issue',
+        },
+      ],
+    },
+  }),
 }));
 
 describe('defaultSorter', () => {
@@ -161,6 +183,36 @@ describe('defaultSorter', () => {
       { name: 'wabc', description: 'xyz' },
       { name: 'bcd', description: 'wxy' },
       { name: 'cde', description: 'vwx' },
+    ]);
+  });
+});
+
+describe('commandSorter', () => {
+  const sorter = commandSorter(['name', 'search']);
+  it('returns items as is if query is empty', () => {
+    const items = [
+      { name: 'assign', aliases: [] },
+      { name: 'close', aliases: [] },
+    ];
+    expect(sorter(items, '')).toBe(items);
+  });
+  it('falls back to default sorter when no aliases match', () => {
+    const items = [
+      { name: 'abc', aliases: [], search: 'abc' },
+      { name: 'bcd', aliases: [], search: 'bcd' },
+    ];
+    expect(sorter(items, 'b')[0].name).toBe('bcd');
+  });
+  it('ranks name prefix above alias prefix above substring', () => {
+    const items = [
+      { name: 'close', aliases: [] },
+      { name: 'request_review', aliases: ['assign_reviewer', 'reviewer'] },
+      { name: 'assign', aliases: [] },
+    ];
+    expect(sorter(items, 'assign').map((i) => i.name)).toEqual([
+      'assign', // name starts with 'assign'
+      'request_review', // alias 'assign_reviewer' starts with 'assign'
+      'close', // no match
     ]);
   });
 });
@@ -221,6 +273,21 @@ describe('createDataSource', () => {
 
     const results = await dataSource.search('', 'b');
     expect(results).toEqual([]);
+  });
+
+  it('memoizes fetch across different prefixCommand and query values', async () => {
+    mock.onGet('/source').reply(HTTP_STATUS_OK, [{ name: 'rebase' }]);
+
+    const dataSource = createDataSource({
+      source: '/source',
+      searchFields: ['name'],
+    });
+
+    await dataSource.search('/r', 'r');
+    await dataSource.search('/re', 're');
+    await dataSource.search('/rel', 'rel');
+
+    expect(mock.history.get).toHaveLength(1);
   });
 });
 
@@ -406,6 +473,19 @@ describe('AutocompleteHelper', () => {
       'filters statuses using apollo cache for command "$command "$query"',
       async ({ command, query }) => {
         const dataSource = autocompleteHelper.getDataSource('status', { command });
+        const results = await dataSource.search(command, query);
+        expect(results.map(({ name }) => name)).toMatchSnapshot();
+      },
+    );
+
+    it.each`
+      command    | query
+      ${'/type'} | ${''}
+      ${'/type'} | ${'ta'}
+    `(
+      'filters types using apollo cache for command "$command "$query"',
+      async ({ command, query }) => {
+        const dataSource = autocompleteHelper.getDataSource('type', { command });
         const results = await dataSource.search(command, query);
         expect(results.map(({ name }) => name)).toMatchSnapshot();
       },

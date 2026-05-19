@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Events::RenderService, feature_category: :user_profile do
   describe '#execute' do
-    let!(:note) { build(:note) }
-    let!(:event) { build(:event, target: note, project: note.project) }
-    let!(:user) { build(:user) }
+    let(:note) { build(:note) }
+    let(:event) { build(:event, target: note, project: note.project) }
+    let(:user) { build(:user) }
 
     context 'when the request format is atom' do
       it 'renders the note inside events' do

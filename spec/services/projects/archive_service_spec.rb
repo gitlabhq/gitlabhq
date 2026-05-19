@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
-  let_it_be_with_reload(:project) { create(:project, namespace: group) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be_with_refind(:project) { create(:project, namespace: group) }
 
   subject(:service) { described_class.new(project: project, current_user: user) }
 
@@ -79,25 +79,58 @@ RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects 
       end
 
       context 'when project ancestors are not archived' do
-        context 'when archiving project fails' do
+        context 'when archiving project fails with project errors' do
           before do
-            allow(project).to receive(:update).with(archived: true).and_return(false)
-            allow(project).to receive_message_chain(:errors, :full_messages, :to_sentence)
-                                .and_return('Validation failed')
+            allow(project).to receive(:archive) do
+              project.errors.add(:base, 'Project state is invalid')
+              false
+            end
           end
 
           it 'returns error with validation messages' do
             result = service.execute
 
             expect(result).to be_error
-            expect(result.message).to eq('Validation failed')
+            expect(result.message).to eq('Project state is invalid')
+          end
+        end
+
+        context 'when archiving project fails with namespace errors' do
+          before do
+            allow(project).to receive(:archive) do
+              project.project_namespace.errors.add(:state, 'cannot transition via "archive"')
+              false
+            end
+          end
+
+          it 'returns error with namespace error messages' do
+            result = service.execute
+
+            expect(result).to be_error
+            expect(result.message).to eq('State cannot transition via "archive"')
+          end
+        end
+
+        context 'when both project and namespace have errors' do
+          before do
+            allow(project).to receive(:archive) do
+              project.errors.add(:base, 'Project error')
+              project.project_namespace.errors.add(:state, 'Namespace error')
+              false
+            end
+          end
+
+          it 'returns combined error messages' do
+            result = service.execute
+
+            expect(result).to be_error
+            expect(result.message).to eq('Project error and State Namespace error')
           end
         end
 
         context 'when archiving project fails without specific error messages' do
           before do
-            allow(project).to receive(:update).with(archived: true).and_return(false)
-            allow(project).to receive_message_chain(:errors, :full_messages, :to_sentence).and_return('')
+            allow(project).to receive(:archive).and_return(false)
           end
 
           it 'returns generic archiving failed error' do
@@ -105,41 +138,6 @@ RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects 
 
             expect(result).to be_error
             expect(result.message).to eq('Failed to archive project.')
-          end
-        end
-
-        context 'when project state is archived but archived attribute is false' do
-          before do
-            project.project_namespace.update!(state: :archived)
-          end
-
-          it 'allows archiving and skips state transition' do
-            result = service.execute
-
-            expect(result).to be_success
-            expect(project.reload.archived).to be(true)
-            expect(project.state).to eq('archived')
-          end
-        end
-
-        context 'when project was archived before group was archived' do
-          it 'allows re-archiving project after group archive and unarchive cycle' do
-            result = service.execute
-            expect(result).to be_success
-            expect(project.reload.archived).to be(true)
-
-            result = Namespaces::Groups::ArchiveService.new(group.reload, user).execute
-            expect(result).to be_success
-
-            result = Namespaces::Groups::UnarchiveService.new(group.reload, user).execute
-            expect(result).to be_success
-
-            project.reload
-
-            result = service.execute
-            expect(result).to be_success
-            expect(project.reload.archived).to be(true)
-            expect(project.project_namespace.state).to eq('archived')
           end
         end
 

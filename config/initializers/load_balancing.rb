@@ -4,8 +4,15 @@ def configure_load_balancing!
   Gitlab::Database::LoadBalancing.configure! do |load_balancer|
     load_balancer.enabled = !Gitlab::Runtime.rake?
     load_balancer.default_pool_size = Gitlab::Database.default_pool_size
-    load_balancer.base_models = ::Gitlab::Database.database_base_models_using_load_balancing.values.freeze
+    load_balancer.base_model_names = ::Gitlab::Database.database_base_models_using_load_balancing.values.map(&:name).freeze
     load_balancer.all_database_names = ::Gitlab::Database.all_database_names.freeze
+  end
+
+  Gitlab::Database::LoadBalancing::Callbacks.configure! do |callbacks|
+    hosts_gauge = Gitlab::Metrics.gauge(:db_load_balancing_hosts, 'Current number of load balancing hosts')
+
+    callbacks.metrics_host_gauge_proc = ->(labels, value) { hosts_gauge.set(labels, value) }
+    callbacks.track_exception_proc = ->(exception) { Gitlab::ErrorTracking.track_exception(exception) }
   end
 end
 

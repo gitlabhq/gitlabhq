@@ -27,12 +27,12 @@ title: Activities for following releases actor
 This feature requires two feature flags:
 
 - `activity_pub`: Enables or disables all ActivityPub-related features.
-- `activity_pub_project`: Enables and disable ActivityPub features specific to
+- `activity_pub_project`: Enables and disables ActivityPub features specific to
   projects. Requires the `activity_pub` flag to also be enabled.
 
 ## Profile
 
-The profile is this actor is a bit different from other actors. We don't want to
+The profile of this actor is a bit different from other actors. We don't want to
 show activities for a given release, but instead the releases for a given project.
 
 The profile endpoint is handled by `Projects::ReleasesController#index`

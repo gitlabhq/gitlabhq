@@ -666,6 +666,13 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
             expect(user.locked_at).to be_nil
           end
 
+          it 'includes show_resend_after in the success response', :freeze_time do
+            user.reload
+            expect(json_response['show_resend_after']).to eq(
+              (user.email_otp_last_sent_at + VerifiesWithEmailHelper::RESEND_COOLDOWN_PERIOD).to_i * 1000
+            )
+          end
+
           context 'when user => email param is present' do
             context 'when email param matches the user\'s verified primary email' do
               let(:params) { { user: { email: user.email } } }
@@ -1115,14 +1122,18 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       end
 
       context 'when user is not treated as locked' do
-        it 'is permitted to fallback to email otp' do
+        it 'is permitted to fallback to email otp', :freeze_time do
           post(users_fallback_to_email_otp_path(user: { login: user.username }))
+          user.reload
 
           expect(session[:verifies_with_email_user_id]).to eq(user.id)
           expect(response).to have_gitlab_http_status(:ok)
 
           expect(json_response).to match({
-            "status" => "success"
+            "status" => "success",
+            "show_resend_after" => (
+              user.email_otp_last_sent_at + VerifiesWithEmailHelper::RESEND_COOLDOWN_PERIOD
+            ).to_i * 1000
           })
         end
       end

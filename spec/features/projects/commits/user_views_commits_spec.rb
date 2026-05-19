@@ -8,9 +8,45 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
 
-  shared_examples 'can view commits' do
+  shared_examples 'private project access denied' do
+    context 'when project is private' do
+      let_it_be(:project) { create_default(:project, :private, :repository, group: group) }
+
+      context 'and user is an inherited member from the group' do
+        context 'and user is a guest' do
+          before_all do
+            group.add_guest(user)
+          end
+
+          it 'renders not found' do
+            sign_in(user)
+            visit project_commits_path(project)
+
+            expect(page).to have_title('Not Found')
+            expect(page).to have_content('Page not found')
+          end
+        end
+      end
+    end
+  end
+
+  shared_examples 'has expected number of commits' do
     it 'lists the correct number of commits' do
+      visit project_commits_path(project)
+
       expect(page).to have_selector('#commits-list ol > li:nth-child(2) > ul', count: 1)
+    end
+  end
+
+  shared_examples 'has expected number of commits with refactor', :js do
+    it 'lists the correct number of commits' do
+      visit project_commits_path(project)
+      wait_for_requests
+
+      expect(page).to have_selector(
+        'li[data-testid="daily-commits"]:nth-child(2) > ul.daily-commits-item',
+        count: 1
+      )
     end
   end
 
@@ -18,11 +54,7 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
     context 'when project is public' do
       let_it_be(:project) { create_default(:project, :public, :repository, group: group) }
 
-      before do
-        visit project_commits_path(project)
-      end
-
-      it_behaves_like 'can view commits'
+      it_behaves_like 'has expected number of commits'
     end
 
     context 'when project is public with private repository' do
@@ -35,35 +67,47 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
             sign_in(user)
           end
 
-          before do
+          it 'lists the correct number of commits' do
             visit project_commits_path(project)
-          end
 
-          it_behaves_like 'can view commits'
+            expect(page).to have_selector('#commits-list ol > li:nth-child(2) > ul', count: 1)
+          end
         end
       end
     end
 
-    context 'when project is private' do
-      let_it_be(:project) { create_default(:project, :private, :repository, group: group) }
+    it_behaves_like 'private project access denied'
 
-      context 'and user is an inherited member from the group' do
-        context 'and user is a guest' do
-          before_all do
-            group.add_guest(user)
-          end
+    context 'when project_commits_refactor is enabled' do
+      before do
+        stub_feature_flags(project_commits_refactor: true)
+      end
 
-          before do
-            sign_in(user)
-            visit project_commits_path(project)
-          end
+      context 'when project is public' do
+        let_it_be(:project) { create_default(:project, :public, :repository, group: group) }
 
-          it 'renders not found' do
-            expect(page).to have_title('Not Found')
-            expect(page).to have_content('Page not found')
+        it_behaves_like 'has expected number of commits with refactor'
+      end
+
+      context 'when project is public with private repository' do
+        let_it_be(:project) { create_default(:project, :public, :repository, :repository_private, group: group) }
+
+        context 'and user is an inherited member from the group' do
+          context 'and user is a guest' do
+            before_all do
+              group.add_guest(user)
+            end
+
+            before do
+              sign_in(user)
+            end
+
+            it_behaves_like 'has expected number of commits with refactor'
           end
         end
       end
+
+      it_behaves_like 'private project access denied'
     end
   end
 

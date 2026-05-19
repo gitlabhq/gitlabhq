@@ -18,13 +18,13 @@ RSpec.describe Namespaces::ProjectNamespacePolicy, feature_category: :groups_and
   end
 
   context 'with read_namespace permissions' do
-    let(:project) { public_project }
+    let_it_be(:project) { public_project }
     let(:owner) { project.creator }
-    let(:developer) { create(:user) }
-    let(:admin) { create(:admin) }
+    let_it_be(:developer) { create(:user) }
+    let_it_be(:admin) { create(:admin) }
     let(:namespace) { project.project_namespace }
 
-    before do
+    before_all do
       project.add_developer(developer)
     end
 
@@ -91,7 +91,7 @@ RSpec.describe Namespaces::ProjectNamespacePolicy, feature_category: :groups_and
     end
 
     context 'with support bot user' do
-      let(:current_user) { create(:support_bot) }
+      let_it_be(:current_user) { create(:support_bot) }
 
       context 'with service desk disabled' do
         it { expect(described_class.new(current_user, namespace)).not_to be_allowed(:read_project, :read_namespace) }
@@ -101,7 +101,7 @@ RSpec.describe Namespaces::ProjectNamespacePolicy, feature_category: :groups_and
     context 'with deploy key access actor' do
       context 'when project is private' do
         let(:project) { private_project }
-        let!(:deploy_key) { create(:deploy_key, user: owner) }
+        let(:deploy_key) { create(:deploy_key, user: owner) }
 
         subject { described_class.new(deploy_key, project.project_namespace) }
 

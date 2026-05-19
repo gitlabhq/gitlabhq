@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
   let_it_be(:user) { create(:user) }
-  let_it_be(:namespace_settings) do
+  let_it_be(:namespace_settings, freeze: false) do
     create(:namespace_settings, runner_registration_enabled: true, allow_runner_registration_token: true)
   end
 
-  let_it_be(:group) { create(:group, namespace_settings: namespace_settings) }
+  let_it_be(:group, freeze: false) { create(:group, namespace_settings: namespace_settings) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
 

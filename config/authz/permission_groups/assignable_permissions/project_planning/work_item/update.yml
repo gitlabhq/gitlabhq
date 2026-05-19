@@ -1,0 +1,42 @@
+---
+name: update_work_item
+description: Grants the ability to update work items
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_work_item
+  - add_issue_spent_time
+  - add_merge_request_spent_time
+  - create_issue_time_estimate
+  - create_merge_request_time_estimate
+  - move_issue
+  - promote_milestone
+  - reorder_issue
+  - reset_issue_spent_time
+  - reset_issue_time_estimate
+  - reset_merge_request_spent_time
+  - reset_merge_request_time_estimate
+  - update_epic
+  - update_epic_issue
+  - update_epic_link
+  - update_epic_note
+  - update_issue
+  - update_work_item
+  - update_issue_board
+  - update_issue_board_list
+  - update_issue_discussion
+  - update_issue_discussion_note
+  - update_issue_note
+  - update_epic_discussion
+  - update_epic_discussion_note
+  - update_iteration
+  - update_iteration_cadence
+  - update_merge_request_note
+  - update_milestone
+  - update_snippet_discussion
+  - update_snippet_discussion_note
+  - update_snippet_note
+  - update_wiki_page_meta_note

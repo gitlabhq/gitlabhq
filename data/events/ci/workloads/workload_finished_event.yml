@@ -1,0 +1,5 @@
+---
+event: Ci::Workloads::WorkloadFinishedEvent
+description: Published when a CI workload transitions to :finished or :failed. Deferred
+  via run_after_commit.
+feature_category: continuous_integration

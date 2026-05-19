@@ -11,6 +11,7 @@ import getPackagesQuery from '~/packages_and_registries/package_registry/graphql
 import {
   packagesDestroyMutation,
   packagesDestroyMutationError,
+  packagesDestroyMutationWithUserErrors,
   packagesListQuery,
 } from '../../mock_data';
 
@@ -114,6 +115,14 @@ describe('DeletePackages', () => {
       expect(wrapper.emitted('end')).toEqual([[]]);
     });
 
+    it('emits success event', async () => {
+      createComponent();
+
+      await clickOnButtonAndWait(eventPayload);
+
+      expect(wrapper.emitted('success')).toEqual([[]]);
+    });
+
     it('does not call createAlert', async () => {
       createComponent();
 
@@ -144,6 +153,37 @@ describe('DeletePackages', () => {
           variant: VARIANT_SUCCESS,
         });
       });
+    });
+  });
+
+  describe('on mutation user error', () => {
+    const serverErrorMessage = "Package 'protected_pkg' is deletion protected.";
+
+    beforeEach(() => {
+      mutationResolver = jest
+        .fn()
+        .mockResolvedValue(packagesDestroyMutationWithUserErrors([serverErrorMessage]));
+    });
+
+    it('displays the server error message', async () => {
+      createComponent();
+
+      await clickOnButtonAndWait(eventPayload);
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: serverErrorMessage,
+        variant: VARIANT_WARNING,
+        captureError: false,
+        error: serverErrorMessage,
+      });
+    });
+
+    it('does not emit success event', async () => {
+      createComponent();
+
+      await clickOnButtonAndWait(eventPayload);
+
+      expect(wrapper.emitted('success')).toBeUndefined();
     });
   });
 

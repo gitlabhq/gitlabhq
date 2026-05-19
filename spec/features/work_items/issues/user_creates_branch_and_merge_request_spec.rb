@@ -60,18 +60,16 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
 
       context 'when branch name is auto-generated' do
         it 'creates a merge request' do
-          perform_enqueued_jobs do
+          click_button 'Create merge request'
+          within_modal do
             click_button 'Create merge request'
-            within_modal do
-              click_button 'Create merge request'
-            end
-
-            expect(page).to have_css('h1', text: 'New merge request')
-            expect(page).to have_text("From #{issue.to_branch_name} into #{project.default_branch}")
-            expect(page).to have_field("Title", with: "Draft: Resolve \"Cherry-Coloured Funk\"")
-            expect(page).to have_field("Description", with: "Closes ##{issue.iid}")
-            expect(page).to have_current_path(project_new_merge_request_path(project, merge_request: { source_branch: issue.to_branch_name, target_branch: project.default_branch, issue_iid: issue.iid }))
           end
+
+          expect(page).to have_css('h1', text: 'New merge request')
+          expect(page).to have_text("From #{issue.to_branch_name} into #{project.default_branch}")
+          expect(page).to have_field("Title", with: "Draft: Resolve \"Cherry-Coloured Funk\"")
+          expect(page).to have_field("Description", with: "Closes ##{issue.iid}")
+          expect(page).to have_current_path(project_new_merge_request_path(project, merge_request: { source_branch: issue.to_branch_name, target_branch: project.default_branch, issue_iid: issue.iid }))
         end
 
         it 'creates a branch' do
@@ -91,19 +89,17 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
         let(:branch_name) { 'custom-branch-name' }
 
         it 'creates a merge request' do
-          perform_enqueued_jobs do
+          click_button 'Create merge request'
+          within_modal do
+            fill_in 'Source branch name', with: branch_name
             click_button 'Create merge request'
-            within_modal do
-              fill_in 'Source branch name', with: branch_name
-              click_button 'Create merge request'
-            end
-
-            expect(page).to have_css('h1', text: 'New merge request')
-            expect(page).to have_text("From #{branch_name} into #{project.default_branch}")
-            expect(page).to have_field("Title", with: "Draft: Resolve \"Cherry-Coloured Funk\"")
-            expect(page).to have_field("Description", with: "Closes ##{issue.iid}")
-            expect(page).to have_current_path(project_new_merge_request_path(project, merge_request: { source_branch: branch_name, target_branch: project.default_branch, issue_iid: issue.iid }))
           end
+
+          expect(page).to have_css('h1', text: 'New merge request')
+          expect(page).to have_text("From #{branch_name} into #{project.default_branch}")
+          expect(page).to have_field("Title", with: "Draft: Resolve \"Cherry-Coloured Funk\"")
+          expect(page).to have_field("Description", with: "Closes ##{issue.iid}")
+          expect(page).to have_current_path(project_new_merge_request_path(project, merge_request: { source_branch: branch_name, target_branch: project.default_branch, issue_iid: issue.iid }))
         end
 
         it 'creates a branch' do

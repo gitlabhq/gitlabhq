@@ -87,3 +87,5 @@ module Notes
     end
   end
 end
+
+Notes::BuildService.prepend_mod_with('Notes::BuildService')

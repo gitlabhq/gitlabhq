@@ -7,7 +7,7 @@ title: Custom flow YAML schema
 
 {{< details >}}
 
-- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
+- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
@@ -31,7 +31,7 @@ as `context:goal`. Your flow must handle the goal format for
 each trigger type you configure.
 
 For more information about trigger types, see
-[triggers](../../duo_agent_platform/triggers/_index.md).
+[triggers](../triggers/_index.md).
 
 Components access the goal through the `inputs` field:
 

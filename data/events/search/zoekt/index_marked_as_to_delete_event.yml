@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::IndexMarkedAsToDeleteEvent
+description: Published when Zoekt indices are eligible for deletion, so the subscribed
+  worker can mark them as pending deletion and clean them up.
+feature_category: global_search
+ee_only: true

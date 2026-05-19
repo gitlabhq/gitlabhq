@@ -1,7 +1,10 @@
 ---
 name: read_epic_label_event
 description: Grants the ability to read epic label events
+deprecated: true
 boundaries:
   - group
+available_for:
+  - granular_access_token
 permissions:
   - read_epic_label_event

@@ -108,7 +108,7 @@ RSpec.describe 'gitlab:gitaly namespace rake task', :silence_stdout, feature_cat
     let(:removed_storage_name) { 'removed_storage' }
     let(:target_storage_name) { 'target_storage' }
     let(:message) { "1 projects from storage #{removed_storage_name} to #{target_storage_name} in the Rails database." }
-    let_it_be(:project) { create(:project) } # rubocop: disable RSpec/AvoidTestProf -- This is not a migration spec
+    let_it_be(:project, freeze: false) { create(:project) } # rubocop: disable RSpec/AvoidTestProf -- This is not a migration spec
 
     before do
       project.update_column(:repository_storage, removed_storage_name)

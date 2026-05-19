@@ -38,7 +38,7 @@ RSpec.describe BulkImports::Common::Pipelines::LabelsPipeline, feature_category:
         allow(service).to receive(:execute)
       end
 
-      expect { subject.run }.to change(::GroupLabel, :count).by(1)
+      expect { subject.run }.to change { ::GroupLabel.count }.by(1)
 
       label = group.labels.first
 

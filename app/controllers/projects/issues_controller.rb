@@ -65,6 +65,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   after_action :log_issue_show, only: :show
 
+  prepend_around_action :track_load_comments_sli, only: [:discussions]
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
 
   respond_to :html
@@ -172,8 +173,9 @@ class Projects::IssuesController < Projects::ApplicationController
 
       redirect_to project_issue_path(@project, @issue)
     else
-      # NOTE: this CAPTCHA support method is indirectly included via IssuableActions
-      with_captcha_check_html_format(spammable: spammable) { render :new }
+      with_captcha_check_json_format(spammable: spammable) do
+        render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
+      end
     end
   end
 
@@ -282,6 +284,12 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   protected
+
+  def track_load_comments_sli
+    Labkit::UserExperienceSli.start(:load_comments) do
+      yield
+    end
+  end
 
   def index_html_request?
     action_name.to_sym == :index && html_request?
@@ -422,7 +430,7 @@ class Projects::IssuesController < Projects::ApplicationController
   # Overridden in EE
   def create_vulnerability_issue_feedback(issue); end
 
-  # Overriden in EE
+  # Overridden in EE
   def work_item_redirect_except_actions
     WORK_ITEM_REDIRECT_EXCEPT_ACTIONS
   end

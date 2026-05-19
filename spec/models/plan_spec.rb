@@ -90,20 +90,57 @@ RSpec.describe Plan, feature_category: :subscription_management do
     end
   end
 
-  describe '#ids_for_names' do
-    let_it_be(:default_plan) { create(:default_plan) }
-
-    subject(:plan) { described_class.ids_for_names([default_plan.name]) }
-
-    it { is_expected.to eq([default_plan.id]) }
-  end
-
   describe '#names_for_ids' do
     let_it_be(:default_plan) { create(:default_plan) }
 
     subject(:plan) { described_class.names_for_ids([default_plan.id]) }
 
     it { is_expected.to eq([default_plan.name]) }
+  end
+
+  describe '.uids_for_names' do
+    it 'returns UIDs for known plan names' do
+      expect(described_class.uids_for_names(%w[default premium])).to contain_exactly(
+        Plan::PLAN_NAME_UID_LIST[:default],
+        Plan::PLAN_NAME_UID_LIST[:premium]
+      )
+    end
+
+    it 'returns an empty array for empty input' do
+      expect(described_class.uids_for_names([])).to eq([])
+    end
+
+    it 'omits unknown plan names' do
+      expect(described_class.uids_for_names(%w[default unknown_plan])).to contain_exactly(
+        Plan::PLAN_NAME_UID_LIST[:default]
+      )
+    end
+  end
+
+  describe '.ids_for_plan_name_uids' do
+    let_it_be(:default_plan) { create(:default_plan) }
+
+    it 'returns IDs for the given plan_name_uids' do
+      uid = Plan::PLAN_NAME_UID_LIST[:default]
+
+      expect(described_class.ids_for_plan_name_uids([uid])).to eq([default_plan.id])
+    end
+
+    it 'returns an empty array for empty input' do
+      expect(described_class.ids_for_plan_name_uids([])).to eq([])
+    end
+
+    it 'omits UIDs with no matching plan' do
+      expect(described_class.ids_for_plan_name_uids([999])).to be_empty
+    end
+
+    it 'returns IDs for multiple plans' do
+      uid = Plan::PLAN_NAME_UID_LIST[:default]
+
+      result = described_class.ids_for_plan_name_uids([uid, 999])
+
+      expect(result).to contain_exactly(default_plan.id)
+    end
   end
 
   describe '#ultimate_or_ultimate_trial_plans?' do

@@ -28,6 +28,7 @@ const OS = {
 };
 
 export const DOWNLOAD_LOCATIONS = {
+  /* eslint-disable @gitlab/no-hardcoded-urls -- external S3 URL */
   [LINUX_PLATFORM]: [
     {
       arch: 'amd64',
@@ -66,6 +67,7 @@ export const DOWNLOAD_LOCATIONS = {
       url: `https://${RUNNER_PACKAGE_HOST}/latest/binaries/gitlab-runner-windows-386.exe`,
     },
   ],
+  /* eslint-enable @gitlab/no-hardcoded-urls -- external S3 URL */
 };
 
 export const commandPrompt = ({ platform }) => {

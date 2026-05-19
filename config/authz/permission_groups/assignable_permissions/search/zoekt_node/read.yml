@@ -3,5 +3,7 @@ name: read_zoekt_node
 description: Grants the ability to read zoekt nodes
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - read_zoekt_node

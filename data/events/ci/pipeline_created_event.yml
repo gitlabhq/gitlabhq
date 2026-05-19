@@ -1,0 +1,4 @@
+---
+event: Ci::PipelineCreatedEvent
+description: Published when a CI pipeline is successfully created and persisted.
+feature_category: continuous_integration

@@ -5,6 +5,7 @@ class Projects::RawController < Projects::ApplicationController
   include ExtractsPath
   include SendsBlob
   include StaticObjectExternalStorage
+  include HandlesGitalyErrors
 
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:blob) }
 
@@ -27,6 +28,14 @@ class Projects::RawController < Projects::ApplicationController
   end
 
   private
+
+  # Override to render plain text instead of HTML template
+  # since RawController serves raw file content, not HTML pages
+  def handle_gitaly_error(exception)
+    Gitlab::ErrorTracking.track_exception(exception)
+
+    render plain: gitaly_unavailable_message, status: :service_unavailable
+  end
 
   def ref
     @fully_qualified_ref || @ref

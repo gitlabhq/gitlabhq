@@ -12,6 +12,11 @@ additional_properties:
     description: Scopes (legacy) or Access Levels (granular) of the created Personal Access Token
   permissions:
     description: Permissions enabled for each Access Level for granular Personal Access Tokens
+  creation_source:
+    description: >-
+      Source that created the token ("ui" for Rails Controller#create actions; "api" for REST or
+      GraphQL requests, including UI actions that use those transports; "unknown" when the service
+      caller did not identify the source)
 product_group: authorization
 product_categories:
   - permissions

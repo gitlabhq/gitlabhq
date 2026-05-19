@@ -10,44 +10,20 @@ attention to the following rules.
 
 ## Bundler checksum verification
 
-In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98508), gem
-checksums are checked before installation. This verification is still
-experimental so it is only active for CI.
+In [GitLab 19.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230459),
+we have now switched to native Bundler checksum verification.
 
-If the downloaded gem's checksum does not match the checksum record in
-`Gemfile.checksum`, you will see an error saying that Bundler cannot continue
-installing a gem because there is a potential security issue.
+The old bundler-checksum gem is now deprecated.
+Please remove any usages of :
 
-You will see this error as well if you updated, or added a new gem without
-updating `Gemfile.checksum`. To fix this error,
-[update the Gemfile.checksum](#updating-the-checksum-file).
-
-You can opt-in to this verification locally by setting the
-`BUNDLER_CHECKSUM_VERIFICATION_OPT_IN` environment variable:
-
-```shell
-export BUNDLER_CHECKSUM_VERIFICATION_OPT_IN=1
-bundle install
-```
-
-Setting it to `false` can also disable it:
-
-```shell
-export BUNDLER_CHECKSUM_VERIFICATION_OPT_IN=false
-bundle install
-```
+- `BUNDLER_CHECKSUM_VERIFICATION_OPT_IN`
+- `bundle exec bundler-checksum init`
+- `bundle exec bundler-checksum lint`
 
 ### Updating the checksum file
 
-This needs to be done for any new, or updated gems.
-
-1. When updating `Gemfile.lock`, make sure to also update `Gemfile.checksum` with:
-
-   ```shell
-   bundle exec bundler-checksum init
-   ```
-
-1. Check and commit the changes for `Gemfile.checksum`.
+`bundle install` will now automatically update the
+`CHECKSUMS` section in `Gemfile.lock`.
 
 ### Updating the `Gemfile.next.lock` File
 
@@ -109,7 +85,7 @@ For gems not listed in this table, it's still recommended but not required that 
 
 When adding a new gem to our `Gemfile` or even changing versions in
 `Gemfile.lock` we strongly recommend that you
-[request a Security review](https://handbook.gitlab.com/handbook/security/product-security/application-security/appsec-reviews/#adding-features-to-the-queue--requesting-a-security-review).
+[request a Security review](https://handbook.gitlab.com/handbook/security/product-security/security-platforms-architecture/application-security/appsec-reviews/#adding-features-to-the-queue--requesting-a-security-review).
 New gems add an extra security risk for GitLab, and it is important to
 evaluate this risk before we ship this to production. Technically, just adding
 a new gem and pushing to a branch in our main `gitlab` project is a security

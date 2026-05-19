@@ -1,7 +1,9 @@
 ---
 name: create_chat_completion
 description: Grants the ability to create chat completions
-permissions:
-  - create_chat_completion
 boundaries:
   - user
+available_for:
+  - granular_access_token
+permissions:
+  - create_chat_completion

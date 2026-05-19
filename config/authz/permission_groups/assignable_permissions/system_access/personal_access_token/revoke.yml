@@ -3,5 +3,7 @@ name: revoke_personal_access_token
 description: Grants the ability to revoke personal access tokens
 boundaries:
   - user
+available_for:
+  - granular_access_token
 permissions:
   - revoke_personal_access_token

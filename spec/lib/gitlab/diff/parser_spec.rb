@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Diff::Parser do
 
   describe '#parse' do
     let(:diff) do
-      <<EOS
+      <<DIFF
 --- a/files/ruby/popen.rb
 +++ b/files/ruby/popen.rb
 @@ -6,12 +6,18 @@ module Popen
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Diff::Parser do
      Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
        @cmd_output << stdout.read
        @cmd_output << stderr.read
-EOS
+DIFF
     end
 
     before do
@@ -95,7 +95,7 @@ EOS
 
   describe '\ No newline at end of file' do
     it "parses nonewline in one file correctly" do
-      first_nonewline_diff = <<~END
+      first_nonewline_diff = <<~DIFF
         --- a/test
         +++ b/test
         @@ -1,2 +1,2 @@
@@ -103,7 +103,7 @@ EOS
          lorem
         -ipsum
         \\ No newline at end of file
-      END
+      DIFF
       lines = parser.parse(first_nonewline_diff.lines).to_a
 
       expect(lines[0].type).to eq('new')
@@ -115,7 +115,7 @@ EOS
     end
 
     it "parses nonewline in two files correctly" do
-      both_nonewline_diff = <<~END
+      both_nonewline_diff = <<~DIFF
         --- a/test
         +++ b/test
         @@ -1,2 +1,2 @@
@@ -125,7 +125,7 @@ EOS
         +ipsum
         +lorem
         \\ No newline at end of file
-      END
+      DIFF
       lines = parser.parse(both_nonewline_diff.lines).to_a
 
       expect(lines[0].type).to eq('old')
@@ -148,9 +148,9 @@ EOS
 
   context 'when it is a binary notice' do
     let(:diff)  do
-      <<~END
+      <<~DIFF
         Binary files a/test and b/test differ
-      END
+      DIFF
     end
 
     it { expect(parser.parse(diff.each_line)).to eq([]) }
@@ -158,14 +158,14 @@ EOS
 
   describe 'tolerates special diff markers in a content' do
     it "counts lines correctly" do
-      diff = <<~END
+      diff = <<~DIFF
         --- a/test
         +++ b/test
         @@ -1,2 +1,2 @@
         +ipsum
         +++ b
         -ipsum
-      END
+      DIFF
 
       lines = parser.parse(diff.lines).to_a
 

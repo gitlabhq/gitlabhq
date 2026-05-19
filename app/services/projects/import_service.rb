@@ -18,6 +18,8 @@ module Projects
     def execute
       track_start_import
 
+      preallocate_iids
+
       add_repository_to_project
 
       validate_repository_size!
@@ -70,6 +72,16 @@ module Projects
 
     def track_start_import
       has_importer? && importer_class.try(:track_start_import, project)
+    end
+
+    # Pre-allocate IIDs for Gitea imports so that records created by users between
+    # project creation and the import completing don't collide with imported IIDs.
+    # Other importers (GitHub, Bitbucket Server, GitLab export) handle pre-allocation
+    # in their own workers/importers.
+    def preallocate_iids
+      return unless project.gitea_import?
+
+      importer.preallocate_iids!
     end
 
     def add_repository_to_project

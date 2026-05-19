@@ -24,11 +24,9 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
     end
 
     describe 'GET /projects/pipeline_schedules' do
-      before do
-        visit_pipelines_schedules
-      end
-
       it 'edits the pipeline' do
+        visit_pipelines_schedules
+
         find_by_testid('edit-pipeline-schedule-btn').click
 
         expect(page).to have_content(s_('PipelineSchedules|Edit scheduled pipeline'))
@@ -38,10 +36,11 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
       context 'when the owner is nil' do
         before do
           pipeline_schedule.update!(owner_id: nil, description: "#{FFaker::Product.product_name} pipeline schedule")
-          visit_pipelines_schedules
         end
 
         it 'shows the pipeline' do
+          visit_pipelines_schedules
+
           within_testid('pipeline-schedule-table-row') do
             expect(page).to have_content(pipeline_schedule.description)
           end
@@ -50,32 +49,35 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
     end
 
     describe 'PATCH /projects/pipelines_schedules/:id/edit' do
-      before do
-        edit_pipeline_schedule
-      end
+      context 'default' do
+        before do
+          edit_pipeline_schedule
+        end
 
-      it 'displays existing properties' do
-        description = find_field('schedule-description').value
-        expect(description).to eq('pipeline schedule')
-        expect(page).to have_button('master')
-        expect(page).to have_button(_('Select timezone'))
-      end
+        it 'displays existing properties' do
+          description = find_field('schedule-description').value
+          expect(description).to eq('pipeline schedule')
+          expect(page).to have_button('master')
+          expect(page).to have_button(_('Select timezone'))
+        end
 
-      it 'edits the scheduled pipeline' do
-        fill_in 'schedule-description', with: 'my brand new description'
+        it 'edits the scheduled pipeline' do
+          fill_in 'schedule-description', with: 'my brand new description'
 
-        save_pipeline_schedule
+          save_pipeline_schedule
 
-        expect(page).to have_content('my brand new description')
+          expect(page).to have_content('my brand new description')
+        end
       end
 
       context 'when ref is nil' do
         before do
           pipeline_schedule.update_attribute(:ref, nil)
-          edit_pipeline_schedule
         end
 
         it 'shows the pipeline schedule with default ref' do
+          edit_pipeline_schedule
+
           page.within('#schedule-target-branch-tag') do
             expect(first('.gl-button-text').text).to eq('master')
           end
@@ -85,10 +87,11 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
       context 'when ref is empty' do
         before do
           pipeline_schedule.update_attribute(:ref, '')
-          edit_pipeline_schedule
         end
 
         it 'shows the pipeline schedule with default ref' do
+          edit_pipeline_schedule
+
           page.within('#schedule-target-branch-tag') do
             expect(first('.gl-button-text').text).to eq('master')
           end
@@ -105,59 +108,59 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
     end
 
     describe 'GET /projects/pipeline_schedules' do
-      before do
-        visit_pipelines_schedules
+      context 'default' do
+        before do
+          visit_pipelines_schedules
+        end
 
-        wait_for_requests
-      end
+        describe 'the view' do
+          it 'displays the required information description' do
+            within_testid('pipeline-schedule-table-row') do
+              expect(page).to have_content('pipeline schedule')
 
-      describe 'the view' do
-        it 'displays the required information description' do
-          within_testid('pipeline-schedule-table-row') do
-            expect(page).to have_content('pipeline schedule')
+              within_testid('next-run-cell') do
+                # validate the format instead of the actual time because timezone issues were causing flaky tests
+                expect(find('time')['title']).to match(/[A-Z][a-z]+ \d+, \d{4} at \d+:\d+:\d+ [AP]M [A-Z]{3,4}/)
+              end
 
-            within_testid('next-run-cell') do
-              # validate the format instead of the actual time because timezone issues were causing flaky tests
-              expect(find('time')['title']).to match(/[A-Z][a-z]+ \d+, \d{4} at \d+:\d+:\d+ [AP]M [A-Z]{3,4}/)
+              expect(page).to have_link('master')
+
+              within_testid('last-pipeline-status') do
+                expect(find("a")['href']).to include(pipeline.id.to_s)
+              end
+            end
+          end
+
+          it 'creates a new scheduled pipeline' do
+            click_link 'New schedule'
+
+            expect(page).to have_content('Schedule a new pipeline')
+          end
+
+          it 'changes ownership of the pipeline', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9431' do
+            find_by_testid('take-ownership-pipeline-schedule-btn').click
+
+            send_keys [:tab, :enter]
+            wait_for_requests
+
+            within_testid('pipeline-schedule-table-row') do
+              expect(page).not_to have_content('No owner')
+              expect(page).to have_link('Sidney Jones')
+            end
+          end
+
+          it 'deletes the pipeline schedule' do
+            row_text = find_by_testid('pipeline-schedule-table-row').text
+
+            within_testid('pipeline-schedule-table-row') do
+              find_by_testid('delete-pipeline-schedule-btn').click
             end
 
-            expect(page).to have_link('master')
+            accept_gl_confirm(button_text: s_('PipelineSchedules|Delete scheduled pipeline'))
+            wait_for_requests
 
-            within_testid('last-pipeline-status') do
-              expect(find("a")['href']).to include(pipeline.id.to_s)
-            end
+            expect(page).not_to have_css('[data-testid="pipeline-schedule-table-row"]', text: row_text, wait: 10)
           end
-        end
-
-        it 'creates a new scheduled pipeline' do
-          click_link 'New schedule'
-
-          expect(page).to have_content('Schedule a new pipeline')
-        end
-
-        it 'changes ownership of the pipeline', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9431' do
-          find_by_testid('take-ownership-pipeline-schedule-btn').click
-
-          send_keys [:tab, :enter]
-          wait_for_requests
-
-          within_testid('pipeline-schedule-table-row') do
-            expect(page).not_to have_content('No owner')
-            expect(page).to have_link('Sidney Jones')
-          end
-        end
-
-        it 'deletes the pipeline schedule' do
-          row_text = find_by_testid('pipeline-schedule-table-row').text
-
-          within_testid('pipeline-schedule-table-row') do
-            find_by_testid('delete-pipeline-schedule-btn').click
-          end
-
-          accept_gl_confirm(button_text: s_('PipelineSchedules|Delete scheduled pipeline'))
-          wait_for_requests
-
-          expect(page).not_to have_css('[data-testid="pipeline-schedule-table-row"]', text: row_text, wait: 10)
         end
       end
 
@@ -165,7 +168,6 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         before do
           pipeline_schedule.update_attribute(:ref, nil)
           visit_pipelines_schedules
-          wait_for_requests
         end
 
         it 'shows a list of the pipeline schedules with empty ref column' do
@@ -181,7 +183,6 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         before do
           pipeline_schedule.update_attribute(:ref, '')
           visit_pipelines_schedules
-          wait_for_requests
         end
 
         it 'shows a list of the pipeline schedules with empty ref column' do

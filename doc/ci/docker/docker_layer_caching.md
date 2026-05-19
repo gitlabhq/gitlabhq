@@ -1,8 +1,11 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Make Docker-in-Docker builds faster with Docker layer caching
+info: To determine the technical writer assigned to the Stage/Group associated with this page,
+  see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Speed up Docker-in-Docker builds by caching image layers across pipeline runs
+  with inline or registry cache backends.
+title: Cache Docker layers in Docker-in-Docker builds
 ---
 
 {{< details >}}
@@ -12,107 +15,112 @@ title: Make Docker-in-Docker builds faster with Docker layer caching
 
 {{< /details >}}
 
-When using Docker-in-Docker, Docker downloads all layers of your image every
-time you create a build. Recent versions of Docker (Docker 1.13 and later) can
-use a pre-existing image as a cache during the `docker build` step. This significantly
-accelerates the build process.
+When you use Docker-in-Docker, Docker downloads all layers of your image on every build.
+Docker 1.13 and later can use a pre-existing image as a cache during the `docker build` step,
+which significantly speeds up the build process.
 
-In Docker 27.0.1 and later, the default `docker` build driver only supports cache backends when the `containerd` image store is enabled.
+When Docker runs `docker build`, each `Dockerfile` command creates a layer.
+Docker retains these layers as a cache and reuses them if nothing has changed.
+A change in one layer causes all subsequent layers to be rebuilt.
+To use a tagged image as a cache source for `docker build`, pass the `--cache-from` argument.
+To specify multiple cache sources, use `--cache-from` multiple times.
 
-To use Docker caching with Docker 27.0.1 and later, do one of the following:
+## Prerequisites
+
+In Docker 27.0.1 and later, the default `docker` build driver only supports cache backends
+when the `containerd` image store is enabled. Do one of the following:
 
 - Enable the `containerd` image store in your Docker daemon configuration.
 - Select a different build driver.
 
-For more information, see [Cache storage backends](https://docs.docker.com/build/cache/backends/).
+## Use inline caching
 
-## How Docker caching works
+Use the `inline` cache backend with the default `docker build` command. It is the simplest way
+to get started with caching. The cache is stored inside the image itself, with no separate
+cache image required. For complex build flows or multi-stage builds, use
+[registry caching](#use-registry-caching) instead.
+For more information, see [inline caching options](https://docs.docker.com/build/cache/backends/inline/).
 
-When running `docker build`, each command in `Dockerfile` creates a layer.
-These layers are retained as a cache and can be reused if there have been no changes. Change in one layer causes the recreation of all subsequent layers.
+> [!note]
+> The `--build-arg BUILDKIT_INLINE_CACHE=1` argument is required. It instructs Docker to embed
+> cache metadata into the image so subsequent builds can use it as a cache source with
+> `--cache-from`. Without this argument, caching silently fails.
 
-To specify a tagged image to be used as a cache source for the `docker build`
-command, use the `--cache-from` argument. Multiple images can be specified
-as a cache source by using multiple `--cache-from` arguments.
+To use inline caching in your pipeline:
 
-## Docker inline caching example
+1. Add the following `.gitlab-ci.yml` configuration to your project:
 
-This example `.gitlab-ci.yml` file shows how to use Docker caching with
-the `inline` cache backend with the default `docker build` command.
+   ```yaml
+   default:
+     image: docker:27.4.1-cli
+     services:
+       - docker:27.4.1-dind
+     before_script:
+       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
-```yaml
-default:
-  image: docker:27.4.1-cli
-  services:
-    - docker:27.4.1-dind
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+   variables:
+     # Use TLS https://docs.gitlab.com/ci/docker/using_docker_build/#tls-enabled
+     DOCKER_HOST: tcp://docker:2376
+     DOCKER_TLS_CERTDIR: "/certs"
 
-variables:
-  # Use TLS https://docs.gitlab.com/ci/docker/using_docker_build/#tls-enabled
-  DOCKER_HOST: tcp://docker:2376
-  DOCKER_TLS_CERTDIR: "/certs"
+   build:
+     stage: build
+     script:
+       - docker pull $CI_REGISTRY_IMAGE:latest || true
+       - docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $CI_REGISTRY_IMAGE:latest
+         --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+       - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+       - docker push $CI_REGISTRY_IMAGE:latest
+   ```
 
-build:
-  stage: build
-  script:
-    - docker pull $CI_REGISTRY_IMAGE:latest || true
-    - docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE:latest
-```
+   In the `build` job `script`:
 
-In the `script` section for the `build` job:
+   - The first command tries to pull the image from the registry to use as a cache source.
+     Any image used with `--cache-from` must be pulled with `docker pull` before it can be used.
+   - The second command builds a Docker image using the pulled image as a cache
+     (via `--cache-from $CI_REGISTRY_IMAGE:latest`), then tags it.
+     The `--build-arg BUILDKIT_INLINE_CACHE=1` flag embeds the build cache into the image.
+   - The last two commands push both tagged images to the container registry so they can be
+     used as cache in future builds.
 
-1. The first command tries to pull the image from the registry so that it can be
-   used as a cache for the `docker build` command.
-   Any image that's used with the `--cache-from` argument must be
-   pulled (using `docker pull`) before it can be used as a cache
-   source.
-1. The second command builds a Docker image by using the pulled image as a
-   cache (see the `--cache-from $CI_REGISTRY_IMAGE:latest` argument) if
-   available, and tags it. The `--build-arg BUILDKIT_INLINE_CACHE=1` tells
-   Docker to use [inline caching](https://docs.docker.com/build/cache/backends/inline/),
-   which embeds the build cache into the image itself.
-1. The last two commands push the tagged Docker images to the container registry
-   so that they can also be used as cache for subsequent builds.
+## Use registry caching
 
-## Docker registry caching example
+Use the `registry` cache backend with `docker buildx build` to store build cache in a dedicated
+cache image, separate from your application image. This scales better than inline caching
+for multi-stage builds and complex build flows.
+For more information, see [cache backend options](https://docs.docker.com/build/cache/backends/).
 
-You can cache your Docker builds directly to a dedicated cache
-image in the registry.
+To use registry caching in your pipeline:
 
-This example `.gitlab-ci.yml` file shows how to use Docker caching
-with the `docker buildx build` command and the `registry` cache backend.
-For more advanced caching options, see [Cache storage backends](https://docs.docker.com/build/cache/backends/).
+1. Add the following `.gitlab-ci.yml` configuration to your project:
 
-```yaml
-default:
-  image: docker:27.4.1-cli
-  services:
-    - docker:27.4.1-dind
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+   ```yaml
+   default:
+     image: docker:27.4.1-cli
+     services:
+       - docker:27.4.1-dind
+     before_script:
+       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
-variables:
-  # Use TLS https://docs.gitlab.com/ci/docker/using_docker_build/#tls-enabled
-  DOCKER_HOST: tcp://docker:2376
-  DOCKER_TLS_CERTDIR: "/certs"
+   variables:
+     # Use TLS https://docs.gitlab.com/ci/docker/using_docker_build/#tls-enabled
+     DOCKER_HOST: tcp://docker:2376
+     DOCKER_TLS_CERTDIR: "/certs"
 
-build:
-  stage: build
-  script:
-    - docker context create my-builder
-    - docker buildx create my-builder --driver docker-container --use
-    - docker buildx build --push -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-      --cache-to type=registry,ref=$CI_REGISTRY_IMAGE/cache-image,mode=max
-      --cache-from type=registry,ref=$CI_REGISTRY_IMAGE/cache-image .
-```
+   build:
+     stage: build
+     script:
+       - docker context create my-builder
+       - docker buildx create my-builder --driver docker-container --use
+       - docker buildx build --push -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+         --cache-to type=registry,ref=$CI_REGISTRY_IMAGE/cache-image,mode=max
+         --cache-from type=registry,ref=$CI_REGISTRY_IMAGE/cache-image .
+   ```
 
-The `build` job's `script`:
+   In the `build` job `script`:
 
-1. Creates and configures the `docker-container` BuildKit driver, which supports the `registry` cache backend.
-1. Builds and pushes a Docker image using:
-
-   - A dedicated cache image with `--cache-from type=registry,ref=$CI_REGISTRY_IMAGE/cache-image`.
-   - Cache updates with `--cache-to type=registry,ref=$CI_REGISTRY_IMAGE/cache-image,mode=max`, where `max` mode caches intermediate layers.
+   - The first two commands create and configure the `docker-container` BuildKit driver,
+     which supports the `registry` cache backend.
+   - The third command builds and pushes the Docker image. It reads from a dedicated cache
+     image with `--cache-from`, and updates it with `--cache-to`. The `max` mode caches
+     all intermediate layers.

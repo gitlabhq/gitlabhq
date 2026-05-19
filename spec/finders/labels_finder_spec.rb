@@ -34,7 +34,7 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
 
     let_it_be(:user) { create(:user) }
 
-    before do
+    before_all do
       project_1.add_developer(user)
     end
 
@@ -76,13 +76,9 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
       end
 
       context 'when group has no projects' do
-        let(:empty_group) { create(:group) }
-        let!(:empty_group_label_1) { create(:group_label, group: empty_group, title: 'Label 1 (empty group)') }
-        let!(:empty_group_label_2) { create(:group_label, group: empty_group, title: 'Label 2 (empty group)') }
-
-        before do
-          empty_group.add_developer(user)
-        end
+        let_it_be(:empty_group) { create(:group, developers: user) }
+        let_it_be(:empty_group_label_1) { create(:group_label, group: empty_group, title: 'Label 1 (empty group)') }
+        let_it_be(:empty_group_label_2) { create(:group_label, group: empty_group, title: 'Label 2 (empty group)') }
 
         context 'when only group labels is false' do
           it 'returns group labels' do
@@ -132,13 +128,13 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
       end
 
       context 'when including labels from group projects with limited visibility' do
-        let(:finder)                     { described_class.new(user, **group_params(group_4)) }
-        let(:group_4)                    { create(:group) }
-        let(:limited_visibility_project) { create(:project, :public, group: group_4) }
-        let(:visible_project)            { create(:project, :public, group: group_4) }
-        let!(:group_label_1)             { create(:group_label, group: group_4) }
-        let!(:limited_visibility_label)  { create(:label, project: limited_visibility_project) }
-        let!(:visible_label)             { create(:label, project: visible_project) }
+        let(:finder)                              { described_class.new(user, **group_params(group_4)) }
+        let_it_be(:group_4)                       { create(:group) }
+        let_it_be(:limited_visibility_project, reload: true) { create(:project, :public, group: group_4) }
+        let_it_be(:visible_project)               { create(:project, :public, group: group_4) }
+        let_it_be(:group_label_1)                 { create(:group_label, group: group_4) }
+        let_it_be(:limited_visibility_label)      { create(:label, project: limited_visibility_project) }
+        let_it_be(:visible_label)                 { create(:label, project: visible_project) }
 
         shared_examples 'with full visibility' do
           it 'returns all projects labels' do
@@ -165,7 +161,7 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
           end
 
           context 'when user is a group member' do
-            before do
+            before_all do
               group_4.add_developer(user)
             end
 
@@ -185,7 +181,7 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
           end
 
           context 'when user is a group member' do
-            before do
+            before_all do
               group_4.add_developer(user)
             end
 
@@ -205,7 +201,7 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
           end
 
           context 'when user is a group member' do
-            before do
+            before_all do
               group_4.add_developer(user)
             end
 
@@ -236,10 +232,10 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
     context 'filtering by project_id' do
       context 'when include_ancestor_groups is true' do
         let_it_be(:sub_project) { create(:project, namespace: private_subgroup_1) }
-        let!(:project_label) { create(:label, project: sub_project, title: 'Label 5') }
+        let_it_be(:project_label) { create(:label, project: sub_project, title: 'Label 5') }
         let(:finder) { described_class.new(user, project_id: sub_project.id, include_ancestor_groups: true) }
 
-        before do
+        before_all do
           private_group_1.add_developer(user)
         end
 

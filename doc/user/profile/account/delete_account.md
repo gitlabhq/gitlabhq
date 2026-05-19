@@ -81,7 +81,7 @@ Prerequisites:
 To delete a user:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Users**.
+1. In the left sidebar, select **Overview** > **Users**.
 1. Select a user.
 1. Under the **Account** tab, select:
    - **Delete user** to delete only the user but maintain their [associated records](#associated-records). You can't use this option if
@@ -211,22 +211,3 @@ To delete the root account, in the Rails console:
 
      ::Users::DeactivateService.new(current_user, skip_authorization: true).execute(user)
      ```
-
-## Troubleshooting
-
-### Deleting a user results in a PostgreSQL null value error
-
-There is [a known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/349411) that results
-in users not being deleted, and the following error generated:
-
-```plaintext
-ERROR: null value in column "user_id" violates not-null constraint
-```
-
-The error can be found in the [PostgreSQL log](../../../administration/logs/_index.md#postgresql-logs) and
-in the **Retries** section of the [background jobs view](../../../administration/admin_area.md#background-jobs) in the **Admin** area.
-
-If the user being deleted used the [iterations](../../group/iterations/_index.md) feature, such
-as adding an issue to an iteration, you must use
-[the workaround documented in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/349411#workaround)
-to delete the user.

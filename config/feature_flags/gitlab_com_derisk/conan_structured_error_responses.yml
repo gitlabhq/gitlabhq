@@ -1,0 +1,9 @@
+---
+name: conan_structured_error_responses
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595495
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231680
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596950
+milestone: '19.0'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

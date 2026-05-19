@@ -5,6 +5,7 @@ import {
   GlIcon,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 
 export default {
@@ -17,6 +18,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['projectRootPath'],
   props: {
     commit: {
       type: Object,
@@ -24,6 +26,9 @@ export default {
     },
   },
   computed: {
+    browseFilesPath() {
+      return joinPaths(this.projectRootPath, '-', 'tree', this.commit.sha);
+    },
     dropdownItems() {
       return [
         {
@@ -46,7 +51,7 @@ export default {
         {
           text: __('Browse files at this commit'),
           icon: 'folder-open',
-          href: this.commit.webUrl,
+          href: this.browseFilesPath,
           extraAttrs: {
             'data-testid': 'browse-files',
           },

@@ -1,7 +1,7 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import { sprintf, s__ } from '~/locale';
+import { useIntegrationForm } from '../../store';
 import UploadDropzoneField from '../upload_dropzone_field.vue';
 import Connection from './connection.vue';
 
@@ -33,7 +33,7 @@ export default {
     ),
   },
   computed: {
-    ...mapGetters(['propsSource']),
+    ...mapState(useIntegrationForm, ['propsSource']),
     dynamicFields() {
       return this.propsSource.fields.filter(
         (field) => field.name !== 'service_account_key_file_name',

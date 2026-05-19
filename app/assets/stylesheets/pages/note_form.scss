@@ -267,6 +267,7 @@ table {
   }
 }
 
+// stylelint-disable-next-line gitlab/no-js-class
 .js-note-attachment-delete {
   display: none;
 }
@@ -501,10 +502,6 @@ table {
 }
 
 .immersive {
-  .md-write-holder {
-    @apply gl-min-h-80;
-  }
-
   .gfm-form .note-textarea:focus {
     outline: none !important;
     box-shadow: none !important;

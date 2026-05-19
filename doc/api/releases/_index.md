@@ -766,7 +766,13 @@ Example response:
 
 ## Delete a Release
 
-Deletes a release. Deleting a release doesn't delete the associated tag. Maintainer level access to the project is required to delete a release.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/work_items/41766) in GitLab 11.7.
+
+{{< /history >}}
+
+Deletes a release. Deleting a release doesn't delete the associated tag. Requires at least the Developer role for the project.
 
 ```plaintext
 DELETE /projects/:id/releases/:tag_name

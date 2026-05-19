@@ -1,0 +1,6 @@
+---
+name: trigger_ai_flow
+description: Grants the ability to trigger AI flow executions on a project.
+  AI flows are automated workflows powered by AI agents such as Amazon Q
+  or Duo Workflow that run in response to project events like issue
+  creation or merge request assignment.

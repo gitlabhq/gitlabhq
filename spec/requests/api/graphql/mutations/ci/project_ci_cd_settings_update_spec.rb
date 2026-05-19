@@ -104,6 +104,66 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
       end
     end
 
+    context 'when cross_project_push_for_job_token_allowed requested to be true' do
+      let(:variables) do
+        {
+          full_path: project.full_path,
+          cross_project_push_for_job_token_allowed: true
+        }
+      end
+
+      it 'updates cross_project_push_for_job_token_allowed', :aggregate_failures do
+        post_graphql_mutation(mutation, current_user: user)
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response_errors).to be_blank
+        expect(project.ci_cd_settings.cross_project_push_for_job_token_allowed).to be(true)
+      end
+    end
+
+    context 'when cross_project_push_for_job_token_allowed is not specified' do
+      let(:variables) do
+        {
+          full_path: project.full_path,
+          push_repository_for_job_token_allowed: true
+        }
+      end
+
+      it 'does not change cross_project_push_for_job_token_allowed', :aggregate_failures do
+        project.ci_cd_settings.update!(cross_project_push_for_job_token_allowed: true)
+
+        post_graphql_mutation(mutation, current_user: user)
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response_errors).to be_blank
+        expect(project.ci_cd_settings.cross_project_push_for_job_token_allowed).to be(true)
+      end
+    end
+
+    context 'when cross_project_push_for_job_token_allowed requested to be false' do
+      let(:variables) do
+        {
+          full_path: project.full_path,
+          cross_project_push_for_job_token_allowed: false
+        }
+      end
+
+      before do
+        project.ci_cd_settings.update!(cross_project_push_for_job_token_allowed: true)
+      end
+
+      it 'updates cross_project_push_for_job_token_allowed to false', :aggregate_failures do
+        post_graphql_mutation(mutation, current_user: user)
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response_errors).to be_blank
+        expect(project.ci_cd_settings.cross_project_push_for_job_token_allowed).to be(false)
+      end
+    end
+
     context 'when display_pipeline_variables is updated' do
       let(:variables) do
         {
@@ -354,17 +414,14 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
           expect(response).to have_gitlab_http_status(:success)
         end
 
-        it 'is not allowed for maintainers', :aggregate_failures do
-          expect { post_graphql_mutation(mutation, current_user: maintainer) }.not_to(
+        it 'is allowed for maintainers', :aggregate_failures do
+          expect { post_graphql_mutation(mutation, current_user: maintainer) }.to(
             change { project.reload.ci_pipeline_variables_minimum_override_role }
+              .from('developer')
+              .to('owner')
           )
 
-          expect(response_errors).to(
-            include(
-              'Changing the ci_pipeline_variables_minimum_override_role to the owner role is not allowed'
-            )
-          )
-
+          expect(response_errors).to be_blank
           expect(response).to have_gitlab_http_status(:success)
         end
       end

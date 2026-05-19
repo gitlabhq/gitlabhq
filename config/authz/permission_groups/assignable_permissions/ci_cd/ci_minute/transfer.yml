@@ -4,5 +4,7 @@ description: Grants the ability to transfer CI minutes
 boundaries:
   - group
   - user
+available_for:
+  - granular_access_token
 permissions:
   - transfer_ci_minute

@@ -1,6 +1,11 @@
 ---
 name: create_package
 description: Grants the ability to create packages
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - create_npm_package_tag
   - publish_composer_package
@@ -14,6 +19,3 @@ permissions:
   - upload_pypi_package
   - upload_ruby_gem
   - upload_terraform_module
-boundaries:
-  - group
-  - project

@@ -1,34 +1,30 @@
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
+import { useIntegrationForm } from '~/integrations/edit/store';
 import { mockField } from '../mock_data';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('DynamicField', () => {
   let wrapper;
-  let store;
 
   const createComponent = (props, isInheriting = false, editable = true) => {
-    store = new Vuex.Store({
-      getters: {
-        isInheriting: () => isInheriting,
-        propsSource: () => {
-          return {
-            editable,
-          };
-        },
-      },
+    const pinia = createTestingPinia({ stubActions: false });
+    const store = useIntegrationForm();
+    Object.assign(store, {
+      defaultState: isInheriting ? { editable } : null,
+      override: !isInheriting,
+      customState: { editable },
     });
 
     wrapper = mount(DynamicField, {
       propsData: { ...mockField, ...props },
-      store,
+      pinia,
     });
   };
 

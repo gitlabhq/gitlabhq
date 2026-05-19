@@ -127,6 +127,7 @@ describe('TransferModal', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: errorMessage,
         captureError: true,
+        error: errorMessage,
       });
     });
 
@@ -137,6 +138,7 @@ describe('TransferModal', () => {
         message:
           'An error occurred while transferring the project. Please refresh the page to try again.',
         captureError: true,
+        error: undefined,
       });
     });
   });

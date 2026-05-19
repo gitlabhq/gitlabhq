@@ -12,6 +12,7 @@ module API
     helpers ::API::Helpers::PackagesHelpers
     helpers ::API::Helpers::Packages::BasicAuthHelpers
     helpers ::API::Helpers::Packages::Nuget
+    helpers ::API::Helpers::Packages::Nuget::WarningHeader
     include ::API::Helpers::Authentication
 
     feature_category :package_registry
@@ -393,8 +394,10 @@ module API
           delete '*package_name/*package_version', format: false, urgency: :low do
             authorize_destroy_package!(project_or_group)
 
-            destroy_conditionally!(find_package) do |package|
-              ::Packages::MarkPackageForDestructionService.new(container: package, current_user: current_user).execute
+            destroy_conditionally!(find_package) do |pkg|
+              result = ::Packages::MarkPackageForDestructionService
+                         .new(container: pkg, current_user: current_user).execute
+              render_api_error!(result.message, result.http_status) if result.error?
             end
           end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProgrammingLanguage do
+RSpec.describe ProgrammingLanguage, feature_category: :source_code_management do
   let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
   let_it_be(:python) { create(:programming_language, name: 'Python') }
   let_it_be(:swift) { create(:programming_language, name: 'Swift') }

@@ -299,11 +299,15 @@ module Emails
       email_with_layout(to: @user.notification_email_or_default, subject: subject(_("New email address added")))
     end
 
-    def new_achievement_email(user, achievement)
+    def new_achievement_email(user, achievement, user_achievement)
       return unless user&.active?
 
       @user = user
       @achievement = achievement
+      @user_achievement = user_achievement
+
+      token = @user_achievement.signed_id(purpose: :achievement_action, expires_in: 30.days)
+      @accept_url = accept_awarded_achievement_url(id: token)
 
       email_with_layout(
         to: @user.notification_email_or_default,

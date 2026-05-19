@@ -149,7 +149,7 @@ A common project badge presents the GitLab CI pipeline status.
 To add this badge to a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Badges**.
 1. Under **Name**, enter _Pipeline Status_.
 1. Under **Link**, enter the following URL:
@@ -179,7 +179,7 @@ If you need individual badges for each project, either:
 To view badges available in a project or group:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Badges**.
 
 ## Add a badge
@@ -187,7 +187,7 @@ To view badges available in a project or group:
 To add a new badge to a project or group:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Badges**.
 1. Select **Add badge**.
 1. In the **Name** text box, enter the name of your badge.
@@ -201,7 +201,7 @@ You can view the exact link for your badges.
 Then you can use the link to embed the badge in your HTML or Markdown pages.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. In the **Pipeline status**, **Coverage report**, or **Latest release** sections, view the URLs for the images.
 
@@ -247,7 +247,7 @@ Pipeline, coverage, release, and custom badges can be rendered in different styl
   https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat
   ```
 
-  ![Badge flat style](img/badge_flat.svg)
+  ![A badge rendered in the flat style.](img/badge_flat.svg)
 
 - Flat square:
 
@@ -255,7 +255,7 @@ Pipeline, coverage, release, and custom badges can be rendered in different styl
   https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
   ```
 
-  ![Badge flat square style](img/badge_flat_square.svg)
+  ![A badge rendered in the flat square style.](img/badge_flat_square.svg)
 
 #### Key text
 
@@ -267,7 +267,7 @@ Customize the badge key text by adding the `key_text=custom_text` parameter to t
 https://gitlab.example.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130
 ```
 
-![Badge with custom text and width](img/badge_custom_text.svg)
+![A badge rendered with custom text and adjusted width.](img/badge_custom_text.svg)
 
 #### Key width
 
@@ -359,7 +359,7 @@ Prerequisites:
 To add a custom badge with an image:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Badges**.
 1. Under **Name**, enter the name for the badge.
 1. Under **Link**, enter the URL that the badge should point to.
@@ -378,7 +378,7 @@ To use custom images generated through a pipeline, see [accessing the latest job
 To edit a badge in a project or group:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Badges**.
 1. Next to the badge you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Edit the **Name**, **Link**, or **Badge image URL**.
@@ -389,7 +389,7 @@ To edit a badge in a project or group:
 To delete a badge in a project or group:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Badges**.
 1. Next to the badge you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete badge**.

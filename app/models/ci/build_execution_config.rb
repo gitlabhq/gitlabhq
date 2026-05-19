@@ -26,6 +26,6 @@ module Ci
       inverse_of: :execution_config,
       partition_foreign_key: :partition_id
 
-    validates :run_steps, json_schema: { filename: 'run_steps' }, presence: true
+    validates :run_steps, json_schema: { filename: 'ci_run_steps' }, presence: true
   end
 end

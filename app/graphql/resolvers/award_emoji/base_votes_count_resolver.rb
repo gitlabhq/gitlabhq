@@ -3,15 +3,9 @@
 module Resolvers
   module AwardEmoji
     class BaseVotesCountResolver < BaseResolver
-      include Gitlab::Graphql::Authorize::AuthorizeResource
-
       type GraphQL::Types::Int, null: true
 
       private
-
-      def authorized_resource?(object)
-        Ability.allowed?(current_user, :"read_#{object.to_ability_name}", object)
-      end
 
       def votes_batch_loader
         BatchLoaders::AwardEmojiVotesBatchLoader

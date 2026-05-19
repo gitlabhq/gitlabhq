@@ -29,7 +29,7 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
 
   describe '#show_automatic_rebase_info' do
     before do
-      allow(project.project_setting).to receive(:automatic_rebase_available?).and_return(true)
+      allow(project.project_setting).to receive(:automatic_rebase_enabled?).and_return(true)
     end
 
     context 'when source branch has diverged from target' do

@@ -338,9 +338,6 @@ issue_links:
 - id
 - source_id
 - target_id
-issue_metrics:
-- id
-- issue_id
 issue_tracker_data:
 - integration_id
 issue_user_mentions:

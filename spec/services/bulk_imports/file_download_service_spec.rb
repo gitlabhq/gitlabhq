@@ -3,427 +3,134 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
-  describe '#execute' do
-    let_it_be(:bulk_import) { build_stubbed(:bulk_import, :with_configuration) }
-    let_it_be(:entity) { build_stubbed(:bulk_import_entity, :with_portable, bulk_import: bulk_import) }
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(build_stubbed(:bulk_import_tracker, entity: entity)) }
-    let_it_be(:allowed_content_types) { %w[application/gzip application/octet-stream] }
-    let_it_be(:content_type) { 'application/octet-stream' }
-    let_it_be(:content_disposition) { nil }
-    let_it_be(:filename) { 'file_download_service_spec' }
-    let_it_be(:tmpdir) { Dir.mktmpdir }
-    let_it_be(:filepath) { File.join(tmpdir, filename) }
+  let_it_be(:bulk_import) { build_stubbed(:bulk_import, :with_configuration) }
+  let_it_be(:entity, freeze: false) { build_stubbed(:bulk_import_entity, :with_portable, bulk_import: bulk_import) }
+  let_it_be(:context, freeze: false) do
+    BulkImports::Pipeline::Context.new(
+      build_stubbed(:bulk_import_tracker, entity: entity),
+      batch_number: 1
+    )
+  end
 
-    let(:headers) do
-      {
-        'content-type' => content_type,
-        'content-disposition' => content_disposition
-      }
-    end
+  let(:tmpdir) { Dir.mktmpdir }
+  let(:relation) { 'labels' }
+  let(:filename) { 'labels.ndjson.gz' }
+  let(:filepath) { File.join(tmpdir, filename) }
 
-    let(:chunk_code) { 200 }
-    let(:chunk_content) { 'some chunk context' }
-    let(:chunk_size) { 100 }
-    let(:chunk_double) do
-      double('chunk', size: chunk_size, code: chunk_code, http_response: double(to_hash: headers), to_s: chunk_content)
-    end
+  after do
+    FileUtils.rm_rf(tmpdir)
+  end
 
-    let(:import_logger) { instance_double(BulkImports::Logger) }
-
-    subject(:service) do
-      described_class.new(
+  describe '.for_context' do
+    subject(:service_for_context) do
+      described_class.for_context(
         context: context,
-        relative_url: '/test',
+        relation: relation,
         tmpdir: tmpdir,
-        filename: filename,
-        allowed_content_types: allowed_content_types
+        filename: filename
       )
     end
 
-    before do
-      allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-        allow(client).to receive(:stream).and_yield(chunk_double)
-      end
+    context 'when the import is online' do
+      it 'initializes the service with an HttpFileDownloadStrategy' do
+        strategy_double = instance_double(Import::BulkImports::HttpFileDownloadStrategy)
 
-      allow_next_instance_of(described_class) do |service|
-        allow(service).to receive(:response_headers).and_return(headers)
-      end
-
-      allow(BulkImports::Logger).to receive(:build).and_return(import_logger)
-      allow(import_logger).to receive_messages(info: nil, warn: nil)
-
-      stub_application_setting(bulk_import_max_download_file_size: 5120) # 5 GiB
-    end
-
-    shared_examples 'downloads file' do
-      it 'downloads file' do
-        subject.execute
-
-        expect(File.exist?(filepath)).to eq(true)
-        expect(File.read(filepath)).to include('chunk')
-      end
-    end
-
-    include_examples 'downloads file'
-
-    context 'when content-type is application/gzip' do
-      let_it_be(:content_type) { 'application/gzip' }
-
-      include_examples 'downloads file'
-    end
-
-    context 'when url is not valid' do
-      it 'raises an error' do
-        stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
-
-        allow(context).to receive(:configuration).and_return(
-          instance_double(BulkImports::Configuration, url: 'https://localhost', access_token: 'token')
-        )
-
-        expect { service.execute }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
-      end
-    end
-
-    context 'when content-type is not valid' do
-      let(:content_type) { 'invalid' }
-
-      it 'logs and raises an error' do
-        expect(import_logger).to receive(:warn).once.with(
-          message: 'Invalid content type',
-          response_code: chunk_code,
-          response_headers: headers,
-          last_chunk_context: 'some chunk context'
-        )
-
-        expect { subject.execute }.to raise_error(described_class::ServiceError, 'Invalid content type')
-      end
-    end
-
-    context 'when size exceeds limit' do
-      let(:chunk_size) { 40.gigabytes }
-
-      it 'raises an error' do
-        expect { subject.execute }.to raise_error(
-          described_class::ServiceError,
-          'File size 40 GiB exceeds limit of 5 GiB'
-        )
-      end
-
-      context 'when file size limit is overridden' do
-        before do
-          allow(context).to receive(:override_file_size_limit?).and_return(true)
-        end
-
-        it 'does not raise an error' do
-          expect { subject.execute }.not_to raise_error
-        end
-
-        it 'logs download exceeding file size limit' do
-          expect(import_logger).to receive(:info).with(
-            a_hash_including(message: 'File size allowed to exceed download file size limit')
-          )
-
-          service.execute
-        end
-      end
-    end
-
-    context 'when size is equals the file size limit' do
-      let(:chunk_size) { 5.gigabytes }
-
-      it 'does not raise an error' do
-        expect { subject.execute }.not_to raise_error
-      end
-
-      context 'when file size limit is overridden' do
-        before do
-          allow(context).to receive(:override_file_size_limit?).and_return(true)
-        end
-
-        it 'does not log downloads not exceeding default file size limits' do
-          expect(import_logger).not_to receive(:info)
-
-          service.execute
-        end
-      end
-    end
-
-    context 'when the instance does not have a file size limit' do
-      let(:chunk_size) { 40.gigabytes }
-
-      before do
-        stub_application_setting(bulk_import_max_download_file_size: 0)
-      end
-
-      it 'does not raise an error' do
-        expect { subject.execute }.not_to raise_error
-      end
-
-      context 'when file size limit is overridden' do
-        before do
-          allow(context).to receive(:override_file_size_limit?).and_return(true)
-        end
-
-        it 'does not log download file size' do
-          expect(import_logger).not_to receive(:info)
-
-          service.execute
-        end
-      end
-    end
-
-    context 'when chunk code is not 200' do
-      let(:chunk_code) { 404 }
-
-      it 'raises an error' do
-        expect { subject.execute }.to raise_error(
-          described_class::ServiceError,
-          'File download error 404'
-        )
-      end
-
-      context 'when chunk code is retriable' do
-        let(:chunk_code) { 502 }
-
-        it 'raises a retriable error' do
-          expect { subject.execute }.to raise_error(
-            BulkImports::NetworkError,
-            'Error downloading file from /test. Error code: 502'
-          )
-        end
-      end
-
-      context 'when chunk code is redirection' do
-        let(:chunk_code) { 303 }
-
-        it 'does not write a redirection chunk' do
-          expect { subject.execute }.not_to raise_error
-
-          expect(File.read(filepath)).not_to include('redirection')
-        end
-
-        context 'when redirection chunk appears at a later stage of the download' do
-          it 'raises an error' do
-            another_chunk_double = double('another redirection', size: 1000, code: 303)
-            data_chunk = double('data chunk', size: 1000, code: 200, http_response: double(to_hash: {}))
-
-            allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-              allow(client)
-                .to receive(:stream)
-                .and_yield(chunk_double)
-                .and_yield(data_chunk)
-                .and_yield(another_chunk_double)
-            end
-
-            expect { subject.execute }.to raise_error(
-              described_class::ServiceError,
-              'File download error 303'
-            )
-          end
-        end
-      end
-    end
-
-    describe 'remote content validation' do
-      context 'on redirect chunk' do
-        let(:chunk_code) { 303 }
-
-        it 'does not run content type & validation' do
-          expect(service).not_to receive(:validate_content_type)
-
-          service.execute
-        end
-      end
-
-      context 'when there is one data chunk' do
-        it 'validates content type' do
-          expect(service).to receive(:validate_content_type)
-
-          service.execute
-        end
-      end
-
-      context 'when there are multiple data chunks' do
-        it 'validates content type only once' do
-          data_chunk = double(
-            'data chunk',
-            size: 1000,
-            code: 200,
-            http_response: double(to_hash: {})
-          )
-
-          allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-            allow(client)
-              .to receive(:stream)
-              .and_yield(chunk_double)
-              .and_yield(data_chunk)
-          end
-
-          expect(service).to receive(:validate_content_type).once
-
-          service.execute
-        end
-      end
-    end
-
-    context 'when file is a symlink' do
-      let_it_be(:symlink) { File.join(tmpdir, 'symlink') }
-
-      before do
-        FileUtils.ln_s(File.join(tmpdir, filename), symlink, force: true)
-      end
-
-      subject do
-        described_class.new(
+        allow(Import::BulkImports::HttpFileDownloadStrategy).to receive(:new).with(
           context: context,
-          relative_url: '/test',
+          relative_url: context.entity.relation_download_url_path(relation, context.extra[:batch_number])
+        ).and_return(strategy_double)
+
+        expect(described_class).to receive(:new).with(
           tmpdir: tmpdir,
-          filename: 'symlink',
-          allowed_content_types: allowed_content_types
-        )
-      end
+          filename: filename,
+          file_download_strategy: strategy_double
+        ).and_call_original
 
-      it 'raises an error and removes the file' do
-        expect { subject.execute }.to raise_error(
-          described_class::ServiceError,
-          'Invalid downloaded file'
-        )
-
-        expect(File.exist?(symlink)).to eq(false)
+        expect(service_for_context).to be_a(described_class)
       end
     end
 
-    context 'when file shares multiple hard links' do
-      let_it_be(:hard_link) { File.join(tmpdir, 'hard_link') }
-
-      before do
-        existing_file = File.join(Dir.mktmpdir, filename)
-        FileUtils.touch(existing_file)
-        FileUtils.link(existing_file, hard_link)
+    context 'when the import is offline' do
+      let_it_be(:offline_bulk_import, freeze: false) { create(:bulk_import) }
+      let_it_be(:entity, freeze: false) { create(:bulk_import_entity, bulk_import: offline_bulk_import) }
+      let_it_be(:entity_prefix) { 'group_123' }
+      let_it_be(:offline_configuration) do
+        create(
+          :import_offline_configuration,
+          bulk_import: offline_bulk_import,
+          entity_prefix_mapping: { entity.source_full_path => entity_prefix }
+        )
       end
 
-      subject do
-        described_class.new(
-          context: context,
-          relative_url: '/test',
+      let_it_be(:context, freeze: false) do
+        BulkImports::Pipeline::Context.new(
+          create(:bulk_import_tracker, entity: entity),
+          batch_number: 1
+        )
+      end
+
+      it 'initializes the service with an ObjectStorageFileDownloadStrategy' do
+        export_prefix = offline_configuration.export_prefix
+        expected_object_key = "#{export_prefix}/#{entity_prefix}/labels/batch_1.ndjson.gz"
+        strategy_double = instance_double(Import::Offline::Imports::ObjectStorageFileDownloadStrategy)
+
+        allow(Import::Offline::Imports::ObjectStorageFileDownloadStrategy).to receive(:new).with(
+          offline_configuration: context.offline_configuration,
+          object_key: expected_object_key
+        ).and_return(strategy_double)
+
+        expect(described_class).to receive(:new).with(
           tmpdir: tmpdir,
-          filename: 'hard_link',
-          allowed_content_types: allowed_content_types
-        )
-      end
+          filename: filename,
+          file_download_strategy: strategy_double
+        ).and_call_original
 
-      it 'raises an error and removes the file' do
-        expect { subject.execute }.to raise_error(
-          described_class::ServiceError,
-          'Invalid downloaded file'
-        )
-
-        expect(File.exist?(hard_link)).to eq(false)
+        expect(service_for_context).to be_a(described_class)
       end
+    end
+  end
+
+  describe '#execute' do
+    let(:mock_strategy_class) do
+      Class.new(Import::BulkImports::FileDownloadStrategy) do
+        def initialize(options = {}); end
+
+        def validate!; end
+
+        def download_file(filepath); end
+      end
+    end
+
+    let(:mock_strategy) { mock_strategy_class.new }
+
+    subject(:service) do
+      described_class.new(
+        tmpdir: tmpdir,
+        filename: filename,
+        file_download_strategy: mock_strategy
+      )
+    end
+
+    it 'validates the file download strategy' do
+      expect(mock_strategy).to receive(:validate!)
+
+      service.execute
+    end
+
+    it 'executes the file download strategy' do
+      expect(mock_strategy).to receive(:download_file).with(filepath)
+
+      service.execute
     end
 
     context 'when dir is not in tmpdir' do
-      subject do
-        described_class.new(
-          context: context,
-          relative_url: '/test',
-          tmpdir: '/etc',
-          filename: filename,
-          allowed_content_types: allowed_content_types
-        )
-      end
+      let(:tmpdir) { FileUtils.mkdir_p(Rails.root.join('tmp/import-test-dir')).first }
 
       it 'raises an error' do
-        expect { subject.execute }.to raise_error(
+        expect { service.execute }.to raise_error(
           StandardError,
-          'path /etc is not allowed'
+          "path #{tmpdir} is not allowed"
         )
-      end
-    end
-
-    context 'when dir path is being traversed' do
-      subject do
-        described_class.new(
-          context: context,
-          relative_url: '/test',
-          tmpdir: File.join(Dir.mktmpdir('bulk_imports'), 'test', '..'),
-          filename: filename,
-          allowed_content_types: allowed_content_types
-        )
-      end
-
-      it 'raises an error' do
-        expect { subject.execute }.to raise_error(
-          Gitlab::PathTraversal::PathTraversalAttackError,
-          'Invalid path'
-        )
-      end
-    end
-
-    context 'when using the remote filename' do
-      let_it_be(:filename) { nil }
-
-      context 'when no filename is given' do
-        it 'raises an error when the filename is not provided in the request header' do
-          expect { subject.execute }.to raise_error(
-            described_class::ServiceError,
-            'Remote filename not provided in content-disposition header'
-          )
-        end
-      end
-
-      context 'with a given filename' do
-        let_it_be(:content_disposition) { 'filename="avatar.png"' }
-
-        it 'uses the given filename' do
-          expect(subject.execute).to eq(File.join(tmpdir, "avatar.png"))
-        end
-      end
-
-      context 'when the filename is a path' do
-        let_it_be(:content_disposition) { 'filename="../../avatar.png"' }
-
-        it 'raises an error when the filename is not provided in the request header' do
-          expect(subject.execute).to eq(File.join(tmpdir, "avatar.png"))
-        end
-      end
-
-      context 'when the filename is longer the the limit' do
-        let_it_be(:content_disposition) { 'filename="../../xxx.b"' }
-
-        before do
-          stub_const('BulkImports::FileDownloads::FilenameFetch::FILENAME_SIZE_LIMIT', 1)
-        end
-
-        it 'raises an error when the filename is not provided in the request header' do
-          expect(subject.execute).to eq(File.join(tmpdir, "x.b"))
-        end
-      end
-    end
-
-    context 'when logging a chunk context' do
-      using RSpec::Parameterized::TableSyntax
-
-      let(:chunk_size) { 40.gigabytes }
-
-      where(:input, :output) do
-        String.new("\x8d\x21\x3f\xad\x76", encoding: 'UTF-8') | "�!?�v"
-        String.new("\x1F\x8B\b\x00\x1F", encoding: 'ASCII-8BIT') | "\u001F�\b\u0000\u001F"
-      end
-
-      with_them do
-        let(:chunk_content) { input }
-
-        it 'scrubs non-printable characters from the chunk' do
-          expect(import_logger).to receive(:warn).once.with(
-            a_hash_including(last_chunk_context: output)
-          )
-
-          expect { service.execute }.to raise_error(
-            described_class::ServiceError,
-            'File size 40 GiB exceeds limit of 5 GiB'
-          )
-        end
       end
     end
   end

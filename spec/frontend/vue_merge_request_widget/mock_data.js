@@ -717,3 +717,51 @@ export const mockPipelineSubscription = {
   },
   __typename: 'Pipeline',
 };
+
+export const mockPipelineInProgressSubscription = {
+  data: {
+    ciPipelineCreationRequestsUpdated: {
+      id: 'gid://gitlab/MergeRequest/133',
+      pipelineCreationRequests: [
+        {
+          status: 'IN_PROGRESS',
+          pipelineId: null,
+          __typename: 'CiPipelineCreationRequest',
+        },
+      ],
+      __typename: 'MergeRequest',
+    },
+  },
+};
+
+export const mockPipelineSucceededSubscription = {
+  data: {
+    ciPipelineCreationRequestsUpdated: {
+      id: 'gid://gitlab/MergeRequest/133',
+      pipelineCreationRequests: [
+        {
+          status: 'SUCCEEDED',
+          pipelineId: 'gid://gitlab/Ci::Pipeline/1055',
+          __typename: 'CiPipelineCreationRequest',
+        },
+      ],
+      __typename: 'MergeRequest',
+    },
+  },
+};
+
+export const mockPipelineFailedSubscription = {
+  data: {
+    ciPipelineCreationRequestsUpdated: {
+      id: 'gid://gitlab/MergeRequest/133',
+      pipelineCreationRequests: [
+        {
+          status: 'FAILED',
+          pipelineId: 'gid://gitlab/Ci::Pipeline/1055',
+          __typename: 'CiPipelineCreationRequest',
+        },
+      ],
+      __typename: 'MergeRequest',
+    },
+  },
+};

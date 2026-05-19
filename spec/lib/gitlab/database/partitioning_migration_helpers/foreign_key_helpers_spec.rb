@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
   let(:create_options) do
     options
       .except(:primary_key)
-      .merge!(reverse_lock_order: false, target_column: :id, validate: validate)
+      .merge!(reverse_lock_order: true, target_column: :id, validate: validate)
   end
 
   before do
@@ -171,7 +171,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
       let(:create_options) do
         exits_options
           .except(:primary_key)
-          .merge!(reverse_lock_order: false, target_column: :id, validate: true)
+          .merge!(reverse_lock_order: true, target_column: :id, validate: true)
       end
 
       it 'forwards them to the foreign key helper methods' do
@@ -515,17 +515,31 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
       end
     end
 
-    context 'with reverse_lock_order option' do
+    context 'when reverse_lock_order is default' do
       before do
         migration.add_concurrent_partitioned_foreign_key(source_table_name, target_table_name, column: column_name)
       end
 
-      it 'passes the reverse_lock_order option to remove_foreign_key_if_exists' do
+      it 'passes reverse_lock_order: true to remove_foreign_key_if_exists by default' do
         expect(migration).to receive(:remove_foreign_key_if_exists).at_least(:once)
           .with(anything, anything, hash_including(reverse_lock_order: true))
 
         migration.remove_partitioned_foreign_key(source_table_name, target_table_name,
-          column: column_name, reverse_lock_order: true)
+          column: column_name)
+      end
+    end
+
+    context 'when reverse_lock_order is false' do
+      before do
+        migration.add_concurrent_partitioned_foreign_key(source_table_name, target_table_name, column: column_name)
+      end
+
+      it 'passes reverse_lock_order: false to remove_foreign_key_if_exists' do
+        expect(migration).to receive(:remove_foreign_key_if_exists).at_least(:once)
+          .with(anything, anything, hash_including(reverse_lock_order: false))
+
+        migration.remove_partitioned_foreign_key(source_table_name, target_table_name,
+          column: column_name, reverse_lock_order: false)
       end
     end
 

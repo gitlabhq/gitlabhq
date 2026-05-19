@@ -6,7 +6,7 @@ RSpec.describe TagsFinder, feature_category: :source_code_management do
   subject(:tags_finder) { described_class.new(repository, params) }
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:repository) { project.repository }
 
   let(:params) { {} }

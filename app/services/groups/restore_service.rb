@@ -53,3 +53,5 @@ module Groups
     end
   end
 end
+
+Groups::RestoreService.prepend_mod

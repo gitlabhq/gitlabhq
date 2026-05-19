@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'projects/_home_panel' do
   include ProjectForksHelper
 
-  context 'home panel' do
+  describe 'home panel' do
     let(:project) { create(:project) }
 
     before do
@@ -19,7 +19,7 @@ RSpec.describe 'projects/_home_panel' do
     end
   end
 
-  context 'forks' do
+  describe 'forks' do
     let(:source_project) { create(:project, :repository) }
     let(:project) { fork_project(source_project) }
     let(:user) { create(:user) }
@@ -30,7 +30,7 @@ RSpec.describe 'projects/_home_panel' do
       allow(view).to receive(:current_user).and_return(user)
     end
 
-    context 'user can read fork source' do
+    context 'when user can read fork source' do
       before do
         allow(view).to receive(:can?).with(user, :read_project, source_project).and_return(true)
       end
@@ -42,7 +42,7 @@ RSpec.describe 'projects/_home_panel' do
       end
     end
 
-    context 'user cannot read fork source' do
+    context 'when user cannot read fork source' do
       before do
         allow(view).to receive(:can?).with(user, :read_project, source_project).and_return(false)
       end

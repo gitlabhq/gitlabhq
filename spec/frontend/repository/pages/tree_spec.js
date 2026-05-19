@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import TreePage from '~/repository/pages/tree.vue';
+import TreeContent from 'jh_else_ce/repository/components/tree_content.vue';
 import { updateElementsVisibility } from '~/repository/utils/dom';
 
 jest.mock('~/repository/utils/dom');
@@ -7,17 +8,32 @@ jest.mock('~/repository/utils/dom');
 describe('Repository tree page component', () => {
   let wrapper;
 
-  function factory(path) {
-    wrapper = shallowMount(TreePage, { propsData: { path } });
+  const findTreeContent = () => wrapper.findComponent(TreeContent);
+
+  function factory(propsData = {}, routePath = undefined) {
+    wrapper = shallowMount(TreePage, {
+      propsData,
+      mocks: {
+        $route: {
+          params: { path: routePath },
+        },
+      },
+    });
   }
 
   afterEach(() => {
     updateElementsVisibility.mockClear();
   });
 
+  it('uses computedPath from mixin to get path from route', () => {
+    factory({}, 'src/components/active.vue');
+
+    expect(findTreeContent().props('path')).toBe('src/components/active.vue');
+  });
+
   describe('when root path', () => {
     beforeEach(() => {
-      factory('/');
+      factory({}, undefined);
     });
 
     it('shows root elements', () => {
@@ -26,26 +42,11 @@ describe('Repository tree page component', () => {
         ['.js-hide-on-root', false],
       ]);
     });
-
-    describe('when changed', () => {
-      beforeEach(() => {
-        updateElementsVisibility.mockClear();
-
-        wrapper.setProps({ path: '/test' });
-      });
-
-      it('hides root elements', () => {
-        expect(updateElementsVisibility.mock.calls).toEqual([
-          ['.js-show-on-root', false],
-          ['.js-hide-on-root', true],
-        ]);
-      });
-    });
   });
 
   describe('when non-root path', () => {
     beforeEach(() => {
-      factory('/test');
+      factory({}, 'test');
     });
 
     it('hides root elements', () => {

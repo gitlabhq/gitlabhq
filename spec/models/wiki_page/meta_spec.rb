@@ -7,31 +7,80 @@ RSpec.describe WikiPage::Meta, feature_category: :wiki do
   let_it_be(:other_project) { create(:project) }
 
   describe '.for_projects_visible_to_user' do
-    let(:private_project) { create(:project, :private) }
-    let(:public_project) { create(:project, :public) }
-    let(:user) { create(:user) }
-    let(:private_meta) { create(:wiki_page_meta, title: 'Private Page', project: private_project) }
-    let(:public_meta) { create(:wiki_page_meta, title: 'Public Page', project: public_project) }
+    let_it_be(:private_project) { create(:project, :private) }
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:private_meta) { create(:wiki_page_meta, title: 'Private Page', project: private_project) }
+    let_it_be(:public_meta) { create(:wiki_page_meta, title: 'Public Page', project: public_project) }
+
+    subject(:results) { described_class.for_projects_visible_to_user(user) }
+
+    it 'excludes meta records from the private project' do
+      expect(results).to include(public_meta)
+      expect(results).not_to include(private_meta)
+    end
 
     context 'when user has access to the private project' do
-      before do
+      before_all do
         private_project.add_developer(user)
       end
 
       it 'returns meta records for both private and public projects' do
-        results = described_class.for_projects_visible_to_user(user)
+        expect(results).to include(private_meta, public_meta)
+      end
+    end
+  end
 
+  describe '.for_groups_visible_to_user' do
+    let_it_be(:public_group) { create(:group, :public) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:public_meta) do
+      create(:wiki_page_meta, title: 'Public Group Page', namespace: public_group)
+    end
+
+    let_it_be(:private_group) { create(:group, :private) }
+    let_it_be(:private_meta) do
+      create(:wiki_page_meta, title: 'Private Group Page', namespace: private_group)
+    end
+
+    subject(:results) { described_class.for_groups_visible_to_user(user) }
+
+    it 'excludes meta records from the private group' do
+      expect(results).to include(public_meta)
+      expect(results).not_to include(private_meta)
+    end
+
+    context 'when user has access to the private group' do
+      before_all do
+        private_group.add_developer(user)
+      end
+
+      it 'returns meta records for both private and public groups' do
         expect(results).to include(private_meta, public_meta)
       end
     end
 
-    context 'when user does not have access to the private project' do
-      it 'excludes meta records from the private project' do
-        results = described_class.for_projects_visible_to_user(user)
+    context 'when meta record belongs to a project' do
+      let!(:project_meta) { create(:wiki_page_meta, title: 'Project Page', project: create(:project, :public)) }
 
+      it 'excludes project-level wiki page meta records' do
         expect(results).to include(public_meta)
-        expect(results).not_to include(private_meta)
+        expect(results).not_to include(project_meta)
       end
+    end
+  end
+
+  describe '.active' do
+    let_it_be(:active_meta) { create(:wiki_page_meta, title: 'Active Page', project: project) }
+    let_it_be(:deleted_meta) do
+      create(:wiki_page_meta, title: 'Deleted Page', project: project, deleted_at: 3.days.ago)
+    end
+
+    it 'returns only records without deleted_at set' do
+      results = described_class.active
+
+      expect(results).to include(active_meta)
+      expect(results).not_to include(deleted_meta)
     end
   end
 

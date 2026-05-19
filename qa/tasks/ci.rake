@@ -4,7 +4,6 @@ namespace :ci do
   desc "Detect changes and generate e2e test pipelines with dynamically scaled parallel jobs"
   task :generate_e2e_pipelines, [:pipeline_path] do |_, args|
     require_relative "helpers/util"
-    require_relative '../../tooling/lib/tooling/events/track_pipeline_events'
 
     include Task::Helpers::Util
     include QA::Tools::Ci::Helpers
@@ -110,26 +109,7 @@ namespace :ci do
 
     logger.info("Following specs were selected for execution: '#{tests_from_mapping}'")
     begin
-      type_of_mr = if mr_labels.include?("frontend") && mr_labels.include?("backend")
-                     "fullstack"
-                   elsif mr_labels.include?("backend")
-                     "backend"
-                   elsif mr_labels.include?("frontend")
-                     "frontend"
-                   else
-                     "other"
-                   end
-
       QA::Tools::Ci::PipelineCreator.new(tests_from_mapping, **creator_args).create(pipelines_for_selective_improved)
-      properties = {
-        label: tests_from_mapping.nil? || tests_from_mapping.empty? ? 'non-selective' : 'selective',
-        value: tests_from_mapping.nil? || tests_from_mapping.empty? ? 0 : tests_from_mapping.count,
-        property: type_of_mr
-      }
-      Tooling::Events::TrackPipelineEvents.new(logger: logger).send_event(
-        "e2e_tests_selected_for_execution_gitlab_pipeline",
-        **properties
-      )
     rescue StandardError => e
       logger.warn("*** Error while creating pipeline with selected specs: #{e.backtrace} ***")
       logger.info("*** Defaulting to running full suite ***")

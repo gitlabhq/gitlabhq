@@ -135,5 +135,4 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'ee/app/services/security/security_orchestration_policies/default_branch_updation_check_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/fetch_policy_approvers_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/policy_branches_service.rb'
-    - 'ee/app/services/security/security_orchestration_policies/protected_branches_push_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/validate_policy_service.rb'

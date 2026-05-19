@@ -227,8 +227,6 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
     @project = feat.project
     @group = feat.group
 
-    stub_feature_flags(disable_all_mention: false)
-
     RSpec::Mocks.with_temporary_scope do
       stub_application_setting(plantuml_enabled: true, plantuml_url: 'http://localhost:8080')
       stub_application_setting(kroki_enabled: true, kroki_url: 'http://localhost:8000')
@@ -243,16 +241,8 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
   context 'default pipeline' do
     it_behaves_like 'all pipelines'
 
-    context 'when `disable_all_mention` FF is enabled' do
-      before do
-        stub_feature_flags(disable_all_mention: true)
-      end
-
-      let(:html) { markdown(feat.raw_markdown, context) }
-
-      it 'includes user reference filter excluding all' do
-        expect(doc).to reference_users_excluding_all
-      end
+    it 'includes user reference filter excluding all' do
+      expect(doc).to reference_users_excluding_all
     end
 
     it 'includes UploadLinkFilter' do
@@ -276,7 +266,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
     end
 
     it 'includes all reference filters' do
-      expect(doc).to reference_users
+      expect(doc).to reference_users_excluding_all
       expect(doc).to reference_issues
       expect(doc).to reference_work_items
       expect(doc).to reference_merge_requests
@@ -339,8 +329,6 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
     let_it_be(:wiki_page) { feat.wiki_page }
 
     let_it_be(:html) do
-      stub_feature_flags(disable_all_mention: false)
-
       RSpec::Mocks.with_temporary_scope do
         stub_application_setting(plantuml_enabled: true, plantuml_url: 'http://localhost:8080')
         stub_application_setting(kroki_enabled: true, kroki_url: 'http://localhost:8000')
@@ -355,18 +343,8 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
       end
     end
 
-    context 'when `disable_all_mention` FF is enabled' do
-      before do
-        stub_feature_flags(disable_all_mention: true)
-      end
-
-      let(:html) do
-        markdown(feat.raw_markdown, context.merge({ pipeline: :wiki, wiki: wiki, page_slug: wiki_page.slug }))
-      end
-
-      it 'includes user reference filter excluding all' do
-        expect(doc).to reference_users_excluding_all
-      end
+    it 'includes user reference filter excluding all' do
+      expect(doc).to reference_users_excluding_all
     end
 
     it_behaves_like 'all pipelines'
@@ -392,7 +370,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
     end
 
     it 'includes all reference filters' do
-      expect(doc).to reference_users
+      expect(doc).to reference_users_excluding_all
       expect(doc).to reference_issues
       expect(doc).to reference_work_items
       expect(doc).to reference_merge_requests

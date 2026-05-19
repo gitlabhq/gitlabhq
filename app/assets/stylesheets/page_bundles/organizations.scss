@@ -3,3 +3,23 @@
 .organization-root-path {
   max-width: 40vw;
 }
+
+.organizations-reconciliation-draggable {
+  padding-bottom: 4.75rem;
+}
+
+// Add padding to draggable container and negative margin to the empty state so it is correctly positioned.
+// The empty state is absolutely positioned under the draggable area 
+// so it does not obstruct the drag and drop functionality.
+.organizations-reconciliation-draggable-empty-state {
+  margin-top: -4rem;
+}
+
+body:has(.organizations-reconciliation-draggable-chosen) * {
+  user-select: none;
+  cursor: grabbing !important;
+}
+
+.organizations-reconciliation-draggable-chosen {
+  @apply gl-shadow-md;
+}

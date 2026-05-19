@@ -34,7 +34,7 @@ Time tracking:
 
 You can see time tracking information in the right sidebar of your work items:
 
-![Time tracking in the sidebar](img/time_tracking_sidebar_v18_3.png)
+![The time tracking section in the right sidebar of a work item.](img/time_tracking_sidebar_v18_3.png)
 
 Enter and remove time tracking data using [quick actions](quick_actions.md) or the user interface.
 Type quick actions on their own lines.
@@ -54,7 +54,7 @@ The estimate is designed to show the total time needed to complete an item.
 
 You can see the estimated time remaining when you hover over the time tracking information in the right sidebar.
 
-![Estimated time remaining](img/remaining_time_v18_3.png)
+![The estimated time remaining tooltip when hovering over the time tracking section.](img/remaining_time_v18_3.png)
 
 ### Add an estimate
 
@@ -263,7 +263,7 @@ To view a time tracking report of time spent on an item:
 
 - In the right sidebar, next to **Spent**, select the time.
 
-![Time tracking report](img/time_tracking_report_v18_3.png)
+![The time tracking report showing individual entries for time spent.](img/time_tracking_report_v18_3.png)
 
 The breakdown of spent time displayed is limited to a maximum of 100 entries.
 
@@ -301,7 +301,7 @@ To view the global time tracking report:
 1. Select start and end dates.
 1. Select **Run report**.
 
-![global time tracking report](img/global_time_report_v16_5.png)
+![The global time tracking report page showing filters and results for multiple items.](img/global_time_report_v16_5.png)
 
 ## Available time units
 
@@ -328,7 +328,7 @@ GitLab administrators can limit the display of time units to hours.
 To do so:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Preferences**.
+1. In the left sidebar, select **Settings** > **Preferences**.
 1. Expand **Localization**.
 1. Under **Time tracking**, select the **Limit display of time tracking units to hours** checkbox.
 1. Select **Save changes**.

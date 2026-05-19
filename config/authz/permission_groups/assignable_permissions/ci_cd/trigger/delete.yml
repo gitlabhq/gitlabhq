@@ -3,5 +3,7 @@ name: delete_trigger
 description: Grants the ability to delete pipeline triggers
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - delete_trigger

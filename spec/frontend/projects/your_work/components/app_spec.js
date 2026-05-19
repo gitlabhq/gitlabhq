@@ -33,6 +33,7 @@ import { createRouter } from '~/projects/your_work';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { programmingLanguages } from 'jest/groups_projects/components/mock_data';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
@@ -44,6 +45,7 @@ describe('YourWorkProjectsApp', () => {
   const defaultPropsData = {
     initialSort: 'created_desc',
     programmingLanguages,
+    canCreateProject: true,
   };
 
   const defaultRoute = {
@@ -65,13 +67,14 @@ describe('YourWorkProjectsApp', () => {
     handlers = [],
     route = defaultRoute,
     stubs = {},
+    props = {},
   } = {}) => {
     const apolloProvider = createMockApollo(handlers);
     router = createRouter();
     await router.push(route);
 
     wrapper = mountFn(YourWorkProjectsApp, {
-      propsData: defaultPropsData,
+      propsData: { ...defaultPropsData, ...props },
       apolloProvider,
       router,
       stubs,
@@ -81,10 +84,6 @@ describe('YourWorkProjectsApp', () => {
   const openActions = async () => {
     await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
   };
-
-  afterEach(() => {
-    window.gon = {};
-  });
 
   it('renders TabsWithList component and passes correct props', async () => {
     await createComponent();
@@ -128,6 +127,38 @@ describe('YourWorkProjectsApp', () => {
       shouldUpdateActiveTabCountFromTabQuery: true,
       userPreferencesSortKey: null,
       sortStorageKey: 'projects',
+    });
+  });
+
+  describe('header actions', () => {
+    it('renders the "Explore projects" button linking to the explore projects page', async () => {
+      await createComponent({ mountFn: mountExtended });
+
+      expect(wrapper.findByRole('link', { name: 'Explore projects' }).attributes('href')).toBe(
+        '/explore/projects',
+      );
+    });
+
+    describe('when canCreateProject is true', () => {
+      it('renders the "New project" button', async () => {
+        await createComponent({ mountFn: mountExtended });
+
+        expect(wrapper.findByTestId('new-project-button').exists()).toBe(true);
+      });
+    });
+
+    describe('when canCreateProject is false', () => {
+      it('does not render the "New project" button', async () => {
+        await createComponent({ mountFn: mountExtended, props: { canCreateProject: false } });
+
+        expect(wrapper.findByTestId('new-project-button').exists()).toBe(false);
+      });
+
+      it('still renders the "Explore projects" button', async () => {
+        await createComponent({ mountFn: mountExtended, props: { canCreateProject: false } });
+
+        expect(wrapper.findByRole('link', { name: 'Explore projects' }).exists()).toBe(true);
+      });
     });
   });
 
@@ -184,20 +215,22 @@ describe('YourWorkProjectsApp', () => {
     });
   });
 
-  it('renders relative URL that supports relative_url_root', async () => {
-    window.gon = { relative_url_root: '/gitlab' };
+  describe('when relative_url_root is set', () => {
+    useConfigurePathHelpers('/gitlab');
 
-    await createComponent({
-      mountFn: mountExtended,
-      handlers: [
-        [userProjectsQuery, jest.fn().mockResolvedValue(contributedProjectsQueryResponse)],
-      ],
+    it('renders project with relative URL prefix', async () => {
+      await createComponent({
+        mountFn: mountExtended,
+        handlers: [
+          [userProjectsQuery, jest.fn().mockResolvedValue(contributedProjectsQueryResponse)],
+        ],
+      });
+      await waitForPromises();
+
+      expect(
+        wrapper.findByRole('link', { name: mockProject.nameWithNamespace }).attributes('href'),
+      ).toBe(`/gitlab/${mockProject.fullPath}`);
     });
-    await waitForPromises();
-
-    expect(
-      wrapper.findByRole('link', { name: mockProject.nameWithNamespace }).attributes('href'),
-    ).toBe(`/gitlab/${mockProject.fullPath}`);
   });
 
   it('uses keyset pagination', async () => {

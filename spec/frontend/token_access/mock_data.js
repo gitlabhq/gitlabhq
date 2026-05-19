@@ -181,13 +181,17 @@ export const inboundUpdateScopeSuccessResponse = {
   },
 };
 
-export const mockPermissionsQueryResponse = (pushRepositoryForJobTokenAllowed = false) => ({
+export const mockPermissionsQueryResponse = ({
+  pushRepositoryForJobTokenAllowed = false,
+  crossProjectPushForJobTokenAllowed = false,
+} = {}) => ({
   data: {
     project: {
       id: 'gid://gitlab/Project/20',
       name: 'ops',
       ciCdSettings: {
         pushRepositoryForJobTokenAllowed,
+        crossProjectPushForJobTokenAllowed,
         __typename: 'ProjectCiCdSetting',
       },
       __typename: 'Project',
@@ -197,12 +201,14 @@ export const mockPermissionsQueryResponse = (pushRepositoryForJobTokenAllowed = 
 
 export const mockPermissionsMutationResponse = ({
   pushRepositoryForJobTokenAllowed = true,
+  crossProjectPushForJobTokenAllowed = false,
   errors = [],
 } = {}) => ({
   data: {
     projectCiCdSettingsUpdate: {
       ciCdSettings: {
         pushRepositoryForJobTokenAllowed,
+        crossProjectPushForJobTokenAllowed,
         __typename: 'ProjectCiCdSetting',
       },
       errors,

@@ -1,0 +1,18 @@
+---
+description: OAuth token request received with a PKCE code_verifier shorter than the RFC 7636 minimum of 43 characters
+internal_events: true
+action: oauth_authorize_with_short_pkce_verifier
+identifiers:
+  - user
+additional_properties:
+  label:
+    description: OAuth application UID (client_id) to identify unique non-compliant applications
+product_group: authentication
+product_categories:
+  - system_access
+milestone: '19.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233769
+tiers:
+  - free
+  - premium
+  - ultimate

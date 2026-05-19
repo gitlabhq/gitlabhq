@@ -51,9 +51,9 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
   let(:service_ping_payload_url) { File.join(described_class::STAGING_BASE_URL, described_class::USAGE_DATA_PATH) }
   let(:service_ping_errors_url) { File.join(described_class::STAGING_BASE_URL, described_class::ERROR_PATH) }
   let(:service_ping_metadata_url) { File.join(described_class::STAGING_BASE_URL, described_class::METADATA_PATH) }
-  let!(:usage_data) { { uuid: 'uuid', unique_instance_id: 'unique_instance_id', recorded_at: Time.current } }
+  let(:usage_data) { { uuid: 'uuid', unique_instance_id: 'unique_instance_id', recorded_at: Time.current } }
 
-  let!(:organization) { create(:organization) }
+  let_it_be(:organization) { create(:organization) }
 
   subject(:submit_service) { described_class.new(organization: organization, payload: usage_data) }
 

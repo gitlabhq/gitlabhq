@@ -92,7 +92,11 @@ export default {
 };
 </script>
 <template>
-  <gl-form-group id="project_topics" :label="$options.i18n.topicsTitle">
+  <gl-form-group
+    id="project_topics"
+    :label="$options.i18n.topicsTitle"
+    label-for="project_topics_input"
+  >
     <gl-token-selector
       ref="tokenSelector"
       :selected-tokens="selectedTokens"
@@ -101,6 +105,7 @@ export default {
       allow-user-defined-tokens
       show-add-new-always
       :placeholder="placeholderText"
+      :text-input-attrs="{ id: 'project_topics_input' }"
       @keydown.enter="handleEnter"
       @text-input="filterTopics"
       @input="onTokensUpdate"

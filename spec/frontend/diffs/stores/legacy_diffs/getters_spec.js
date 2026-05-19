@@ -339,12 +339,14 @@ describe('Diffs Module Getters', () => {
   });
 
   describe('currentDiffIndex', () => {
+    const blobs = [
+      { type: 'blob', fileHash: '111' },
+      { type: 'blob', fileHash: '222' },
+      { type: 'blob', fileHash: '333' },
+    ];
+
     it('returns index of currently selected diff in diffList', () => {
-      useFileBrowser().treeEntries = [
-        { type: 'blob', fileHash: '111' },
-        { type: 'blob', fileHash: '222' },
-        { type: 'blob', fileHash: '333' },
-      ];
+      useFileBrowser().tree = blobs;
       store.currentDiffFileId = '222';
 
       expect(store.currentDiffIndex).toEqual(1);
@@ -355,11 +357,7 @@ describe('Diffs Module Getters', () => {
     });
 
     it('returns 0 if no diff is selected yet or diff is not found', () => {
-      store.treeEntries = [
-        { type: 'blob', fileHash: '111' },
-        { type: 'blob', fileHash: '222' },
-        { type: 'blob', fileHash: '333' },
-      ];
+      useFileBrowser().tree = blobs;
       store.currentDiffFileId = '';
 
       expect(store.currentDiffIndex).toEqual(0);

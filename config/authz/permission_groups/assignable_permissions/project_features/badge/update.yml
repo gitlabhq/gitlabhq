@@ -4,5 +4,7 @@ description: Grants the ability to update badges
 boundaries:
   - project
   - group
+available_for:
+  - granular_access_token
 permissions:
   - update_badge

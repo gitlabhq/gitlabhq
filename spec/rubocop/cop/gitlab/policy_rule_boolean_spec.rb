@@ -32,6 +32,13 @@ RSpec.describe RuboCop::Cop::Gitlab::PolicyRuleBoolean do
     RUBY
   end
 
+  it 'registers offense for && in a rule numblock' do
+    expect_offense(<<~RUBY)
+      rule { _1 && _2 }.enable :light_bulb
+      ^^^^^^^^^^^^^^^^^ && is not allowed within a rule block. Did you mean to use `&`?
+    RUBY
+  end
+
   it 'registers no offense for &' do
     expect_no_offenses(<<~RUBY)
       rule { conducts_electricity & batteries }.enable :light_bulb

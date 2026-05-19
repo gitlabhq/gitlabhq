@@ -3,6 +3,10 @@
 module Atlassian
   module JiraConnect
     class Client
+      ASSOCIATION_VALUES_LIMIT = 500
+
+      AssociationsTruncatedError = Class.new(StandardError)
+
       def self.generate_update_sequence_id
         (Time.now.utc.to_f * 1000).round
       end
@@ -77,7 +81,16 @@ module Atlassian
 
         return if items.empty?
 
-        r = post('/rest/deployments/0.1/bulk', { deployments: items })
+        deployment_hashes = items.map do |item|
+          hash = item.as_json.deep_symbolize_keys
+          if Feature.enabled?(:truncate_jira_deployment_associations, project)
+            truncate_associations_if_needed(hash)
+          else
+            hash
+          end
+        end
+
+        r = post('/rest/deployments/0.1/bulk', { deployments: deployment_hashes })
         handle_response(r, 'deployments') { |data| errors(data, 'rejectedDeployments', r) }
       end
 
@@ -199,6 +212,80 @@ module Atlassian
         Note.count_for_collection(merge_requests.map(&:id), 'MergeRequest').to_h do |count_group|
           [count_group.noteable_id, count_group.count]
         end
+      end
+
+      # Jira caps total association values per deployment at
+      # ASSOCIATION_VALUES_LIMIT across all associationTypes combined.
+      # Splitting a deployment into multiple POSTs does not accumulate
+      # associations: verified against Jira Cloud, requests with the same
+      # deployment identity and equal updateSequenceNumber are dropped, and
+      # requests with a higher updateSequenceNumber wholesale replace the
+      # previous data. So when a deployment produces more than the limit,
+      # we truncate to the limit and track the excess so we can monitor
+      # customer impact.
+      def truncate_associations_if_needed(deployment_hash)
+        associations = deployment_hash[:associations] || []
+        total_values = associations.sum { |a| a[:values]&.size || 0 }
+
+        return deployment_hash if total_values <= ASSOCIATION_VALUES_LIMIT
+
+        dropped_values = total_values - ASSOCIATION_VALUES_LIMIT
+
+        Gitlab::ErrorTracking.track_exception(
+          AssociationsTruncatedError.new(
+            "Deployment associations truncated: #{total_values} -> #{ASSOCIATION_VALUES_LIMIT}"
+          ),
+          extra: {
+            deployment_sequence_number: deployment_hash[:deploymentSequenceNumber],
+            pipeline_id: deployment_hash.dig(:pipeline, :id),
+            total_values: total_values,
+            dropped_values: dropped_values
+          },
+          tags: truncation_tags(dropped_values)
+        )
+
+        # Prioritise issueKeys in the truncated payload: those are the primary
+        # linkage Jira uses to attach the deployment to issues. If the
+        # serializer emits commit/mergeRequest associations before issue keys,
+        # filling the 500-value budget in input order would starve the issue
+        # keys and the deployment would never link to anything in Jira.
+        issue_keys_type = ::Atlassian::JiraConnect::Serializers::DeploymentEntity::ISSUE_KEYS_ASSOCIATION_TYPE.to_s
+        prioritised, rest = associations.partition do |assoc|
+          assoc[:associationType].to_s == issue_keys_type
+        end
+        ordered = prioritised + rest
+
+        budget = ASSOCIATION_VALUES_LIMIT
+        truncated = ordered.filter_map do |assoc|
+          next if budget <= 0
+
+          take = [assoc[:values].to_a.size, budget].min
+          budget -= take
+          next if take == 0
+
+          assoc.merge(values: assoc[:values].first(take))
+        end
+
+        deployment_hash.merge(associations: truncated)
+      end
+
+      # Coarse, low-cardinality tags so Sentry can aggregate the truncation
+      # distribution. `extra:` data is not aggregatable in Discover.
+      def truncation_tags(dropped_values)
+        bucket = if dropped_values < 100
+                   '<100'
+                 elsif dropped_values < 500
+                   '100-499'
+                 elsif dropped_values < 1000
+                   '500-999'
+                 else
+                   '>=1000'
+                 end
+
+        {
+          dropped_bucket: bucket,
+          truncation_severity: dropped_values >= 800 ? 'high' : 'normal'
+        }
       end
 
       def jwt_token(http_method, uri)

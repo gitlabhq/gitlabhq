@@ -44,6 +44,8 @@ Tree.args = {
   file: {
     name: 'files',
     type: 'tree',
+    path: 'files',
+    opened: false,
   },
 };
 
@@ -53,6 +55,7 @@ OpenFolder.args = {
   file: {
     name: 'files',
     type: 'tree',
+    path: 'files',
     opened: true,
     active: true,
   },

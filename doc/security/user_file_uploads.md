@@ -62,7 +62,7 @@ Prerequisites:
 To configure authentication settings for all media files:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll to **Project visibility** and select **Require authentication to view media files**.
 
@@ -97,6 +97,6 @@ mutation{
 }
 ```
 
-Project members that do not have the Owner or Maintainer role cannot access this GraphQL endpoint.
+Project members that do not have the Maintainer or Owner role cannot access this GraphQL endpoint.
 
 You can also use the REST API for [projects](../api/project_markdown_uploads.md#delete-an-uploaded-file-by-secret-and-filename) or [groups](../api/group_markdown_uploads.md#delete-an-uploaded-file-by-secret-and-filename) to delete an uploaded file.

@@ -27,6 +27,19 @@ RSpec.describe 'PipelineRetry', feature_category: :pipeline_composition do
 
   let(:mutation_response) { graphql_mutation_response(:pipeline_retry) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :retry_pipeline do
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(
+        :pipeline_retry,
+        { id: pipeline.to_global_id.to_s },
+        'errors'
+      )
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'returns an error if the user is not allowed to retry the pipeline' do
     post_graphql_mutation(mutation, current_user: create(:user))
 

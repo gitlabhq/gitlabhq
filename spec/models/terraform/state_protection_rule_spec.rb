@@ -38,6 +38,72 @@ RSpec.describe Terraform::StateProtectionRule, feature_category: :infrastructure
     end
   end
 
+  describe '.exists_for_projects_and_state_names' do
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project1_rule) { create(:terraform_state_protection_rule, project: project1, state_name: 'production') }
+
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:project2_rule) { create(:terraform_state_protection_rule, project: project2, state_name: 'staging') }
+
+    let_it_be(:unprotected_project) { create(:project) }
+
+    let(:single_project_input) do
+      [
+        [project1.id, 'production'],
+        [project1.id, 'unprotected-state']
+      ]
+    end
+
+    let(:single_project_expected_result) do
+      [
+        { 'project_id' => project1.id, 'state_name' => 'production', 'protected' => true },
+        { 'project_id' => project1.id, 'state_name' => 'unprotected-state', 'protected' => false }
+      ]
+    end
+
+    let(:multi_projects_input) do
+      [
+        *single_project_input,
+        [project2.id, 'staging'],
+        [project2.id, 'unprotected-state']
+      ]
+    end
+
+    let(:multi_projects_expected_result) do
+      [
+        *single_project_expected_result,
+        { 'project_id' => project2.id, 'state_name' => 'staging', 'protected' => true },
+        { 'project_id' => project2.id, 'state_name' => 'unprotected-state', 'protected' => false }
+      ]
+    end
+
+    let(:unprotected_projects_input) do
+      [
+        [unprotected_project.id, 'some-state']
+      ]
+    end
+
+    let(:unprotected_projects_expected_result) do
+      [
+        { 'project_id' => unprotected_project.id, 'state_name' => 'some-state', 'protected' => false }
+      ]
+    end
+
+    subject { described_class.exists_for_projects_and_state_names(projects_and_state_names).to_a }
+
+    where(:projects_and_state_names, :expected_result) do
+      ref(:single_project_input)       | ref(:single_project_expected_result)
+      ref(:multi_projects_input)       | ref(:multi_projects_expected_result)
+      ref(:unprotected_projects_input) | ref(:unprotected_projects_expected_result)
+      nil                              | []
+      []                               | []
+    end
+
+    with_them do
+      it { is_expected.to match_array expected_result }
+    end
+  end
+
   describe 'validations' do
     subject(:rule) { build(:terraform_state_protection_rule) }
 

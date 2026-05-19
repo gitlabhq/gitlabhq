@@ -252,4 +252,31 @@ describe('Interval Pattern Input Component', () => {
       expect(wrapper.emitted()).toEqual({ cronValue: [['0 16 * * *']] });
     });
   });
+
+  describe('Random day-of-month generation', () => {
+    // Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/502445
+    // Day-of-month in cron must be 1-31; 0 is invalid syntax.
+    const mountWithoutDataOverride = () =>
+      mountExtended(IntervalPatternInput, {
+        provide: { workerCronExpression: workerCronValue },
+      });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('produces day 1 when Math.random returns 0 (never 0 which is invalid cron syntax)', () => {
+      jest.spyOn(global.Math, 'random').mockReturnValue(0);
+      wrapper = mountWithoutDataOverride();
+
+      expect(wrapper.vm.randomDay).toBe(1);
+    });
+
+    it('produces day 28 at the upper bound (safe for every month)', () => {
+      jest.spyOn(global.Math, 'random').mockReturnValue(0.99999);
+      wrapper = mountWithoutDataOverride();
+
+      expect(wrapper.vm.randomDay).toBe(28);
+    });
+  });
 });

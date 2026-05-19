@@ -30,24 +30,24 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, feature_categor
     end
   end
 
-  it "renders expand up" do
+  it "renders expand up with tooltip" do
     match_line = Gitlab::Diff::Line.new("", 'match', 1, 0, 0)
     diff_hunk = Gitlab::Diff::ViewerHunk.new(
       header: Gitlab::Diff::ViewerHunkHeader.new(match_line, nil, 1),
       lines: lines.drop(1)
     )
     render_component(diff_hunk)
-    expect(page).to have_selector('button svg use[href$="#expand-up"]')
+    expect(page).to have_selector('button.has-tooltip[title="Show lines before"] svg use[href$="#expand-up"]')
   end
 
-  it "renders expand down" do
+  it "renders expand down with tooltip" do
     match_line = Gitlab::Diff::Line.new("", 'match', 100, 0, 0)
     diff_hunk = Gitlab::Diff::ViewerHunk.new(
       header: Gitlab::Diff::ViewerHunkHeader.new(match_line, 1, nil),
       lines: []
     )
     render_component(diff_hunk)
-    expect(page).to have_selector('button svg use[href$="#expand-down"]')
+    expect(page).to have_selector('button.has-tooltip[title="Show lines after"] svg use[href$="#expand-down"]')
   end
 
   it "renders both expand up and down" do

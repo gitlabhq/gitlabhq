@@ -502,17 +502,19 @@ describe('Reviewer dropdown component', () => {
 
       it('tracks which position any selected users were in after a search as a telemetry event', async () => {
         findDropdown().vm.$emit('search', 'bob');
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
         findDropdown().vm.$emit('select', 'bob');
         findDropdown().vm.$emit('hidden');
 
         await waitForPromises();
 
+        // Client-side filtering on 'bob' returns only 1 result, so bob is at position 1
         expect(trackEventSpy).toHaveBeenCalledWith(
           'user_selects_reviewer_from_mr_sidebar_after_search',
           {
-            value: 2,
+            value: 1,
             suggested_position: 0,
-            selectable_reviewers_count: 2,
+            selectable_reviewers_count: 1,
           },
           undefined,
         );
@@ -930,6 +932,79 @@ describe('Reviewer dropdown component', () => {
           iid: '1',
         }),
       );
+    });
+
+    describe('client-side filtering', () => {
+      const twoUsers = [
+        createMockUser(),
+        createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+      ];
+
+      beforeEach(async () => {
+        createComponent({
+          adminMergeRequest: true,
+          propsData: { users: twoUsers },
+        });
+        await waitForPromises();
+      });
+
+      it('does not call the autocomplete GraphQL query', async () => {
+        findDropdown().vm.$emit('shown');
+        await waitForPromises();
+
+        findDropdown().vm.$emit('search', 'bob');
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        await waitForPromises();
+
+        expect(autocompleteUsersMock).not.toHaveBeenCalled();
+      });
+
+      it('filters users by name', async () => {
+        findDropdown().vm.$emit('search', 'Nonadmin');
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        await waitForPromises();
+
+        const items = findDropdown().props('items');
+        const usersGroup = items.find((group) => group.text === 'Users');
+
+        expect(usersGroup.options).toEqual(
+          expect.arrayContaining([expect.objectContaining({ value: 'bob' })]),
+        );
+        expect(usersGroup.options).not.toEqual(
+          expect.arrayContaining([expect.objectContaining({ value: 'root' })]),
+        );
+      });
+
+      it('filters users by username', async () => {
+        findDropdown().vm.$emit('search', 'root');
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        await waitForPromises();
+
+        const items = findDropdown().props('items');
+        const usersGroup = items.find((group) => group.text === 'Users');
+
+        expect(usersGroup.options).toEqual(
+          expect.arrayContaining([expect.objectContaining({ value: 'root' })]),
+        );
+        expect(usersGroup.options).not.toEqual(
+          expect.arrayContaining([expect.objectContaining({ value: 'bob' })]),
+        );
+      });
+
+      it('returns all users when search is empty', async () => {
+        findDropdown().vm.$emit('shown');
+        await waitForPromises();
+
+        const items = findDropdown().props('items');
+        const usersGroup = items.find((group) => group.text === 'Users');
+
+        expect(usersGroup.options).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({ value: 'root' }),
+            expect.objectContaining({ value: 'bob' }),
+          ]),
+        );
+      });
     });
   });
 

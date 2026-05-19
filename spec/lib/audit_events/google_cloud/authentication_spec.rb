@@ -13,28 +13,6 @@ RSpec.describe AuditEvents::GoogleCloud::Authentication, feature_category: :audi
       described_class.new(scope: scope).generate_access_token(client_email, private_key)
     end
 
-    context 'when credentials are invalid' do
-      context 'with empty private key' do
-        let_it_be(:private_key) { '' }
-
-        it 'handles the exception' do
-          expect(Gitlab::ErrorTracking).to receive(:log_exception)
-
-          generate_access_token
-        end
-      end
-
-      context 'with empty client_email key' do
-        let_it_be(:client_email) { '' }
-
-        it 'handles the exception' do
-          expect(Gitlab::ErrorTracking).to receive(:log_exception)
-
-          generate_access_token
-        end
-      end
-    end
-
     context 'with doubled service_account_credentials' do
       let(:service_account_credentials) { instance_double('Google::Auth::ServiceAccountCredentials') }
 
@@ -58,20 +36,77 @@ RSpec.describe AuditEvents::GoogleCloud::Authentication, feature_category: :audi
           generate_access_token
         end
 
-        it 'fetches access token' do
+        it 'returns the access token string' do
           expect(generate_access_token).to eq('token')
         end
       end
 
-      context 'when an error occurs' do
+      context 'when fetch_access_token! raises OpenSSL::PKey::RSAError' do
+        let(:error) { OpenSSL::PKey::RSAError.new('invalid private key') }
+
         before do
-          allow(service_account_credentials).to receive(:fetch_access_token!).and_raise(StandardError)
+          allow(service_account_credentials).to receive(:fetch_access_token!).and_raise(error)
         end
 
-        it 'handles the exception and returns nil' do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception)
-          expect(generate_access_token).to be_nil
+        it 'propagates the error to the caller' do
+          expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
+          expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+          expect { generate_access_token }.to raise_error(OpenSSL::PKey::RSAError, 'invalid private key')
         end
+      end
+
+      context 'when fetch_access_token! raises Signet::AuthorizationError' do
+        let(:error) { Signet::AuthorizationError.new('unauthorized') }
+
+        before do
+          allow(service_account_credentials).to receive(:fetch_access_token!).and_raise(error)
+        end
+
+        it 'propagates the error to the caller' do
+          expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
+          expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+          expect { generate_access_token }.to raise_error(Signet::AuthorizationError, /unauthorized/)
+        end
+      end
+
+      context 'when fetch_access_token! raises an unexpected StandardError' do
+        let(:error) { StandardError.new('unexpected') }
+
+        before do
+          allow(service_account_credentials).to receive(:fetch_access_token!).and_raise(error)
+        end
+
+        it 'propagates the error to the caller without tracking it' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+          expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
+
+          expect { generate_access_token }.to raise_error(StandardError, 'unexpected')
+        end
+      end
+    end
+
+    context 'with a real invalid private key' do
+      let(:client_email) { 'test@example.com' }
+      let(:private_key) { '' }
+
+      it 'propagates the error raised by the underlying Google auth library' do
+        expect { described_class.new(scope: scope).generate_access_token(client_email, private_key) }
+          .to raise_error(OpenSSL::PKey::RSAError)
+      end
+    end
+
+    context 'when make_creds raises' do
+      let(:error) { OpenSSL::PKey::RSAError.new('Neither PUB key nor PRIV key') }
+
+      before do
+        allow(Google::Auth::ServiceAccountCredentials)
+          .to receive(:make_creds).and_raise(error)
+      end
+
+      it 'propagates the error to the caller' do
+        expect { generate_access_token }.to raise_error(OpenSSL::PKey::RSAError, /Neither PUB key nor PRIV key/)
       end
     end
   end

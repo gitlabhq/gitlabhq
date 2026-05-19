@@ -189,7 +189,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter, featur
         subject.mark_as_imported(protected_branch)
         subject.mark_as_imported(second_protected_branch)
 
-        subject.each_object_to_import {}
+        subject.each_object_to_import { nil }
         expect(Gitlab::GithubImport::ObjectCounter).not_to have_received(:increment)
       end
     end

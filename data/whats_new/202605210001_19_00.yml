@@ -1,0 +1,96 @@
+- name: "Group-level custom review instructions for GitLab Duo"
+  description: |
+    In previous versions of GitLab, you could only define custom review instructions for
+    GitLab Duo at the project level. Teams working across many projects in the
+    same group had to duplicate the same instructions in every project.
+
+    Now you can configure shared custom review instructions for an entire group and its subgroups.
+    Select a project in your group to use as a template. When GitLab Duo performs a code review,
+    it combines the group-level instructions with any instructions defined in the individual project.
+    Both Code Review Flow and GitLab Duo Code Review support group-level custom instructions.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo/customize_duo/review_instructions/#configure-custom-review-instructions-for-a-group
+  published_at: 2026-05-21
+  release: "19.0"
+
+- name: "Configure work item types"
+  description: |
+    Previously, work item types could be either an Issue or a Task. You can now configure custom
+    work item types in a project to match the way your team plans and tracks work.
+
+    You can create or rename types to User Story, Bug, or Maintenance. Each work item displays
+    with its type name and a unique icon. The new types support custom fields and status lifecycles,
+    and appear in your saved views and issue boards. Type configuration in the top-level group
+    (GitLab.com) or organization (GitLab Self-Managed) cascades down to all projects.
+
+    You can also control which types are available for each project. Enable or disable a type
+    across all projects at once, or let individual projects manage their own type visibility.
+    When you disable a type in a project, existing work items are not affected.
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/work_items/configurable_work_item_types/
+  published_at: 2026-05-21
+  release: "19.0"
+
+- name: "GitLab Secrets Manager now available in open beta"
+  description: |
+    The GitLab Secrets Manager is now available in open beta for Premium and Ultimate customers on
+    GitLab.com and GitLab Self-Managed. When the GitLab Secrets Manager is enabled, project and group
+    Owners can store, retrieve, and reference CI/CD secrets in GitLab. Secrets are scoped to a project
+    or group and are accessible to only pipeline jobs that explicitly request them.
+
+    Previously, most teams relied on external services such as HashiCorp Vault or AWS Secrets Manager.
+    During open beta, GitLab Secrets Manager follows the beta support policy and might not be ready
+    for production use.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ci/secrets/secrets_manager/
+  published_at: 2026-05-21
+  release: "19.0"
+
+- name: "GitLab Duo Developer enhancements for merge request workflows"
+  description: |
+    GitLab Duo Developer now supports multiple trigger methods: assign it to an issue, select
+    Generate MR, or @mention it in any issue or MR discussion thread to turn feedback,
+    To-do items, and design questions into code changes, follow-up MRs, or research summaries.
+
+    With AGENTS.md and agent-config.yml configured, GitLab Duo Developer runs your tests and
+    checks before committing. After a top-level group or instance administrator enables the
+    Developer Flow, GitLab automatically adds mention and assign triggers to eligible projects.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/flows/foundational_flows/developer/
+  published_at: 2026-05-21
+  release: "19.0"
+
+- name: "Dependency scanning by using SBOM generally available"
+  description: |
+    The GitLab SBOM-based dependency scanner is now generally available. Maven, Gradle, and Python
+    projects now have complete visibility into vulnerabilities across their full dependency tree,
+    including vulnerable packages introduced transitively, not just those declared directly.
+
+    The analyzer now includes automatic dependency resolution for Maven, Gradle, and Python projects.
+    When a lockfile or resolved dependency graph is not present, the analyzer automatically invokes
+    tooling to resolve the full transitive dependency graph before scanning. Dependency resolution
+    is enabled by default and requires no additional configuration beyond including the v2 Dependency
+    Scanning template.
+
+    For projects where dependency resolution is not possible, the analyzer falls back to manifest
+    scanning, parsing pom.xml, requirements.txt, build.gradle, and build.gradle.kts to identify
+    direct dependencies.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/dependency_scanning/dependency_scanning_sbom/
+  published_at: 2026-05-21
+  release: "19.0"

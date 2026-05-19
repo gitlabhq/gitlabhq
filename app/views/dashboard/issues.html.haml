@@ -10,8 +10,4 @@
 = render_if_exists 'shared/dashboard/saml_reauth_notice',
   groups_requiring_saml_reauth: user_groups_requiring_reauth
 
-= render ::Layouts::PageHeadingComponent.new(_("Work items")) do |c|
-  - c.with_actions do
-    = render 'shared/new_project_item_vue_select'
-
 .js-issues-dashboard{ data: dashboard_issues_list_data(current_user) }

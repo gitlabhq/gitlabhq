@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Users::TermsController, feature_category: :system_access do
   include TermsHelper
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   let(:term) { create(:term) }
 

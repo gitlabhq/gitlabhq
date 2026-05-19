@@ -10,8 +10,7 @@
           "firefox": 91
         }
       }
-    ],
-    "@babel/preset-react"
+    ]
   ],
   "plugins": []
 }

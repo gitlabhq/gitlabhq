@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Issue::Metrics < ApplicationRecord
-  ignore_column :id_convert_to_bigint, remove_with: '18.9', remove_after: '2026-02-22'
-  ignore_column :issue_id_convert_to_bigint, remove_with: '18.9', remove_after: '2026-02-22'
+  ignore_column :id_convert_to_bigint, remove_with: '19.0', remove_after: '2026-05-22'
+  ignore_column :issue_id_convert_to_bigint, remove_with: '19.0', remove_after: '2026-05-22'
 
   belongs_to :issue
   belongs_to :namespace

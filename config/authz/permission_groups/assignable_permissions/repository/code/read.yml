@@ -1,7 +1,9 @@
 ---
 name: read_code
 description: Grants the ability to read code from a repository
-permissions:
-  - read_code
 boundaries:
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_code

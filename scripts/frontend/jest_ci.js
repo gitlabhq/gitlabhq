@@ -8,7 +8,6 @@ const { getChangedFiles } = require('./find_jest_predictive_tests');
 const IS_CI = Boolean(process.env.CI);
 
 const VUE_3_TESTING_DOCS_URL =
-  // eslint-disable-next-line no-restricted-syntax
   'https://docs.gitlab.com/ee/development/testing_guide/testing_vue3.html';
 const VUE_3_TESTING_EPIC = 'https://gitlab.com/groups/gitlab-org/-/epics/11740';
 

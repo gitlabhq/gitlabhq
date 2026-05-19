@@ -44,10 +44,16 @@ module Gitlab
 
       def validate_property!(hash, key, *class_names)
         return unless hash.has_key?(key)
-        return if hash[key].nil?
-        return if class_names.include?(hash[key].class)
 
-        error = InvalidPropertyTypeError.new("#{key} should be an instance of #{class_names.join(', ')}")
+        value = hash[key]
+
+        return if value.nil?
+        return if class_names.any? { |klass| value.is_a?(klass) }
+
+        error = InvalidPropertyTypeError.new(
+          "#{key} should be an instance of #{class_names.join(', ')}, got #{value.class}"
+        )
+
         log_invalid_property(error)
       end
 
@@ -79,7 +85,9 @@ module Gitlab
             log_invalid_property(error)
           end
 
-          validate_property!(custom_properties, key, *allowed_types) unless extra_tracking_properties.include?(key)
+          next if extra_tracking_properties.include?(key)
+
+          validate_property!(custom_properties, key, *allowed_types)
         end
       end
 

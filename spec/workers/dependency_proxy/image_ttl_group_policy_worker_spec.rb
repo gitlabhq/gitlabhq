@@ -32,7 +32,7 @@ RSpec.describe DependencyProxy::ImageTtlGroupPolicyWorker, type: :worker, featur
       end
     end
 
-    context 'counts logging' do
+    context 'when logging counts' do
       let_it_be(:expired_blob) { create(:dependency_proxy_blob, :pending_destruction, group: group) }
       let_it_be(:expired_blob2) { create(:dependency_proxy_blob, :pending_destruction, group: group) }
       let_it_be(:expired_manifest) { create(:dependency_proxy_manifest, :pending_destruction, group: group) }

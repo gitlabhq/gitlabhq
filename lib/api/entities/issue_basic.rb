@@ -10,7 +10,7 @@ module API
       expose :closed_at, documentation: { type: 'DateTime', example: '2022-11-15T08:30:55.232Z' }
       expose :closed_by, using: Entities::UserBasic
 
-      expose :labels, documentation: { type: 'String', is_array: true, example: 'bug' } do |issue, options|
+      expose :labels, documentation: { type: 'String', is_array: true, example: ['bug'] } do |issue, options|
         if options[:with_labels_details]
           ::API::Entities::LabelBasic.represent(issue.labels.sort_by(&:title))
         else

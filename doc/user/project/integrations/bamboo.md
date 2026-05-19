@@ -43,7 +43,7 @@ integration in GitLab.
 ## Configure GitLab
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **Atlassian Bamboo**.
 1. Ensure the **Active** checkbox is selected.
 1. Enter the base URL of your Bamboo server. For example, `https://bamboo.example.com`.

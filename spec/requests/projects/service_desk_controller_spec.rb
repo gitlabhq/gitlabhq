@@ -105,6 +105,53 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
       expect(json_response['message']).to eq('Issue template key is empty or does not exist')
     end
 
+    context 'when disabling service desk with a custom email configured' do
+      let!(:setting) { create(:service_desk_setting, project: project, custom_email: 'support@example.com') }
+      let!(:credential) { create(:service_desk_custom_email_credential, project: project) }
+      let!(:verification) { create(:service_desk_custom_email_verification, project: project) }
+
+      it 'destroys custom email records' do
+        put project_service_desk_path(project, format: :json), params: { service_desk_enabled: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        project.reset
+        expect(project.service_desk_custom_email_credential).to be_nil
+        expect(project.service_desk_custom_email_verification).to be_nil
+        expect(project.service_desk_setting).to have_attributes(
+          custom_email: nil,
+          custom_email_enabled: false
+        )
+      end
+    end
+
+    context 'when disabling service desk without a custom email configured' do
+      it 'does not call the destroy service' do
+        expect(ServiceDesk::CustomEmails::DestroyService).not_to receive(:new)
+
+        put project_service_desk_path(project, format: :json), params: { service_desk_enabled: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when enabling service desk with a custom email configured' do
+      let!(:setting) { create(:service_desk_setting, project: project, custom_email: 'support@example.com') }
+
+      it 'does not destroy custom email records' do
+        project.update!(service_desk_enabled: false)
+
+        expect(ServiceDesk::CustomEmails::DestroyService).not_to receive(:new)
+
+        put project_service_desk_path(project, format: :json), params: { service_desk_enabled: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        project.reset
+        expect(project.service_desk_setting.custom_email).to eq('support@example.com')
+      end
+    end
+
     context 'when user cannot admin the project' do
       let(:other_user) { create(:user) }
 

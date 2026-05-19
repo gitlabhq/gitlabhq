@@ -2,17 +2,8 @@
 Gitlab/AvoidDirectWorkItemTypeUsage:
   Exclude:
     - 'app/models/work_item.rb'
-    - 'app/models/work_items/type.rb'
     - 'app/models/work_items/types_framework/system_defined/type.rb'
     - 'ee/app/models/ee/work_items/types_framework/provider.rb'
     - 'ee/app/models/work_items/types_framework/custom/type.rb'
-    - 'ee/elastic/migrate/20240807160655_reindex_all_issues_from_database.rb'
-    - 'ee/lib/gitlab/epic_work_item_sync/diff.rb'
-    - 'ee/lib/gitlab/search/aggregation_parser.rb'
-    - 'lib/gitlab/database_importers/work_items/base_type_importer.rb'
     - 'spec/factories/work_items/types_framework/system_defined/type.rb'
-    - 'spec/factories/work_items/work_item_types.rb'
-    - 'spec/models/work_items/types_framework/provider_spec.rb'
-    - 'spec/support/shared_examples/requests/api/graphql/work_item_type_list_shared_examples.rb'
     - 'spec/support/shared_examples/services/work_items/data_sync/cloneable_and_moveable_data_stared_examples.rb'
-    - 'spec/support/shared_examples/work_item_base_types_importer.rb'

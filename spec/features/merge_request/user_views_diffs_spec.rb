@@ -57,7 +57,7 @@ RSpec.describe 'User views diffs', :js, feature_category: :code_review_workflow 
   end
 
   it 'hides loading spinner after load' do
-    expect(page).not_to have_selector('.mr-loading-status .loading', visible: true)
+    expect(page).not_to have_selector('.mr-loading-status .loading', visible: :visible)
   end
 
   it 'expands all diffs', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9314' do

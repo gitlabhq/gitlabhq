@@ -126,5 +126,6 @@ Prerequisites:
 To limit the terminal session lifetime in your GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Web terminal**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Web terminal**.
 1. Set a `max session time`.

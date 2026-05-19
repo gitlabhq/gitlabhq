@@ -107,5 +107,9 @@ In this case, you must
 
 ## Error: `Elasticsearch version not compatible`
 
-To resolve this problem, confirm that your version of Elasticsearch or OpenSearch is
-[compatible with your version of GitLab](../integration/advanced_search/elasticsearch.md#version-requirements).
+If your Elasticsearch or OpenSearch version is not compatible with GitLab,
+indexing pauses to prevent data loss and this message is logged to [`elasticsearch.log`](../administration/logs/_index.md#elasticsearchlog).
+
+To resolve this issue, [ensure your Elasticsearch or OpenSearch version is compatible with GitLab](../integration/advanced_search/elasticsearch.md#version-compatibility).
+
+If you're using a compatible version, [resume indexing](../integration/advanced_search/elasticsearch.md#resume-indexing).

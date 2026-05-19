@@ -24,6 +24,10 @@ module Authn
         iam_config.jwt_audience
       end
 
+      def jwt_issuer
+        iam_config.jwt_issuer
+      end
+
       def secret
         path = iam_config.secret_file
         raise ConfigurationError, 'IAM auth service secret_file is not configured' if path.blank?

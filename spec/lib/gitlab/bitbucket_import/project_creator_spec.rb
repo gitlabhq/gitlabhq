@@ -41,16 +41,6 @@ RSpec.describe Gitlab::BitbucketImport::ProjectCreator, feature_category: :impor
     expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
   end
 
-  context 'when basic auth is used' do
-    let(:access_params) { { username: 'foo', app_password: 'bar' } }
-
-    it 'sets basic auth in unsafe_import_url' do
-      project = creator.execute
-
-      expect(project.unsafe_import_url).to eq("https://foo:bar@bitbucket.org/repo/repo.git")
-    end
-  end
-
   context 'when API token is used' do
     let(:access_params) { { email: 'user@example.com', api_token: 'token123' } }
 

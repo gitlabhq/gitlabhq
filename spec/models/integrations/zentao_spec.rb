@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Zentao, feature_category: :integrations do
+RSpec.describe Integrations::Zentao, feature_category: :team_planning do
   let(:url) { 'https://jihudemo.zentao.net' }
   let(:api_url) { 'https://jihudemo.zentao.net' }
   let(:api_token) { 'ZENTAO_TOKEN' }

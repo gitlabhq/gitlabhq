@@ -64,6 +64,7 @@ module Gitlab
           notification_emails: { threshold: 1000, interval: 1.day },
           oauth_dynamic_registration: { threshold: 5, interval: 1.hour },
           offline_export: { threshold: 6, interval: 1.minute },
+          offline_import: { threshold: 6, interval: 1.minute },
           permanent_email_failure: { threshold: 5, interval: 1.day },
           phone_verification_send_code: { threshold: 5, interval: 1.day },
           phone_verification_verify_code: { threshold: 5, interval: 1.day },
@@ -277,6 +278,17 @@ module Gitlab
         rate_limit_value(value)
       end
 
+      # Returns the threshold value for a given rate limit key, resolving any
+      # Proc against the current application settings.
+      #
+      # @param key [Symbol] Key attribute registered in `.rate_limits`
+      # @return [Integer] The resolved threshold; 0 when the key disables itself.
+      def threshold(key)
+        value = rate_limit_value_by_key(key, :threshold)
+
+        rate_limit_value(value)
+      end
+
       private
 
       def _throttled?(key, scope:, strategy:, threshold: nil, interval: nil, users_allowlist: nil, peek: false)
@@ -285,13 +297,42 @@ module Gitlab
         return false if scoped_user_in_allowlist?(scope, users_allowlist)
 
         threshold_value = threshold || threshold(key)
-
         return false if threshold_value == 0
 
         interval_value = interval || interval(key)
-
         return false if interval_value == 0
 
+        labkit_decision = dispatch_to_labkit(
+          key,
+          scope: scope,
+          strategy: strategy,
+          peek: peek,
+          threshold: threshold,
+          interval: interval
+        )
+
+        return labkit_decision if !labkit_decision.nil? && LabkitAdapter.enforce?(key)
+
+        legacy_decision = legacy_throttled?(
+          key,
+          scope: scope,
+          strategy: strategy,
+          peek: peek,
+          threshold_value: threshold_value,
+          interval_value: interval_value
+        )
+
+        LabkitAdapter.record_divergence(key, labkit_decision, legacy_decision) unless labkit_decision.nil?
+
+        legacy_decision
+      end
+
+      # Computes the throttle decision via the legacy Redis counter shape
+      # (application_rate_limiter:<key>:<scope>:<period_key>). Increments
+      # the counter unless +peek+, then compares against +threshold_value+.
+      # Returns false when the counter is missing (peek with no prior
+      # increment) so callers treat "no counter" as "not throttled".
+      def legacy_throttled?(key, scope:, strategy:, peek:, threshold_value:, interval_value:)
         # `period_key` is based on the current time and interval so when time passes to the next interval
         # the key changes and the rate limit count starts again from 0.
         # Based on https://github.com/rack/rack-attack/blob/886ba3a18d13c6484cd511a4dc9b76c0d14e5e96/lib/rack/attack/cache.rb#L63-L68
@@ -303,7 +344,6 @@ module Gitlab
                 else
                   # We add a 1 second buffer to avoid timing issues when we're at the end of a period
                   expiry = interval_value - time_elapsed_in_period + 1
-
                   strategy.increment(cache_key, expiry)
                 end
 
@@ -314,10 +354,19 @@ module Gitlab
         value > threshold_value
       end
 
-      def threshold(key)
-        value = rate_limit_value_by_key(key, :threshold)
+      # Routes a check through the labkit adapter when applicable, returning
+      # labkit's boolean decision or nil if the adapter does not handle this
+      # call. The adapter only takes the plain IncrementPerAction strategy;
+      # per-resource and resource-usage strategies stay on the legacy path.
+      # Peek dispatches to a read-only Redis round-trip so the labkit counter
+      # only advances via paired non-peek call sites.
+      def dispatch_to_labkit(key, scope:, strategy:, peek:, threshold:, interval:)
+        return unless strategy.is_a?(IncrementPerAction)
 
-        rate_limit_value(value)
+        return unless LabkitAdapter.shadow_or_enforce?(key, threshold_override: threshold,
+          interval_override: interval)
+
+        peek ? LabkitAdapter.run_peek!(key, scope: scope) : LabkitAdapter.run!(key, scope: scope)
       end
 
       def rate_limit_value(value)

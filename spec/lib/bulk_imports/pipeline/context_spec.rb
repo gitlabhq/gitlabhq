@@ -6,11 +6,12 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
   let_it_be(:user) { create(:user, :admin) }
   let_it_be(:group) { create(:group) }
   let_it_be(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
+  let_it_be(:offline_bulk_import) { create(:bulk_import, :with_offline_configuration, user: user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:project_entity) { create(:bulk_import_entity, :project_entity, project: project) }
   let_it_be(:project_tracker) { create(:bulk_import_tracker, entity: project_entity) }
 
-  let_it_be(:entity) do
+  let_it_be_with_reload(:entity) do
     create(
       :bulk_import_entity,
       source_full_path: 'source/full/path',
@@ -21,7 +22,7 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
     )
   end
 
-  let_it_be(:tracker) do
+  let_it_be_with_reload(:tracker) do
     create(
       :bulk_import_tracker,
       entity: entity,
@@ -49,6 +50,28 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
 
   describe '#configuration' do
     it { expect(subject.configuration).to eq(bulk_import.configuration) }
+  end
+
+  describe '#offline_configuration' do
+    before do
+      entity.update!(bulk_import: offline_bulk_import)
+    end
+
+    it { expect(subject.offline_configuration).to eq(offline_bulk_import.offline_configuration) }
+  end
+
+  describe '#offline?' do
+    context 'when offline' do
+      before do
+        entity.update!(bulk_import: offline_bulk_import)
+      end
+
+      it { expect(subject.offline?).to eq(true) }
+    end
+
+    context 'when not offline' do
+      it { expect(subject.offline?).to eq(false) }
+    end
   end
 
   describe '#extra' do

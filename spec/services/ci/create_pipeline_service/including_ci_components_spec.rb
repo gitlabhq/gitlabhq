@@ -362,42 +362,5 @@ RSpec.describe 'Creating a pipeline that includes CI components', feature_catego
         execute_service_with_request_store
       end.to issue_same_number_of_queries_as(control).with_threshold(accepted_threshold)
     end
-
-    context 'when ci_optimize_component_instance_path feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_optimize_component_instance_path: false)
-      end
-
-      it 'creates a pipeline using legacy component fetching' do
-        stub_ci_pipeline_yaml_file(config_three_components)
-
-        response = execute_service
-        pipeline = response.payload
-
-        expect(pipeline).to be_persisted
-        expect(pipeline.error_messages).to be_empty
-        expect(pipeline.statuses.map(&:name)).to match_array(%w[component-a-job component-b-job component-c-job])
-      end
-
-      it 'does not cache DB calls when including multiple components from the same project', :use_sql_query_cache do
-        # Warm up
-        stub_ci_pipeline_yaml_file(config_one_component)
-        execute_service
-
-        stub_ci_pipeline_yaml_file(config_three_components)
-        execute_service
-
-        stub_ci_pipeline_yaml_file(config_one_component)
-        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          execute_service_with_request_store
-        end
-
-        accepted_threshold = 8 # 2 stages + 2 builds + 2 job definitions + 2 build sources
-        stub_ci_pipeline_yaml_file(config_three_components)
-        expect do
-          execute_service_with_request_store
-        end.not_to issue_same_number_of_queries_as(control).with_threshold(accepted_threshold)
-      end
-    end
   end
 end

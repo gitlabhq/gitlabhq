@@ -146,4 +146,31 @@ describe('WebhookFormTriggerList', () => {
       expect(wrapper.vm.triggers.pipelineEvents).toBe(true);
     });
   });
+
+  describe('when system hook triggers are provided', () => {
+    const systemHookTriggers = {
+      repositoryUpdateEvents: true,
+      pushEvents: false,
+      tagPushEvents: false,
+      mergeRequestsEvents: false,
+      pushEventsBranchFilter: '',
+      branchFilterStrategy: 'all_branches',
+    };
+
+    beforeEach(() => {
+      createComponent({ props: { initialTriggers: systemHookTriggers, isSystemHook: true } });
+    });
+
+    it('renders only triggers present in initialTriggers', () => {
+      expect(findTriggerByTestId('repositoryUpdateEvents').exists()).toBe(true);
+      expect(findTriggerByTestId('tagPushEvents').exists()).toBe(true);
+      expect(findTriggerByTestId('mergeRequestsEvents').exists()).toBe(true);
+    });
+
+    it('does not render project-only triggers', () => {
+      expect(findTriggerByTestId('noteEvents').exists()).toBe(false);
+      expect(findTriggerByTestId('issuesEvents').exists()).toBe(false);
+      expect(findTriggerByTestId('pipelineEvents').exists()).toBe(false);
+    });
+  });
 });

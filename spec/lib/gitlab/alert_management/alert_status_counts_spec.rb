@@ -26,7 +26,7 @@ RSpec.describe Gitlab::AlertManagement::AlertStatusCounts do
     end
 
     context 'for an authorized user' do
-      before do
+      before_all do
         project.add_developer(current_user)
       end
 

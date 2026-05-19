@@ -1,0 +1,9 @@
+---
+name: create_third_party_agent_direct_access_token
+description: Grants the ability to create direct access tokens for third-party agents
+available_for:
+  - granular_access_token
+permissions:
+  - create_third_party_agent_direct_access_token
+boundaries:
+  - user

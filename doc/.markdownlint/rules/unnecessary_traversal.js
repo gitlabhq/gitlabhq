@@ -19,6 +19,7 @@ module.exports = {
       const linkRegex = /\[([^\]]+)\]\((\.\.\/([^/]+)\/)(.*?)(?:\s+"[^"]*")?\)/g;
 
       let match;
+      // eslint-disable-next-line no-cond-assign
       while ((match = linkRegex.exec(line)) !== null) {
         /* 
           Destructure regex match into:

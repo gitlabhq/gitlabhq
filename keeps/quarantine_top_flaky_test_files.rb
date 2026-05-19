@@ -5,7 +5,7 @@ require_relative 'helpers/gitlab_api_helper'
 module Keeps
   class QuarantineTopFlakyTestFiles < ::Gitlab::Housekeeper::Keep
     TOP_FLAKY_TEST_FILES_PROJECT_ID = 69718754 # gitlab-org/quality/test-failure-issues
-    TOP_FLAKY_TEST_FILES_LABELS = 'automation:top-flaky-test-file,flaky-test-reviewed'
+    TOP_FLAKY_TEST_FILES_LABELS = 'automation:top-flaky-test-file'
     TOP_FLAKY_TEST_EXCLUDE_LABELS = 'flaky-test::false-positive,flakiness-class::misclassified,quarantine'
     QUERY_URL = "https://gitlab.com/api/v4/projects/#{TOP_FLAKY_TEST_FILES_PROJECT_ID}/issues/?order_by=updated_at&state=opened&labels[]=#{TOP_FLAKY_TEST_FILES_LABELS}&not[labels][]=#{TOP_FLAKY_TEST_EXCLUDE_LABELS}&per_page=20".freeze
     SHARED_EXAMPLES_INCLUSION_PATTERNS = %w[

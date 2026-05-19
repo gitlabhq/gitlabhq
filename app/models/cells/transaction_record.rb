@@ -30,6 +30,9 @@ module Cells
     end
 
     TIMEOUT_IN_SECONDS = 0.2
+    GRPC_RETRIABLE_ERRORS = [GRPC::DeadlineExceeded, GRPC::Unavailable].freeze
+    GRPC_MAX_TRIES = 2
+    GRPC_RETRY_BASE_INTERVAL = 0.1
 
     # Extend the transaction class with an accessor to store a TransactionRecord
     # in `cells_current_transaction_record`. Each transaction object is unique,
@@ -98,11 +101,15 @@ module Cells
       raise Error, 'Already created lease' if outstanding_lease
       raise Error, 'Attributes can now only be claimed on main DB' if Cells::OutstandingLease.connection != @connection
 
-      @outstanding_lease = Cells::OutstandingLease.create_from_request!(
-        create_records: self.class.sanitize_records_for_grpc(create_records),
-        destroy_records: self.class.sanitize_records_for_grpc(destroy_records),
-        deadline: deadline
-      )
+      @outstanding_lease = Retriable.retriable(
+        on: GRPC_RETRIABLE_ERRORS, tries: GRPC_MAX_TRIES, base_interval: GRPC_RETRY_BASE_INTERVAL
+      ) do
+        Cells::OutstandingLease.create_from_request!(
+          create_records: self.class.sanitize_records_for_grpc(create_records),
+          destroy_records: self.class.sanitize_records_for_grpc(destroy_records),
+          deadline: deadline
+        )
+      end
     rescue GRPC::BadStatus => e
       raise_committing_error!(e)
       raise Error, 'Failed to create lease'
@@ -115,8 +122,18 @@ module Cells
       # since the transaction might be rolledback prematurely
       return unless outstanding_lease
 
-      outstanding_lease.send_rollback_update!(deadline: deadline)
+      Retriable.retriable(
+        on: GRPC_RETRIABLE_ERRORS, tries: GRPC_MAX_TRIES, base_interval: GRPC_RETRY_BASE_INTERVAL
+      ) do
+        outstanding_lease.send_rollback_update!(deadline: deadline)
+      end
+
       outstanding_lease.destroy! # the lease is no longer needed
+      @done = true
+    rescue GRPC::BadStatus => e
+      # DB transaction already rolled back - do not raise.
+      # The OutstandingLease remains for LostTransactionRecoveryWorker to reconcile.
+      Gitlab::ErrorTracking.track_exception(e, feature_category: :cell)
       @done = true
     end
 
@@ -126,8 +143,18 @@ module Cells
       raise Error, 'Already done' if done
       raise Error, 'No lease created' unless outstanding_lease
 
-      outstanding_lease.send_commit_update!(deadline: deadline)
+      Retriable.retriable(
+        on: GRPC_RETRIABLE_ERRORS, tries: GRPC_MAX_TRIES, base_interval: GRPC_RETRY_BASE_INTERVAL
+      ) do
+        outstanding_lease.send_commit_update!(deadline: deadline)
+      end
+
       outstanding_lease.destroy! # the lease is no longer needed
+      @done = true
+    rescue GRPC::BadStatus => e
+      # DB transaction already committed - do not raise to the caller.
+      # The OutstandingLease remains for LostTransactionRecoveryWorker to reconcile.
+      Gitlab::ErrorTracking.track_exception(e, feature_category: :cell)
       @done = true
     end
 

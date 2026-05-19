@@ -4,5 +4,7 @@ description: Grants the ability to update protected branches
 boundaries:
   - project
   - group
+available_for:
+  - granular_access_token
 permissions:
   - update_protected_branch

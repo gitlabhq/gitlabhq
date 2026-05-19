@@ -3,5 +3,7 @@ name: merge_topic
 description: Grants the ability to merge topics
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - merge_topic

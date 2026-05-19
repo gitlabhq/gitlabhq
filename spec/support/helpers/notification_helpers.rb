@@ -3,7 +3,7 @@
 module NotificationHelpers
   extend self
 
-  def send_notifications(*new_mentions, current_user: @u_disabled)
+  def send_notifications(*new_mentions, current_user: u_disabled)
     mentionable.description = new_mentions.map(&:to_reference).join(' ')
 
     notification.send(notification_method, mentionable, new_mentions, current_user)
@@ -25,6 +25,8 @@ module NotificationHelpers
   end
 
   def create_notification_setting(user, resource, level)
+    user.notification_settings.reset if user.notification_settings.loaded?
+
     setting = user.notification_settings_for(resource)
     setting.level = level
     setting.save!
@@ -33,6 +35,8 @@ module NotificationHelpers
   # Create custom notifications
   # When resource is nil it means global notification
   def update_custom_notification(event, user, resource: nil, value: true)
+    user.notification_settings.reset if user.notification_settings.loaded?
+
     setting = user.notification_settings_for(resource)
     setting.update!(event => value)
   end

@@ -6,7 +6,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
   include RepoHelpers
 
   context 'for inputs' do
-    let_it_be(:project) { create(:project, :small_repo) }
+    let_it_be(:project, freeze: false) { create(:project, :small_repo) }
     let_it_be(:user)    { project.first_owner }
 
     let(:ref)    { 'refs/heads/master' }

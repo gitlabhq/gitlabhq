@@ -10,6 +10,7 @@ const formatSubgroupsAndProjects = (item) => {
   const baseItem = {
     type: item.type,
     name: item.name,
+    path: item.path,
     fullPath: item.full_path,
     editPath: item.edit_path,
     archived: item.archived,
@@ -40,6 +41,7 @@ const formatSubgroupsAndProjects = (item) => {
       userPermissions: {
         archiveGroup: item.can_archive,
         canLeave: item.can_leave,
+        changeGroup: item.can_transfer,
         removeGroup: item.can_remove,
         viewEditPage: item.can_edit,
       },
@@ -68,6 +70,7 @@ const formatSubgroupsAndProjects = (item) => {
       removeProject: item.can_remove,
       canLeave: item.can_leave,
       viewEditPage: item.can_edit,
+      changeNamespace: item.can_transfer,
     },
     // All properties below are not yet supported by `/children.json` endpoint
     // We set them to defaults so that we don't get Apollo errors when

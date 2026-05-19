@@ -5,7 +5,7 @@ import { GlAlert, GlSprintf } from '@gitlab/ui';
 import mockDeploymentFixture from 'test_fixtures/graphql/deployments/graphql/queries/deployment.query.graphql.json';
 import mockEnvironmentFixture from 'test_fixtures/graphql/deployments/graphql/queries/environment.query.graphql.json';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
-import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
+import { setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import ShowDeployment from '~/deployments/components/show_deployment.vue';
 import DeploymentHeader from '~/deployments/components/deployment_header.vue';
 import DeploymentDeployBlock from '~/deployments/components/deployment_deploy_block.vue';
@@ -139,7 +139,7 @@ describe('~/deployments/components/show_deployment.vue', () => {
     });
 
     it('should set up a toggle visibility hook on mount', () => {
-      expect(toggleQueryPollingByVisibility).toHaveBeenCalled();
+      expect(setupQueryPollingByVisibility).toHaveBeenCalled();
     });
   });
 });

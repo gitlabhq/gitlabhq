@@ -71,7 +71,7 @@ class GroupDescendantsFinder
     by_search(descendants)
   end
 
-  # When filtering we want all to preload all the ancestors upto the specified
+  # When filtering we want all to preload all the ancestors up to the specified
   # parent group.
   #
   # - root

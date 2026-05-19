@@ -1529,6 +1529,12 @@ graph TD
 ```
 ````
 
+> [!note]
+> On GitLab Self-Managed, if you configured a `Cross-Origin-Resource-Policy` header with
+> `same-site` or `same-origin`, Mermaid diagrams silently fail to render. To resolve this, use
+> `cross-origin` instead. For more information, see
+> [`Cross-Origin-Resource-Policy` header and Mermaid diagrams](https://docs.gitlab.com/omnibus/settings/nginx/#cross-origin-resource-policy-header-and-mermaid-diagrams).
+
 When rendered, the example looks similar to:
 
 ```mermaid

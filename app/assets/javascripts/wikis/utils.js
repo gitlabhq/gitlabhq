@@ -1,4 +1,5 @@
 export function isTemplate() {
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Boolean check, not generating a URL
   return window.location.href.includes('/wikis/templates');
 }
 

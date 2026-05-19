@@ -1,11 +1,8 @@
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import csrf from '~/lib/utils/csrf';
+import { pinia } from '~/pinia/instance';
 import FeatureFlagsComponent from './components/feature_flags.vue';
-import createStore from './store/index';
-
-Vue.use(Vuex);
+import { useFeatureFlags } from './store/index';
 
 export default () => {
   const el = document.querySelector('#feature-flags-vue');
@@ -28,10 +25,17 @@ export default () => {
     featureFlagsLimit,
   } = el.dataset;
 
+  useFeatureFlags(pinia).setInitialState({
+    endpoint,
+    projectId,
+    unleashApiInstanceId,
+    rotateInstanceIdPath,
+  });
+
   return new Vue({
     el,
     name: 'FeatureFlagsComponentRoot',
-    store: createStore({ endpoint, projectId, unleashApiInstanceId, rotateInstanceIdPath }),
+    pinia,
     provide: {
       projectName,
       featureFlagsHelpPagePath,

@@ -2,11 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_state, feature_category: :user_profile,
-  quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/39378',
-    type: :flaky
-  } do
+RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_state, feature_category: :user_profile do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:user) do
@@ -140,7 +136,7 @@ RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_stat
       using_session :admin_session do
         gitlab_sign_in(admin)
 
-        gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid, additional_info: { extra: { raw_info: { acr: 'bronze' } } })
+        gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid, additional_info: { extra: { raw_info: { acr: 'bronze' } } }, expect_fail: true)
 
         visit user_settings_active_sessions_path
 
@@ -155,15 +151,9 @@ RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_stat
       using_session :admin_session do
         gitlab_sign_in(admin)
 
-        wait_for_requests
-
         gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid, additional_info: additional_info)
 
-        wait_for_requests
-
         visit user_settings_active_sessions_path
-
-        wait_for_requests
 
         within('.settings-section') do
           expect(page).to have_content('with Admin Mode')

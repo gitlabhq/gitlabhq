@@ -2,11 +2,13 @@ inherit_gem:
   gitlab-styles:
     - rubocop-default.yml
 
+plugins:
+  # Always load these cop even if disabled by default so RuboCop knows about rules in TODOs.
+  - rubocop-internal_affairs
+
 require:
   - ./rubocop/rubocop
   - rubocop-rspec
-  # Always load these cop even if disabled by default so RuboCop knows about rules in TODOs.
-  - rubocop/cop/internal_affairs
 
 inherit_from:
   <% unless ENV['REVEAL_RUBOCOP_TODO'] == '1' %>
@@ -48,6 +50,8 @@ AllCops:
     - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
     # projects_controller.rb is used for testing LLM response and is very sensitive to whitespaces.
     - 'ee/spec/fixtures/llm/projects_controller.rb'
+    # Shell scripts without extensions that RuboCop would otherwise try to parse as Ruby.
+    - 'scripts/generate_event_doc'
   # Use absolute path to avoid orphan directories with changed workspace root.
   CacheRootDirectory: <%= Dir.getwd %>/tmp
   MaxFilesInCache: 1_000_000
@@ -118,6 +122,13 @@ InternalAffairs/DeprecateCopHelper:
   Enabled: true
   Include:
     - spec/rubocop/**/*.rb
+
+# Override the default Include path since GitLab's cops live under rubocop/cop/
+# rather than the standard lib/rubocop/cop/ path (added in rubocop 1.81.7).
+InternalAffairs/OnSendWithoutOnCSend:
+  Enabled: true
+  Include:
+    - 'rubocop/cop/**/*.rb'
 
 Layout/LineLength:
   AllowedPatterns: ['^RSpec\.describe\s.*\sdo']
@@ -484,6 +495,12 @@ Gitlab/EventStoreSubscriber:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+Gitlab/EventStoreDocRequired:
+  Enabled: true
+  Include:
+    - 'app/events/**/*.rb'
+    - 'ee/app/events/**/*.rb'
+
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/496562
 Gitlab/Ai/OrderConstants:
   Enabled: true
@@ -640,6 +657,7 @@ Gitlab/AvoidCurrentOrganization:
     - 'ee/app/workers/**/*'
     - 'lib/gitlab/current_settings.rb'
     - 'lib/gitlab/middleware/organizations/current.rb'
+    - 'config/initializers/gitlab_database_data_isolation.rb'
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
@@ -650,6 +668,14 @@ Gitlab/AvoidUserOrganization:
     - 'spec/**/*'
     - 'ee/spec/**/*'
     - 'ee/db/fixtures/development/**/*'
+
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/581990
+Gitlab/AvoidOrganizationUrlRoutes:
+  Enabled: true
+  Exclude:
+    - 'app/helpers/routing/organizations_helper.rb'
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
 
 Gitlab/DisallowCurrentOrganizationIdSafeNavigation:
   Description: 'Use `Current.organization.id` instead of `Current.organization&.id`. `Current.organization` is expected to be assigned.'
@@ -805,7 +831,7 @@ RSpec/WebMockEnable:
   Exclude:
     - 'spec/support/webmock.rb'
 
-Naming/PredicateName:
+Naming/PredicatePrefix:
   Enabled: true
   Exclude:
     - 'spec/**/*'
@@ -825,8 +851,20 @@ RSpec/AvoidTestProf:
     - 'ee/spec/lib/gitlab/background_migration/**/*.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
 
+RSpec/AvoidWaitForRequests:
+  Enabled: true
+  Include:
+    - '{,ee/,jh/}spec/**/*.rb'
+
 RSpec/AvoidConditionalStatements:
   Enabled: true
+  Include:
+    - 'spec/features/**/*.rb'
+    - 'ee/spec/features/**/*.rb'
+
+RSpec/FeatureSpecMaxExamples:
+  Enabled: true
+  Max: 25
   Include:
     - 'spec/features/**/*.rb'
     - 'ee/spec/features/**/*.rb'
@@ -911,6 +949,12 @@ API/GrapeArrayMissingCoerce:
   Include:
     - 'lib/**/api/**/*.rb'
     - 'ee/**/api/**/*.rb'
+
+API/AccessLevelStringType:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
 
 API/ClassLevelAllowAccessWithScope:
   Enabled: true
@@ -998,6 +1042,18 @@ API/RouteSettingLifecycle:
     - 'lib/**/api/**/*.rb'
     - 'ee/lib/**/api/**/*.rb'
 
+API/RouteSettingTier:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
+API/SameAsDescription:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
 Cop/SidekiqOptionsQueue:
   Enabled: true
   Exclude:
@@ -1022,6 +1078,12 @@ Graphql/AuthorizeTypes:
     - 'ee/spec/**/*.rb'
 
 Graphql/IDType:
+  Enabled: true
+  Include:
+    - 'app/graphql/**/*'
+    - 'ee/app/graphql/**/*'
+
+Graphql/AccessLevelEnum:
   Enabled: true
   Include:
     - 'app/graphql/**/*'
@@ -1228,6 +1290,18 @@ Migration/PreventIndexCreation:
 Migration/PreventForeignKeyCreation:
   Enabled: true
   EnforcedSince: 20250116000000
+
+Migration/PreventLargeBlobInDatabase:
+  Enabled: true
+  Include:
+    - 'db/migrate/*.rb'
+    - 'db/post_migrate/*.rb'
+    - 'ee/db/embedding/migrate/*.rb'
+    - 'ee/db/embedding/post_migrate/*.rb'
+    - 'ee/db/geo/migrate/*.rb'
+    - 'ee/db/geo/post_migrate/*.rb'
+  EnforcedSince: 20260430000000
+  MaxSize: 4096
 
 Migration/SchemaAdditionMethodsNoPost:
   Enabled: true
@@ -1452,6 +1526,12 @@ Search/NamespacedClass:
     - 'ee/app/services/ee/mcp/tools/**/*.rb'
     - 'ee/app/finders/security/*.rb'
 
+Search/VulnerabilityBulkOperationElasticsearchSync:
+  Enabled: true
+  Include:
+    - 'ee/app/*/security/**/*.rb'
+    - 'ee/app/*/vulnerabilities/**/*.rb'
+
 SidekiqLoadBalancing/WorkerDataConsistency:
   Enabled: true
   Include:
@@ -1671,3 +1751,11 @@ Gitlab/Authz/AvoidHighestRoleUsage:
   Include:
     - 'app/policies/**/*.rb'
     - 'ee/app/policies/**/*.rb'
+
+Gitlab/AvoidProjectIssuableUrlHelpers:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+    - 'app/helpers/routing/projects_helper.rb'
+    - 'ee/app/helpers/ee/routing/projects_helper.rb'

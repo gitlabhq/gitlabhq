@@ -1,0 +1,4 @@
+---
+event: Projects::ProjectArchivedEvent
+description: Published when a project is archived.
+feature_category: groups_and_projects

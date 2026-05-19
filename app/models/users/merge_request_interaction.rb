@@ -13,6 +13,7 @@ module Users
     end
 
     def can_merge?
+      merge_request.project&.preload_protected_branches
       merge_request.can_be_merged_by?(user)
     end
 

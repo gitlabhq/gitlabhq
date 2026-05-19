@@ -66,7 +66,7 @@ export default {
     @primary="handleConfirm"
     @hidden="handleCancel"
   >
-    <p>
+    <p v-if="token">
       <gl-sprintf :message="$options.i18n.description">
         <template #tokenName>
           <b>{{ token.name }}</b>

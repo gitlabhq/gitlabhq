@@ -12,8 +12,10 @@ import {
 applyGitLabUIConfig({
   firstDayOfWeek: gon.first_day_of_week,
   translations: {
+    'ClipboardButton.copied': __('Copied'),
+    'ClipboardButton.error': __('Copy failed'),
+    'ClipboardButton.title': __('Copy to clipboard'),
     'CloseButton.title': __('Close'),
-    'DuoChatContextItemPopover.DisabledReason': __('This item is disabled'),
     'GlAlert.closeButtonTitle': __('Dismiss'),
     'GlBanner.closeButtonTitle': __('Dismiss'),
     'GlBreadcrumb.showMoreLabel': __('Show more breadcrumbs'),
@@ -27,29 +29,6 @@ applyGitLabUIConfig({
     'GlCollapsibleListbox.loadingAnnouncementText.searching': __('Searching'),
     'GlDatepicker.monthLabel': __('Month'),
     'GlDatepicker.yearLabel': __('Year'),
-    'GlDuoChatContextItemMenu.emptyStateMessage': s__('DuoChat|No results found'),
-    'GlDuoChatContextItemMenu.loadingMessage': __('Loading…'),
-    'GlDuoChatContextItemMenu.searchInputPlaceholder': s__('DuoChat|Search %{categoryLabel}…'),
-    'GlDuoChatContextItemMenu.selectedContextItemsTitle': s__('DuoChat|Included references'),
-    'GlDuoWorkflowPanel.collapseButtonTitle': s__('GitLabDuo|Collapse'),
-    'GlDuoWorkflowPanel.expandButtonTitle': s__('GitLabDuo|Expand'),
-    'GlDuoWorkflowPrompt.cancelButtonText': s__('GitLabDuo|Cancel'),
-    'GlDuoWorkflowPrompt.confirmButtonText': s__('GitLabDuo|Generate plan'),
-    'GlDuoWorkflowPrompt.imageDescription': s__(
-      'GitLabDuo|It should have any tools necessary for the workflow installed.',
-    ),
-    'GlDuoWorkflowPrompt.imageLabel': s__('GitLabDuo|Image'),
-    'GlDuoWorkflowPrompt.imageLabelDescription': s__(
-      'GitLabDuo|The container image to run the workflow in.',
-    ),
-    'GlDuoWorkflowPrompt.promptDescription': s__(
-      'GitLabDuo|Be specific and include any requirements.',
-    ),
-    'GlDuoWorkflowPrompt.promptLabel': __('Description'),
-    'GlDuoWorkflowPrompt.promptLabelDescription': s__(
-      'GitLabDuo|What would you like to do and how.',
-    ),
-    'GlDuoWorkflowPrompt.title': s__('GitLabDuo|Goal'),
     'GlModal.closeButtonTitle': __('Close'),
     'GlToken.closeButtonTitle': __('Remove'),
     'GlSearchBoxByType.input.placeholder': __('Search'),

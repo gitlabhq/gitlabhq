@@ -38,6 +38,10 @@ import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
 
 export default {
+  childrenType: {
+    id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Task', // eslint-disable-line @gitlab/require-i18n-strings
+  },
   components: {
     GlAlert,
     GlDisclosureDropdown,
@@ -353,6 +357,7 @@ export default {
         :is-group="false"
         :issuable-gid="issuableGid"
         :children-ids="childrenIds"
+        :children-type="$options.childrenType"
         :parent-confidential="confidential"
         :parent-iteration="issuableIteration"
         :parent-milestone="issuableMilestone"

@@ -4,7 +4,6 @@ import { toggleWikiSidebar } from '~/wikis/utils/sidebar_toggle';
 import { observeSidebarResponsiveness } from '~/wikis/utils/sidebar_responsive';
 import WikiSidebarHeader from './wiki_sidebar_header.vue';
 import WikiSidebarEntries from './wiki_sidebar_entries.vue';
-import WikiSidebarToggle from './wiki_sidebar_toggle.vue';
 
 const LOCAL_STORAGE_STATE_KEY = 'wiki-sidebar-expanded';
 
@@ -14,7 +13,7 @@ const sidebarExpandedByDefault = () => {
 
 export default {
   name: 'WikiSidebar',
-  components: { WikiSidebarHeader, WikiSidebarEntries, WikiSidebarToggle },
+  components: { WikiSidebarHeader, WikiSidebarEntries },
   inject: ['hasCustomSidebar'],
   data() {
     return {
@@ -71,10 +70,6 @@ export default {
     data-offset-top="50"
     data-spy="affix"
   >
-    <wiki-sidebar-toggle
-      class="gl-fixed gl-top-4 gl-ml-4 gl-hidden @lg/panel:gl-block"
-      action="open"
-    />
     <div class="js-wiki-sidebar-resizer"></div>
     <div class="sidebar-container">
       <div class="blocks-container">

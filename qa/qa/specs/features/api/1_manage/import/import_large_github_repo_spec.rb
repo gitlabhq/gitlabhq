@@ -10,7 +10,6 @@ require "etc"
 # Because of this, all expectation check for inclusion rather than exact match to avoid failures if extra issues,
 #   comments, events got created while import was running.
 
-# rubocop:disable Rails/Pluck -- false positive matches
 # rubocop:disable RSpec/MultipleMemoizedHelpers -- slightly specific test which relies on instance variables to track metrics
 module QA
   RSpec.describe 'Manage', :github, requires_admin: 'creates users',
@@ -743,5 +742,4 @@ module QA
     end
   end
 end
-# rubocop:enable Rails/Pluck
 # rubocop:enable RSpec/MultipleMemoizedHelpers

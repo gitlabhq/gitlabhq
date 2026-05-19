@@ -27,7 +27,7 @@ Prerequisites:
 To change a rate limit:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Import and export rate limits**.
 1. Change the value of any rate limit. The rate limits are per minute per user, not per IP address.
    Set to `0` to disable a rate limit.

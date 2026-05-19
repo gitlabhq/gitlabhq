@@ -170,23 +170,7 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
               allow(merge_request).to receive(:has_ci_enabled?).and_return(true)
             end
 
-            context 'when mwcp_skip_ci_guard is enabled' do
-              before do
-                stub_feature_flags(mwcp_skip_ci_guard: true)
-              end
-
-              it_behaves_like 'a valid diff head pipeline is required'
-            end
-
-            context 'when mwcp_skip_ci_guard is disabled' do
-              before do
-                stub_feature_flags(mwcp_skip_ci_guard: false)
-              end
-
-              it 'is success' do
-                expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
-              end
-            end
+            it_behaves_like 'a valid diff head pipeline is required'
           end
         end
       end

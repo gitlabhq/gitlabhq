@@ -27,6 +27,11 @@ export default {
       required: false,
       default: null,
     },
+    initialSecretToken: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -182,7 +187,7 @@ export default {
         data-testid="webhook-url"
       />
       <gl-alert
-        v-if="urlHasChanged"
+        v-if="urlHasChanged && initialSecretToken"
         variant="warning"
         :dismissible="false"
         class="gl-form-input-xl gl-my-4"

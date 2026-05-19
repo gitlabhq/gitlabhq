@@ -841,6 +841,12 @@ RSpec.describe Repository, feature_category: :source_code_management do
       expect(commit_ids).to eq(%w[b83d6e391c22777fca1ed3012fce84f633d7fed0])
     end
 
+    it 'returns commits filtered by path' do
+      commit_ids = repository.list_commits(ref: 'master', path: 'files/ruby/popen.rb').map(&:id)
+
+      expect(commit_ids).to eq(%w[570e7b2abdd848b95f2f578043fc23bd6f6fd24d 874797c3a73b60d2187ed6e2fcabd289ff75171e 913c66a37b4a45b9769037c55c2d238bd0942d2e])
+    end
+
     it 'returns the correct page' do
       commit_ids = repository.list_commits(
         ref: 'master', pagination_params: { limit: 1, page_token: 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }

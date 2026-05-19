@@ -287,86 +287,32 @@ func (s *GitalyTestServer) GetBlob(in *gitalypb.GetBlobRequest, stream gitalypb.
 	return s.finalError()
 }
 
+// GetArchive is a method on GitalyTestServer that handles the GetArchive RPC call.
 func (s *GitalyTestServer) GetArchive(in *gitalypb.GetArchiveRequest, stream gitalypb.RepositoryService_GetArchiveServer) error {
-	s.Add(1)
-	defer s.Done()
-
-	if err := validateRepository(in.GetRepository()); err != nil {
-		return err
-	}
-
-	nSends, err := sendBytes([]byte(GitalyGetArchiveResponseMock), func(p []byte) error {
+	return s.sendStreamResponse(in.GetRepository(), []byte(GitalyGetArchiveResponseMock), func(p []byte) error {
 		return stream.Send(&gitalypb.GetArchiveResponse{Data: p})
 	})
-	if err != nil {
-		return err
-	}
-	if nSends <= 1 {
-		panic("should have sent more than one message")
-	}
-
-	return s.finalError()
 }
 
 // RawDiff is a method on GitalyTestServer that handles the RawDiff RPC call.
-func (s *GitalyTestServer) RawDiff(_ *gitalypb.RawDiffRequest, stream gitalypb.DiffService_RawDiffServer) error {
-	nSends, err := sendBytes([]byte(GitalyGetDiffResponseMock), func(p []byte) error {
-		return stream.Send(&gitalypb.RawDiffResponse{
-			Data: p,
-		})
+func (s *GitalyTestServer) RawDiff(in *gitalypb.RawDiffRequest, stream gitalypb.DiffService_RawDiffServer) error {
+	return s.sendStreamResponse(in.GetRepository(), []byte(GitalyGetDiffResponseMock), func(p []byte) error {
+		return stream.Send(&gitalypb.RawDiffResponse{Data: p})
 	})
-	if err != nil {
-		return err
-	}
-	if nSends <= 1 {
-		panic("should have sent more than one message")
-	}
-
-	return s.finalError()
 }
 
+// RawPatch is a method on GitalyTestServer that handles the RawPatch RPC call.
 func (s *GitalyTestServer) RawPatch(in *gitalypb.RawPatchRequest, stream gitalypb.DiffService_RawPatchServer) error {
-	s.Add(1)
-	defer s.Done()
-
-	if err := validateRepository(in.GetRepository()); err != nil {
-		return err
-	}
-
-	nSends, err := sendBytes([]byte(GitalyGetPatchResponseMock), func(p []byte) error {
-		return stream.Send(&gitalypb.RawPatchResponse{
-			Data: p,
-		})
+	return s.sendStreamResponse(in.GetRepository(), []byte(GitalyGetPatchResponseMock), func(p []byte) error {
+		return stream.Send(&gitalypb.RawPatchResponse{Data: p})
 	})
-	if err != nil {
-		return err
-	}
-	if nSends <= 1 {
-		panic("should have sent more than one message")
-	}
-
-	return s.finalError()
 }
 
+// GetSnapshot is a method on GitalyTestServer that handles the GetSnapshot RPC call.
 func (s *GitalyTestServer) GetSnapshot(in *gitalypb.GetSnapshotRequest, stream gitalypb.RepositoryService_GetSnapshotServer) error {
-	s.Add(1)
-	defer s.Done()
-
-	if err := validateRepository(in.GetRepository()); err != nil {
-		return err
-	}
-
-	nSends, err := sendBytes([]byte(GitalyGetSnapshotResponseMock), func(p []byte) error {
+	return s.sendStreamResponse(in.GetRepository(), []byte(GitalyGetSnapshotResponseMock), func(p []byte) error {
 		return stream.Send(&gitalypb.GetSnapshotResponse{Data: p})
 	})
-	if err != nil {
-		return err
-	}
-	if nSends <= 1 {
-		panic("should have sent more than one message")
-	}
-
-	return s.finalError()
 }
 
 // sendBytes returns the number of times the 'sender' function was called and an error.
@@ -393,6 +339,25 @@ func (s *GitalyTestServer) finalError() error {
 	}
 
 	return nil
+}
+
+func (s *GitalyTestServer) sendStreamResponse(repo *gitalypb.Repository, mockData []byte, sender func([]byte) error) error {
+	s.Add(1)
+	defer s.Done()
+
+	if err := validateRepository(repo); err != nil {
+		return err
+	}
+
+	nSends, err := sendBytes(mockData, sender)
+	if err != nil {
+		return err
+	}
+	if nSends <= 1 {
+		panic("should have sent more than one message")
+	}
+
+	return s.finalError()
 }
 
 // FindChangedPaths is a method on GitalyTestServer that handles the FindChangedPaths RPC call.

@@ -25,7 +25,6 @@ export default function createRouter(base, baseRef, fullName) {
   const treePathRoute = {
     component: TreePage,
     props: (route) => ({
-      path: normalizePathParam(route.params.path),
       refType: getRefType(route.query.ref_type || null),
     }),
   };
@@ -34,7 +33,6 @@ export default function createRouter(base, baseRef, fullName) {
     component: BlobPage,
     props: (route) => {
       return {
-        path: normalizePathParam(route.params.path),
         projectPath: base,
         refType: getRefType(route.query.ref_type || null),
       };

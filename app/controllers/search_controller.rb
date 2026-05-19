@@ -28,6 +28,11 @@ class SearchController < ApplicationController
 
   around_action :allow_gitaly_ref_name_caching
 
+  # Ensure organization is resolved before authenticate_user! because
+  # authenticate? calls search_service which needs Current.organization.
+  skip_before_action :set_current_organization
+  prepend_before_action :set_current_organization
+
   skip_before_action :authenticate_user!, unless: :authenticate?
 
   before_action :check_scope_global_search_enabled, except: :opensearch
@@ -162,7 +167,7 @@ class SearchController < ApplicationController
     # If we raise an error somewhere in the @global_search_duration_s benchmark block, we will end up here
     # with a 200 status code, but an empty @global_search_duration_s.
     Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
-      error: @global_search_duration_s.nil? || (status < 200 || status >= 400),
+      error: @global_search_duration_s.nil? || status >= 500,
       search_type: @search_type,
       search_level: @search_level,
       search_scope: @scope
@@ -211,12 +216,12 @@ class SearchController < ApplicationController
     return false if params[:search].blank?
 
     unless search_service.valid_query_length?
-      flash[:alert] = t('errors.messages.search_chars_too_long', count: Gitlab::Search::Params::SEARCH_CHAR_LIMIT)
+      flash[:alert] = t('errors.messages.search_chars_too_long', count: Search::Params::SEARCH_CHAR_LIMIT)
       return false
     end
 
     unless search_service.valid_terms_count?
-      flash[:alert] = t('errors.messages.search_terms_too_long', count: Gitlab::Search::Params::SEARCH_TERM_LIMIT)
+      flash[:alert] = t('errors.messages.search_terms_too_long', count: Search::Params::SEARCH_TERM_LIMIT)
       return false
     end
 

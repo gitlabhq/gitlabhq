@@ -66,7 +66,7 @@ Example response:
   "description": "A new organization",
   "created_at": "2024-09-18T02:35:15.371Z",
   "updated_at": "2024-09-18T02:35:15.371Z",
-  "web_url": "https://gitlab.example.com/-/organizations/new-org",
+  "web_url": "https://gitlab.example.com/o/new-org/-/overview",
   "avatar_url": "https://gitlab.example.com/uploads/-/system/organizations/organization_detail/avatar/42/avatar.png"
 }
 ```

@@ -80,7 +80,7 @@ Prerequisites:
 To configure the default squashing behavior for all merge requests in your project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **Squash commits when merging** section, select your desired behavior:
    - **Do not allow**: Squashing is never performed, and the option is not displayed.
    - **Allow**: Squashing is allowed, but cleared by default.
@@ -88,6 +88,29 @@ To configure the default squashing behavior for all merge requests in your proje
    - **Require**: Squashing is always performed. While merge requests display the option
      to squash, users cannot change it.
 1. Select **Save changes**.
+
+## Long-running branch behavior
+
+You should not squash and merge long-running branches. Instead, use a
+[merge method](methods/_index.md) that preserves the original commit history,
+such as merge commits or fast-forward merges.
+
+When you squash and merge a branch that continues to receive new commits, the branch history
+diverges from the target branch. Squashing creates a single new commit on the target branch
+with a different SHA. If you continue working on the source branch without rebasing or merging
+the target branch back in, Git treats the histories as diverged.
+
+When you open a new merge request from that source branch, you see the following:
+
+- Commits that were already merged in the previous merge request.
+- A warning that the source branch is behind the target branch.
+
+The diff correctly shows only the new changes not yet in the target branch.
+
+To keep a long-running branch in sync with its target after a squash merge:
+
+- Rebase the source branch off the target branch after each merge.
+- Merge the target branch back into the source branch after each merge.
 
 ## Related topics
 

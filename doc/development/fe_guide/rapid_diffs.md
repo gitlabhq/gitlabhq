@@ -12,8 +12,7 @@ See [Deferred by default](#deferred-by-default) for the reasoning behind this
 approach.
 
 > [!NOTE]
-> The merge request page requires the `rapid_diffs_on_mr_show` feature flag
-> and `?rapid_diffs=true` in the URL.
+> The merge request page requires the `rapid_diffs_on_mr_show` feature flag.
 
 ## Server and client architecture
 

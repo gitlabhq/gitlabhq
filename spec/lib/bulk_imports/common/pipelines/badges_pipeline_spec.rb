@@ -26,7 +26,7 @@ RSpec.describe BulkImports::Common::Pipelines::BadgesPipeline, feature_category:
     end
 
     it 'imports a group badge' do
-      expect { pipeline.run }.to change(Badge, :count).by(2)
+      expect { pipeline.run }.to change { Badge.count }.by(2)
 
       badge = group.badges.last
 
@@ -36,7 +36,7 @@ RSpec.describe BulkImports::Common::Pipelines::BadgesPipeline, feature_category:
     end
 
     it 'skips already imported records' do
-      expect { pipeline.run }.to change(Badge, :count).by(2)
+      expect { pipeline.run }.to change { Badge.count }.by(2)
 
       expect { pipeline.run }.to not_change(Badge, :count)
     end
@@ -47,7 +47,7 @@ RSpec.describe BulkImports::Common::Pipelines::BadgesPipeline, feature_category:
       let(:entity) { create(:bulk_import_entity, :project_entity, project: project) }
 
       it 'imports a project badge & skips group badge' do
-        expect { pipeline.run }.to change(Badge, :count).by(1)
+        expect { pipeline.run }.to change { Badge.count }.by(1)
 
         badge = project.badges.last
 

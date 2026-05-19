@@ -10,6 +10,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
   let(:snowplow_sync_emitter) { false }
   let(:snowplow_emitter_thread_count) { false }
   let(:snowplow_emitter_http_timeout) { false }
+  let(:snowplow_job_emitter) { false }
   let(:tracker) do
     SnowplowTracker::Tracker.new(emitters: [emitter], subject: SnowplowTracker::Subject.new, namespace: 'namespace',
       app_id: 'app_id')
@@ -20,7 +21,8 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
       track_struct_event_logger: track_struct_event_logger,
       snowplow_sync_emitter: snowplow_sync_emitter,
       snowplow_emitter_thread_count: snowplow_emitter_thread_count,
-      snowplow_emitter_http_timeout: snowplow_emitter_http_timeout
+      snowplow_emitter_http_timeout: snowplow_emitter_http_timeout,
+      snowplow_job_emitter: snowplow_job_emitter
     )
     stub_application_setting(
       snowplow_enabled?: true,
@@ -323,6 +325,22 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
   end
 
+  context 'when snowplow_job_emitter flag is enabled' do
+    let(:snowplow_job_emitter) { true }
+
+    before do
+      allow(Rails.env).to receive(:test?).and_return(false)
+    end
+
+    it 'uses the custom SnowplowJobEmitter' do
+      expect(Gitlab::Tracking::SnowplowJobEmitter).to receive(:new)
+      expect(SnowplowTracker::AsyncEmitter).not_to receive(:new)
+      expect(Gitlab::Tracking::SnowplowLoggingEmitter).not_to receive(:new)
+
+      subject.send(:emitter)
+    end
+  end
+
   context 'when snowplow_emitter_http_timeout flag is enabled' do
     let(:snowplow_emitter_http_timeout) { true }
 
@@ -417,6 +435,18 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
           expect(SnowplowTracker::AsyncEmitter).not_to receive(:new)
           expect(Gitlab::Tracking::SnowplowLoggingEmitter).not_to receive(:new)
           expect(SnowplowTracker::Emitter).to receive(:new)
+
+          subject.send(:emitter)
+        end
+      end
+
+      context 'when snowplow_job_emitter flag is enabled' do
+        let(:snowplow_job_emitter) { true }
+
+        it 'uses the custom SnowplowJobEmitter' do
+          expect(SnowplowTracker::AsyncEmitter).not_to receive(:new)
+          expect(Gitlab::Tracking::SnowplowJobEmitter).to receive(:new)
+          expect(Gitlab::Tracking::SnowplowLoggingEmitter).not_to receive(:new)
 
           subject.send(:emitter)
         end

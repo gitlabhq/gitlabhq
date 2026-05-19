@@ -30,7 +30,7 @@ Two rate limit settings control access to raw endpoints:
 To configure these settings:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Performance optimization**.
 
 ![The raw blob request rate limit per minute set to 300 and 800.](img/rate_limits_on_raw_endpoints_v18_10.png)

@@ -41,7 +41,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
     end
 
     describe '#check_for_spam?' do
-      context 'when not overriden' do
+      context 'when not overridden' do
         subject { spammable_model.check_for_spam? }
 
         context 'when spammable attributes have changed' do

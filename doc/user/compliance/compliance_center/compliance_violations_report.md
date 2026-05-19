@@ -58,7 +58,7 @@ Prerequisites:
 To view the compliance violations report:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 
 The compliance violations report displays:
 
@@ -183,7 +183,7 @@ Prerequisites:
 To export a compliance violations report:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 1. In the upper-right corner, select **Export**.
 1. Select **Export violations report**.
 
@@ -223,7 +223,7 @@ Prerequisites:
 To view the static compliance violations report:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 
 You can sort the compliance report on:
 
@@ -294,7 +294,7 @@ Prerequisites:
 To export a report of merge request compliance violations for projects in a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Compliance center**.
+1. In the left sidebar, select **Secure** > **Compliance center**.
 1. In the upper-right corner, select **Export**.
 1. Select **Export violations report**.
 

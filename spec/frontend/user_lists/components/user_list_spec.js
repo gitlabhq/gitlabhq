@@ -2,20 +2,22 @@ import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { uniq } from 'lodash-es';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import Api from '~/api';
 import UserList from '~/user_lists/components/user_list.vue';
-import createStore from '~/user_lists/store/show';
+import { useUserListShow } from '~/user_lists/store/show';
 import { parseUserIds, stringifyUserIds } from '~/user_lists/store/utils';
 import { userList } from 'jest/feature_flags/mock_data';
 
 jest.mock('~/api');
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('User List', () => {
   let wrapper;
+  let pinia;
+  let store;
 
   const click = (testId) => wrapper.find(`[data-testid="${testId}"]`).trigger('click');
 
@@ -26,8 +28,13 @@ describe('User List', () => {
   const factory = () => {
     destroy();
 
+    pinia = createTestingPinia({ stubActions: false });
+    store = useUserListShow();
+    store.projectId = '1';
+    store.userListIid = '2';
+
     wrapper = mount(UserList, {
-      store: createStore({ projectId: '1', userListIid: '2' }),
+      pinia,
       propsData: {
         emptyStatePath: '/empty_state.svg',
       },

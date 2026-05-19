@@ -5,7 +5,7 @@ module API
     class Feature < Grape::Entity
       expose :name, documentation: { type: 'String', example: 'experimental_feature' }
       expose :state, documentation: { type: 'String', example: 'off' }
-      expose :gates, using: Entities::FeatureGate do |model|
+      expose :gates, using: ::API::Entities::FeatureGate do |model|
         model.gates.map do |gate|
           # in Flipper 0.26.1, they removed two GateValues#[] method calls for performance reasons
           # https://github.com/flippercloud/flipper/pull/706/commits/ed914b6adc329455a634be843c38db479299efc7
@@ -21,12 +21,12 @@ module API
       end
 
       class Definition < Grape::Entity
-        ::Feature::Definition::PARAMS.each do |param|
-          expose param
+        ::Feature::Definition::PARAMS.each do |param, type|
+          expose param, documentation: { type: type } # rubocop:disable API/EntityFieldType -- dynamically defined
         end
       end
 
-      expose :definition, using: Definition do |feature|
+      expose :definition, using: ::API::Entities::Feature::Definition do |feature|
         ::Feature::Definition.definitions[feature.name.to_sym]
       end
     end

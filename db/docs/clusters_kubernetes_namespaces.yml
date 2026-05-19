@@ -8,30 +8,9 @@ description: "(Deprecated) A Kubernetes namespace in a GitLab managed Kubernetes
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e3ca493876ab71ed29817a0af436fc563f564bbe
 milestone: '11.5'
 gitlab_schema: gitlab_main_org
-desired_sharding_key:
-  sharding_project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: cluster_id
-        table: clusters
-        sharding_key: project_id
-        belongs_to: cluster
-  group_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: cluster_id
-        table: clusters
-        sharding_key: group_id
-        belongs_to: cluster
-  organization_id:
-    references: organizations
-    backfill_via:
-      parent:
-        foreign_key: cluster_id
-        table: clusters
-        sharding_key: organization_id
-        belongs_to: cluster
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584433
+sharding_key:
+  sharding_project_id: projects
+  group_id: namespaces
+  organization_id: organizations
+organization_transfer_support: todo
 table_size: small

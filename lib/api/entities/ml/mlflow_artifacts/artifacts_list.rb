@@ -5,7 +5,7 @@ module API
     module Ml
       module MlflowArtifacts
         class ArtifactsList < Grape::Entity
-          expose :files, with: ::API::Entities::Ml::MlflowArtifacts::Artifact
+          expose :files, using: ::API::Entities::Ml::MlflowArtifacts::Artifact, documentation: { is_array: true }
         end
       end
     end

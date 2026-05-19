@@ -48,6 +48,7 @@ module Types
     field :labels, Types::LabelType.connection_type,
       null: true,
       description: 'Labels of the issue.',
+      skip_type_authorization: [:read_label],
       resolver: Resolvers::BulkLabelsResolver
     field :milestone, Types::MilestoneType, null: true,
       description: 'Milestone of the issue.'

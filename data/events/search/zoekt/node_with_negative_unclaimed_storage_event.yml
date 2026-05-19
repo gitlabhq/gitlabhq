@@ -1,0 +1,7 @@
+---
+event: Search::Zoekt::NodeWithNegativeUnclaimedStorageEvent
+description: Published when Zoekt nodes are observed with negative unclaimed storage
+  bytes, so the subscribed worker can take corrective action (such as moving namespaces
+  off the over-allocated nodes).
+feature_category: global_search
+ee_only: true

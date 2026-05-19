@@ -274,7 +274,7 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
       before do
         allow(described_class).to receive(:first_commit_on_branch?).and_return(true)
         allow(described_class).to receive(:run_command)
-          .with("git log -1 --format='%h%n%B' HEAD")
+          .with("git log -1 --no-show-signature --format='%h%n%B' HEAD")
           .and_return(["abc1234\nAdd a valid commit message", true])
       end
 
@@ -298,7 +298,7 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
       before do
         allow(described_class).to receive(:first_commit_on_branch?).and_return(true)
         allow(described_class).to receive(:run_command)
-          .with("git log -1 --format='%h%n%B' HEAD")
+          .with("git log -1 --no-show-signature --format='%h%n%B' HEAD")
           .and_return(['', false])
       end
 
@@ -309,7 +309,7 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
       before do
         allow(described_class).to receive(:first_commit_on_branch?).and_return(true)
         allow(described_class).to receive(:run_command)
-          .with("git log -1 --format='%h%n%B' HEAD")
+          .with("git log -1 --no-show-signature --format='%h%n%B' HEAD")
           .and_return(['', true])
       end
 

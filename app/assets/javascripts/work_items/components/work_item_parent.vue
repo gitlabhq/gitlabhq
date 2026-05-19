@@ -21,7 +21,6 @@ import workItemsByReferencesQuery from '../graphql/work_items_by_references.quer
 import workItemAllowedParentTypesQuery from '../graphql/work_item_allowed_parent_types.query.graphql';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
-  NAME_TO_ENUM_MAP,
   NO_WORK_ITEM_IID,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WIDGET_TYPE_HIERARCHY,
@@ -79,6 +78,7 @@ export default {
       default: false,
     },
   },
+  emits: ['error', 'parentMilestone', 'updateWidgetDraft'],
   data() {
     return {
       searchTerm: '',
@@ -192,18 +192,10 @@ export default {
         const baseVariables = {
           fullPath: this.isIssue ? this.groupPath : this.fullPath,
           searchTerm: this.searchTerm,
-          ...(this.glFeatures.workItemConfigurableTypes
-            ? {
-                workItemTypeIds: [
-                  ...this.allowedParentTypes,
-                  ...this.allowedParentTypesForNewWorkItem,
-                ].map((type) => type.id),
-              }
-            : {
-                types: [...this.allowedParentTypes, ...this.allowedParentTypesForNewWorkItem].map(
-                  (type) => NAME_TO_ENUM_MAP[type.name],
-                ),
-              }),
+          workItemTypeIds: [
+            ...this.allowedParentTypes,
+            ...this.allowedParentTypesForNewWorkItem,
+          ].map((type) => type.id),
           in: this.searchTerm ? 'TITLE' : undefined,
           iid: null,
           isNumber: false,

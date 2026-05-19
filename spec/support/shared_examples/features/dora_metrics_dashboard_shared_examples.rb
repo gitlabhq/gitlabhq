@@ -4,7 +4,7 @@ RSpec.shared_examples 'DORA metrics analytics renders as an analytics dashboard'
   let(:dashboard_list_item_testid) { "[data-testid='dashboard-list-item']" }
 
   it 'renders DORA metrics analytics page correctly' do
-    expect(find_by_testid('gridstack-grid')).to be_visible
+    expect(find_by_testid('analytics-dashboard')).to be_visible
     expect(page).not_to have_selector(dashboard_list_item_testid)
     expect(page).to have_text _('DORA metrics analytics')
     expect(page).to have_text _("View current DORA metric performance and historical trends " \

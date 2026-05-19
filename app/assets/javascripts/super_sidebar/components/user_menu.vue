@@ -355,10 +355,7 @@ export default {
           class="gl-absolute -gl-bottom-1 -gl-right-1 gl-flex gl-h-5 gl-w-5 gl-cursor-pointer gl-items-center gl-justify-center gl-rounded-full gl-bg-neutral-0 gl-text-sm gl-shadow-sm"
           :title="data.status.message"
         >
-          <gl-emoji
-            :data-name="data.status.emoji"
-            class="super-topbar-status-emoji gl-pointer-events-none gl-text-[9px]"
-          />
+          <gl-emoji :data-name="data.status.emoji" class="gl-pointer-events-none gl-text-[9px]" />
         </div>
       </template>
 

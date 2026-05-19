@@ -813,6 +813,24 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(json_response.size).to eq(0)
       end
     end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'allows searching users by username' do
+        get api(path, oauth_access_token: oauth_token), params: { username: user.username }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an(Array)
+        expect(json_response.first['username']).to eq(user.username)
+      end
+
+      it 'blocks unfiltered user listing without a username parameter' do
+        get api(path, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 
   describe "GET /users/:id" do
@@ -1091,6 +1109,23 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       get api("/users/1ASDF", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'allows fetching a user by ID' do
+        get api(path, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['username']).to eq(user.username)
+      end
+
+      it 'blocks access to user sub-resources' do
+        get api("/users/#{user.id}/keys", oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
   end
 
@@ -1960,7 +1995,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           put api(path, admin, admin_mode: true), params: { organization: param_organization }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq({ 'user_detail.organization' => ['is too long (maximum is 500 characters)'] })
+          expect(json_response['message']).to eq({ 'user_detail.base' => ['Organization is too long (maximum is 500 characters)'] })
           expect(user.reload.company).to eq(expected_organization)
         end
       end
@@ -2749,7 +2784,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response.first['title']).to eq(key.title)
     end
 
-    it 'returns array of ssh keys with comments replaced with'\
+    it 'returns array of ssh keys with comments replaced with' \
       'a simple identifier of username + hostname' do
       request
 
@@ -3668,7 +3703,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         end
       end
 
-      it 'returns array of ssh keys with comments replaced with'\
+      it 'returns array of ssh keys with comments replaced with' \
         'a simple identifier of username + hostname' do
         request
 
@@ -5438,6 +5473,14 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response['message']).to eq('403 Forbidden')
     end
 
+    it 'passes creation_source api to the service' do
+      expect(::PersonalAccessTokens::CreateService).to receive(:new)
+        .with(hash_including(params: hash_including(creation_source: PersonalAccessToken::CREATION_SOURCE_API)))
+        .and_call_original
+
+      post api(path, admin, admin_mode: true), params: params
+    end
+
     it 'creates a personal access token when authenticated as admin' do
       post api(path, admin, admin_mode: true), params: params
 
@@ -5496,6 +5539,14 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('name is missing, scopes is missing')
+    end
+
+    it 'passes creation_source api to the service' do
+      expect(::PersonalAccessTokens::CreateService).to receive(:new)
+        .with(hash_including(params: hash_including(creation_source: PersonalAccessToken::CREATION_SOURCE_API)))
+        .and_call_original
+
+      post api(path, user), params: params.merge(scopes: ['k8s_proxy'])
     end
 
     it_behaves_like 'authorizing granular token permissions', :create_personal_access_token do

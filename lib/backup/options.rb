@@ -262,7 +262,7 @@ module Backup
     #
     # @param [String] field contains a list separated by comma without surrounding spaces
     def extract_skippables!(field)
-      list = field.split(',').uniq
+      list = field.to_s.split(',').uniq
 
       extract_skippable_operations!(list)
       extract_skippable_tasks(list)

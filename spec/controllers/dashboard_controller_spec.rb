@@ -28,7 +28,7 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
 
   context 'signed in' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
 
     before_all do
       project.add_maintainer(user)
@@ -186,7 +186,7 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
     render_views
 
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
+    let_it_be(:project, freeze: false) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
     let_it_be(:other_project) { create(:project, :public) }
 
     before do

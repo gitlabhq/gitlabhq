@@ -137,7 +137,7 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
     end
 
     context 'when current user is an OWNER' do
-      before do
+      before_all do
         project.add_owner(current_user)
       end
 
@@ -153,7 +153,7 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
     let_it_be(:project) { create(:project, group: group) }
     let_it_be(:admin) { create(:admin) }
 
-    before do
+    before_all do
       project.add_owner(owner)
       project.add_maintainer(maintainer)
       project.add_developer(developer)
@@ -275,21 +275,20 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
   end
 
   describe '.truncate_teams' do
-    before do
-      @project_1 = create(:project)
-      @project_2 = create(:project)
+    let_it_be(:project_1) { create(:project) }
+    let_it_be(:project_2) { create(:project) }
+    let_it_be(:user_1) { create(:user) }
+    let_it_be(:user_2) { create(:user) }
 
-      @user_1 = create :user
-      @user_2 = create :user
+    before_all do
+      project_1.add_developer(user_1)
+      project_2.add_reporter(user_2)
 
-      @project_1.add_developer(@user_1)
-      @project_2.add_reporter(@user_2)
-
-      described_class.truncate_teams([@project_1.id, @project_2.id])
+      described_class.truncate_teams([project_1.id, project_2.id])
     end
 
-    it { expect(@project_1.users).to be_empty }
-    it { expect(@project_2.users).to be_empty }
+    it { expect(project_1.users).to be_empty }
+    it { expect(project_2.users).to be_empty }
   end
 
   it_behaves_like 'members notifications', :project
@@ -316,7 +315,7 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
 
     context 'when the source project of the project member is destroyed' do
       it 'refreshes the authorization of user to the project in the group' do
-        expect { project.destroy! }.to change { user.can?(:guest_access, project) }.from(true).to(false)
+        expect { project.destroy! }.to change { user.can?(:read_project, project) }.from(true).to(false)
       end
 
       it 'refreshes the authorization without calling AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker' do
@@ -387,7 +386,7 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
       let(:action) { project.add_member(user, Gitlab::Access::GUEST) }
 
       it 'changes access level' do
-        expect { action }.to change { user.can?(:guest_access, project) }.from(false).to(true)
+        expect { action }.to change { user.can?(:read_project, project) }.from(false).to(true)
       end
 
       it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker inline to recalculate authorizations'
@@ -397,12 +396,12 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
     context 'on update' do
       let(:action) { project.members.find_by(user: user).update!(access_level: Gitlab::Access::DEVELOPER) }
 
-      before do
+      before_all do
         project.add_member(user, Gitlab::Access::GUEST)
       end
 
       it 'changes access level' do
-        expect { action }.to change { user.can?(:developer_access, project) }.from(false).to(true)
+        expect { action }.to change { user.can?(:push_code, project) }.from(false).to(true)
       end
 
       it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker inline to recalculate authorizations'
@@ -412,12 +411,12 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
     context 'on destroy' do
       let(:action) { project.members.find_by(user: user).destroy! }
 
-      before do
+      before_all do
         project.add_member(user, Gitlab::Access::GUEST)
       end
 
       it 'changes access level' do
-        expect { action }.to change { user.can?(:guest_access, project) }.from(true).to(false)
+        expect { action }.to change { user.can?(:read_project, project) }.from(true).to(false)
       end
 
       it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker inline to recalculate authorizations'
@@ -426,8 +425,8 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
   end
 
   describe '#set_member_namespace_id' do
-    let(:project) { create(:project) }
-    let(:member) { create(:project_member, project: project) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:member) { create(:project_member, project: project) }
 
     context 'on create' do
       it 'sets the member_namespace_id' do

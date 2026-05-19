@@ -57,6 +57,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isSearchingVersions: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     resource: {
       type: Object,
       required: true,
@@ -70,12 +75,18 @@ export default {
       required: false,
       default: null,
     },
+    latestVersionName: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
-  emits: ['version-selected'],
+  emits: ['version-selected', 'version-search'],
   data() {
     return {
       isReportAbuseDrawerOpen: false,
       selectedVersionId: null,
+      selectedVersion: {},
     };
   },
   computed: {
@@ -122,11 +133,8 @@ export default {
     isArchived() {
       return Boolean(this.resource.archived);
     },
-    selectedVersion() {
-      return this.versions.find((v) => v.value === this.selectedVersionId) || {};
-    },
     isLatestVersion() {
-      return this.versions.length > 0 && this.versions[0].text === this.currentVersion.name;
+      return this.currentVersion.name === this.latestVersionName;
     },
     versionBadgeVariant() {
       return this.isLatestVersion ? 'info' : 'neutral';
@@ -147,6 +155,7 @@ export default {
       handler(versionId) {
         if (versionId) {
           this.selectedVersionId = versionId;
+          this.selectedVersion = this.getSelectedVersion(versionId);
         }
       },
     },
@@ -158,14 +167,20 @@ export default {
     toggleReportAbuseDrawer(isOpen) {
       this.isReportAbuseDrawerOpen = isOpen;
     },
+    getSelectedVersion(versionId) {
+      return this.versions.find((v) => v.value === versionId) || {};
+    },
     onVersionSelect(versionId) {
-      const version = this.versions.find((v) => v.value === versionId);
-      if (version) {
+      this.selectedVersion = this.getSelectedVersion(versionId);
+      if (this.selectedVersion.text) {
         this.$router.push({
-          query: { ...this.$route.query, version: version.text },
+          query: { ...this.$route.query, version: this.selectedVersion.text },
         });
-        this.$emit('version-selected', version.text);
+        this.$emit('version-selected', this.selectedVersion.text);
       }
+    },
+    onVersionSearch(searchTerm) {
+      this.$emit('version-search', searchTerm);
     },
   },
 };
@@ -229,12 +244,15 @@ export default {
         <gl-collapsible-listbox
           v-model="selectedVersionId"
           :items="versions"
+          :loading="isSearchingVersions"
+          searchable
           @select="onVersionSelect"
+          @search="onVersionSearch"
         >
           <template #toggle>
             <gl-button
               :disabled="!selectedVersion.text"
-              :loading="isLoadingData && !selectedVersion.text"
+              :loading="(isLoadingData && !selectedVersion.text) || isSearchingVersions"
             >
               <span>{{ toggleButtonText }}</span>
               <span v-if="selectedVersion.createdAt" class="gl-text-sm gl-text-secondary"
@@ -245,7 +263,9 @@ export default {
           </template>
           <template #list-item="{ item }">
             <span>{{ item.text }}</span>
-            <span class="gl-text-sm gl-text-secondary">({{ item.createdAt }})</span>
+            <span v-if="item.createdAt" class="gl-text-sm gl-text-secondary"
+              >({{ item.createdAt }})</span
+            >
           </template>
         </gl-collapsible-listbox>
         <gl-disclosure-dropdown

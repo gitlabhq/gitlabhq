@@ -62,7 +62,7 @@ module Gitlab
           end
         end
 
-        # Overriden on EE::Gitlab::Issuable::Clone::CopyResourceEventsService
+        # Overridden on EE::Gitlab::Issuable::Clone::CopyResourceEventsService
         # These values should never be copied to the new entity. This service should always set a new appropriate
         # value that references the new target.
         def blocked_resource_event_attributes

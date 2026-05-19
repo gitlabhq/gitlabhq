@@ -177,87 +177,6 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
       end
     end
 
-    context 'for resource owner password credential flow', :aggregate_failures do
-      let_it_be(:password) { User.random_password }
-
-      def authenticate(with_password)
-        post '/oauth/token', params: { grant_type: 'password', username: user.username, password: with_password }
-      end
-
-      context 'when user does not have two factor enabled' do
-        let_it_be(:user) { create(:user, password: password, organizations: [organization]) }
-
-        it 'authenticates successfully' do
-          expect(::Gitlab::Auth).to receive(:find_with_user_password).and_call_original
-
-          authenticate(password)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(user.reload.failed_attempts).to eq(0)
-        end
-
-        it 'fails to authenticate and increments failed attempts when using the incorrect password' do
-          authenticate('incorrect_password')
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(user.reload.failed_attempts).to eq(1)
-        end
-      end
-
-      context 'when the user has two factor enabled' do
-        let_it_be(:user) { create(:user, :two_factor, password: password) }
-
-        it 'fails to authenticate and does not call GitLab::Auth even when using the correct password' do
-          expect(::Gitlab::Auth).not_to receive(:find_with_user_password)
-
-          authenticate(password)
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(user.reload.failed_attempts).to eq(0)
-        end
-      end
-
-      context "when the user's password is automatically set" do
-        let_it_be(:user) { create(:user, password_automatically_set: true) }
-
-        it 'fails to authenticate and does not call GitLab::Auth even when using the correct password' do
-          expect(::Gitlab::Auth).not_to receive(:find_with_user_password)
-
-          authenticate(password)
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(user.reload.failed_attempts).to eq(0)
-        end
-
-        context 'when the user has an identity matching a provider that is not password-based' do
-          before do
-            create(:identity, provider: 'google_oauth2', user: user)
-          end
-
-          it 'fails to authenticate and does not call GitLab::Auth' do
-            expect(::Gitlab::Auth).not_to receive(:find_with_user_password)
-
-            authenticate(password)
-
-            expect(response).to have_gitlab_http_status(:bad_request)
-            expect(user.reload.failed_attempts).to eq(0)
-          end
-        end
-
-        context 'when the user is a password-based omniauth user' do
-          before do
-            create(:identity, provider: 'ldapmain', user: user)
-          end
-
-          it 'forwards the request to Gitlab::Auth' do
-            expect(::Gitlab::Auth).to receive(:find_with_user_password)
-
-            authenticate(password)
-          end
-        end
-      end
-    end
-
     describe 'PKCE validation for dynamic applications' do
       let_it_be(:user) { create(:user) }
 
@@ -465,9 +384,10 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
 
     describe 'POST /oauth/revoke' do
       let(:other_headers) { { 'Content-Type' => 'application/x-www-form-urlencoded' } }
+      let_it_be(:oauth_application) { create(:oauth_application) }
 
       before do
-        post '/oauth/revoke', headers: headers, params: { token: '12345' }
+        post '/oauth/revoke', headers: headers, params: { token: '12345', client_id: oauth_application.uid, client_secret: oauth_application.secret }
       end
 
       it 'returns 200' do

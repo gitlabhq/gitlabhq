@@ -24,7 +24,7 @@ reports in the **Admin** area.
 To receive notifications of new abuse reports by email:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Reporting**.
+1. In the left sidebar, select **Settings** > **Reporting**.
 1. Expand the **Abuse reports** section.
 1. Provide an email address and select **Save changes**.
 
@@ -47,7 +47,7 @@ To find out more about reporting abuse, see
 To access abuse reports:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Abuse reports**.
+1. In the left sidebar, select **Abuse reports**.
 
 There are four ways to resolve an abuse report, with a button for each method:
 

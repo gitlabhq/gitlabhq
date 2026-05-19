@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlLink, GlAlert, GlFormCheckbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { clearDraft } from '~/lib/utils/autosave';
@@ -18,6 +18,7 @@ export default {
     GlSprintf,
     GlLink,
     GlAlert,
+    GlFormCheckbox,
   },
   inject: {
     endpoints: {
@@ -102,6 +103,16 @@ export default {
       required: false,
       default: null,
     },
+    showResolveDiscussionToggle: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    discussionResolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -109,6 +120,8 @@ export default {
       conflictWhileEditing: false,
       isSubmitting: false,
       autocompleteDataSources: gl.GfmAutoComplete?.dataSources,
+      isResolving: false,
+      isUnresolving: true,
     };
   },
   computed: {
@@ -125,6 +138,9 @@ export default {
     },
     commentButtonCategory() {
       return this.saveDraft ? 'secondary' : 'primary';
+    },
+    isSubmitDisabled() {
+      return !this.editedNoteBody.length || this.isSubmitting;
     },
     formFieldProps() {
       return {
@@ -160,22 +176,33 @@ export default {
       clearDraft(this.autosaveKey);
       this.$emit('cancel', shouldConfirm && this.noteBody !== this.editedNoteBody);
     },
-    handleKeySubmit(shiftPressed = false) {
-      if (shiftPressed && this.saveDraft) {
+    handleKeySubmit(forceUpdate = false) {
+      if (this.saveDraft && !forceUpdate) {
         this.handleDraftSubmit();
       } else {
-        this.handleUpdate(shiftPressed);
+        this.handleUpdate();
       }
       this.editedNoteBody = '';
     },
-    async handleUpdate(shiftPressed = false) {
+    newResolvedState() {
+      return (
+        (this.discussionResolved && !this.isUnresolving) ||
+        (!this.discussionResolved && this.isResolving)
+      );
+    },
+    shouldToggleResolved() {
+      if (!this.showResolveDiscussionToggle) return false;
+      return this.newResolvedState() !== this.discussionResolved;
+    },
+    async handleUpdate() {
       this.isSubmitting = true;
+      const shouldResolve = this.shouldToggleResolved();
       trackSavedUsingEditor(
         this.$refs.markdownEditor.isContentEditorActive,
         `${this.noteableType}_note`,
       );
       try {
-        await this.saveNote(this.editedNoteBody, shiftPressed);
+        await this.saveNote(this.editedNoteBody, shouldResolve);
         this.editedNoteBody = '';
         clearDraft(this.autosaveKey);
       } catch (error) {
@@ -191,12 +218,13 @@ export default {
     async handleDraftSubmit() {
       if (!this.saveDraft) return;
       this.isSubmitting = true;
+      const resolveDiscussion = this.showResolveDiscussionToggle ? this.newResolvedState() : false;
       trackSavedUsingEditor(
         this.$refs.markdownEditor.isContentEditorActive,
         `${this.noteableType}_note`,
       );
       try {
-        await this.saveDraft(this.editedNoteBody);
+        await this.saveDraft(this.editedNoteBody, resolveDiscussion);
         this.editedNoteBody = '';
         clearDraft(this.autosaveKey);
       } catch (error) {
@@ -251,35 +279,49 @@ export default {
         @keydown.exact.esc="cancel(true)"
         @handleSuggestDismissed="$emit('handleSuggestDismissed')"
       />
-      <div class="gl-mt-3 gl-flex gl-flex-wrap gl-gap-4">
-        <gl-button
-          v-if="saveDraft"
-          :disabled="!editedNoteBody.length || isSubmitting"
-          category="primary"
-          variant="confirm"
-          data-testid="add-to-review-button"
-          @click="handleDraftSubmit()"
-        >
-          {{ draftButtonTitle }}
-        </gl-button>
-        <gl-button
-          :disabled="!editedNoteBody.length || isSubmitting"
-          :category="commentButtonCategory"
-          variant="confirm"
-          data-testid="reply-comment-button"
-          @click="handleUpdate()"
-        >
-          {{ commentButtonTitle }}
-        </gl-button>
-        <gl-button
-          v-if="canCancel"
-          category="secondary"
-          variant="default"
-          data-testid="cancel"
-          @click="cancel(true)"
-        >
-          {{ $options.i18n.cancel }}
-        </gl-button>
+      <div class="gl-mt-3">
+        <template v-if="showResolveDiscussionToggle">
+          <label v-if="discussionResolved" class="gl-mb-0 gl-py-3">
+            <gl-form-checkbox v-model="isUnresolving" data-testid="unresolve-checkbox">
+              {{ __('Reopen thread') }}
+            </gl-form-checkbox>
+          </label>
+          <label v-else class="gl-mb-0 gl-py-3">
+            <gl-form-checkbox v-model="isResolving" data-testid="resolve-checkbox">
+              {{ __('Resolve thread') }}
+            </gl-form-checkbox>
+          </label>
+        </template>
+        <div class="gl-flex gl-flex-wrap gl-gap-4">
+          <gl-button
+            v-if="saveDraft"
+            :disabled="isSubmitDisabled"
+            category="primary"
+            variant="confirm"
+            data-testid="add-to-review-button"
+            @click="handleDraftSubmit()"
+          >
+            {{ draftButtonTitle }}
+          </gl-button>
+          <gl-button
+            :disabled="isSubmitDisabled"
+            :category="commentButtonCategory"
+            variant="confirm"
+            data-testid="reply-comment-button"
+            @click="handleUpdate()"
+          >
+            {{ commentButtonTitle }}
+          </gl-button>
+          <gl-button
+            v-if="canCancel"
+            category="secondary"
+            variant="default"
+            data-testid="cancel"
+            @click="cancel(true)"
+          >
+            {{ $options.i18n.cancel }}
+          </gl-button>
+        </div>
       </div>
     </form>
   </div>

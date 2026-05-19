@@ -26,7 +26,7 @@ ARCH ?= $(shell uname -m | sed -e 's/x86_64/amd64/' | sed -e 's/aarch64/arm64/')
 
 LABKIT_VALIDATE_VERSION := v2.0.0-20260325011833-45bdfd4bfc9f
 
-GOLANGCI_LINT_VERSION := 2.3.1
+GOLANGCI_LINT_VERSION := 2.11.4
 GOLANGCI_LINT_ARCH ?= ${ARCH}
 GOLANGCI_LINT_FILE := _support/bin/golangci-lint-${GOLANGCI_LINT_VERSION}
 

@@ -1,0 +1,87 @@
+{
+  "repository": "example/image",
+  "name": "latest",
+  "image": {
+    "size_bytes": 0,
+    "manifest": {
+      "digest": "sha256:00000000",
+      "media_type": "application/vnd.oci.image.index.v1+json",
+      "references": [
+        {
+          "size_bytes": 100,
+          "manifest": {
+            "digest": "sha256:11111111",
+            "media_type": "application/vnd.oci.image.manifest.v1+json"
+          },
+          "config": {
+            "digest": "sha256:01111111",
+            "media_type": "application/vnd.oci.image.config.v1+json",
+            "platform": {
+              "architecture": "amd64",
+              "os": "linux"
+            }
+          }
+        },
+        {
+          "size_bytes": 200,
+          "manifest": {
+            "digest": "sha256:22222222",
+            "media_type": "application/vnd.oci.image.manifest.v1+json"
+          },
+          "config": {
+            "digest": "sha256:02222222",
+            "media_type": "application/vnd.oci.image.config.v1+json",
+            "platform": {
+              "architecture": "arm64",
+              "os": "linux",
+              "variant": "v8"
+            }
+          }
+        },
+        {
+          "size_bytes": 300,
+          "manifest": {
+            "digest": "sha256:33333333",
+            "media_type": "application/vnd.oci.image.manifest.v1+json"
+          },
+          "config": {
+            "digest": "sha256:03333333",
+            "media_type": "application/vnd.oci.image.config.v1+json",
+            "platform": {
+              "architecture": "amd64",
+              "os": "windows",
+              "os_version": "10.0.20348.4529"
+            }
+          }
+        },
+        {
+          "size_bytes": 400,
+          "manifest": {
+            "digest": "sha256:44444444",
+            "media_type": "application/vnd.oci.image.manifest.v1+json"
+          },
+          "config": {
+            "digest": "sha256:04444444",
+            "media_type": "application/vnd.oci.image.config.v1+json",
+            "platform": {
+              "architecture": "unknown"
+            }
+          }
+        },
+        {
+          "size_bytes": 500,
+          "manifest": {
+            "digest": "sha256:55555555",
+            "media_type": "application/vnd.oci.image.manifest.v1+json"
+          },
+          "config": {
+            "digest": "sha256:05555555",
+            "media_type": "application/vnd.oci.image.config.v1+json"
+          }
+        }
+      ]
+    }
+  },
+  "created_at": "2026-03-01T12:00:00.000Z",
+  "published_at": "2026-03-01T15:00:00.000Z"
+}

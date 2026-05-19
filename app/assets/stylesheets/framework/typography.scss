@@ -60,8 +60,10 @@
     @apply gl-bg-disabled;
   }
 
+  /* stylelint-disable gitlab/no-js-class */
   img.js-lazy-loaded,
   img.emoji {
+  /* stylelint-enable gitlab/no-js-class */
     min-width: inherit;
     min-height: inherit;
     background-color: inherit;
@@ -418,8 +420,8 @@
   [data-sticky-header] > table:not(.code) > tbody > tr:first-child > th {
     @apply gl-sticky;
     @apply gl-top-0;
-    @apply gl-z-2;
     @apply gl-bg-default;
+    @apply gl-z-1;
     border-top: 0;
     border-bottom: 0;
     box-shadow:
@@ -967,6 +969,7 @@ pre {
  * Textareas intended for GFM
  *
  */
+// stylelint-disable-next-line gitlab/no-js-class
 textarea.js-gfm-input {
   @apply gl-font-monospace;
   font-size: $gl-font-size;

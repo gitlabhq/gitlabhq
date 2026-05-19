@@ -320,6 +320,29 @@ RSpec.describe API::GoProxy, feature_category: :package_registry do
       it_behaves_like 'a module archive resource', 'v2.0.0', ['go.mod', 'a.go', 'x.go'], path: '/v2'
     end
 
+    describe 'package event tracking' do
+      let(:module_name) { base }
+      let(:resource) { 'v1.0.1.zip' }
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_golang_user' } }
+
+      subject { get_resource(user) }
+
+      it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
+
+      it 'triggers the pull_package_from_registry internal event with the golang label' do
+        expect { get_resource(user) }.to trigger_internal_events('pull_package_from_registry').with(
+          category: 'InternalEventTracking',
+          project: project,
+          namespace: project.namespace,
+          user: user,
+          additional_properties: {
+            label: 'golang',
+            property: 'user'
+          }
+        )
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :read_packages,
       allow_public_access_for_enabled_project_features: :package_registry do
       let(:module_name) { base }

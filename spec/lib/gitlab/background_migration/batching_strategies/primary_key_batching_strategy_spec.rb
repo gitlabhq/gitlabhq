@@ -81,6 +81,60 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchi
     end
   end
 
+  context 'when job class uses cursor-based batching' do
+    let(:job_class) do
+      Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+        cursor :id
+      end
+    end
+
+    context 'when starting on the first batch' do
+      it 'returns the bounds of the next batch' do
+        batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: [namespace1.id], batch_size: 3, job_arguments: [], job_class: job_class)
+
+        expect(batch_bounds).to eq([[namespace1.id], [namespace3.id]])
+      end
+    end
+
+    context 'when additional batches remain' do
+      it 'returns the bounds of the next batch' do
+        batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: [namespace2.id], batch_size: 3, job_arguments: [], job_class: job_class)
+
+        expect(batch_bounds).to eq([[namespace2.id], [namespace4.id]])
+      end
+    end
+
+    context 'when on the final batch' do
+      it 'returns the bounds of the next batch' do
+        batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: [namespace4.id], batch_size: 3, job_arguments: [], job_class: job_class)
+
+        expect(batch_bounds).to eq([[namespace4.id], [namespace4.id]])
+      end
+    end
+
+    context 'when no additional batches remain' do
+      it 'returns nil' do
+        batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: [namespace4.id + 1], batch_size: 1, job_arguments: [], job_class: job_class)
+
+        expect(batch_bounds).to be_nil
+      end
+    end
+
+    context 'when cursor column is a non-integer type' do
+      let(:job_class) do
+        Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+          cursor :id, :name
+        end
+      end
+
+      it 'correctly casts values in the tuple comparison' do
+        batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: [namespace1.id, namespace1.name], batch_size: 3, job_arguments: [], job_class: job_class)
+
+        expect(batch_bounds).to eq([[namespace1.id, namespace1.name], [namespace3.id, namespace3.name]])
+      end
+    end
+  end
+
   context 'when job class requires not to reset order' do
     let(:job_class) do
       Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do

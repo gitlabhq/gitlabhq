@@ -1,0 +1,9 @@
+---
+name: read_email
+description: Grants the ability to read emails
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_user_email

@@ -8,6 +8,7 @@ module Organizations
     include Gitlab::Routing.url_helpers
     include FeatureGate
     include Organizations::Isolatable
+    include Organizations::Stateful
     include Cells::Claimable
 
     cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, feature_flag: :cells_claims_organizations
@@ -25,6 +26,7 @@ module Organizations
                                 .order(:id)
     }
     scope :by_path, ->(path) { where(path: path) }
+    scope :with_isolation, -> { eager_load(:isolated_record) }
 
     before_destroy :check_if_default_organization
 
@@ -64,7 +66,18 @@ module Organizations
     validate :check_visibility_level, if: -> { new_record? || visibility_level_changed? }
     validate :check_organization_reserved_name, if: -> { new_record? }
 
-    delegate :description, :description_html, :avatar, :avatar_url, :remove_avatar!, to: :organization_detail
+    delegate :description,
+      :description_html,
+      :avatar,
+      :avatar_url,
+      :remove_avatar!,
+      :deletion_error,
+      :deletion_error=,
+      :state_metadata,
+      :state_metadata=,
+      :deletion_scheduled_at,
+      :deletion_scheduled_at=,
+      to: :organization_detail
 
     accepts_nested_attributes_for :organization_detail
     accepts_nested_attributes_for :organization_users
@@ -75,6 +88,20 @@ module Organizations
 
     def self.default_organization
       find_by(id: DEFAULT_ORGANIZATION_ID)
+    end
+
+    def self.find_by_id_with_isolation(id)
+      with_isolation.find_by(id: id)
+    end
+
+    def self.find_by_path_with_isolation(path)
+      return unless path
+
+      with_isolation.where("LOWER(path) = ?", path.downcase).first
+    end
+
+    def self.find_by_namespace_path_with_isolation(path)
+      with_isolation.where(id: with_namespace_path(path).select(:id)).first
     end
 
     def self.default?(id)
@@ -92,6 +119,10 @@ module Organizations
 
     def default?
       self.class.default?(id)
+    end
+
+    def empty?
+      groups.none? && projects.none?
     end
 
     def to_param

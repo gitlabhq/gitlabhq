@@ -4,16 +4,14 @@
 // https://gitlab.com/gitlab-org/gitlab/-/issues/323200
 
 import BlobContentViewer from '../components/blob_content_viewer.vue';
+import repositoryPathMixin from '../mixins/repository_path';
 
 export default {
   components: {
     BlobContentViewer,
   },
+  mixins: [repositoryPathMixin],
   props: {
-    path: {
-      type: String,
-      required: true,
-    },
     projectPath: {
       type: String,
       required: true,
@@ -27,5 +25,10 @@ export default {
 };
 </script>
 <template>
-  <blob-content-viewer :path="path" :project-path="projectPath" :ref-type="refType" />
+  <blob-content-viewer
+    :key="$route.path"
+    :path="computedPath"
+    :project-path="projectPath"
+    :ref-type="refType"
+  />
 </template>

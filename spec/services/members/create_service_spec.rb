@@ -348,9 +348,22 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
     let_it_be(:other_member) { create(:user, organization: other_organization) }
     let(:user_id) { other_member.id.to_s }
 
-    it 'does not add the member' do
-      expect(execute_service[:status]).to eq(:error)
-      expect(source.users).not_to include other_member
+    context 'when source organization is isolated' do
+      before do
+        source.organization.mark_as_isolated!
+      end
+
+      it 'does not add the member' do
+        expect(execute_service[:status]).to eq(:error)
+        expect(source.users).not_to include other_member
+      end
+    end
+
+    context 'when source organization is not isolated' do
+      it 'adds the member' do
+        expect(execute_service[:status]).to eq(:success)
+        expect(source.users).to include other_member
+      end
     end
   end
 

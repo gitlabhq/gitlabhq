@@ -59,6 +59,19 @@ RSpec.describe "Sync project fork", feature_category: :source_code_management do
   end
 
   context 'when the user has permission' do
+    context 'with granular tokens', :clean_gitlab_redis_shared_state do
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :push_code do
+        let(:user) { current_user }
+        let(:boundary_object) { project }
+        let(:mutation) do
+          graphql_mutation(:project_sync_fork,
+            { project_path: project.full_path, target_branch: target_branch }, 'errors')
+        end
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+    end
+
     context 'and the sync service executes successfully', :sidekiq_inline do
       it 'calls the sync service' do
         expect(::Projects::Forks::SyncWorker).to receive(:perform_async).and_call_original

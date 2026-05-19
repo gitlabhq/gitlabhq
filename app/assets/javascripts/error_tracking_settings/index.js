@@ -1,6 +1,6 @@
 import Vue from 'vue';
+import { pinia } from '~/pinia/instance';
 import ErrorTrackingSettings from './components/app.vue';
-import createStore from './store';
 
 export default () => {
   const formContainerEl = document.querySelector('.js-error-tracking-form');
@@ -20,7 +20,7 @@ export default () => {
   return new Vue({
     el: formContainerEl,
     name: 'ErrorTrackingSettingsRoot',
-    store: createStore(),
+    pinia,
     render(createElement) {
       return createElement(ErrorTrackingSettings, {
         props: {

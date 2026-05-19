@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
 
-  let_it_be(:pipeline, reload: true) do
+  let_it_be_with_reload(:pipeline) do
     create(
       :ci_pipeline,
       project: project,
@@ -16,13 +16,19 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
     )
   end
 
-  let(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
-  let(:test_stage) { create(:ci_stage, name: 'test', pipeline: pipeline) }
-  let(:deploy_stage) { create(:ci_stage, name: 'deploy', pipeline: pipeline) }
-  let!(:build) { create(:ci_build, pipeline: pipeline, name: 'build', stage_idx: 0, ci_stage: build_stage) }
-  let!(:rubocop_test) { create(:ci_build, pipeline: pipeline, name: 'rubocop', stage_idx: 1, ci_stage: test_stage) }
-  let!(:staging) { create(:ci_build, pipeline: pipeline, name: 'staging', stage_idx: 2, ci_stage: deploy_stage) }
-  let!(:rspec_test) do
+  let_it_be(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
+  let_it_be(:test_stage) { create(:ci_stage, name: 'test', pipeline: pipeline) }
+  let_it_be(:deploy_stage) { create(:ci_stage, name: 'deploy', pipeline: pipeline) }
+  let_it_be_with_reload(:build) do
+    create(:ci_build, pipeline: pipeline, name: 'build', stage_idx: 0, ci_stage: build_stage)
+  end
+
+  let_it_be(:rubocop_test) do
+    create(:ci_build, pipeline: pipeline, name: 'rubocop', stage_idx: 1, ci_stage: test_stage)
+  end
+
+  let_it_be(:staging) { create(:ci_build, pipeline: pipeline, name: 'staging', stage_idx: 2, ci_stage: deploy_stage) }
+  let_it_be_with_reload(:rspec_test) do
     create(:ci_build, :success, pipeline: pipeline, name: 'rspec', stage_idx: 1, ci_stage: test_stage)
   end
 
@@ -52,7 +58,7 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
         end
 
         context 'when a job is retried' do
-          before do
+          before_all do
             project.add_developer(user)
           end
 
@@ -173,7 +179,7 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
   end
 
   context 'for cross_pipeline dependencies' do
-    let!(:job) do
+    let(:job) do
       create(:ci_build,
         pipeline: pipeline,
         name: 'build_with_pipeline_dependency',
@@ -186,15 +192,15 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
 
     context 'when dependency specifications are valid' do
       context 'when pipeline exists in the hierarchy' do
-        let!(:pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
-        let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:parent_pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
 
         context 'when job exists' do
           let(:dependencies) do
             [{ pipeline: parent_pipeline.id.to_s, job: upstream_job.name, artifacts: true }]
           end
 
-          let!(:upstream_job) { create(:ci_build, :success, pipeline: parent_pipeline) }
+          let_it_be(:upstream_job) { create(:ci_build, :success, pipeline: parent_pipeline) }
 
           it { expect(cross_pipeline_deps).to contain_exactly(upstream_job) }
           it { is_expected.to be_valid }
@@ -218,11 +224,11 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
         end
 
         context 'when same job names exist in other pipelines in the hierarchy' do
-          let(:cross_pipeline_limit) do
+          let_it_be(:cross_pipeline_limit) do
             ::Gitlab::Ci::Config::Entry::Needs::NEEDS_CROSS_PIPELINE_DEPENDENCIES_LIMIT
           end
 
-          let(:sibling_pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
+          let_it_be(:sibling_pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
 
           let(:dependencies) do
             [
@@ -235,7 +241,7 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
             ]
           end
 
-          before do
+          before_all do
             cross_pipeline_limit.times do |index|
               create(:ci_build, :success,
                 pipeline: parent_pipeline, name: "dependency-#{index}",
@@ -281,12 +287,11 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
       end
 
       context 'when jobs exist in different pipelines in the hierarchy' do
-        let!(:pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
-        let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
-        let!(:parent_job) { create(:ci_build, :success, name: 'parent_job', pipeline: parent_pipeline) }
-
-        let!(:sibling_pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
-        let!(:sibling_job) { create(:ci_build, :success, name: 'sibling_job', pipeline: sibling_pipeline) }
+        let_it_be(:parent_pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
+        let_it_be(:parent_job) { create(:ci_build, :success, name: 'parent_job', pipeline: parent_pipeline) }
+        let_it_be(:sibling_pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
+        let_it_be(:sibling_job) { create(:ci_build, :success, name: 'sibling_job', pipeline: sibling_pipeline) }
 
         context 'when pipeline and jobs dependencies are mismatched' do
           let(:dependencies) do
@@ -318,9 +323,9 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
       end
 
       context 'when job and pipeline exist outside the hierarchy' do
-        let!(:pipeline) { create(:ci_pipeline, project: project) }
-        let!(:another_pipeline) { create(:ci_pipeline, project: project) }
-        let!(:dependency) { create(:ci_build, :success, pipeline: another_pipeline) }
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:another_pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:dependency) { create(:ci_build, :success, pipeline: another_pipeline) }
 
         let(:dependencies) do
           [{ pipeline: another_pipeline.id.to_s, job: dependency.name, artifacts: true }]
@@ -334,8 +339,8 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
       end
 
       context 'when current pipeline is specified' do
-        let!(:pipeline) { create(:ci_pipeline, project: project) }
-        let!(:dependency) { create(:ci_build, :success, pipeline: pipeline) }
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:dependency) { create(:ci_build, :success, pipeline: pipeline) }
 
         let(:dependencies) do
           [{ pipeline: pipeline.id.to_s, job: dependency.name, artifacts: true }]
@@ -350,9 +355,9 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
     end
 
     context 'when artifacts:false' do
-      let!(:pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
-      let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
-      let!(:parent_job) { create(:ci_build, :success, name: 'parent_job', pipeline: parent_pipeline) }
+      let_it_be(:parent_pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
+      let_it_be(:parent_job) { create(:ci_build, :success, name: 'parent_job', pipeline: parent_pipeline) }
 
       let(:dependencies) do
         [{ pipeline: parent_pipeline.id.to_s, job: parent_job.name, artifacts: false }]
@@ -364,7 +369,7 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
   end
 
   describe '#all' do
-    let!(:job) do
+    let_it_be(:job) do
       create(:ci_build, pipeline: pipeline, name: 'deploy', stage_idx: 3, ci_stage: deploy_stage)
     end
 
@@ -383,13 +388,13 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
   describe '#invalid' do
     subject { described_class.new(job).invalid }
 
-    let!(:job) { create(:ci_build, pipeline: pipeline, stage_idx: 3, ci_stage: deploy_stage) }
+    let_it_be(:job) { create(:ci_build, pipeline: pipeline, stage_idx: 3, ci_stage: deploy_stage) }
 
     context 'with only local dependencies' do
-      let!(:valid_local_job) { create(:ci_build, :success, pipeline: pipeline, stage_idx: 0) }
-      let!(:invalid_local_job) { create(:ci_build, :success, :expired, pipeline: pipeline, stage_idx: 1) }
+      let_it_be(:valid_local_job) { create(:ci_build, :success, pipeline: pipeline, stage_idx: 0) }
+      let_it_be(:invalid_local_job) { create(:ci_build, :success, :expired, pipeline: pipeline, stage_idx: 1) }
 
-      before do
+      before_all do
         pipeline.unlocked!
       end
 
@@ -400,14 +405,14 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
     end
 
     context 'with cross-pipeline dependencies' do
-      let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
-      let!(:child_pipeline) { create(:ci_pipeline, child_of: parent_pipeline, project: project) }
-      let!(:valid_cross_job) { create(:ci_build, :success, pipeline: parent_pipeline, name: 'valid_cross') }
-      let!(:invalid_cross_job) do
+      let_it_be_with_reload(:parent_pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: parent_pipeline, project: project) }
+      let_it_be(:valid_cross_job) { create(:ci_build, :success, pipeline: parent_pipeline, name: 'valid_cross') }
+      let_it_be(:invalid_cross_job) do
         create(:ci_build, :success, :expired, pipeline: parent_pipeline, name: 'invalid_cross')
       end
 
-      let!(:job_with_cross_deps) do
+      let_it_be(:job_with_cross_deps) do
         create(:ci_build, pipeline: child_pipeline, stage_idx: 1,
           options: {
             cross_dependencies: [
@@ -419,7 +424,7 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
 
       subject { described_class.new(job_with_cross_deps).invalid }
 
-      before do
+      before_all do
         parent_pipeline.unlocked!
       end
 
@@ -430,14 +435,14 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
     end
 
     context 'with mixed dependency types' do
-      let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
-      let!(:child_pipeline) { create(:ci_pipeline, child_of: parent_pipeline, project: project) }
-      let!(:invalid_local_job) { create(:ci_build, :success, :expired, pipeline: child_pipeline, stage_idx: 1) }
-      let!(:invalid_cross_job) do
+      let_it_be_with_reload(:parent_pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be_with_reload(:child_pipeline) { create(:ci_pipeline, child_of: parent_pipeline, project: project) }
+      let_it_be(:invalid_local_job) { create(:ci_build, :success, :expired, pipeline: child_pipeline, stage_idx: 1) }
+      let_it_be(:invalid_cross_job) do
         create(:ci_build, :success, :expired, pipeline: parent_pipeline, name: 'invalid_cross')
       end
 
-      let!(:job_with_mixed_deps) do
+      let_it_be(:job_with_mixed_deps) do
         create(:ci_build, pipeline: child_pipeline, stage_idx: 2,
           options: {
             dependencies: [invalid_local_job.name],
@@ -449,7 +454,7 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
 
       subject { described_class.new(job_with_mixed_deps).invalid }
 
-      before do
+      before_all do
         child_pipeline.unlocked!
         parent_pipeline.unlocked!
       end

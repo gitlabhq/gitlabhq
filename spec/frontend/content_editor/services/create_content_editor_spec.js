@@ -5,7 +5,7 @@ import { createTestContentEditorExtension } from '../test_utils';
 
 jest.mock('~/emoji');
 jest.mock('~/content_editor/services/gl_api_markdown_deserializer');
-jest.mock('~/graphql_shared/issuable_client', () => ({
+jest.mock('~/graphql_shared/issuable_client_state', () => ({
   currentAssignees: jest.fn().mockReturnValue({}),
   linkedItems: jest.fn().mockReturnValue({}),
 }));

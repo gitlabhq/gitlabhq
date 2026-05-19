@@ -2,12 +2,13 @@
 stage: AI-powered
 group: Workflow Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Discover, enable, and manage agents and flows from a central catalog.
 title: AI Catalog
 ---
 
 {{< details >}}
 
-- Tier: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
+- Tier: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -48,7 +49,8 @@ Use the AI Catalog to:
 
 Prerequisites:
 
-- You must meet the [prerequisites](_index.md#prerequisites).
+- Meet the [GitLab Duo Agent Platform prerequisites](_index.md#prerequisites).
+- On GitLab Self-Managed, have [GitLab Duo turned on for the instance](turn_on_off.md#for-an-instance).
 - To enable agents and flows from the AI Catalog:
   - In a group, you must have the Maintainer or Owner role.
   - In a project, you must have the Maintainer or Owner role.
@@ -138,8 +140,8 @@ To view the current version of an agent or flow:
 
 1. In the top bar, select **Search or go to** and find your project or group.
 1. In the left sidebar, select either:
-   - **Automate** > **Agents**
-   - **Automate** > **Flows**
+   - **AI** > **Agents**
+   - **AI** > **Flows**
 1. Select the agent or flow to view its details.
 
 The details page displays:
@@ -158,10 +160,52 @@ To make your group or project use the latest version of an agent or flow:
 
 1. In the top bar, select **Search or go to** and find your project or group.
 1. In the left sidebar, select either:
-   - **Automate** > **Agents**
-   - **Automate** > **Flows**
+   - **AI** > **Agents**
+   - **AI** > **Flows**
 1. Select the agent or flow you want to update.
 1. Review the latest version carefully. To update, select **View latest version** > **Update to `<x.y.z>`**.
+
+## Restrict the AI Catalog to a group hierarchy
+
+{{< details >}}
+
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594617) in GitLab 19.0.
+
+{{< /history >}}
+
+In a top-level group, you can restrict the AI Catalog so that, for a project in that group hierarchy, users can
+see, enable, and run only:
+
+- Foundational agents and flows maintained by GitLab.
+- Public agents and flows owned by projects in the same top-level group hierarchy.
+- Private agents and flows owned by the project itself.
+
+Agents and flows owned by projects outside the hierarchy are:
+
+- Hidden from the AI Catalog.
+- Blocked from being enabled.
+- Blocked from running, even if a project previously enabled them.
+
+You can configure this setting only on a top-level group. It applies to all projects
+in that hierarchy. Changes to this setting are recorded in the audit log.
+
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+
+To restrict the AI Catalog to your group hierarchy:
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. In the **Data and privacy** section, under **AI Catalog**, select the **Restrict the AI Catalog to this group** checkbox.
+1. Select **Save changes**.
 
 ## Related topics
 

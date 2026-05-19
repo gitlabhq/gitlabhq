@@ -28,4 +28,4 @@
         #js-target-project-dropdown{ data: { target_projects_path: target_projects_project_json_compare_index_path(@project), current_project: { value: f.object.target_project_id.to_s, text: f.object.target_project.full_path, refsUrl: refs_project_path(f.object.target_project) }.to_json, current_branch: { value: f.object.target_branch.presence, text: f.object.target_branch.presence }.to_json, branch_error_description_id: @merge_request.errors[:base].present? ? 'error_explanation' : nil } }
   .row
     .gl-col-12
-      = f.submit _('Compare branches and continue'), data: { testid: 'compare-branches-button' }, pajamas_button: true
+      = f.submit _('Compare branches and continue'), class: 'js-compare-branches-button', data: { testid: 'compare-branches-button' }, pajamas_button: true

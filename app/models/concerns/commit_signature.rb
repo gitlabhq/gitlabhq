@@ -43,6 +43,10 @@ module CommitSignature
     raise NoMethodError, 'must implement `signed_by_user` method'
   end
 
+  def verified_committer?
+    verified? || verified_system?
+  end
+
   # If commit is persisted as verified, check that commit email is still correct.
   def verification_status
     persisted_status = read_attribute(:verification_status)
@@ -75,3 +79,5 @@ module CommitSignature
     signed_by_user&.verified_emails
   end
 end
+
+CommitSignature.prepend_mod

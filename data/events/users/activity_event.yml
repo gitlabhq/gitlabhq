@@ -1,0 +1,7 @@
+---
+event: Users::ActivityEvent
+description: Published to record user activity within a namespace, used for tracking
+  seat usage and last activity timestamps. Emitted from web request after-actions
+  (when a user and group/project context are both present), from EventCreateService
+  push/design activity, and from Git HTTP and Gitaly-SSH operations.
+feature_category: user_management

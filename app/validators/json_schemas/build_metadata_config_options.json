@@ -82,6 +82,21 @@
       "$ref": "#/definitions/servicesDefinition"
     },
     "start_in": true,
+    "suspend_options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suspend_on_success": {
+          "type": "boolean"
+        },
+        "suspend_on_failure": {
+          "type": "boolean"
+        },
+        "environment_key": {
+          "type": "string"
+        }
+      }
+    },
     "trigger": {
       "$ref": "#/definitions/triggerDefinition"
     }
@@ -104,6 +119,9 @@
           "$ref": "#/definitions/reportPath"
         },
         "api_fuzzing": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "environment_key": {
           "$ref": "#/definitions/reportPath"
         },
         "archive": {

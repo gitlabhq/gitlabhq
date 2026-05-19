@@ -199,6 +199,30 @@ end
 
 Adding this decorator ensures that all endpoints are explicitly covered by the authorization system, even those that don't require permissions.
 
+#### Allowing Access on Publicly Visible Resources
+
+Permissions listed in `config/authz/roles/public_anonymous.yml` are granted to a fine-grained PAT without an explicit scope when the target Project or Group is publicly visible and the relevant feature is enabled. This mirrors the access an anonymous caller has on the same resource.
+
+To opt a permission into this behavior, add it under the matching boundary (`project:` or `group:`) in `config/authz/roles/public_anonymous.yml`:
+
+```yaml
+project:
+  permissions: []
+  raw_permissions:
+    - read_release
+group:
+  permissions: []
+  raw_permissions:
+    - read_subgroup
+```
+
+**When to opt in:**
+
+- The permission represents read-only access to data that is already visible to anonymous callers on a public Project or Group.
+- The permission is gated behind a `ProjectFeature` (for example `repository`, `issues`) so that disabling the feature still prevents access.
+
+The bypass is gated to `:project` and `:group` boundaries. `:user` and `:instance` boundaries do not consult `public_anonymous.yml`.
+
 **Important Notes:**
 
 - Add the decorator to **every endpoint** individually, even if multiple endpoints use the same permission
@@ -221,6 +245,7 @@ These tests verify that:
 - Users without the required permission are denied access with a 403 Forbidden response and proper error message (`insufficient_granular_scope`)
 - The authorization system correctly evaluates the granular scope against the endpoint's permission requirements
 - The feature flag `granular_personal_access_tokens` is properly enforced (denies access when disabled)
+- For `:project` and `:group` boundaries on REST endpoints, a granular PAT without scope grants access whenever an anonymous caller can access the same endpoint (the public-resource bypass)
 
 #### Add Shared Examples for Each Endpoint
 

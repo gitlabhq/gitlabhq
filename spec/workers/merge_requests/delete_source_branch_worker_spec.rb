@@ -43,108 +43,65 @@ RSpec.describe MergeRequests::DeleteSourceBranchWorker, :clean_gitlab_redis_shar
       end
     end
 
-    context 'when prevent_merge_race_condition feature flag is enabled' do
-      it 'retargets and deletes the branch' do
-        expect_next_instance_of(::MergeRequests::RetargetChainService) do |instance|
-          expect(instance).to receive(:execute).with(merge_request)
-        end
-
-        expect_next_instance_of(::Projects::DeleteBranchWorker) do |instance|
-          expect(instance).to receive(:perform).with(
-            merge_request.source_project.id,
-            user.id,
-            merge_request.source_branch
-          )
-        end
-
-        worker.perform(merge_request.id, sha, user.id)
+    it 'retargets and deletes the branch' do
+      expect_next_instance_of(::MergeRequests::RetargetChainService) do |instance|
+        expect(instance).to receive(:execute).with(merge_request)
       end
 
-      it 'releases the branch deletion lease after successful deletion' do
+      expect_next_instance_of(::Projects::DeleteBranchWorker) do |instance|
+        expect(instance).to receive(:perform).with(
+          merge_request.source_project.id,
+          user.id,
+          merge_request.source_branch
+        )
+      end
+
+      worker.perform(merge_request.id, sha, user.id)
+    end
+
+    it 'releases the branch deletion lease after successful deletion' do
+      branch_deletion_lease.try_obtain
+
+      worker.perform(merge_request.id, sha, user.id)
+
+      expect(branch_deletion_lease.exists?).to be false
+    end
+
+    context 'when source branch sha does not match' do
+      it 'does not retarget or delete the branch' do
+        expect(::MergeRequests::RetargetChainService).not_to receive(:new)
+        expect(::Projects::DeleteBranchWorker).not_to receive(:new)
+
+        worker.perform(merge_request.id, 'new-source-branch-sha', user.id)
+      end
+
+      it 'lets the branch deletion lease expire via TTL' do
         branch_deletion_lease.try_obtain
 
-        worker.perform(merge_request.id, sha, user.id)
+        worker.perform(merge_request.id, 'new-source-branch-sha', user.id)
 
-        expect(branch_deletion_lease.exists?).to be false
-      end
-
-      context 'when source branch sha does not match' do
-        it 'does not retarget or delete the branch' do
-          expect(::MergeRequests::RetargetChainService).not_to receive(:new)
-          expect(::Projects::DeleteBranchWorker).not_to receive(:new)
-
-          worker.perform(merge_request.id, 'new-source-branch-sha', user.id)
-        end
-
-        it 'lets the branch deletion lease expire via TTL' do
-          branch_deletion_lease.try_obtain
-
-          worker.perform(merge_request.id, 'new-source-branch-sha', user.id)
-
-          expect(branch_deletion_lease.exists?).to be true
-        end
-      end
-
-      context 'when delete worker raises an error' do
-        it 'preserves the branch deletion lease so retries are protected' do
-          branch_deletion_lease.try_obtain
-
-          expect(::Projects::DeleteBranchWorker).to receive(:new).and_raise(StandardError)
-
-          expect_next_instance_of(::MergeRequests::RetargetChainService) do |instance|
-            expect(instance).to receive(:execute).with(merge_request)
-          end
-
-          expect { worker.perform(merge_request.id, sha, user.id) }.to raise_error(StandardError)
-
-          expect(branch_deletion_lease.exists?).to be true
-        end
-      end
-
-      it_behaves_like 'an idempotent worker' do
-        let(:job_args) { [merge_request.id, sha, user.id] }
+        expect(branch_deletion_lease.exists?).to be true
       end
     end
 
-    context 'when prevent_merge_race_condition feature flag is disabled' do
-      before do
-        stub_feature_flags(prevent_merge_race_condition: false)
-      end
+    context 'when delete worker raises an error' do
+      it 'preserves the branch deletion lease so retries are protected' do
+        branch_deletion_lease.try_obtain
 
-      it 'retargets and deletes the branch' do
+        expect(::Projects::DeleteBranchWorker).to receive(:new).and_raise(StandardError)
+
         expect_next_instance_of(::MergeRequests::RetargetChainService) do |instance|
           expect(instance).to receive(:execute).with(merge_request)
         end
 
-        expect_next_instance_of(::Projects::DeleteBranchWorker) do |instance|
-          expect(instance).to receive(:perform).with(
-            merge_request.source_project.id,
-            user.id,
-            merge_request.source_branch
-          )
-        end
+        expect { worker.perform(merge_request.id, sha, user.id) }.to raise_error(StandardError)
 
-        worker.perform(merge_request.id, sha, user.id)
+        expect(branch_deletion_lease.exists?).to be true
       end
+    end
 
-      context 'when source branch sha does not match' do
-        it 'does nothing' do
-          expect(::MergeRequests::RetargetChainService).not_to receive(:new)
-          expect(::Projects::DeleteBranchWorker).not_to receive(:new)
-
-          worker.perform(merge_request.id, 'new-source-branch-sha', user.id)
-        end
-      end
-
-      it 'does not release the branch deletion lease' do
-        expect(Gitlab::ExclusiveLease).not_to receive(:cancel)
-
-        worker.perform(merge_request.id, sha, user.id)
-      end
-
-      it_behaves_like 'an idempotent worker' do
-        let(:job_args) { [merge_request.id, sha, user.id] }
-      end
+    it_behaves_like 'an idempotent worker' do
+      let(:job_args) { [merge_request.id, sha, user.id] }
     end
   end
 end

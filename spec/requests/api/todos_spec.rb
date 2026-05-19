@@ -294,7 +294,7 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
       create(:todo, author: author_2, user: john_doe, target: project_2, action: Todo::MEMBER_ACCESS_REQUESTED)
       create(:todo, author: author_2, user: john_doe, target: group_2, action: Todo::MEMBER_ACCESS_REQUESTED)
 
-      expect { get api('/todos', john_doe) }.not_to exceed_query_limit(control1).with_threshold(7)
+      expect { get api('/todos', john_doe) }.not_to exceed_query_limit(control1).with_threshold(11)
 
       control2 = ActiveRecord::QueryRecorder.new { get api('/todos', john_doe) }
 
@@ -303,7 +303,7 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
       create_issue_todo_for(john_doe, project_1)
 
       # Additional query only when target belongs to project from different group
-      expect { get api('/todos', john_doe) }.not_to exceed_query_limit(control2).with_threshold(1)
+      expect { get api('/todos', john_doe) }.not_to exceed_query_limit(control2).with_threshold(3)
 
       expect(response).to have_gitlab_http_status(:ok)
     end

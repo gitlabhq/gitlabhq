@@ -47,6 +47,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
   before do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: container_repository.path, tags: tags, with_manifest: true)
+    stub_container_registry_gitlab_api_support(supported: false)
   end
 
   subject { post_graphql(query, current_user: user, variables: variables) }
@@ -754,7 +755,9 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       )
     end
 
-    it 'avoids N+1 database queries', :without_current_organization, :use_sql_query_cache do
+    it 'avoids N+1 database queries', :use_sql_query_cache do
+      current_organization.organization_detail # warm up cache so control query doesn't record an additional query
+
       first_user = create(:user, developer_of: project)
       second_user = create(:user, developer_of: project)
 

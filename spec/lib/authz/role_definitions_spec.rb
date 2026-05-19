@@ -24,4 +24,39 @@ RSpec.describe Authz::Role, feature_category: :permissions do
           "Update config/authz/roles/developer.yml to include them."
     end
   end
+
+  describe 'public_anonymous role' do
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:public_group) { create(:group, :public) }
+
+    let(:role) { described_class.get(:public_anonymous) }
+
+    before do
+      next unless Gitlab.ee?
+
+      stub_licensed_features(GitlabSubscriptions::Features::ALL_FEATURES.index_with(true))
+    end
+
+    it 'lists only project permissions an anonymous caller can exercise on a public project' do
+      drift = role.permissions(:project).reject do |permission|
+        ::Users::Anonymous.can?(permission, public_project)
+      end
+
+      expect(drift).to be_empty,
+        "config/authz/roles/public_anonymous.yml lists project permissions that an " \
+          "anonymous caller cannot exercise on a public project: #{drift.to_a.sort.join(', ')}. " \
+          "Either remove them from the YAML or update ProjectPolicy so anonymous can exercise them."
+    end
+
+    it 'lists only group permissions an anonymous caller can exercise on a public group' do
+      drift = role.permissions(:group).reject do |permission|
+        ::Users::Anonymous.can?(permission, public_group)
+      end
+
+      expect(drift).to be_empty,
+        "config/authz/roles/public_anonymous.yml lists group permissions that an " \
+          "anonymous caller cannot exercise on a public group: #{drift.to_a.sort.join(', ')}. " \
+          "Either remove them from the YAML or update GroupPolicy so anonymous can exercise them."
+    end
+  end
 end

@@ -176,7 +176,7 @@ In Jira Service Management:
 In GitLab:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **GitLab for Jira Cloud app**. If the integration is disabled, first [link a GitLab group](#configure-the-gitlab-for-jira-cloud-app)
    which enables the GitLab for Jira Cloud app integration for the group, its subgroups, and projects.
 1. In the **Service ID** field, enter the service ID that you want to map into this project. To use multiple service IDs,
@@ -247,7 +247,7 @@ To enable deployment gating:
 To add the service account to your protected environments in GitLab:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Protected environments** and select **Protect an environment**.
 1. From the **Select environment** dropdown list, select an environment to protect (for example, **staging**).
 1. From the **Allowed to deploy** dropdown list, select who can deploy to this environment (for example, **Developers + Maintainers**).
@@ -318,9 +318,14 @@ If you installed the GitLab for Jira Cloud app from the
   The Forge app uses the same app identifier, so you do not have to migrate any data.
 - You do not have to change your GitLab configuration.
 
-If you [installed the GitLab for Jira Cloud app manually](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually),
-the migration to Forge also affects your installation.
-This installation method is based on Atlassian Connect.
+If you previously installed the GitLab for Jira Cloud app manually with the Connect-based
+**App descriptor URL** workflow, you must reinstall the app using the Forge-based method.
+Atlassian [disabled Connect-based private installs on 2026-03-31](https://www.atlassian.com/blog/developer/announcing-connect-end-of-support-timeline-and-next-steps),
+so the previous workflow no longer works. To reinstall, follow the
+[Forge-based manual install instructions](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually),
+which publish a private copy of the
+[GitLab for Jira Cloud Forge app](https://gitlab.com/gitlab-org/gitlab-jira-forge) under your own
+Atlassian developer account.
 
 For more information about the transition from Connect to Forge, see
 [the Atlassian guide on how to adopt Forge](https://developer.atlassian.com/platform/adopting-forge-from-connect/how-to-adopt/).
@@ -373,7 +378,7 @@ For more information, see the [privacy and security details of the Atlassian Mar
 
 When working with the GitLab for Jira Cloud app, you might encounter the following issues.
 
-For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app_troubleshooting.md).
+For administrator troubleshooting, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app_troubleshooting.md).
 
 ### Error: `Failed to link group`
 

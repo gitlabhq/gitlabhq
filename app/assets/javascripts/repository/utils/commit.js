@@ -5,6 +5,7 @@ export function normalizeData(data, path, extra = () => {}) {
     sha: d.commit.id,
     message: d.commit.message,
     titleHtml: d.commit_title_html,
+    lockLabel: d.lock_label || false,
     committedDate: d.commit.committed_date,
     commitPath: d.commit_path,
     fileName: d.file_name,

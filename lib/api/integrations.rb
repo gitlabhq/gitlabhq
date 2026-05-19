@@ -31,8 +31,7 @@ module API
     end
 
     SLASH_COMMAND_INTEGRATIONS = {
-      'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_arguments,
-      'slack-slash-commands' => ::Integrations::SlackSlashCommands.api_arguments
+      'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_arguments
     }.freeze
 
     helpers do

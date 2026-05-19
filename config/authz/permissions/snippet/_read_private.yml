@@ -1,0 +1,7 @@
+---
+name: _read_private_snippet
+description: Grants the ability to read a project snippet whose visibility is
+  more restricted than the project's visibility (private snippets, or internal
+  snippets when accessed by an external user). Used by the project snippet
+  policy to gate access for snippets the viewer would not otherwise see based
+  on visibility alone.

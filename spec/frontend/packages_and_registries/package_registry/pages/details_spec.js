@@ -461,7 +461,7 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        findDeletePackageModal().vm.$emit('end');
+        findDeletePackageModal().vm.$emit('success');
 
         expect(window.location.replace).toHaveBeenCalledWith(
           'projectListUrl?showSuccessDeleteAlert=true',
@@ -475,7 +475,7 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        findDeletePackageModal().vm.$emit('end');
+        findDeletePackageModal().vm.$emit('success');
 
         expect(window.location.replace).toHaveBeenCalledWith(
           'groupListUrl?showSuccessDeleteAlert=true',

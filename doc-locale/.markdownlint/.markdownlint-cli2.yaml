@@ -4,8 +4,8 @@
 # See https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md for explanations of each rule
 
 customRules:
-  - rules/no-four-asterisks.js
-  - rules/no-fullwidth-asterisks.js
+  - rules/no_four_asterisks.js
+  - rules/no_fullwidth_asterisks.js
 
 config:
   # First, set the default

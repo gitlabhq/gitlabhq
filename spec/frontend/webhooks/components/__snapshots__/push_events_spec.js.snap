@@ -3,12 +3,8 @@
 exports[`Webhook push events form editor component Different push events rules when editing existing hook with "all_branches" strategy selected 1`] = `
 <gl-form-radio-group-stub
   checked="all_branches"
-  disabledfield="disabled"
-  htmlfield="html"
   name="hook[branch_filter_strategy]"
   options=""
-  textfield="text"
-  valuefield="value"
 >
   <gl-form-radio-stub
     class="branch-filter-strategy-radio gl-mt-2"
@@ -49,12 +45,8 @@ exports[`Webhook push events form editor component Different push events rules w
 exports[`Webhook push events form editor component Different push events rules when editing existing hook with "regex" strategy selected 1`] = `
 <gl-form-radio-group-stub
   checked="regex"
-  disabledfield="disabled"
-  htmlfield="html"
   name="hook[branch_filter_strategy]"
   options=""
-  textfield="text"
-  valuefield="value"
 >
   <gl-form-radio-stub
     class="branch-filter-strategy-radio gl-mt-2"
@@ -109,12 +101,8 @@ exports[`Webhook push events form editor component Different push events rules w
 exports[`Webhook push events form editor component Different push events rules when editing existing hook with "wildcard" strategy selected 1`] = `
 <gl-form-radio-group-stub
   checked="wildcard"
-  disabledfield="disabled"
-  htmlfield="html"
   name="hook[branch_filter_strategy]"
   options=""
-  textfield="text"
-  valuefield="value"
 >
   <gl-form-radio-stub
     class="branch-filter-strategy-radio gl-mt-2"
@@ -169,12 +157,8 @@ exports[`Webhook push events form editor component Different push events rules w
 exports[`Webhook push events form editor component Different push events rules when editing new hook all_branches should be selected by default 1`] = `
 <gl-form-radio-group-stub
   checked="all_branches"
-  disabledfield="disabled"
-  htmlfield="html"
   name="hook[branch_filter_strategy]"
   options=""
-  textfield="text"
-  valuefield="value"
 >
   <gl-form-radio-stub
     class="branch-filter-strategy-radio gl-mt-2"
@@ -215,12 +199,8 @@ exports[`Webhook push events form editor component Different push events rules w
 exports[`Webhook push events form editor component Different push events rules when editing new hook should be able to set regex rule 1`] = `
 <gl-form-radio-group-stub
   checked="regex"
-  disabledfield="disabled"
-  htmlfield="html"
   name="hook[branch_filter_strategy]"
   options=""
-  textfield="text"
-  valuefield="value"
 >
   <gl-form-radio-stub
     class="branch-filter-strategy-radio gl-mt-2"
@@ -275,12 +255,8 @@ exports[`Webhook push events form editor component Different push events rules w
 exports[`Webhook push events form editor component Different push events rules when editing new hook should be able to set wildcard rule 1`] = `
 <gl-form-radio-group-stub
   checked="wildcard"
-  disabledfield="disabled"
-  htmlfield="html"
   name="hook[branch_filter_strategy]"
   options=""
-  textfield="text"
-  valuefield="value"
 >
   <gl-form-radio-stub
     class="branch-filter-strategy-radio gl-mt-2"

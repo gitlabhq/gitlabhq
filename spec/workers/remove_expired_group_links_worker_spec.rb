@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe RemoveExpiredGroupLinksWorker, feature_category: :system_access do
   describe '#perform' do
-    context 'ProjectGroupLinks' do
+    context 'when processing ProjectGroupLinks' do
       let!(:expired_project_group_link) { create(:project_group_link, expires_at: 1.hour.ago) }
       let!(:project_group_link_expiring_in_future) { create(:project_group_link, expires_at: 10.days.from_now) }
       let!(:non_expiring_project_group_link) { create(:project_group_link, expires_at: nil) }
@@ -37,8 +37,8 @@ RSpec.describe RemoveExpiredGroupLinksWorker, feature_category: :system_access d
       end
     end
 
-    context 'GroupGroupLinks' do
-      context 'expired GroupGroupLink exists' do
+    context 'when processing GroupGroupLinks' do
+      context 'when expired GroupGroupLink exists' do
         let!(:group_group_link) { create(:group_group_link, expires_at: 1.hour.ago) }
 
         it 'calls Groups::GroupLinks::DestroyService' do
@@ -89,7 +89,7 @@ RSpec.describe RemoveExpiredGroupLinksWorker, feature_category: :system_access d
         end
       end
 
-      context 'expired GroupGroupLink does not exist' do
+      context 'when expired GroupGroupLink does not exist' do
         it 'does not call Groups::GroupLinks::DestroyService' do
           mock_destroy_service = instance_double(Groups::GroupLinks::DestroyService)
           allow(Groups::GroupLinks::DestroyService).to(

@@ -52,6 +52,7 @@ module DashboardHelper
     {
       planner: 'Planner',
       reporter: 'Reporter',
+      security_manager: 'Security Manager',
       developer: 'Developer',
       maintainer: 'Maintainer',
       owner: 'Owner',

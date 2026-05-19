@@ -114,11 +114,11 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
     end
   end
 
-  describe '#empty?' do
+  describe '#waiting_on_export?' do
     context 'when export status is present' do
       let(:status) { 'any status' }
 
-      it { expect(export_status.empty?).to eq(false) }
+      it { expect(export_status.waiting_on_export?).to eq(false) }
     end
 
     context 'when export status is not present' do
@@ -127,7 +127,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
       end
 
       it 'returns true' do
-        expect(export_status.empty?).to eq(true)
+        expect(export_status.waiting_on_export?).to eq(true)
       end
     end
 
@@ -137,7 +137,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
       end
 
       it 'returns true' do
-        expect(export_status.empty?).to eq(true)
+        expect(export_status.waiting_on_export?).to eq(true)
       end
     end
 
@@ -151,7 +151,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
       end
 
       it 'returns false' do
-        expect(export_status.empty?).to eq(false)
+        expect(export_status.waiting_on_export?).to eq(false)
       end
     end
   end
@@ -245,34 +245,101 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
       end
     end
 
-    describe '#batch' do
+    describe '#all_batch_numbers' do
+      context 'when batches count is present' do
+        let(:response_double) do
+          instance_double(
+            HTTParty::Response,
+            parsed_response: [{ 'relation' => 'labels', 'status' => status, 'batches_count' => 5 }])
+        end
+
+        it 'an array from 1 to batches_count' do
+          expect(export_status.all_batch_numbers).to eq([1, 2, 3, 4, 5])
+        end
+      end
+
+      context 'when batches count is missing' do
+        let(:response_double) do
+          instance_double(HTTParty::Response, parsed_response: [{ 'relation' => 'labels', 'status' => status }])
+        end
+
+        it 'returns an empty array' do
+          expect(export_status.all_batch_numbers).to be_empty
+        end
+      end
+    end
+
+    describe '#batch_failed?' do
       context 'when export is batched' do
         let(:batched) { true }
+        let(:statuses) { BulkImports::ExportBatch::STATE_VALUES }
         let(:batches) do
           [
-            { 'relation' => 'labels', 'status' => status, 'batch_number' => 1 },
-            { 'relation' => 'milestones', 'status' => status, 'batch_number' => 2 }
+            { 'relation' => 'labels', 'status' => statuses[:created], 'batch_number' => 1 },
+            { 'relation' => 'labels', 'status' => statuses[:finished], 'batch_number' => 2 },
+            { 'relation' => 'labels', 'status' => statuses[:started], 'batch_number' => 3 },
+            { 'relation' => 'labels', 'status' => statuses[:failed], 'batch_number' => 4 }
           ]
         end
 
-        context 'when batch number is in range' do
-          it 'returns batch information' do
-            expect(export_status.batch(1)['relation']).to eq('labels')
-            expect(export_status.batch(2)['relation']).to eq('milestones')
-            expect(export_status.batch(3)).to eq(nil)
-          end
+        it 'returns true for batches with failed status' do
+          expect(export_status.batch_failed?(4)).to be(true)
+        end
+
+        it 'returns false for batches without failed status', :aggregate_failures do
+          expect(export_status.batch_failed?(1)).to be(false)
+          expect(export_status.batch_failed?(2)).to be(false)
+          expect(export_status.batch_failed?(3)).to be(false)
+        end
+
+        it 'returns false when batch does not exist' do
+          expect(export_status.batch_failed?(5)).to be(false)
         end
       end
 
       context 'when batch number is less than 1' do
         it 'raises error' do
-          expect { export_status.batch(0) }.to raise_error(ArgumentError)
+          expect { export_status.batch_failed?(0) }.to raise_error(
+            ArgumentError, 'Batch number (0) must be >= 1'
+          )
+        end
+      end
+
+      context 'when export is not batched' do
+        it 'returns false' do
+          expect(export_status.batch_failed?(1)).to be(false)
+        end
+      end
+    end
+
+    describe '#batch_error' do
+      context 'when export is batched' do
+        let(:batched) { true }
+        let(:statuses) { BulkImports::ExportBatch::STATE_VALUES }
+        let(:batches) do
+          [
+            { 'relation' => 'labels', 'status' => statuses[:failed], 'batch_number' => 1, 'error' => 'Error' }
+          ]
+        end
+
+        it 'returns batch error' do
+          expect(export_status.batch_error(1)).to be('Error')
+        end
+
+        it 'returns nil when batch does not exist' do
+          expect(export_status.batch_error(2)).to be_nil
+        end
+      end
+
+      context 'when batch number is less than 1' do
+        it 'raises error' do
+          expect { export_status.batch_failed?(0) }.to raise_error(ArgumentError)
         end
       end
 
       context 'when export is not batched' do
         it 'returns nil' do
-          expect(export_status.batch(1)).to eq(nil)
+          expect(export_status.batch_error(1)).to be_nil
         end
       end
     end

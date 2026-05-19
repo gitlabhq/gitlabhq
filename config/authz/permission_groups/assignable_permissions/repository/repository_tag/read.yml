@@ -1,8 +1,10 @@
 ---
 name: read_repository_tag
 description: Grants the ability to read repository tags
+boundaries:
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - read_repository_tag
   - read_repository_tag_signature
-boundaries:
-  - project

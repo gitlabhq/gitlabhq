@@ -203,7 +203,7 @@ export default {
       <h2 id="super-sidebar-heading" class="gl-sr-only">
         {{ $options.i18n.primaryNavigation }}
       </h2>
-      <div class="contextual-nav gl-flex gl-grow gl-flex-col gl-overflow-hidden">
+      <div class="contextual-nav gl-flex gl-grow gl-flex-col gl-overflow-hidden gl-pt-2">
         <div
           v-if="sidebarData.current_context_header && !isIconOnly"
           id="super-sidebar-context-header"

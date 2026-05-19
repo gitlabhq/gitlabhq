@@ -44,7 +44,7 @@ GitLab team members with edit access can update the [source](https://lucid.app/l
 GitLab Dedicated deploys Gitaly [in a sharded setup](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect), not in a Gitaly Cluster (Praefect) configuration.
 
 - Customer repositories are spread across multiple virtual machines.
-- GitLab manages [storage weights](../repository_storage_paths.md#configure-where-new-repositories-are-stored) on behalf of the customer.
+- GitLab manages storage weights on behalf of the customer.
 
 ### Geo setup
 
@@ -59,7 +59,7 @@ Geo does not use an active-active failover configuration. For more information, 
 
 Optionally, private connectivity is available for your GitLab Dedicated instance, using [AWS PrivateLink](https://aws.amazon.com/privatelink/) as a connection gateway.
 
-Both [inbound](configure_instance/network_security.md#inbound-private-link) and [outbound](configure_instance/network_security.md#outbound-private-link) private links are supported.
+Both [inbound](configure_instance/network_security.md#inbound-privatelink-connections) and [outbound](configure_instance/network_security.md#outbound-privatelink-connections) PrivateLink connections are supported.
 
 #### Inbound
 

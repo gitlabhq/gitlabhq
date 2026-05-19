@@ -1,0 +1,10 @@
+---
+name: ci_cache_component_includes
+description: Cache CI/CD component include content in Redis to reduce Gitaly load
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231756
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/588313
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596974
+milestone: '19.0'
+group: group::pipeline authoring
+type: ops
+default_enabled: false

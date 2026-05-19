@@ -4,6 +4,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { SCHEDULE_ORIGIN, API_ORIGIN, TRIGGER_ORIGIN, AGENT_SESSION_ORIGIN } from '../constants';
 
 export default {
+  name: 'PipelineLabels',
   components: {
     GlBadge,
     GlLink,

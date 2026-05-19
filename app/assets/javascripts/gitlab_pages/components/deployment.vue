@@ -5,7 +5,7 @@ import UserDate from '~/vue_shared/components/user_date.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { SHORT_DATE_FORMAT_WITH_TIME } from '~/vue_shared/constants';
 import { s__ } from '~/locale';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { projectJobPath } from '~/lib/utils/path_helpers/project';
 import deletePagesDeploymentMutation from '../queries/delete_pages_deployment.mutation.graphql';
 import restorePagesDeploymentMutation from '../queries/restore_pages_deployment.mutation.graphql';
 
@@ -64,12 +64,7 @@ export default {
   },
   computed: {
     ciBuildUrl() {
-      return joinPaths(
-        gon.relative_url_root || '/',
-        this.projectFullPath,
-        '/-/jobs/',
-        `${this.deployment.ciBuildId}`,
-      );
+      return projectJobPath(this.projectFullPath, this.deployment.ciBuildId);
     },
     formattedRootDirectory() {
       return `/${this.deployment.rootDirectory || 'public'}`;

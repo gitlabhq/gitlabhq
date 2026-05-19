@@ -8,6 +8,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'PipelinesArtifacts',
   i18n,
   directives: {
     GlTooltip: GlTooltipDirective,

@@ -261,7 +261,7 @@ RSpec.describe AtomicInternalId do
   end
 
   context 'when transitioning a model from one scope to another' do
-    let!(:issue) { build(:issue, project: project) }
+    let(:issue) { build(:issue, project: project) }
     let(:old_issue_model) do
       Class.new(ApplicationRecord) do
         include AtomicInternalId
@@ -315,7 +315,7 @@ RSpec.describe AtomicInternalId do
   end
 
   context 'when models is scoped to namespace and does not have an init proc' do
-    let!(:issue) { build(:issue, namespace: create(:group)) }
+    let(:issue) { build(:issue, namespace: create(:group)) }
 
     let(:issue_model) do
       Class.new(ApplicationRecord) do

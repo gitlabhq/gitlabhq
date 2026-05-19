@@ -10,6 +10,10 @@ module Gitlab
           AsyncConstraints::Validators.for(record).perform
         end
       end
+
+      def self.pending_entries
+        PostgresAsyncConstraintValidation.ordered
+      end
     end
   end
 end

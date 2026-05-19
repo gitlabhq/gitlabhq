@@ -154,7 +154,7 @@ RSpec.describe Gitlab::ImportExport::Importer, feature_category: :importers do
           create_list(:project_snippet, 2, project: project)
           snippet_with_repo = create(:project_snippet, :repository, project: project)
 
-          expect { importer.execute }.to change(Snippet, :count).by(-2).and(raise_error(Projects::ImportService::Error))
+          expect { importer.execute }.to change { Snippet.count }.by(-2).and(raise_error(Projects::ImportService::Error))
 
           expect(snippet_with_repo.reload).to be_present
         end

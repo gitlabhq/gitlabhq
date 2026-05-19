@@ -6,9 +6,10 @@ import { initOverviewTabCounter } from '~/mr_notes/init_count';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
+import { useMergeRequestDiscussions } from '~/merge_request/stores/merge_request_discussions';
 import { pinia } from '~/pinia/instance';
 
-export function initMrStateLazyLoad() {
+export function initMrStateLazyLoad(createRapidDiffsApp) {
   useBatchComments(pinia).$patch({ isMergeRequest: true });
   useMrNotes(pinia).setActiveTab(window.mrTabs.getCurrentAction());
 
@@ -32,8 +33,9 @@ export function initMrStateLazyLoad() {
       );
       eventHub.$once('fetchedNotesData', () => initOverviewTabCounter());
 
+      const store = createRapidDiffsApp ? useMergeRequestDiscussions(pinia) : useMrNotes(pinia);
       requestIdleCallback(() => {
-        initDiscussionCounter();
+        initDiscussionCounter(store);
       });
       pageInitialized = true;
     }

@@ -1,7 +1,10 @@
 ---
 name: create_project_alias
 description: Grants the ability to create project aliases
+deprecated: true
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - create_project_alias

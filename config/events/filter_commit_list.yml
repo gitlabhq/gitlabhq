@@ -1,0 +1,21 @@
+---
+description: User applies a filter on the commit list page
+internal_events: true
+status: active
+action: filter_commit_list
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: Filter type(s) applied — "author", "message", "author,message", or "none"
+product_group: source_code
+product_categories:
+  - source_code_management
+milestone: '19.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231975
+tiers:
+  - free
+  - premium
+  - ultimate

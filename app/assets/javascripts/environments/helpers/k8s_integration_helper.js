@@ -89,6 +89,7 @@ export const buildKubernetesErrors = (errors = []) => ({
 });
 
 export const updateFluxRequested = ({
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Kubernetes JSON Patch path expression, not a GitLab URL
   path = '/metadata/annotations/reconcile.fluxcd.io~1requestedAt',
   value = new Date(),
 } = {}) =>

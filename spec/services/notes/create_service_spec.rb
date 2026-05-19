@@ -402,10 +402,6 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         end
 
         context 'with suggestions' do
-          before do
-            allow_any_instance_of(Suggestions::CreateService).to receive(:execute).and_call_original
-          end
-
           let(:new_opts) do
             {
               in_reply_to_discussion_id: nil,

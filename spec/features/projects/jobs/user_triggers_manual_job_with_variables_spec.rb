@@ -46,10 +46,6 @@ RSpec.describe 'User triggers manual job with variables', :js, feature_category:
       })
     end
 
-    before do
-      visit(project_job_path(project, build))
-    end
-
     it 'displays job inputs form and passes values correctly' do
       expect(page).to have_content('Inputs')
 

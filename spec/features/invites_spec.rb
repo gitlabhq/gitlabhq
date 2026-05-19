@@ -11,6 +11,7 @@ RSpec.describe 'Group or Project invitations', :with_current_organization, :aggr
   let(:group_invite) { group.group_members.invite.last }
 
   before do
+    stub_feature_flags(subscription_sm_unification: false)
     stub_application_setting(require_admin_approval_after_user_signup: false)
     project.add_maintainer(owner)
     group.add_owner(owner)
@@ -186,19 +187,6 @@ RSpec.describe 'Group or Project invitations', :with_current_organization, :aggr
             expect(page).to have_content('prohibited this user from being saved')
             expect(page).to have_current_path(user_registration_path, ignore_query: true)
             expect(find_by_testid('invite-email').text).to eq(group_invite.invite_email)
-          end
-        end
-
-        context 'with invite email acceptance', :snowplow do
-          it 'tracks the accepted invite' do
-            fill_in_sign_up_form(new_user, invite: true)
-
-            expect_snowplow_event(
-              category: 'RegistrationsController',
-              action: 'accepted',
-              label: 'invite_email',
-              user: group_invite.reload.user
-            )
           end
         end
 

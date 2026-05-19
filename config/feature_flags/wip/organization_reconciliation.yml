@@ -1,0 +1,9 @@
+---
+name: organization_reconciliation
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/21394
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/232489
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/597700
+milestone: '19.0'
+group: group::organizations
+type: wip
+default_enabled: false

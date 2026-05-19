@@ -198,6 +198,45 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     end
   end
 
+  describe '.in_namespaces' do
+    let_it_be(:group_a) { create(:group) }
+    let_it_be(:group_b) { create(:group) }
+    let_it_be(:group_c) { create(:group) }
+
+    let_it_be(:project_in_a) { create(:project, namespace: group_a) }
+    let_it_be(:project_in_b) { create(:project, namespace: group_b) }
+    let_it_be(:project_in_c) { create(:project, namespace: group_c) }
+
+    let_it_be(:resource_in_a) { create(:ci_catalog_resource, project: project_in_a) }
+    let_it_be(:resource_in_b) { create(:ci_catalog_resource, project: project_in_b) }
+    let_it_be(:resource_in_c) { create(:ci_catalog_resource, project: project_in_c) }
+
+    it 'returns only catalog resources whose project namespace matches one of the given ids' do
+      expect(described_class.in_namespaces([group_a.id]))
+        .to contain_exactly(resource_in_a)
+    end
+
+    it 'returns the union of catalog resources for multiple namespaces' do
+      expect(described_class.in_namespaces([group_a.id, group_c.id]))
+        .to contain_exactly(resource_in_a, resource_in_c)
+    end
+
+    it 'returns no resources for a namespace with no catalog resources' do
+      empty_group = create(:group)
+
+      expect(described_class.in_namespaces([empty_group.id])).to be_empty
+    end
+
+    it 'does not include catalog resources whose project belongs to a descendant of the given namespace' do
+      child_group = create(:group, parent: group_a)
+      child_project = create(:project, namespace: child_group)
+      create(:ci_catalog_resource, project: child_project)
+
+      expect(described_class.in_namespaces([group_a.id]))
+        .to contain_exactly(resource_in_a)
+    end
+  end
+
   describe 'authorized catalog resources' do
     let_it_be(:namespace) { create(:group) }
     let_it_be(:other_namespace) { create(:group) }

@@ -134,28 +134,26 @@ The flow of a PQL lead is as follows:
 
 ```mermaid
 sequenceDiagram
-    Trial Frontend Forms ->>TrialsController#create_lead: GitLab.com frontend sends [lead] to backend
-    TrialsController#create->>CreateLeadService: [lead]
-    TrialsController#create->>ApplyTrialService: [lead] Apply the trial
-    CreateLeadService->>SubscriptionPortalClient#generate_trial(sync_to_gl#61;false): [lead] Creates customer account on CustomersDot
-    ApplyTrialService->>SubscriptionPortalClient#generate_trial(sync_to_gl#61;true): [lead] Asks CustomersDot to apply the trial on namespace
-    SubscriptionPortalClient#generate_trial(sync_to_gl#61;false)->>CustomersDot|TrialsController#create(sync_to_gl#61;false): GitLab.com sends [lead] to CustomersDot
-    SubscriptionPortalClient#generate_trial(sync_to_gl#61;true)->>CustomersDot|TrialsController#create(sync_to_gl#61;true): GitLab.com asks CustomersDot to apply the trial
-
-
+    Trial Frontend Forms->>TrialsController#35;create_lead: GitLab.com frontend sends [lead] to backend
+    TrialsController#35;create->>CreateLeadService: [lead]
+    TrialsController#35;create->>ApplyTrialService: [lead] Apply the trial
+    CreateLeadService->>SubscriptionPortalClient#35;generate_trial_lead: [lead] Creates customer account on CustomersDot
+    ApplyTrialService->>SubscriptionPortalClient#35;generate_trial(sync_to_gl#61;true): [lead] Asks CustomersDot to apply the trial on namespace
+    SubscriptionPortalClient#35;generate_trial_lead->>CustomersDot|Leads#58;#58;GitlabCom#58;#58;UltimatesController#35;create: GitLab.com sends [lead] to CustomersDot
+    SubscriptionPortalClient#35;generate_trial(sync_to_gl#61;true)->>CustomersDot|TrialsController#35;create(sync_to_gl#61;true): GitLab.com asks CustomersDot to apply the trial
 ```
 
 #### Trial lead flow on CustomersDot (`sync_to_gl`)
 
 ```mermaid
 sequenceDiagram
-    CustomersDot|TrialsController#create->>HostedPlans|CreateTrialService#execute: Save [lead] to leads table for monitoring purposes
-    HostedPlans|CreateTrialService#execute->>BaseTrialService#create_account: Creates a customer record in customers table
-    HostedPlans|CreateTrialService#create_lead->>CreateLeadService: Creates a lead record in customers table
-    HostedPlans|CreateTrialService#create_lead->>Workato|CreateLeadWorker: Async worker to submit [lead] to Workato
+    CustomersDot|Leads#58;#58;GitlabCom#58;#58;UltimatesController#35;create->>HostedPlans|CreateTrialService#35;execute: Save [lead] to leads table for monitoring purposes
+    HostedPlans|CreateTrialService#35;execute->>BaseTrialService#35;create_account: Creates a customer record in customers table
+    HostedPlans|CreateTrialService#35;create_lead->>CreateLeadService: Creates a lead record in customers table
+    HostedPlans|CreateTrialService#35;create_lead->>Workato|CreateLeadWorker: Async worker to submit [lead] to Workato
     Workato|CreateLeadWorker->>Workato|CreateLeadService: [lead]
-    Workato|CreateLeadService->>WorkatoApp#create_lead: [lead]
-    WorkatoApp#create_lead->>Workato: [lead] is sent to Workato
+    Workato|CreateLeadService->>WorkatoApp#35;create_lead: [lead]
+    WorkatoApp#35;create_lead->>Workato: [lead] is sent to Workato
 ```
 
 #### Applying the trial to a namespace on CustomersDot

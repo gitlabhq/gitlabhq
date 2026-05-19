@@ -391,4 +391,127 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
       expect { extract_ref_and_format('foo.atom') }.to raise_error(ExtractsPath::InvalidPathError)
     end
   end
+
+  describe '#verify_gitaly_availability!' do
+    let(:ref) { 'master' }
+    let(:path) { nil }
+    let(:params) { ActionController::Parameters.new(path: path, ref: ref) }
+
+    before do
+      allow(self).to receive(:render_404)
+    end
+
+    context 'when controller does not include HandlesGitalyErrors' do
+      before do
+        allow(self.class).to receive(:include?).and_call_original
+        allow(self.class).to receive(:include?).with(HandlesGitalyErrors).and_return(false)
+      end
+
+      it 'does not perform the health check' do
+        expect(Gitlab::GitalyClient::HealthCheckService).not_to receive(:new)
+
+        verify_gitaly_availability!
+      end
+    end
+
+    context 'when controller includes HandlesGitalyErrors' do
+      before do
+        allow(self.class).to receive(:include?).and_call_original
+        allow(self.class).to receive(:include?).with(HandlesGitalyErrors).and_return(true)
+      end
+
+      context 'when repository_container is nil' do
+        before do
+          @project = nil
+        end
+
+        it 'does not perform the health check' do
+          expect(Gitlab::GitalyClient::HealthCheckService).not_to receive(:new)
+
+          verify_gitaly_availability!
+        end
+      end
+
+      context 'when Gitaly is available' do
+        before do
+          allow_next_instance_of(Gitlab::GitalyClient::HealthCheckService) do |service|
+            allow(service).to receive(:check).and_return({ success: true })
+          end
+        end
+
+        it 'does not raise an error' do
+          expect { verify_gitaly_availability! }.not_to raise_error
+        end
+      end
+
+      context 'when Gitaly is unavailable' do
+        before do
+          allow_next_instance_of(Gitlab::GitalyClient::HealthCheckService) do |service|
+            allow(service).to receive(:check).and_return({ success: false, message: 'Gitaly unavailable' })
+          end
+        end
+
+        it 'raises Gitlab::Git::CommandError' do
+          expect { verify_gitaly_availability! }.to raise_error(Gitlab::Git::CommandError, 'Gitaly unavailable')
+        end
+
+        context 'when health check returns no message' do
+          before do
+            allow_next_instance_of(Gitlab::GitalyClient::HealthCheckService) do |service|
+              allow(service).to receive(:check).and_return({ success: false, message: nil })
+            end
+          end
+
+          it 'raises with default message' do
+            expect { verify_gitaly_availability! }.to raise_error(Gitlab::Git::CommandError, 'Gitaly is not available')
+          end
+        end
+      end
+    end
+  end
+
+  describe '#assign_ref_vars Gitaly availability check' do
+    let(:path) { nil }
+    let(:params) { ActionController::Parameters.new(path: path, ref: ref) }
+
+    before do
+      allow(self).to receive(:render_404)
+      allow(self.class).to receive(:include?).and_call_original
+      allow(self.class).to receive(:include?).with(HandlesGitalyErrors).and_return(true)
+    end
+
+    context 'when @ref is blank' do
+      let(:ref) { '' }
+
+      it 'does not call verify_gitaly_availability!' do
+        expect(self).not_to receive(:verify_gitaly_availability!)
+
+        assign_ref_vars
+      end
+    end
+
+    context 'when @ref is present but @commit is nil' do
+      let(:ref) { 'nonexistent-branch' }
+
+      before do
+        allow(container.repository).to receive(:commit).and_return(nil)
+      end
+
+      it 'calls verify_gitaly_availability!' do
+        expect(self).to receive(:verify_gitaly_availability!)
+
+        assign_ref_vars
+      end
+    end
+
+    context 'when @commit is present' do
+      let(:ref) { 'master' }
+
+      it 'does not call verify_gitaly_availability!' do
+        expect(self).not_to receive(:verify_gitaly_availability!)
+
+        assign_ref_vars
+      end
+    end
+  end
 end

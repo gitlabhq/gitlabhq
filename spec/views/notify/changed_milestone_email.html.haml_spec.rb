@@ -11,7 +11,7 @@ RSpec.describe 'notify/changed_milestone_email.html.haml' do
     assign(:milestone_url, milestone_link)
   end
 
-  context 'milestone without start and due dates' do
+  context 'when milestone has no start and due dates' do
     it 'renders without date range' do
       render
 
@@ -20,7 +20,7 @@ RSpec.describe 'notify/changed_milestone_email.html.haml' do
     end
   end
 
-  context 'milestone with start and due dates' do
+  context 'when milestone has start and due dates' do
     before do
       milestone.update!(start_date: '2018-01-01', due_date: '2018-12-31')
     end

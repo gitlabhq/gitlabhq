@@ -17,8 +17,8 @@ module Integrations
         update_inherited_descendant_integrations
       end
 
-      create_integration_for_groups_without_integration_belonging_to_group
-      create_integration_for_projects_without_integration_belonging_to_group
+      propagate_integration_to_descendant_groups
+      propagate_integration_to_descendant_projects
     end
 
     private
@@ -66,19 +66,47 @@ module Integrations
       )
     end
 
-    def create_integration_for_groups_without_integration_belonging_to_group
-      propagate_integrations(
-        integration.group.descendants.without_integration(integration),
-        PropagateIntegrationGroupWorker
-      )
+    def propagate_integration_to_descendant_groups
+      if Feature.enabled?(:integration_propagation_simplified_batching, integration.group.root_ancestor)
+        # Skip without_integration filter here - the worker re-applies it.
+        # Keeping the batch scope simple avoids expensive OFFSET queries.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/591182
+        propagate_integrations(
+          integration.group.descendants,
+          PropagateIntegrationGroupWorker
+        )
+      else
+        propagate_integrations(
+          integration.group.descendants.without_integration(integration),
+          PropagateIntegrationGroupWorker
+        )
+      end
     end
 
-    def create_integration_for_projects_without_integration_belonging_to_group
-      propagate_integrations(
-        Project.without_integration_excluding_ancestor_archived_check(integration)
-              .in_namespace(integration.group.self_and_descendants.excluding_self_and_ancestors_archived),
-        PropagateIntegrationProjectWorker
-      )
+    def propagate_integration_to_descendant_projects
+      if Feature.enabled?(:integration_propagation_simplified_batching, integration.group.root_ancestor)
+        # Pluck namespace IDs first, then batch on a simple IN (ids) scope.
+        # The worker re-applies all filters, so we skip them here to
+        # avoid expensive OFFSET queries in each_batch.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/591182
+        namespace_ids = integration.group
+          .self_and_descendants
+          .excluding_self_and_ancestors_archived
+          .ids # rubocop:disable CodeReuse/ActiveRecord -- avoids subquery in each_batch scope
+
+        return if namespace_ids.empty?
+
+        propagate_integrations(
+          Project.in_namespace(namespace_ids),
+          PropagateIntegrationProjectWorker
+        )
+      else
+        propagate_integrations(
+          Project.without_integration_excluding_ancestor_archived_check(integration)
+                .in_namespace(integration.group.self_and_descendants.excluding_self_and_ancestors_archived),
+          PropagateIntegrationProjectWorker
+        )
+      end
     end
 
     def propagate_integrations(relation, worker_class)

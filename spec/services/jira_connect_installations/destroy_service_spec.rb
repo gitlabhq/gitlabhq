@@ -35,7 +35,7 @@ RSpec.describe JiraConnectInstallations::DestroyService, feature_category: :inte
       expect(JiraConnect::JiraCloudAppDeactivationWorker).to receive(:perform_async).with(group1.id)
       expect(JiraConnect::JiraCloudAppDeactivationWorker).to receive(:perform_async).with(group2.id)
 
-      expect { subject }.to change(JiraConnectInstallation, :count).by(-1)
+      expect { subject }.to change { JiraConnectInstallation.count }.by(-1)
     end
 
     context 'and the installation has an instance_url set' do
@@ -46,7 +46,7 @@ RSpec.describe JiraConnectInstallations::DestroyService, feature_category: :inte
       it 'schedules a ForwardEventWorker background job and keeps the installation' do
         expect(JiraConnect::ForwardEventWorker).to receive(:perform_async).with(installation.id, jira_base_path, jira_event_path)
 
-        expect { subject }.not_to change(JiraConnectInstallation, :count)
+        expect { subject }.not_to change { JiraConnectInstallation.count }
       end
     end
   end

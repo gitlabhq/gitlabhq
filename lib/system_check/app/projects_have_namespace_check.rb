@@ -11,15 +11,15 @@ module SystemCheck
       end
 
       def multi_check
-        $stdout.puts ''
+        say ''
 
         Project.find_each(batch_size: 100) do |project|
-          $stdout.print sanitized_message(project)
+          print sanitized_message(project) # rubocop:disable Rails/Output -- system check CLI output
 
           if project.namespace
-            $stdout.puts Rainbow('yes').green
+            say Rainbow('yes').green
           else
-            $stdout.puts Rainbow('no').red
+            say Rainbow('no').red
             show_error
           end
         end

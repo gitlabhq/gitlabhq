@@ -72,7 +72,7 @@ set-pipeline-name:
     FILES_TO_DOWNLOAD: >
       scripts/utils.sh
       scripts/pipeline/set_pipeline_name.rb
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.21
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.23
   stage: prepare
   before_script:
     - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
@@ -95,7 +95,7 @@ gitlab_git_test:
 verify-tests-yml:
   extends:
     - .setup:rules:verify-tests-yml
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.21
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.23
   stage: preflight
   needs: []
   script:
@@ -193,7 +193,13 @@ detect-system-tests-duo-experiment:
   rules:
     - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
       when: never
-    - !reference [.prevent-tier-2-and-below, rules] # only needed in tier 3, as predictions are not yet used
+    - if: '$GLCI_DUO_SYSTEM_TESTS_DISABLED == "true"'
+      when: never
+    - !reference [".prevent-tier-1", rules]
+    - !reference [".rails:rules:tier-3-with-test-env", rules]  # tier-3 for predictive metrics only, when setup-test-env runs
+    - !reference [".prevent-on-full-system-changes", rules]  # full system suite already runs in main pipeline for core-backend and workhorse changes
+    - !reference [".prevent-run-all-rspec", rules]  # all rspec tests already run; no need for Duo selection
+    - !reference [".prevent-spec-only", rules]  # spec files already directly identified by detect-tests; Duo adds nothing
     - !reference [.rails:rules:detect-tests, rules]
   before_script:
     - npm install -g @gitlab/duo-cli
@@ -219,6 +225,35 @@ detect-system-tests-duo-experiment:
       - duo_feature_specs.json
     when: always
   allow_failure: true
+
+verify-start-workflow-service-assets:
+  extends:
+    - .predictive-job
+    - .with-ci-node-image
+    - .setup:rules:verify-start-workflow-service-assets
+  stage: preflight
+  variables:
+    GIT_STRATEGY: fetch
+  script:
+    - |
+      SERVICE_FILE="ee/app/services/ai/duo_workflows/start_workflow_service.rb"
+      REGISTRY="registry.gitlab.com"
+
+      DUO_CLI_VERSION=$(grep -oP 'DUO_CLI_VERSION\s*=\s*"\K[^"]+' "${SERVICE_FILE}")
+      echo "Checking npm availability of @gitlab/duo-cli@${DUO_CLI_VERSION}..."
+      npm view "@gitlab/duo-cli@${DUO_CLI_VERSION}" version || \
+        { echo "ERROR: @gitlab/duo-cli@${DUO_CLI_VERSION} is not available on the npm registry. Update DUO_CLI_VERSION or publish the package." && exit 1; }
+
+      IMAGE_PATH=$(grep -oP 'IMAGE_PATH\s*=\s*"\K[^"]+' "${SERVICE_FILE}")
+      IMAGE_REPO="${IMAGE_PATH%:*}"
+      IMAGE_TAG="${IMAGE_PATH##*:}"
+      echo "Checking availability of ${REGISTRY}/${IMAGE_PATH}..."
+      TOKEN=$(curl -sf "https://gitlab.com/jwt/auth?service=container_registry&scope=repository:${IMAGE_REPO}:pull" \
+        | grep -oP '"token":"\K[^"]+')
+      curl --fail -sf -o /dev/null \
+        -H "Authorization: Bearer ${TOKEN}" \
+        "https://${REGISTRY}/v2/${IMAGE_REPO}/manifests/${IMAGE_TAG}" || \
+        { echo "ERROR: ${REGISTRY}/${IMAGE_PATH} not found in registry. Update IMAGE_PATH or publish the image."; exit 1; }
 
 detect-previous-failed-tests:
   extends:

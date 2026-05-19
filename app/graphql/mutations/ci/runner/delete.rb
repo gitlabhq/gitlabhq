@@ -7,6 +7,12 @@ module Mutations
         graphql_name 'RunnerDelete'
 
         authorize :delete_runner
+        authorize_granular_token permissions: :delete_runner,
+          boundaries: [
+            { boundary_argument: :id, boundary_type: :project },
+            { boundary_argument: :id, boundary_type: :group },
+            { boundary: :instance, boundary_type: :instance }
+          ]
 
         RunnerID = ::Types::GlobalIDType[::Ci::Runner]
 

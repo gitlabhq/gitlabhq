@@ -1,6 +1,11 @@
 import jsYaml from 'js-yaml';
 import { glql } from '@gitlab/query-language-rust';
-import { DEFAULT_DISPLAY_FIELDS, DEFAULT_DISPLAY_TYPE } from '../constants';
+import {
+  DEFAULT_DISPLAY_FIELDS,
+  DEFAULT_DISPLAY_TYPE,
+  MODE_STANDARD,
+  MODE_ANALYTICS,
+} from '../constants';
 import { extractGroupOrProject } from '../utils/common';
 import { glqlFeatureFlags } from '../utils/feature_flags';
 
@@ -10,7 +15,10 @@ export const parseYAMLConfig = (frontmatter) => {
   const config = jsYaml.safeLoad(frontmatter) || {};
 
   config.display = config.display || DEFAULT_DISPLAY_TYPE;
-  config.fields = config.fields || DEFAULT_DISPLAY_FIELDS;
+
+  if (config.mode !== MODE_ANALYTICS && !config.fields) {
+    config.fields = DEFAULT_DISPLAY_FIELDS;
+  }
 
   return config;
 };
@@ -25,7 +33,7 @@ export const parseQueryTextWithFrontmatter = (text) => {
 };
 
 export const parseQuery = async (query, config) => {
-  const { output, success, variables, fields } = await glql.compile(query, {
+  const { output, success, variables, fields, mode } = await glql.compile(query, {
     ...config,
     ...extractGroupOrProject(),
     username: gon.current_username,
@@ -39,6 +47,7 @@ export const parseQuery = async (query, config) => {
     variables,
     config,
     fields,
+    mode: mode || MODE_STANDARD,
   };
 };
 

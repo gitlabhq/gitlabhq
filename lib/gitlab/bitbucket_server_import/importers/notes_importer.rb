@@ -61,6 +61,10 @@ module Gitlab
             page_counter.expire!
 
             mark_merge_request_processed(merge_request)
+          rescue BitbucketServer::Connection::ConnectionError => e
+            raise if e.retryable?
+
+            track_import_failure!(project, exception: e)
           rescue JSON::NestingError => e
             track_import_failure!(project, exception: e)
           end
@@ -141,7 +145,16 @@ module Gitlab
         end
 
         def merge_request_collection
-          project.merge_requests.where.not(iid: already_processed_merge_requests) # rubocop: disable CodeReuse/ActiveRecord -- no need to move this to ActiveRecord model
+          cache_key = format(
+            Stage::ImportRepositoryWorker::MAX_IID_CACHE_KEY,
+            project_id: project.id, usage: :merge_requests
+          )
+          max_iid = Gitlab::Cache::Import::Caching.read(
+            cache_key, timeout: Gitlab::Cache::Import::Caching::LONGER_TIMEOUT
+          )
+          scope = project.merge_requests
+          scope = scope.where(iid: ..max_iid.to_i) if max_iid.present? # rubocop: disable CodeReuse/ActiveRecord -- simple IID boundary filter
+          scope.where.not(iid: already_processed_merge_requests.map(&:to_i)) # rubocop: disable CodeReuse/ActiveRecord -- no need to move this to ActiveRecord model
         end
 
         def page_counter_id(merge_request)

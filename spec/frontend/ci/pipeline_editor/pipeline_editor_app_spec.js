@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { GlAlert, GlButton, GlLoadingIcon, GlSprintf, GlToast } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlSprintf, GlToast } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 
@@ -15,7 +15,6 @@ import { objectToQuery, visitUrl } from '~/lib/utils/url_utility';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 import PipelineEditorTabs from '~/ci/pipeline_editor/components/pipeline_editor_tabs.vue';
 import PipelineEditorEmptyState from '~/ci/pipeline_editor/components/ui/pipeline_editor_empty_state.vue';
-import PipelineEditorNewEmptyState from '~/ci/pipeline_editor/components/ui/pipeline_editor_new_empty_state.vue';
 import PipelineEditorMessages from '~/ci/pipeline_editor/components/ui/pipeline_editor_messages.vue';
 import PipelineEditorHeader from '~/ci/pipeline_editor/components/header/pipeline_editor_header.vue';
 import ValidationSegment, {
@@ -36,6 +35,7 @@ import getAppStatus from '~/ci/pipeline_editor/graphql/queries/client/app_status
 
 import PipelineEditorApp from '~/ci/pipeline_editor/pipeline_editor_app.vue';
 import PipelineEditorHome from '~/ci/pipeline_editor/pipeline_editor_home.vue';
+import ConfirmUnsavedChangesDialog from '~/vue_shared/components/confirm_unsaved_changes_dialog.vue';
 
 import {
   mockCiConfigPath,
@@ -153,11 +153,9 @@ describe('Pipeline editor app component', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEditorHome = () => wrapper.findComponent(PipelineEditorHome);
   const findEmptyState = () => wrapper.findComponent(PipelineEditorEmptyState);
-  const findNewEmptyState = () => wrapper.findComponent(PipelineEditorNewEmptyState);
-  const findEmptyStateButton = () => findEmptyState().findComponent(GlButton);
-  const findNewEmptyStateButton = () =>
-    findNewEmptyState().find('[data-testid="create-new-ci-button"]');
+  const findEmptyStateButton = () => findEmptyState().find('[data-testid="create-new-ci-button"]');
   const findValidationSegment = () => wrapper.findComponent(ValidationSegment);
+  const findConfirmUnsavedChangesDialog = () => wrapper.findComponent(ConfirmUnsavedChangesDialog);
 
   beforeEach(() => {
     mockBlobContentData = jest.fn();
@@ -301,6 +299,33 @@ describe('Pipeline editor app component', () => {
       });
     });
 
+    describe('confirm unsaved changes dialog', () => {
+      it('renders the dialog with has-unsaved-changes false when content matches the last commit', async () => {
+        await createComponentWithApollo({
+          data: {
+            currentBranch: mockDefaultBranch,
+            lastCommittedContent: 'foo',
+            currentCiFileContent: 'foo',
+          },
+        });
+
+        expect(findConfirmUnsavedChangesDialog().exists()).toBe(true);
+        expect(findConfirmUnsavedChangesDialog().props('hasUnsavedChanges')).toBe(false);
+      });
+
+      it('binds has-unsaved-changes to true when current content diverges from the last commit', async () => {
+        await createComponentWithApollo({
+          data: {
+            currentBranch: mockDefaultBranch,
+            lastCommittedContent: 'foo',
+            currentCiFileContent: 'foo123',
+          },
+        });
+
+        expect(findConfirmUnsavedChangesDialog().props('hasUnsavedChanges')).toBe(true);
+      });
+    });
+
     describe('when no CI config file exists', () => {
       beforeEach(async () => {
         mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
@@ -312,41 +337,9 @@ describe('Pipeline editor app component', () => {
         });
       });
 
-      it('shows an empty state and does not show editor home component', () => {
+      it('shows the empty state and does not show editor home component', () => {
         expect(findEmptyState().exists()).toBe(true);
-        expect(findAlert().exists()).toBe(false);
         expect(findEditorHome().exists()).toBe(false);
-      });
-
-      it('calls once and does not  start poll for the commit sha', () => {
-        expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(1);
-      });
-
-      it('tracks visit_pipeline_editor_without_ci_config event', () => {
-        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-        expect(trackEventSpy).toHaveBeenCalledWith(
-          'visit_pipeline_editor_without_ci_config',
-          {},
-          undefined,
-        );
-      });
-
-      describe('because of a fetching error', () => {
-        it('shows a unkown error message', async () => {
-          const loadUnknownFailureText = 'The CI configuration was not loaded, please try again.';
-
-          mockBlobContentData.mockRejectedValueOnce();
-          await createComponentWithApollo({
-            stubs: {
-              PipelineEditorMessages,
-            },
-          });
-
-          expect(findEmptyState().exists()).toBe(false);
-
-          expect(findAlert().text()).toBe(loadUnknownFailureText);
-          expect(findEditorHome().exists()).toBe(true);
-        });
       });
     });
 
@@ -368,52 +361,6 @@ describe('Pipeline editor app component', () => {
         await findEmptyStateButton().vm.$emit('click');
 
         expect(findEmptyState().exists()).toBe(false);
-        expect(findEditorHome().exists()).toBe(true);
-      });
-    });
-
-    describe('when no CI config file exists and updateVisualLanguage is enabled', () => {
-      beforeEach(async () => {
-        mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
-        await createComponentWithApollo({
-          provide: {
-            glFeatures: { updateVisualLanguage: true },
-          },
-          stubs: {
-            PipelineEditorNewEmptyState,
-          },
-          data: { currentBranch: mockDefaultBranch },
-        });
-      });
-
-      it('shows the new empty state and does not show editor home component', () => {
-        expect(findNewEmptyState().exists()).toBe(true);
-        expect(findEmptyState().exists()).toBe(false);
-        expect(findEditorHome().exists()).toBe(false);
-      });
-    });
-
-    describe('with no CI config setup and updateVisualLanguage is enabled', () => {
-      it('user can click on CTA button to get started', async () => {
-        mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
-        mockLatestCommitShaQuery.mockResolvedValue(mockEmptyCommitShaResults);
-
-        await createComponentWithApollo({
-          provide: {
-            glFeatures: { updateVisualLanguage: true },
-          },
-          stubs: {
-            PipelineEditorHome,
-            PipelineEditorNewEmptyState,
-          },
-        });
-
-        expect(findNewEmptyState().exists()).toBe(true);
-        expect(findEditorHome().exists()).toBe(false);
-
-        await findNewEmptyStateButton().vm.$emit('click');
-
-        expect(findNewEmptyState().exists()).toBe(false);
         expect(findEditorHome().exists()).toBe(true);
       });
     });

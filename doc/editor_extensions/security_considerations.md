@@ -71,6 +71,9 @@ Verify that:
 - Command arguments do not include unexpected flags or parameters.
 - Sensitive file access and network requests are necessary for the task.
 
+Your administrator can control whether you can approve tools once for a session, instead of approving each invocation. For more information, see
+[tool approvals](../user/gitlab_duo_chat/agentic_chat.md#tool-approvals).
+
 If you use the GitLab Duo CLI in headless mode, tool calls are approved automatically. Use headless
 mode with caution and in a controlled sandbox environment, such as a development container.
 

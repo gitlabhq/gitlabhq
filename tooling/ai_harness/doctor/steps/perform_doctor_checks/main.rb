@@ -2,6 +2,7 @@
 
 require_relative '../../../../../lib/gitlab/fp/result'
 require_relative 'resolve_repo_root'
+require_relative 'load_config'
 require_relative 'check_parity'
 require_relative 'check_ai_references'
 require_relative 'check_gitignore'
@@ -20,6 +21,7 @@ module AiHarness
             result =
               Gitlab::Fp::Result.ok(context)
                 .map(ResolveRepoRoot.method(:resolve))
+                .map(LoadConfig.method(:load))
                 .map(CheckParity.method(:check))
                 .map(CheckAiReferences.method(:check))
                 .map(CheckGitignore.method(:check))

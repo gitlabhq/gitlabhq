@@ -52,7 +52,8 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
       project.add_guest(current_user)
     end
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_issue, :update_issue] do
+    it_behaves_like 'authorizing granular token permissions for GraphQL',
+      [:read_issue, :update_issue, :create_issue_note] do
       let(:user) { current_user }
       let(:boundary_object) { project }
       let(:issue_fields) { all_graphql_fields_for('Issue', max_depth: 1) }

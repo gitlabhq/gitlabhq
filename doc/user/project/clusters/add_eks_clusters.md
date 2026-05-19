@@ -265,7 +265,7 @@ To configure Amazon authentication in GitLab, generate an access key for the
 IAM user in the Amazon AWS console, and follow these steps:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Amazon EKS**.
 1. Check **Enable Amazon EKS integration**.
 1. Enter your **Account ID**.

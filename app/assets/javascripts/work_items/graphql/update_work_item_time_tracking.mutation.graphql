@@ -1,0 +1,43 @@
+#import "~/work_items/graphql/timelog.fragment.graphql"
+
+# @feature_category: team_planning
+mutation updateWorkItemTimeTracking(
+  $input: WorkItemUpdateInput!
+  $useWorkItemFeatures: Boolean = false
+) {
+  workItemUpdate(input: $input) {
+    errors
+    workItem {
+      id
+      widgets @skip(if: $useWorkItemFeatures) {
+        type
+        ... on WorkItemWidgetTimeTracking {
+          timeEstimate
+          humanReadableAttributes {
+            timeEstimate
+          }
+          timelogs {
+            nodes {
+              ...TimelogFragment
+            }
+          }
+          totalTimeSpent
+        }
+      }
+      features @include(if: $useWorkItemFeatures) {
+        timeTracking {
+          timeEstimate
+          humanReadableAttributes {
+            timeEstimate
+          }
+          timelogs {
+            nodes {
+              ...TimelogFragment
+            }
+          }
+          totalTimeSpent
+        }
+      }
+    }
+  }
+}

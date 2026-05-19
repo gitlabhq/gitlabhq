@@ -60,7 +60,7 @@ module Gitlab
             on_update: nil,
             name: nil,
             validate: true,
-            reverse_lock_order: false,
+            reverse_lock_order: true,
             column: column
           })
 
@@ -160,7 +160,7 @@ module Gitlab
         #     remove_partitioned_foreign_key :users, :projects, column: :project_id
         #     remove_partitioned_foreign_key :users, name: 'fk_rails_123456'
         #
-        def remove_partitioned_foreign_key(source, target = nil, column: nil, name: nil, reverse_lock_order: false)
+        def remove_partitioned_foreign_key(source, target = nil, column: nil, name: nil, reverse_lock_order: true)
           assert_not_in_transaction_block(scope: ERROR_SCOPE)
 
           # Determine the foreign key name if not provided

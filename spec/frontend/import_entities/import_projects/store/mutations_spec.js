@@ -153,6 +153,103 @@ describe('import_projects store mutations', () => {
 
         expect(state.isLoadingRepos).toBe(false);
       });
+
+      describe('for imported projects whose source repo no longer exists', () => {
+        const ORPHANED_PROJECT = {
+          id: 99,
+          importSource: 'TEST/gone',
+          providerLink: 'https://demo.link/TEST/gone',
+          importStatus: 'failed',
+          fullPath: '/bitbucket-server-imports/gone-12',
+        };
+
+        it('includes them in repositories list', () => {
+          state = getInitialState();
+          const response = {
+            importedProjects: [ORPHANED_PROJECT],
+            providerRepos: [],
+          };
+
+          mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
+
+          expect(state.repositories).toHaveLength(1);
+          expect(state.repositories[0].importedProject).toStrictEqual(ORPHANED_PROJECT);
+          expect(state.repositories[0].importSource.id).toBe(99);
+          expect(state.repositories[0].importSource.fullName).toBe('TEST/gone');
+        });
+
+        it('handles fullPath being null', () => {
+          state = getInitialState();
+          const project = { ...ORPHANED_PROJECT, fullPath: null };
+          const response = {
+            importedProjects: [project],
+            providerRepos: [],
+          };
+
+          mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
+
+          expect(state.repositories).toHaveLength(1);
+          expect(state.repositories[0].importSource.target).toBe('');
+        });
+
+        it('handles providerLink being null', () => {
+          state = getInitialState();
+          const project = { ...ORPHANED_PROJECT, providerLink: null };
+          const response = {
+            importedProjects: [project],
+            providerRepos: [],
+          };
+
+          mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
+
+          expect(state.repositories).toHaveLength(1);
+          expect(state.repositories[0].importSource.providerLink).toBeNull();
+          expect(state.repositories[0].importedProject).toStrictEqual(project);
+        });
+
+        it('does not duplicate projects that match a provider repo', () => {
+          state = getInitialState();
+          const response = {
+            importedProjects: [IMPORTED_PROJECT],
+            providerRepos: [SOURCE_PROJECT],
+          };
+
+          mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
+
+          expect(state.repositories).toHaveLength(1);
+        });
+
+        it('does not duplicate orphaned projects across paginated page loads', () => {
+          state = getInitialState();
+
+          // Page 1: orphaned project is added (no matching providerRepo)
+          const page1 = {
+            importedProjects: [ORPHANED_PROJECT],
+            providerRepos: [SOURCE_PROJECT],
+          };
+          mutations[types.RECEIVE_REPOS_SUCCESS](state, page1);
+
+          expect(state.repositories).toHaveLength(2);
+          expect(state.repositories.filter((r) => r.importSource.id === 99)).toHaveLength(1);
+
+          // Page 2: same importedProjects come back (unpaginated), new providerRepos
+          const PAGE_2_SOURCE = {
+            id: 2,
+            fullName: 'another/repo',
+            sanitizedName: 'repo',
+            providerLink: 'https://demo.link/another/repo',
+          };
+          const page2 = {
+            importedProjects: [ORPHANED_PROJECT],
+            providerRepos: [PAGE_2_SOURCE],
+          };
+          mutations[types.RECEIVE_REPOS_SUCCESS](state, page2);
+
+          // The orphaned project must NOT be duplicated
+          expect(state.repositories.filter((r) => r.importSource.id === 99)).toHaveLength(1);
+          expect(state.repositories).toHaveLength(3); // SOURCE_PROJECT + ORPHANED + PAGE_2_SOURCE
+        });
+      });
     });
 
     it('passes response as it is', () => {

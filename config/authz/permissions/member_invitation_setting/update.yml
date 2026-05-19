@@ -1,0 +1,4 @@
+---
+name: update_member_invitation_setting
+description: Grants the ability to change the group setting that prevents members
+  from inviting users to the group and its descendants.

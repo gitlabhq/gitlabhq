@@ -63,12 +63,12 @@ describe('pipeline graph action component', () => {
       createComponent();
     });
 
-    it('emits `pipelineActionRequestComplete` after a successful request', async () => {
+    it('emits `pipeline-action-request-complete` after a successful request', async () => {
       findButton().trigger('click');
 
       await waitForPromises();
 
-      expect(wrapper.emitted().pipelineActionRequestComplete).toHaveLength(1);
+      expect(wrapper.emitted()['pipeline-action-request-complete']).toHaveLength(1);
     });
 
     it('displays a loading icon/disabled button while waiting for request', async () => {
@@ -101,12 +101,12 @@ describe('pipeline graph action component', () => {
         await waitForPromises();
       });
 
-      it('emits `showActionConfirmationModal` event', () => {
-        expect(wrapper.emitted().showActionConfirmationModal).toHaveLength(1);
+      it('emits `show-action-confirmation-modal` event', () => {
+        expect(wrapper.emitted()['show-action-confirmation-modal']).toHaveLength(1);
       });
 
-      it('does not emit `pipelineActionRequestComplete` event', () => {
-        expect(wrapper.emitted().pipelineActionRequestComplete).toBeUndefined();
+      it('does not emit `pipeline-action-request-complete` event', () => {
+        expect(wrapper.emitted()['pipeline-action-request-complete']).toBeUndefined();
       });
     });
 
@@ -115,12 +115,12 @@ describe('pipeline graph action component', () => {
         await wrapper.setProps({ shouldTriggerClick: true });
       });
 
-      it('does not emit `showActionConfirmationModal` event', () => {
-        expect(wrapper.emitted().showActionConfirmationModal).toBeUndefined();
+      it('does not emit `show-action-confirmation-modal` event', () => {
+        expect(wrapper.emitted()['show-action-confirmation-modal']).toBeUndefined();
       });
 
-      it('emits `actionButtonClicked` event', () => {
-        expect(wrapper.emitted().actionButtonClicked).toHaveLength(1);
+      it('emits `action-button-clicked` event', () => {
+        expect(wrapper.emitted()['action-button-clicked']).toHaveLength(1);
       });
     });
   });

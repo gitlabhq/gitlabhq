@@ -32,16 +32,19 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
     it { is_expected.not_to allow_value('special.characters/\?<>@&=_ ').for(:bucket) }
 
     describe 'bulk_import and offline_export should be mutually exclusive' do
-      where(:bulk_import, :offline_export, :expected_result) do
-        nil                 | nil                    | false
-        build(:bulk_import) | nil                    | true
-        nil                 | build(:offline_export) | true
-        build(:bulk_import) | build(:offline_export) | false
+      let(:bulk_import) { build(:bulk_import) }
+      let(:offline_export) { build(:offline_export) }
+
+      where(:bulk_import_object, :offline_export_object, :expected_result) do
+        nil               | nil                  | false
+        ref(:bulk_import) | nil                  | true
+        nil               | ref(:offline_export) | true
+        ref(:bulk_import) | ref(:offline_export) | false
       end
 
       with_them do
         it 'validates exclusivity' do
-          export = build(:offline_configuration, bulk_import: bulk_import, offline_export: offline_export)
+          export = build(:offline_configuration, bulk_import: bulk_import_object, offline_export: offline_export_object)
           expect(export.valid?).to be expected_result
         end
       end
@@ -175,6 +178,57 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
         end
       end
     end
+
+    describe '#entity_prefix_mapping' do
+      let(:configuration) { build(:offline_configuration) }
+      let(:valid_mapping) do
+        {
+          'my-group/my-project' => 'project_1',
+          'my-group' => 'group_2'
+        }
+      end
+
+      it { is_expected.to allow_value(valid_mapping).for(:entity_prefix_mapping) }
+
+      context 'with an invalid source full path key' do
+        where(:invalid_key) do
+          [
+            '',
+            nil,
+            'has spaces/in path',
+            'has?forbidden!special@chars'
+          ]
+        end
+
+        with_them do
+          let(:invalid_mapping) { { invalid_key => 'group_123' } }
+
+          it { is_expected.not_to allow_value(invalid_mapping).for(:entity_prefix_mapping) }
+        end
+      end
+
+      context 'with an invalid entity prefix' do
+        where(:invalid_entity_prefix) do
+          [
+            'organization_123',
+            'project',
+            '123',
+            '',
+            '_',
+            'project/123',
+            'project_123_123',
+            123,
+            []
+          ]
+        end
+
+        with_them do
+          let(:invalid_mapping) { valid_mapping['some/project'] = invalid_entity_prefix }
+
+          it { is_expected.not_to allow_value(invalid_mapping).for(:entity_prefix_mapping) }
+        end
+      end
+    end
   end
 
   describe 'callbacks' do
@@ -189,6 +243,58 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
         configuration = create(:offline_configuration, export_prefix: 'existing_prefix')
 
         expect(described_class.find(configuration.id).export_prefix).to eq('existing_prefix')
+      end
+    end
+  end
+
+  describe '#endpoint' do
+    context 'when credentials include an endpoint' do
+      it 'returns the endpoint' do
+        configuration = build(:offline_configuration, :s3_compatible)
+
+        expect(configuration.endpoint).to eq('https://minio.example.com')
+      end
+    end
+
+    context 'when credentials do not include an endpoint' do
+      it 'returns nil' do
+        configuration = build(:offline_configuration, :aws_s3)
+
+        expect(configuration.endpoint).to be_nil
+      end
+    end
+
+    context 'when credentials are not present' do
+      it 'returns nil' do
+        configuration = build(:offline_configuration)
+        allow(configuration).to receive(:object_storage_credentials).and_return(nil)
+
+        expect(configuration.endpoint).to be_nil
+      end
+    end
+  end
+
+  describe '#entity_prefix_for_path' do
+    let(:configuration) do
+      build(:offline_configuration, entity_prefix_mapping: {
+        'my-group/my-project' => 'project_1',
+        'my-group' => 'group_2'
+      })
+    end
+
+    context 'when the path exists in the mapping' do
+      it 'returns the entity prefix for a project path' do
+        expect(configuration.entity_prefix_for_path('my-group/my-project')).to eq('project_1')
+      end
+
+      it 'returns the entity prefix for a group path' do
+        expect(configuration.entity_prefix_for_path('my-group')).to eq('group_2')
+      end
+    end
+
+    context 'when the path does not exist in the mapping' do
+      it 'returns nil' do
+        expect(configuration.entity_prefix_for_path('unknown/path')).to be_nil
       end
     end
   end

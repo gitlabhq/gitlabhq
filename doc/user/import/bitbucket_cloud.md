@@ -89,33 +89,41 @@ For user contributions to be mapped, each user must complete the following befor
    username in the Bitbucket account settings.
 1. Connect your Bitbucket account in [GitLab profile service sign-in](https://gitlab.com/-/profile/account).
 
-### Generate a Bitbucket Cloud app password
+### Generate a Bitbucket Cloud app password (removed)
 
-> [!warning]
-> Support for app passwords was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961) in GitLab 18.9
-> and is planned for removal in 19.0. Use [user API tokens](https://support.atlassian.com/organization-administration/docs/understand-user-api-tokens/)
-> instead.
+<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
-If you want to use the import API to import a Bitbucket Cloud repository, you must create a Bitbucket Cloud app password.
+{{< details >}}
 
-To generate a Bitbucket Cloud app password:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-1. Go to <https://bitbucket.org/account/settings/>.
-1. In the **Access Management** section, select **App passwords**.
-1. Select **Create app password**.
-1. Enter password name.
-1. Select at least the following permissions:
+{{< /details >}}
 
-   ```plaintext
-   Account: Email, Read
-   Projects: Read
-   Repositories: Read
-   Pull Requests: Read
-   Issues: Read
-   Wiki: Read and Write
-   ```
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961) in GitLab 18.9
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961) in GitLab 19.0.
+Use [Bitbucket Cloud API token](#generate-a-bitbucket-cloud-api-token) instead.
 
-1. Select **Create**.
+<!--- end_remove -->
+
+### Generate a Bitbucket Cloud API token
+
+To use the import API to import a Bitbucket Cloud repository, you must create a Bitbucket Cloud API token.
+
+To generate a Bitbucket Cloud API token:
+
+1. Go to <https://id.atlassian.com/manage-profile/security/api-tokens>.
+1. Select **Create API token with scopes**.
+1. Enter a token name and expiration date, then select **Next**.
+1. Select **Bitbucket** and then **Next**.
+1. Select at least the following scopes:
+
+   - `read:repository:bitbucket`
+   - `read:pullrequest:bitbucket`
+   - `read:issue:bitbucket`
+   - `read:wiki:bitbucket`
+
+1. Select **Create token** and copy the token.
 
 ## Import your Bitbucket Cloud repositories
 

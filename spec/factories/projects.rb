@@ -253,11 +253,19 @@ FactoryBot.define do
 
     trait :archived do
       archived { true }
+
+      after(:create) do |project|
+        project.project_namespace.archive!
+      end
     end
 
     trait :aimed_for_deletion do
       marked_for_deletion_at { Date.yesterday }
       deleting_user { creator }
+
+      after(:create) do |project, evaluator|
+        project.project_namespace.schedule_deletion!(transition_user: evaluator.deleting_user)
+      end
     end
 
     trait :not_aimed_for_deletion do
@@ -721,6 +729,20 @@ FactoryBot.define do
     after(:build) do |project|
       project.import_data ||= project.build_import_data
       project.import_data.merge_data({ user_contribution_mapping_enabled: true })
+    end
+  end
+
+  trait :with_code_review_custom_instructions do
+    repository
+
+    transient do
+      instructions { nil }
+    end
+
+    after(:build, :stub) do |project, evaluator|
+      stub_method(project.repository, :code_review_custom_instructions_for) do |*_args|
+        evaluator.instructions
+      end
     end
   end
 end

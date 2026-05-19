@@ -180,7 +180,7 @@ module Enums
 
     def self.purl_types
       # if PURL is empty or nil then mark it as not_provided,
-      # othewise mark it as unsupported
+      # otherwise mark it as unsupported
       @_purl_types ||= PURL_TYPES.dup.tap do |h|
         h.default_proc = proc { |_, key| key.to_s.blank? ? 0 : 999 }
       end

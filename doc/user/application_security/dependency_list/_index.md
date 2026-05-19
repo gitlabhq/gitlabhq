@@ -62,7 +62,7 @@ Prerequisites:
 To view the dependencies of a project or all projects in a group:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Secure** > **Dependency list**.
+1. In the left sidebar, select **Secure** > **Dependency list**.
 1. Optional. If there are transitive dependencies, you can also view all of the dependency paths:
    - For a project, in the **Location** column, select **View dependency paths**.
    - For a group, in the **Location** column, select the location, then select **View dependency paths**.
@@ -115,7 +115,7 @@ Prerequisites:
 To filter the dependency list:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Secure** > **Dependency list**.
+1. In the left sidebar, select **Secure** > **Dependency list**.
 1. Select the filter bar.
 1. Select a filter, then from the dropdown list select one or more criteria.
    To close the dropdown list, select outside of it. To add more filters, repeat this step.
@@ -196,7 +196,7 @@ Prerequisites:
 To export the dependency list:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Secure** > **Dependency list**.
+1. In the left sidebar, select **Secure** > **Dependency list**.
 1. Select **Export** and then select the file format.
 
 The dependency list is sent to your email address. To download the dependency list, select the

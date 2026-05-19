@@ -127,6 +127,12 @@ tests, it's up to you to add them.
 
 <!-- vale gitlab_base.Spelling = YES -->
 
+Auto Test provisions a temporary PostgreSQL database and sets `DATABASE_URL` to point to it.
+
+The Auto Test job is defined in the
+[`Jobs/Test.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Test.gitlab-ci.yml)
+template.
+
 ### Currently supported languages
 
 Not all buildpacks support Auto Test yet, as it's a relatively new

@@ -41,7 +41,7 @@ This extension provides several sets of commands that you can trigger in the
 
 ### Manage CI/CD pipelines
 
-- [`GitLab: Show Merged GitLab CI/CD Configuration`](cicd.md#show-merged-gitlab-cicd-configuration):
+- [`GitLab: Show Merged GitLab CI/CD Configuration`](cicd.md#show-merged-configuration-file):
   Show a preview of the GitLab CI/CD configuration file `.gitlab-ci.yml` with all includes resolved.
 - [`GitLab: Validate GitLab CI/CD Configuration`](cicd.md#test-gitlab-cicd-configuration):
   Test the GitLab CI/CD configuration file `.gitlab-ci.yml`.
@@ -85,14 +85,13 @@ This extension also integrates with some commands provided by VS Code:
 To learn how to change settings in VS Code, see the VS Code documentation for
 [User and Workspace Settings](https://code.visualstudio.com/docs/configure/settings).
 
-If you use self-signed certificates to connect to your GitLab instance, read the community-contributed
-[settings for self-signed certificates](troubleshooting.md#configure-self-signed-certificates).
+If you use self-signed certificates to connect to your GitLab instance, see [configure the extension for Custom Certificate Authorities](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/docs/user/custom-certificates.md).
 
 | Setting | Default | Information |
 | ------- | ------- | ----------- |
 | `gitlab.customQueries` | Not applicable | Defines the search queries that retrieves the items shown on the GitLab Panel. For more information, see [Custom Queries documentation](custom_queries.md). |
 | `gitlab.authentication.oauthClientIds` | Not applicable | The OAuth client ID to use (by GitLab instance URL) during [setup](setup.md#authenticate-with-gitlab). |
-| `gitlab.debug` | false | When `true`, enables debug mode. Debug mode improves error stack traces because the extension uses source maps to understand minified code. Debug mode also shows debug log messages in the [extension logs](troubleshooting.md#view-log-files). |
+| `gitlab.debug` | false | When `true`, enables debug mode. Debug mode improves error stack traces because the extension uses source maps to understand minified code. Debug mode also shows debug log messages in the [extension logs](troubleshooting.md#view-debug-logs). |
 | `gitlab.duo.enabledWithoutGitlabProject` | true | When `true`, keeps GitLab Duo features enabled if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. When `false`, disables all GitLab Duo features if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. See [`duoFeaturesEnabledForProject` setting](#duofeaturesenabledforproject). |
 | `gitlab.duoAgentPlatform.defaultNamespace` | Not applicable | The default group or namespace path for GitLab Duo Agent Platform when the extension can't get GitLab project details. |
 | `gitlab.duoCodeSuggestions.additionalLanguages` | Not applicable | (Experimental.) To expand the list of officially supported languages for GitLab Duo Code Suggestions, provide an array of the [language identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers). Code Suggestions quality for the added languages might not be optimal. |

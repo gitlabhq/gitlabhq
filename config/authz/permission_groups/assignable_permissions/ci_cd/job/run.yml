@@ -1,0 +1,10 @@
+---
+name: run_job
+description: Grants the ability to play and retry jobs
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - play_job
+  - retry_job

@@ -1113,6 +1113,51 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
   end
 
+  context 'deleting a project with lfs_objects_projects' do
+    let!(:lfs_objects_projects) { create_list(:lfs_objects_project, 2, project: project) }
+
+    it 'deletes lfs_objects_projects and logs the count' do
+      allow(Gitlab::AppLogger).to receive(:info)
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        class: described_class.name,
+        project_id: project.id,
+        message: 'Deleting LFS objects projects completed',
+        deleted_lfs_objects_project_count: 2
+      )
+
+      expect { destroy_project(project, user, {}) }
+        .to change { LfsObjectsProject.where(project_id: project.id).count }.from(2).to(0)
+    end
+
+    it 'does not delete lfs_objects_projects belonging to other projects' do
+      other_project = create(:project)
+      create_list(:lfs_objects_project, 2, project: other_project)
+
+      expect { destroy_project(project, user, {}) }
+        .not_to change { LfsObjectsProject.where(project_id: other_project.id).count }
+    end
+
+    context 'when there are more lfs_objects_projects than the batch size' do
+      before do
+        stub_const("#{described_class}::BATCH_SIZE", 2)
+        create(:lfs_objects_project, project: project)
+      end
+
+      it 'deletes lfs_objects_projects in multiple batches and logs the total count' do
+        allow(Gitlab::AppLogger).to receive(:info)
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          class: described_class.name,
+          project_id: project.id,
+          message: 'Deleting LFS objects projects completed',
+          deleted_lfs_objects_project_count: 3
+        )
+
+        expect { destroy_project(project, user, {}) }
+          .to change { LfsObjectsProject.where(project_id: project.id).count }.from(3).to(0)
+      end
+    end
+  end
+
   describe '#destroy_orphaned_ci_job_artifacts!' do
     let(:service) { described_class.new(project, user) }
 

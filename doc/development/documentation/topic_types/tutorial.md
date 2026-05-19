@@ -149,10 +149,10 @@ you can:
 ## Metadata
 
 On pages that are tutorials, add the most appropriate `stage:` and `group:` metadata at the top of the file.
-If the majority of the content does not align with a single group, specify `none` for the stage
+If the majority of the content does not align with a single group, specify `Tutorials` for the stage
 and `Tutorials` for the group:
 
 ```plaintext
-stage: none
+stage: Tutorials
 group: Tutorials
 ```

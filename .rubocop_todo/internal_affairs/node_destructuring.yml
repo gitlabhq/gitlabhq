@@ -1,7 +1,0 @@
----
-InternalAffairs/NodeDestructuring:
-  Exclude:
-    - 'rubocop/cop/ban_catch_throw.rb'
-    - 'rubocop/cop/gitlab/httparty.rb'
-    - 'rubocop/cop/gitlab/mark_used_feature_flags.rb'
-    - 'rubocop/cop/prefer_class_methods_over_module.rb'

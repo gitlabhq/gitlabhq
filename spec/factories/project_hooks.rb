@@ -17,6 +17,10 @@ FactoryBot.define do
       token { generate(:token) }
     end
 
+    trait :signing_token do
+      signing_token { "whsec_#{Base64.strict_encode64(SecureRandom.bytes(32))}" }
+    end
+
     trait :all_events_enabled do
       push_events { true }
       merge_requests_events { true }

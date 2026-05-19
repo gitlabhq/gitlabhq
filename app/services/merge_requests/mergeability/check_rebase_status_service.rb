@@ -9,7 +9,7 @@ module MergeRequests
       def execute
         return inactive unless merge_request.project.ff_merge_must_be_possible?
 
-        return inactive if merge_request.project.project_setting.automatic_rebase_available?
+        return inactive if merge_request.project.project_setting.automatic_rebase_enabled?
 
         if merge_request.should_be_rebased?
           failure

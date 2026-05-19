@@ -4,7 +4,18 @@ RSpec.describe Gitlab::Database::DataIsolation::Strategies::Arel::Scope do
   let(:organization_id) { 1234 }
   let(:unmodified_sql) { ast.to_sql }
 
-  subject(:scoped) { described_class.new(organization_id).add_scope(ast) }
+  subject(:scoped) { described_class.new.add_scope(ast) }
+
+  before do
+    Gitlab::Database::DataIsolation.configure do |config|
+      config.current_sharding_key_value = ->(_type) { organization_id }
+    end
+  end
+
+  around do |example|
+    Gitlab::Database::DataIsolation::Context.without_data_isolation { ast }
+    example.run
+  end
 
   describe '.without_data_isolation (via Context)' do
     let(:ast) { Project.all.arel }
@@ -34,10 +45,6 @@ RSpec.describe Gitlab::Database::DataIsolation::Strategies::Arel::Scope do
   end
 
   context 'when the query is using joins' do
-    before do
-      Project.has_many :issues, foreign_key: :project_id
-    end
-
     context 'with INNER JOIN' do
       let(:ast) { Project.joins(:issues).arel }
       let(:modified_sql) { "#{unmodified_sql} WHERE \"projects\".\"organization_id\" = #{organization_id}" }
@@ -228,10 +235,16 @@ RSpec.describe Gitlab::Database::DataIsolation::Strategies::Arel::Scope do
     end
   end
 
-  context 'when the override value is nil' do
-    subject(:scoped) { described_class.new(nil).add_scope(ast) }
+  context 'when current_sharding_key_value returns nil' do
+    subject(:scoped) { described_class.new.add_scope(ast) }
 
     let(:ast) { Project.all.arel }
+
+    before do
+      Gitlab::Database::DataIsolation.configure do |config|
+        config.current_sharding_key_value = ->(_type) { nil }
+      end
+    end
 
     it 'does nothing' do
       expect(scoped.to_sql).to eq(unmodified_sql)
@@ -239,7 +252,7 @@ RSpec.describe Gitlab::Database::DataIsolation::Strategies::Arel::Scope do
   end
 
   context 'when the table has multiple sharding keys (nullable OR)' do
-    let(:ast) { Gitlab::Database::DataIsolation::Context.without_data_isolation { Snippet.all.arel } }
+    let(:ast) { Snippet.all.arel }
     let(:project_id) { 5678 }
     let(:modified_sql) do
       "#{unmodified_sql} WHERE (\"snippets\".\"project_id\" = #{project_id} " \
@@ -263,7 +276,7 @@ RSpec.describe Gitlab::Database::DataIsolation::Strategies::Arel::Scope do
     end
 
     context 'when one key type resolves to nil' do
-      let(:ast) { Gitlab::Database::DataIsolation::Context.without_data_isolation { Snippet.all.arel } }
+      let(:ast) { Snippet.all.arel }
 
       before do
         Gitlab::Database::DataIsolation.configure do |config|
@@ -296,7 +309,7 @@ RSpec.describe Gitlab::Database::DataIsolation::Strategies::Arel::Scope do
       end
     end
 
-    it 'uses the override value for the scoped table' do
+    it 'uses the current_sharding_key_value for the scoped table' do
       expect(scoped.to_sql).to eq(
         "SELECT \"projects\".* FROM \"projects\" WHERE \"projects\".\"organization_id\" = #{organization_id}"
       )
@@ -310,8 +323,12 @@ RSpec.describe Gitlab::Database::DataIsolation::Strategies::Arel::Scope do
         "FROM \"organizations\" WHERE \"organizations\".\"id\" = $1 AND \"organizations\".\"status\" = $2)"
     end
 
-    subject(:scoped) do
-      described_class.new(Organization.select(:id).where(id: organization_id, status: :active)).add_scope(ast)
+    before do
+      Gitlab::Database::DataIsolation.configure do |config|
+        config.current_sharding_key_value = ->(_type) {
+          Organization.select(:id).where(id: organization_id, status: :active)
+        }
+      end
     end
 
     it 'adds the scope' do

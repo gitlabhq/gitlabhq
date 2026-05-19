@@ -9,10 +9,9 @@ module Issues
 
     TooManyConcurrentRebalances = Class.new(StandardError)
 
-    def initialize(projects)
-      @projects_collection = (projects.is_a?(Array) ? Project.id_in(projects) : projects).select(:id).projects_order_id_asc
-      @root_namespace = @projects_collection.select(:namespace_id).without_order.take.root_namespace # rubocop:disable CodeReuse/ActiveRecord
-      @caching = ::Gitlab::Issues::Rebalancing::State.new(@root_namespace, @projects_collection)
+    def initialize(namespace)
+      @root_namespace = namespace.root_ancestor
+      @caching = ::Gitlab::Issues::Rebalancing::State.new(namespace)
     end
 
     def execute
@@ -46,7 +45,7 @@ module Issues
 
     private
 
-    attr_reader :root_namespace, :projects_collection, :caching
+    attr_reader :root_namespace, :caching
 
     def block_issue_repositioning!
       Feature.enable(:block_issue_repositioning, root_namespace)
@@ -59,9 +58,9 @@ module Issues
     def get_issue_ids(index, limit)
       issue_ids = caching.get_cached_issue_ids(index, limit)
 
-      # if we have a list of cached issues and no current project id cached,
-      # then we successfully cached issues for all projects
-      return issue_ids if issue_ids.any? && caching.get_current_project_id.blank?
+      # if we have a list of cached issues and no current namespace id cached,
+      # then we successfully cached issues for all namespaces
+      return issue_ids if issue_ids.any? && caching.get_current_namespace_id.blank?
 
       # if we got no issue ids at the start of re-balancing then we did not cache any issue ids yet
       preload_issue_ids
@@ -71,16 +70,19 @@ module Issues
 
     # rubocop: disable CodeReuse/ActiveRecord
     def preload_issue_ids
-      index = 0
-      cached_project_id = caching.get_current_project_id
+      cached_namespace_id = caching.get_current_namespace_id
 
-      collection = projects_collection
-      collection = projects_collection.where(Project.arel_table[:id].gteq(cached_project_id.to_i)) if cached_project_id.present?
+      namespace_ids = root_namespace.self_and_descendant_ids(skope: Namespace)
+      namespace_ids = namespace_ids.where(id: cached_namespace_id.to_i..) if cached_namespace_id.present?
 
-      collection.each do |project|
-        caching.cache_current_project_id(project.id)
-        index += 1
-        scope = Issue.in_projects(project).order_by_relative_position.with_non_null_relative_position.select(:id, :relative_position)
+      namespace_ids.each do |namespace_id|
+        caching.cache_current_namespace_id(namespace_id)
+
+        scope = Issue
+          .where(namespace_id: namespace_id)
+          .order_by_relative_position
+          .with_non_null_relative_position
+          .select(:id, :relative_position)
 
         with_retry(PREFETCH_ISSUES_BATCH_SIZE, 100) do |batch_size|
           Gitlab::Pagination::Keyset::Iterator.new(scope: scope).each_batch(of: batch_size) do |batch|
@@ -89,7 +91,7 @@ module Issues
         end
       end
 
-      caching.remove_current_project_id_cache
+      caching.remove_current_namespace_id_cache
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -171,7 +173,7 @@ module Issues
       begin
         yield batch_size
         retries = 0
-      rescue ActiveRecord::StatementTimeout, ActiveRecord::QueryCanceled => ex
+      rescue ActiveRecord::StatementTimeout, ActiveRecord::QueryCanceled => ex # rubocop:disable Database/RescueStatementTimeout, Database/RescueQueryCanceled -- Necessary for adaptive batch resizing strategy
         raise ex if batch_size < exit_batch_size
 
         if (retries += 1) == RETRIES_LIMIT
@@ -181,7 +183,7 @@ module Issues
         end
 
         retry
-      end
+      end # rubocop:enable Database/RescueStatementTimeout, Database/RescueQueryCanceled
     end
   end
 end

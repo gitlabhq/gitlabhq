@@ -91,12 +91,14 @@ export const COMMANDS = {
   REASSIGN: '/reassign',
   REASSIGN_REVIEWER: '/reassign_reviewer',
   RELABEL: '/relabel',
+  REQUEST_REVIEW: '/request_review',
   UNASSIGN: '/unassign',
   UNASSIGN_REVIEWER: '/unassign_reviewer',
   UNLABEL: '/unlabel',
   ITERATION: '/iteration',
   UNLINK: '/unlink',
   STATUS: '/status',
+  TYPE: '/type',
 };
 
 export const COMMANDS_WITH_LOCAL_DATA = [COMMANDS.UNASSIGN, COMMANDS.UNLABEL, COMMANDS.UNLINK];

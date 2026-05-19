@@ -9,6 +9,9 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
   end.uniq.sort
 
   let(:is_graphql) { context_type == :graphql }
+
+  let(:boundary) { ::Authz::Boundary.for(boundary_object) }
+
   let(:error_boundary_object) { boundary_object }
   let(:acceptable_messages) { [message] }
 
@@ -44,8 +47,33 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
 
   context 'when authenticating with a legacy personal access token' do
     let(:pat) { create(:personal_access_token, :admin_mode, user:) }
+    let(:root_ancestor) { boundary.namespace&.root_ancestor }
 
     it_behaves_like 'granting access'
+
+    context 'when namespace enforces granular tokens' do
+      let(:message) { 'Access denied: This operation requires a fine-grained personal access token' }
+
+      before do
+        skip 'namespace has no root ancestor' unless root_ancestor
+
+        # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/594556
+        skip 'not applicable for GraphQL' if is_graphql
+
+        stub_feature_flags(granular_personal_access_tokens_enforcement_saas: root_ancestor)
+
+        root_ancestor.create_namespace_settings! unless root_ancestor.namespace_settings
+
+        root_ancestor.namespace_settings.update!(
+          enforce_granular_tokens: true,
+          granular_tokens_enforced_after: Date.current
+        )
+
+        root_ancestor.reload
+      end
+
+      it_behaves_like 'denying access'
+    end
   end
 
   context 'when authenticating with a granular personal access token' do
@@ -55,7 +83,6 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
       end.uniq
     end
 
-    let(:boundary) { ::Authz::Boundary.for(boundary_object) }
     let(:pat) { create(:granular_pat, user: user, boundary: boundary, permissions: assignables) }
 
     it_behaves_like 'granting access'
@@ -73,6 +100,15 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
     context 'when an authorizing granular scope is missing' do
       before do
         pat.granular_scopes.delete_all
+
+        # Disable the public-access bypass so the "denying access" assertion
+        # exercises the missing-scope path. Without this stub the bypass
+        # consults `policy_for(nil, ...)` and grants access on public resources,
+        # masking the denial we want to verify.
+        null_policy = instance_double(::DeclarativePolicy::Base, allowed?: false)
+        allow(::DeclarativePolicy).to receive(:policy_for).and_call_original
+        allow(::DeclarativePolicy).to receive(:policy_for)
+          .with(nil, anything, hash_including(:cache)).and_return(null_policy)
       end
 
       let(:acceptable_messages) do
@@ -87,6 +123,53 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
 
       it_behaves_like 'denying access'
     end
+
+    context 'when compared to a non-member request' do
+      it 'fine-grained PAT without scope mirrors a non-member request' do
+        unless boundary_object.is_a?(::Project) || boundary_object.is_a?(::Group)
+          skip 'only meaningful on Project/Group boundaries'
+        end
+
+        skip 'GraphQL bypass parity is covered by per-resolver authorization' if is_graphql
+
+        # Pick a baseline that the bypass should mirror: a logged-in non-member when
+        # all declared permissions are in public_anonymous (an anonymous HTTP probe
+        # is unusable on `authenticate!` endpoints), or anonymous otherwise (the
+        # bypass shouldn't grant permissions outside public_anonymous, and a
+        # legacy non-member would false-positive for writes on public resources).
+        non_member = create(:user)
+        granular_pat = create(:granular_pat, user: non_member)
+        all_anonymous = granular_permissions.all? { |p| ::Users::Anonymous.can?(p, boundary_object) }
+        baseline_pat = create(:personal_access_token, user: non_member) if all_anonymous
+
+        expect(dispatch_request_as(granular_pat)).to eq(dispatch_request_as(baseline_pat))
+      end
+    end
+  end
+
+  # Re-dispatches the caller-defined `let(:request)` with a different `pat`.
+  # Stubs `pat` and invalidates the let memoization so `request` re-evaluates.
+  #
+  # Implementation notes:
+  # - We reach into `__memoized` because RSpec offers no public API for
+  #   per-key memoization invalidation. Verified against rspec-core 3.13;
+  #   if its internal storage layout changes this is the line to update.
+  # - The rescue is scoped to NoMethodError on a nil-stubbed pat: some
+  #   callers reference `pat.token` directly (e.g. basic auth headers).
+  #   We don't short-circuit `nil` because callers that pass `pat` to
+  #   helpers which gracefully accept a nil token should still dispatch:
+  #   that path actually exercises anonymous HTTP and surfaces drift
+  #   between policy-based bypass and HTTP-level authz.
+  def dispatch_request_as(new_pat)
+    allow(self).to receive(:pat).and_return(new_pat)
+    __memoized.instance_variable_get(:@memoized).delete(:request)
+
+    request
+    response.successful?
+  rescue NoMethodError
+    raise unless new_pat.nil?
+
+    false
   end
 end
 

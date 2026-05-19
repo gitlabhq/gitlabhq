@@ -28,6 +28,10 @@ class UserCustomAttribute < ApplicationRecord
   TOP_LEVEL_GROUP_LIMIT_EXEMPT = 'top_level_group_limit_exempt'
 
   class << self
+    def declarative_policy_class
+      'Users::CustomAttributePolicy'
+    end
+
     def upsert_custom_attributes(custom_attributes)
       created_at = DateTime.now
       updated_at = DateTime.now

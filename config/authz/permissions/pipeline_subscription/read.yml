@@ -1,6 +1,0 @@
----
-name: read_pipeline_subscription
-description: |-
-  Grants the ability to view a project's pipeline subscriptions.
-  Pipeline subscriptions allow a project to automatically trigger
-  a pipeline when a tag pipeline completes in another project.

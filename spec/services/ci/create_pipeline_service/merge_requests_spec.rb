@@ -14,7 +14,7 @@ RSpec.describe Ci::CreatePipelineService,
     let(:pipeline) { service.execute(source).payload }
 
     before do
-      stub_ci_pipeline_yaml_file <<-EOS
+      stub_ci_pipeline_yaml_file <<-YAML
         workflow:
           rules:
             # do not create pipelines if merge requests are opened
@@ -25,7 +25,7 @@ RSpec.describe Ci::CreatePipelineService,
 
         rspec:
           script: echo Hello World
-      EOS
+      YAML
     end
 
     context 'when pushing a change' do

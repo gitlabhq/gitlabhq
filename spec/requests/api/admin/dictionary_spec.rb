@@ -36,6 +36,7 @@ RSpec.describe API::Admin::Dictionary, feature_category: :database do
         aggregate_failures "testing response" do
           expect(json_response['table_name']).to eq('achievements')
           expect(json_response['feature_categories']).to eq(['user_profile'])
+          expect(json_response['table_size']).to eq('small')
         end
       end
     end

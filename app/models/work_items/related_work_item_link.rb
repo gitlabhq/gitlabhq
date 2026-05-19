@@ -13,6 +13,8 @@ module WorkItems
     belongs_to :source, class_name: 'WorkItem'
     belongs_to :target, class_name: 'WorkItem'
 
+    scope :order_by_created_at_asc, -> { order(:created_at) }
+
     class << self
       extend ::Gitlab::Utils::Override
 

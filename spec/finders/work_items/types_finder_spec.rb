@@ -27,12 +27,16 @@ RSpec.describe ::WorkItems::TypesFinder, feature_category: :team_planning do
     end
 
     it_behaves_like 'lists all work item type values' do
+      subject(:types_list) { finder.execute(only_available: false).map(&:base_type) }
+    end
+
+    it_behaves_like 'lists generally available work item types' do
       subject(:types_list) { finder.execute.map(&:base_type) }
     end
 
     it_behaves_like 'filtering work item types by existing name' do
       let(:name) { 'issue' }
-      subject(:types_list) { finder.execute(name: name).map(&:base_type) }
+      subject(:types_list) { finder.execute(name: name, only_available: false).map(&:base_type) }
 
       context 'and filtering by available' do
         subject(:types_list) do
@@ -47,7 +51,7 @@ RSpec.describe ::WorkItems::TypesFinder, feature_category: :team_planning do
 
     it_behaves_like 'filtering work item types by non-existing name' do
       let(:name) { 'unknown' }
-      subject(:types_list) { finder.execute(name: name).map(&:base_type) }
+      subject(:types_list) { finder.execute(name: name, only_available: false).map(&:base_type) }
     end
   end
 
@@ -59,12 +63,16 @@ RSpec.describe ::WorkItems::TypesFinder, feature_category: :team_planning do
     end
 
     it_behaves_like 'lists all work item type values' do
+      subject(:types_list) { finder.execute(only_available: false).map(&:base_type) }
+    end
+
+    it_behaves_like 'lists generally available work item types' do
       subject(:types_list) { finder.execute.map(&:base_type) }
     end
 
     it_behaves_like 'filtering work item types by existing name' do
       let(:name) { 'issue' }
-      subject(:types_list) { finder.execute(name: name).map(&:base_type) }
+      subject(:types_list) { finder.execute(name: name, only_available: false).map(&:base_type) }
 
       context 'and filtering by available' do
         subject(:types_list) do
@@ -79,7 +87,7 @@ RSpec.describe ::WorkItems::TypesFinder, feature_category: :team_planning do
 
     it_behaves_like 'filtering work item types by non-existing name' do
       let(:name) { 'unknown' }
-      subject(:types_list) { finder.execute(name: name).map(&:base_type) }
+      subject(:types_list) { finder.execute(name: name, only_available: false).map(&:base_type) }
     end
   end
 
@@ -91,12 +99,16 @@ RSpec.describe ::WorkItems::TypesFinder, feature_category: :team_planning do
     end
 
     it_behaves_like 'lists all work item type values' do
+      subject(:types_list) { finder.execute(only_available: false).map(&:base_type) }
+    end
+
+    it_behaves_like 'lists generally available work item types' do
       subject(:types_list) { finder.execute.map(&:base_type) }
     end
 
     it_behaves_like 'filtering work item types by existing name' do
       let(:name) { 'issue' }
-      subject(:types_list) { finder.execute(name: name).map(&:base_type) }
+      subject(:types_list) { finder.execute(name: name, only_available: false).map(&:base_type) }
 
       context 'and filtering by available' do
         subject(:types_list) do
@@ -112,7 +124,48 @@ RSpec.describe ::WorkItems::TypesFinder, feature_category: :team_planning do
 
     it_behaves_like 'filtering work item types by non-existing name' do
       let(:name) { 'unknown' }
-      subject(:types_list) { finder.execute(name: name).map(&:base_type) }
+      subject(:types_list) { finder.execute(name: name, only_available: false).map(&:base_type) }
+    end
+  end
+
+  describe 'parameter handling' do
+    let(:container) { group_project }
+    let(:provider) { ::WorkItems::TypesFramework::Provider.new(container) }
+
+    before do
+      allow(::WorkItems::TypesFramework::Provider).to receive(:new).with(container).and_return(provider)
+    end
+
+    context 'when only_available is omitted' do
+      it 'delegates to the provider#available_types' do
+        expect(provider).to receive(:available_types).and_call_original
+
+        finder.execute
+      end
+
+      it 'does not delegate to allowed_types, all_ordered_by_name, or filtered_types' do
+        expect(provider).not_to receive(:allowed_types)
+        expect(provider).not_to receive(:all_ordered_by_name)
+        expect(provider).not_to receive(:filtered_types)
+
+        finder.execute
+      end
+    end
+
+    context 'when only_available is true' do
+      it 'delegates to the provider#allowed_types' do
+        expect(provider).to receive(:allowed_types).and_call_original
+
+        finder.execute(only_available: true)
+      end
+    end
+
+    context 'when only_available is false' do
+      it 'delegates to the provider#all_ordered_by_name' do
+        expect(provider).to receive(:all_ordered_by_name).and_call_original
+
+        finder.execute(only_available: false)
+      end
     end
   end
 end

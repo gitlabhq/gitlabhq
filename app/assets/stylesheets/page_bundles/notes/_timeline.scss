@@ -89,10 +89,6 @@
 
   .timeline-entry:not(.timeline-entry .timeline-entry):last-child::before {
     @apply gl-bg-default;
-
-    .modal-body, .work-item-drawer & {
-      @apply gl-bg-overlap;
-    }
   }
 }
 

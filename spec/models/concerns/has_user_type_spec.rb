@@ -143,12 +143,12 @@ RSpec.describe User, feature_category: :system_access do
         end
 
         context 'when user is a project_bot' do
-          let(:observed_user) { project_bot }
+          let_it_be(:observed_user) { project_bot }
 
           context 'when groups are present and user can :read_group' do
             let_it_be(:group) { create(:group) }
 
-            before do
+            before_all do
               group.add_developer(observed_user)
               group.add_developer(viewing_user)
             end
@@ -159,7 +159,7 @@ RSpec.describe User, feature_category: :system_access do
           context 'when user can :read_project' do
             let_it_be(:project) { create(:project) }
 
-            before do
+            before_all do
               project.add_developer(observed_user)
               project.add_developer(viewing_user)
             end
@@ -229,8 +229,8 @@ RSpec.describe User, feature_category: :system_access do
       end
 
       context 'when the user is a project bot' do
-        let(:user1) { create(:user) }
-        let(:user2) { create(:user) }
+        let_it_be(:user1) { create(:user) }
+        let_it_be(:user2) { create(:user) }
 
         subject(:owners_and_maintainers) { project_bot.resource_bot_owners_and_maintainers }
 

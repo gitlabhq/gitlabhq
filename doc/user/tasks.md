@@ -75,7 +75,7 @@ Prerequisites:
 To create a task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**.
+1. In the left sidebar, select **Plan** > **Work items**.
 1. In the top-right corner, select **New item**.
 1. From the **Type** dropdown list, select **Task** if it is not already selected.
 1. Complete the following:
@@ -99,7 +99,7 @@ Prerequisites:
 To convert a task list item in an issue description to a task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the issue description, hover over the task list item and select the options menu
    ({{< icon name="ellipsis_v" >}}).
 1. Select **Convert to child item**.
@@ -124,7 +124,7 @@ Prerequisites:
 To add an existing task to an issue:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the issue description, in the **Child items** section, select **Add** ({{< icon name="plus" >}}).
 1. Select **Existing task**.
 1. Search tasks by title.
@@ -146,7 +146,7 @@ Prerequisites:
 To edit a task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the upper-right corner, select **Edit**.
 1. Optional. To edit the title, type into the **Title** text box.
 1. Optional. To edit the description, make your changes to the **Description** text box.
@@ -173,7 +173,7 @@ Prerequisites:
 To edit the description of a task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the upper-right corner, select **Edit**.
 1. At the bottom of the **Description** text box, select **Switch to rich text editing**.
    If the control shows **Switch to plain text editing**, the text box is already in rich text mode.
@@ -195,7 +195,7 @@ Prerequisites:
 To promote a task to an issue:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. Unlink the parent issue and promote the task: In the task window, use these two
    [quick actions](project/quick_actions.md) in separate comments:
 
@@ -234,7 +234,7 @@ Prerequisites:
 To convert a task into another item type:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. Optional. If the task has a parent issue assigned, remove it.
    Add a comment to the task with the `/remove_parent` quick action.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Change type**.
@@ -262,7 +262,7 @@ To reconnect them, see [Set an issue as a parent](#set-an-issue-as-a-parent).
 To remove a task from an issue using the **Child items** section:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the issue description, in the **Child items** section, select the options menu
    ({{< icon name="ellipsis_v" >}}) next to the task you want to remove.
 1. Select **Remove task**.
@@ -290,7 +290,7 @@ Prerequisites:
 To delete a task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. Select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Delete task**.
 1. In the confirmation dialog, select **Delete task**.
@@ -362,7 +362,7 @@ Prerequisites:
 To change the status of a task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the right sidebar, in the **Status** section, select **Edit**.
 1. From the dropdown list, select the status.
 
@@ -391,7 +391,7 @@ Prerequisites:
 To change the assignee on a task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the right sidebar, in the **Assignee** section, select **Edit**.
 1. From the dropdown list, select the users to add as an assignee.
 1. Select any area outside the dropdown list.
@@ -412,7 +412,7 @@ Prerequisites:
 To add [labels](project/labels.md) to a task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the right sidebar, in the **Labels** section, select **Edit**.
 1. From the dropdown list, select the labels to add.
 1. Select any area outside the dropdown list.
@@ -438,7 +438,7 @@ You can set start and due dates on a task to show when work should begin and end
 To set a start or due date:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the right sidebar, in the **Dates** section, select **Edit**.
 1. Optional. In the **Start date** picker, select a date.
 1. Optional. In the **Due date** picker, select a date.
@@ -468,7 +468,7 @@ Prerequisites:
 To add a task to a milestone:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the right sidebar, in the **Milestone** section, select **Edit**.
 1. From the dropdown list, select the milestone.
    If a task already belongs to a milestone, the dropdown list shows the current milestone.
@@ -500,7 +500,7 @@ This value is visible only when you view a task.
 To set issue weight of a task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the right sidebar, in the **Weight** section, select **Edit**.
 1. Enter a whole, positive number.
 1. Select **Apply** or press <kbd>Enter</kbd>.
@@ -570,7 +570,7 @@ Prerequisites:
 To add a task to an iteration:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to be associated with the task.
 1. Select any area outside the dropdown list.
@@ -660,7 +660,7 @@ To refer to a task elsewhere in GitLab, you can use its full URL or a short refe
 To copy the task reference to your clipboard:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Copy Reference**.
 
 You can now paste the reference into another description or comment.
@@ -684,7 +684,7 @@ For more information about creating comments by sending an email and the necessa
 To copy the task's email address:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Copy task email address**.
 
 ## Set an issue as a parent
@@ -703,7 +703,7 @@ Prerequisites:
 To set an issue as a parent of a task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the right sidebar, in the **Parent** section, select **Edit**.
 1. From the dropdown list, select the parent to add.
 1. Select any area outside the dropdown list.
@@ -756,7 +756,7 @@ Check that box and select **Create task**.
 To change the confidentiality of an existing task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Turn on confidentiality**.
 
@@ -843,7 +843,7 @@ Prerequisites:
 To link an item to a task:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the **Linked items** section of a task, select **Add** ({{< icon name="plus" >}}).
 1. Select the relationship between the two items. Either:
    - **relates to**
@@ -864,7 +864,7 @@ Prerequisites:
 - You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the **Linked items** section of a task, next to each item, select the vertical
    ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Remove**.
 

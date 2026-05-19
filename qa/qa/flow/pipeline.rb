@@ -7,6 +7,8 @@ module QA
 
       AVAILABLE_STATUSES = %w[created waiting_for_resource preparing waiting_for_callback pending running success
         failed canceling canceled skipped manual scheduled].freeze
+      DEFAULT_WAIT = 240
+      WAIT_SLEEP_INTERVAL = 5
 
       # Acceptable statuses:
       # Canceled, Created, Failed, Manual, Passed
@@ -35,14 +37,18 @@ module QA
       # Trying to let it wait for up to 4 minutes, any longer than that is unacceptable in most scenarios.
       #
       # Provide a different size when more than 1 pipelines are expected.
-      def wait_for_pipeline_creation_via_api(project:, size: 1, wait: 240)
+      def wait_for_pipeline_creation_via_api(project:, size: 1, wait: DEFAULT_WAIT)
         Runtime::Logger.info("Waiting for #{project.name}'s latest pipeline to be created...")
-        Support::Waiter.wait_until(message: 'Wait for pipeline to be created', max_duration: wait) do
+        Support::Waiter.wait_until(
+          message: 'Wait for pipeline to be created',
+          max_duration: wait,
+          sleep_interval: WAIT_SLEEP_INTERVAL
+        ) do
           project.pipelines.present? && project.pipelines.size >= size
         end
       end
 
-      def wait_for_latest_pipeline_to_have_status(project:, status: nil, wait: 240)
+      def wait_for_latest_pipeline_to_have_status(project:, status: nil, wait: DEFAULT_WAIT)
         wait_for_pipeline_status(
           project: project,
           status: status,
@@ -51,7 +57,7 @@ module QA
         )
       end
 
-      def wait_for_pipeline_to_have_status_by_source_branch(project:, source_branch:, status: nil, wait: 240)
+      def wait_for_pipeline_to_have_status_by_source_branch(project:, source_branch:, status: nil, wait: DEFAULT_WAIT)
         wait_for_pipeline_status(
           project: project,
           status: status,
@@ -61,7 +67,7 @@ module QA
         )
       end
 
-      def wait_for_pipeline_to_have_status_by_id(project:, pipeline_id:, status: nil, wait: 240)
+      def wait_for_pipeline_to_have_status_by_id(project:, pipeline_id:, status: nil, wait: DEFAULT_WAIT)
         wait_for_pipeline_status(
           project: project,
           status: status,
@@ -73,9 +79,13 @@ module QA
 
       # To wait for pipeline to complete regardless of status
       #
-      def wait_for_latest_pipeline_to_finish(project:, wait: 240)
+      def wait_for_latest_pipeline_to_finish(project:, wait: DEFAULT_WAIT)
         Runtime::Logger.info("Waiting for #{project.name}'s latest pipeline to finish...")
-        Support::Waiter.wait_until(message: 'Wait for latest pipeline to run', max_duration: wait) do
+        Support::Waiter.wait_until(
+          message: 'Wait for latest pipeline to run',
+          max_duration: wait,
+          sleep_interval: WAIT_SLEEP_INTERVAL
+        ) do
           pipeline = project.latest_pipeline
           pipeline[:started_at].present? && pipeline[:finished_at].present?
         end
@@ -91,7 +101,8 @@ module QA
 
         Support::Waiter.wait_until(
           message: "Wait for #{pipeline_desc} to have status #{status}",
-          max_duration: wait
+          max_duration: wait,
+          sleep_interval: WAIT_SLEEP_INTERVAL
         ) do
           pipeline = pipeline_finder.call
           pipeline && pipeline[:status] == status

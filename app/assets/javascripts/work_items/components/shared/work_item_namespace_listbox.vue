@@ -234,7 +234,10 @@ export default {
       this.setFrequentItems(keyword);
     },
     handleSelect(namespacePath) {
-      this.$emit('selectNamespace', namespacePath);
+      const selectedNamespace = this.namespaceCache.find(
+        (namespace) => namespace.fullPath === namespacePath,
+      );
+      this.$emit('selectNamespace', namespacePath, selectedNamespace);
     },
     async handleDropdownShow() {
       this.searchKey = '';

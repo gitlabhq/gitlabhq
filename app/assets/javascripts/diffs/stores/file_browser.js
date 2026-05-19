@@ -83,7 +83,15 @@ export const useFileBrowser = defineStore('fileBrowser', {
   },
   getters: {
     flatBlobsList() {
-      return Object.values(this.treeEntries || {}).filter((f) => f.type === 'blob');
+      const blobs = [];
+      const walk = (entries) => {
+        entries.forEach((entry) => {
+          if (entry.type === 'blob') blobs.push(entry);
+          if (entry.tree?.length) walk(entry.tree);
+        });
+      };
+      walk(this.tree);
+      return blobs;
     },
     allBlobs() {
       return this.flatBlobsList.reduce((acc, file) => {

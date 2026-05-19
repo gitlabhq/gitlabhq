@@ -94,13 +94,19 @@ context[:exit_code] = Integer     # 0 or 1
 The sub-chain runs when `print_help` is false. It adds to the context:
 ```ruby
 context[:repo_root] = String     # Added by ResolveRepoRoot
+context[:config] = Hash          # Added by LoadConfig
 context[:stdout_text] = String   # Added by FormatOutput
 context[:exit_code] = Integer    # Added by DetermineExitCode
 ```
 
-`ResolveRepoRoot` raises on failure (git not found, not in a repo) —
-these are infrastructure errors, not domain errors. Check steps append
-to `context[:results]`.
+`context[:config]` mirrors the shape of `tooling/ai_harness/config.yml`
+exactly — hashes/arrays are preserved as-is. Downstream steps read keys
+they need from this hash.
+
+`ResolveRepoRoot` and `LoadConfig` raise on failure (git not found, not
+in a repo, config file missing or unparseable) — these are
+infrastructure errors, not domain errors. Check steps append to
+`context[:results]`.
 
 **Important:** The context hash does NOT contain an IO object. Check and
 transform steps are pure — no IO side effects. Stdout is handled by
@@ -259,6 +265,19 @@ def self.resolve(context) → Hash
 - Raises `RuntimeError` if git fails or returns empty (infrastructure error)
 - **Returns `context`** — chained via `.map`
 
+**`Steps::PerformDoctorChecks::LoadConfig`**:
+
+```ruby
+def self.load(context) → Hash
+```
+
+- Reads `tooling/ai_harness/config.yml` via `YAML.safe_load_file`
+- Adds `config: Hash` to context — the parsed structure preserved as-is
+- Raises on infrastructure failure (file missing, parse error). Per
+  `03_constraints.md` §3.4 these exceptions are not rescued, matching
+  `ResolveRepoRoot`'s treatment of infrastructure errors.
+- **Returns `context`** — chained via `.map`
+
 **Check steps** — each has a single public class method:
 
 ```ruby
@@ -333,7 +352,6 @@ These files are expected to exist in the repo:
 
 These patterns must be in root `.gitignore` (non-rooted):
 
-- `AGENTS.local.md`
 - `CLAUDE.local.md`
 - `.ai/*`
 
@@ -354,12 +372,35 @@ These patterns must be in root `.gitignore` (non-rooted):
 - `.gitlab/duo/chat-rules.md`
 - `.gitlab/duo/mcp.json`
 
-`AGENTS.local.md` and `CLAUDE.local.md` (at any directory level) are
-personal local override files that must never be committed. They are
-gitignored by the patterns enforced in §3.2, but the forbidden check
-catches the case where someone force-adds them with `git add --force`.
-This closes the gap where both the gitignore check and the forbidden check
-would otherwise pass silently if the gitignore entry exists but the file
-is tracked.
+`CLAUDE.local.md` (at any directory level) is the personal local override
+file used by this repo. It is gitignored by the pattern enforced in §3.2,
+but the forbidden check catches the case where someone force-adds it with
+`git add --force`. This closes the gap where both the gitignore check and
+the forbidden check would otherwise pass silently if the gitignore entry
+exists but the file is tracked.
+
+`AGENTS.local.md` (at any directory level) is non-standard for this repo
+and is not required in `.gitignore`, but is included in the forbidden list
+so that any accidental commit (force-added or otherwise) is still caught.
 
 These files in a gitignored or `.git/info/exclude`'d state are acceptable.
+
+**Allowed exceptions within forbidden patterns:**
+
+Files listed in `tooling/ai_harness/config.yml` under the
+`allowed_committed_files` key are intentionally committed as project
+content and are NOT flagged as forbidden. The `LoadConfig` step loads
+this YAML once at the head of the sub-chain into `context[:config]`,
+and the forbidden-files check reads the allowlist via
+`context[:config].fetch('allowed_committed_files')`.
+
+The YAML uses prefix matching: an entry matches any tracked path that
+begins with the entry string. This supports both exact-file paths
+(e.g. `.claude/skills/foo/SKILL.md`) and directory prefixes
+(e.g. `.claude/skills/foo/`).
+
+Each entry should be preceded by a YAML comment explaining the reason
+for the exception.
+
+Initial entries:
+- `.claude/skills/gitlab-coding-principles/SKILL.md` (added in !234174)

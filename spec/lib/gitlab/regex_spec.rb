@@ -734,6 +734,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('example.com/foo%2Fbar') }
     it { is_expected.to match('example.com/foo/bar') }
     it { is_expected.to match('example.com/foo/bar/baz') }
+    it { is_expected.to match('git.sr.ht/~user/repo') }
     it { is_expected.to match('tl.dr.foo.bar.baz') }
     it { is_expected.to match('(tl.dr.foo.bar.baz)') }
     it { is_expected.to match(' tl.dr.foo.bar.baz ') }

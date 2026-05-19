@@ -29,6 +29,13 @@ RSpec.describe 'gitlab:db:truncate_legacy_tables', :silence_stdout, :reestablish
   before do
     skip_if_shared_database(:ci)
 
+    # Run validate_config before creating test tables. This prerequisite calls
+    # establish_connection which replaces the connection pool. Without this,
+    # tables created on the old pool's transaction are invisible to the new pool's
+    # connection, causing existing_tables_set to filter them out.
+    Rake::Task['gitlab:db:validate_config'].reenable
+    Rake::Task['gitlab:db:validate_config'].invoke
+
     execute_on_each_database(<<~SQL, databases: databases)
        CREATE TABLE #{test_gitlab_main_table} (id integer NOT NULL);
        INSERT INTO #{test_gitlab_main_table} VALUES(generate_series(1, 50));

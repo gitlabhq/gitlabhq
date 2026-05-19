@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::BuildPrepareWorker, feature_category: :continuous_integration do
   subject { described_class.new.perform(build_id) }
 
-  context 'build exists' do
+  context 'when build exists' do
     let(:build) { create(:ci_build) }
     let(:build_id) { build.id }
     let(:service) { double(execute: true) }
@@ -18,7 +18,7 @@ RSpec.describe Ci::BuildPrepareWorker, feature_category: :continuous_integration
     end
   end
 
-  context 'build does not exist' do
+  context 'when build does not exist' do
     let(:build_id) { -1 }
 
     it 'does not attempt to prepare the build' do

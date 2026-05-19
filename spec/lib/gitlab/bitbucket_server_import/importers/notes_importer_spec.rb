@@ -114,6 +114,42 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
   subject(:importer) { described_class.new(project) }
 
   describe '#execute', :clean_gitlab_redis_shared_state do
+    context 'when a max merge request IID was cached during pre-allocation' do
+      let!(:locally_created_mr) do
+        create(:merge_request, source_project: project, iid: 102, source_branch: 'branch_3')
+      end
+
+      before do
+        Gitlab::Cache::Import::Caching.write(
+          "bitbucket-server-importer/max-iid/#{project.id}/merge_requests", pull_request_1.iid.to_s
+        )
+
+        allow_next_instance_of(BitbucketServer::Client) do |instance|
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_1).and_return([])
+        end
+      end
+
+      it 'only fetches notes for merge requests with IID at or below the cached max' do
+        waiter = importer.execute
+
+        expect(waiter).to be_an_instance_of(Gitlab::JobWaiter)
+        expect(waiter.jobs_remaining).to eq(0)
+        expect(Gitlab::Cache::Import::Caching.values_from_set(importer.send(:merge_request_processed_cache_key)))
+          .to match_array(%w[100])
+      end
+
+      it 'reads the cached max IID with LONGER_TIMEOUT to preserve the original expiry' do
+        cache_key = "bitbucket-server-importer/max-iid/#{project.id}/merge_requests"
+
+        allow(Gitlab::Cache::Import::Caching).to receive(:read).and_call_original
+        expect(Gitlab::Cache::Import::Caching).to receive(:read)
+          .with(cache_key, timeout: Gitlab::Cache::Import::Caching::LONGER_TIMEOUT)
+          .and_call_original
+
+        importer.execute
+      end
+    end
+
     context 'when pull request was already processed' do
       before do
         Gitlab::Cache::Import::Caching.set_add(importer.send(:merge_request_processed_cache_key), "100")
@@ -381,6 +417,46 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
 
         expect(Gitlab::Cache::Import::Caching.values_from_set(importer.send(:merge_request_processed_cache_key)))
           .to match_array(%w[101])
+      end
+    end
+
+    context 'when a non-retryable ConnectionError is raised for a single PR' do
+      it 'logs the error and continues processing the remaining merge requests' do
+        error = BitbucketServer::Connection::ConnectionError.new(
+          'Error 404: No pull request exists with ID 100', http_status_code: 404
+        )
+
+        allow_next_instance_of(BitbucketServer::Client) do |instance|
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_1).and_raise(error)
+          allow(instance).to receive(:activities).with('key', 'slug', 101, page_hash_1).and_return([])
+        end
+
+        expect(Gitlab::Import::ImportFailureService).to receive(:track).with(
+          hash_including(
+            project_id: project.id,
+            error_source: described_class.name,
+            exception: error
+          )
+        )
+
+        expect { importer.execute }.not_to raise_error
+
+        expect(Gitlab::Cache::Import::Caching.values_from_set(importer.send(:merge_request_processed_cache_key)))
+          .to match_array(%w[101])
+      end
+    end
+
+    context 'when a retryable ConnectionError is raised' do
+      it 're-raises the error' do
+        error = BitbucketServer::Connection::ConnectionError.new(
+          'Error 500: Internal Server Error', http_status_code: 500
+        )
+
+        allow_next_instance_of(BitbucketServer::Client) do |instance|
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_1).and_raise(error)
+        end
+
+        expect { importer.execute }.to raise_error(error)
       end
     end
 

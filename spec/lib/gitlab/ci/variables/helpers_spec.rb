@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
     end
 
     context 'when new variables is nil' do
-      let(:new_variables) {}
+      let(:new_variables) { nil }
       let(:result) do
         [
           { key: 'key1', value: 'value1' },
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
     end
 
     context 'when variables is nil' do
-      let(:variables) {}
+      let(:variables) { nil }
 
       it { is_expected.to match_array([]) }
     end

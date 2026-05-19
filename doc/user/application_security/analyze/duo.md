@@ -52,7 +52,7 @@ Prerequisites:
 To explain the vulnerability:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Vulnerability report**.
+1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
 1. In the dropdown list that appears, select **Tool**, then select all the values in the **SAST** category.

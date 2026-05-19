@@ -1,0 +1,7 @@
+---
+event: Ai::ActiveContext::Code::CreateEnabledNamespaceEvent
+description: Published to trigger creation of Ai::ActiveContext::Code::EnabledNamespace
+  records for namespaces eligible for code indexing. Re-emitted by the subscriber
+  worker to continue batched processing across event invocations.
+feature_category: global_search
+ee_only: true

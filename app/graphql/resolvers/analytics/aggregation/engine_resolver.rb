@@ -13,7 +13,7 @@ module Resolvers
               type Types::Analytics::Aggregation::AggregationScopeType.build(engine, **graphql_context),
                 null: true
 
-              adapter.each_filter_argument(engine.filters) do |name, type, kwargs|
+              adapter.each_filter_argument(engine.filters.reject(&:metric?)) do |name, type, kwargs|
                 argument(name, type, **kwargs) # rubocop:disable Graphql/Descriptions -- defined in adapter
               end
             end

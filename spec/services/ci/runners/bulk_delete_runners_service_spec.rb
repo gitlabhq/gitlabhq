@@ -10,9 +10,9 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute', feature_cate
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 
-  let(:user) {}
+  let(:user) { nil }
   let(:service_args) { { runners: runners_arg, current_user: user } }
-  let(:runners_arg) {}
+  let(:runners_arg) { nil }
 
   context 'with runners specified' do
     let!(:instance_runner) { create(:ci_runner) }

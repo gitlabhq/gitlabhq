@@ -45,7 +45,7 @@ RSpec.describe Ci::StuckBuilds::DropScheduledService, feature_category: :continu
   end
 
   context 'when there are no stale scheduled builds' do
-    let(:job) {}
+    let(:job) { nil }
 
     it 'does not drop the stale scheduled build yet' do
       expect { service.execute }.not_to raise_error

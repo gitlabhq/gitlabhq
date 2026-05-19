@@ -48,9 +48,9 @@ type sendQueryParams struct {
 }
 
 type queryResponse struct {
-	Result          json.RawMessage `json:"result"`
+	Result          json.RawMessage `json:"result,omitempty"`
 	QueryType       string          `json:"query_type"`
-	RawQueryStrings []string        `json:"raw_query_strings"`
+	RawQueryStrings []string        `json:"raw_query_strings,omitempty"`
 	RowCount        int32           `json:"row_count"`
 }
 
@@ -102,9 +102,7 @@ func (sq *SendQuery) Inject(w http.ResponseWriter, r *http.Request, sendData str
 		return
 	}
 
-	if params.GkgServer.JWT != "" {
-		ctx = metadata.NewOutgoingContext(ctx, metadata.Pairs("authorization", "Bearer "+params.GkgServer.JWT))
-	}
+	ctx = buildOutgoingContext(ctx, params.GkgServer)
 
 	stream, err := client.ExecuteQuery(ctx)
 	if err != nil {
@@ -176,15 +174,27 @@ func handleRecvError(ctx context.Context, w http.ResponseWriter, r *http.Request
 		fail.Request(w, r, fmt.Errorf("orbit.SendQuery: stream ended without result"), fail.WithStatus(http.StatusBadGateway))
 		return
 	}
-	if ctx.Err() != nil {
-		fail.Request(w, r, fmt.Errorf("orbit.SendQuery: %v", ctx.Err()), fail.WithStatus(http.StatusGatewayTimeout))
-		return
-	}
-	if st, ok := status.FromError(err); ok && st.Code() == codes.Canceled {
+	if isContextDone(ctx, err) {
+		fail.Request(w, r, fmt.Errorf("orbit.SendQuery: %v", err), fail.WithStatus(http.StatusGatewayTimeout))
 		return
 	}
 	log.WithRequest(r).WithError(fmt.Errorf("orbit.SendQuery: stream recv: %v", err)).Error()
 	fail.Request(w, r, fmt.Errorf("orbit.SendQuery: stream error"), fail.WithStatus(http.StatusBadGateway))
+}
+
+// isContextDone returns true when the recv error was caused by the context
+// being done (deadline exceeded or canceled). It checks both the local
+// context and the gRPC status code for DeadlineExceeded so the detection
+// is race-free: gRPC may return the error before the child context's
+// Err() is set.
+func isContextDone(ctx context.Context, err error) bool {
+	if ctx.Err() != nil {
+		return true
+	}
+	if st, ok := status.FromError(err); ok {
+		return st.Code() == codes.DeadlineExceeded
+	}
+	return false
 }
 
 func (sq *SendQuery) handleRedaction(
@@ -219,6 +229,11 @@ func (sq *SendQuery) handleRedaction(
 }
 
 func writeResultResponse(w http.ResponseWriter, r *http.Request, result *gkgpb.ExecuteQueryResult, format gkgpb.ResponseFormat, mcpID any) {
+	if format == gkgpb.ResponseFormat_RESPONSE_FORMAT_LLM {
+		writeLLMResultResponse(w, r, result, mcpID)
+		return
+	}
+
 	resp := buildQueryResponse(result, format)
 
 	w.Header().Del("Content-Length")
@@ -235,6 +250,37 @@ func writeResultResponse(w http.ResponseWriter, r *http.Request, result *gkgpb.E
 	}
 	if err := json.NewEncoder(w).Encode(out); err != nil {
 		log.WithRequest(r).WithError(fmt.Errorf("orbit.SendQuery: write response: %v", err)).Error()
+	}
+}
+
+// writeLLMResultResponse writes the raw goon body directly: text/plain for
+// REST callers, MCP text content for MCP callers. The JSON envelope is skipped
+// because goon is not JSON; wrapping it would escape every newline.
+func writeLLMResultResponse(w http.ResponseWriter, r *http.Request, result *gkgpb.ExecuteQueryResult, mcpID any) {
+	body := result.GetFormattedText()
+
+	w.Header().Del("Content-Length")
+	if mcpID != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		out := mcpResponse{
+			JSONRPC: "2.0",
+			Result: mcpToolResult{
+				Content: []mcpContent{{Type: "text", Text: body}},
+				IsError: false,
+			},
+			ID: mcpID,
+		}
+		if err := json.NewEncoder(w).Encode(out); err != nil {
+			log.WithRequest(r).WithError(fmt.Errorf("orbit.SendQuery: write LLM MCP response: %v", err)).Error()
+		}
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	if _, err := io.WriteString(w, body); err != nil {
+		log.WithRequest(r).WithError(fmt.Errorf("orbit.SendQuery: write LLM response: %v", err)).Error()
 	}
 }
 
@@ -277,7 +323,7 @@ func wrapMCPSuccess(resultJSON []byte, mcpID any) mcpResponse {
 }
 
 func buildQueryResponse(result *gkgpb.ExecuteQueryResult, format gkgpb.ResponseFormat) queryResponse {
-	resp := queryResponse{RawQueryStrings: []string{}}
+	var resp queryResponse
 
 	if md := result.GetMetadata(); md != nil {
 		resp.QueryType = md.GetQueryType()
@@ -285,16 +331,17 @@ func buildQueryResponse(result *gkgpb.ExecuteQueryResult, format gkgpb.ResponseF
 		resp.RowCount = md.GetRowCount()
 	}
 
-	switch format {
-	case gkgpb.ResponseFormat_RESPONSE_FORMAT_LLM:
-		resp.Result, _ = json.Marshal(result.GetFormattedText())
-	default:
-		raw := result.GetResultJson()
-		if json.Valid([]byte(raw)) {
-			resp.Result = json.RawMessage(raw)
-		} else {
-			resp.Result, _ = json.Marshal(raw)
-		}
+	if format == gkgpb.ResponseFormat_RESPONSE_FORMAT_LLM {
+		// LLM responses are written by writeLLMResultResponse with no envelope.
+		// Leave Result nil; callers should not consume it for LLM format.
+		return resp
+	}
+
+	raw := result.GetResultJson()
+	if json.Valid([]byte(raw)) {
+		resp.Result = json.RawMessage(raw)
+	} else {
+		resp.Result, _ = json.Marshal(raw)
 	}
 
 	return resp
@@ -323,4 +370,19 @@ func gkgErrorToHTTPStatus(code string) int {
 	default:
 		return http.StatusBadRequest
 	}
+}
+
+// buildOutgoingContext attaches per-call gRPC metadata to ctx from the
+// generic Headers map. All entries are forwarded verbatim; callers are
+// responsible for populating the map with the correct header names and
+// values (e.g. "authorization", "x-gitlab-enabled-feature-flags", …).
+func buildOutgoingContext(ctx context.Context, server GkgServer) context.Context {
+	if len(server.Headers) == 0 {
+		return ctx
+	}
+	var pairs []string
+	for k, v := range server.Headers {
+		pairs = append(pairs, k, v)
+	}
+	return metadata.NewOutgoingContext(ctx, metadata.Pairs(pairs...))
 }

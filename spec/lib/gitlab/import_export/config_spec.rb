@@ -35,7 +35,7 @@ RSpec.describe Gitlab::ImportExport::Config, feature_category: :importers do
 
     context 'when using custom config' do
       let(:config) do
-        <<-EOF.strip_heredoc
+        <<~YAML
           tree:
             project:
               - labels:
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::ImportExport::Config, feature_category: :importers do
             preloads:
               statuses:
                 bridge_ee:
-        EOF
+        YAML
       end
 
       let(:config_hash) { YAML.safe_load(config, permitted_classes: [Symbol]) }

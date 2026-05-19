@@ -1,6 +1,6 @@
 <script>
 import { visitUrl, getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
+import { TYPENAME_WORK_ITEM, TYPENAME_NAMESPACE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import CreateWorkItem from '../components/create_work_item.vue';
 import CreateWorkItemCancelConfirmationModal from '../components/create_work_item_cancel_confirmation_modal.vue';
@@ -14,6 +14,7 @@ import {
   WORK_ITEM_TYPE_ROUTE_ISSUE,
 } from '../constants';
 import workItemRelatedItemQuery from '../graphql/work_item_related_item.query.graphql';
+import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import { convertTypeEnumToName } from '../utils';
 
 export default {
@@ -103,6 +104,21 @@ export default {
         if (numberOfDiscussionsResolved) {
           routerPushObject.query = { resolves_discussion: numberOfDiscussionsResolved };
         }
+
+        const { cache } = this.$apollo.provider.defaultClient;
+        const cachedData = cache.readQuery({
+          query: namespaceWorkItemTypesQuery,
+          variables: { fullPath: this.rootPageFullPath },
+        });
+
+        if (cachedData?.namespace?.id) {
+          cache.evict({
+            id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: cachedData.namespace.id }),
+            fieldName: 'workItems',
+          });
+          cache.gc();
+        }
+
         this.$router.push(routerPushObject);
       } else {
         visitUrl(workItem.webUrl);

@@ -69,6 +69,9 @@ describe('GitlabDuoSettings', () => {
     wrapper.findByTestId('duo-secret-detection-fp-enabled');
   const findDuoSastVrWorkflowToggle = () => wrapper.findByTestId('duo-sast-vr-workflow-enabled');
   const findAutoReviewToggle = () => wrapper.findByTestId('amazon-q-auto-review-enabled');
+  const findToolApprovalToggle = () => wrapper.findByTestId('tool-approval-for-session-enabled');
+  const findToolApprovalCascadingLockIcon = () =>
+    wrapper.findByTestId('tool-approval-cascading-lock-icon');
 
   beforeEach(() => {
     wrapper = createWrapper();
@@ -434,6 +437,80 @@ describe('GitlabDuoSettings', () => {
           expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
 
           await findDuoSecretDetectionFpToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+        });
+      });
+
+      describe('Tool approval for session settings', () => {
+        it('renders the tool approval toggle when Duo features are enabled', () => {
+          wrapper = createWrapper({ duoFeaturesEnabled: true, amazonQAvailable: false });
+
+          expect(findToolApprovalToggle().exists()).toBe(true);
+          expect(findToolApprovalToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not render the tool approval toggle when Duo features are disabled', () => {
+          wrapper = createWrapper({ duoFeaturesEnabled: false });
+
+          expect(findToolApprovalToggle().exists()).toBe(false);
+        });
+
+        it('does not render the tool approval toggle when Amazon Q is available', () => {
+          wrapper = createWrapper({ duoFeaturesEnabled: true, amazonQAvailable: true });
+
+          expect(findToolApprovalToggle().exists()).toBe(false);
+        });
+
+        it('disables the toggle when Duo features are locked', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoFeaturesLocked: true,
+            amazonQAvailable: false,
+          });
+
+          expect(findToolApprovalToggle().props('disabled')).toBe(true);
+        });
+
+        it('disables the toggle when cascading lock is active', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            toolApprovalForSessionLocked: true,
+            toolApprovalForSessionCascadingSettings: {
+              lockedByAncestor: true,
+              lockedByApplicationSetting: false,
+            },
+          });
+
+          expect(findToolApprovalToggle().props('disabled')).toBe(true);
+          expect(findToolApprovalCascadingLockIcon().exists()).toBe(true);
+        });
+
+        it('does not show cascading lock icon when not locked', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+          });
+
+          expect(findToolApprovalCascadingLockIcon().exists()).toBe(false);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            initialToolApprovalForSessionEnabled: true,
+          });
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][tool_approval_for_session_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findToolApprovalToggle().vm.$emit('change', false);
 
           expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
         });

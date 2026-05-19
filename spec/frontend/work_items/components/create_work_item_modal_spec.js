@@ -9,17 +9,8 @@ import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.
 import {
   CREATION_CONTEXT_LIST_ROUTE,
   WORK_ITEM_TYPE_NAME_EPIC,
-  WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
-  WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  WORK_ITEM_TYPE_NAME_REQUIREMENTS,
-  WORK_ITEM_TYPE_NAME_TASK,
-  WORK_ITEM_TYPE_NAME_TEST_CASE,
-  WORK_ITEM_TYPE_NAME_TICKET,
-  WORK_ITEM_TYPE_ROUTE_EPIC,
-  WORK_ITEM_TYPE_ROUTE_ISSUE,
-  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
 } from '~/work_items/constants';
 import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
 
@@ -230,28 +221,14 @@ describe('CreateWorkItemModal', () => {
     expect(findCreateModal().props('visible')).toBe(false);
   });
 
-  it.each`
-    workItemType                        | routeParamName
-    ${WORK_ITEM_TYPE_NAME_EPIC}         | ${WORK_ITEM_TYPE_ROUTE_EPIC}
-    ${WORK_ITEM_TYPE_NAME_ISSUE}        | ${WORK_ITEM_TYPE_ROUTE_ISSUE}
-    ${WORK_ITEM_TYPE_NAME_INCIDENT}     | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
-    ${WORK_ITEM_TYPE_NAME_KEY_RESULT}   | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
-    ${WORK_ITEM_TYPE_NAME_OBJECTIVE}    | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
-    ${WORK_ITEM_TYPE_NAME_REQUIREMENTS} | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
-    ${WORK_ITEM_TYPE_NAME_TASK}         | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
-    ${WORK_ITEM_TYPE_NAME_TEST_CASE}    | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
-    ${WORK_ITEM_TYPE_NAME_TICKET}       | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
-  `(
-    `has link to new work item page in modal header for $workItemType and it appends initialCreationContext params to the url`,
-    async ({ workItemType, routeParamName }) => {
-      createComponent({ preselectedWorkItemType: workItemType });
-      await waitForPromises();
+  it('has link to new work item page in modal header and appends initialCreationContext params to the url', async () => {
+    createComponent();
+    await waitForPromises();
 
-      expect(findOpenInFullPageButton().attributes().href).toBe(
-        `/full-path/-/${routeParamName}/new?initialCreationContext=${CREATION_CONTEXT_LIST_ROUTE}`,
-      );
-    },
-  );
+    expect(findOpenInFullPageButton().attributes().href).toBe(
+      `/full-path/-/work_items/new?initialCreationContext=${CREATION_CONTEXT_LIST_ROUTE}`,
+    );
+  });
 
   describe('when there is a related item', () => {
     beforeEach(async () => {
@@ -269,7 +246,7 @@ describe('CreateWorkItemModal', () => {
 
     it('appends the related item id and initialCreationContext params to the full page button href', () => {
       expect(findOpenInFullPageButton().attributes('href')).toBe(
-        `/full-path/-/epics/new?related_item_id=gid://gitlab/WorkItem/843&initialCreationContext=${CREATION_CONTEXT_LIST_ROUTE}`,
+        `/full-path/-/work_items/new?related_item_id=gid://gitlab/WorkItem/843&initialCreationContext=${CREATION_CONTEXT_LIST_ROUTE}`,
       );
     });
   });

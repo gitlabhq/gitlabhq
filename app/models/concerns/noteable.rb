@@ -99,7 +99,7 @@ module Noteable
   end
 
   # This does not consider OutOfContextDiscussions in MRs
-  # where notes from commits are overriden so that they have
+  # where notes from commits are overridden so that they have
   # the same discussion_id
   def discussion_root_note_ids(notes_filter:, sort: :created_asc)
     sort = :created_asc if sort.nil?

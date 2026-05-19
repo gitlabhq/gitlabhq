@@ -32,6 +32,8 @@ query projectWorkItemAwardEmojis(
         awardEmoji {
           type
           newCustomEmojiPath
+          upvotes
+          downvotes
           awardEmoji(first: $pageSize, after: $after) {
             pageInfo {
               ...PageInfo

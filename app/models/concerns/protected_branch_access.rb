@@ -7,6 +7,7 @@ module ProtectedBranchAccess
   included do
     belongs_to :protected_branch
 
+    # protected_ref_project
     delegate :project, to: :protected_branch, allow_nil: true, prefix: :protected_ref
 
     # We cannot delegate to :protected_branch here (even with allow_nil: true)
@@ -17,3 +18,6 @@ module ProtectedBranchAccess
     end
   end
 end
+
+ProtectedBranchAccess.include_mod_with('ProtectedBranchAccess::Scopes')
+ProtectedBranchAccess.prepend_mod_with('ProtectedBranchAccess')

@@ -1,0 +1,10 @@
+---
+name: orbit_code_intelligence
+description: Enables the Orbit-powered Code Intelligence side panel in the blob file viewer
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/21901
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234404
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/599054
+milestone: '19.0'
+group: group::code review
+type: beta
+default_enabled: false

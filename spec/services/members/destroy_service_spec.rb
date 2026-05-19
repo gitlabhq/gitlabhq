@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Members::DestroyService, feature_category: :groups_and_projects do
   let_it_be(:current_user) { create(:user) }
+  let_it_be_with_reload(:member_user) { create(:user) }
+  let_it_be_with_reload(:group) { create(:group, :public) }
+  let_it_be_with_reload(:group_project) { create(:project, :public, group: group) }
 
-  let(:member_user) { create(:user) }
-  let(:group) { create(:group, :public) }
-  let(:group_project) { create(:project, :public, group: group) }
   let(:opts) { {} }
 
   shared_examples 'a service raising ActiveRecord::RecordNotFound' do
@@ -135,7 +135,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
     subject(:destroy_member) { service_object.execute }
 
     context 'for group members' do
-      before do
+      before_all do
         group.add_owner(current_user)
       end
 
@@ -229,7 +229,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
         end
       end
 
-      before do
+      before_all do
         group_project.add_owner(current_user)
       end
 
@@ -310,7 +310,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
     end
 
     context 'when current user can destroy the given member' do
-      before do
+      before_all do
         group_project.add_maintainer(current_user)
         group.add_owner(current_user)
       end
@@ -399,7 +399,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
     context 'when current user can destroy the given access requester' do
       let(:opts) { { skip_subresources: true } }
 
-      before do
+      before_all do
         group_project.add_maintainer(current_user)
         group.add_owner(current_user)
       end
@@ -452,7 +452,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
     end
 
     context 'when current user can destroy the given invited user' do
-      before do
+      before_all do
         group_project.add_maintainer(current_user)
         group.add_owner(current_user)
       end

@@ -1,9 +1,11 @@
 ---
 name: read_variable
 description: Grants the ability to read variables
-permissions:
-  - read_variable
 boundaries:
   - project
   - group
   - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_variable

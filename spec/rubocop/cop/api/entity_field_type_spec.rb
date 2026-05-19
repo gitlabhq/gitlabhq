@@ -159,6 +159,42 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
         expose :relation, documentation: { type: '::API::Entities::SomeType', example: 'label' }
       RUBY
     end
+
+    it 'does not register an offense for API::Entities constant with .to_s' do
+      expect_no_offenses(<<~RUBY)
+        expose :last_pipeline, documentation: { type: API::Entities::Ci::PipelineBasic.to_s }
+      RUBY
+    end
+
+    it 'does not register an offense for API::Entities constant with leading colons and .to_s' do
+      expect_no_offenses(<<~RUBY)
+        expose :last_pipeline, documentation: { type: ::API::Entities::Ci::PipelineBasic.to_s }
+      RUBY
+    end
+
+    it 'does not register an offense for API::Entities constant with .name' do
+      expect_no_offenses(<<~RUBY)
+        expose :last_pipeline, documentation: { type: API::Entities::Ci::PipelineBasic.name }
+      RUBY
+    end
+
+    it 'does not register an offense for API::Entities constant with leading colons and .name' do
+      expect_no_offenses(<<~RUBY)
+        expose :last_pipeline, documentation: { type: ::API::Entities::Ci::PipelineBasic.name }
+      RUBY
+    end
+
+    it 'does not register an offense for API::Entities constant wrapped in String()' do
+      expect_no_offenses(<<~RUBY)
+        expose :last_pipeline, documentation: { type: String(API::Entities::Ci::PipelineBasic) }
+      RUBY
+    end
+
+    it 'does not register an offense for API::Entities constant with leading colons wrapped in String()' do
+      expect_no_offenses(<<~RUBY)
+        expose :last_pipeline, documentation: { type: String(::API::Entities::Ci::PipelineBasic) }
+      RUBY
+    end
   end
 
   describe 'using option' do

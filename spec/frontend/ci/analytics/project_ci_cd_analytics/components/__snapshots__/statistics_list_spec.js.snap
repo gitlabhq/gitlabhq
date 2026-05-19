@@ -8,6 +8,7 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
     <gl-single-stat-stub
       animationdecimalplaces="0"
       id="reference-0"
+      metatooltip=""
       shouldanimate="true"
       title="Total pipeline runs"
       titleiconclass=""
@@ -21,6 +22,7 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
     <gl-single-stat-stub
       animationdecimalplaces="0"
       id="reference-1"
+      metatooltip=""
       shouldanimate="true"
       title="Failure rate"
       titleiconclass=""
@@ -41,6 +43,7 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
     <gl-single-stat-stub
       animationdecimalplaces="0"
       id="reference-2"
+      metatooltip=""
       shouldanimate="true"
       title="Success rate"
       titleiconclass=""

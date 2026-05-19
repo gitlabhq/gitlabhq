@@ -4,7 +4,6 @@ import DashboardsListNameCell from '~/vue_shared/components/dashboards_list/dash
 
 const mockDashboard = {
   name: 'Built in dashboard',
-  description: 'Built in dashboard description',
   isStarred: true,
   dashboardUrl: '/fake/link/to/share',
 };
@@ -35,13 +34,23 @@ describe('DashboardsListNameCell', () => {
       expect(findDashboardLink().text()).toBe(mockDashboard.name);
     });
 
-    it('renders the description', () => {
-      expect(findDescription().props('text')).toBe(mockDashboard.description);
-    });
-
     it('renders the star icon', () => {
       expect(findStarIcon().props('icon')).toBe('star');
       expect(findStarIcon().attributes('title')).toBe('Remove from favorites');
+    });
+
+    it('does not render the description', () => {
+      expect(findDescription().exists()).toBe(false);
+    });
+  });
+
+  describe('with a description', () => {
+    beforeEach(() => {
+      createWrapper({ description: 'Built in dashboard description' });
+    });
+
+    it('renders the description', () => {
+      expect(findDescription().props('text')).toBe('Built in dashboard description');
     });
   });
 

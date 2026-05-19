@@ -17,8 +17,11 @@ describe('expandLinesAdapter', () => {
   const getLastInsertedRow = () => document.querySelector('[data-hunk-lines="4"]');
   const getDiffElement = () => document.querySelector('#diffElement');
   const getSurroundingLines = (direction) => {
-    const prev = getExpandButton(direction).closest('tr').previousElementSibling;
-    const next = getExpandButton(direction).closest('tr').nextElementSibling;
+    const headerRow = getExpandButton(direction).closest('tr');
+    const allRows = Array.from(document.querySelectorAll('[data-hunk-lines], [data-hunk-header]'));
+    const headerIndex = allRows.indexOf(headerRow);
+    const prev = allRows.slice(0, headerIndex).findLast((el) => 'hunkLines' in el.dataset);
+    const next = allRows.slice(headerIndex + 1).find((el) => 'hunkLines' in el.dataset);
     return [prev ? new DiffLineRow(prev) : null, next ? new DiffLineRow(next) : null];
   };
   const getDiffFileContext = () => {
@@ -49,7 +52,7 @@ describe('expandLinesAdapter', () => {
         <div data-file-body>
           <table>
             <tbody>
-              <tr>
+              <tr data-hunk-header>
                 <td>
                   <button data-click="expandLines" data-expand-direction="up"></button>
                 </td>
@@ -58,7 +61,9 @@ describe('expandLinesAdapter', () => {
                 <td>
                 </td>
               </tr>
-              <tr>
+            </tbody>
+            <tbody>
+              <tr data-hunk-header>
                 <td>
                   <button data-click="expandLines" data-expand-direction="both"></button>
                 </td>
@@ -67,7 +72,9 @@ describe('expandLinesAdapter', () => {
                 <td>
                 </td>
               </tr>
-              <tr>
+            </tbody>
+            <tbody>
+              <tr data-hunk-header>
                 <td>
                   <button data-click="expandLines" data-expand-direction="down"></button>
                 </td>

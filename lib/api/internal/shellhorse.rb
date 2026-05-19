@@ -47,6 +47,14 @@ module API
               # haves is the number of objects the client announced it has.
               optional :haves, type: Integer, desc: 'Number of objects the client announces it has.'
             end
+            optional :written_bytes, type: Integer,
+              desc: 'Number of bytes written (sent to client) during the git operation.'
+            optional :received_bytes, type: Integer,
+              desc: 'Number of bytes received (from client) during the git operation.'
+            optional :key_id, type: Integer,
+              desc: 'ID of the SSH key used for authentication. Present when a deploy key authenticates via SSH.'
+            optional :username, type: String,
+              desc: 'Username of the user performing the git operation.'
           end
 
           route_setting :authorization, skip_granular_token_authorization: :gitlab_shared_secret_auth
@@ -55,8 +63,6 @@ module API
               break response_with_status(code: 400, success: false, message: "No valid action specified")
             end
 
-            # ToDo: move need_git_audit_event? check after access_check_result when the human guard is removed
-            # the issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/591573
             unless need_git_audit_event?
               break response_with_status(code: 200, success: false, message: "No git audit event needed")
             end
@@ -74,6 +80,9 @@ module API
               action: params[:action],
               verb: check_clone_or_pull_or_push_verb(params)
             }
+
+            audit_message[:written_bytes] = params[:written_bytes] if params[:written_bytes].present?
+            audit_message[:received_bytes] = params[:received_bytes] if params[:received_bytes].present?
 
             # If the protocol is SSH, we need to send the original IP from the PROXY
             # protocol to the audit streaming event. The original IP from gitlab-shell

@@ -350,7 +350,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
       it 'also deletes the associated evidence' do
         release_with_evidence
 
-        expect { release_with_evidence.destroy! }.to change(Releases::Evidence, :count).by(-1)
+        expect { release_with_evidence.destroy! }.to change { Releases::Evidence.count }.by(-1)
       end
     end
   end

@@ -10,16 +10,16 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
 
   describe '#issues' do
     describe 'confidential issues' do
-      let(:author) { create(:user) }
-      let(:assignee) { create(:user) }
-      let(:non_member) { create(:user) }
+      let_it_be(:author) { create(:user) }
+      let_it_be(:assignee) { create(:user) }
+      let_it_be(:non_member) { create(:user) }
       let(:member) { create(:user) }
-      let(:admin) { create(:admin) }
-      let!(:security_issue_1) do
+      let_it_be(:admin) { create(:admin) }
+      let_it_be(:security_issue_1) do
         create(:issue, :confidential, project: project, title: 'Security issue 1', author: author)
       end
 
-      let!(:security_issue_2) do
+      let_it_be(:security_issue_2) do
         create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee])
       end
 
@@ -138,7 +138,7 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
   end
 
   describe '#milestones' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
     let!(:group_milestone1) { create(:milestone, group: group, due_date: '2017-01-01', title: 'Second Title') }
     let!(:group_milestone2) { create(:milestone, group: group, due_date: '2017-01-01', title: 'First Title') }
     let!(:project_milestone) { create(:milestone, project: project, due_date: '2016-01-01') }
@@ -244,7 +244,7 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
 
     subject { described_class.new(project, user).contacts(issue).as_json }
 
-    before do
+    before_all do
       group.add_developer(user)
     end
 
@@ -290,20 +290,16 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
       expect(labels.map(&extract_title)).to match_array(expected_labels.map(&extract_title))
     end
 
-    let(:user) { create(:user) }
-    let(:group) { create(:group, :nested) }
-    let!(:sub_group) { create(:group, parent: group) }
-    let(:project) { create(:project, :public, group: group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group, :nested, developers: user) }
+    let_it_be(:sub_group) { create(:group, parent: group) }
+    let_it_be(:project) { create(:project, :public, group: group) }
     let(:issue) { create(:issue, project: project) }
 
-    let!(:label1) { create(:label, project: project) }
-    let!(:label2) { create(:label, project: project) }
-    let!(:sub_group_label) { create(:group_label, group: sub_group) }
-    let!(:parent_group_label) { create(:group_label, group: group.parent, group_id: group.id) }
-
-    before do
-      create(:group_member, group: group, user: user)
-    end
+    let_it_be(:label1) { create(:label, project: project) }
+    let_it_be(:label2) { create(:label, project: project) }
+    let_it_be(:sub_group_label) { create(:group_label, group: sub_group) }
+    let_it_be(:parent_group_label) { create(:group_label, group: group.parent, group_id: group.id) }
 
     it 'returns labels from project and ancestor groups' do
       service = described_class.new(project, user)
@@ -337,7 +333,7 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
     end
 
     context 'with archived labels' do
-      let!(:archived_label) { create(:label, :archived, project: project) }
+      let_it_be(:archived_label) { create(:label, :archived, project: project) }
 
       subject(:results) { described_class.new(project, user).labels_as_hash(nil) }
 

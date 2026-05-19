@@ -1,0 +1,4 @@
+---
+event: Groups::GroupTransferedEvent
+description: Published after a group is transferred to a different parent namespace.
+feature_category: groups_and_projects

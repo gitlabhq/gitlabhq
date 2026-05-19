@@ -2,7 +2,7 @@
 
 RSpec.describe ActiveContext::EmbeddingModel do
   let(:field) { 'embeddings_v123' }
-  let(:model_name) { 'embedding model 123' }
+  let(:model_key) { 'gitlab-model-123' }
   let(:model) { 'model-123' }
 
   let(:llm_class) { Test::MockLlmClass }
@@ -10,7 +10,7 @@ RSpec.describe ActiveContext::EmbeddingModel do
 
   let(:embedding_model) do
     described_class.new(
-      model_name: model_name,
+      model_key: model_key,
       field: field,
       llm_class: llm_class,
       llm_params: llm_params
@@ -19,7 +19,7 @@ RSpec.describe ActiveContext::EmbeddingModel do
 
   describe 'accessors' do
     it 'returns the expected embedding model info' do
-      expect(embedding_model.model_name).to eq(model_name)
+      expect(embedding_model.model_key).to eq(model_key)
       expect(embedding_model.field).to eq(field.to_sym)
       expect(embedding_model.llm_class).to eq(llm_class)
       expect(embedding_model.llm_params).to eq(llm_params)
@@ -60,13 +60,13 @@ RSpec.describe ActiveContext::EmbeddingModel do
       it 'logs the embeddings generation' do
         expect(::ActiveContext::Logger).to receive(:info).with(
           message: "generate embeddings",
-          model: 'embedding model 123',
+          model: 'gitlab-model-123',
           status: "start",
           class: "ActiveContext::EmbeddingModel"
         )
         expect(::ActiveContext::Logger).to receive(:info).with(
           message: "generate embeddings",
-          model: 'embedding model 123',
+          model: 'gitlab-model-123',
           status: "done",
           class: "ActiveContext::EmbeddingModel"
         )

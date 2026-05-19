@@ -29,7 +29,7 @@ RSpec.describe MergeRequest::CleanupSchedule, feature_category: :code_review_wor
         let(:cleanup_schedule) { create(:merge_request_cleanup_schedule, :running) }
 
         it 'does not change status' do
-          expect { cleanup_schedule.run }.not_to change(cleanup_schedule, :status)
+          expect { cleanup_schedule.run }.not_to change { cleanup_schedule.status }
         end
       end
     end
@@ -44,14 +44,14 @@ RSpec.describe MergeRequest::CleanupSchedule, feature_category: :code_review_wor
       end
 
       it 'increments failed_count' do
-        expect { cleanup_schedule.retry }.to change(cleanup_schedule, :failed_count).by(1)
+        expect { cleanup_schedule.retry }.to change { cleanup_schedule.failed_count }.by(1)
       end
 
       context 'when previous status is not running' do
         let(:cleanup_schedule) { create(:merge_request_cleanup_schedule) }
 
         it 'does not change status' do
-          expect { cleanup_schedule.retry }.not_to change(cleanup_schedule, :status)
+          expect { cleanup_schedule.retry }.not_to change { cleanup_schedule.status }
         end
       end
     end
@@ -66,14 +66,14 @@ RSpec.describe MergeRequest::CleanupSchedule, feature_category: :code_review_wor
       end
 
       it 'sets the completed_at' do
-        expect { cleanup_schedule.complete }.to change(cleanup_schedule, :completed_at)
+        expect { cleanup_schedule.complete }.to change { cleanup_schedule.completed_at }
       end
 
       context 'when previous status is not running' do
         let(:cleanup_schedule) { create(:merge_request_cleanup_schedule, :completed) }
 
         it 'does not change status' do
-          expect { cleanup_schedule.complete }.not_to change(cleanup_schedule, :status)
+          expect { cleanup_schedule.complete }.not_to change { cleanup_schedule.status }
         end
       end
     end
@@ -88,14 +88,14 @@ RSpec.describe MergeRequest::CleanupSchedule, feature_category: :code_review_wor
       end
 
       it 'increments failed_count' do
-        expect { cleanup_schedule.mark_as_failed }.to change(cleanup_schedule, :failed_count).by(1)
+        expect { cleanup_schedule.mark_as_failed }.to change { cleanup_schedule.failed_count }.by(1)
       end
 
       context 'when previous status is not running' do
         let(:cleanup_schedule) { create(:merge_request_cleanup_schedule, :failed) }
 
         it 'does not change status' do
-          expect { cleanup_schedule.mark_as_failed }.not_to change(cleanup_schedule, :status)
+          expect { cleanup_schedule.mark_as_failed }.not_to change { cleanup_schedule.status }
         end
       end
     end

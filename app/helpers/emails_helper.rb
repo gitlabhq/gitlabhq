@@ -130,7 +130,7 @@ module EmailsHelper
 
       _("Issue was closed by %{name} with %{closed_via}") % { name: name, closed_via: closed_via }
     else
-      type = work_item_type_for(@issue).capitalize
+      type = work_item_type_for(@issue)
 
       if name
         _("%{type} was closed by %{name}") % { name: name, type: type }

@@ -2,6 +2,7 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Install, configure, back up, and upgrade GitLab in a Docker container.
 title: Install GitLab in a Docker container
 ---
 

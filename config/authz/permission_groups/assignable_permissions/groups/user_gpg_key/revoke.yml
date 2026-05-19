@@ -1,7 +1,10 @@
 ---
 name: revoke_user_gpg_key
 description: Grants the ability to revoke user GPG keys
+deprecated: true
 boundaries:
   - user
+available_for:
+  - granular_access_token
 permissions:
   - revoke_user_gpg_key

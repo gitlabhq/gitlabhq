@@ -5,8 +5,8 @@ module Gitlab
     module Aggregation
       class QueryPlan
         class Filter < BasePart
-          def initialize(definition, configuration)
-            super(definition, format_configuration(definition, configuration))
+          def initialize(definition, configuration, query_plan:)
+            super(definition, format_configuration(definition, configuration), query_plan: query_plan)
           end
 
           private

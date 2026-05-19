@@ -1163,6 +1163,7 @@ module Gitlab
         ref:,
         query: nil,
         author: nil,
+        path: nil,
         committed_before: nil,
         committed_after: nil,
         pagination_params: { page_token: nil, limit: 1000 }
@@ -1173,6 +1174,7 @@ module Gitlab
           gitaly_commit_client.list_commits(
             [ref],
             author: author,
+            path: path,
             ignore_case: true,
             commit_message_patterns: query,
             before: committed_before,

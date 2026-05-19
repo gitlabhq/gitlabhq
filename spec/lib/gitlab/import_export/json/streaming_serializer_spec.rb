@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:release) { create(:release) }
-  let_it_be(:group) { create(:group) }
 
   let_it_be_with_reload(:exportable) do
     create(:project,
@@ -16,7 +15,6 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
       :builds_private,
       description: 'description',
       releases: [release],
-      group: group,
       approvals_before_merge: 1)
   end
 
@@ -29,8 +27,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
   let(:include) { [] }
   let(:custom_orderer) { nil }
   let(:include_if_exportable) { {} }
-  let(:user_contributions_cache_key) { "bulk_imports/#{exportable.class}/#{exportable.id}/user_contribution_ids" }
-
+  let(:offline_export) { build_stubbed(:offline_export) }
   let(:relations_schema) do
     {
       only: [:name, :description],
@@ -197,31 +194,58 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
           end.new
         end
 
-        it 'caches existing referenced user_ids' do
-          expected_user_ref_ids = Issue.all.pluck(
-            :author_id, :updated_by_id, :last_edited_by_id, :closed_by_id
-          ).flatten.uniq.filter_map { |user_id| user_id.to_s if user_id }
+        it 'does not cache referenced user_ids' do
+          cache_key = "offline_export//#{exportable.class}/#{exportable.id}/user_contribution_ids"
 
           subject.execute
 
           expect(
-            Gitlab::Cache::Import::Caching.values_from_set(user_contributions_cache_key)
-          ).to match_array(expected_user_ref_ids)
+            Gitlab::Cache::Import::Caching.values_from_set(cache_key)
+          ).to be_empty
+        end
+
+        context 'when offline_export_id is present' do
+          subject(:serializer) do
+            described_class.new(
+              exportable,
+              relations_schema,
+              json_writer,
+              exportable_path: exportable_path,
+              logger: logger,
+              current_user: user,
+              offline_export_id: offline_export.id
+            )
+          end
+
+          it 'caches existing referenced user_ids scoped to the offline export' do
+            expected_user_ref_ids = Issue.all.pluck(
+              :author_id, :updated_by_id, :last_edited_by_id, :closed_by_id
+            ).flatten.uniq.filter_map { |user_id| user_id.to_s if user_id }
+            cache_key = "offline_export/#{offline_export.id}/#{exportable.class}/#{exportable.id}/user_contribution_ids"
+
+            subject.execute
+
+            expect(
+              Gitlab::Cache::Import::Caching.values_from_set(cache_key)
+            ).to match_array(expected_user_ref_ids)
+          end
         end
       end
     end
 
     context 'with single relation' do
-      let(:group_options) do
+      let(:namespace_options) do
         { include: [], only: [:name, :path, :description] }
       end
 
       let(:include) do
-        [{ group: group_options }]
+        [{ namespace: namespace_options }]
       end
 
       it 'calls json_writer.write_relation with proper params' do
-        expect(json_writer).to receive(:write_relation).with(exportable_path, :group, group.to_json(group_options))
+        expect(json_writer).to receive(:write_relation).with(
+          exportable_path, :namespace, exportable.namespace.to_json(namespace_options)
+        )
 
         subject.execute
       end
@@ -234,8 +258,8 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
 
         expect(logger).to have_received(:info).with(
           importer: 'Import/Export',
-          message: 'Exporting relation: group',
-          relation: 'group',
+          message: 'Exporting relation: namespace',
+          relation: 'namespace',
           project_id: exportable.id,
           project_name: exportable.name,
           project_path: exportable.full_path
@@ -243,16 +267,46 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
       end
 
       context 'contributing user id caching' do
+        let(:namespace_options) do
+          { include: [], only: [:name, :path, :description, :owner_id] }
+        end
+
         before do
           allow(json_writer).to receive(:write_relation)
         end
 
-        it 'caches existing referenced user_ids' do
-          expect_next_instance_of(BulkImports::UserContributionsExportMapper) do |contribution_mapper|
-            expect(contribution_mapper).to receive(:cache_user_contributions_on_record).with(group).once
-          end
+        it 'does not cache referenced user_ids' do
+          cache_key = "offline_export//#{exportable.class}/#{exportable.id}/user_contribution_ids"
 
           subject.execute
+
+          expect(
+            Gitlab::Cache::Import::Caching.values_from_set(cache_key)
+          ).to be_empty
+        end
+
+        context 'when offline_export_id is supplied' do
+          subject(:serializer) do
+            described_class.new(
+              exportable,
+              relations_schema,
+              json_writer,
+              exportable_path: exportable_path,
+              logger: logger,
+              current_user: user,
+              offline_export_id: offline_export.id
+            )
+          end
+
+          it 'caches existing referenced user_ids scoped to the offline export' do
+            cache_key = "offline_export/#{offline_export.id}/#{exportable.class}/#{exportable.id}/user_contribution_ids"
+
+            subject.execute
+
+            expect(
+              Gitlab::Cache::Import::Caching.values_from_set(cache_key)
+            ).to match_array([exportable.namespace.owner_id.to_s])
+          end
         end
       end
     end
@@ -303,14 +357,39 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
           project_member.update!(created_by: create(:user))
         end
 
-        it 'caches existing referenced user_ids' do
-          expected_user_ref_ids = [project_member.user_id, project_member.created_by_id].map(&:to_s)
+        it 'does not cache referenced user_ids' do
+          cache_key = "offline_export//#{exportable.class}/#{exportable.id}/user_contribution_ids"
 
           subject.execute
 
           expect(
-            Gitlab::Cache::Import::Caching.values_from_set(user_contributions_cache_key)
-          ).to match_array(expected_user_ref_ids)
+            Gitlab::Cache::Import::Caching.values_from_set(cache_key)
+          ).to be_empty
+        end
+
+        context 'when offline_export_id is supplied' do
+          subject(:serializer) do
+            described_class.new(
+              exportable,
+              relations_schema,
+              json_writer,
+              exportable_path: exportable_path,
+              logger: logger,
+              current_user: user,
+              offline_export_id: offline_export.id
+            )
+          end
+
+          it 'caches existing referenced user_ids scoped to the offline export' do
+            expected_user_ref_ids = [project_member.user_id, project_member.created_by_id].map(&:to_s)
+            cache_key = "offline_export/#{offline_export.id}/#{exportable.class}/#{exportable.id}/user_contribution_ids"
+
+            subject.execute
+
+            expect(
+              Gitlab::Cache::Import::Caching.values_from_set(cache_key)
+            ).to match_array(expected_user_ref_ids)
+          end
         end
       end
     end
@@ -552,9 +631,33 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
       end
 
       it 'does not attempt to cache user references from a User record' do
-        expect(Gitlab::Cache::Import::Caching.values_from_set(user_contributions_cache_key)).to be_empty
+        cache_key = "bulk_imports/#{exportable.class}/#{exportable.id}/user_contribution_ids"
+
+        expect(Gitlab::Cache::Import::Caching.values_from_set(cache_key)).to be_empty
 
         subject.serialize_relation({ user_contributions: { only: [:id, :public_email, :username, :name], include: [] } })
+      end
+
+      context 'when offline_export_id is supplied' do
+        subject(:serializer) do
+          described_class.new(
+            exportable,
+            relations_schema,
+            json_writer,
+            exportable_path: exportable_path,
+            logger: logger,
+            current_user: user,
+            offline_export_id: offline_export.id
+          )
+        end
+
+        it 'does not attempt to cache user references from a User record' do
+          cache_key = "offline_export/#{offline_export.id}/#{exportable.class}/#{exportable.id}/user_contribution_ids"
+
+          expect(Gitlab::Cache::Import::Caching.values_from_set(cache_key)).to be_empty
+
+          subject.serialize_relation({ user_contributions: { only: [:id, :public_email, :username, :name], include: [] } })
+        end
       end
     end
   end

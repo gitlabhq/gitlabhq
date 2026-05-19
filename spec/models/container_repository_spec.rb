@@ -800,10 +800,10 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     subject { repository.set_delete_ongoing_status }
 
     it 'updates deletion status attributes' do
-      expect { subject }.to change(repository, :status).from(nil).to('delete_ongoing')
-                              .and change(repository, :delete_started_at).from(nil).to(Time.zone.now)
-                              .and change(repository, :status_updated_at).from(nil).to(Time.zone.now)
-                              .and change(repository, :next_delete_attempt_at).to(nil)
+      expect { subject }.to change { repository.status }.from(nil).to('delete_ongoing')
+                              .and change { repository.delete_started_at }.from(nil).to(Time.zone.now)
+                              .and change { repository.status_updated_at }.from(nil).to(Time.zone.now)
+                              .and change { repository.next_delete_attempt_at }.to(nil)
     end
   end
 
@@ -833,10 +833,10 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       end
 
       it 'updates delete attributes' do
-        expect { subject }.to change(repository, :status).from('delete_ongoing').to('delete_scheduled')
-                                .and change(repository, :delete_started_at).to(nil)
-                                .and change(repository, :failed_deletion_count).from(current_failed_count).to(new_failed_count)
-                                .and change(repository, :next_delete_attempt_at).to(minutes_delay.minute.from_now)
+        expect { subject }.to change { repository.status }.from('delete_ongoing').to('delete_scheduled')
+                                .and change { repository.delete_started_at }.to(nil)
+                                .and change { repository.failed_deletion_count }.from(current_failed_count).to(new_failed_count)
+                                .and change { repository.next_delete_attempt_at }.to(minutes_delay.minute.from_now)
 
         expect(repository.status_updated_at).to eq(Time.zone.now)
       end
@@ -849,9 +849,9 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     subject { repository.set_delete_failed_status }
 
     it 'updates delete attributes' do
-      expect { subject }.to change(repository, :status).from('delete_ongoing').to('delete_failed')
-                              .and change(repository, :delete_started_at).to(nil)
-                              .and change(repository, :status_updated_at).to(Time.zone.now)
+      expect { subject }.to change { repository.status }.from('delete_ongoing').to('delete_failed')
+                              .and change { repository.delete_started_at }.to(nil)
+                              .and change { repository.status_updated_at }.to(Time.zone.now)
     end
   end
 
@@ -861,7 +861,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     %i[delete_scheduled delete_ongoing delete_failed].each do |status|
       context "when status is updated to #{status}" do
         it 'updates status_changed_at' do
-          expect { repository.update!(status: status) }.to change(repository, :status_updated_at).from(nil).to(Time.zone.now)
+          expect { repository.update!(status: status) }.to change { repository.status_updated_at }.from(nil).to(Time.zone.now)
         end
       end
     end
@@ -870,7 +870,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       it 'does not update status_changed_at' do
         repository.name = 'different-image'
 
-        expect { repository.save! }.not_to change(repository, :status_updated_at)
+        expect { repository.save! }.not_to change { repository.status_updated_at }
       end
     end
   end
@@ -1263,6 +1263,132 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
       expect(registry1.object_id).to be(registry.object_id)
       expect(registry2.object_id).not_to be(registry.object_id)
+    end
+  end
+
+  describe '#tag_details' do
+    let(:tag_name) { 'my-tag' }
+    let(:raw_response) do
+      {
+        'name' => tag_name,
+        'created_at' => '2024-01-15T12:00:00.000Z',
+        'published_at' => nil,
+        'image' => {
+          'size_bytes' => 4321,
+          'manifest' => { 'digest' => 'sha256:abc123', 'media_type' => 'application/vnd.oci.image.index.v1+json', 'references' => nil },
+          'config' => { 'platform' => nil }
+        }
+      }
+    end
+
+    subject { repository.tag_details(name: tag_name) }
+
+    context 'when the GitLab API is not supported' do
+      before do
+        stub_container_registry_gitlab_api_support(supported: false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the GitLab API is supported' do
+      before do
+        stub_container_registry_gitlab_api_support(supported: true) do |client|
+          stub_container_registry_tag_details(client, path: repository.path, tag: tag_name, response: raw_response)
+        end
+      end
+
+      it 'calls fetch_tag_details and transform_tag_details and returns a Tag' do
+        result = subject
+
+        expect(result).to be_a(ContainerRegistry::Tag)
+        expect(result.name).to eq(tag_name)
+      end
+    end
+  end
+
+  describe '#transform_tag_details' do
+    subject { repository.send(:transform_tag_details, response) }
+
+    context 'when response is nil' do
+      let(:response) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with an image manifest response (non-index)' do
+      let(:response) do
+        {
+          'name' => 'stable',
+          'created_at' => '2024-02-01T08:00:00.000Z',
+          'published_at' => '2024-02-01T09:00:00.000Z',
+          'image' => {
+            'size_bytes' => 9999,
+            'manifest' => {
+              'digest' => 'sha256:deadbeef',
+              'media_type' => 'application/vnd.oci.image.manifest.v1+json',
+              'references' => nil
+            },
+            'config' => {
+              'platform' => { 'architecture' => 'amd64', 'os' => 'linux', 'os_version' => nil, 'variant' => nil }
+            }
+          }
+        }
+      end
+
+      it 'builds a Tag with the correct attributes' do
+        result = subject
+
+        expect(result).to be_a(ContainerRegistry::Tag)
+        expect(result.name).to eq('stable')
+        expect(result.total_size).to eq(9999)
+        expect(result.digest).to eq('sha256:deadbeef')
+        expect(result.media_type).to eq('application/vnd.oci.image.manifest.v1+json')
+        expect(result.platform).to have_attributes(architecture: 'amd64', os: 'linux')
+        expect(result.manifests).to be_nil
+      end
+    end
+
+    context 'with an image index response' do
+      let(:response) do
+        {
+          'name' => 'latest',
+          'created_at' => '2024-03-01T00:00:00.000Z',
+          'published_at' => nil,
+          'image' => {
+            'size_bytes' => 20000,
+            'manifest' => {
+              'digest' => 'sha256:indexdigest',
+              'media_type' => 'application/vnd.oci.image.index.v1+json',
+              'references' => [
+                {
+                  'manifest' => { 'digest' => 'sha256:amd64ref', 'media_type' => 'application/vnd.oci.image.manifest.v1+json' },
+                  'size_bytes' => 10000,
+                  'config' => { 'platform' => { 'architecture' => 'amd64', 'os' => 'linux', 'os_version' => nil, 'variant' => nil } }
+                },
+                {
+                  'manifest' => { 'digest' => 'sha256:arm64ref', 'media_type' => 'application/vnd.oci.image.manifest.v1+json' },
+                  'size_bytes' => 10000,
+                  'config' => { 'platform' => { 'architecture' => 'arm64', 'os' => 'linux', 'os_version' => nil, 'variant' => nil } }
+                }
+              ]
+            },
+            'config' => { 'platform' => nil }
+          }
+        }
+      end
+
+      it 'builds a Tag with manifests populated and platform nil' do
+        result = subject
+
+        expect(result).to be_a(ContainerRegistry::Tag)
+        expect(result.name).to eq('latest')
+        expect(result.manifests).to be_an(Array)
+        expect(result.manifests.length).to eq(2)
+        expect(result.manifests.first).to have_attributes(digest: 'sha256:amd64ref')
+        expect(result.manifests.second).to have_attributes(digest: 'sha256:arm64ref')
+        expect(result.platform).to be_nil
+      end
     end
   end
 

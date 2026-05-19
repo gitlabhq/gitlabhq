@@ -37,10 +37,17 @@ RSpec.describe Bitbucket::OauthConnection, feature_category: :integrations do
       connection.get('/users')
     end
 
-    context 'when the API returns an error' do
+    context 'when the API returns a retryable error' do
+      let(:oauth2_error) do
+        faraday_response = double(Faraday::Response, status: 429, headers: {}, body: 'some error')
+        allow(faraday_response).to receive(:on_complete)
+
+        OAuth2::Error.new(OAuth2::Response.new(faraday_response))
+      end
+
       before do
         allow_next_instance_of(OAuth2::AccessToken) do |instance|
-          allow(instance).to receive(:get).and_raise(OAuth2::Error, 'some error')
+          allow(instance).to receive(:get).and_raise(oauth2_error)
         end
 
         stub_const('Bitbucket::ExponentialBackoff::INITIAL_DELAY', 0.0)
@@ -49,12 +56,45 @@ RSpec.describe Bitbucket::OauthConnection, feature_category: :integrations do
 
       it 'logs the retries and raises an error if it does not succeed on retry' do
         expect(Gitlab::BitbucketImport::Logger).to receive(:info)
-          .with(message: 'Retrying in 0.0 seconds due to some error')
+          .with(message: /Retrying in .+ seconds due to/)
           .twice
 
         connection = described_class.new({ token: token })
 
         expect { connection.get('/users') }.to raise_error(Bitbucket::ExponentialBackoff::RateLimitError)
+      end
+    end
+
+    context 'when token refresh raises a transient error' do
+      let(:oauth2_error) do
+        faraday_response = double(Faraday::Response, status: 500, headers: {}, body: 'Internal Server Error')
+        allow(faraday_response).to receive(:on_complete)
+
+        OAuth2::Error.new(OAuth2::Response.new(faraday_response))
+      end
+
+      before do
+        stub_const('Bitbucket::ExponentialBackoff::INITIAL_DELAY', 0.0)
+        allow(Random).to receive(:rand).and_return(0.001)
+      end
+
+      it 'retries the refresh and succeeds if the next attempt works' do
+        call_count = 0
+        refresh_response = double(token: 'new_token', expires_at: nil, expires_in: nil, refresh_token: nil)
+
+        allow_next_instance_of(OAuth2::AccessToken) do |instance|
+          allow(instance).to receive_messages(expired?: true, get: double(parsed: { 'user' => 'test' }))
+          allow(instance).to receive(:refresh!) do
+            call_count += 1
+            raise oauth2_error if call_count == 1
+
+            refresh_response
+          end
+        end
+
+        connection = described_class.new({ token: token, expires_at: 1.hour.ago.to_i })
+
+        expect(connection.get('/users')).to eq({ 'user' => 'test' })
       end
     end
   end

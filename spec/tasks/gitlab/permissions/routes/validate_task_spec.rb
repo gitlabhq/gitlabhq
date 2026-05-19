@@ -75,7 +75,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
       end
 
@@ -91,9 +91,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
         allow(Authz::Permission).to receive(:defined?).with(:read_issue).and_return(true)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_issue).and_return([mock_assignable])
       end
 
@@ -107,7 +107,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:undefined_permission).and_return(false)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:undefined_permission).and_return([])
       end
 
@@ -142,9 +142,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
         allow(Authz::Permission).to receive(:defined?).with(:undefined_permission).and_return(false)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:undefined_permission).and_return([])
       end
 
@@ -177,9 +177,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       before do
         allow(Authz::Permission).to receive(:defined?).with(:undefined_one).and_return(false)
         allow(Authz::Permission).to receive(:defined?).with(:undefined_two).and_return(false)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:undefined_one).and_return([])
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:undefined_two).and_return([])
       end
 
@@ -230,9 +230,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       before do
         allow(Authz::Permission).to receive(:defined?).with(:undefined_one).and_return(false)
         allow(Authz::Permission).to receive(:defined?).with(:undefined_two).and_return(false)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:undefined_one).and_return([])
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:undefined_two).and_return([])
       end
 
@@ -259,12 +259,32 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
     end
 
+    context 'when a route has a permission only in a deprecated assignable permission' do
+      let(:route_settings) { { authorization: { permissions: :read_something, boundary_type: :project } } }
+      let(:deprecated_assignable) do
+        instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project], deprecated?: true)
+      end
+
+      before do
+        allow(Authz::Permission).to receive(:defined?).with(:read_something).and_return(true)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:read_something).and_return([])
+      end
+
+      it 'returns an error because the assignable is deprecated' do
+        expect { run }.to raise_error(SystemExit).and output(
+          /routes reference permissions not included in any assignable permission/
+        ).to_stdout
+      end
+    end
+
     context 'when a route has a permission not in any assignable permission' do
       let(:route_settings) { { authorization: { permissions: :read_something, boundary_type: :project } } }
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_something).and_return(true)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission).with(:read_something).and_return([])
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission).with(:read_something)
+          .and_return([])
       end
 
       it 'returns an error' do
@@ -288,7 +308,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_something).and_return(true)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_something).and_return([mock_assignable])
       end
 
@@ -326,7 +346,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_something).and_return(true)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_something).and_return([mock_assignable])
       end
 
@@ -364,7 +384,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_something).and_return(true)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_something).and_return([mock_assignable])
       end
 
@@ -379,7 +399,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_something).and_return(true)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_something).and_return([mock_assignable])
       end
 
@@ -588,7 +608,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
         allow(task).to receive(:spec_permission_scanner).and_return(mock_scanner)
         allow(mock_scanner).to receive(:add_route)
         allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
       end
 
@@ -627,7 +647,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
         allow(task).to receive(:spec_permission_scanner).and_return(mock_scanner)
         allow(mock_scanner).to receive(:add_route)
         allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
-        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
       end
 

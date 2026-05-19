@@ -7,6 +7,7 @@ module Types
       description 'Represents a deployment freeze window of a project'
 
       authorize :read_freeze_period
+      authorize_granular_token permissions: :read_freeze_period, boundary: :project, boundary_type: :project
 
       present_using ::Ci::FreezePeriodPresenter
 

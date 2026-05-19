@@ -88,7 +88,9 @@ RSpec.shared_examples 'User creates wiki page' do
 
       click_button('Open sidebar')
 
-      click_link("Home")
+      within_testid('wiki-list') do
+        click_link("Home", exact: true)
+      end
 
       expect(page).to have_current_path(wiki_page_path(wiki, "home"), ignore_query: true)
 
@@ -100,7 +102,9 @@ RSpec.shared_examples 'User creates wiki page' do
 
       expect(page).to have_current_path(wiki_page_path(wiki, "api"), ignore_query: true)
 
-      click_link("Home")
+      within_testid('wiki-list') do
+        click_link("Home", exact: true)
+      end
 
       expect(page).to have_current_path(wiki_page_path(wiki, "home"), ignore_query: true)
 

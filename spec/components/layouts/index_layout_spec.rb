@@ -76,19 +76,51 @@ RSpec.describe Layouts::IndexLayout, feature_category: :design_system do
     end
   end
 
+  describe 'loading' do
+    it 'renders spinner component when loading is true' do
+      render_inline described_class.new(heading: heading, loading: true) do
+        content
+      end
+
+      expect(page).to have_css('[data-testid="index-layout-loading-icon"]')
+    end
+
+    it 'does not render spinner component when loading is false' do
+      render_inline described_class.new(heading: heading, loading: false) do
+        content
+      end
+
+      expect(page).not_to have_css('[data-testid="index-layout-loading-icon"]')
+    end
+
+    it 'does not render content slot when loading' do
+      render_inline described_class.new(heading: heading, loading: true) do
+        content
+      end
+
+      expect(page).not_to have_css('[data-testid="index-layout-content"]', text: content)
+    end
+
+    it 'renders content slot when not loading' do
+      render_inline described_class.new(heading: heading, loading: false) do
+        content
+      end
+
+      expect(page).to have_css('[data-testid="index-layout-content"]', text: content)
+    end
+  end
+
   describe 'slots' do
     describe 'alerts' do
-      it 'renders alerts container when slot is provided' do
+      it 'renders alert content when slot is provided' do
         render_inline described_class.new(heading: heading) do |c|
           c.with_alerts { alerts_content }
         end
-
         expect(page).to have_css('[data-testid="index-layout-alerts"]', text: alerts_content)
       end
 
-      it 'does not render alerts container when slots are not provided' do
+      it 'does not render when no alerts slot is provided' do
         render_inline described_class.new(heading: heading)
-
         expect(page).not_to have_css('[data-testid="index-layout-alerts"]')
       end
     end

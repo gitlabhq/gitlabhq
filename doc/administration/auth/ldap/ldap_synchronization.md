@@ -484,7 +484,7 @@ Prerequisites:
 To assign a custom admin role with an LDAP CN:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Roles and permissions**.
+1. In the left sidebar, select **Settings** > **Roles and permissions**.
 1. On the **LDAP Synchronization** tab, select an **LDAP Server**.
 1. In the **Sync method** field, select `Group cn`.
 1. In the **Group cn** field, begin typing the CN of the group. A dropdown list appears with matching CNs in the configured `group_base`.
@@ -501,7 +501,7 @@ GitLab begins linking the role to any matching LDAP users. This process may take
 To assign a custom admin role with an LDAP filter:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Roles and permissions**.
+1. In the left sidebar, select **Settings** > **Roles and permissions**.
 1. On the **LDAP Synchronization** tab, select an **LDAP Server**.
 1. In the **Sync method** field, select `User filter`.
 1. In **User filter** text box, enter a filter. For details, see [set up LDAP user filter](_index.md#set-up-ldap-user-filter).
@@ -533,7 +533,7 @@ To enable global group memberships lock:
 
 1. [Configure LDAP](_index.md#configure-ldap).
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Ensure the **Lock memberships to LDAP synchronization** checkbox is selected.
 
@@ -545,7 +545,7 @@ GitLab administrators can remove this permission from group Owners:
 
 1. [Configure LDAP](_index.md#configure-ldap).
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Ensure the **Allow group owners to manage LDAP-related settings** checkbox is not checked.
 

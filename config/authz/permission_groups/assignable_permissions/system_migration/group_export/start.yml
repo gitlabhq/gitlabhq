@@ -1,0 +1,10 @@
+---
+name: start_group_export
+description: Grants the ability to start a group export.
+deprecated: true
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - start_group_export

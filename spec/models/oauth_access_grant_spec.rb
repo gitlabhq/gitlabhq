@@ -11,7 +11,7 @@ RSpec.describe OauthAccessGrant do
       access_grant = create(:oauth_access_grant, application: application)
       create(:oauth_openid_request, access_grant: access_grant)
 
-      expect { access_grant.delete }.to change(Doorkeeper::OpenidConnect::Request, :count).by(-1)
+      expect { access_grant.delete }.to change { Doorkeeper::OpenidConnect::Request.count }.by(-1)
     end
   end
 end

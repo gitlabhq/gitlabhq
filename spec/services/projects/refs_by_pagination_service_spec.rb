@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Projects::RefsByPaginationService, feature_category: :source_code_management do
   let(:default_per_page) { 20 }
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:protected_branch) { create(:protected_branch, project: project, name: 'feature*') }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:protected_branch, freeze: false) { create(:protected_branch, project: project, name: 'feature*') }
   let_it_be(:protected_tag) { create(:protected_tag, project: project, name: 'v*') }
 
   subject(:service) { described_class.new(protected_ref, project, params) }
@@ -15,16 +15,33 @@ RSpec.describe Projects::RefsByPaginationService, feature_category: :source_code
     describe 'with pagination' do
       before do
         allow_next_instance_of(Gitlab::Git::Finders::RefsFinder) do |finder|
-          allow(finder).to receive(:execute).and_return(refs_from_finder)
+          allow(finder).to receive_messages(execute: refs_from_finder, next_cursor: next_cursor)
         end
       end
 
-      context 'when fewer refs returned than per_page' do
+      context 'when Gitaly returns a next cursor' do
+        let(:next_cursor) { "refs/#{ref_prefix}/feature-next" }
+        let(:refs_from_finder) do
+          Array.new(default_per_page) { |i| Struct.new(:name).new("refs/#{ref_prefix}/feature-#{i}") }
+        end
+
+        it 'returns refs with a next page link' do
+          refs, prev_path, next_path = service.execute
+
+          expect(refs).to be_an(Array)
+          expect(refs.size).to eq(default_per_page)
+          expect(next_path).to include("page_token=#{CGI.escape(next_cursor)}")
+          expect(prev_path).to be_nil
+        end
+      end
+
+      context 'when Gitaly returns an empty cursor' do
+        let(:next_cursor) { '' }
         let(:refs_from_finder) do
           Array.new(15) { |i| Struct.new(:name).new("refs/#{ref_prefix}/feature-#{i}") }
         end
 
-        it 'marks as last page and returns all refs' do
+        it 'returns refs without a next page link' do
           refs, prev_path, next_path = service.execute
 
           expect(refs).to be_an(Array)
@@ -34,28 +51,16 @@ RSpec.describe Projects::RefsByPaginationService, feature_category: :source_code
         end
       end
 
-      context 'when exactly per_page + 1 refs returned' do
+      context 'when Gitaly returns a nil cursor' do
+        let(:next_cursor) { nil }
         let(:refs_from_finder) do
-          Array.new(21) { |i| Struct.new(:name).new("refs/#{ref_prefix}/feature-#{i}") }
+          Array.new(5) { |i| Struct.new(:name).new("refs/#{ref_prefix}/feature-#{i}") }
         end
 
-        it 'marks as NOT last page and returns only per_page refs' do
-          refs, _, next_path = service.execute
-
-          expect(refs.size).to eq(default_per_page)
-          expect(next_path).not_to be_nil
-        end
-      end
-
-      context 'when exactly per_page refs returned' do
-        let(:refs_from_finder) do
-          Array.new(20) { |i| Struct.new(:name).new("refs/#{ref_prefix}/feature-#{i}") }
-        end
-
-        it 'marks as last page since we requested per_page + 1' do
+        it 'returns refs without a next page link' do
           refs, prev_path, next_path = service.execute
 
-          expect(refs.size).to eq(default_per_page)
+          expect(refs.size).to eq(5)
           expect(next_path).to be_nil
           expect(prev_path).to be_nil
         end
@@ -70,7 +75,7 @@ RSpec.describe Projects::RefsByPaginationService, feature_category: :source_code
 
       before do
         allow_next_instance_of(Gitlab::Git::Finders::RefsFinder) do |finder|
-          allow(finder).to receive(:execute).and_return([])
+          allow(finder).to receive_messages(execute: [], next_cursor: '')
         end
       end
 
@@ -102,7 +107,7 @@ RSpec.describe Projects::RefsByPaginationService, feature_category: :source_code
     context 'with known ref types' do
       before do
         allow_next_instance_of(Gitlab::Git::Finders::RefsFinder) do |finder|
-          allow(finder).to receive(:execute).and_return(mock_refs)
+          allow(finder).to receive_messages(execute: mock_refs, next_cursor: '')
         end
       end
 
@@ -119,23 +124,16 @@ RSpec.describe Projects::RefsByPaginationService, feature_category: :source_code
         end
 
         let(:params) { { ref_type: :branches, page_token: 'token123' } }
-        let(:finder) do
-          Gitlab::Git::Finders::RefsFinder.new(
-            project.repository.raw_repository,
-            ref_type: :branches,
-            search: protected_branch.name
-          )
-        end
 
         describe 'RefsFinder initialization' do
-          it 'creates RefsFinder with correct parameters including per_page + 1' do
+          it 'creates RefsFinder with correct parameters' do
             service.execute
 
             expect(Gitlab::Git::Finders::RefsFinder).to have_received(:new).with(
               project.repository.raw_repository,
               ref_type: :branches,
               search: protected_branch.name,
-              per_page: 21,
+              per_page: 20,
               page_token: 'token123'
             )
           end
@@ -157,23 +155,16 @@ RSpec.describe Projects::RefsByPaginationService, feature_category: :source_code
         end
 
         let(:params) { { ref_type: :tags, page_token: 'token456' } }
-        let(:finder) do
-          Gitlab::Git::Finders::RefsFinder.new(
-            project.repository.raw_repository,
-            ref_type: :tags,
-            search: protected_tag.name
-          )
-        end
 
         describe 'RefsFinder initialization' do
-          it 'creates RefsFinder with correct parameters including per_page + 1' do
+          it 'creates RefsFinder with correct parameters' do
             service.execute
 
             expect(Gitlab::Git::Finders::RefsFinder).to have_received(:new).with(
               project.repository.raw_repository,
               ref_type: :tags,
               search: protected_tag.name,
-              per_page: 21,
+              per_page: 20,
               page_token: 'token456'
             )
           end

@@ -64,7 +64,7 @@ UIからサービスデスクチケットを作成するには:
 
 ![サービスデスクチケットトラッカー](img/service_desk_issue_tracker_v16_10.png)
 
-エンドユーザーからのメッセージは、特別な[サポートボットユーザー](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users)からのものとして表示されます。GitLabで通常通りコメントを読み取り、書き込みできます:
+エンドユーザーからのメッセージは、特別な[サポートボットユーザー](../../../subscriptions/manage_seats.md#criteria-for-non-billable-users)からのものとして表示されます。GitLabで通常通りコメントを読み取り、書き込みできます:
 
 - プロジェクトの表示レベル（プライベート、内部、公開）はサービスデスクに影響しません。
 - プロジェクトへのパス（グループまたはネームスペースを含む）は、メールに表示されます。

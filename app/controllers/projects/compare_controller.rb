@@ -9,6 +9,7 @@ class Projects::CompareController < Projects::ApplicationController
   include CompareHelper
   include Projects::TargetProjects
   include RapidDiffs::Resource
+  include HandlesGitalyErrors
 
   # Authorize
   before_action :require_non_empty_project
@@ -91,6 +92,7 @@ class Projects::CompareController < Projects::ApplicationController
   private
 
   def rapid_diffs_presenter
+    return if @gitaly_unavailable
     return if compare.nil?
 
     @rapid_diffs_presenter ||= ::RapidDiffs::ComparePresenter.new(
@@ -151,6 +153,25 @@ class Projects::CompareController < Projects::ApplicationController
     return @compare if defined?(@compare)
 
     @compare = CompareService.new(source_project, head_ref).execute(target_project, start_ref, straight: straight)
+
+    # CompareService returns nil both when there's nothing to compare AND when Gitaly is unavailable
+    # (because Gitlab::Git::Commit.find swallows errors). If we got nil, verify Gitaly is actually
+    # available by making an explicit call that will raise if it's not.
+    verify_gitaly_availability! if @compare.nil?
+
+    @compare
+  end
+
+  # Check if Gitaly is available using the health check service.
+  # Raises Gitlab::Git::CommandError if Gitaly is unavailable, which will be
+  # caught by HandlesGitalyErrors and show the graceful degradation message.
+  def verify_gitaly_availability!
+    storage = source_project.repository_storage
+    result = Gitlab::GitalyClient::HealthCheckService.new(storage).check
+
+    return if result[:success]
+
+    raise Gitlab::Git::CommandError, result[:message] || 'Gitaly is not available'
   end
 
   def straight

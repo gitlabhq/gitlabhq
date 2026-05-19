@@ -5,23 +5,23 @@ require 'spec_helper'
 RSpec.describe Boards::Issues::MoveService, feature_category: :portfolio_management do
   describe '#execute' do
     context 'when parent is a project' do
-      let(:user) { create(:user) }
-      let(:project) { create(:project) }
-      let(:board1) { create(:board, project: project) }
-      let(:board2) { create(:board, project: project) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:board1) { create(:board, project: project) }
+      let_it_be(:board2) { create(:board, project: project) }
 
-      let(:bug) { create(:label, project: project, name: 'Bug') }
-      let(:development) { create(:label, project: project, name: 'Development') }
-      let(:testing) { create(:label, project: project, name: 'Testing') }
-      let(:regression) { create(:label, project: project, name: 'Regression') }
+      let_it_be(:bug) { create(:label, project: project, name: 'Bug') }
+      let_it_be(:development) { create(:label, project: project, name: 'Development') }
+      let_it_be(:testing) { create(:label, project: project, name: 'Testing') }
+      let_it_be(:regression) { create(:label, project: project, name: 'Regression') }
 
-      let!(:list1)   { create(:list, board: board1, label: development, position: 0) }
-      let!(:list2)   { create(:list, board: board1, label: testing, position: 1) }
-      let!(:closed)  { create(:closed_list, board: board1) }
+      let_it_be(:list1)  { create(:list, board: board1, label: development, position: 0) }
+      let_it_be(:list2)  { create(:list, board: board1, label: testing, position: 1) }
+      let_it_be(:closed) { create(:closed_list, board: board1) }
 
-      let(:parent) { project }
+      let_it_be(:parent) { project }
 
-      before do
+      before_all do
         parent.add_developer(user)
       end
 
@@ -29,24 +29,24 @@ RSpec.describe Boards::Issues::MoveService, feature_category: :portfolio_managem
     end
 
     context 'when parent is a group' do
-      let(:user) { create(:user) }
-      let(:group) { create(:group) }
-      let(:project) { create(:project, namespace: group) }
-      let(:board1) { create(:board, group: group) }
-      let(:board2) { create(:board, group: group) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, namespace: group) }
+      let_it_be(:board1) { create(:board, group: group) }
+      let_it_be(:board2) { create(:board, group: group) }
 
-      let(:bug) { create(:group_label, group: group, name: 'Bug') }
-      let(:development) { create(:group_label, group: group, name: 'Development') }
-      let(:testing) { create(:group_label, group: group, name: 'Testing') }
-      let(:regression) { create(:group_label, group: group, name: 'Regression') }
+      let_it_be(:bug) { create(:group_label, group: group, name: 'Bug') }
+      let_it_be(:development) { create(:group_label, group: group, name: 'Development') }
+      let_it_be(:testing) { create(:group_label, group: group, name: 'Testing') }
+      let_it_be(:regression) { create(:group_label, group: group, name: 'Regression') }
 
-      let!(:list1)   { create(:list, board: board1, label: development, position: 0) }
-      let!(:list2)   { create(:list, board: board1, label: testing, position: 1) }
-      let!(:closed)  { create(:closed_list, board: board1) }
+      let_it_be(:list1)  { create(:list, board: board1, label: development, position: 0) }
+      let_it_be(:list2)  { create(:list, board: board1, label: testing, position: 1) }
+      let_it_be(:closed) { create(:closed_list, board: board1) }
 
-      let(:parent) { group }
+      let_it_be(:parent) { group }
 
-      before do
+      before_all do
         parent.add_developer(user)
       end
 
@@ -65,7 +65,7 @@ RSpec.describe Boards::Issues::MoveService, feature_category: :portfolio_managem
 
       let(:params) { { board_id: board1.id, from_list_id: list1.id, to_list_id: list2.id } }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 

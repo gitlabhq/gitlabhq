@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Auth::Ldap::Config, feature_category: :system_access do
   let(:config) { described_class.new('ldapmain') }
 
   def raw_cert
-    <<-EOS
+    <<-CERT
 -----BEGIN CERTIFICATE-----
 MIIDZjCCAk4CCQDX+u/9fICksDANBgkqhkiG9w0BAQsFADB1MQswCQYDVQQGEwJV
 UzEMMAoGA1UECAwDRm9vMQwwCgYDVQQHDANCYXIxDDAKBgNVBAoMA0JhejEMMAoG
@@ -34,11 +34,11 @@ Kn2QmPAkLw4EcqYSCNSSvnyzu5SM64jwLWRXFsmlqD7773oT29vTkqM1EQANFEfT
 7gQomLyPqoPBoFph5oSNn6Rf31QX1Sie92EAKVnZ1XmD68hKzjv6ChCtzTv4jABg
 XrDwnLkORIAF/Q==
 -----END CERTIFICATE-----
-    EOS
+    CERT
   end
 
   def raw_key
-    <<-EOS
+    <<-KEY
 -----BEGIN PRIVATE KEY-----
 MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQD7gwf+PwFJkxJo
 WMzdd56OCrfIZEWy0LhDUR5TnkMNOfzFXaAdQFizj8yF5+JHsRg/bR5KCZfEtED5
@@ -67,7 +67,7 @@ AtlErSqafbECNDSwS5BX8yDpu5yRBJ4xegO/rNlmb8ICRYkuJapD1xXicFOsmfUK
 0Ff8afd2Q/OfBeUdq9KA4JO9fNqzEwOWvv8Ryn4ZSYcAuLP7IVJKjjI6R7rYaO/G
 3OWJdizbykGOi0BFDu+3dw==
 -----END PRIVATE KEY-----
-    EOS
+    KEY
   end
 
   describe '.servers' do

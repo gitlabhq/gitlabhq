@@ -9,7 +9,7 @@ RSpec.describe Types::Ci::NamespaceSettingsType, feature_category: :pipeline_com
   specify { expect(described_class.graphql_name).to eq('CiCdSettings') }
 
   it 'requires authorization' do
-    expect(described_class).to require_graphql_authorizations(:maintainer_access)
+    expect(described_class).to require_graphql_authorizations(:read_ci_namespace_settings)
   end
 
   it 'exposes the expected fields' do

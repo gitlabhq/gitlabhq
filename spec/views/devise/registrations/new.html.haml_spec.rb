@@ -5,11 +5,13 @@ require 'spec_helper'
 RSpec.describe 'devise/registrations/new', feature_category: :system_access do
   let(:resource) { Users::RegistrationsBuildService.new(nil, {}).execute }
   let(:tracking_label) { '_some_registration_' }
-  let(:onboarding_status_presenter) { instance_double(::Onboarding::StatusPresenter, registration_omniauth_params: {}) }
+  let(:onboarding_status_presenter) { ::Onboarding::StatusPresenter.new({}, nil, resource) }
 
   subject { render && rendered }
 
   before do
+    stub_feature_flags(subscription_sm_unification: false)
+    stub_feature_flags(subscription_com_unification: false)
     allow(view).to receive(:onboarding_status_presenter).and_return(onboarding_status_presenter)
     allow(view).to receive(:resource).and_return(resource)
     allow(view).to receive(:resource_name).and_return(:user)

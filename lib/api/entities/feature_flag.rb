@@ -9,10 +9,10 @@ module API
       expose :version, documentation: { type: 'String', example: 'new_version_flag' }
       expose :created_at, documentation: { type: 'DateTime', example: '2019-11-04T08:13:51.423Z' }
       expose :updated_at, documentation: { type: 'DateTime', example: '2019-11-04T08:13:51.423Z' }
-      expose :scopes do |_ff|
+      expose :scopes, documentation: { type: 'Array' } do |_ff|
         []
       end
-      expose :strategies, using: FeatureFlag::Strategy
+      expose :strategies, using: ::API::Entities::FeatureFlag::Strategy
     end
   end
 end

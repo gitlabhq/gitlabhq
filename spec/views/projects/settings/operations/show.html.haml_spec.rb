@@ -32,7 +32,7 @@ RSpec.describe 'projects/settings/operations/show' do
   end
 
   describe 'Operations > Error Tracking' do
-    context 'Settings page ' do
+    describe 'Settings page' do
       it 'renders the Operations Settings page' do
         render
 

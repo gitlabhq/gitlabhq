@@ -20,6 +20,7 @@ module Gitlab
         # job_arguments - The migration job arguments
         # job_class - The migration job class
         # rubocop:disable Metrics/AbcSize -- temporarily contains two branches for cursor and non-cursor batching
+        # rubocop:disable Metrics/MethodLength -- temporarily contains two branches for cursor and non-cursor batching
         def next_batch(table_name, column_name, batch_min_value:, batch_size:, job_arguments:, job_class: nil)
           base_class = Gitlab::Database.application_record_for_connection(connection)
           model_class = define_batchable_model(table_name, connection: connection, base_class: base_class)
@@ -29,9 +30,19 @@ module Gitlab
           if job_class.cursor?
             cursor_columns = job_class.cursor_columns
 
+            cursor_expression = Arel::Nodes::Grouping.new(
+              cursor_columns.map { |column| model_class.arel_table[column] }
+            )
+            cursor_values = Arel::Nodes::Grouping.new(
+              cursor_columns.zip(batch_min_value).map do |column, value|
+                Arel::Nodes.build_quoted(value, model_class.arel_table[column])
+              end
+            )
+
             Gitlab::Pagination::Keyset::Iterator.new(
-              scope: model_class.select(cursor_columns).order(cursor_columns),
-              cursor: cursor_columns.zip(batch_min_value).to_h
+              scope: model_class.select(cursor_columns)
+                .where(cursor_expression.gteq(cursor_values))
+                .order(cursor_columns)
             ).each_batch(of: batch_size, load_batch: false) do |batch|
               break unless batch.first && batch.last # skip if the batch is empty for some reason
 
@@ -62,6 +73,7 @@ module Gitlab
           next_batch_bounds
         end
         # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/MethodLength
 
         private
 

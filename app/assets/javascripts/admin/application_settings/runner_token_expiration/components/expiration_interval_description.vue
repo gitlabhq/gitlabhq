@@ -16,7 +16,7 @@ export default {
   },
   i18n: {
     fieldHelpText: s__(
-      'AdminSettings|If no unit is written, it defaults to seconds. For example, these are all equivalent: %{oneDayInSeconds}, %{oneDayInHoursHumanReadable}, or %{oneDayHumanReadable}. Minimum value is two hours. %{linkStart}Learn more.%{linkEnd}',
+      'AdminSettings|If no unit is written, it defaults to seconds. For example, these are all equivalent: %{oneDayInSeconds}, %{oneDayInHoursHumanReadable}, or %{oneDayHumanReadable}. Minimum value is two hours. %{linkStart}Learn more%{linkEnd}.',
     ),
   },
   computed: {
@@ -44,8 +44,8 @@ export default {
         <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
         <code>1 day</code>
       </template>
-      <template #link>
-        <gl-link :href="helpUrl" target="_blank">{{ __('Learn more.') }}</gl-link>
+      <template #link="{ content }">
+        <gl-link :href="helpUrl" target="_blank">{{ content }}</gl-link>
       </template>
     </gl-sprintf>
   </p>

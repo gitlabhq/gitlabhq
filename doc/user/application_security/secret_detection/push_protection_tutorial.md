@@ -114,15 +114,15 @@ To demonstrate, we'll push our last commit to GitLab.
 
 ### With a push option
 
-You can use a push option to skip secret detection:
+You can use a push option to skip secret push protection:
 
-- Push your commit with the `secret_detection.skip_all` option:
+- Push your commit with the `secret_push_protection.skip_all` option:
 
   ```shell
-  git push -o secret_detection.skip_all
+  git push -o secret_push_protection.skip_all
   ```
 
-Secret detection is skipped, and the changes are pushed to the remote.
+Secret push protection is skipped, and the changes are pushed to the remote.
 
 ### With a commit message
 

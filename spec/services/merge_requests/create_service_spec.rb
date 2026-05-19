@@ -6,9 +6,9 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
   include ProjectForksHelper
   include AfterNextHelpers
 
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
-  let(:user2) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:user2) { create(:user) }
 
   describe '#execute' do
     context 'valid params' do
@@ -25,7 +25,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
       let(:service) { described_class.new(project: project, current_user: user, params: opts) }
       let(:merge_request) { service.execute }
 
-      before do
+      before_all do
         project.add_maintainer(user)
         project.add_developer(user2)
       end
@@ -73,47 +73,29 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
       end
 
       describe 'preloading branch existence before the transaction' do
-        context 'when validate_merge_request_branch_existence feature flag is enabled' do
-          before do
-            stub_feature_flags(validate_merge_request_branch_existence: project)
+        it 'calls source_branch_exists? and target_branch_exists? before save' do
+          expect_next_instance_of(MergeRequest) do |instance|
+            expect(instance).to receive(:source_branch_exists?).at_least(:once).and_call_original.ordered
+            expect(instance).to receive(:target_branch_exists?).at_least(:once).and_call_original.ordered
+            expect(instance).to receive(:save).twice.and_call_original.ordered
           end
 
-          it 'calls source_branch_exists? and target_branch_exists? before save' do
-            expect_next_instance_of(MergeRequest) do |instance|
-              expect(instance).to receive(:source_branch_exists?).at_least(:once).and_call_original.ordered
-              expect(instance).to receive(:target_branch_exists?).at_least(:once).and_call_original.ordered
-              expect(instance).to receive(:save).twice.and_call_original.ordered
-            end
-
-            service.execute
-          end
-
-          context 'when branches do not exist' do
-            let(:opts) do
-              {
-                title: 'Awesome merge_request',
-                description: 'please fix',
-                source_branch: 'non-existent-source',
-                target_branch: 'non-existent-target',
-                force_remove_source_branch: '1'
-              }
-            end
-
-            it 'does not raise an error during preloading' do
-              expect { service.execute }.not_to raise_error
-            end
-          end
+          service.execute
         end
 
-        context 'when validate_merge_request_branch_existence feature flag is disabled' do
-          before do
-            stub_feature_flags(validate_merge_request_branch_existence: false)
+        context 'when branches do not exist' do
+          let(:opts) do
+            {
+              title: 'Awesome merge_request',
+              description: 'please fix',
+              source_branch: 'non-existent-source',
+              target_branch: 'non-existent-target',
+              force_remove_source_branch: '1'
+            }
           end
 
-          it 'skips preloading branch existence' do
-            merge_request = service.execute
-
-            expect(merge_request).to be_persisted
+          it 'does not raise an error during preloading' do
+            expect { service.execute }.not_to raise_error
           end
         end
       end
@@ -464,7 +446,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
           }
         end
 
-        before do
+        before_all do
           project.add_maintainer(user)
           project.add_maintainer(user2)
         end
@@ -479,9 +461,9 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
 
     context 'merge request create service' do
       context 'asssignee_id' do
-        let(:user2) { create(:user) }
+        let_it_be(:user2) { create(:user) }
 
-        before do
+        before_all do
           project.add_maintainer(user)
         end
 
@@ -521,7 +503,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
             }
           end
 
-          before do
+          before_all do
             project.add_maintainer(user2)
           end
 
@@ -571,7 +553,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
         }
       end
 
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -609,7 +591,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
         }
       end
 
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -667,9 +649,12 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
       end
 
       context 'when the user has access to both projects' do
+        before_all do
+          project.add_developer(user)
+        end
+
         before do
           target_project.add_developer(user)
-          project.add_developer(user)
         end
 
         it 'creates the merge request', :sidekiq_inline do
@@ -712,7 +697,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
         }
       end
 
-      before do
+      before_all do
         project.add_developer(user2)
         project.add_maintainer(user)
       end

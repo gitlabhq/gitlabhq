@@ -145,5 +145,118 @@ RSpec.describe MergeRequests::ResolveDiffPositionService, feature_category: :cod
         expect(result.message).to include('does not match the current merge request diff')
       end
     end
+
+    context 'with multiline parameters' do
+      let(:params) do
+        {
+          merge_request: merge_request,
+          file_path: file_path,
+          new_line: new_line,
+          old_line: old_line,
+          end_new_line: 5,
+          end_old_line: nil,
+          head_sha: head_sha
+        }
+      end
+
+      it 'returns a position with line_range' do
+        expect(result).to be_success
+
+        position = result.payload[:position]
+        expect(position[:line_range]).to be_present
+        expect(position[:line_range]['start']).to include('line_code', 'type')
+        expect(position[:line_range]['end']).to include('line_code', 'type')
+      end
+
+      it 'sets top-level line to the end of the range' do
+        position = result.payload[:position]
+
+        expect(position[:new_line]).to eq(5)
+        expect(position[:old_line]).to be_nil
+      end
+
+      it 'computes line_code for start and end' do
+        position = result.payload[:position]
+        resolved_path = position[:new_path]
+
+        expected_start_code = Gitlab::Git.diff_line_code(resolved_path, new_line, 0)
+        expected_end_code = Gitlab::Git.diff_line_code(resolved_path, 5, 0)
+
+        expect(position[:line_range]['start']['line_code']).to eq(expected_start_code)
+        expect(position[:line_range]['end']['line_code']).to eq(expected_end_code)
+      end
+
+      it 'sets the correct type for added lines' do
+        position = result.payload[:position]
+
+        expect(position[:line_range]['start']['type']).to eq('new')
+        expect(position[:line_range]['end']['type']).to eq('new')
+      end
+
+      context 'with old_line range (removed lines)' do
+        let(:params) do
+          {
+            merge_request: merge_request,
+            file_path: file_path,
+            new_line: nil,
+            old_line: 3,
+            end_new_line: nil,
+            end_old_line: 7,
+            head_sha: head_sha
+          }
+        end
+
+        it 'sets the correct type for removed lines' do
+          position = result.payload[:position]
+
+          expect(position[:line_range]['start']['type']).to eq('old')
+          expect(position[:line_range]['start']['old_line']).to eq(3)
+          expect(position[:line_range]['end']['type']).to eq('old')
+          expect(position[:line_range]['end']['old_line']).to eq(7)
+        end
+
+        it 'sets top-level line to the end of the range' do
+          position = result.payload[:position]
+
+          expect(position[:old_line]).to eq(7)
+          expect(position[:new_line]).to be_nil
+        end
+      end
+
+      context 'with context lines (both old and new)' do
+        let(:params) do
+          {
+            merge_request: merge_request,
+            file_path: file_path,
+            new_line: 1,
+            old_line: 1,
+            end_new_line: 5,
+            end_old_line: 5,
+            head_sha: head_sha
+          }
+        end
+
+        it 'sets type to nil for context lines' do
+          position = result.payload[:position]
+
+          expect(position[:line_range]['start']['type']).to be_nil
+          expect(position[:line_range]['end']['type']).to be_nil
+        end
+
+        it 'sets top-level lines to the end of the range' do
+          position = result.payload[:position]
+
+          expect(position[:new_line]).to eq(5)
+          expect(position[:old_line]).to eq(5)
+        end
+      end
+    end
+
+    context 'without multiline parameters' do
+      it 'does not include line_range in the position' do
+        expect(result).to be_success
+        expect(result.payload[:position][:line_range]).to be_nil
+      end
+    end
   end
 end

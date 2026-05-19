@@ -19,6 +19,11 @@ module Mutations
         description: 'Whether to archive the label. Introduced in GitLab 18.10.'
 
       authorize :admin_label
+      authorize_granular_token permissions: :update_label,
+        boundaries: [
+          { boundary_argument: :id, boundary_type: :project },
+          { boundary_argument: :id, boundary_type: :group }
+        ]
 
       def resolve(id:, **args)
         label = Gitlab::Graphql::Lazy.force(find_object(id))

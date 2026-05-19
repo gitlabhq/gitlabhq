@@ -88,6 +88,52 @@ module Tasks
           violations[:schema][name] = errors if errors.any?
         end
 
+        def validate_name(permission)
+          return if self.class::PERMISSION_NAME_REGEX.match?(permission.name)
+
+          violations[:name] << permission.name
+        end
+
+        def validate_action(permission)
+          return if permission.try(:deprecated?)
+          return unless permission.action.present?
+          return unless self.class::DISALLOWED_ACTIONS.key?(permission.action.to_sym)
+
+          violations[:action][permission.name] = permission.action.to_sym
+        end
+
+        def format_error_list_with_source(kind)
+          return '' if violations[kind].empty?
+
+          out = "#{error_messages[kind]}\n\n"
+
+          violations[kind].each do |permission|
+            sources = permission_source_paths(permission)
+            out += "  - #{permission} (#{sources.join(', ')})\n"
+          end
+
+          "#{out}\n"
+        end
+
+        def format_action_errors
+          return '' if violations[:action].empty?
+
+          out = "#{error_messages[:action]}\n\n"
+
+          violations[:action].each do |permission, action|
+            preferred = self.class::DISALLOWED_ACTIONS[action]
+            source = permission_source_paths(permission).first
+
+            out += "  - #{permission}: Prefer #{preferred} over #{action}. (#{source})\n"
+          end
+
+          "#{out}\n"
+        end
+
+        def permission_source_paths(_permission_name)
+          raise NotImplementedError
+        end
+
         def error_messages
           raise NotImplementedError
         end

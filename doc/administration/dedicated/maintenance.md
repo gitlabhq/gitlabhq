@@ -24,11 +24,13 @@ your instance is created.
 
 ### Maintenance window schedule
 
+The following maintenance windows are listed in chronological order:
+
 | Region                          | Day           | Time (UTC) |
 | ------------------------------- | ------------- | ---------- |
-| Asia Pacific                    | Wednesday     | 1:00 PM-5:00 PM |
 | Europe, Middle East, and Africa | Tuesday       | 1:00 AM-5:00 AM |
 | Americas (Option 1)             | Tuesday       | 7:00 AM-11:00 AM |
+| Asia Pacific                    | Wednesday     | 1:00 PM-5:00 PM |
 | Americas (Option 2)             | Sunday-Monday | 9:00 PM-1:00 AM |
 
 To view your assigned maintenance window, go to [Switchboard](tenant_overview.md).

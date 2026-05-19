@@ -1,0 +1,6 @@
+---
+event: GitlabSubscriptions::RenewedEvent
+description: Published when a GitLab subscription is renewed. Fires only on genuine
+  renewals — both start_date and end_date must change in the same update, with the
+  new start_date >= the previous end_date. Deferred via run_after_commit.
+feature_category: subscription_management

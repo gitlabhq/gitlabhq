@@ -8,12 +8,14 @@ import {
   GlLink,
   GlFormCharacterCount,
   GlFormGroup,
+  GlSprintf,
 } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { CREATED_DESC, UPDATED_DESC } from '~/work_items/list/constants';
 import { SAVED_VIEW_VISIBILITY } from '~/work_items/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -82,6 +84,9 @@ describe('WorkItemsNewSavedViewModal', () => {
     filters: {},
     displaySettings: {},
     sort: CREATED_DESC,
+    updatedAt: '2025-12-04T10:00:00Z',
+    author: { id: 'gid://gitlab/User/1', name: 'Tim Ridgewater' },
+    lastUpdatedBy: { id: 'gid://gitlab/User/1', name: 'Nicole Evans' },
     userPermissions: {
       updateSavedView: true,
       deleteSavedView: true,
@@ -128,6 +133,8 @@ describe('WorkItemsNewSavedViewModal', () => {
         }),
         GlFormCharacterCount,
         GlFormGroup,
+        GlSprintf,
+        TimeAgoTooltip: true,
       },
       provide: {
         subscribedSavedViewLimit: 5,
@@ -152,6 +159,8 @@ describe('WorkItemsNewSavedViewModal', () => {
   const findLearnMoreLink = () => findWarningMessage().findComponent(GlLink);
   const findSharedRadioButton = () => findVisibilityGlRadioButtons().at(1);
   const findSharedReadOnlyHelpText = () => wrapper.findByTestId('shared-read-only-help-text');
+  const findAuthorInfo = () => wrapper.findByTestId('saved-view-author-info');
+  const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 
   beforeEach(() => {
     mockToastShow.mockClear();
@@ -579,6 +588,55 @@ describe('WorkItemsNewSavedViewModal', () => {
       expect(findAlert().text()).toBe('Something went wrong while saving the view');
       expect(mockToastShow).not.toHaveBeenCalled();
       expect(wrapper.emitted('hide')).toBeUndefined();
+    });
+
+    describe('Saved view metadata', () => {
+      it('renders in edit mode with author and updatedAt', () => {
+        createComponent({ mockSavedView: existingSavedView });
+
+        expect(findAuthorInfo().exists()).toBe(true);
+        expect(findAuthorInfo().text()).toContain('Created by');
+        expect(findAuthorInfo().text()).toContain('Tim Ridgewater');
+        expect(findAuthorInfo().text()).toContain('Nicole Evans');
+      });
+
+      it('passes updatedAt to TimeAgoTooltip', () => {
+        createComponent({ mockSavedView: existingSavedView });
+
+        expect(findTimeAgoTooltip().props('time')).toBe('2025-12-04T10:00:00Z');
+      });
+
+      it('does not render in create mode', () => {
+        createComponent();
+
+        expect(findAuthorInfo().exists()).toBe(false);
+      });
+
+      it('hides the updated-by section when lastUpdatedBy is null', () => {
+        createComponent({
+          mockSavedView: {
+            ...existingSavedView,
+            lastUpdatedBy: null,
+            updatedAt: null,
+          },
+        });
+
+        expect(findAuthorInfo().exists()).toBe(true);
+        expect(findAuthorInfo().text()).toContain('Tim Ridgewater');
+        expect(findAuthorInfo().text()).not.toContain('Nicole Evans');
+        expect(findTimeAgoTooltip().exists()).toBe(false);
+      });
+
+      it('hides the entire footer when view is private', () => {
+        createComponent({
+          mockSavedView: {
+            ...existingSavedView,
+            isPrivate: true,
+          },
+        });
+
+        expect(findAuthorInfo().exists()).toBe(false);
+      });
     });
   });
 });

@@ -17,6 +17,7 @@ RSpec.describe 'Namespace.sidebar', feature_category: :navigation do
         sidebar {
           openIssuesCount
           openMergeRequestsCount
+          openWorkItemsCount
         }
       }
     }
@@ -26,6 +27,7 @@ RSpec.describe 'Namespace.sidebar', feature_category: :navigation do
   before_all do
     create_list(:issue, 2, project: project)
     create(:merge_request, source_project: project)
+    create(:work_item, :opened, project: project)
   end
 
   context 'with a Group' do
@@ -36,9 +38,12 @@ RSpec.describe 'Namespace.sidebar', feature_category: :navigation do
 
       expect(response).to have_gitlab_http_status(:ok)
 
+      # Issues and work items share the `issues` table, so:
+      # 2 issues + 1 work item = 3 for both counts (issues are work items of type "Issue")
       expect(graphql_data_at(:namespace, :sidebar)).to eq({
-        'openIssuesCount' => 2,
-        'openMergeRequestsCount' => 1
+        'openIssuesCount' => 3,
+        'openMergeRequestsCount' => 1,
+        'openWorkItemsCount' => 3
       })
     end
 
@@ -60,7 +65,8 @@ RSpec.describe 'Namespace.sidebar', feature_category: :navigation do
 
         expect(graphql_data_at(:namespace, :sidebar)).to eq({
           'openIssuesCount' => nil,
-          'openMergeRequestsCount' => 1
+          'openMergeRequestsCount' => 1,
+          'openWorkItemsCount' => 3
         })
       end
     end
@@ -75,8 +81,9 @@ RSpec.describe 'Namespace.sidebar', feature_category: :navigation do
       expect(response).to have_gitlab_http_status(:ok)
 
       expect(graphql_data_at(:namespace, :sidebar)).to eq({
-        'openIssuesCount' => 2,
-        'openMergeRequestsCount' => 1
+        'openIssuesCount' => 3,
+        'openMergeRequestsCount' => 1,
+        'openWorkItemsCount' => 3
       })
     end
   end

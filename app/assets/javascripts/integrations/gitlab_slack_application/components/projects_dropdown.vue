@@ -26,6 +26,7 @@ export default {
       default: null,
     },
   },
+  emits: ['project-selected'],
   data() {
     return {
       selected: this.selectedProject,

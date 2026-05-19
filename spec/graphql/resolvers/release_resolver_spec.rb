@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Resolvers::ReleaseResolver do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :private) }
-  let_it_be(:release) { create(:release, project: project) }
+  let_it_be(:project, freeze: false) { create(:project, :private) }
+  let_it_be(:release, freeze: false) { create(:release, project: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:public_user) { create(:user) }
 

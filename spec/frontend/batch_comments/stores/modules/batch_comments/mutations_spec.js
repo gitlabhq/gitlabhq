@@ -63,6 +63,15 @@ describe('Batch comments mutations', () => {
         },
       ]);
     });
+
+    it.each([null, undefined, 'string', {}, 42])(
+      'sets drafts to empty array when given %s',
+      (input) => {
+        mutations[types.SET_BATCH_COMMENTS_DRAFTS](state, input);
+
+        expect(state.drafts).toEqual([]);
+      },
+    );
   });
 
   describe(types.REQUEST_PUBLISH_REVIEW, () => {

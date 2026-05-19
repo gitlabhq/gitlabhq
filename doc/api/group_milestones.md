@@ -148,7 +148,7 @@ Parameters:
 | Attribute | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
 | `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
-| `milestone_id` | integer | yes | The ID of the group's milestone |
+| `milestone_id` | integer | yes | The ID of the group milestone |
 
 ## Get all issues assigned to a single milestone
 

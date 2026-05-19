@@ -9,6 +9,7 @@ import DropdownContentsCreateView from '~/sidebar/components/labels/labels_selec
 import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import { isScopedLabel } from '~/lib/utils/common_utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import Tracking from '~/tracking';
 import { ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
@@ -30,7 +31,7 @@ export default {
     GlLabel,
     WorkItemSidebarDropdownWidget,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   inject: {
     canAdminLabel: 'canAdminLabel',
     issuesListPath: 'issuesListPath',
@@ -179,6 +180,7 @@ export default {
         return {
           fullPath: this.workItemFullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
         };
       },
       update(data) {
@@ -287,6 +289,7 @@ export default {
                   removeLabelIds,
                 },
               },
+              useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
             },
           });
 

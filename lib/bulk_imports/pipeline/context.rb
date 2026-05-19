@@ -3,6 +3,8 @@
 module BulkImports
   module Pipeline
     class Context
+      include Gitlab::Utils::StrongMemoize
+
       attr_accessor :extra
 
       attr_reader :tracker
@@ -45,6 +47,16 @@ module BulkImports
       def configuration
         @configuration ||= bulk_import.configuration
       end
+
+      def offline?
+        bulk_import.offline?
+      end
+      strong_memoize_attr :offline?
+
+      def offline_configuration
+        bulk_import.offline_configuration
+      end
+      strong_memoize_attr :offline_configuration
 
       def source_ghost_user_id
         @source_ghost_user_id ||= BulkImports::SourceInternalUserFinder.new(configuration).cached_ghost_user_id

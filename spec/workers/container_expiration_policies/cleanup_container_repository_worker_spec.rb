@@ -59,7 +59,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, fe
           end
         end
 
-        context 'the truncated log field' do
+        context 'with the truncated log field' do
           where(:before_truncate_size, :after_truncate_size, :truncated) do
             100 | 100 | false
             100 | 80  | true
@@ -81,7 +81,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, fe
           end
         end
 
-        context 'the cache hit ratio field' do
+        context 'with the cache hit ratio field' do
           where(:after_truncate_size, :cached_tags_count, :ratio) do
             nil | nil | nil
             10  | nil | nil
@@ -167,7 +167,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, fe
       it_behaves_like 'handling all repository conditions'
     end
 
-    context 'container repository selection' do
+    context 'when selecting container repository' do
       where(:repository_cleanup_status, :repository_policy_status, :other_repository_cleanup_status, :other_repository_policy_status, :expected_selected_repository) do
         :unscheduled | :disabled     | :unscheduled | :disabled     | :none
         :unscheduled | :disabled     | :unscheduled | :runnable     | :other_repository
@@ -481,7 +481,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, fe
       disabled_repository.project.container_expiration_policy.update_column(:enabled, false)
     end
 
-    context 'counts and capacity' do
+    context 'with counts and capacity' do
       where(:scheduled_count, :unfinished_count, :capacity, :expected_count) do
         2 | 2 | 10 | 4
         2 | 0 | 10 | 2

@@ -25,6 +25,13 @@ RSpec.describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_s
       it 'updates detected_repository_languages flag' do
         expect { subject.execute }.to change { project.detected_repository_languages }.to(true)
       end
+
+      it 'persists language_id on newly created programming languages' do
+        subject.execute
+
+        ruby_lang = ProgrammingLanguage.find_by(name: 'Ruby')
+        expect(ruby_lang.language_id).to be_present
+      end
     end
 
     context 'with a previous detection' do
@@ -32,8 +39,8 @@ RSpec.describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_s
         subject.execute
 
         allow(project.repository).to receive(:languages).and_return(
-          [{ value: 99.63, label: "Ruby", color: "#701516", highlight: "#701516" },
-            { value: 0.3, label: "D", color: "#701516", highlight: "#701516" }]
+          [{ value: 99.63, label: "Ruby", color: "#701516", highlight: "#701516", language_id: 326 },
+            { value: 0.3, label: "D", color: "#701516", highlight: "#701516", language_id: 85 }]
         )
       end
 
@@ -47,6 +54,22 @@ RSpec.describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_s
         expect(project).not_to receive(:update_column).with(:detected_repository_languages, true)
 
         subject.execute
+      end
+    end
+
+    context 'when Gitaly returns nil for language_id' do
+      before do
+        allow(project.repository).to receive(:languages).and_return(
+          [{ value: 99.0, label: "NewLang", color: "#abcdef", highlight: "#abcdef", language_id: nil }]
+        )
+      end
+
+      it 'creates the programming language without language_id' do
+        subject.execute
+
+        lang = ProgrammingLanguage.find_by(name: 'NewLang')
+        expect(lang).to be_present
+        expect(lang.language_id).to be_nil
       end
     end
 

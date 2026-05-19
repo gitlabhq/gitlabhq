@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  class CreateApprovalEventWorker
+  # Worker is not idempotent: each run creates an Event record.
+  # Retrying would produce duplicate approval events.
+  class CreateApprovalEventWorker # rubocop:disable Scalability/IdempotentWorker -- Currently not idempotent
     include Gitlab::EventStore::Subscriber
 
     data_consistency :always
     feature_category :code_review_workflow
     urgency :low
-    idempotent!
 
     def handle_event(event)
       current_user_id = event.data[:current_user_id]

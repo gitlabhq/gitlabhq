@@ -5,8 +5,8 @@ require 'parallel'
 require 'rainbow'
 require 'yaml'
 
-EXCLUDED_METHODS_PATH = '.gitlab/lint/unused_methods/excluded_methods.yml'
-POTENTIAL_METHODS_PATH = '.gitlab/lint/unused_methods/potential_methods_to_remove.yml'
+EXCLUDED_METHODS_PATH = 'scripts/lint/excluded_methods.yml'
+POTENTIAL_METHODS_PATH = 'scripts/lint/potential_methods_to_remove.yml'
 
 print_report = %w[true 1].include? ENV["REPORT_ALL_UNUSED_METHODS"]
 

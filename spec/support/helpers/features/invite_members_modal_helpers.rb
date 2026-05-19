@@ -4,28 +4,28 @@ module Features
   module InviteMembersModalHelpers
     include ListboxHelpers
 
-    def invite_member(names, role: 'Guest', expires_at: nil, use_exact_text_match: true)
+    def invite_member(names, role: 'Guest', expires_at: nil)
       click_on 'Invite members'
 
-      invite_with_opened_modal(names, role: role, expires_at: expires_at, use_exact_text_match: use_exact_text_match)
+      invite_with_opened_modal(names, role: role, expires_at: expires_at)
     end
 
-    def invite_with_opened_modal(names, role: 'Guest', expires_at: nil, use_exact_text_match: true)
+    def invite_with_opened_modal(names, role: 'Guest', expires_at: nil)
       page.within invite_modal_selector do
         select_members(names)
         send_keys :escape # dismiss dropdown
-        choose_options(role, expires_at, use_exact_text_match)
+        choose_options(role, expires_at)
         submit_invites
       end
 
       wait_for_requests
     end
 
-    def invite_member_by_email(role, use_exact_text_match: true)
+    def invite_member_by_email(role)
       click_on _('Invite members')
 
       page.within invite_modal_selector do
-        choose_options(role, nil, use_exact_text_match)
+        choose_options(role, nil)
         find(member_dropdown_selector).set('new_email@gitlab.com')
         wait_for_requests
 
@@ -55,7 +55,7 @@ module Features
       end
     end
 
-    def invite_group(name, role: 'Guest', expires_at: nil, use_exact_text_match: true)
+    def invite_group(name, role: 'Guest', expires_at: nil)
       click_on 'Invite a group'
 
       click_on 'Select a group'
@@ -64,7 +64,7 @@ module Features
 
       # Find the modal that contains the selected group and scope to that
       within(page.find('[data-testid="invite-modal"], .js-invite-groups-modal', text: name)) do
-        choose_options(role, expires_at, use_exact_text_match)
+        choose_options(role, expires_at)
       end
 
       submit_invites
@@ -74,11 +74,11 @@ module Features
       click_button 'Invite'
     end
 
-    def choose_options(role, expires_at, use_exact_text_match = true)
+    def choose_options(role, expires_at)
       page.within role_dropdown_selector do
         wait_for_requests
         toggle_listbox
-        select_listbox_item(role, exact_text: use_exact_text_match)
+        select_listbox_item(role)
       end
 
       return unless expires_at

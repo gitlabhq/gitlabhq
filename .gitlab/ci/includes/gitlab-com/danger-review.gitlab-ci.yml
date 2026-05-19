@@ -18,8 +18,6 @@ danger-review:
       optional: true
     - job: cache:node-modules
       optional: true
-  variables:
-    BUNDLE_WITH: "danger"
   before_script:
     - (command -v git &> /dev/null && git config --global http.https://gitlab.com/gitlab-org/gitlab.proactiveAuth basic) || true
     - source scripts/utils.sh
@@ -27,3 +25,6 @@ danger-review:
     - yarn_install_script
   # extending from .review:rules:danger doesn't work
   rules: !reference [.review:rules:danger, rules]
+
+danger-review dry-run:
+  rules: !reference [.review:rules:danger-local, rules]

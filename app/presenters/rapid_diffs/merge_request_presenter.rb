@@ -15,7 +15,7 @@ module RapidDiffs
       current_user: nil, request_params: nil, environment: nil, conflicts: nil
     )
       super(
-        ::MergeRequests::VersionedMergeRequest.new(subject),
+        ::MergeRequests::VersionedMergeRequest.from_diff_options(subject, diff_options),
         diff_view:, diff_options:, current_user:, request_params:, environment:
       )
       @conflicts = conflicts
@@ -115,15 +115,25 @@ module RapidDiffs
       add_category_abuse_reports_path
     end
 
+    def new_comment_template_paths
+      [{
+        text: _('Your comment templates'),
+        href: profile_comment_templates_path
+      }]
+    end
+
     def code_review_enabled
       !!@current_user
     end
 
     def versions
+      return unless resource.merge_request_diff&.persisted?
+
       ::RapidDiffs::DiffCompareVersionsEntity.represent(
         resource,
         diff_id: request_params[:diff_id],
-        start_sha: request_params[:start_sha]
+        start_sha: request_params[:start_sha],
+        commit_id: request_params[:commit_id]
       ).as_json
     end
 
@@ -157,7 +167,8 @@ module RapidDiffs
       {
         diff_id: request_params[:diff_id] || resolved_diff_id,
         start_sha: request_params[:start_sha],
-        commit_id: request_params[:commit_id]
+        commit_id: request_params[:commit_id],
+        only_context_commits: request_params[:only_context_commits]
       }
     end
 
@@ -171,3 +182,5 @@ module RapidDiffs
     strong_memoize_attr :resolved_diff_id
   end
 end
+
+RapidDiffs::MergeRequestPresenter.prepend_mod

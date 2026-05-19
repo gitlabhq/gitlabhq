@@ -1,0 +1,20 @@
+---
+description: User clicked a link to learn more about scan profiles
+internal_events: true
+status: active
+action: click_scan_profile_learn_more_link
+identifiers:
+- user
+product_group: security_platform_management
+product_categories:
+- security_asset_inventories
+- security_testing_configuration
+milestone: '19.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223115
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: link location

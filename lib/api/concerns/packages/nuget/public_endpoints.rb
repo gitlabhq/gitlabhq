@@ -74,7 +74,7 @@ module API
                   regexp: API::NO_SLASH_URL_PART_REGEX,
                   documentation: { example: 'k813f89485474661234z7109cve5709eFFFFFFFF' }
                 requires :same_file_name, same_as: :file_name, allow_blank: false, type: String,
-                  desc: 'The symbol file name'
+                  desc: "The symbol file name. Must match the 'file_name' parameter"
               end
               route_setting :authorization, skip_granular_token_authorization: :public_endpoint
               get '*file_name/*signature/*same_file_name', format: false, urgency: :low do

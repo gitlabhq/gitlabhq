@@ -31,9 +31,9 @@ conventions on Go files.
 GitLab Duo appends your custom review instructions to its standard review criteria,
 instead of replacing them.
 
-GitLab Duo Code Review supports custom review instructions.
+GitLab Duo Code Review supports custom review instructions set for a specific project or for all projects within a group.
 
-## Configure custom review instructions
+## Configure custom review instructions for a project
 
 To configure custom merge request review instructions:
 
@@ -137,6 +137,32 @@ To configure custom merge request review instructions:
 1. Optional:
    - Review the feedback and refine your instructions as needed.
    - Test the patterns to ensure they match the intended files.
+
+## Configure custom review instructions for a group
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230090) in GitLab 19.0.
+
+{{< /history >}}
+
+You can define custom review instructions for a group by specifying a project to use as a template.
+The template project must contain a `.gitlab/duo/mr-review-instructions.yaml` file with review
+instructions that apply to all projects in the group and its subgroups.
+
+When GitLab Duo performs a code review, it combines instructions from the top-level group with instructions defined in the individual project.
+
+Prerequisites:
+
+- The Owner role for the top-level group.
+- A project in the group contains the custom review instructions that you want to use as a template.
+
+To configure custom review instructions for a group:
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
+1. Under **Custom review instructions for groups**, select a project in your group.
+1. Select **Save changes**.
 
 ## Best practices
 
@@ -695,7 +721,7 @@ instructions:
 For more custom review instructions use cases, see the following production examples:
 
 - [GitLab development in `gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/duo/mr-review-instructions.yaml)
-- [GitLab handbook](https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/main/.gitlab/duo/mr-review-instructions.yml)
+- [GitLab handbook](https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/main/.gitlab/duo/mr-review-instructions.yaml)
 - [GitLab website](https://gitlab.com/gitlab-com/marketing/digital-experience/about-gitlab-com/-/blob/main/.gitlab/duo/mr-review-instructions.yaml)
 - [Developer Advocacy: Tanuki IoT Platform](https://gitlab.com/gitlab-da/use-cases/ai/gitlab-duo-agent-platform/demo-environments/tanuki-iot-platform/-/blob/main/.gitlab/duo/mr-review-instructions.yaml)
 

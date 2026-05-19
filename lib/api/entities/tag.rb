@@ -9,11 +9,14 @@ module API
       expose :message, documentation: { type: 'String', example: 'Release v1.0.0' }
       expose :target, documentation: { type: 'String', example: '2695effb5807a22ff3d138d593fd856244e155e7' }
 
-      expose :commit, using: Entities::Commit do |repo_tag, options|
+      expose :commit, using: ::API::Entities::Commit,
+        documentation: { type: '::API::Entities::Commit' } do |repo_tag, options|
         options[:project].repository.commit(repo_tag.dereferenced_target)
       end
 
-      expose :release, using: Entities::TagRelease, if: ->(*) { can_read_release? } do |repo_tag, options|
+      expose :release, using: ::API::Entities::TagRelease,
+        documentation: { type: '::API::Entities::TagRelease' },
+        if: ->(*) { can_read_release? } do |repo_tag, options|
         options[:releases]&.find { |r| r.tag == repo_tag.name }
       end
       expose :protected, documentation: { type: 'Boolean', example: true } do |repo_tag, options|

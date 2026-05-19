@@ -4,6 +4,8 @@ action: click_text
 extra_properties:
 identifiers:
 product_group: global_search
+product_categories:
+- global_search
 milestone: "13.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40822
 tiers:

@@ -10,6 +10,7 @@ import {
 } from '~/rapid_diffs/utils/line_utils';
 import { createAlert } from '~/alert';
 import { pinia } from '~/pinia/instance';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 
 function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id }) {
   if (lineRow.nextElementSibling?.dataset.discussionRow === 'true') return;
@@ -19,6 +20,7 @@ function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id }) 
   const instance = new Vue({
     el: placeholder,
     pinia,
+    apolloProvider,
     name: 'DiffDiscussionRowRoot',
     provide() {
       return {
@@ -38,6 +40,7 @@ function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id }) 
         suggestionsHelpPath: appData.suggestionsHelpPath,
         defaultSuggestionCommitMessage: appData.defaultSuggestionCommitMessage,
         linkedFileData: appData.linkedFileData,
+        newCommentTemplatePaths: appData.newCommentTemplatePaths || [],
       };
     },
     render(h) {
@@ -95,9 +98,9 @@ export const createLineDiscussionsAdapter = ({ store, parallel, errorMessage }) 
     const { diffElement, appData, trigger, id } = this;
     const { oldPath, newPath, blobRawPath } = this.data;
     const stopWatcher = watch(
-      () => store.findAllLineDiscussionsForFile({ oldPath, newPath }),
-      (matchedDiscussions) => {
-        matchedDiscussions.forEach(({ position }) => {
+      () => store.findLinePositionsForFile({ oldPath, newPath }),
+      (matchedPositions) => {
+        matchedPositions.forEach((position) => {
           try {
             const lineRow = findLineRow(diffElement, position.old_line, position.new_line);
             if (!lineRow) return;

@@ -2,6 +2,7 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Deploy all GitLab components in Kubernetes using Cloud Native First reference architectures with four standardized sizes and external PostgreSQL, Redis, and object storage.
 title: 'Reference architecture: Cloud Native First (Beta)'
 ---
 
@@ -33,7 +34,7 @@ card "Kubernetes via Helm Charts" as kubernetes {
 
   collections "**Gitaly Pods**\n//StatefulSets//" as gitaly #FF8C00
 
-  collections "**Supporting Pods**\n//NGINX, Toolbox//" as support #e76a9b
+  collections "**Supporting Pods**\n//Gateway API / Ingress, Toolbox//" as support #e76a9b
 }
 
 card "External Services" as external {
@@ -66,10 +67,12 @@ sidekiq -[#ff8dd1,norank]--> database
 - **Webservice** - Handles web requests
 - **Sidekiq** - Processes background jobs
 - **Gitaly** - Manages Git repositories using StatefulSets with persistent volumes
-- **Supporting services** - NGINX Ingress, Toolbox, and monitoring components
+- **Supporting services** - Gateway API / Ingress, Toolbox, and monitoring components
 
 > [!note]
-> Gitaly on Kubernetes is deployed as Gitaly Sharded (non-Cluster) only and [does not support zero-downtime upgrades](https://gitlab.com/gitlab-org/gitaly/-/work_items/6934). Each Gitaly pod is a single point of failure for the repositories it serves. Gitaly Cluster (Praefect) is not supported in Kubernetes.
+> When deploying Gitaly on Kubernetes, Gitaly only supports sharded (non-cluster) configurations. You can upgrade Gitaly without downtime through
+> [client retries](../settings/gitaly_timeouts.md). Each Gitaly pod is a single point of failure for the repositories it serves.
+> Gitaly Cluster (Praefect) is not supported on Kubernetes.
 >
 > If you require Gitaly high availability with automatic failover, consider [Cloud Native Hybrid architectures](_index.md#cloud-native-hybrid), which deploy Gitaly Cluster on virtual machines while running stateless components in Kubernetes. For Gitaly on Kubernetes requirements and limitations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md#requirements).
 

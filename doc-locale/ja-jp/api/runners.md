@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Runner API
 ---
 
@@ -12,9 +12,11 @@ title: Runner API
 
 {{< /details >}}
 
-このページでは、インスタンスに登録されているRunnerのエンドポイントについて説明します。現在のユーザーにリンクされたRunnerを作成するには、[Runnerの作成](users.md#create-a-runner-linked-to-a-user)を参照してください。
+このAPIを使用して、インスタンスに登録されている[Runner](../ci/runners/_index.md)を管理します。
 
-[ページネーション](rest/_index.md#pagination)は、次のAPIエンドポイント（デフォルトでは20個のアイテムを返します）で使用できます: 
+新規のインスタンス、グループ、またはプロジェクトのRunnerを作成するには、[`POST /user/runners`](users.md#create-a-runner-linked-to-a-user)エンドポイントを使用します。既存のRunnerを管理するには、このAPIを使用します。
+
+[ページネーション](rest/_index.md#pagination)は、次のAPIエンドポイント（デフォルトでは20個のアイテムを返します）で使用できます。
 
 ```plaintext
 GET /runners
@@ -24,19 +26,19 @@ GET /projects/:id/runners
 GET /groups/:id/runners
 ```
 
-## 登録トークンと認証トークン {#registration-and-authentication-tokens}
+## 登録と認証トークン {#registration-and-authentication-tokens}
 
 RunnerをGitLabに接続するには、2つのトークンが必要です。
 
 | トークン | 説明 |
 | ----- | ----------- |
-| 登録トークン（GitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/380872)となり、GitLab 20.0で削除予定） | [Runnerを登録](https://docs.gitlab.com/runner/register/)するために使用するトークン。[GitLabを通じて取得](../ci/runners/_index.md)できます。 |
+| 登録トークン（レガシー） | [Runnerを登録](https://docs.gitlab.com/runner/register/)するために使用するトークン。[GitLabを通じて取得](../ci/runners/_index.md)できます。 |
 | 認証トークン | GitLabインスタンスでRunnerを認証するために使用するトークン。このトークンは、ユーザーが[Runnerを登録](https://docs.gitlab.com/runner/register/)すると、自動的に取得されます。つまり、ユーザーが手動で[Runnerを登録](#create-a-runner)するか、[認証トークンをリセット](#reset-runners-authentication-token-by-using-the-runner-id)すると、Runners APIによって自動的に取得されます。[`POST /user/runners`](users.md#create-a-runner-linked-to-a-user)エンドポイントを使用しても、トークンを取得できます。 |
 
-次に、Runnerの登録にトークンを使用する方法の例を示します:
+次に、Runnerの登録にトークンを使用する方法の例を示します。
 
 1. GitLab APIと登録トークンを使用してRunnerを登録し、認証トークンを受け取ります。
-1. 認証トークンを[Runnerの設定ファイル](https://docs.gitlab.com/runner/commands/#configuration-file)に追加します:
+1. 認証トークンを[Runnerの設定ファイル](https://docs.gitlab.com/runner/commands/#configuration-file)に追加します。
 
    ```toml
    [[runners]]
@@ -45,14 +47,14 @@ RunnerをGitLabに接続するには、2つのトークンが必要です。
 
 これで、GitLabとRunnerが接続されます。
 
-## 利用可能なRunnerの一覧 {#list-available-runners}
+## 利用可能なすべてのRunnerを一覧表示 {#list-all-available-runners}
 
-ユーザーが利用できるRunnerのリストを取得します。
+ユーザーが利用可能なすべてのRunnerを一覧表示します。
 
-前提要件: 
+前提条件: 
 
 - グループRunnerの場合、オーナーのネームスペースでオーナーロールが必要です。
-- プロジェクトRunnerの場合、Runnerに割り当てられたプロジェクトのメンテナーロール以上が必要です。
+- プロジェクトRunnerの場合、Runnerが割り当てられているプロジェクトでセキュリティマネージャー、メンテナー、またはオーナーロールが必要です。
 
 ```plaintext
 GET /runners
@@ -65,7 +67,7 @@ GET /runners?tag_list=tag1,tag2
 
 | 属性        | 型         | 必須 | 説明 |
 |------------------|--------------|----------|-------------|
-| `scope`          | 文字列       | いいえ       | 非推奨: 代わりに、`type`または`status`を使用してください。返されるRunnerのスコープ（`active`、`paused`、`online`、`offline`のいずれか）。指定されていない場合は、すべてのRunnerが表示されます |
+| `scope`          | 文字列       | いいえ       | 非推奨。代わりに、`type`または`status`を使用してください。返されるRunnerのスコープ（`active`、`paused`、`online`、`offline`のいずれか）。指定されていない場合は、すべてのRunnerが表示されます |
 | `type`           | 文字列       | いいえ       | 返されるRunnerのタイプ（`instance_type`、`group_type`、`project_type`のいずれか） |
 | `status`         | 文字列       | いいえ       | 返されるRunnerの状態（`online`、`offline`、`stale`、`never_contacted`のいずれか）。<br/>その他の可能な値は、非推奨の`active`と`paused`です。<br/>`offline` Runnerをリクエストすると、`stale`が`offline`に含まれているため、`stale` Runnerも返される場合があります。 |
 | `paused`         | ブール値      | いいえ       | 新規ジョブを受け入れているRunnerのみを含めるか、無視しているRunnerのみを含めるか |
@@ -73,28 +75,17 @@ GET /runners?tag_list=tag1,tag2
 | `version_prefix` | 文字列       | いいえ       | 返されるRunnerのバージョンのプレフィックス。例: `15.0`、`14`、`16.1.241` |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners"
 ```
 
-{{< alert type="warning" >}}
+> [!warning]非推奨:
+>
+> - `status`クエリパラメータの`active`と`paused`の値は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`クエリパラメータを使用してください。
+> - 応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
+> - 応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
 
-`status`クエリパラメータの`active`と`paused`の値は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`クエリパラメータを使用してください。
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
-
-{{< /alert >}}
-
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -108,7 +99,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "runner_type": "project_type",
         "name": null,
         "online": true,
-        "status": "online"
+        "status": "online",
+        "job_execution_status": "idle"
     },
     {
         "active": true,
@@ -120,12 +112,13 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "runner_type": "group_type",
         "name": null,
         "online": false,
-        "status": "offline"
+        "status": "offline",
+        "job_execution_status": "idle"
     }
 ]
 ```
 
-## すべてのRunnerをリストする {#list-all-runners}
+## すべてのRunnerを一覧表示 {#list-all-runners}
 
 {{< details >}}
 
@@ -134,11 +127,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 {{< /details >}}
 
-GitLabインスタンス（プロジェクトおよび共有）内のすべてのRunnerのリストを取得します。
+GitLabインスタンス内のすべてのRunner（プロジェクトと共有）を一覧表示します。
 
-前提要件: 
+前提条件: 
 
-- 管理者アクセス権または監査担当者アクセス権が必要です。
+- 管理者アクセスまたは監査担当者アクセスが必要です。
 
 ```plaintext
 GET /runners/all
@@ -151,7 +144,7 @@ GET /runners/all?tag_list=tag1,tag2
 
 | 属性        | 型         | 必須 | 説明 |
 |------------------|--------------|----------|-------------|
-| `scope`          | 文字列       | いいえ       | 非推奨: 代わりに、`type`または`status`を使用してください。返されるRunnerのスコープ（`specific`、`shared`、`active`、`paused`、`online`、`offline`のいずれか）指定されていない場合は、すべてのRunnerが表示されます |
+| `scope`          | 文字列       | いいえ       | 非推奨。代わりに、`type`または`status`を使用してください。返されるRunnerのスコープ（`specific`、`shared`、`active`、`paused`、`online`、`offline`のいずれか）指定されていない場合は、すべてのRunnerが表示されます |
 | `type`           | 文字列       | いいえ       | 返されるRunnerのタイプ（`instance_type`、`group_type`、`project_type`のいずれか） |
 | `status`         | 文字列       | いいえ       | 返されるRunnerの状態（`online`、`offline`、`stale`、`never_contacted`のいずれか）。<br/>その他の可能な値は、非推奨の`active`と`paused`です。<br/>`offline` Runnerをリクエストすると、`stale`が`offline`に含まれているため、`stale` Runnerも返される場合があります。 |
 | `paused`         | ブール値      | いいえ       | 新規ジョブを受け入れているRunnerのみを含めるか、無視しているRunnerのみを含めるか |
@@ -159,28 +152,28 @@ GET /runners/all?tag_list=tag1,tag2
 | `version_prefix` | 文字列       | いいえ       | 返されるRunnerのバージョンのプレフィックス。例: `15.0`、`16.1.241` |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/all"
-```
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/all"
 
-{{< alert type="warning" >}}
+> [!warning]
+> Deprecations:
+>
+> - The `active` and `paused` values in the `status` query parameter are deprecated
+>   and scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   Use the `paused` query parameter instead.
+> - The `active` attribute in the response is deprecated
+>   and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   Use the `paused` attribute instead.
+> - The `ip_address` attribute in the response is deprecated
+>   [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
+>   [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   In GitLab 17.0, this attribute returns an empty string.
+>   The `ipAddress` attribute can be found inside the respective runner manager.
+>   It is only available through the GraphQL
+>   [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
-`status`クエリパラメータの`active`と`paused`の値は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`クエリパラメータを使用してください。
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
-
-{{< /alert >}}
-
-レスポンス例:
+Example response:
 
 ```json
 [
@@ -194,7 +187,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "runner_type": "instance_type",
         "name": null,
         "online": true,
-        "status": "online"
+        "status": "online",
+        "job_execution_status": "idle"
     },
     {
         "active": true,
@@ -206,7 +200,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "runner_type": "instance_type",
         "name": null,
         "online": false,
-        "status": "offline"
+        "status": "offline",
+        "job_execution_status": "idle"
     },
     {
         "active": true,
@@ -218,7 +213,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "runner_type": "project_type",
         "name": null,
         "online": true,
-        "status": "paused"
+        "status": "paused",
+        "job_execution_status": "idle"
     },
     {
         "active": true,
@@ -230,27 +226,26 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "runner_type": "group_type",
         "name": null,
         "online": false,
-        "status": "offline"
+        "status": "offline",
+        "job_execution_status": "idle"
     }
 ]
 ```
 
 最初の20個よりも多くのRunnerを表示するには、[ページネーション](rest/_index.md#pagination)を使用してください。
 
-## Runnerの詳細を取得する {#get-runners-details}
+## Runnerの詳細を取得する {#retrieve-runners-details}
 
 Runnerの詳細を取得します。
 
-このエンドポイントを介したインスタンスRunnerの詳細は、すべての認証済みユーザーが利用できます。
+インスタンスRunnerの詳細は、このエンドポイントを介してすべての認証済みユーザーが利用できます。
 
-前提要件: 
+前提条件: 
 
 - ユーザーアクセス: 次のいずれかが必要です:
-
-  - グループRunnerの場合: オーナーのネームスペースで、メンテナーロール以上。
-  - プロジェクトRunnerの場合: Runnerを所有するプロジェクトで、メンテナーロール以上。
-  - 関連するグループまたはプロジェクトで、`admin_runners`権限を持つカスタムロール。
-
+  - グループRunnerの場合: オーナーのネームスペースでメンテナーまたはオーナーロール。
+  - プロジェクトRunnerの場合: Runnerを所有するプロジェクトでセキュリティマネージャー、メンテナー、またはオーナーロール。
+  - 関連するグループまたはプロジェクトで`admin_runners`パーミッションを持つカスタムロール。
 - `manage_runner`スコープと適切なロールを持つアクセストークン。
 
 ```plaintext
@@ -262,28 +257,17 @@ GET /runners/:id
 | `id`      | 整数 | はい      | RunnerのID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/6"
 ```
 
-{{< alert type="warning" >}}
+> [!warning]非推奨:
+>
+> - 応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
+> - 応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
+> - 応答の`version`、`revision`、`platform`、および`architecture`属性は[GitLab 17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/457128)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。同じ属性が、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
 
-応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-応答の`version`、`revision`、`platform`、および`architecture`属性は[GitLab 17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/457128)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。同じ属性が、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
-
-{{< /alert >}}
-
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -300,6 +284,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "name": null,
     "online": true,
     "status": "online",
+    "job_execution_status": "idle",
     "platform": null,
     "projects": [
         {
@@ -321,7 +306,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 }
 ```
 
-## Runnerの詳細を更新する {#update-runners-details}
+## Runnerの詳細を更新 {#update-runners-details}
 
 Runnerの詳細を更新します。
 
@@ -329,22 +314,20 @@ Runnerの詳細を更新します。
 PUT /runners/:id
 ```
 
-前提要件: 
+前提条件: 
 
 - ユーザーアクセス: 次のいずれかが必要です:
-
   - インスタンスRunnerの場合: GitLabインスタンスへの管理者アクセス。
-  - グループRunnerの場合: オーナーのネームスペースにおけるオーナーロール。
-  - プロジェクトRunnerの場合: Runnerに割り当てられたプロジェクトで、メンテナーロール以上。
-  - 関連するグループまたはプロジェクトで、`admin_runners`権限を持つカスタムロール。
-
+  - グループRunnerの場合: オーナーのネームスペースでオーナーロール。
+  - プロジェクトRunnerの場合: Runnerが割り当てられているプロジェクトでメンテナーまたはオーナーロール。
+  - 関連するグループまたはプロジェクトで`admin_runners`パーミッションを持つカスタムロール。
 - `manage_runner`スコープと適切なロールを持つアクセストークン。
 
 | 属性          | 型    | 必須 | 説明 |
 |--------------------|---------|----------|-------------|
 | `id`               | 整数 | はい      | RunnerのID |
 | `description`      | 文字列  | いいえ       | Runnerの説明 |
-| `active`           | ブール値 | いいえ       | 非推奨: 代わりに、`paused`を使用してください。Runnerがジョブの受信を許可されているかどうかを示すフラグ |
+| `active`           | ブール値 | いいえ       | 非推奨。代わりに、`paused`を使用してください。Runnerがジョブの受信を許可されているかどうかを示すフラグ |
 | `paused`           | ブール値 | いいえ       | Runnerが新規ジョブを無視する必要があるかどうかを指定します |
 | `tag_list`         | 配列   | いいえ       | Runnerのタグのリスト |
 | `run_untagged`     | ブール値 | いいえ       | タグ付けされていないジョブをRunnerが実行できるかどうかを指定します |
@@ -354,23 +337,19 @@ PUT /runners/:id
 | `maintenance_note` | 文字列  | いいえ       | Runnerの自由形式のメンテナンスノート（1024文字） |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6" \
-     --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
+curl --request PUT \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/6" \
+     --form "description=test-1-20150125-test" \
+     --form "tag_list=ruby,mysql,tag1,tag2"
 ```
 
-{{< alert type="warning" >}}
+> [!warning]非推奨:
+>
+> - `active`クエリパラメータは非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
+> - 応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
 
-`active`クエリパラメータは非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
-
-{{< /alert >}}
-
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -386,6 +365,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
     "name": null,
     "online": true,
     "status": "online",
+    "job_execution_status": "idle",
     "platform": null,
     "projects": [
         {
@@ -413,15 +393,13 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 Runnerを一時停止します。
 
-前提要件: 
+前提条件: 
 
 - ユーザーアクセス: 次のいずれかが必要です:
-
   - インスタンスRunnerの場合: GitLabインスタンスへの管理者アクセス。
-  - グループRunnerの場合: オーナーのネームスペースにおけるオーナーロール。
-  - プロジェクトRunnerの場合: Runnerに割り当てられたプロジェクトで、メンテナーロール以上。
-  - 関連するグループまたはプロジェクトで、`admin_runners`権限を持つカスタムロール。
-
+  - グループRunnerの場合: オーナーのネームスペースでオーナーロール。
+  - プロジェクトRunnerの場合: Runnerが割り当てられているプロジェクトでメンテナーまたはオーナーロール。
+  - 関連するグループまたはプロジェクトで`admin_runners`パーミッションを持つカスタムロール。
 - `manage_runner`スコープと適切なロールを持つアクセストークン。
 
 ```plaintext
@@ -438,25 +416,25 @@ PUT --form "active=false" /runners/:runner_id
 | `runner_id` | 整数 | はい      | RunnerのID |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "paused=true"  "https://gitlab.example.com/api/v4/runners/6"
+curl --request PUT \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "paused=true"  \
+     --url "https://gitlab.example.com/api/v4/runners/6"
 
 # --or--
 
 # Deprecated: removal planned in 16.0
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "active=false"  "https://gitlab.example.com/api/v4/runners/6"
+curl --request PUT \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "active=false"  \
+     --url "https://gitlab.example.com/api/v4/runners/6"
 ```
 
-{{< alert type="warning" >}}
+> [!warning] `active`フォーム属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
 
-`active`フォーム属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
+## Runnerが処理したすべてのジョブを一覧表示 {#list-all-jobs-processed-by-a-runner}
 
-{{< /alert >}}
-
-## Runnerが処理したジョブをリストする {#list-jobs-processed-by-a-runner}
-
-指定されたRunnerが処理している、または処理したジョブをリストします。ジョブのリストは、ユーザーが少なくともレポーターロールを持っているプロジェクトに限定されます。
+指定されたRunnerによって処理中または処理済みであったすべてのジョブを一覧表示します。ジョブのリストは、ユーザーがレポーター、デベロッパー、メンテナー、またはオーナーロールを持っているプロジェクトに限定されます。
 
 ```plaintext
 GET /runners/:id/jobs
@@ -471,10 +449,11 @@ GET /runners/:id/jobs
 | `sort`      | 文字列  | いいえ       | `asc`または`desc`順にジョブを並べ替えます（デフォルト: `desc`）。`sort`が指定されている場合は、`order_by`も指定する必要があります |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/1/jobs?status=running"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/1/jobs?status=running"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -543,9 +522,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## Runnerのマネージャーをリストする {#list-runners-managers}
+## すべてのRunnerのマネージャーを一覧表示 {#list-all-runners-managers}
 
-Runnerのすべてのマネージャーをリストします。
+Runnerのすべてのマネージャーを一覧表示します。
 
 ```plaintext
 GET /runners/:id/managers
@@ -556,10 +535,11 @@ GET /runners/:id/managers
 | `id`      | 整数 | はい      | RunnerのID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/1/managers"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/1/managers"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -573,7 +553,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
       "created_at": "2024-06-09T11:12:02.507Z",
       "contacted_at": "2024-06-09T06:30:09.355Z",
       "ip_address": "127.0.0.1",
-      "status": "offline"
+      "status": "offline",
+      "job_execution_status": "idle"
     },
     {
       "id": 2,
@@ -585,32 +566,33 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
       "created_at": "2024-06-09T09:12:02.507Z",
       "contacted_at": "2024-06-09T06:30:09.355Z",
       "ip_address": "127.0.0.1",
-      "status": "offline"
+      "status": "offline",
+      "job_execution_status": "idle"
     }
 ]
 ```
 
-## プロジェクトのRunnerをリストする {#list-projects-runners}
+## プロジェクトのすべてのRunnerを一覧表示 {#list-all-of-a-projects-runners}
 
-祖先グループと[許可されているインスタンスRunner](../ci/runners/runners_scope.md#enable-instance-runners-for-a-project)を含めて、プロジェクトで利用可能なすべてのRunnerをリストします。
+プロジェクトで利用可能なすべてのRunnerを、祖先グループや[許可されているインスタンスRunner](../ci/runners/runners_scope.md#enable-instance-runners-for-a-project)を含めて一覧表示します。
 
-前提要件: 
+前提条件: 
 
-- GitLabインスタンスの管理者であるか、対象プロジェクトのメンテナーまたは監査担当者ロール以上を持っている必要があります。
+- GitLabインスタンスの管理者であるか、ターゲットプロジェクトでメンテナーまたは監査担当者ロール以上を持っている必要があります。
 
 ```plaintext
 GET /projects/:id/runners
 GET /projects/:id/runners?scope=active
 GET /projects/:id/runners?type=project_type
-GET /projects/:id/runners/all?status=online
-GET /projects/:id/runners/all?paused=true
+GET /projects/:id/runners?status=online
+GET /projects/:id/runners?paused=true
 GET /projects/:id/runners?tag_list=tag1,tag2
 ```
 
 | 属性        | 型           | 必須 | 説明 |
 |------------------|----------------|----------|-------------|
 | `id`             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `scope`          | 文字列         | いいえ       | 非推奨: 代わりに、`type`または`status`を使用してください。返されるRunnerのスコープ（`active`、`paused`、`online`、`offline`のいずれか）。指定されていない場合は、すべてのRunnerが表示されます |
+| `scope`          | 文字列         | いいえ       | 非推奨。代わりに、`type`または`status`を使用してください。返されるRunnerのスコープ（`active`、`paused`、`online`、`offline`のいずれか）。指定されていない場合は、すべてのRunnerが表示されます |
 | `type`           | 文字列         | いいえ       | 返されるRunnerのタイプ（`instance_type`、`group_type`、`project_type`のいずれか） |
 | `status`         | 文字列         | いいえ       | 返されるRunnerの状態（`online`、`offline`、`stale`、`never_contacted`のいずれか）。<br/>その他の可能な値は、非推奨の`active`と`paused`です。<br/>`offline` Runnerをリクエストすると、`stale`が`offline`に含まれているため、`stale` Runnerも返される場合があります。 |
 | `paused`         | ブール値        | いいえ       | 新規ジョブを受け入れているRunnerのみを含めるか、無視しているRunnerのみを含めるか |
@@ -618,28 +600,17 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 | `version_prefix` | 文字列         | いいえ       | 返されるRunnerのバージョンのプレフィックス。例: `15.0`、`14`、`16.1.241` |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/runners"
 ```
 
-{{< alert type="warning" >}}
+> [!warning]非推奨:
+>
+> - `status`クエリパラメータの`active`と`paused`の値は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`クエリパラメータを使用してください。
+> - 応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
+> - 応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
 
-`status`クエリパラメータの`active`と`paused`の値は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`クエリパラメータを使用してください。
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
-
-{{< /alert >}}
-
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -653,7 +624,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "runner_type": "project_type",
         "name": null,
         "online": false,
-        "status": "offline"
+        "status": "offline",
+        "job_execution_status": "idle"
     },
     {
         "active": true,
@@ -665,7 +637,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "runner_type": "instance_type",
         "name": null,
         "online": true,
-        "status": "online"
+        "status": "online",
+        "job_execution_status": "idle"
     }
 ]
 ```
@@ -674,12 +647,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 利用可能なプロジェクトRunnerをプロジェクトに割り当てます。
 
-前提要件: 
+前提条件: 
 
 - ユーザーアクセス: 次のいずれかが必要です:
 
-  - Runnerを所有するプロジェクトおよび対象プロジェクトのメンテナーロール以上。
-  - 関連するグループまたはプロジェクトで、`admin_runners`権限を持つカスタムロール。
+  - Runnerを所有するプロジェクトおよびターゲットプロジェクトでメンテナーまたはオーナーロール。
+  - 関連するグループまたはプロジェクトで`admin_runners`パーミッションを持つカスタムロール。
 
 ```plaintext
 POST /projects/:id/runners
@@ -691,17 +664,15 @@ POST /projects/:id/runners
 | `runner_id` | 整数        | はい      | RunnerのID |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners" \
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/runners" \
      --form "runner_id=9"
 ```
 
-{{< alert type="warning" >}}
+> [!warning]レスポンス内の`ip_address`属性は、[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
 
-応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
-
-{{< /alert >}}
-
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -713,22 +684,21 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
     "runner_type": "project_type",
     "name": null,
     "online": true,
-    "status": "online"
+    "status": "online",
+    "job_execution_status": "idle"
 }
 ```
 
-## プロジェクトからRunnerの割り当てを解除する {#unassign-a-runner-from-project}
+## プロジェクトからRunnerの割り当てを解除 {#unassign-a-runner-from-project}
 
 プロジェクトからプロジェクトRunnerの割り当てを解除します。オーナープロジェクトからRunnerの割り当てを解除することはできません。このアクションを試みると、エラーが発生します。代わりに、[Runnerの削除](#delete-a-runner)への呼び出しを使用します。
 
-前提要件: 
+前提条件: 
 
 - 管理者でない限り、Runnerをロックしてはいけません。
 - ユーザーアクセス: 次のいずれかが必要です:
-
-  - 割り当てを解除するプロジェクトで、メンテナーロール以上。
-  - 関連するグループまたはプロジェクトで、`admin_runners`権限を持つカスタムロール。
-
+  - 割り当てを解除したいプロジェクトでメンテナーまたはオーナーロール。
+  - 関連するグループまたはプロジェクトで`admin_runners`パーミッションを持つカスタムロール。
 - `manage_runner`スコープと適切なロールを持つアクセストークン。
 
 ```plaintext
@@ -741,21 +711,21 @@ DELETE /projects/:id/runners/:runner_id
 | `runner_id` | 整数        | はい      | RunnerのID |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners/9"
+curl --request DELETE \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/runners/9"
 ```
 
-## グループのRunnerをリストする {#list-groups-runners}
+## グループのすべてのRunnerを一覧表示 {#list-all-of-a-groups-runners}
 
-[許可されているインスタンスRunner](../ci/runners/runners_scope.md#enable-instance-runners-for-a-group)を含めて、グループとその祖先グループで利用可能なすべてのRunnerをリストます。
+グループおよびその祖先グループで利用可能なすべてのRunnerを、[許可されているインスタンスRunner](../ci/runners/runners_scope.md#enable-instance-runners-for-a-group)を含めて一覧表示します。
 
-前提要件: 
+前提条件: 
 
 - ユーザーアクセス: 次のいずれかが必要です:
-
   - GitLabインスタンスへの管理者アクセス。
-  - グループのオーナーまたは監査担当者ロール。
-  - グループ内で`admin_runners`権限を持つカスタムロール。
-
+  - グループでオーナーまたは監査担当者ロール。
+  - グループで`admin_runners`パーミッションを持つカスタムロール。
 - `manage_runner`スコープと適切なロールを持つアクセストークン。
 
 ```plaintext
@@ -775,29 +745,19 @@ GET /groups/:id/runners?tag_list=tag1,tag2
 | `tag_list`       | 文字列配列 | いいえ       | Runnerタグのリスト |
 | `version_prefix` | 文字列       | いいえ       | 返されるRunnerのバージョンのプレフィックス。例: `15.0`、`14`、`16.1.241` |
 
+> [!warning]非推奨:
+>
+> - `status`クエリパラメータの`active`と`paused`の値は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`クエリパラメータを使用してください。
+> - 応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
+
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/9/runners"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/groups/9/runners"
 ```
 
-{{< alert type="warning" >}}
+> [!warning]レスポンス内の`ip_address`属性は、[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLabでは、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
 
-`status`クエリパラメータの`active`と`paused`の値は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`クエリパラメータを使用してください。
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLabでは、t属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
-
-{{< /alert >}}
-
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -811,7 +771,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "runner_type": "instance_type",
     "name": "gitlab-runner",
     "online": null,
-    "status": "never_contacted"
+    "status": "never_contacted",
+    "job_execution_status": "idle"
   },
   {
     "id": 6,
@@ -823,7 +784,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "runner_type": "instance_type",
     "name": "gitlab-runner",
     "online": false,
-    "status": "offline"
+    "status": "offline",
+    "job_execution_status": "idle"
   },
   {
     "id": 8,
@@ -835,20 +797,19 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "runner_type": "group_type",
     "name": "gitlab-runner",
     "online": null,
-    "status": "never_contacted"
+    "status": "never_contacted",
+    "job_execution_status": "idle"
   }
 ]
 ```
 
 ## Runnerを作成する {#create-a-runner}
 
-{{< alert type="warning" >}}
-
-このエンドポイントは、Runner登録トークンを使用した登録がプロジェクト設定またはグループ設定で無効になっている場合、`HTTP 410 Gone`状態コードを返します。Runner登録トークンを使用した登録が無効になっている場合は、[`POST /user/runners`](users.md#create-a-runner-linked-to-a-user)エンドポイントを使用して、Runnerを作成して登録します。
-
-{{< /alert >}}
+> [!warning]このエンドポイントは登録トークン（[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/380872)）を使用します。これはGitLab 17.0以降ではデフォルトで無効になっています。推奨されるワークフローでRunnerを作成するには、代わりに[`POST /user/runners`](users.md#create-a-runner-linked-to-a-user)を使用します。
 
 Runner登録トークンを使用してRunnerを作成します。
+
+このエンドポイントは、Runner登録トークンを使用した登録がプロジェクト設定またはグループ設定で無効になっている場合、`HTTP 410 Gone`状態コードを返します。Runner登録トークンを使用した登録が無効になっている場合は、[`POST /user/runners`](users.md#create-a-runner-linked-to-a-user)エンドポイントを使用して、Runnerを作成して登録します。
 
 ```plaintext
 POST /runners
@@ -859,7 +820,7 @@ POST /runners
 | `token`            | 文字列       | はい      | [登録トークン](#registration-and-authentication-tokens) |
 | `description`      | 文字列       | いいえ       | Runnerの説明 |
 | `info`             | ハッシュ         | いいえ       | Runnerのメタデータ。`name`、`version`、`revision`、`platform`、`architecture`を含めることができますが、UIの**管理者**エリアには、`version`、`platform`、`architecture`のみが表示されます |
-| `active`           | ブール値      | いいえ       | 非推奨: 代わりに、`paused`を使用してください。Runnerに新規ジョブの受信を許可するかどうかを指定します |
+| `active`           | ブール値      | いいえ       | 非推奨。代わりに、`paused`を使用してください。Runnerに新規ジョブの受信を許可するかどうかを指定します |
 | `paused`           | ブール値      | いいえ       | Runnerが新規ジョブを無視する必要があるかどうかを指定します |
 | `locked`           | ブール値      | いいえ       | 現在のプロジェクトに対してRunnerをロックする必要があるかどうかを指定します |
 | `run_untagged`     | ブール値      | いいえ       | タグ付けされていないジョブをRunnerが処理する必要があるかどうかを指定します |
@@ -870,7 +831,8 @@ POST /runners
 | `maintenance_note` | 文字列       | いいえ       | Runnerの自由形式のメンテナンスノート（1024文字） |
 
 ```shell
-curl --request POST "https://gitlab.example.com/api/v4/runners" \
+curl --request POST \
+     --url "https://gitlab.example.com/api/v4/runners" \
      --form "token=<registration_token>" --form "description=test-1-20150125-test" \
      --form "tag_list=ruby,mysql,tag1,tag2"
 ```
@@ -883,7 +845,7 @@ curl --request POST "https://gitlab.example.com/api/v4/runners" \
 | 403    | 無効なRunner登録トークン |
 | 410    | Runner登録が無効になっています |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -895,24 +857,22 @@ curl --request POST "https://gitlab.example.com/api/v4/runners" \
 
 ## Runnerを削除する {#delete-a-runner}
 
-次の要素を指定して、Runnerを削除できます:
+次の要素を指定して、Runnerを削除できます。
 
 - RunnerのID
 - Runnerの認証トークン
 
-### IDでRunnerを削除する {#delete-a-runner-by-id}
+### IDでRunnerを削除 {#delete-a-runner-by-id}
 
-IDでRunnerを削除するには、アクセストークンとRunnerのIDを使用します:
+IDでRunnerを削除するには、アクセストークンとRunnerのIDを使用します。
 
-前提要件: 
+前提条件: 
 
 - ユーザーアクセス: 次のいずれかが必要です:
-
   - インスタンスRunnerの場合: GitLabインスタンスへの管理者アクセス。
-  - グループRunnerの場合: オーナーのネームスペースにおけるオーナーロール。
-  - プロジェクトRunnerの場合: Runnerを所有するプロジェクトで、メンテナーロール以上。
-  - 関連するグループまたはプロジェクトで、`admin_runners`権限を持つカスタムロール。
-
+  - グループRunnerの場合: オーナーのネームスペースでオーナーロール。
+  - プロジェクトRunnerの場合: Runnerを所有するプロジェクトでメンテナーまたはオーナーロール。
+  - 関連するグループまたはプロジェクトで`admin_runners`パーミッションを持つカスタムロール。
 - `manage_runner`スコープと適切なロールを持つアクセストークン。
 
 ```plaintext
@@ -921,15 +881,17 @@ DELETE /runners/:id
 
 | 属性 | 型    | 必須 | 説明 |
 |-----------|---------|----------|-------------|
-| `id`      | 整数 | はい      | RunnerのID。IDは、**設定** > **CI/CD**で確認できます。**Runners**を展開すると、**Remove Runner**（Runnerの削除）の下にポンド記号で始まるIDが表示されます（例: `#6`）。 |
+| `id`      | 整数 | はい      | RunnerのID。IDはUIの**設定** > **CI/CD**で確認できます。**Runners**を展開すると、**Runnerの削除**の下にポンド記号で始まるIDが表示されます（例: `#6`）。 |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
+curl --request DELETE \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/6"
 ```
 
-### 認証トークンでRunnerを削除する {#delete-a-runner-by-authentication-token}
+### 認証トークンでRunnerを削除 {#delete-a-runner-by-authentication-token}
 
-認証トークンを使用してRunnerを削除します。
+Runnerの認証トークンを使用してRunnerを削除します。
 
 ```plaintext
 DELETE /runners
@@ -940,7 +902,8 @@ DELETE /runners
 | `token`   | 文字列 | はい      | Runnerの[認証トークン](#registration-and-authentication-tokens)。 |
 
 ```shell
-curl --request DELETE "https://gitlab.example.com/api/v4/runners" \
+curl --request DELETE \
+     --url "https://gitlab.example.com/api/v4/runners" \
      --form "token=<authentication_token>"
 ```
 
@@ -950,7 +913,7 @@ curl --request DELETE "https://gitlab.example.com/api/v4/runners" \
 |--------|-------------|
 | 204    | Runnerが削除されました |
 
-## 登録済みRunnerの認証を検証する {#verify-authentication-for-a-registered-runner}
+## 登録済みのランナーの認証を検証 {#verify-authentication-for-a-registered-runner}
 
 登録済みRunnerの認証情報を検証します。
 
@@ -964,7 +927,8 @@ POST /runners/verify
 | `system_id` | 文字列 | いいえ       | Runnerのシステム識別子。この属性は、`token`が`glrt-`で始まる場合に必須です。 |
 
 ```shell
-curl --request POST "https://gitlab.example.com/api/v4/runners/verify" \
+curl --request POST \
+     --url "https://gitlab.example.com/api/v4/runners/verify" \
      --form "token=<authentication_token>"
 ```
 
@@ -975,7 +939,7 @@ curl --request POST "https://gitlab.example.com/api/v4/runners/verify" \
 | 200    | 認証情報が有効です |
 | 403    | 認証情報が無効です |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -985,15 +949,11 @@ curl --request POST "https://gitlab.example.com/api/v4/runners/verify" \
 }
 ```
 
-## インスタンスのRunner登録トークンをリセットする {#reset-instances-runner-registration-token}
+## インスタンスのRunner登録トークンをリセット {#reset-instances-runner-registration-token}
 
-{{< alert type="warning" >}}
-
-Runner登録トークンを渡すオプションと、特定の設定引数のサポートは、GitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/380872)となっており、GitLab 20.0で削除される予定です。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。
-
-詳細については、[新しいRunner登録ワークフローに移行する](../ci/runners/new_creation_workflow.md)を参照してください。
-
-{{< /alert >}}
+> [!warning] Runner登録トークンを渡すオプションおよび特定の設定引数のサポートはレガシーと見なされ、推奨されません。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。
+>
+> 詳細については、[新しいRunner登録ワークフローに移行する](../ci/runners/new_creation_workflow.md)を参照してください。
 
 GitLabインスタンスのRunner登録トークンをリセットします。
 
@@ -1002,17 +962,14 @@ POST /runners/reset_registration_token
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/runners/reset_registration_token"
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/reset_registration_token"
 ```
 
-## プロジェクトのRunner登録トークンをリセットする {#reset-projects-runner-registration-token}
+## プロジェクトのRunner登録トークンをリセット {#reset-projects-runner-registration-token}
 
-{{< alert type="warning" >}}
-
-Runner登録トークンを渡すオプションと、特定の設定引数のサポートは、GitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/380872)となっており、GitLab 20.0で削除される予定です。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。詳細については、[新しいRunner登録ワークフローに移行する](../ci/runners/new_creation_workflow.md)を参照してください。
-
-{{< /alert >}}
+> [!warning] Runner登録トークンを渡すオプションおよび特定の設定引数のサポートはレガシーと見なされ、推奨されません。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。詳細については、[新しいRunner登録ワークフローに移行する](../ci/runners/new_creation_workflow.md)を参照してください。
 
 プロジェクトのRunner登録トークンをリセットします。
 
@@ -1021,17 +978,14 @@ POST /projects/:id/runners/reset_registration_token
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/9/runners/reset_registration_token"
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/runners/reset_registration_token"
 ```
 
-## グループのRunner登録トークンをリセットする {#reset-groups-runner-registration-token}
+## グループのRunner登録トークンをリセット {#reset-groups-runner-registration-token}
 
-{{< alert type="warning" >}}
-
-Runner登録トークンを渡すオプションと、特定の設定引数のサポートは、GitLab 15.6で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/380872)となっており、GitLab 20.0で削除される予定です。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。詳細については、[新しいRunner登録ワークフローに移行する](../ci/runners/new_creation_workflow.md)を参照してください。
-
-{{< /alert >}}
+> [!warning] Runner登録トークンを渡すオプションおよび特定の設定引数のサポートはレガシーと見なされ、推奨されません。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。詳細については、[新しいRunner登録ワークフローに移行する](../ci/runners/new_creation_workflow.md)を参照してください。
 
 グループのRunner登録トークンをリセットします。
 
@@ -1040,23 +994,22 @@ POST /groups/:id/runners/reset_registration_token
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/9/runners/reset_registration_token"
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/groups/9/runners/reset_registration_token"
 ```
 
-## Runner IDを使用してRunnerの認証トークンをリセットする {#reset-runners-authentication-token-by-using-the-runner-id}
+## Runner IDを使用してRunnerのRunner認証トークンをリセット {#reset-runners-authentication-token-by-using-the-runner-id}
 
 Runner IDを使用して、Runnerの認証トークンをリセットします。
 
-前提要件: 
+前提条件: 
 
 - ユーザーアクセス: 次のいずれかが必要です:
-
   - インスタンスRunnerの場合: GitLabインスタンスへの管理者アクセス。
-  - グループRunnerの場合: オーナーのネームスペースにおけるオーナーロール。
-  - プロジェクトRunnerの場合: Runnerに割り当てられたプロジェクトで、メンテナーロール以上。
-  - 関連するグループまたはプロジェクトで、`admin_runners`権限を持つカスタムロール。
-
+  - グループRunnerの場合: オーナーのネームスペースでオーナーロール。
+  - プロジェクトRunnerの場合: Runnerが割り当てられているプロジェクトでメンテナーまたはオーナーロール。
+  - 関連するグループまたはプロジェクトで`admin_runners`パーミッションを持つカスタムロール。
 - `manage_runner`スコープと適切なロールを持つアクセストークン。
 
 ```plaintext
@@ -1068,11 +1021,12 @@ POST /runners/:id/reset_authentication_token
 | `id`      | 整数 | はい      | RunnerのID |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/runners/1/reset_authentication_token"
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/1/reset_authentication_token"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -1081,7 +1035,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## 現在のトークンを使用してRunnerの認証トークンをリセットする {#reset-runners-authentication-token-by-using-the-current-token}
+## 現在のトークンを使用してRunnerの認証トークンをリセット {#reset-runners-authentication-token-by-using-the-current-token}
 
 現在のトークンの値をインプットとして使用して、Runnerの認証トークンをリセットします。
 
@@ -1094,15 +1048,63 @@ POST /runners/reset_authentication_token
 | `token`   | 文字列 | はい      | Runnerの認証トークン |
 
 ```shell
-curl --request POST --form "token=<current token>" \
-     "https://gitlab.example.com/api/v4/runners/reset_authentication_token"
+curl --request POST \
+     --form "token=<current token>" \
+     --url "https://gitlab.example.com/api/v4/runners/reset_authentication_token"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
     "token": "6337ff461c94fd3fa32ba3b1ff4125",
     "token_expires_at": "2021-09-27T21:05:03.203Z"
+}
+```
+
+## Job Router情報を検出 {#discover-job-router-information}
+
+{{< history >}}
+
+- GitLab 18.7で`job_router`および`job_router_instance_runners`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/19607)されました。デフォルトでは無効になっています。
+
+{{< /history >}}
+
+RunnerのJob Router検出情報を取得します。
+
+前提条件: 
+
+- 有効なRunner認証トークンを指定する必要があります。
+
+```plaintext
+GET /runners/router/discovery
+```
+
+```shell
+curl --header "Runner-Token: <runner_authentication_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/router/discovery"
+```
+
+応答:
+
+レスポンスには次のフィールドが含まれます:
+
+| 属性    | 型     | 説明           |
+|--------------|----------|-----------------------|
+| `server_url` | 文字列   | Job RouterへのURL |
+
+レスポンスは次のいずれかのステータスコードを返します:
+
+| 状態 | 説明                                   |
+|--------|-----------------------------------------------|
+| `200`  | Job Router情報が正常に取得されました |
+| `403`  | 禁止                                     |
+| `501`  | Job Routerは利用できません                   |
+
+レスポンス例: 
+
+```json
+{
+    "server_url": "wss://kas.example.com"
 }
 ```

@@ -56,8 +56,13 @@ module Gitlab
               expanded_content_hash
             end
 
+            def include_type
+              raise NotImplementedError, 'subclass must implement `include_type`'
+            end
+
             def metadata
               {
+                type: include_type,
                 context_project: context.project&.full_path,
                 context_sha: context.sha
               }
@@ -177,7 +182,7 @@ module Gitlab
             end
 
             def expand_context_attrs
-              {}
+              { parent_file: self }
             end
 
             def masked_location

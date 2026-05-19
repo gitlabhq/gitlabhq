@@ -108,6 +108,24 @@ describe('PipelineInputsTable', () => {
       expect(findHelpIcon().attributes('title')).toBe('Array values must be in JSON format.');
     });
 
+    it('does not render an info icon if the type is ARRAY but has options', () => {
+      createComponent({
+        props: {
+          inputs: [
+            {
+              name: 'input1',
+              description: '',
+              type: 'ARRAY',
+              value: [],
+              options: [{ value: 'option1' }],
+              isSelected: true,
+            },
+          ],
+        },
+      });
+      expect(findHelpIcon().exists()).toBe(false);
+    });
+
     it('does not render an info icon if the type is not ARRAY', () => {
       createComponent({
         props: {

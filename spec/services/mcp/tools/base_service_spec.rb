@@ -17,7 +17,9 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
           type: 'object',
           properties: {
             required_field: { type: 'string' },
-            optional_field: { type: 'integer' }
+            optional_field: { type: 'integer' },
+            items_field: { type: 'array', items: { type: 'string' }, maxItems: 3 },
+            enum_field: { type: 'string', enum: %w[option_a option_b option_c] }
           },
           required: ['required_field']
         }
@@ -93,7 +95,9 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
           type: 'object',
           properties: {
             required_field: { type: 'string' },
-            optional_field: { type: 'integer' }
+            optional_field: { type: 'integer' },
+            items_field: { type: 'array', items: { type: 'string' }, maxItems: 3 },
+            enum_field: { type: 'string', enum: %w[option_a option_b option_c] }
           },
           required: ['required_field']
         },
@@ -194,6 +198,29 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to eq('Validation error: required_field is missing')
+      end
+    end
+
+    context 'with array exceeding maxItems' do
+      let(:arguments) { { arguments: { required_field: 'valid', items_field: %w[a b c d] } } }
+
+      it 'returns validation error with maxItems message' do
+        result = test_service.execute(request: nil, params: arguments)
+
+        expect(result[:isError]).to be true
+        expect(result[:content].first[:text]).to include('items_field cannot contain more than 3 items')
+      end
+    end
+
+    context 'with invalid enum value' do
+      let(:arguments) { { arguments: { required_field: 'valid', enum_field: 'invalid_option' } } }
+
+      it 'returns validation error with enum message' do
+        result = test_service.execute(request: nil, params: arguments)
+
+        expect(result[:isError]).to be true
+        expect(result[:content].first[:text])
+          .to include("Invalid enum_field: 'invalid_option'. Must be one of: option_a, option_b, option_c")
       end
     end
 

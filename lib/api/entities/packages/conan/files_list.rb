@@ -7,7 +7,7 @@ module API
         class FilesList < Grape::Entity
           expose :files, documentation: {
             type: 'object',
-            example: '{ "files" : { "conan_sources.tgz" : { }, "conanmanifest.txt" : { }, "conanfile.py" : { } } }'
+            example: { "conan_sources.tgz" => {}, "conanmanifest.txt" => {}, "conanfile.py" => {} }
           } do |obj|
             obj[:files].each_with_object({}) { |file, files| files[file.file_name] = {} }
           end

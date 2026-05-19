@@ -261,21 +261,21 @@ func WriteExecutable(tb testing.TB, path string, content []byte) string {
 	//
 	// No matter what, after this step any file descriptors referring to this writeable file
 	// descriptor will be exclusively locked.
-	require.NoError(tb, syscall.Flock(int(executable.Fd()), syscall.LOCK_EX))
+	require.NoError(tb, syscall.Flock(int(executable.Fd()), syscall.LOCK_EX)) // #nosec G115 - only used in testing
 
 	// We now close this file. The file will be automatically unlocked as soon as all
 	// references to this file descriptor are closed.
 	MustClose(tb, executable)
 
 	// We now open the file again, but this time only for reading.
-	executable, err = os.Open(path)
+	executable, err = os.Open(path) // #nosec G304 - only used in testing
 	require.NoError(tb, err)
 
 	// And this time, we try to acquire a shared lock on this file. This call will block until
 	// the exclusive file lock on the above writeable file descriptor has been dropped. So as
 	// soon as we're able to acquire the lock we know that there cannot be any open writeable
 	// file descriptors for this file anymore, and thus we won't get ETXTBSY anymore.
-	require.NoError(tb, syscall.Flock(int(executable.Fd()), syscall.LOCK_SH))
+	require.NoError(tb, syscall.Flock(int(executable.Fd()), syscall.LOCK_SH)) // #nosec G115 - only used in testing
 	MustClose(tb, executable)
 
 	return path

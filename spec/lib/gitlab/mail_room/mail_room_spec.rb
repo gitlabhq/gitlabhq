@@ -476,7 +476,7 @@ RSpec.describe Gitlab::MailRoom, feature_category: :build do
 
         expect(application_secrets).to match(a_hash_including(
           a_shared_key: 'this key is shared',
-          an_overriden_shared_key: 'the merge overwrote this key',
+          an_overridden_shared_key: 'the merge overwrote this key',
           an_environment_specific_key: 'test environment value',
           erb_env_key: 'an environment variable value',
           encrypted_settings_key_base: encrypted_settings_key_base

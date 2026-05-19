@@ -38,8 +38,11 @@ RSpec.describe HooksHelper, feature_category: :integrations do
           url_variables: "[]",
           custom_headers: "[]",
           is_new_hook: "false",
+          is_system_hook: "false",
           triggers: expected_triggers,
-          deploy_token_events_enabled: 'false'
+          deploy_token_events_enabled: 'false',
+          has_signing_token: 'false',
+          signing_token_docs_path: anything
         )
       end
     end
@@ -60,8 +63,11 @@ RSpec.describe HooksHelper, feature_category: :integrations do
           url_variables: Gitlab::Json.dump([{ key: 'abc' }, { key: 'def' }]),
           custom_headers: "[]",
           is_new_hook: "false",
+          is_system_hook: "false",
           triggers: expected_triggers,
-          deploy_token_events_enabled: 'false'
+          deploy_token_events_enabled: 'false',
+          has_signing_token: 'false',
+          signing_token_docs_path: anything
         )
       end
     end
@@ -82,8 +88,11 @@ RSpec.describe HooksHelper, feature_category: :integrations do
           url_variables: "[]",
           custom_headers: Gitlab::Json.dump([{ key: 'test', value: WebHook::SECRET_MASK }]),
           is_new_hook: "false",
+          is_system_hook: "false",
           triggers: expected_triggers,
-          deploy_token_events_enabled: 'false'
+          deploy_token_events_enabled: 'false',
+          has_signing_token: 'false',
+          signing_token_docs_path: anything
         )
       end
     end
@@ -108,11 +117,15 @@ RSpec.describe HooksHelper, feature_category: :integrations do
       end
     end
 
-    context 'when hook is not a project hook' do
+    context 'when hook is a system hook' do
       subject(:form_data) { helper.webhook_form_data(system_hook) }
 
       it 'does not include deploy_token_events_enabled' do
         expect(form_data).not_to have_key(:deploy_token_events_enabled)
+      end
+
+      it 'includes is_system_hook as true' do
+        expect(form_data).to include(is_system_hook: 'true')
       end
     end
 
@@ -123,6 +136,20 @@ RSpec.describe HooksHelper, feature_category: :integrations do
 
       it 'does not include deploy_token_events_enabled' do
         expect(form_data).not_to have_key(:deploy_token_events_enabled)
+      end
+    end
+
+    context 'when hook has a signing token' do
+      let(:project_hook) { build_stubbed(:project_hook, :signing_token, project: project) }
+
+      it 'includes has_signing_token as true' do
+        expect(form_data).to include(has_signing_token: 'true')
+      end
+    end
+
+    context 'when hook has no signing token' do
+      it 'includes has_signing_token as false' do
+        expect(form_data).to include(has_signing_token: 'false')
       end
     end
   end

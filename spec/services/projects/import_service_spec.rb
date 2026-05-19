@@ -135,9 +135,10 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
           it 'succeeds if repository fetch as mirror is successful' do
             expect(project).to receive(:ensure_repository)
             expect(project.repository).to receive(:fetch_as_mirror).with('https://bitbucket.org/vim/vim.git', refmap: Gitlab::LegacyGithubImport::Importer.refmap, resolved_address: '').and_return(true)
-            expect_next_instance_of(Gitlab::LegacyGithubImport::Importer) do |importer|
-              expect(importer).to receive(:execute).and_return(true)
-            end
+
+            # The importer is instantiated twice: once for preallocate_iids, once for import_data
+            allow_any_instance_of(Gitlab::LegacyGithubImport::Importer).to receive(:preallocate_iids!)
+            allow_any_instance_of(Gitlab::LegacyGithubImport::Importer).to receive(:execute).and_return(true)
 
             expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |service|
               expect(service).to receive(:execute).and_return(status: :success)
@@ -149,6 +150,8 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
           end
 
           it 'fails if repository fetch as mirror fails' do
+            allow_any_instance_of(Gitlab::LegacyGithubImport::Importer).to receive(:preallocate_iids!)
+
             expect(project).to receive(:ensure_repository)
             expect(project.repository)
               .to receive(:fetch_as_mirror)
@@ -489,6 +492,62 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
           result = subject.execute
 
           expect(result[:status]).to eq(:success)
+        end
+      end
+    end
+
+    describe 'preallocate_iids' do
+      context 'when importing from Gitea' do
+        before do
+          project.import_url = 'https://example.com/repo/repo.git'
+          project.import_type = 'gitea'
+
+          allow(project).to receive(:ensure_repository)
+          allow(project.repository).to receive(:fetch_as_mirror).and_return(true)
+        end
+
+        it 'calls preallocate_iids! on the importer before adding the repository' do
+          # The importer is instantiated twice: once for preallocate_iids, once for import_data.
+          # expect_next_instance_of only stubs the first instance, so we use allow_any_instance_of
+          # for execute and set the expectation on preallocate_iids! via the first instance.
+          expect_next_instance_of(Gitlab::LegacyGithubImport::Importer) do |importer|
+            expect(importer).to receive(:preallocate_iids!)
+          end
+
+          allow_next_instance_of(Gitlab::LegacyGithubImport::Importer) do |importer|
+            allow(importer).to receive(:execute).and_return(true)
+          end
+
+          expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |service|
+            expect(service).to receive(:execute).and_return(status: :success)
+          end
+
+          subject.execute
+        end
+      end
+
+      %w[github bitbucket bitbucket_server fogbugz gitlab_project].each do |type|
+        context "when importing from #{type}" do
+          before do
+            project.import_url = 'https://example.com/repo/repo.git'
+            project.import_type = type
+
+            importer_class = Gitlab::ImportSources.importer(type)
+
+            allow_next_instance_of(importer_class) do |importer|
+              allow(importer).to receive(:execute).and_return(true)
+            end
+
+            allow(project).to receive(:ensure_repository)
+            allow(project.repository).to receive(:fetch_as_mirror).and_return(true)
+            allow(project.repository).to receive(:import_repository).and_return(true)
+          end
+
+          it 'does not preallocate IIDs' do
+            expect(Gitlab::LegacyGithubImport::Importer).not_to receive(:new)
+
+            subject.execute
+          end
         end
       end
     end

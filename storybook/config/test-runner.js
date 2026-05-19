@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/filename-case */
 const { injectAxe, checkA11y, configureAxe } = require('axe-playwright');
 const { getStoryContext } = require('@storybook/test-runner');
 

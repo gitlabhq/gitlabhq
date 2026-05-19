@@ -1,16 +1,13 @@
 # frozen_string_literal: true
 
-# Imports a project from Bitbucket Cloud using
-# username and app password (not OAuth)
+# Imports a project from Bitbucket Cloud using an API token
 module Import
   class BitbucketService < Import::BaseService
     attr_reader :current_user, :params
 
     # @param [User] current_user
     # @param [Hash] params
-    # @option params [String] bitbucket_username - Bitbucket Cloud username
-    # @option params [String] bitbucket_app_password - Bitbucket Cloud user app password
-    # @option params [String] bitbucket_email - Bitbucket Cloud email (if username/app password not used)
+    # @option params [String] bitbucket_email - Bitbucket Cloud email
     # @option params [String] bitbucket_api_token - Bitbucket Cloud API token
     def initialize(current_user, params)
       @current_user = current_user
@@ -64,17 +61,10 @@ module Import
     end
 
     def credentials
-      if params[:bitbucket_email].present? && params[:bitbucket_api_token].present?
-        {
-          email: params[:bitbucket_email],
-          api_token: params[:bitbucket_api_token]
-        }
-      else
-        {
-          username: params[:bitbucket_username],
-          app_password: params[:bitbucket_app_password]
-        }
-      end
+      {
+        email: params[:bitbucket_email],
+        api_token: params[:bitbucket_api_token]
+      }
     end
 
     def create_project

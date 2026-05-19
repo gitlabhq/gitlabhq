@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::IndexMarkedAsReadyEvent
+description: Published when initializing Zoekt indices have all of their repositories
+  finished indexing and can therefore be transitioned to the ready state.
+feature_category: global_search
+ee_only: true

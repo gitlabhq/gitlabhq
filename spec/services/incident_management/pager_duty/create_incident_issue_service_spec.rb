@@ -18,7 +18,7 @@ RSpec.describe IncidentManagement::PagerDuty::CreateIncidentIssueService, featur
 
       context 'when issue can be created' do
         it 'creates a new issue' do
-          expect { execute }.to change(Issue, :count).by(1)
+          expect { execute }.to change { Issue.count }.by(1)
         end
 
         it 'responds with success' do
@@ -58,7 +58,7 @@ RSpec.describe IncidentManagement::PagerDuty::CreateIncidentIssueService, featur
         let(:incident_payload) { {} }
 
         it 'does not create a GitLab issue' do
-          expect { execute }.not_to change(Issue, :count)
+          expect { execute }.not_to change { Issue.count }
         end
 
         it 'responds with error' do
@@ -72,7 +72,7 @@ RSpec.describe IncidentManagement::PagerDuty::CreateIncidentIssueService, featur
       let_it_be(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: false) }
 
       it 'does not create a GitLab issue' do
-        expect { execute }.not_to change(Issue, :count)
+        expect { execute }.not_to change { Issue.count }
       end
 
       it 'responds with forbidden' do

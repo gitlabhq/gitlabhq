@@ -1,0 +1,11 @@
+# @feature_category: user_profile
+#import "./achievement_fields.fragment.graphql"
+
+mutation updateAchievement($input: AchievementsUpdateInput!) {
+  achievementsUpdate(input: $input) {
+    achievement {
+      ...AchievementFragment
+    }
+    errors
+  }
+}

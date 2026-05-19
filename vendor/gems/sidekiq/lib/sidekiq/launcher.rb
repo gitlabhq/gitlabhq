@@ -84,8 +84,13 @@ module Sidekiq
     private unless $TESTING
 
     BEAT_PAUSE = 10
+    HEARTBEAT_TTL = (ENV["SIDEKIQ_HEARTBEAT_TTL"] || 120).to_i
 
     def start_heartbeat
+      Thread.current.priority = 3
+    rescue ThreadError, NotImplementedError
+      # Thread priorities are not supported on all platforms; ignore.
+    ensure
       loop do
         beat
         sleep BEAT_PAUSE
@@ -154,7 +159,7 @@ module Sidekiq
             transaction.unlink(work_key)
             if curstate.size > 0
               transaction.hset(work_key, curstate)
-              transaction.expire(work_key, 60)
+              transaction.expire(work_key, HEARTBEAT_TTL)
             end
           end
         end
@@ -174,7 +179,7 @@ module Sidekiq
               "rtt_us", rtt,
               "quiet", @done.to_s,
               "rss", kb)
-            transaction.expire(key, 60)
+            transaction.expire(key, HEARTBEAT_TTL)
             transaction.rpop("#{key}-signals")
           }
         }

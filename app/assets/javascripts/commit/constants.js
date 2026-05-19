@@ -11,6 +11,7 @@ export const verificationStatuses = {
   SAME_USER_DIFFERENT_EMAIL: 'SAME_USER_DIFFERENT_EMAIL',
   MULTIPLE_SIGNATURES: 'MULTIPLE_SIGNATURES',
   REVOKED_KEY: 'REVOKED_KEY',
+  EXPIRED_KEY: 'EXPIRED_KEY',
   VERIFIED_SYSTEM: 'VERIFIED_SYSTEM',
   UNVERIFIED_AUTHOR_EMAIL: 'UNVERIFIED_AUTHOR_EMAIL',
 };
@@ -96,6 +97,12 @@ export const statusConfig = {
     label: __('Unverified'),
     title: s__('CommitSignature|Unverified signature'),
     description: s__('CommitSignature|This commit was signed with a key that was revoked.'),
+  },
+  [verificationStatuses.EXPIRED_KEY]: {
+    variant: 'neutral',
+    label: __('Unverified'),
+    title: s__('CommitSignature|Unverified signature'),
+    description: s__('CommitSignature|This commit was signed with a key that has expired.'),
   },
 };
 

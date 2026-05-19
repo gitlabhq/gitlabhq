@@ -1,5 +1,5 @@
 <script>
-import { GlModal, GlSprintf, GlLink, GlLoadingIcon, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
+import { GlCard, GlModal, GlSprintf, GlLink, GlLoadingIcon, GlToggle } from '@gitlab/ui';
 import { sortBy } from 'lodash-es';
 import Api from '~/api';
 import { i18n } from '../constants';
@@ -7,12 +7,12 @@ import { i18n } from '../constants';
 export default {
   name: 'CustomNotificationsModal',
   components: {
+    GlCard,
     GlModal,
     GlSprintf,
     GlLink,
     GlLoadingIcon,
-    GlFormGroup,
-    GlFormCheckbox,
+    GlToggle,
   },
   inject: {
     projectId: {
@@ -107,38 +107,44 @@ export default {
     ref="modal"
     :visible="visible"
     :modal-id="modalId"
+    scrollable
+    hide-footer
     :title="$options.i18n.customNotificationsModal.title"
     @show="onOpen"
     v-on="$listeners"
   >
-    <div class="container-fluid">
-      <div class="row">
-        <div class="gl-col-lg-4">
-          <h4 class="gl-mt-0" data-testid="modalBodyTitle">
-            {{ $options.i18n.customNotificationsModal.bodyTitle }}
-          </h4>
-          <gl-sprintf :message="$options.i18n.customNotificationsModal.bodyMessage">
-            <template #notificationLink="{ content }">
-              <gl-link :href="helpPagePath" target="_blank">{{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </div>
-        <div class="gl-col-lg-8">
-          <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-3" />
-          <template v-else>
-            <gl-form-group v-for="event in events" :key="event.id">
-              <gl-form-checkbox
-                v-model="event.enabled"
+    <gl-sprintf :message="$options.i18n.customNotificationsModal.bodyMessage">
+      <template #notificationLink="{ content }">
+        <gl-link :href="helpPagePath" target="_blank">{{ content }}</gl-link>
+      </template>
+    </gl-sprintf>
+    <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-3" />
+    <template v-else>
+      <gl-card class="gl-mt-5" body-class="gl-py-0">
+        <template #header>
+          <h3>{{ __('Notification events') }}</h3>
+        </template>
+        <ul class="gl-m-0 gl-flex gl-flex-col gl-p-0">
+          <li
+            v-for="event in events"
+            :key="event.id"
+            class="gl-border-b gl-flex gl-items-center gl-justify-between gl-p-4 last:gl-border-none"
+            @click="updateEvent(!event.enabled, event)"
+          >
+            <span class="gl-font-bold">{{ event.name }}</span>
+            <span @click.stop>
+              <gl-toggle
+                :value="event.enabled"
+                :label="event.name"
+                label-position="hidden"
+                :is-loading="event.loading"
                 :data-testid="`notification-setting-${event.id}`"
                 @change="updateEvent($event, event)"
-              >
-                <strong>{{ event.name }}</strong
-                ><gl-loading-icon v-if="event.loading" size="sm" :inline="true" class="gl-ml-2" />
-              </gl-form-checkbox>
-            </gl-form-group>
-          </template>
-        </div>
-      </div>
-    </div>
+              />
+            </span>
+          </li>
+        </ul>
+      </gl-card>
+    </template>
   </gl-modal>
 </template>

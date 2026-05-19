@@ -34,7 +34,14 @@ module QA
         Resource::ProjectWebHook.setup(session: session, merge_requests: true) do |webhook, smocker|
           create(:merge_request, project: webhook.project)
 
-          expect_web_hook_single_event_success(webhook, smocker, type: 'merge_request')
+          # MR creation can trigger multiple webhook events (open + merge status update)
+          expect { smocker.events(session).size >= 1 }.to eventually_be_truthy
+            .within(max_duration: 30, sleep_interval: 2),
+            -> { "Should have at least 1 event, got: #{smocker.stringified_history(session)}" }
+
+          expect(smocker.events(session)).to include(
+            a_hash_including(object_kind: 'merge_request', project: a_hash_including(name: webhook.project.name))
+          )
         end
       end
 

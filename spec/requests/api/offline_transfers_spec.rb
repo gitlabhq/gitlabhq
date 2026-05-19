@@ -197,6 +197,12 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       end
     end
 
+    context 'when user is unauthenticated' do
+      let(:request) { post api('/offline_exports', nil), params: params }
+
+      it_behaves_like '401 response'
+    end
+
     it_behaves_like 'not found when offline_transfer_exports is disabled'
   end
 
@@ -280,6 +286,12 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       end
     end
 
+    context 'when user is unauthenticated' do
+      let(:request) { get api('/offline_exports', nil) }
+
+      it_behaves_like '401 response'
+    end
+
     it_behaves_like 'not found when offline_transfer_exports is disabled'
   end
 
@@ -316,12 +328,196 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       it_behaves_like '404 response'
     end
 
+    context 'when user is unauthenticated' do
+      let(:request) { get api("/offline_exports/#{export_1.id}", nil) }
+
+      it_behaves_like '401 response'
+    end
+
     it_behaves_like 'not found when offline_transfer_exports is disabled'
   end
 
-  context 'when user is unauthenticated' do
-    let(:request) { get api('/offline_exports', nil) }
+  describe 'POST /offline_imports', :with_current_organization do
+    let_it_be(:bulk_import) { create(:bulk_import, user: user) }
 
-    it_behaves_like '401 response'
+    let(:bucket) { 'imports' }
+    let(:export_prefix) { 'export_2025-09-18_1hrwkrv' }
+    let(:entity_params) do
+      [
+        {
+          'source_type' => 'group_entity',
+          'source_full_path' => 'top_level_group',
+          'destination_namespace' => 'dest-group',
+          'destination_slug' => 'dest-grp'
+        }
+      ]
+    end
+
+    let(:aws_s3_credentials) do
+      {
+        'aws_access_key_id' => 'AwsUserAccessKey',
+        'aws_secret_access_key' => 'aws/secret+access/key',
+        'region' => 'us-east-1'
+      }
+    end
+
+    let(:s3_compatible_credentials) do
+      {
+        'aws_access_key_id' => 'minio-user-access-key',
+        'aws_secret_access_key' => 'minio-secret-access-key',
+        'region' => 'gdk',
+        'endpoint' => 'https://minio.example.com'
+      }
+    end
+
+    let(:params) do
+      {
+        bucket: bucket,
+        export_prefix: export_prefix,
+        aws_s3_configuration: aws_s3_credentials,
+        entities: entity_params
+      }
+    end
+
+    subject(:request) { post api('/offline_imports', user), params: params }
+
+    before do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+    end
+
+    shared_examples 'starting a new import' do |provider|
+      let(:service_response) { instance_double(ServiceResponse, success?: true, payload: bulk_import) }
+      let(:service_double) { instance_double(Import::Offline::Imports::CreateService, execute: service_response) }
+      let(:params) do
+        {
+          bucket: bucket,
+          export_prefix: export_prefix,
+          entities: entity_params
+        }.merge(configuration_key => credentials)
+      end
+
+      before do
+        allow(Import::Offline::Imports::CreateService).to receive(:new).and_return(service_double)
+      end
+
+      it "starts a new offline import using #{provider} object storage with default params" do
+        expect(Import::Offline::Imports::CreateService).to receive(:new).with(
+          {
+            bucket: bucket,
+            export_prefix: export_prefix,
+            object_storage_credentials: credentials.merge('path_style' => path_style_default),
+            provider: provider
+          },
+          { entities: entity_params },
+          current_user: user,
+          fallback_organization: current_organization
+        )
+
+        request
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to include(
+          'id' => bulk_import.id,
+          'status' => bulk_import.status_name.to_s,
+          'created_at' => bulk_import.created_at.iso8601(3),
+          'updated_at' => bulk_import.updated_at.iso8601(3),
+          'has_failures' => bulk_import.has_failures
+        )
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_offline_import do
+      before do
+        allow_next_instance_of(Import::Offline::Imports::CreateService) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.success)
+        end
+      end
+
+      let(:boundary_object) { :instance }
+      let(:request) { post api('/offline_imports', personal_access_token: pat), params: params }
+    end
+
+    it_behaves_like 'starting a new import', :aws do
+      let(:configuration_key) { :aws_s3_configuration }
+      let(:credentials) { aws_s3_credentials }
+      let(:path_style_default) { false }
+    end
+
+    it_behaves_like 'starting a new import', :s3_compatible do
+      let(:configuration_key) { :s3_compatible_configuration }
+      let(:credentials) { s3_compatible_credentials }
+      let(:path_style_default) { true }
+    end
+
+    context 'when no configuration params are provided' do
+      let(:params) do
+        {
+          bucket: bucket,
+          export_prefix: export_prefix,
+          entities: entity_params
+        }
+      end
+
+      it_behaves_like '400 response'
+    end
+
+    context 'when more than one provider configuration params are provided' do
+      let(:params) do
+        {
+          bucket: bucket,
+          export_prefix: export_prefix,
+          aws_s3_configuration: aws_s3_credentials,
+          s3_compatible_configuration: s3_compatible_credentials,
+          entities: entity_params
+        }
+      end
+
+      it_behaves_like '400 response'
+    end
+
+    context 'when request exceeds rate limits' do
+      it 'prevents user from starting a new import' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+
+        request
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(response.headers).to include('Retry-After' => Gitlab::ApplicationRateLimiter.interval(:offline_import))
+        expect(json_response['message']['error']).to eq(
+          'This endpoint has been requested too many times. Try again later.'
+        )
+      end
+    end
+
+    context 'when service returns an error' do
+      before do
+        allow_next_instance_of(Import::Offline::Imports::CreateService) do |service|
+          allow(service).to receive(:execute).and_return(
+            ServiceResponse.error(message: 'Import failed', reason: :unprocessable_entity)
+          )
+        end
+      end
+
+      it 'renders the error' do
+        request
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq('Import failed')
+      end
+    end
+
+    context 'when offline_transfer_imports is disabled' do
+      before do
+        stub_feature_flags(offline_transfer_imports: false)
+      end
+
+      it_behaves_like '404 response'
+    end
+
+    context 'when user is unauthenticated' do
+      let(:request) { post api('/offline_imports', nil), params: params }
+
+      it_behaves_like '401 response'
+    end
   end
 end

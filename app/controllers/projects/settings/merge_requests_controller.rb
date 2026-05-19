@@ -45,7 +45,7 @@ module Projects
       end
 
       def project_params_attributes
-        [
+        attrs = [
           :allow_merge_on_skipped_pipeline,
           :resolve_outdated_diff_discussions,
           :only_allow_merge_if_all_discussions_are_resolved,
@@ -56,8 +56,11 @@ module Projects
           :merge_method,
           :merge_commit_template_or_default,
           :squash_commit_template_or_default,
-          :suggestion_commit_message
-        ] + [project_setting_attributes: project_setting_attributes]
+          :suggestion_commit_message,
+          :mr_default_title_template
+        ]
+
+        attrs + [project_setting_attributes: project_setting_attributes]
       end
     end
   end

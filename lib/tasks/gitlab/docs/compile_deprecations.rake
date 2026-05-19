@@ -25,13 +25,13 @@ namespace :gitlab do
       if doc == contents
         puts "#{COLOR_CODE_GREEN}INFO: Deprecations documentation is up to date.#{COLOR_CODE_RESET}"
       else
-        warn <<~EOS
+        warn <<~TEXT
         #{COLOR_CODE_RED}ERROR: Deprecations documentation is outdated!#{COLOR_CODE_RESET}
         To update the deprecations documentation, either:
 
         - Run `bin/rake gitlab:docs:compile_deprecations` and commit the changes to this branch.
         - Have a technical writer resolve the issue.
-        EOS
+        TEXT
         abort
       end
     end

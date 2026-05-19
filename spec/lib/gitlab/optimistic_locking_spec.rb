@@ -13,49 +13,6 @@ RSpec.describe Gitlab::OptimisticLocking do
       .and_return(histogram)
   end
 
-  describe '#retry_lock_with_transaction' do
-    let(:name) { 'test_transaction_lock' }
-
-    it 'does not change current_scope', :aggregate_failures do
-      relation = pipeline.cancelable_statuses
-
-      expected_scope = Ci::Build.current_scope&.to_sql
-
-      described_class.retry_lock_with_transaction(relation, name: :test) do
-        expect(Ci::Build.current_scope&.to_sql).to eq(expected_scope)
-      end
-
-      expect(Ci::Build.current_scope&.to_sql).to eq(expected_scope)
-    end
-
-    context 'when an exception is raised within the transaction' do
-      subject do
-        described_class.retry_lock_with_transaction(pipeline, name: name) do |lock_subject|
-          lock_subject.succeed
-          raise StandardError, 'Test error'
-        end
-      end
-
-      it 'raises the exception' do
-        expect { subject }.to raise_error(StandardError, 'Test error')
-      end
-
-      it 'does not update the record' do
-        expect do
-          subject
-        rescue StandardError
-          nil
-        end.not_to change { pipeline.reload.status }
-      end
-
-      it 'does not log optimistic lock retries' do
-        expect(described_class.retry_lock_logger).not_to receive(:info)
-
-        expect { subject }.to raise_error(StandardError, 'Test error')
-      end
-    end
-  end
-
   describe '#retry_lock' do
     let(:name) { 'optimistic_locking_spec' }
 

@@ -4,7 +4,7 @@ require('spec_helper')
 
 RSpec.describe Projects::TodosController do
   let_it_be(:user)    { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project) }

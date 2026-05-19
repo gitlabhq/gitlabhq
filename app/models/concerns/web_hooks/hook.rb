@@ -8,6 +8,10 @@ module WebHooks
 
     SECRET_MASK = '************'
     MAX_PARAM_LENGTH = 8192
+    SIGNING_TOKEN_PREFIX = 'whsec_'
+    # Format of a signing token with 32 encoded bytes.
+    # Base64.strict_encode64(SecureRandom.bytes(32)).length # => 44 (43 chars + 1 padding "=")
+    SIGNING_TOKEN_FORMAT = %r{\A#{SIGNING_TOKEN_PREFIX}[A-Za-z0-9+/]{43}=\z}
     MAX_CUSTOM_HEADER_NAME_LENGTH = 255
 
     TEMPLATE_PARSE_LIMITS = {
@@ -29,6 +33,10 @@ module WebHooks
       include Sortable
       include WebHooks::AutoDisabling
       include Gitlab::EncryptedAttribute
+
+      prevent_from_serialization :signing_token
+
+      encrypts :signing_token
 
       attr_encrypted :token,
         mode: :per_attribute_iv,
@@ -67,6 +75,8 @@ module WebHooks
       }
 
       validates :token, length: { maximum: MAX_PARAM_LENGTH }, format: { without: /\n/ }
+      validates :signing_token, format: { with: SIGNING_TOKEN_FORMAT }, allow_nil: true
+      validate :signing_token_decodable, if: -> { signing_token.present? && errors[:signing_token].empty? }
 
       after_initialize :initialize_url_variables
       after_initialize :initialize_custom_headers
@@ -174,6 +184,12 @@ module WebHooks
       end
 
       private
+
+      def signing_token_decodable
+        Base64.strict_decode64(signing_token.delete_prefix(SIGNING_TOKEN_PREFIX))
+      rescue ArgumentError
+        errors.add(:signing_token, _('is not a valid base64-encoded string'))
+      end
 
       def reset_token
         self.token = nil if url_changed? && !encrypted_token_changed?

@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe GitlabSchema.types['SnippetBlob'] do
   include GraphqlHelpers
 
-  let_it_be(:blob) { create(:project_snippet, :public, :repository).blobs.first }
-  let_it_be(:nullity) do
+  let_it_be(:blob, freeze: false) { create(:project_snippet, :public, :repository).blobs.first }
+  let_it_be(:nullity, freeze: false) do
     {
       'richData' => be_nullable,
       'plainData' => be_nullable,

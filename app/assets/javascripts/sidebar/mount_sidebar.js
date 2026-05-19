@@ -10,7 +10,8 @@ import {
   parseBoolean,
 } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
-import { apolloProvider, defaultClient, currentReviewers } from '~/graphql_shared/issuable_client';
+import { apolloProvider, defaultClient } from '~/graphql_shared/issuable_client';
+import { currentReviewers } from '~/graphql_shared/issuable_client_state';
 import Translate from '~/vue_shared/translate';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';

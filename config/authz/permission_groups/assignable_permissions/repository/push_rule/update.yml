@@ -1,8 +1,10 @@
 ---
 name: update_push_rule
 description: Grants the ability to update push rules
-permissions:
-  - update_push_rule
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_push_rule

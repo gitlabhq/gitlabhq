@@ -12,6 +12,7 @@ import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import WorkItemCloseConfirmModal from '~/work_items/components/work_item_close_confirm_modal.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import WorkItemDescriptionTemplatesListbox from '~/work_items/components/work_item_description_template_listbox.vue';
@@ -20,13 +21,19 @@ import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.grap
 import workItemDescriptionTemplateQuery from '~/work_items/graphql/work_item_description_template.query.graphql';
 import namespacePathsQuery from '~/work_items/graphql/namespace_paths.query.graphql';
 import projectPermissionsQuery from '~/work_items/graphql/ai_permissions_for_project.query.graphql';
+import workItemLinkedItemsQuery from '~/work_items/graphql/work_item_linked_items.query.graphql';
+import workItemOpenChildCountQuery from '~/work_items/graphql/open_child_count.query.graphql';
 import { newWorkItemId } from '~/work_items/utils';
-import { ROUTES, WIDGET_TYPE_DESCRIPTION } from '~/work_items/constants';
+import { ROUTES, WIDGET_TYPE_DESCRIPTION, STATE_CLOSED } from '~/work_items/constants';
 import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
   workItemQueryResponse,
   namespacePathsQueryResponse,
+  workItemBlockedByLinkedItemsResponse,
+  workItemNoBlockedByLinkedItemsResponse,
+  mockOpenChildrenCount,
+  mockNoOpenChildrenCount,
 } from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
@@ -55,6 +62,8 @@ describe('WorkItemDescription', () => {
   const findDescriptionTemplateWarning = () => wrapper.findByTestId('description-template-warning');
   const findApplyTemplate = () => wrapper.findByTestId('template-apply');
   const findCancelApplyTemplate = () => wrapper.findByTestId('template-cancel');
+
+  const findCloseConfirmModal = () => wrapper.findComponent(WorkItemCloseConfirmModal);
 
   const editDescription = (newText) => findMarkdownEditor().vm.$emit('input', newText);
 
@@ -91,6 +100,11 @@ describe('WorkItemDescription', () => {
 
   const mockFullPath = 'test-project-path';
 
+  const noBlockedByHandler = jest.fn().mockResolvedValue(workItemNoBlockedByLinkedItemsResponse);
+  const blockedByHandler = jest.fn().mockResolvedValue(workItemBlockedByLinkedItemsResponse);
+  const noOpenChildrenHandler = jest.fn().mockResolvedValue(mockNoOpenChildrenCount);
+  const openChildrenHandler = jest.fn().mockResolvedValue(mockOpenChildrenCount);
+
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
     isCreateFlow = false,
@@ -112,6 +126,8 @@ describe('WorkItemDescription', () => {
     hideFullscreenMarkdownButton = false,
     workspacePermissionsHandler = mockWorkspacePermissionsHandler,
     workItemWidgetsAutoSaveKey = mockWorkItemWidgetsAutoSaveKey,
+    workItemLinkedItemsHandler = noBlockedByHandler,
+    workItemOpenChildCountHandler = noOpenChildrenHandler,
   } = {}) => {
     getDraft.mockImplementation((key) => {
       if (key === mockWorkItemWidgetsAutoSaveKey) {
@@ -130,6 +146,8 @@ describe('WorkItemDescription', () => {
         [workItemDescriptionTemplateQuery, descriptionTemplateHandler],
         [projectPermissionsQuery, workspacePermissionsHandler],
         [namespacePathsQuery, mockNamespacePathsHandler],
+        [workItemLinkedItemsQuery, workItemLinkedItemsHandler],
+        [workItemOpenChildCountQuery, workItemOpenChildCountHandler],
       ]),
       propsData: {
         fullPath,
@@ -725,6 +743,32 @@ describe('WorkItemDescription', () => {
       expect(findConflictsAlert().exists()).toBe(false);
     });
 
+    it('does not overwrite descriptionText on subsequent workItem cache updates during create flow', async () => {
+      const workItemResponseHandler = jest
+        .fn()
+        .mockResolvedValueOnce(workItemByIidResponseFactory())
+        .mockResolvedValueOnce(
+          workItemByIidResponseFactory({
+            description: 'stale description from cache update',
+          }),
+        );
+      await createComponent({
+        workItemId: newWorkItemId(workItemQueryResponse.data.workItem.workItemType.name),
+        isEditing: true,
+        workItemResponseHandler,
+      });
+
+      editDescription('user typed text');
+      await nextTick();
+
+      // Trigger a refetch of the work item data to simulate a cache update
+      // (e.g. from each keystroke writing to the resolver).
+      await wrapper.vm.$apollo.queries.workItem.refetch();
+      await waitForPromises();
+
+      expect(findMarkdownEditor().props('value')).toBe('user typed text');
+    });
+
     it('does not show conflict warning when redirecting from issues edit page', async () => {
       jest.spyOn(urlUtility, 'updateHistory');
 
@@ -880,6 +924,129 @@ describe('WorkItemDescription', () => {
       it('passes empty editorAiActions prop to MarkdownEditor', () => {
         const editorAiActions = findMarkdownEditor().props('editorAiActions');
         expect(editorAiActions).toHaveLength(0);
+      });
+    });
+  });
+
+  describe('/close quick action confirmation', () => {
+    const closeText = '/close';
+
+    const saveDescription = async () => {
+      findMarkdownEditor().vm.$emit('input', closeText);
+      await waitForPromises();
+      findForm().vm.$emit('submit', new Event('submit'));
+      await waitForPromises();
+    };
+
+    describe('when work item has no blockers and no open children', () => {
+      it('emits updateWorkItem directly without showing any modal', async () => {
+        await createComponent({ isEditing: true });
+        await saveDescription();
+
+        expect(findCloseConfirmModal().exists()).toBe(false);
+        expect(wrapper.emitted('updateWorkItem')).toHaveLength(1);
+      });
+    });
+
+    describe('when work item is closed', () => {
+      it('does not show any confirmation modal', async () => {
+        await createComponent({
+          isEditing: true,
+          workItemResponse: workItemByIidResponseFactory({ state: STATE_CLOSED }),
+          workItemLinkedItemsHandler: blockedByHandler,
+        });
+        await saveDescription();
+
+        expect(findCloseConfirmModal().exists()).toBe(false);
+        expect(wrapper.emitted('updateWorkItem')).toHaveLength(1);
+      });
+    });
+
+    describe('when /close is part of a longer word', () => {
+      it('does not trigger the confirmation modal', async () => {
+        await createComponent({ isEditing: true, workItemLinkedItemsHandler: blockedByHandler });
+        findMarkdownEditor().vm.$emit('input', '/closet');
+        await waitForPromises();
+        findForm().vm.$emit('submit', new Event('submit'));
+        await waitForPromises();
+
+        expect(findCloseConfirmModal().exists()).toBe(false);
+        expect(wrapper.emitted('updateWorkItem')).toHaveLength(1);
+      });
+    });
+
+    describe('when work item is blocked by open items', () => {
+      beforeEach(async () => {
+        await createComponent({ isEditing: true, workItemLinkedItemsHandler: blockedByHandler });
+        await saveDescription();
+      });
+
+      it('shows the confirm modal with isBlockedByOpenItems=true instead of emitting updateWorkItem', () => {
+        expect(findCloseConfirmModal().exists()).toBe(true);
+        expect(findCloseConfirmModal().props('isBlockedByOpenItems')).toBe(true);
+        expect(wrapper.emitted('updateWorkItem')).toBeUndefined();
+      });
+
+      it('passes the blocking items to the modal', () => {
+        expect(findCloseConfirmModal().props('blockerItems').length).toBeGreaterThan(0);
+      });
+
+      it('emits updateWorkItem when the modal proceed action is confirmed', async () => {
+        findCloseConfirmModal().vm.$emit('proceed');
+        await waitForPromises();
+
+        expect(wrapper.emitted('updateWorkItem')).toHaveLength(1);
+      });
+
+      it('does not emit updateWorkItem when the modal is cancelled', async () => {
+        findCloseConfirmModal().vm.$emit('hide');
+        await waitForPromises();
+
+        expect(wrapper.emitted('updateWorkItem')).toBeUndefined();
+      });
+    });
+
+    describe('when work item has open child items', () => {
+      beforeEach(async () => {
+        await createComponent({
+          isEditing: true,
+          workItemOpenChildCountHandler: openChildrenHandler,
+        });
+        await saveDescription();
+      });
+
+      it('shows the confirm modal with isBlockedByOpenItems=false instead of emitting updateWorkItem', () => {
+        expect(findCloseConfirmModal().exists()).toBe(true);
+        expect(findCloseConfirmModal().props('isBlockedByOpenItems')).toBe(false);
+        expect(wrapper.emitted('updateWorkItem')).toBeUndefined();
+      });
+
+      it('emits updateWorkItem when the modal proceed action is confirmed', async () => {
+        findCloseConfirmModal().vm.$emit('proceed');
+        await waitForPromises();
+
+        expect(wrapper.emitted('updateWorkItem')).toHaveLength(1);
+      });
+
+      it('does not emit updateWorkItem when the modal is cancelled', async () => {
+        findCloseConfirmModal().vm.$emit('hide');
+        await waitForPromises();
+
+        expect(wrapper.emitted('updateWorkItem')).toBeUndefined();
+      });
+    });
+
+    describe('when work item is both blocked and has open children', () => {
+      it('shows the confirm modal with isBlockedByOpenItems=true', async () => {
+        await createComponent({
+          isEditing: true,
+          workItemLinkedItemsHandler: blockedByHandler,
+          workItemOpenChildCountHandler: openChildrenHandler,
+        });
+        await saveDescription();
+
+        expect(findCloseConfirmModal().exists()).toBe(true);
+        expect(findCloseConfirmModal().props('isBlockedByOpenItems')).toBe(true);
       });
     });
   });

@@ -323,4 +323,54 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
       expect(current_application_settings.database_reindexing['reindexing_minimum_relative_bloat_size']).to be(threshold)
     end
   end
+
+  describe '.log_pending_items' do
+    let(:connection_name) { 'main' }
+    let(:label) { 'pending_indexes_to_create' }
+    let(:index) { instance_double(Gitlab::Database::AsyncIndexes::PostgresAsyncIndex, name: 'index_foo_on_bar') }
+    let(:items) { [index] }
+
+    it 'logs count and each item name' do
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        hash_including(message: 'Pending count', connection_name: connection_name, metric_label: label, count: 1)
+      )
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        hash_including(message: 'Pending item', connection_name: connection_name, metric_label: label, name: 'index_foo_on_bar')
+      )
+
+      described_class.send(:log_pending_items, connection_name, label, items)
+    end
+  end
+
+  describe '.stats' do
+    it 'logs pending items info' do
+      expect(Gitlab::AppLogger).to receive(:info).at_least(:once)
+
+      described_class.stats
+    end
+
+    context 'when database parameter is provided' do
+      it 'skips other databases' do
+        allow(Gitlab::Database::AsyncIndexes).to receive(:pending_indexes_to_create).and_return([])
+        allow(Gitlab::Database::AsyncIndexes).to receive(:pending_indexes_to_drop).and_return([])
+        allow(described_class).to receive(:queued_actions).and_return([])
+        allow(Gitlab::Database::AsyncConstraints).to receive(:pending_entries).and_return([])
+
+        # log_pending_items is called 4 times per database (once for each metric)
+        # When a specific database is provided, it should only be called 4 times, not 8
+        expect(described_class).to receive(:log_pending_items).exactly(4).times
+
+        described_class.stats(Gitlab::Database::PRIMARY_DATABASE_NAME)
+      end
+    end
+
+    context 'when an error occurs' do
+      it 'logs the error and re-raises' do
+        allow(Gitlab::Database::AsyncIndexes).to receive(:pending_indexes_to_create).and_raise('Unexpected!')
+        expect(Gitlab::AppLogger).to receive(:error)
+
+        expect { described_class.stats }.to raise_error('Unexpected!')
+      end
+    end
+  end
 end

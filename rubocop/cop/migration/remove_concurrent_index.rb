@@ -10,12 +10,12 @@ module RuboCop
       class RemoveConcurrentIndex < RuboCop::Cop::Base
         include MigrationHelpers
 
+        RESTRICT_ON_SEND = %i[remove_concurrent_index].freeze
         MSG = '`remove_concurrent_index` is not reversible so you must manually define ' \
           'the `up` and `down` methods in your migration class, using `add_concurrent_index` in `down`'
 
         def on_send(node)
           return unless in_migration?(node)
-          return unless node.children[1] == :remove_concurrent_index
 
           node.each_ancestor(:def) do |def_node|
             add_offense(def_node.loc.name) if def_node.method?(:change)

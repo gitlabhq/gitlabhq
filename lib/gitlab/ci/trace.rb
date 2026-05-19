@@ -42,6 +42,12 @@ module Gitlab
         end
       end
 
+      def raw_range(byte_offset:, byte_limit:)
+        read do |stream|
+          stream.raw_range(byte_offset: byte_offset, byte_limit: byte_limit)
+        end
+      end
+
       def extract_coverage(regex)
         read do |stream|
           stream.extract_coverage(regex)

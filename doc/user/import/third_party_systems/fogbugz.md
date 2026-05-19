@@ -1,0 +1,61 @@
+---
+stage: Create
+group: Import
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: Migrate from FogBugz
+description: "Migrate from FogBugz to GitLab."
+---
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+Import your FogBugz project to GitLab.
+
+The FogBugz importer imports all of your cases and comments with the original case numbers and timestamps.
+You can map FogBugz users to GitLab users.
+
+## Prerequisites
+
+{{< history >}}
+
+- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
+{{< /history >}}
+
+- [FogBugz import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
+  enabled. If not enabled, ask your GitLab administrator to enable it. The FogBugz import source is enabled
+  by default on GitLab.com.
+- The Maintainer or Owner role on the destination group to import to.
+
+## Import project from FogBugz
+
+To import your project from FogBugz:
+
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. Select **Import project**.
+1. Select **FogBugz**.
+1. Enter your FogBugz URL, email address, and password.
+1. Create a mapping from FogBugz users to GitLab users. For each FogBugz user:
+   - To map a FogBugz account to a full name, without mapping it to a GitLab account, leave the **GitLab User**
+     text box empty. This mapping adds the user's full name to the description of all issues and comments, but
+     assigns the issues and comments to the project creator.
+   - To map a FogBugz account to a GitLab account, in **GitLab User**, select the GitLab user
+     you want to associate issues and comments with.
+1. When all users are mapped, select **Continue to the next step**.
+1. To import a project:
+   - For the first time: Select **Import**.
+   - Again: Select **Re-import**. Specify a new name and select **Re-import** again. Re-importing creates a new copy of
+     the source project.
+1. After the import finishes, select the link to go to the project
+   dashboard. Follow the directions to push your existing repository.
+
+## Related topics
+
+- [Import and export settings](../../../administration/settings/import_and_export_settings.md).
+- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md).
+- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).

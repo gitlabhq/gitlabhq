@@ -78,19 +78,27 @@ Not enabled
 
 #### View security configuration page
 
+Prerequisites:
+
+- The Security Manager, Maintainer, or Owner role for the project.
+
 To view a project's security configuration:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 
 To see a historic view of changes to the CI/CD configuration file, select **Configuration history**.
 
 #### Edit a project's security configuration
 
+Prerequisites:
+
+- The Security Manager, Maintainer, or Owner role for the project.
+
 To edit a project's security configuration:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. Select the security scanner you want to enable or configure and follow the instructions.
 
 For more details on how to enable and configure individual security scanners, see their
@@ -193,7 +201,7 @@ file.
 For more information about overriding security jobs, see:
 
 - [Override SAST jobs](../sast/_index.md#override-sast-jobs).
-- [Overriding dependency scanning jobs](../dependency_scanning/_index.md#overriding-dependency-scanning-jobs).
+- [Overriding dependency scanning jobs](../dependency_scanning/dependency_scanning_sbom/_index.md#customizing-analyzer-behavior).
 - [Overriding container scanning jobs](../container_scanning/_index.md#overriding-the-container-scanning-template).
 - [Overriding secret detection jobs](../secret_detection/pipeline/configure.md).
 - [Overriding DAST jobs](../dast/browser/_index.md).

@@ -9,11 +9,11 @@
 = render_if_exists 'shared/dashboard/saml_reauth_notice',
   groups_requiring_saml_reauth: user_groups_requiring_reauth
 
-= render ::Layouts::PageHeadingComponent.new(title) do |c|
-  - c.with_actions do
-    #js-merge-request-dashboard-config
-    - if current_user
-      = render 'shared/new_project_item_vue_select'
+- if current_page?(merge_requests_search_dashboard_path)
+  = render ::Layouts::PageHeadingComponent.new(title) do |c|
+    - c.with_actions do
+      - if current_user
+        = render 'shared/new_project_item_vue_select'
 
 - if !current_page?(merge_requests_search_dashboard_path)
   #js-merge-request-dashboard{ data: {

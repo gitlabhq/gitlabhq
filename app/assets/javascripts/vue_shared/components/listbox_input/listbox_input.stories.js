@@ -34,12 +34,13 @@ Disabled.args = {
 export const WithLabel = Template.bind({});
 WithLabel.args = {
   ...defaultProps,
-  description: 'A nice label',
+  label: 'Select an option',
 };
 
 export const WithDescription = Template.bind({});
 WithDescription.args = {
   ...defaultProps,
+  label: 'Select an option',
   description: 'This is a collapsible list',
 };
 

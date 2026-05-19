@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SearchHelper, 'search navigation (JavaScript fixtures)', type: :helper, feature_category: :global_search do
+RSpec.describe SearchHelper, 'search navigation (JavaScript fixtures)', :with_current_organization, type: :helper, feature_category: :global_search do
   include ApplicationHelper
   include JavaScriptFixturesHelpers
 

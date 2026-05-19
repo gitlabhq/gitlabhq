@@ -129,7 +129,6 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
 
     shared_examples 'enables the flag for the actor' do |actor_type|
       it 'sets the feature gate' do
-        actor_value = actor_type == :runner ? actor.id.to_s : actor.full_path
         post api(path, admin, admin_mode: true), params: { value: 'true', actor_type => actor_value }
 
         expect(response).to have_gitlab_http_status(:created)
@@ -149,30 +148,35 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
     context 'when enabling for a project by path' do
       it_behaves_like 'enables the flag for the actor', :project do
         let(:actor) { create(:project) }
+        let(:actor_value) { actor.full_path }
       end
     end
 
     context 'when enabling for a group by path' do
       it_behaves_like 'enables the flag for the actor', :group do
         let(:actor) { create(:group) }
+        let(:actor_value) { actor.full_path }
       end
     end
 
     context 'when enabling for a namespace by path' do
       it_behaves_like 'enables the flag for the actor', :namespace do
         let(:actor) { create(:namespace) }
+        let(:actor_value) { actor.full_path }
       end
     end
 
     context 'when enabling for a repository by path' do
       it_behaves_like 'enables the flag for the actor', :repository do
         let_it_be(:actor) { create(:project).repository }
+        let(:actor_value) { actor.full_path }
       end
     end
 
     context 'when enabling for a runner by ID' do
       it_behaves_like 'enables the flag for the actor', :runner do
         let_it_be(:actor) { create(:ci_runner) }
+        let(:actor_value) { actor.id.to_s }
       end
 
       context 'with multiple runners' do
@@ -198,6 +202,13 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
       end
     end
 
+    context 'when enabling for an endpoint by caller_id' do
+      it_behaves_like 'enables the flag for the actor', :endpoint do
+        let(:actor) { Feature::Endpoint.new('GET /api/v4/projects/:id') }
+        let(:actor_value) { actor.caller_id }
+      end
+    end
+
     context 'when the value argument is missing' do
       it 'returns a 400' do
         post api("/features/#{feature_name}", admin, admin_mode: true)
@@ -209,6 +220,11 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
 
     describe 'mutually exclusive parameters' do
       shared_examples 'fails to set the feature flag' do
+        before do
+          post api("/features/#{feature_name}", admin, admin_mode: true),
+            params: { value: '0.01', key: 'percentage_of_actors' }.merge(extra_params)
+        end
+
         it 'returns an error' do
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']).to match(/key, \w+ are mutually exclusive/)
@@ -216,49 +232,43 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
       end
 
       context 'when key and feature_group are provided' do
-        before do
-          post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', feature_group: 'some-value' }
-        end
+        let(:extra_params) { { feature_group: 'some-value' } }
 
         it_behaves_like 'fails to set the feature flag'
       end
 
       context 'when key and user are provided' do
-        before do
-          post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', user: 'some-user' }
-        end
+        let(:extra_params) { { user: 'some-user' } }
 
         it_behaves_like 'fails to set the feature flag'
       end
 
       context 'when key and group are provided' do
-        before do
-          post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', group: 'somepath' }
-        end
+        let(:extra_params) { { group: 'somepath' } }
 
         it_behaves_like 'fails to set the feature flag'
       end
 
       context 'when key and namespace are provided' do
-        before do
-          post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', namespace: 'somepath' }
-        end
+        let(:extra_params) { { namespace: 'somepath' } }
 
         it_behaves_like 'fails to set the feature flag'
       end
 
       context 'when key and project are provided' do
-        before do
-          post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', project: 'somepath' }
-        end
+        let(:extra_params) { { project: 'somepath' } }
 
         it_behaves_like 'fails to set the feature flag'
       end
 
       context 'when key and runner are provided' do
-        before do
-          post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', runner: '1' }
-        end
+        let(:extra_params) { { runner: '1' } }
+
+        it_behaves_like 'fails to set the feature flag'
+      end
+
+      context 'when key and endpoint are provided' do
+        let(:extra_params) { { endpoint: 'GET /api/v4/projects' } }
 
         it_behaves_like 'fails to set the feature flag'
       end

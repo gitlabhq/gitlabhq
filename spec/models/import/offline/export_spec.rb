@@ -103,6 +103,31 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
     end
   end
 
+  describe 'email notification' do
+    let_it_be(:export) { create(:offline_export, :started) }
+    let_it_be(:configuration) { create(:offline_configuration, offline_export: export) }
+
+    describe 'after transitioning to finished' do
+      let(:mail) { instance_double(ActionMailer::MessageDelivery, deliver_later: true) }
+
+      it 'sends offline_export_complete email' do
+        expect(Notify).to receive(:offline_export_complete).with(export.user_id, export.id).and_return(mail)
+
+        export.finish
+      end
+    end
+
+    describe 'after transitioning to failed' do
+      let(:mail) { instance_double(ActionMailer::MessageDelivery, deliver_later: true) }
+
+      it 'sends offline_export_failed email' do
+        expect(Notify).to receive(:offline_export_failed).with(export.user_id, export.id).and_return(mail)
+
+        export.fail_op
+      end
+    end
+  end
+
   describe '#completed?' do
     where(:status_trait, :expected_result) do
       :created  | false

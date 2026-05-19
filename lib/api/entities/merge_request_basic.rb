@@ -4,28 +4,33 @@ module API
   module Entities
     class MergeRequestBasic < IssuableEntity
       # Deprecated in favour of merge_user
-      expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
+      expose :merged_by, using: ::API::Entities::UserBasic do |merge_request, _options|
         merge_request.metrics&.merged_by
       end
-      expose :merge_user, using: Entities::UserBasic do |merge_request|
+      expose :merge_user, using: ::API::Entities::UserBasic do |merge_request|
         merge_request.metrics&.merged_by || merge_request.merge_user
       end
-      expose :merged_at do |merge_request, _options|
+      expose :merged_at,
+        documentation: { type: 'DateTime', example: '2022-01-31T15:10:45.080Z' } do |merge_request, _options|
         merge_request.metrics&.merged_at
       end
-      expose :closed_by, using: Entities::UserBasic do |merge_request, _options|
+      expose :closed_by, using: ::API::Entities::UserBasic do |merge_request, _options|
         merge_request.metrics&.latest_closed_by
       end
-      expose :closed_at do |merge_request, _options|
+      expose :closed_at,
+        documentation: { type: 'DateTime', example: '2022-01-31T15:10:45.080Z' } do |merge_request, _options|
         merge_request.metrics&.latest_closed_at
       end
-      expose :title_html, if: ->(_, options) { options[:render_html] } do |entity|
+      expose :title_html, documentation: { type: 'String' }, if: ->(_, options) { options[:render_html] } do |entity|
         MarkupHelper.markdown_field(entity, :title)
       end
-      expose :description_html, if: ->(_, options) { options[:render_html] } do |entity|
+      expose :description_html, documentation: { type: 'String' }, if: ->(_, options) {
+        options[:render_html]
+      } do |entity|
         MarkupHelper.markdown_field(entity, :description)
       end
-      expose :target_branch, :source_branch
+      expose :target_branch, documentation: { type: 'String' }
+      expose :source_branch, documentation: { type: 'String' }
       expose(:user_notes_count, documentation: { type: 'Integer' }) do |merge_request, options|
         issuable_metadata.user_notes_count
       end
@@ -36,11 +41,13 @@ module API
         issuable_metadata.downvotes
       end
 
-      expose :author, :assignees, :assignee, using: Entities::UserBasic
-      expose :reviewers, using: Entities::UserBasic
+      expose :author, using: ::API::Entities::UserBasic
+      expose :assignees, using: ::API::Entities::UserBasic
+      expose :assignee, using: ::API::Entities::UserBasic
+      expose :reviewers, using: ::API::Entities::UserBasic
       expose :source_project_id, documentation: { type: 'Integer' }
       expose :target_project_id, documentation: { type: 'Integer' }
-      expose :labels do |merge_request, options|
+      expose :labels, documentation: { type: 'String', is_array: true } do |merge_request, options|
         if options[:with_labels_details]
           ::API::Entities::LabelBasic.represent(merge_request.labels.sort_by(&:title))
         else
@@ -54,7 +61,7 @@ module API
       # [Deprecated]  see draft
       #
       expose :draft?, as: :work_in_progress, documentation: { type: 'Boolean' }
-      expose :milestone, using: Entities::Milestone
+      expose :milestone, using: ::API::Entities::Milestone
       expose :merge_when_pipeline_succeeds, documentation: { type: 'Boolean' }
 
       # Ideally we should deprecate `MergeRequest#merge_status` exposure and
@@ -63,44 +70,49 @@ module API
       # information.
       #
       # For list endpoints, we skip the recheck by default, since it's expensive
-      expose :merge_status do |merge_request, options|
+      expose :merge_status, documentation: { type: 'String', example: 'unchecked' } do |merge_request, options|
         if !options[:skip_merge_status_recheck] && can_check_mergeability?(merge_request.project)
           merge_request.check_mergeability(async: true)
         end
 
         merge_request.public_merge_status
       end
-      expose :detailed_merge_status
+      expose :detailed_merge_status, documentation: { type: 'String', example: 'mergeable' }
 
-      expose :merge_after do |merge_request, _options|
+      expose :merge_after,
+        documentation: { type: 'DateTime', example: '2022-01-31T15:10:45.080Z' } do |merge_request, _options|
         merge_request.merge_schedule&.merge_after
       end
 
-      expose :diff_head_sha, as: :sha
-      expose :merge_commit_sha
-      expose :squash_commit_sha
-      expose :discussion_locked
-      expose :should_remove_source_branch?, as: :should_remove_source_branch
-      expose :force_remove_source_branch?, as: :force_remove_source_branch
-      expose :prepared_at
+      expose :diff_head_sha, as: :sha, documentation: { type: 'String', example: '1234abcd' }
+      expose :merge_commit_sha, documentation: { type: 'String', example: '1234abcd' }
+      expose :squash_commit_sha, documentation: { type: 'String', example: '1234abcd' }
+      expose :discussion_locked, documentation: { type: 'Boolean' }
+      expose :should_remove_source_branch?, as: :should_remove_source_branch, documentation: { type: 'Boolean' }
+      expose :force_remove_source_branch?, as: :force_remove_source_branch, documentation: { type: 'Boolean' }
+      expose :prepared_at, documentation: { type: 'DateTime', example: '2022-01-31T15:10:45.080Z' }
 
       with_options if: ->(merge_request, _) { merge_request.for_fork? } do
-        expose :allow_collaboration
+        expose :allow_collaboration, documentation: { type: 'Boolean' }
         # Deprecated
-        expose :allow_collaboration, as: :allow_maintainer_to_push
+        expose :allow_collaboration, as: :allow_maintainer_to_push, documentation: { type: 'Boolean' }
       end
 
       # reference is deprecated in favour of references
       # Introduced [Gitlab 12.6](https://gitlab.com/gitlab-org/gitlab/merge_requests/20354)
-      expose :reference do |merge_request, options|
+      expose :reference, documentation: { type: 'String', example: '!1' } do |merge_request, options|
         merge_request.to_reference(options[:project])
       end
 
-      expose :references, with: IssuableReferences do |merge_request|
+      expose :references, documentation: { type: 'Hash' }, with: IssuableReferences do |merge_request|
         merge_request
       end
 
-      expose :web_url do |merge_request|
+      expose :web_url,
+        documentation: {
+          type: 'String',
+          example: 'https://gitlab.example.com/my-group/my-project/-/merge_requests/1'
+        } do |merge_request|
         Gitlab::UrlBuilder.build(merge_request)
       end
 
@@ -108,8 +120,8 @@ module API
         merge_request
       end
 
-      expose :squash
-      expose :squash_on_merge?, as: :squash_on_merge
+      expose :squash, documentation: { type: 'Boolean' }
+      expose :squash_on_merge?, as: :squash_on_merge, documentation: { type: 'Boolean' }
       expose :task_completion_status,
         using: ::API::Entities::TaskCompletionStatus,
         documentation: { type: 'Entities::TaskCompletionStatus' }
@@ -118,8 +130,8 @@ module API
       #   MergeRequests::MergeabilityCheckService. However, it can also indicate
       #   that either #has_no_commits? or #branch_missing? are true.
       #
-      expose :cannot_be_merged?, as: :has_conflicts
-      expose :mergeable_discussions_state?, as: :blocking_discussions_resolved
+      expose :cannot_be_merged?, as: :has_conflicts, documentation: { type: 'Boolean' }
+      expose :mergeable_discussions_state?, as: :blocking_discussions_resolved, documentation: { type: 'Boolean' }
 
       private
 

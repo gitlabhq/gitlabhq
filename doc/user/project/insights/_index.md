@@ -30,7 +30,7 @@ Prerequisites:
 To view insights for a project or group:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Analyze** > **Insights**.
+1. In the left sidebar, select **Analyze** > **Insights**.
 1. To view a report, from the **Select report** dropdown list, select the report you want to view.
    To view annotations, hover over each bar in the chart.
 1. Optional. Filter the results:
@@ -542,6 +542,6 @@ Prerequisites:
 To configure group insights:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Analytics**.
+1. In the left sidebar, select **Settings** > **Analytics**.
 1. In the **Insights** section, select a project that contains the `.gitlab/insights.yml` configuration file.
 1. Select **Save changes**.

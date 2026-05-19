@@ -110,8 +110,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :
 
     subject { template_file.send(:expand_context_attrs) }
 
-    it 'drops all parameters' do
-      is_expected.to be_empty
+    it 'includes parent_file' do
+      is_expected.to eq({ parent_file: template_file })
     end
   end
 

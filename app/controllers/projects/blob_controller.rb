@@ -51,6 +51,7 @@ class Projects::BlobController < Projects::ApplicationController
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:repository_file_tree_browser, current_user)
     push_frontend_feature_flag(:blob_edit_refactor, @project)
+    push_frontend_feature_flag(:duo_convert_ci_use_developer_flow, @project)
   end
 
   def new
@@ -72,6 +73,7 @@ class Projects::BlobController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
+        audit_repository_file_access
         show_html
       end
 
@@ -326,6 +328,29 @@ class Projects::BlobController < Projects::ApplicationController
     )
 
     render json: json
+  end
+
+  def audit_repository_file_access
+    return unless blob
+    return unless current_user
+
+    audit_context = {
+      name: 'repository_file_accessed_web',
+      author: current_user,
+      scope: @project,
+      target: @project,
+      message: "User accessed repository file '#{@path}' at ref '#{@ref}' via Web UI",
+      additional_details: {
+        file_path: @path,
+        ref: @ref,
+        project_path: @project.full_path,
+        project_id: @project.id,
+        ip_address: request.remote_ip,
+        user_agent: Gitlab::Audit::Sanitizer.sanitize_user_agent(request.user_agent)
+      }
+    }
+
+    ::Gitlab::Audit::Auditor.audit(audit_context)
   end
 
   def tree_path

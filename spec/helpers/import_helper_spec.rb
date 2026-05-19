@@ -50,6 +50,46 @@ RSpec.describe ImportHelper, feature_category: :importers do
     end
   end
 
+  describe '#import_by_url_data_attributes' do
+    let_it_be(:project) { create(:project, import_url: 'https://example.com/repo.git') }
+
+    let(:ci_cd_only) { false }
+    let(:git_timeout) { '10 minutes' }
+    let(:repository_mirrors_available) { false }
+
+    subject(:data_attributes) do
+      helper.import_by_url_data_attributes(project, ci_cd_only, git_timeout, repository_mirrors_available)
+    end
+
+    it 'returns expected data attributes' do
+      expect(data_attributes).to include(
+        project_id: project.id,
+        import_by_url_validate_path: validate_import_url_path,
+        import_from_url: project.safe_import_url,
+        import_path: project_import_path(project),
+        git_timeout: '10 minutes',
+        ci_cd_only: 'false',
+        has_repository_mirrors_feature: 'false'
+      )
+    end
+
+    context 'when ci_cd_only is true' do
+      let(:ci_cd_only) { true }
+
+      it 'returns ci_cd_only as a string' do
+        expect(data_attributes[:ci_cd_only]).to eq('true')
+      end
+    end
+
+    context 'when repository mirrors are available' do
+      let(:repository_mirrors_available) { true }
+
+      it 'returns has_repository_mirrors_feature as true' do
+        expect(data_attributes[:has_repository_mirrors_feature]).to eq('true')
+      end
+    end
+  end
+
   describe '#import_configure_github_admin_message' do
     subject { helper.import_configure_github_admin_message }
 

@@ -109,7 +109,7 @@ export default {
     },
   },
   dropzoneAllowList: ['.xml'],
-  manifestImportHelpLink: helpPagePath('user/project/import/manifest'),
+  manifestImportHelpLink: helpPagePath('user/import/third_party_systems/manifest_file'),
 };
 </script>
 

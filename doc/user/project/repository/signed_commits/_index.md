@@ -33,9 +33,9 @@ marked **Verified** in the GitLab UI.
 
 GitLab verifies signatures on commits and tags. The following signing methods are supported:
 
-- [SSH key](ssh.md): Commits and tags
-- [GPG key](gpg.md): Commits only
-- [X.509 certificate](x509.md): Commits and tags
+- [SSH key](ssh.md)
+- [GPG key](gpg.md)
+- [X.509 certificate](x509.md)
 
 ## Verify commits
 

@@ -43,7 +43,7 @@ export default {
       default: null,
     },
     noteId: {
-      type: String,
+      type: [String, Number],
       required: false,
       default: null,
     },

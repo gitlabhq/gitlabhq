@@ -63,9 +63,7 @@ module Import
           )
 
           compressed_path = File.join(tmpdir_path, compressed_filename)
-          object_key = [configuration.export_prefix, compressed_filename].join(
-            Import::Clients::ObjectStorage::PREFIX_SEPARATOR
-          )
+          object_key = Import::Offline::ObjectKeyBuilder.new(configuration).metadata_object_key
 
           client.store_file(object_key, compressed_path)
         end

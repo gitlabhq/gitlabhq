@@ -69,7 +69,7 @@ module Gitlab
           end
         end
       rescue *rescue_errors => e
-        raise Config::ConfigError, e.message
+        raise ConfigError, e.message
       end
       # rubocop: enable Metrics/ParameterLists
 
@@ -168,18 +168,19 @@ module Gitlab
           merged_yaml: @config&.deep_stringify_keys&.to_yaml
         }
       end
+      strong_memoize_attr :metadata
 
       private
 
       def expand_config(config, inputs)
         build_config(config, inputs)
 
-      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError, Gitlab::Ci::Config::External::Context::TimeoutError => e
-        track_and_raise_for_dev_exception(e)
-        raise Config::ConfigError, e.message
+      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError, Gitlab::Ci::Config::External::Context::TimeoutError, Gitlab::Ci::Config::External::Context::HTTPTimeoutError => e
+        Gitlab::ErrorTracking.track_exception(e)
+        raise ConfigError, e.message
 
       rescue Gitlab::Ci::Config::Yaml::LoadError => e
-        raise Config::ConfigError, e.message
+        raise ConfigError, e.message
       end
 
       def build_config(config, inputs)
@@ -202,8 +203,7 @@ module Gitlab
         end
 
         initial_config = logger.instrument(:config_external_process, once: true) do
-          gitaly_timeout = Feature.enabled?(:ci_config_gitaly_timeout, @project) ? GITALY_TIMEOUT_SECONDS : nil
-          Config::GitalyTimeout.with_timeout(gitaly_timeout) do
+          Config::GitalyTimeout.with_timeout(GITALY_TIMEOUT_SECONDS) do
             Config::External::Processor.new(initial_config, @context).perform
           end
         end

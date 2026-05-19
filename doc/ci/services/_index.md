@@ -27,6 +27,11 @@ case is to run a database container, for example:
 - [Redis](redis.md)
 - [GitLab](gitlab.md) as an example for a microservice offering a JSON API
 
+> [!warning]
+> To enable inter-service networking, set `FF_NETWORK_PER_BUILD` to `true`.
+> Without this flag, services may not work properly. For more information, see
+> [feature flags](https://docs.gitlab.com/runner/configuration/feature-flags)
+
 Consider that you're developing a content management system that uses database for storage.
 You need a database to test all features in the application. Running a database
 container as a service image is a good use case in this scenario.
@@ -210,7 +215,7 @@ end-to-end-tests:
     - name: postgres:18
       alias: db postgres db
   variables:
-    FF_NETWORK_PER_BUILD: 1
+    FF_NETWORK_PER_BUILD: 1 # activate container-to-container networking
     POSTGRES_PASSWORD: supersecretpassword
     BACKEND_POSTGRES_HOST: postgres
   script:

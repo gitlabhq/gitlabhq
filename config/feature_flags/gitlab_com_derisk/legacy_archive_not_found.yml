@@ -1,0 +1,10 @@
+---
+name: legacy_archive_not_found
+description: Return 404 for legacy repository archive URL instead of falling through to catch-all route
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595699
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230417
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596145
+milestone: '18.11'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

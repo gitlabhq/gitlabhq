@@ -302,32 +302,39 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     end
   end
 
-  describe '.with_executing_builds' do
-    subject(:scope) { described_class.with_executing_builds }
+  describe '.ids_with_running_builds' do
+    subject(:result) { described_class.ids_with_running_builds(ids) }
 
     let_it_be(:runner) { create(:ci_runner) }
-    let_it_be(:runner_managers_by_status) do
-      Ci::HasStatus::AVAILABLE_STATUSES.index_with { |_status| create(:ci_runner_machine, runner: runner) }
+
+    let_it_be(:manager_with_running_build) do
+      create(:ci_runner_machine, runner: runner).tap do |manager|
+        create(:ci_build, :picked, runner_manager: manager)
+      end
     end
 
-    let_it_be(:busy_runner_managers) do
-      Ci::HasStatus::EXECUTING_STATUSES.map { |status| runner_managers_by_status[status] }
+    let_it_be(:manager_without_running_build) do
+      create(:ci_runner_machine, runner: runner).tap do |manager|
+        create(:ci_build, :canceling, runner_manager: manager)
+      end
     end
 
-    context 'with no builds running' do
+    context 'when ids include a manager with a running build' do
+      let(:ids) { [manager_with_running_build.id, manager_without_running_build.id] }
+
+      it { is_expected.to contain_exactly(manager_with_running_build.id) }
+    end
+
+    context 'when ids include only managers without running builds' do
+      let(:ids) { [manager_without_running_build.id] }
+
       it { is_expected.to be_empty }
     end
 
-    context 'with builds' do
-      before_all do
-        Ci::HasStatus::AVAILABLE_STATUSES.each do |status|
-          runner_manager = runner_managers_by_status[status]
-          build = create(:ci_build, status, runner: runner)
-          create(:ci_runner_machine_build, runner_manager: runner_manager, build: build)
-        end
-      end
+    context 'when ids is empty' do
+      let(:ids) { [] }
 
-      it { is_expected.to match_array(busy_runner_managers) }
+      it { is_expected.to be_empty }
     end
   end
 

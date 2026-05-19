@@ -12,14 +12,25 @@ title: Projects
 
 {{< /details >}}
 
-## Query fields
+{{< history >}}
 
-The following fields are required: [Namespace](#project-group)
+- Field `avatarUrl` [added](https://gitlab.com/gitlab-org/glql/-/merge_requests/361) in GitLab 18.11.
+
+{{< /history >}}
+
+## Allowed scopes
+
+| Scope       | Description                                                                              |
+| ----------- | ---------------------------------------------------------------------------------------- |
+| `namespace` | Query projects in a specific namespace. You can use `group` as an alias for `namespace`. |
+
+For more information, see [scopes](_index.md#scopes).
+
+## Query fields
 
 | Field                                                    | Name (and alias)       | Operators  |
 | -------------------------------------------------------- | ---------------------- | ---------- |
 | [Archived only](#project-archived-only)                  | `archivedOnly`         | `=`, `!=`  |
-| [Group / Namespace](#project-group)                      | `namespace`, `group`   | `=`        |
 | [Has code coverage](#project-has-code-coverage)          | `hasCodeCoverage`      | `=`, `!=`  |
 | [Has vulnerabilities](#project-has-vulnerabilities)      | `hasVulnerabilities`   | `=`, `!=`  |
 | [Include archived](#project-include-archived)            | `includeArchived`      | `=`, `!=`  |
@@ -36,13 +47,6 @@ The following fields are required: [Namespace](#project-group)
 **Notes**:
 
 - Cannot be used together with `includeArchived`.
-
-### Group / Namespace {#project-group}
-
-**Description**: Specify the group namespace to query projects from. This field is required.
-You can use either `namespace` or `group` as the field name.
-
-**Allowed value types**: `String`
 
 ### Has code coverage {#project-has-code-coverage}
 
@@ -75,8 +79,8 @@ You can use either `namespace` or `group` as the field name.
 
 **Notes**:
 
-- This field can only be used with the `namespace` or `group` field.
-- Defaults to `true` when a `namespace` or `group` is specified.
+- This field can only be used with a `namespace` scope.
+- Defaults to `true` when a `namespace` scope is specified.
 
 ### Issues enabled {#project-issues-enabled}
 
@@ -95,6 +99,7 @@ You can use either `namespace` or `group` as the field name.
 | Field                            | Name (and alias)                 | Description |
 | -------------------------------- | -------------------------------- | ----------- |
 | Archived                         | `archived`                       | Display whether the project is archived |
+| Avatar URL                       | `avatarUrl`                      | Display the URL of the project avatar |
 | Duo features enabled             | `duoFeaturesEnabled`             | Display whether Duo features are enabled |
 | Forked                           | `forked`                         | Display whether the project is a fork |
 | Forks count                      | `forksCount`                     | Display the number of forks |
@@ -125,7 +130,7 @@ You can use either `namespace` or `group` as the field name.
 
 - `lastActivity` only supports descending (`desc`) sort order.
 
-**Examples**:
+## Examples
 
 - List all projects in the `gitlab-org` group sorted by path:
 

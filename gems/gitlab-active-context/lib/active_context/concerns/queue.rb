@@ -50,9 +50,11 @@ module ActiveContext
           end
         end
 
-        def queue_size
+        def queue_size(shards: queue_shards, include_orphaned: false)
+          shards &= queue_shards unless include_orphaned
+
           ActiveContext::Redis.with_redis do |redis|
-            queue_shards.sum do |shard_number|
+            shards.sum do |shard_number|
               redis.zcard(redis_set_key(shard_number))
             end
           end
@@ -68,13 +70,23 @@ module ActiveContext
           end
         end
 
-        def each_queued_items_by_shard(redis, shards: queue_shards)
-          (shards & queue_shards).each do |shard_number|
+        def each_queued_items_by_shard(redis, shards: queue_shards, include_orphaned: false, limit: shard_limit)
+          shards &= queue_shards unless include_orphaned
+
+          shards.each do |shard_number|
             set_key = redis_set_key(shard_number)
-            specs = redis.zrangebyscore(set_key, '-inf', '+inf', limit: [0, shard_limit], with_scores: true)
+            specs = redis.zrangebyscore(set_key, '-inf', '+inf', limit: [0, limit], with_scores: true)
 
             yield shard_number, specs
           end
+        end
+
+        def remove_shard_items(redis, shard_number, min_score, max_score)
+          redis.zremrangebyscore(
+            redis_set_key(shard_number),
+            min_score,
+            max_score
+          )
         end
 
         def clear_tracking!

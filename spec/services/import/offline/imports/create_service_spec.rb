@@ -51,6 +51,15 @@ RSpec.describe Import::Offline::Imports::CreateService, :aggregate_failures, fea
       expect(response.payload).to be_a(BulkImport)
     end
 
+    it 'triggers the ScheduleImportWorker' do
+      expect(Import::Offline::Imports::ScheduleImportWorker).to receive(:perform_async).with(
+        an_instance_of(Integer),
+        params[:entities].map(&:deep_stringify_keys)
+      )
+
+      service.execute
+    end
+
     it 'creates an empty bulk import for import scaffolding' do
       expect { service.execute }
         .to change { BulkImport.count }.by(1)

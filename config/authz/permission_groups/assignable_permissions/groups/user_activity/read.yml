@@ -1,7 +1,10 @@
 ---
 name: read_user_activity
 description: Grants the ability to read user activity
+deprecated: true
 boundaries:
   - user
+available_for:
+  - granular_access_token
 permissions:
   - read_user_activity

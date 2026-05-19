@@ -21,7 +21,7 @@ Prerequisites:
 - Administrator access.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **New user account restrictions** and look for the **Email confirmation settings** options.
 
 ## Confirmation token expiry

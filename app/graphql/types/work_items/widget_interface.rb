@@ -10,7 +10,8 @@ module Types
       field :type,
         ::Types::WorkItems::WidgetTypeEnum,
         null: true,
-        description: 'Widget type.'
+        description: 'Widget type.',
+        scopes: [:api, :read_api, :ai_workflows]
 
       # Whenever a new widget is added make sure to update the spec to avoid N + 1 queries in
       # spec/requests/api/graphql/project/work_items_spec.rb and add the necessary preloads

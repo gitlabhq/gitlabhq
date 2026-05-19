@@ -4,16 +4,13 @@
 export default {
   files: [
     'app/assets/javascripts/boards/components/board_app.vue',
-    'app/assets/javascripts/incidents/components/incidents_list.vue',
+    'app/assets/javascripts/boards/components/board_filtered_search.vue',
     'app/assets/javascripts/issues/dashboard/components/issues_dashboard_app.vue',
     'app/assets/javascripts/pages/projects/shared/permissions/components/gitlab_duo_settings.vue',
     'app/assets/javascripts/search/sidebar/components/scope_sidebar_navigation.vue',
     'app/assets/javascripts/security_configuration/components/app.vue',
-    'app/assets/javascripts/vue_shared/components/filtered_search_bar/tokens/work_item_parent_token.vue',
     'app/assets/javascripts/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue',
-    'app/assets/javascripts/work_items/components/shared/work_item_token_input.vue',
-    'app/assets/javascripts/work_items/components/work_item_parent.vue',
-    'app/assets/javascripts/work_items/list/components/work_item_bulk_edit_parent.vue',
+    'app/assets/javascripts/work_items/pages/planning_view.vue',
   ],
   rules: {
     'local-rules/no-orphaned-feature-flag-references': 'off',

@@ -16,7 +16,7 @@ class MergeRequestPollWidgetEntity < Grape::Entity
   end
 
   expose :show_automatic_rebase_info do |merge_request|
-    merge_request.project.project_setting.automatic_rebase_available? &&
+    merge_request.project.project_setting.automatic_rebase_enabled? &&
       merge_request.open? &&
       !merge_request.project.merge_trains_enabled? &&
       merge_request.diverged_from_target_branch?

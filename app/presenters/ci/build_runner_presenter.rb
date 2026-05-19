@@ -93,6 +93,17 @@ module Ci
       "#{Project::INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET}+"
     end
 
+    def suspend_options
+      opts = options[:suspend_options]
+      return unless opts.present?
+
+      {
+        suspend_on_success: opts[:suspend_on_success] || false,
+        suspend_on_failure: opts[:suspend_on_failure] || false,
+        environment_key: opts[:environment_key]
+      }.compact
+    end
+
     private
 
     def create_archive(artifacts)
@@ -154,11 +165,7 @@ module Ci
     end
 
     def refspec_for_persistent_ref
-      if Feature.enabled?(:runner_refspec_use_sha_instead_of_persistent_ref, project)
-        "+#{sha}:#{pipeline.persistent_ref.path}"
-      else
-        "+#{pipeline.persistent_ref.path}:#{pipeline.persistent_ref.path}"
-      end
+      "+#{sha}:#{pipeline.persistent_ref.path}"
     end
 
     def git_depth_value

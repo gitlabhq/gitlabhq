@@ -13,7 +13,7 @@ title: Make jobs start earlier with `needs`
 {{< /details >}}
 
 Use the [`needs`](_index.md#needs) keyword to specify job dependencies in your pipeline.
-Jobs start as soon as their dependencies finish, regardless of pipeline stages.
+Jobs start as soon as their dependencies finish without waiting for pipeline stages to complete.
 This lets you run jobs earlier and avoid unnecessary waiting.
 
 Use cases:
@@ -29,11 +29,13 @@ Use cases:
 
 ## How `needs` works
 
-By default, jobs run in stages. A job waits for all jobs in the previous stage to finish before it starts.
+By default, jobs run in stages. All jobs in a stage must finish successfully before
+any job in a later stage can start. For example, with the default `build`, `test`, and `deploy` stages,
+all jobs in `build` must run and finish before any job in `test` can start.
 
-With `needs`, you specify exactly which jobs a job depends on. The job starts immediately after
+With `needs`, you list specific jobs a job depends on. The job starts immediately after
 those dependencies finish, even if other jobs in earlier stages are still running.
-This creates a kind of [directed acyclic graph (DAG)](https://en.wikipedia.org/wiki/Directed_acyclic_graph) pipeline.
+This creates a pipeline with a kind of [directed acyclic graph (DAG)](https://en.wikipedia.org/wiki/Directed_acyclic_graph) structure.
 
 You can mix staged jobs and jobs with `needs` dependencies in the same pipeline.
 
@@ -41,13 +43,28 @@ Additionally, you can use `needs: []` to set a job to run immediately without wa
 earlier jobs or stages to finish. It's common to run lint jobs or scanners immediately
 when they can run on the source code and do not depend on build results.
 
-## `needs` compared to jobs that only use stages
+## `needs` compared to staged jobs
 
-To demonstrate the benefits of using `needs`, we can compare two ways to configure
-a pipeline with six jobs.
+To demonstrate the benefits of `needs`, we can compare two pipelines with six jobs.
 
 This pipeline has the six jobs organized in stages. Without `needs`, all jobs in a stage must finish
 before the next stage starts, even if some jobs are independent:
+
+```mermaid
+graph TB
+  subgraph build["Build Stage"]
+    build_a["build_app_A"]
+    build_b["build_app_B"]
+  end
+  subgraph test["Test Stage"]
+    test_a["test_app_A"]
+    test_b["test_app_B"]
+  end
+  subgraph deploy["Deploy Stage"]
+    deploy_a["deploy_app_A"]
+    deploy_b["deploy_app_B"]
+  end
+```
 
 ```yaml
 stages:
@@ -80,8 +97,15 @@ deploy_app_B:
   script: echo "Deploying B..."
 ```
 
+In this example, no test or deploy jobs run until all jobs in the `build` stage complete.
+If the B jobs take a long time to run, the A test and deploy jobs could be delayed while
+waiting for B jobs to complete.
+
+With `needs`, you can define two independent execution paths. Each job depends only on the jobs it actually needs,
+allowing parallel execution across the two paths:
+
 ```mermaid
-graph TB
+graph LR
   subgraph build["Build Stage"]
     build_a["build_app_A"]
     build_b["build_app_B"]
@@ -94,14 +118,12 @@ graph TB
     deploy_a["deploy_app_A"]
     deploy_b["deploy_app_B"]
   end
+
+  build_a --> test_a
+  build_b --> test_b
+  test_a --> deploy_a
+  test_b --> deploy_b
 ```
-
-In this example, no test or deploy jobs run until all jobs in the `build` stage complete.
-If the A jobs take a long time to run, the B test and deploy jobs could be delayed while
-waiting for A jobs to complete.
-
-With `needs`, you can define two independent execution paths. Each job depends only on the jobs it actually needs,
-allowing parallel execution across the two paths:
 
 ```yaml
 stages:
@@ -138,30 +160,9 @@ deploy_app_B:
   script: echo "Deploying B..."
 ```
 
-```mermaid
-graph LR
-  subgraph build["Build Stage"]
-    build_a["build_app_A"]
-    build_b["build_app_B"]
-  end
-  subgraph test["Test Stage"]
-    test_a["test_app_A"]
-    test_b["test_app_B"]
-  end
-  subgraph deploy["Deploy Stage"]
-    deploy_a["deploy_app_A"]
-    deploy_b["deploy_app_B"]
-  end
-
-  build_a --> test_a
-  build_b --> test_b
-  test_a --> deploy_a
-  test_b --> deploy_b
-```
-
-In this example, `test_app_B` runs as soon as `build_app_B` completes successfully,
-even if `build_app_A` is still running. Similarly, `deploy_app_B` could run and deploy
-before `build_app_A` completes.
+In this example, `test_app_A` runs as soon as `build_app_A` completes successfully,
+even if `build_app_B` is still running. Similarly, `deploy_app_A` could run and deploy
+before `build_app_B` completes.
 
 ### View dependencies between jobs
 
@@ -170,20 +171,36 @@ You can view the dependencies between jobs on the pipeline graph.
 To enable this view, from the pipeline details page:
 
 - Select **Job dependencies**.
-- Optional. Toggle **Show dependencies** to show how the jobs are linked together.
+- Optional. Toggle **Show dependencies** to display lines that show which jobs are linked together.
 
 ![A pipeline graph showing 5 jobs and their dependencies](img/needs_dependency_view_v18_11.png)
 
 ## `needs` examples
 
-Use `needs` to create dependencies between job and reduce the amount of time jobs are waiting to start.
+Use `needs` to create dependencies between jobs and reduce the amount of time jobs are waiting to start.
 Patterns can include fan-out, fan-in, and diamond dependencies.
 
 ### Fan-out
 
-To create a fan-out job dependency graph, configure multiple jobs depend on one job.
+To create a fan-out job dependency graph, configure multiple jobs to depend on one job.
 
 For example:
+
+```mermaid
+graph LR
+  subgraph build["Build Stage"]
+    build_job["build"]
+  end
+  subgraph test["Test Stage"]
+    test_unit["test_unit"]
+    test_integration["test_integration"]
+    test_performance["test_performance"]
+  end
+
+  build_job --> test_unit
+  build_job --> test_integration
+  build_job --> test_performance
+```
 
 ```yaml
 stages:
@@ -210,26 +227,31 @@ test_performance:
   script: echo "Performance tests..."
 ```
 
-```mermaid
-graph LR
-  subgraph build["Build Stage"]
-    build_job["build"]
-  end
-  subgraph test["Test Stage"]
-    test_unit["test_unit"]
-    test_integration["test_integration"]
-    test_performance["test_performance"]
-  end
-
-  build_job --> test_unit
-  build_job --> test_integration
-  build_job --> test_performance
-```
-
 ### Fan-in
 
 To create a fan-in dependency graph, configure one job to wait for several jobs to finish.
+
 For example:
+
+```mermaid
+graph LR
+  subgraph build["Build Stage"]
+    build_frontend["build_frontend"]
+    build_backend["build_backend"]
+  end
+  subgraph test["Test Stage"]
+    test_frontend["test_frontend"]
+    test_backend["test_backend"]
+  end
+  subgraph deploy["Deploy Stage"]
+    deploy_job["deploy"]
+  end
+
+  build_frontend --> test_frontend
+  build_backend --> test_backend
+  test_frontend --> deploy_job
+  test_backend --> deploy_job
+```
 
 ```yaml
 stages:
@@ -261,30 +283,32 @@ deploy:
   script: echo "Deploying..."
 ```
 
+### Diamond dependency
+
+To create a diamond dependency graph, combine fan-out and fan-in. One job fans out to multiple jobs,
+which then fan back in to a single job. For example:
+
 ```mermaid
 graph LR
   subgraph build["Build Stage"]
-    build_frontend["build_frontend"]
-    build_backend["build_backend"]
+    build_job["build"]
   end
   subgraph test["Test Stage"]
-    test_frontend["test_frontend"]
-    test_backend["test_backend"]
+    test_unit["test_unit"]
+    test_integration["test_integration"]
+    test_performance["test_performance"]
   end
   subgraph deploy["Deploy Stage"]
     deploy_job["deploy"]
   end
 
-  build_frontend --> test_frontend
-  build_backend --> test_backend
-  test_frontend --> deploy_job
-  test_backend --> deploy_job
+  build_job --> test_unit
+  build_job --> test_integration
+  build_job --> test_performance
+  test_unit --> deploy_job
+  test_integration --> deploy_job
+  test_performance --> deploy_job
 ```
-
-### Diamond dependency
-
-To create a diamond dependency graph, combine fan-out and fan-in. One job fans out to multiple jobs,
-which then fan back in to a single job. For example:
 
 ```yaml
 stages:
@@ -315,28 +339,6 @@ deploy:
   stage: deploy
   needs: ["test_unit", "test_integration", "test_performance"]
   script: echo "Deploying..."
-```
-
-```mermaid
-graph LR
-  subgraph build["Build Stage"]
-    build_job["build"]
-  end
-  subgraph test["Test Stage"]
-    test_unit["test_unit"]
-    test_integration["test_integration"]
-    test_performance["test_performance"]
-  end
-  subgraph deploy["Deploy Stage"]
-    deploy_job["deploy"]
-  end
-
-  build_job --> test_unit
-  build_job --> test_integration
-  build_job --> test_performance
-  test_unit --> deploy_job
-  test_integration --> deploy_job
-  test_performance --> deploy_job
 ```
 
 ### Immediate start
@@ -376,6 +378,10 @@ deploy_app:
   script: echo "Deploying app..."
 ```
 
+In this example, `lint_yaml` and `lint_code` start immediately with `needs: []`, without waiting for `build_app`
+or the `test` stage to finish. `deploy_app` does not use `needs`, so it waits for all jobs
+in earlier stages to finish before starting.
+
 The pipeline view shows the jobs grouped in stages:
 
 ```mermaid
@@ -409,10 +415,6 @@ graph LR
   build_app --> test_app["test_app"]
   test_app --> deploy_app["deploy_app"]
 ```
-
-In this example, `lint_yaml` and `lint_code` start immediately with `needs: []`, without waiting for `build_app`
-or the `test` stage to finish. `deploy_app` does not use `needs`, so it waits for all jobs
-in earlier stages to finish before starting.
 
 ## Stageless pipelines
 
@@ -482,8 +484,8 @@ In this example:
   - `test`, which always exists in the pipeline.
   - `test_optional`, which only exists in the pipeline when `RUN_OPTIONAL_TESTS` is `true`.
 - When `RUN_OPTIONAL_TESTS` is:
-  - `true`, then `test_optional` doesn't exist in the pipeline and `deploy` runs after `test` finishes.
-  - `false`, then `test_optional` exists in the pipeline and `deploy` waits for both `test`
+  - `false`, then `test_optional` doesn't exist in the pipeline and `deploy` runs after `test` finishes.
+  - `true`, then `test_optional` exists in the pipeline and `deploy` waits for both `test`
     and `test_optional` to finish.
 
 Without `optional: true`, pipeline creation fails because the `deploy` job
@@ -516,7 +518,9 @@ To fix this issue, you must either:
 For example:
 
 ```yaml
+#
 # Method 1: Job with rules that may not exist
+#
 compile:
   stage: build
   rules:
@@ -530,7 +534,9 @@ unit_tests:
       optional: true        # to the pipeline and this needs is ignored.
   script: echo "Running unit tests..."
 
+#
 # Method 2: Job with rules that always matches the dependent job
+#
 build:
   stage: build
   rules:

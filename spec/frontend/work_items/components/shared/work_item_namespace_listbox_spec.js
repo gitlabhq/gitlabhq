@@ -103,6 +103,12 @@ describe('WorkItemNamespaceListbox', () => {
     const emitted = wrapper.emitted('selectNamespace');
 
     expect(emitted[0][0]).toBe(namespaceProjectsData[0].fullPath);
+    expect(emitted[0][1]).toEqual(
+      expect.objectContaining({
+        fullPath: namespaceProjectsData[0].fullPath,
+        __typename: 'Project',
+      }),
+    );
   });
 
   it('renders recent projects if present', async () => {

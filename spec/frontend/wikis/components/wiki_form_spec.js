@@ -50,6 +50,7 @@ describe('WikiForm', () => {
 
   const findMarkdownHelpLink = () => wrapper.findByTestId('wiki-markdown-help-link');
   const findTemplatesDropdown = () => wrapper.findComponent(WikiTemplate);
+  const findPathGenerationToggle = () => wrapper.findByTestId('path-generation-toggle');
 
   const getFormData = () => new FormData(findForm().element);
 
@@ -563,26 +564,27 @@ describe('WikiForm', () => {
       });
 
       it('renders the correct initial value in the title input', () => {
-        expect(findTitle().element.value).toBe('parent/path/{Give this page a title}');
+        expect(findTitle().element.value).toBe('{Give this page a title}');
+      });
+
+      it('sets the path to the parent path', () => {
+        expect(findPath().element.value).toBe('parent/path/');
       });
 
       it('clears placeholder when user starts typing', async () => {
-        await findTitle().setValue('parent/path/My New Page');
-        expect(findTitle().element.value).toBe('parent/path/My New Page');
+        await findTitle().setValue('My New Page');
+        expect(findTitle().element.value).toBe('My New Page');
       });
 
       it('clears placeholder when user presses a printable key', async () => {
-        // Simulate focus to ensure placeholder is active
         await findTitle().trigger('focus');
-        // Simulate keydown for a printable character
         await findTitle().trigger('keydown', {
           key: 'M',
           ctrlKey: false,
           metaKey: false,
           altKey: false,
         });
-        // After keydown, the value should be just the parent path
-        expect(findTitle().element.value).toBe('parent/path/');
+        expect(findTitle().element.value).toBe('');
       });
 
       it('does not clear placeholder for non-printable keys', async () => {
@@ -593,7 +595,7 @@ describe('WikiForm', () => {
           metaKey: false,
           altKey: false,
         });
-        expect(findTitle().element.value).toBe('parent/path/{Give this page a title}');
+        expect(findTitle().element.value).toBe('{Give this page a title}');
       });
 
       it('does not clear placeholder for modifier key combinations', async () => {
@@ -604,7 +606,44 @@ describe('WikiForm', () => {
           metaKey: false,
           altKey: false,
         });
-        expect(findTitle().element.value).toBe('parent/path/{Give this page a title}');
+        expect(findTitle().element.value).toBe('{Give this page a title}');
+      });
+    });
+
+    describe('when creating a new page with parent and a custom path', () => {
+      beforeEach(async () => {
+        createWrapper({
+          mountFn: mountExtended,
+          pageInfo: pageInfoWithNewPageTitle,
+        });
+
+        await nextTick();
+      });
+
+      it('does not overwrite a custom path when generating path from title is disabled', async () => {
+        findPathGenerationToggle().vm.$emit('change', false);
+        await nextTick();
+
+        findPath().setValue('parent/path/custom-slug');
+        await nextTick();
+
+        await findTitle().setValue('My New Page');
+        await nextTick();
+
+        expect(findPath().element.value).toBe('parent/path/custom-slug');
+      });
+
+      it('restores parent path in generated path when re-enabling path generation', async () => {
+        await findTitle().setValue('My New Page');
+        await nextTick();
+
+        findPathGenerationToggle().vm.$emit('change', false);
+        await nextTick();
+
+        findPathGenerationToggle().vm.$emit('change', true);
+        await nextTick();
+
+        expect(findPath().element.value).toBe('parent/path/My-New-Page');
       });
     });
 
@@ -657,19 +696,43 @@ describe('WikiForm', () => {
     });
   });
 
+  describe('title newline prevention', () => {
+    beforeEach(() => {
+      createWrapper({
+        mountFn: mountExtended,
+        persisted: true,
+      });
+    });
+
+    it('prevents Enter key from inserting a newline', () => {
+      const titleInput = findTitle();
+      const event = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
+      titleInput.element.dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(true);
+    });
+
+    it('replaces newlines with spaces in pasted content', async () => {
+      await inputTitle('line1\nline2\rline3\u2028line4\u2029line5');
+
+      expect(findTitle().element.value).toBe('line1 line2 line3 line4 line5');
+    });
+  });
+
   describe.each`
-    case                                                                                    | persisted | originalTitle | originalPath                 | titleInput   | expectedTitle | expectedPath
-    ${'new page with title'}                                                                | ${false}  | ${''}         | ${''}                        | ${'My page'} | ${'My page'}  | ${'My-page'}
-    ${'new page with no title'}                                                             | ${false}  | ${''}         | ${''}                        | ${''}        | ${'Untitled'} | ${'untitled-20230730042400'}
-    ${'new page with title (page reload) generates path from title'}                        | ${false}  | ${'Foo'}      | ${''}                        | ${'Bar'}     | ${'Bar'}      | ${'Bar'}
-    ${'new page with title and path (page reload) updates path with title'}                 | ${false}  | ${'Foo'}      | ${'foo'}                     | ${'Bar'}     | ${'Bar'}      | ${'Bar'}
-    ${'new page with title that is removed and no path (state inconsistency after reload)'} | ${false}  | ${'Foo'}      | ${''}                        | ${''}        | ${'Untitled'} | ${'untitled-20230730042400'}
-    ${'new page with path but no title (page reload)'}                                      | ${false}  | ${''}         | ${'bar'}                     | ${''}        | ${'Untitled'} | ${'bar'}
-    ${'existing page with updated title keeps path'}                                        | ${true}   | ${'Foo'}      | ${'foo'}                     | ${'Bar'}     | ${'Bar'}      | ${'foo'}
-    ${'existing page with removed title keeps path'}                                        | ${true}   | ${'Foo'}      | ${'foo'}                     | ${''}        | ${'Untitled'} | ${'foo'}
-    ${'existing page with no title updates path from title'}                                | ${true}   | ${'Untitled'} | ${'untitled-20221310061200'} | ${'Bar'}     | ${'Bar'}      | ${'Bar'}
-    ${'existing page with autogenerated path keeps path when title is removed'}             | ${true}   | ${'Untitled'} | ${'untitled-20221310061200'} | ${''}        | ${'Untitled'} | ${'untitled-20221310061200'}
-    ${'existing page with title and autogenerated path keeps path when title is removed'}   | ${true}   | ${'Foo'}      | ${'untitled-20221310061200'} | ${''}        | ${'Untitled'} | ${'untitled-20221310061200'}
+    case                                                                                    | persisted | originalTitle                     | originalPath                      | titleInput   | expectedTitle | expectedPath
+    ${'new page with parent path and title'}                                                | ${false}  | ${'parent/path/{new_page_title}'} | ${'parent/path/{new_page_title}'} | ${'My page'} | ${'My page'}  | ${'parent/path/My-page'}
+    ${'new page with title'}                                                                | ${false}  | ${''}                             | ${''}                             | ${'My page'} | ${'My page'}  | ${'My-page'}
+    ${'new page with no title'}                                                             | ${false}  | ${''}                             | ${''}                             | ${''}        | ${'Untitled'} | ${'untitled-20230730042400'}
+    ${'new page with title (page reload) generates path from title'}                        | ${false}  | ${'Foo'}                          | ${''}                             | ${'Bar'}     | ${'Bar'}      | ${'Bar'}
+    ${'new page with title and path (page reload) updates path with title'}                 | ${false}  | ${'Foo'}                          | ${'foo'}                          | ${'Bar'}     | ${'Bar'}      | ${'Bar'}
+    ${'new page with title that is removed and no path (state inconsistency after reload)'} | ${false}  | ${'Foo'}                          | ${''}                             | ${''}        | ${'Untitled'} | ${'untitled-20230730042400'}
+    ${'new page with path but no title (page reload)'}                                      | ${false}  | ${''}                             | ${'bar'}                          | ${''}        | ${'Untitled'} | ${'bar'}
+    ${'existing page with updated title keeps path'}                                        | ${true}   | ${'Foo'}                          | ${'foo'}                          | ${'Bar'}     | ${'Bar'}      | ${'foo'}
+    ${'existing page with removed title keeps path'}                                        | ${true}   | ${'Foo'}                          | ${'foo'}                          | ${''}        | ${'Untitled'} | ${'foo'}
+    ${'existing page with no title updates path from title'}                                | ${true}   | ${'Untitled'}                     | ${'untitled-20221310061200'}      | ${'Bar'}     | ${'Bar'}      | ${'Bar'}
+    ${'existing page with autogenerated path keeps path when title is removed'}             | ${true}   | ${'Untitled'}                     | ${'untitled-20221310061200'}      | ${''}        | ${'Untitled'} | ${'untitled-20221310061200'}
+    ${'existing page with title and autogenerated path keeps path when title is removed'}   | ${true}   | ${'Foo'}                          | ${'untitled-20221310061200'}      | ${''}        | ${'Untitled'} | ${'untitled-20221310061200'}
   `(
     '$case',
     ({ persisted, originalTitle, originalPath, titleInput, expectedTitle, expectedPath }) => {
@@ -1106,6 +1169,38 @@ describe('WikiForm', () => {
           ['wiki[message]', 'Update new title'],
         ]);
       });
+    });
+  });
+
+  describe('keyboard shortcut form submission', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
+    it('submits the form when ctrl+enter is triggered on the markdown editor', async () => {
+      const submitSpy = jest.spyOn(findForm().element, 'submit');
+      const ctrlEnterEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
+        ctrlKey: true,
+      });
+
+      findMarkdownEditor().vm.$emit('keydown', ctrlEnterEvent);
+      await nextTick();
+
+      expect(submitSpy).toHaveBeenCalled();
+    });
+
+    it('submits the form when meta+enter is triggered on the markdown editor', async () => {
+      const submitSpy = jest.spyOn(findForm().element, 'submit');
+      const metaEnterEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
+        metaKey: true,
+      });
+
+      findMarkdownEditor().vm.$emit('keydown', metaEnterEvent);
+      await nextTick();
+
+      expect(submitSpy).toHaveBeenCalled();
     });
   });
 });

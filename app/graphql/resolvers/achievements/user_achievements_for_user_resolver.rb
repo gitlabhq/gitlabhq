@@ -11,13 +11,28 @@ module Resolvers
         description: 'Indicates whether or not achievements hidden from the profile should be included in the result.'
 
       def resolve_with_lookahead(include_hidden:)
-        relation = super().order_by_priority_asc
+        super().then do |relation|
+          next relation.shown_on_profile unless include_hidden && current_user
 
-        if include_hidden && current_user == object
-          relation
-        else
-          relation.shown_on_profile
-        end
+          # Profile owner sees all their own achievements
+          next relation if current_user == object
+
+          hidden_achievements_for_awarder(relation)
+        end.order_by_priority_asc
+      end
+
+      private
+
+      # Returns the union of publicly shown achievements and achievements hidden on profile
+      # that the current_user is allowed to see as an awarder (maintainer or owner of the
+      # achievement's namespace, via direct membership, inherited access, or group-link).
+      # Uses Groups::AcceptingProjectImportsFinder, which implements the same three-path
+      # namespace union used here.
+      def hidden_achievements_for_awarder(relation)
+        awarder_namespaces = ::Groups::AcceptingProjectImportsFinder.new(current_user).execute.select(:id)
+        shown = relation.shown_on_profile
+        awarder_relation = relation.for_namespaces(awarder_namespaces).hidden_on_profile
+        ::Achievements::UserAchievement.from_union([shown, awarder_relation])
       end
     end
     # rubocop:enable Graphql/ResolverType

@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import CiResourceComponents from '~/ci/catalog/components/details/ci_resource_components.vue';
 import CiResourceDetails from '~/ci/catalog/components/details/ci_resource_details.vue';
 import CiResourceReadme from '~/ci/catalog/components/details/ci_resource_readme.vue';
+import CiResourceAnalytics from 'ee_component/ci/catalog/components/details/ci_resource_analytics.vue';
 
 describe('CiResourceDetails', () => {
   let wrapper;
@@ -26,6 +27,7 @@ describe('CiResourceDetails', () => {
   const findAllTabs = () => wrapper.findAllComponents(GlTab);
   const findCiResourceReadme = () => wrapper.findComponent(CiResourceReadme);
   const findCiResourceComponents = () => wrapper.findComponent(CiResourceComponents);
+  const findCiResourceAnalytics = () => wrapper.findComponent(CiResourceAnalytics);
 
   describe('tabs', () => {
     beforeEach(() => {
@@ -36,6 +38,10 @@ describe('CiResourceDetails', () => {
       expect(findAllTabs()).toHaveLength(2);
       expect(findCiResourceComponents().exists()).toBe(true);
       expect(findCiResourceReadme().exists()).toBe(true);
+    });
+
+    it('renders the analytics component', () => {
+      expect(findCiResourceAnalytics().exists()).toBe(true);
     });
 
     it('passes lazy attribute to all tabs', () => {

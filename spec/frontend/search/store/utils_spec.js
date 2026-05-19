@@ -277,9 +277,18 @@ describe('Global Search Store Utils', () => {
 
   describe('getAggregationsUrl', () => {
     useMockLocationHelper();
-    it('returns zero as string if no count is provided', () => {
+
+    it('returns the aggregations URL without a relative URL root', () => {
       const testURL = window.location.href;
       expect(getAggregationsUrl()).toStrictEqual(`${testURL}search/aggregations`);
+    });
+
+    it('returns the aggregations URL with a relative URL root', () => {
+      gon.relative_url_root = '/glab';
+      const currentUrl = new URL(window.location.href);
+      currentUrl.pathname = '/glab/search/aggregations';
+      expect(getAggregationsUrl()).toStrictEqual(currentUrl.toString());
+      delete gon.relative_url_root;
     });
   });
 

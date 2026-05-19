@@ -96,7 +96,7 @@ To set up the Workload Identity Federation you can either:
 To use the GitLab UI to set up the Workload Identity Federation:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Locate the Google Cloud IAM integration and select **Configure**.
 1. Select **Guided setup** and follow the instructions.
 
@@ -182,7 +182,7 @@ For more information, see the Google Cloud documentation about how to [define an
 After you create the workload identity pool and provider, to complete the setup in GitLab:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Locate the Google Cloud IAM integration and select **Configure**.
 1. Select **Manual setup**
 1. Complete the fields.

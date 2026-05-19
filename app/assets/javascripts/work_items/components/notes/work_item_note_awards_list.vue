@@ -5,6 +5,7 @@ import AwardsList from '~/vue_shared/components/awards_list.vue';
 import { getMutation, optimisticAwardUpdate, getNewCustomEmojiPath } from '../../notes/award_utils';
 
 export default {
+  name: 'WorkItemNoteAwardsList',
   components: {
     AwardsList,
   },

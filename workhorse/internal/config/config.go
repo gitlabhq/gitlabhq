@@ -507,11 +507,11 @@ func (creds *GoogleCredentials) getGCPCredentials(ctx context.Context) (*google.
 			return nil, fmt.Errorf("error reading Google json key location: %w", err)
 		}
 
-		return google.CredentialsFromJSON(ctx, b, gcpCredentialsScope)
+		return google.CredentialsFromJSON(ctx, b, gcpCredentialsScope) //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/work_items/598339
 	}
 
 	b := []byte(creds.JSONKeyString)
-	return google.CredentialsFromJSON(ctx, b, gcpCredentialsScope)
+	return google.CredentialsFromJSON(ctx, b, gcpCredentialsScope) //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/work_items/598339
 }
 
 func splitCommand(cmd string) (string, []string) {

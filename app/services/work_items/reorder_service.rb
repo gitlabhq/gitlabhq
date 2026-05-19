@@ -14,7 +14,7 @@ module WorkItems
       return missing_arguments_error(work_item) unless move_between_ids
 
       ::WorkItems::UpdateService.new(
-        container: work_item.project,
+        container: work_item.resource_parent,
         current_user: current_user,
         params: { move_between_ids: move_between_ids }
       ).execute(work_item)

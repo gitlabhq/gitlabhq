@@ -10,7 +10,9 @@ module API
       } do |project, options|
         project.export_status(options[:current_user])
       end
-      expose :_links, if: ->(project, options) { project.export_status(options[:current_user]) == :finished } do
+      expose :_links, if: ->(project, options) {
+        project.export_status(options[:current_user]) == :finished
+      }, documentation: { type: 'Hash' } do
         expose :api_url, documentation: {
           type: 'String',
           example: 'https://gitlab.example.com/api/v4/projects/1/export/download'

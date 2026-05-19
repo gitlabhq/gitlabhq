@@ -16,7 +16,7 @@ import updateBoardListMutation from '~/boards/graphql/board_list_update.mutation
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import BoardDrawerWrapper from '~/boards/components/board_drawer_wrapper.vue';
-import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
+import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 import { DraggableItemTypes } from 'ee_else_ce/boards/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
@@ -110,7 +110,7 @@ describe('BoardContent', () => {
   const findDraggable = () => wrapper.findComponent(Draggable);
   const findError = () => wrapper.findComponent(GlAlert);
   const findDrawerWrapper = () => wrapper.findComponent(BoardDrawerWrapper);
-  const findWorkItemDrawer = () => wrapper.findComponent(WorkItemDrawer);
+  const findWorkItemDetailPanel = () => wrapper.findComponent(WorkItemDetailPanel);
 
   const moveList = () => {
     const movableListsOrder = [mockLists[0].id, mockLists[1].id];
@@ -283,7 +283,7 @@ describe('BoardContent', () => {
     });
 
     it('updates Apollo cache when work item in the drawer is updated', () => {
-      findWorkItemDrawer().vm.$emit('work-item-updated', { iid: '1' });
+      findWorkItemDetailPanel().vm.$emit('work-item-updated', { iid: '1' });
 
       expect(mockUpdateCache).toHaveBeenCalled();
     });
@@ -307,14 +307,16 @@ describe('BoardContent', () => {
     });
   });
 
-  it('handles `draggedType` when dragging starts', async () => {
+  it('handles `draggedItemId` when dragging starts', async () => {
     createComponent();
     await waitForPromises();
 
-    findBoardColumns().wrappers[0].vm.$emit('dragStart', { itemType: 'ISSUE' });
+    findBoardColumns().wrappers[0].vm.$emit('dragStart', {
+      itemId: 'gid://gitlab/WorkItems::Type/1',
+    });
 
     await nextTick();
 
-    expect(findBoardColumns().at(0).props('draggedType')).toBe('ISSUE');
+    expect(findBoardColumns().at(0).props('draggedItemId')).toBe('gid://gitlab/WorkItems::Type/1');
   });
 });

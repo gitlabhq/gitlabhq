@@ -12,7 +12,7 @@ title: Project templates API
 
 {{< /details >}}
 
-Use this API to retrieve project-specific version of these endpoints:
+Use this API to retrieve a project-specific version of these endpoints:
 
 - [Dockerfile templates](templates/dockerfiles.md)
 - [Gitignore templates](templates/gitignores.md)

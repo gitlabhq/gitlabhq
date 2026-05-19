@@ -22,19 +22,8 @@ module Labels
     def execute
       return unless old_group.present?
 
-      if Feature.enabled?(:label_transfer_service_query_improvements, project)
-        execute_with_improved_queries
-      else
-        execute_legacy_version
-      end
-    end
-
-    private
-
-    attr_reader :current_user, :old_group, :project
-
-    def execute_with_improved_queries
-      # Cache label_ids outside of the transaction (still happens inside a transaction for project transfers)
+      # Cache label_ids outside of the transaction
+      # (For project transfers this service is already called inside a transaction)
       group_label_ids
 
       Label.transaction do
@@ -51,21 +40,9 @@ module Labels
       end
     end
 
-    def execute_legacy_version
-      link_ids = group_labels_applied_to_issues.pluck("label_links.id") +
-        group_labels_applied_to_merge_requests.pluck("label_links.id")
+    private
 
-      Label.transaction do
-        labels_to_transfer.find_each do |label|
-          new_label_id = find_or_create_label!(label)
-
-          next if new_label_id == label.id
-
-          update_label_links(link_ids, old_label_id: label.id, new_label_id: new_label_id)
-          update_label_priorities(old_label_id: label.id, new_label_id: new_label_id)
-        end
-      end
-    end
+    attr_reader :current_user, :old_group, :project
 
     def group_label_ids
       label_ids = Set.new
@@ -96,28 +73,6 @@ module Labels
       LabelLink.where(namespace_id: project.project_namespace_id)
     end
 
-    def labels_to_transfer
-      Label
-        .from_union([
-          group_labels_applied_to_issues,
-          group_labels_applied_to_merge_requests
-        ])
-        .without_order
-        .distinct
-    end
-
-    def group_labels_applied_to_issues
-      @labels_applied_to_issues ||= Label.joins(:issues)
-        .joins("INNER JOIN namespaces on namespaces.id = labels.group_id AND namespaces.type = 'Group'")
-        .where(issues: { project_id: project.id }).without_order
-    end
-
-    def group_labels_applied_to_merge_requests
-      @labels_applied_to_mrs ||= Label.joins(:merge_requests)
-        .joins("INNER JOIN namespaces on namespaces.id = labels.group_id AND namespaces.type = 'Group'")
-        .where(merge_requests: { target_project_id: project.id }).without_order
-    end
-
     def find_or_create_label!(label)
       params    = label.attributes.slice('title', 'description', 'color')
       new_label = FindOrCreateService.new(
@@ -127,11 +82,6 @@ module Labels
       ).execute(skip_authorization: true)
 
       new_label.id
-    end
-
-    def update_label_links(link_ids, old_label_id:, new_label_id:)
-      LabelLink.where(id: link_ids, label_id: old_label_id)
-        .update_all(label_id: new_label_id)
     end
 
     def update_label_priorities(old_label_id:, new_label_id:)

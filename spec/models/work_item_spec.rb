@@ -356,12 +356,14 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   end
 
   describe '#supports_assignee?' do
-    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter::WIDGETS_FOR_TYPE.each_pair do |base_type, widgets|
+    WorkItems::Type::BASE_TYPES.each_key do |base_type|
       specify do
-        work_item = build(:work_item, base_type)
-        supports_assignee = widgets.include?(:assignees)
-
         skip if !Gitlab.ee? && [:epic, :requirement, :objective, :test_case, :key_result].include?(base_type)
+
+        work_item = build(:work_item, base_type)
+        widgets = WorkItems::TypesFramework::SystemDefined::Definitions
+          .const_get(base_type.to_s.camelize, false).widgets
+        supports_assignee = widgets.include?('assignees')
 
         expect(work_item.supports_assignee?).to eq(supports_assignee)
       end
@@ -369,12 +371,14 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   end
 
   describe '#supports_time_tracking?' do
-    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter::WIDGETS_FOR_TYPE.each_pair do |base_type, widgets|
+    WorkItems::Type::BASE_TYPES.each_key do |base_type|
       specify do
-        work_item = build(:work_item, base_type)
-        supports_time_tracking = widgets.include?(:time_tracking)
-
         skip if !Gitlab.ee? && [:epic, :requirement, :objective, :test_case, :key_result].include?(base_type)
+
+        work_item = build(:work_item, base_type)
+        widgets = WorkItems::TypesFramework::SystemDefined::Definitions
+          .const_get(base_type.to_s.camelize, false).widgets
+        supports_time_tracking = widgets.include?('time_tracking')
 
         expect(work_item.supports_time_tracking?).to eq(supports_time_tracking)
       end

@@ -8,6 +8,7 @@ module Gitlab
 
       # Diff properties
       attr_accessor :old_path, :new_path, :a_mode, :b_mode, :diff
+      attr_reader :from_id, :to_id
 
       # Stats properties
       attr_accessor :new_file, :renamed_file, :deleted_file, :generated, :encoded_file_path
@@ -303,6 +304,8 @@ module Gitlab
         @new_file = Gitlab::Git.blank_ref?(gitaly_diff.from_id)
         @renamed_file = gitaly_diff.from_path != gitaly_diff.to_path
         @deleted_file = Gitlab::Git.blank_ref?(gitaly_diff.to_id)
+        @from_id = gitaly_diff.from_id unless Gitlab::Git.blank_ref?(gitaly_diff.from_id)
+        @to_id = gitaly_diff.to_id unless Gitlab::Git.blank_ref?(gitaly_diff.to_id)
         @too_large = gitaly_diff.too_large if gitaly_diff.respond_to?(:too_large)
         gitaly_overflow = gitaly_diff.try(:overflow_marker)
         @overflow = Diff.collect_patch_overage? && gitaly_overflow

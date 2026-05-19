@@ -1,7 +1,9 @@
 ---
 name: create_code_suggestion_completion
 description: Grants the ability to create code suggestion completions
-permissions:
-  - create_code_suggestion_completion
 boundaries:
   - user
+available_for:
+  - granular_access_token
+permissions:
+  - create_code_suggestion_completion

@@ -15,7 +15,7 @@ RSpec.describe QA::Support::Loglinking do
     context 'when correlation_id exists' do
       let(:correlation_id) { 'foo123' }
       let(:sentry_url) { "https://sentry.address/?environment=bar&query=correlation_id%3A%22#{correlation_id}%22" }
-      let(:discover_url) { "https://kibana.address/app/discover#/?_a=%28index:%27pubsub-rails-inf-foo%27%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20#{correlation_id}%27%29%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29" }
+      let(:discover_url) { "https://kibana.address/app/discover#/?_a=%28index:%27pubsub-rails-inf-foo%27%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20%22#{correlation_id}%22%27%29%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29" }
       let(:dashboard_url) { "https://kibana.address/app/dashboards#/view/abc-123-dashboard-id?_g=%28time%3A%28from:%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29&_a=%28filters%3A%21%28%28query%3A%28match_phrase%3A%28json.correlation_id%3A%27#{correlation_id}%27%29%29%29%29%29" }
 
       before do

@@ -40,6 +40,14 @@ RSpec.describe 'Creation of a new branch', feature_category: :source_code_manage
           project.add_developer(current_user)
         end
 
+        it_behaves_like 'authorizing granular token permissions for GraphQL',
+          [:create_branch, :read_branch] do
+          let(:user) { current_user }
+          let(:boundary_object) { project }
+          let(:mutation) { graphql_mutation(:create_branch, input, 'branch { name } errors') }
+          let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+        end
+
         it_behaves_like 'creates a new branch'
 
         context 'when ref is not correct' do

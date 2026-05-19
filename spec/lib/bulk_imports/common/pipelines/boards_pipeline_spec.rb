@@ -61,7 +61,7 @@ RSpec.describe BulkImports::Common::Pipelines::BoardsPipeline, feature_category:
 
     describe '#run' do
       it 'imports issue boards into destination project' do
-        expect { subject.run }.to change(::Board, :count).by(1)
+        expect { subject.run }.to change { ::Board.count }.by(1)
         board = project.boards.find_by(name: board_data["name"])
         expect(board).to be_present
         expect(board.project.id).to eq(project.id)
@@ -86,7 +86,7 @@ RSpec.describe BulkImports::Common::Pipelines::BoardsPipeline, feature_category:
 
     describe '#run' do
       it 'imports issue boards into destination group' do
-        expect { subject.run }.to change(::Board, :count).by(1)
+        expect { subject.run }.to change { ::Board.count }.by(1)
         board = group.boards.find_by(name: board_data["name"])
         expect(board).to be_present
         expect(board.group.id).to eq(group.id)

@@ -32,7 +32,7 @@ References are displayed as issue links.
 To disable work items for a project, including the GitLab issue tracker:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Work items**, turn off the toggle.
 1. Select **Save changes**.

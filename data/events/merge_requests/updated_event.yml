@@ -1,0 +1,6 @@
+---
+event: MergeRequests::UpdatedEvent
+description: Published when a merge request is updated, so EE subscribers (such as
+  Cluster Agent AutoFlow workers) can react to changes on the merge request.
+feature_category: code_review_workflow
+ee_only: true

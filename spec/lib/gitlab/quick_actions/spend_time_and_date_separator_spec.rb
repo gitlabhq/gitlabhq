@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'gitlab_chronic_duration'
 
 RSpec.describe Gitlab::QuickActions::SpendTimeAndDateSeparator, feature_category: :team_planning do
   subject { described_class }
@@ -49,6 +50,22 @@ RSpec.describe Gitlab::QuickActions::SpendTimeAndDateSeparator, feature_category
       context 'unparseable date(invalid mixes of delimiters)' do
         it_behaves_like 'arg line with invalid parameters' do
           let(:invalid_arg) { '10m 2017.02-02' }
+        end
+      end
+
+      context 'date submitted during the 12am-1am BST window' do
+        let(:raw_time) { '1h' }
+        let(:raw_date) { '2026-04-15' }
+        let(:timezone) { 'Europe/London' }
+
+        it 'does not reject date when it is today in user timezone', :aggregate_failures do
+          travel_to(Time.utc(2026, 4, 14, 23, 30)) do
+            time_spent, spent_at, category = subject.new("#{raw_time} #{raw_date}", timezone).execute
+
+            expect(time_spent).to eq(3600)
+            expect(spent_at).to eq(Date.parse(raw_date).in_time_zone(timezone).midday)
+            expect(category).to be_nil
+          end
         end
       end
 

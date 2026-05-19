@@ -4,5 +4,7 @@ description: Grants the ability to read member roles
 boundaries:
   - group
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - read_member_role

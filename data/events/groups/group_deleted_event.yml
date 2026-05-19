@@ -1,0 +1,4 @@
+---
+event: Groups::GroupDeletedEvent
+description: Published after a group and all its contents are permanently destroyed.
+feature_category: groups_and_projects

@@ -21,8 +21,12 @@ RSpec.describe Authn::Tokens::RunnerAuthenticationToken, :aggregate_failures, fe
       expect(described_class.prefix?(::Ci::Runner.created_runner_prefix)).to be_truthy
     end
 
-    it 'returns false for legacy registration runner token prefix' do
-      expect(described_class.prefix?(::Ci::Runner::REGISTRATION_RUNNER_TOKEN_PREFIX)).to be_falsey
+    it 'returns true for legacy runner auth token prefix' do
+      expect(described_class.prefix?(::Ci::Runner::REGISTRATION_RUNNER_TOKEN_PREFIX)).to be_truthy
+    end
+
+    it 'returns false for runner registration token prefix' do
+      expect(described_class.prefix?(::RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX)).to be_falsey
     end
 
     it 'returns false for invalid prefix' do

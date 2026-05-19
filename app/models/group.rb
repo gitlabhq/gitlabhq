@@ -147,6 +147,9 @@ class Group < Namespace
 
   has_one :deletion_schedule, class_name: 'GroupDeletionSchedule'
   delegate :deleting_user, :marked_for_deletion_on, to: :deletion_schedule, allow_nil: true
+  delegate :mcp_server_enabled, :mcp_server_enabled=, to: :namespace_settings, allow_nil: true
+
+  scope :with_mcp_server_enabled, -> { joins(:namespace_settings).where(namespace_settings: { mcp_server_enabled: true }) }
 
   scope :aimed_for_deletion, -> { where.associated(:deletion_schedule) }
   scope :self_or_ancestors_aimed_for_deletion, -> { where(self_or_ancestors_deletion_schedule_subquery.exists) }
@@ -254,6 +257,7 @@ class Group < Namespace
   after_commit :update_two_factor_requirement
 
   scope :with_users, -> { includes(:users) }
+  scope :preload_owners, -> { preload(:owners) }
 
   scope :active, -> { self_and_ancestors_active }
   scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
@@ -792,6 +796,10 @@ class Group < Namespace
     all_owners.size == 1 && all_owners.first.user_id == user.id
   end
 
+  def service_accounts
+    provisioned_users.service_account
+  end
+
   # Excludes non-direct owners for top-level group
   # Excludes project_bots
   # Excludes service accounts
@@ -1166,22 +1174,31 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:allow_iframes_in_markdown, type: :wip)
   end
 
-  def use_mermaid_v11_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:use_mermaid_v11, type: :gitlab_com_derisk)
+  def sscs_malware_detection_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:sscs_malware_detection, type: :wip)
   end
 
   def use_work_item_url?
     !feature_flag_enabled_for_self_or_ancestor?(:work_item_legacy_url, type: :gitlab_com_derisk)
   end
 
-  # overriden in EE
+  # overridden in EE
   def has_active_hooks?(hooks_scope = :push_hooks)
     false
   end
 
-  # overriden in EE
+  # overridden in EE
   def enterprise_user_settings_available?(user = nil)
     false
+  end
+
+  # SaaS only feature, overridden in EE
+  def mcp_server_setting_available?
+    false
+  end
+
+  def mcp_server_enabled?
+    root? && !!namespace_settings&.mcp_server_enabled?
   end
 
   def supports_lock_on_merge?
@@ -1397,6 +1414,11 @@ class Group < Namespace
     Gitlab::SafeRequestStore.fetch(cache_key) do
       ancestors(hierarchy_order: :asc).joins(:deletion_schedule).to_a
     end
+  end
+
+  override :remove_ancestor_inherited_transitions?
+  def remove_ancestor_inherited_transitions?
+    Feature.enabled?(:remove_group_ancestor_inherited_transitions, self)
   end
 end
 

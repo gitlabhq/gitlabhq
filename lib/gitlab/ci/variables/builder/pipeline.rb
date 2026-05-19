@@ -25,14 +25,15 @@ module Gitlab
               variables.concat(predefined_merge_request_variables) if pipeline.merge_request?
               variables.concat(predefined_upstream_variables) if pipeline.source_pipeline&.source_bridge.present?
 
-              if pipeline.open_merge_requests_refs.any?
-                variables.append(key: 'CI_OPEN_MERGE_REQUESTS', value: pipeline.open_merge_requests_refs.join(','))
+              append_variable(variables, key: 'CI_OPEN_MERGE_REQUESTS') do
+                refs = pipeline.open_merge_requests_refs
+                refs.join(',') if refs.any?
               end
 
               variables.append(key: 'CI_GITLAB_FIPS_MODE', value: 'true') if Gitlab::FIPS.enabled?
 
-              variables.append(key: 'CI_KUBERNETES_ACTIVE', value: 'true') if pipeline.has_kubernetes_active?
-              variables.append(key: 'CI_DEPLOY_FREEZE', value: 'true') if pipeline.freeze_period?
+              append_variable(variables, key: 'CI_KUBERNETES_ACTIVE') { 'true' if pipeline.has_kubernetes_active? }
+              append_variable(variables, key: 'CI_DEPLOY_FREEZE') { 'true' if pipeline.freeze_period? }
 
               if pipeline.external_pull_request_event? && pipeline.external_pull_request
                 variables.concat(pipeline.external_pull_request.predefined_variables)
@@ -71,38 +72,44 @@ module Gitlab
               variables.append(key: 'CI_COMMIT_REF_NAME', value: pipeline.source_ref)
               variables.append(key: 'CI_COMMIT_REF_SLUG', value: pipeline.source_ref_slug)
               variables.append(key: 'CI_COMMIT_BRANCH', value: pipeline.ref) if pipeline.branch?
-              variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message_truncated)
-              variables.append(key: 'CI_COMMIT_MESSAGE_IS_TRUNCATED', value: git_commit_message_truncated?.to_s)
-              variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_title_truncated)
-              variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description_truncated)
+
+              append_variable(variables, key: 'CI_COMMIT_MESSAGE') { git_commit_message_truncated }
+              append_variable(variables, key: 'CI_COMMIT_MESSAGE_IS_TRUNCATED') { git_commit_message_truncated?.to_s }
+              append_variable(variables, key: 'CI_COMMIT_TITLE') { git_commit_title_truncated }
+              append_variable(variables, key: 'CI_COMMIT_DESCRIPTION') { git_commit_description_truncated }
               variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!pipeline.protected_ref?).to_s)
-              variables.append(key: 'CI_COMMIT_TIMESTAMP', value: pipeline.git_commit_timestamp.to_s)
-              variables.append(key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text.to_s)
-              variables.append(key: 'CI_COMMIT_USER_LOGIN', value: pipeline.git_author_login.to_s)
+              append_variable(variables, key: 'CI_COMMIT_TIMESTAMP') { pipeline.git_commit_timestamp.to_s }
+              append_variable(variables, key: 'CI_COMMIT_AUTHOR') { pipeline.git_author_full_text.to_s }
+              append_variable(variables, key: 'CI_COMMIT_USER_LOGIN') { pipeline.git_author_login.to_s }
             end
           end
           strong_memoize_attr :predefined_commit_variables
 
           def predefined_commit_tag_variables
             Gitlab::Ci::Variables::Collection.new.tap do |variables|
-              git_tag = pipeline.project.repository.find_tag(pipeline.ref)
+              append_variable(variables, key: 'CI_COMMIT_TAG') do
+                pipeline.ref if git_tag
+              end
 
-              next variables unless git_tag
+              append_variable(variables, key: 'CI_COMMIT_TAG_MESSAGE') do
+                next unless git_tag
 
-              variables.append(key: 'CI_COMMIT_TAG', value: pipeline.ref)
-
-              if Feature.enabled?(:strip_signature_from_ci_commit_tag_message, pipeline.project)
-                variables.append(key: 'CI_COMMIT_TAG_MESSAGE', value: strip_signature(git_tag.message))
-              else
-                variables.append(key: 'CI_COMMIT_TAG_MESSAGE', value: git_tag.message)
+                if Feature.enabled?(:strip_signature_from_ci_commit_tag_message, pipeline.project)
+                  strip_signature(git_tag.message)
+                else
+                  git_tag.message
+                end
               end
             end
           end
           strong_memoize_attr :predefined_commit_tag_variables
 
-          def predefined_merge_request_variables
-            Preloader::MergeRequest.new(pipeline.merge_request).preload
+          def git_tag
+            pipeline.project.repository.find_tag(pipeline.ref)
+          end
+          strong_memoize_attr :git_tag
 
+          def predefined_merge_request_variables
             Gitlab::Ci::Variables::Collection.new.tap do |variables|
               variables.append(key: 'CI_MERGE_REQUEST_EVENT_TYPE', value: pipeline.merge_request_event_type.to_s)
               variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: pipeline.source_sha.to_s)
@@ -133,30 +140,49 @@ module Gitlab
           strong_memoize_attr :merge_request_diff
 
           def git_commit_message_truncated
-            return pipeline.git_commit_message.to_s unless git_commit_message_truncated?
+            return git_commit_message unless git_commit_message_truncated?
 
-            truncate_in_bytes(pipeline.git_commit_message.to_s, MAX_COMMIT_MESSAGE_SIZE_IN_BYTES)
+            truncate_in_bytes(git_commit_message, MAX_COMMIT_MESSAGE_SIZE_IN_BYTES)
           end
 
           def git_commit_title_truncated
-            return pipeline.git_commit_full_title.to_s unless git_commit_message_truncated?
+            return git_commit_full_title unless git_commit_message_truncated?
 
-            truncate_in_bytes(pipeline.git_commit_full_title.to_s, MAX_COMMIT_MESSAGE_SIZE_IN_BYTES)
+            truncate_in_bytes(git_commit_full_title, MAX_COMMIT_MESSAGE_SIZE_IN_BYTES)
           end
 
           def git_commit_description_truncated
-            return pipeline.git_commit_description.to_s unless git_commit_message_truncated?
+            return git_commit_description unless git_commit_message_truncated?
 
-            truncate_in_bytes(pipeline.git_commit_description.to_s, MAX_COMMIT_MESSAGE_SIZE_IN_BYTES)
+            truncate_in_bytes(git_commit_description, MAX_COMMIT_MESSAGE_SIZE_IN_BYTES)
           end
 
           def git_commit_message_truncated?
-            pipeline.git_commit_message.to_s.bytesize > MAX_COMMIT_MESSAGE_SIZE_IN_BYTES
+            git_commit_message.bytesize > MAX_COMMIT_MESSAGE_SIZE_IN_BYTES
           end
           strong_memoize_attr :git_commit_message_truncated?
 
+          def git_commit_message
+            pipeline.git_commit_message.to_s
+          end
+          strong_memoize_attr :git_commit_message
+
+          def git_commit_full_title
+            pipeline.git_commit_full_title.to_s
+          end
+          strong_memoize_attr :git_commit_full_title
+
+          def git_commit_description
+            pipeline.git_commit_description.to_s
+          end
+          strong_memoize_attr :git_commit_description
+
           def truncate_in_bytes(text, max_size)
             text.byteslice(0, max_size)
+          end
+
+          def append_variable(variables, key:, &block)
+            variables.append(key: key, lazy: true, value: block)
           end
         end
       end

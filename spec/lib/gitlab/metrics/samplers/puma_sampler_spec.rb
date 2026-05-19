@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Metrics::Samplers::PumaSampler do
 
     context 'in cluster mode' do
       let(:puma_stats) do
-        <<~EOS
+        <<~JSON
         {
           "workers": 2,
           "phase": 2,
@@ -33,14 +33,14 @@ RSpec.describe Gitlab::Metrics::Samplers::PumaSampler do
             "booted": true,
             "last_checkin": "2019-05-15T07:57:55Z",
             "last_status": {
-              "backlog":0,
-              "running":1,
-              "pool_capacity":4,
+              "backlog": 0,
+              "running": 1,
+              "pool_capacity": 4,
               "max_threads": 4
             }
           }]
         }
-        EOS
+        JSON
       end
 
       it 'samples master statistics' do
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Metrics::Samplers::PumaSampler do
 
     context 'with empty worker stats' do
       let(:puma_stats) do
-        <<~EOS
+        <<~JSON
         {
           "workers": 2,
           "phase": 2,
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::Metrics::Samplers::PumaSampler do
             "last_status": {}
           }]
         }
-        EOS
+        JSON
       end
 
       it 'does not log worker stats' do
@@ -91,14 +91,14 @@ RSpec.describe Gitlab::Metrics::Samplers::PumaSampler do
 
     context 'in single mode' do
       let(:puma_stats) do
-        <<~EOS
+        <<~JSON
         {
-          "backlog":0,
-          "running":1,
-          "pool_capacity":4,
+          "backlog": 0,
+          "running": 1,
+          "pool_capacity": 4,
           "max_threads": 4
         }
-        EOS
+        JSON
       end
 
       it 'samples worker statistics' do
@@ -107,6 +107,27 @@ RSpec.describe Gitlab::Metrics::Samplers::PumaSampler do
         expect(subject.metrics[:puma_workers]).to receive(:set).with(labels, 1)
         expect(subject.metrics[:puma_running_workers]).to receive(:set).with(labels, 1)
         expect_worker_stats(labels)
+
+        subject.sample
+      end
+    end
+
+    context 'when puma stats json violates safe parsing limits' do
+      let(:deep_json) do
+        nested = '"value"'
+        33.times { nested = %({ "a": #{nested} }) }
+        nested
+      end
+
+      let(:puma_stats) { deep_json }
+
+      it 'does not raise' do
+        expect { subject.sample }.not_to raise_error
+      end
+
+      it 'logs a warning' do
+        allow(Gitlab::AppLogger).to receive(:warn)
+        expect(Gitlab::AppLogger).to receive(:warn).with(/failed to parse Puma stats/)
 
         subject.sample
       end

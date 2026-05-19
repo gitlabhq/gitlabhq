@@ -21,6 +21,7 @@ description: Create custom roles with tailored permissions to meet specific orga
 - Custom admin roles [introduced](https://gitlab.com/groups/gitlab-org/-/epics/15854) as an [experiment](../../policy/development_stages_support.md) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `custom_ability_read_admin_dashboard`.
 - Ability to manage custom admin roles with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `custom_admin_roles`. Disabled by default.
 - Custom admin roles [generally available](https://gitlab.com/groups/gitlab-org/-/epics/15957) in GitLab 18.3. Feature flag `custom_admin_roles` enabled by default.
+- Feature flag `custom_admin_roles` removed in GitLab 19.0.
 
 {{< /history >}}
 
@@ -101,7 +102,7 @@ Prerequisites:
 To create a custom admin role:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Roles and permissions**.
+1. In the left sidebar, select **Settings** > **Roles and permissions**.
 1. Select **New role**.
 1. Select **Admin role**.
 1. Enter a name and description for the custom role.
@@ -219,7 +220,7 @@ Prerequisites:
 To assign a custom admin role to an existing user:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Users**.
+1. In the left sidebar, select **Overview** > **Users**.
 1. Select **Edit** for a user.
 1. In the **Access** section, set the access level to either **Regular** or **Auditor**.
 1. From the **Admin area** dropdown list, select a custom admin role.
@@ -292,5 +293,5 @@ To assign custom roles to LDAP or SAML groups:
 If a permission does not exist, you can:
 
 - Discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
-- Create an issue to request the permission with the [permission proposal issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Permission%20Proposal).
+- Create an issue to request the permission with the [permission proposal issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Permission%20Proposal).
 - Contribute to GitLab and add the permission.

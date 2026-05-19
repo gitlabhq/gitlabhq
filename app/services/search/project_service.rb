@@ -20,7 +20,8 @@ module Search
         repository_ref: params[:repository_ref],
         order_by: params[:order_by],
         sort: params[:sort],
-        filters: filters
+        filters: filters,
+        organization_id: params[:organization_id]
       )
     end
 

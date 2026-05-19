@@ -1,9 +1,11 @@
 ---
 name: delete_variable
 description: Grants the ability to delete variables
-permissions:
-  - delete_variable
 boundaries:
   - project
   - group
   - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_variable

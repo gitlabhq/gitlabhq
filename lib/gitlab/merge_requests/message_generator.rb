@@ -34,15 +34,15 @@ module Gitlab
         )
       end
 
-      def new_mr_title(template)
+      def new_mr_title(template, issue: nil)
         return unless template.present?
 
         result = replace_placeholders(
           template,
-          allowed_placeholders: ALLOWED_NEW_MR_TITLE_PLACEHOLDERS
+          allowed_placeholders: ALLOWED_NEW_MR_TITLE_PLACEHOLDERS,
+          issue: issue
         )
-        # Title must be single-line; take only the first line if placeholders
-        # expanded to multi-line content (e.g. %{first_commit} with a body).
+        # Safety net: ensure the title is always single-line regardless of placeholder expansion.
         result.lines.first&.strip.presence
       end
 
@@ -58,10 +58,10 @@ module Gitlab
       attr_reader :merge_request, :current_user
 
       PLACEHOLDERS = {
-        'source_branch' => ->(merge_request, _, _) { merge_request.source_branch.to_s },
-        'target_branch' => ->(merge_request, _, _) { merge_request.target_branch.to_s },
-        'title' => ->(merge_request, _, _) { merge_request.title },
-        'issues' => ->(merge_request, _, _) do
+        'source_branch' => ->(merge_request, _, _, _) { merge_request.source_branch.to_s },
+        'target_branch' => ->(merge_request, _, _, _) { merge_request.target_branch.to_s },
+        'title' => ->(merge_request, _, _, _) { merge_request.title },
+        'issues' => ->(merge_request, _, _, _) do
           return if merge_request.visible_closing_issues_for.blank?
 
           closes_issues_references = merge_request.visible_closing_issues_for.map do |issue|
@@ -69,34 +69,39 @@ module Gitlab
           end
           "Closes #{closes_issues_references.to_sentence}"
         end,
-        'description' => ->(merge_request, _, _) { merge_request.description },
-        'reference' => ->(merge_request, _, _) { merge_request.to_reference(full: true) },
-        'local_reference' => ->(merge_request, _, _) { merge_request.to_reference(full: false) },
-        'source_project_id' => ->(merge_request, _, _) { merge_request.source_project.id.to_s },
-        'first_commit' => ->(merge_request, _, _) {
+        'description' => ->(merge_request, _, _, _) { merge_request.description },
+        'reference' => ->(merge_request, _, _, _) { merge_request.to_reference(full: true) },
+        'local_reference' => ->(merge_request, _, _, _) { merge_request.to_reference(full: false) },
+        'source_project_id' => ->(merge_request, _, _, _) { merge_request.source_project.id.to_s },
+        'first_commit' => ->(merge_request, _, _, _) {
           return unless merge_request.persisted? || merge_request.compare_commits.present?
 
           merge_request.first_commit&.safe_message&.strip
         },
-        'first_multiline_commit' => ->(merge_request, _, _) {
+        'first_commit_title' => ->(merge_request, _, _, _) {
+          return unless merge_request.persisted? || merge_request.compare_commits.present?
+
+          merge_request.first_commit&.title&.strip
+        },
+        'first_multiline_commit' => ->(merge_request, _, _, _) {
           merge_request.first_multiline_commit&.safe_message&.strip.presence || merge_request.title
         },
-        'first_multiline_commit_description' => ->(merge_request, _, _) {
+        'first_multiline_commit_description' => ->(merge_request, _, _, _) {
           merge_request.first_multiline_commit_description&.strip
         },
-        'url' => ->(merge_request, _, _) { Gitlab::UrlBuilder.build(merge_request) },
-        'reviewed_by' => ->(merge_request, _, _) {
+        'url' => ->(merge_request, _, _, _) { Gitlab::UrlBuilder.build(merge_request) },
+        'reviewed_by' => ->(merge_request, _, _, _) {
           merge_request.reviewed_by_users
                        .map { |user| "Reviewed-by: #{user.name} <#{user.commit_email_or_default}>" }
                        .join("\n")
         },
-        'approved_by' => ->(merge_request, _, _) {
+        'approved_by' => ->(merge_request, _, _, _) {
           merge_request.approved_by_users
                        .map { |user| "Approved-by: #{user.name} <#{user.commit_email_or_default}>" }
                        .join("\n")
         },
-        'merged_by' => ->(_, user, _) { "#{user&.name} <#{user&.commit_email_or_default}>" },
-        'co_authored_by' => ->(merge_request, merged_by, squash) do
+        'merged_by' => ->(_, user, _, _) { "#{user&.name} <#{user&.commit_email_or_default}>" },
+        'co_authored_by' => ->(merge_request, merged_by, squash, _) do
           commit_author = squash ? merge_request.author : merged_by
           merge_request.recent_commits
                        .to_h { |commit| [commit.author_email, commit.author_name] }
@@ -104,13 +109,13 @@ module Gitlab
                        .map { |author_email, author_name| "Co-authored-by: #{author_name} <#{author_email}>" }
                        .join("\n")
         end,
-        'merge_request_author' => ->(merge_request, _, _) {
+        'merge_request_author' => ->(merge_request, _, _, _) {
           "#{merge_request.author&.name} <#{merge_request.author&.commit_email_or_default}>"
         },
-        'title_from_branch' => ->(merge_request, _, _) {
+        'title_from_branch' => ->(merge_request, _, _, _) {
           MessageGenerator.humanize_branch_name(merge_request.source_branch)
         },
-        'all_commits' => ->(merge_request, _, _) do
+        'all_commits' => ->(merge_request, _, _, _) do
           merge_request
             .recent_commits(load_from_gitaly: true)
             .without_merge_commits
@@ -122,7 +127,9 @@ module Gitlab
               end
             end
             .join("\n\n")
-        end
+        end,
+        'issue_id' => ->(_, _, _, issue) { issue&.iid&.to_s },
+        'issue_title' => ->(_, _, _, issue) { issue&.title }
       }.freeze
 
       # A new merge request that is in the process of being created and hasn't
@@ -145,20 +152,27 @@ module Gitlab
         source_branch
         target_branch
         title_from_branch
-        first_commit
-        first_multiline_commit
+        first_commit_title
+        issue_id
+        issue_title
       ].freeze
 
       PLACEHOLDERS_COMBINED_REGEX = /%{(#{Regexp.union(PLACEHOLDERS.keys)})}/
 
-      def replace_placeholders(message, allowed_placeholders: [], squash: false, keep_carriage_return: false)
+      def replace_placeholders(
+        message,
+        allowed_placeholders: [],
+        squash: false,
+        keep_carriage_return: false,
+        issue: nil
+      )
         # Convert CRLF to LF.
         message = message.delete("\r") unless keep_carriage_return
 
         used_variables = message.scan(PLACEHOLDERS_COMBINED_REGEX).map { |value| value[0] }.uniq
         values = used_variables.to_h do |variable_name|
           replacement = if allowed_placeholders.include?(variable_name)
-                          PLACEHOLDERS[variable_name].call(merge_request, current_user, squash)
+                          PLACEHOLDERS[variable_name].call(merge_request, current_user, squash, issue)
                         end
 
           ["%{#{variable_name}}", replacement]

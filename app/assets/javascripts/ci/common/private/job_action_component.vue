@@ -51,7 +51,11 @@ export default {
       default: false,
     },
   },
-  emits: ['actionButtonClicked', 'showActionConfirmationModal', 'pipelineActionRequestComplete'],
+  emits: [
+    'action-button-clicked',
+    'show-action-confirmation-modal',
+    'pipeline-action-request-complete',
+  ],
   data() {
     return {
       isDisabled: false,
@@ -68,7 +72,7 @@ export default {
     shouldTriggerClick(flag) {
       if (flag && this.withConfirmationModal) {
         this.executeAction();
-        this.$emit('actionButtonClicked');
+        this.$emit('action-button-clicked');
       }
     },
   },
@@ -83,7 +87,7 @@ export default {
       e.preventDefault();
 
       if (this.withConfirmationModal) {
-        this.$emit('showActionConfirmationModal');
+        this.$emit('show-action-confirmation-modal');
       } else {
         this.executeAction();
       }
@@ -99,7 +103,7 @@ export default {
           this.isLoading = false;
           this.isDisabled = false;
 
-          this.$emit('pipelineActionRequestComplete');
+          this.$emit('pipeline-action-request-complete');
         })
         .catch((err) => {
           this.isDisabled = false;

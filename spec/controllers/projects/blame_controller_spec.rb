@@ -67,9 +67,31 @@ RSpec.describe Projects::BlameController, feature_category: :source_code_managem
       it_behaves_like 'blame_response'
     end
 
+    context 'when inline_blame feature flag is enabled' do
+      let(:id) { 'master/files/ruby/popen.rb' }
+
+      before do
+        stub_feature_flags(inline_blame: project)
+      end
+
+      it 'does not call load_blame' do
+        expect(controller).not_to receive(:load_blame)
+        get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
+      end
+
+      it 'responds with success' do
+        get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     context 'when ignore_revs is true' do
       let(:ignore_revs) { true }
       let(:id) { 'master/files/ruby/popen.rb' }
+
+      before do
+        stub_feature_flags(inline_blame: false)
+      end
 
       shared_examples_for 'redirecting ignore rev with flash' do |flash_message|
         context 'and there are other params' do
@@ -123,6 +145,48 @@ RSpec.describe Projects::BlameController, feature_category: :source_code_managem
     end
   end
 
+  describe 'GET show with inline_blame feature flag' do
+    render_views
+
+    let(:id) { 'master/files/ruby/popen.rb' }
+
+    context 'when inline_blame flag is enabled' do
+      before do
+        stub_feature_flags(inline_blame: project)
+      end
+
+      it 'renders a client-side redirect to the blob page with blame=1' do
+        get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include("/#{project.full_path}/-/blob/master/files/ruby/popen.rb?blame=1")
+        expect(response.body).to include('window.location.replace')
+        expect(response.body).not_to include('blame-table')
+      end
+
+      it 'includes ref_type in the redirect URL when provided' do
+        get :show, params: { namespace_id: project.namespace, project_id: project, id: id, ref_type: 'heads' }
+
+        expect(response.body).to include('ref_type=heads')
+        expect(response.body).to include('blame=1')
+      end
+    end
+
+    context 'when inline_blame flag is disabled' do
+      before do
+        stub_feature_flags(inline_blame: false)
+      end
+
+      it 'renders the legacy blame page' do
+        get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include('blame-table')
+        expect(response.body).not_to include('window.location.replace')
+      end
+    end
+  end
+
   describe 'GET page' do
     render_views
 
@@ -141,5 +205,26 @@ RSpec.describe Projects::BlameController, feature_category: :source_code_managem
     end
 
     it_behaves_like 'blame_response'
+  end
+
+  describe 'when gitaly is unavailable' do
+    let(:id) { 'master/files/ruby/popen.rb' }
+
+    before do
+      allow(Gitlab::Git::Commit).to receive(:find)
+        .and_raise(Gitlab::Git::CommandError, 'Gitaly unavailable')
+    end
+
+    it 'returns 503' do
+      get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
+
+      expect(response).to have_gitlab_http_status(:service_unavailable)
+    end
+
+    it 'tracks the exception' do
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(Gitlab::Git::CommandError))
+
+      get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
+    end
   end
 end

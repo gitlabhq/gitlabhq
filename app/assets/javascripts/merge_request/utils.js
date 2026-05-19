@@ -43,7 +43,7 @@ export function buildLineDiscussionData({
   viewConfig,
   diffRefs,
 }) {
-  const { position, lineChange, lineCode } = discussion;
+  const { position, lineChange, lineCode, commitId } = discussion;
   return {
     endpoint: noteableData.create_note_path,
     data: {
@@ -66,7 +66,7 @@ export function buildLineDiscussionData({
         }),
         noteable_type: noteableData.noteableType,
         noteable_id: noteableData.id,
-        commit_id: null,
+        commit_id: commitId || null,
         type: DIFF_NOTE_TYPE,
         line_code: lineCode || null,
       },
@@ -93,10 +93,10 @@ export function buildDraftLineDiscussionData({ discussion, noteBody, viewConfig,
   };
 }
 
-export function buildDraftReplyData({ discussion, noteText, diffRefs }) {
+export function buildDraftReplyData({ discussion, noteText, diffRefs, resolveDiscussion = false }) {
   return {
     in_reply_to_discussion_id: discussion.reply_id,
-    draft_note: { note: noteText },
+    draft_note: { note: noteText, resolve_discussion: resolveDiscussion },
     merge_request_diff_head_sha: diffRefs.head_sha,
   };
 }

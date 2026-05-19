@@ -34,7 +34,7 @@ module Gitlab
             on_update: nil,
             target_column: :id,
             validate: true,
-            reverse_lock_order: false,
+            reverse_lock_order: true,
             allow_partitioned: false,
             column: column
           })
@@ -112,7 +112,7 @@ module Gitlab
         end
 
         def remove_foreign_key_if_exists(source, target = nil, **kwargs)
-          reverse_lock_order = kwargs.delete(:reverse_lock_order)
+          reverse_lock_order = kwargs.delete(:reverse_lock_order) { true }
           return unless foreign_key_exists?(source, target, **kwargs)
 
           if target && reverse_lock_order && transaction_open?

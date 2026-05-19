@@ -88,7 +88,7 @@ ls *export.tar.gz
 2020-12-05_22-11-148_namespace_export.tar.gz
 ```
 
-Time spent on exporting a group might vary depending on a size of the group. This endpoint
+Time spent on exporting a group might vary depending on the size of the group. This endpoint
 returns either:
 
 - The exported archive (when available)

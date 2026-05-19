@@ -7,10 +7,10 @@ import {
   GlLink,
   GlSprintf,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
+import { useIntegrationForm } from '../store';
 
 const commentDetailOptions = [
   {
@@ -113,7 +113,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isInheriting']),
+    ...mapState(useIntegrationForm, ['isInheriting']),
     showTriggerSettings() {
       return this.triggerCommit || this.triggerMergeRequest;
     },

@@ -83,6 +83,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         value: project.namespace.id.to_s },
       { key: 'CI_PROJECT_ROOT_NAMESPACE',
         value: project.namespace.root_ancestor.path },
+      { key: 'CI_PROJECT_ROOT_NAMESPACE_SLUG',
+        value: Gitlab::Utils.slugify(project.namespace.root_ancestor.path) },
       { key: 'CI_PROJECT_URL',
         value: project.web_url },
       { key: 'CI_PROJECT_VISIBILITY',

@@ -1,5 +1,6 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import FieldPresenter from '~/glql/components/presenters/field.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import ListPresenter from '~/glql/components/presenters/list.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
@@ -75,5 +76,39 @@ describe('ListPresenter', () => {
     createWrapper({ data: MOCK_ISSUES, fields: MOCK_FIELDS, listType: 'ol' });
 
     expect(wrapper.find('ol')).toBeDefined();
+  });
+
+  it('does not render title heading when fields do not include title', () => {
+    const fieldsWithoutTitle = MOCK_FIELDS.filter((f) => f.key !== 'title');
+    createWrapper({ data: MOCK_ISSUES, fields: fieldsWithoutTitle }, mountExtended);
+
+    expect(wrapper.find('h3').exists()).toBe(false);
+  });
+
+  it('renders all fields when there is no title field', () => {
+    const fieldsWithoutTitle = MOCK_FIELDS.filter((f) => f.key !== 'title');
+    createWrapper({ data: MOCK_ISSUES, fields: fieldsWithoutTitle }, mountExtended);
+
+    const listItem = wrapper.findByTestId('list-item-0');
+    const fieldPresenters = listItem.findAllComponents(FieldPresenter);
+    const fieldKeys = fieldPresenters.wrappers.map((w) => w.props('fieldKey'));
+
+    fieldsWithoutTitle.forEach((field) => {
+      expect(fieldKeys).toContain(field.key);
+    });
+  });
+
+  it('passes compact variant to field presenters', () => {
+    createWrapper({ data: MOCK_ISSUES, fields: MOCK_FIELDS }, mountExtended);
+
+    const listItem = wrapper.findByTestId('list-item-0');
+    const fieldPresenters = listItem.findAllComponents(FieldPresenter);
+    const nonTitlePresenters = fieldPresenters.wrappers.filter(
+      (w) => w.props('fieldKey') !== 'title',
+    );
+
+    nonTitlePresenters.forEach((fp) => {
+      expect(fp.props('variant')).toBe('compact');
+    });
   });
 });

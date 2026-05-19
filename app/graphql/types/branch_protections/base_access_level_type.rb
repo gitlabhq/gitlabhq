@@ -5,10 +5,12 @@ module Types
     class BaseAccessLevelType < Types::BaseObject
       authorize :read_protected_branch
 
+      # rubocop:disable Graphql::AccessLevelEnum -- Introduced before the cop
       field :access_level,
         type: GraphQL::Types::Int,
         null: false,
         description: 'GitLab::Access level.'
+      # rubocop:enable Graphql::AccessLevelEnum
 
       field :access_level_description,
         type: GraphQL::Types::String,

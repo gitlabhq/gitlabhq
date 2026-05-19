@@ -1,21 +1,28 @@
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 
 import IntegrationSectionCoonfiguration from '~/integrations/edit/components/sections/configuration.vue';
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
-import { createStore } from '~/integrations/edit/store';
+import { useIntegrationForm } from '~/integrations/edit/store';
 
 import { mockIntegrationProps } from '../../mock_data';
+
+Vue.use(PiniaVuePlugin);
 
 describe('IntegrationSectionCoonfiguration', () => {
   let wrapper;
 
   const createComponent = ({ customStateProps = {}, props = {} } = {}) => {
-    const store = createStore({
+    const pinia = createTestingPinia({ stubActions: false });
+    const store = useIntegrationForm();
+    Object.assign(store, {
       customState: { ...mockIntegrationProps, ...customStateProps },
     });
     wrapper = shallowMount(IntegrationSectionCoonfiguration, {
       propsData: { ...props },
-      store,
+      pinia,
     });
   };
 

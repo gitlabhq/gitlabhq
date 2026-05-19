@@ -1,4 +1,3 @@
-import PortalVue from 'portal-vue';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
@@ -28,7 +27,6 @@ export const createRouter = () => {
 };
 
 Vue.use(VueApollo);
-Vue.use(PortalVue);
 Vue.use(VueRouter);
 
 defaultClient.cache.policies.addTypePolicies({

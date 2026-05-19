@@ -2,7 +2,6 @@ $whats-new-drawer-size: 500px;
 
 .whats-new-drawer {
   box-shadow: none;
-  overflow-y: hidden;
 
   // setting custom width above mobile breakpoint
   @include gl-media-breakpoint-up(md) {

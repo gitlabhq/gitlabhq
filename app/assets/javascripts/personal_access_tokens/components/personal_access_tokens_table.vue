@@ -29,6 +29,9 @@ export default {
     GlButton,
     PersonalAccessTokenStatusBadge,
   },
+  inject: {
+    granularTokensEnforced: { default: false },
+  },
   props: {
     tokens: {
       type: Array,
@@ -41,6 +44,15 @@ export default {
   },
   emits: ['select', 'rotate', 'revoke', 'duplicate'],
   methods: {
+    canDuplicate(token) {
+      return token.granular;
+    },
+    canRotate(token) {
+      return token.active && (!this.granularTokensEnforced || token.granular);
+    },
+    canRevoke(token) {
+      return token.active;
+    },
     selectTargetToken(token) {
       this.$emit('select', token);
     },
@@ -148,14 +160,17 @@ export default {
         <gl-disclosure-dropdown-item @action="selectTargetToken(item)">
           <template #list-item>{{ $options.i18n.viewDetails }}</template>
         </gl-disclosure-dropdown-item>
-        <gl-disclosure-dropdown-item v-if="item.granular" @action="duplicateTargetToken(item)">
+
+        <gl-disclosure-dropdown-item v-if="canDuplicate(item)" @action="duplicateTargetToken(item)">
           <template #list-item>{{ $options.i18n.duplicate }}</template>
         </gl-disclosure-dropdown-item>
-        <gl-disclosure-dropdown-item v-if="item.active" @action="rotateTargetToken(item)">
+
+        <gl-disclosure-dropdown-item v-if="canRotate(item)" @action="rotateTargetToken(item)">
           <template #list-item>{{ $options.i18n.rotate }}</template>
         </gl-disclosure-dropdown-item>
+
         <gl-disclosure-dropdown-item
-          v-if="item.active"
+          v-if="canRevoke(item)"
           variant="danger"
           @action="revokeTargetToken(item)"
         >

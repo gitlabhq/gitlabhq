@@ -41,7 +41,7 @@ Prerequisites:
 To enable the unauthenticated request rate limit:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Package registry rate limits**.
 1. Select **Enable unauthenticated request rate limit**.
 
@@ -59,7 +59,7 @@ Prerequisites:
 To enable the authenticated API request rate limit:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**
+1. In the left sidebar, select **Settings** > **Network**
 1. Expand **Package registry rate limits**.
 1. Select **Enable authenticated API request rate limit**.
 

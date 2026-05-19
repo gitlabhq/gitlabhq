@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Analytics::UsageTrends::WorkersArgumentBuilder do
     let_it_be(:project_2) { create(:project, namespace: user_1.namespace, creator: user_1) }
     let_it_be(:project_3) { create(:project, namespace: user_1.namespace, creator: user_1) }
 
-    let(:recorded_at) { 2.days.ago }
+    let(:recorded_at) { 2.days.ago.iso8601 }
     let(:projects_measurement_identifier) { ::Analytics::UsageTrends::Measurement.identifiers.fetch(:projects) }
     let(:users_measurement_identifier) { ::Analytics::UsageTrends::Measurement.identifiers.fetch(:users) }
     let(:measurement_identifiers) { [projects_measurement_identifier, users_measurement_identifier] }

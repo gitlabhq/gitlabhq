@@ -4,6 +4,7 @@ import {
   renderArchiveSuccessToast,
   renderDeleteSuccessToast,
   renderRestoreSuccessToast,
+  renderTransferSuccessToast,
   renderUnarchiveSuccessToast,
 } from '~/vue_shared/components/projects_list/utils';
 import {
@@ -13,6 +14,7 @@ import {
   ACTION_DELETE_IMMEDIATELY,
   ACTION_EDIT,
   ACTION_RESTORE,
+  ACTION_TRANSFER,
   ACTION_UNARCHIVE,
 } from '~/vue_shared/components/list_actions/constants';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -50,6 +52,26 @@ describe('availableGraphQLProjectActions', () => {
       });
 
       expect(availableActions).toContain(ACTION_EDIT);
+    });
+  });
+
+  describe('when user has changeNamespace permission', () => {
+    it('includes transfer action', () => {
+      const availableActions = availableGraphQLProjectActions({
+        userPermissions: { changeNamespace: true },
+      });
+
+      expect(availableActions).toContain(ACTION_TRANSFER);
+    });
+  });
+
+  describe('when user has no changeNamespace permission', () => {
+    it('does not include transfer action', () => {
+      const availableActions = availableGraphQLProjectActions({
+        userPermissions: { changeNamespace: false },
+      });
+
+      expect(availableActions).not.toContain(ACTION_TRANSFER);
     });
   });
 
@@ -185,6 +207,16 @@ describe('renderDeleteSuccessToast', () => {
     it('renders toast explaining project is being deleted', () => {
       expect(toast).toHaveBeenCalledWith(`${MOCK_PROJECT_PENDING_DELETION.name} is being deleted.`);
     });
+  });
+});
+
+describe('renderTransferSuccessToast', () => {
+  it('calls toast correctly', () => {
+    renderTransferSuccessToast(MOCK_PROJECT);
+
+    expect(toast).toHaveBeenCalledWith(
+      `Project '${MOCK_PROJECT.nameWithNamespace}' transfer has been scheduled. Users with the Maintainer or Owner role will be notified when it completes.`,
+    );
   });
 });
 

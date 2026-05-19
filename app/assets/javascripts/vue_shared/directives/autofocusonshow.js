@@ -15,7 +15,7 @@ export default {
         entries.forEach((entry) => {
           // Combining `intersectionRatio > 0` and
           // element's `offsetParent` presence will
-          // deteremine if element is truely visible
+          // determine if element is truly visible
           if (entry.intersectionRatio > 0 && entry.target.offsetParent) {
             entry.target.focus();
           }

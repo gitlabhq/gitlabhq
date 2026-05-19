@@ -75,10 +75,11 @@ class GenerateRspecPipeline
       return
     end
 
-    # Predictive system tests should be skipped in tier2/3 pipeline, use skip.yml to avoid empty child pipelines.
+    # Predictive system tests should be skipped in tier3 pipelines, use skip.yml to avoid empty child pipelines.
+    # In tier-2, Duo-predicted subset of system tests are run or the full suite when not confident
     # Exception: spec-only MRs should still run system tests.
-    if tier_2_or_above? && only_system_tests? && !spec_only?
-      info "Using #{SKIP_PIPELINE_YML_FILE} due to only system tests detected in tier-2/3 pipeline"
+    if tier_3? && only_system_tests? && !spec_only?
+      info "Using #{SKIP_PIPELINE_YML_FILE} due to only system tests detected in tier-3 pipeline"
       FileUtils.cp(SKIP_PIPELINE_YML_FILE, generated_pipeline_path)
       return
     end
@@ -98,11 +99,11 @@ class GenerateRspecPipeline
     :job_tags, :generated_pipeline_path
 
   def info(text)
-    $stdout.puts "[#{self.class.name}] #{text}"
+    puts "[#{self.class.name}] #{text}"
   end
 
   def all_rspec_files
-    @all_rspec_files ||= File.exist?(rspec_files_path) ? File.read(rspec_files_path).split(' ') : []
+    @all_rspec_files ||= File.exist?(rspec_files_path) ? File.read(rspec_files_path).split(' ').uniq : []
   end
 
   def erb_binding
@@ -237,6 +238,10 @@ class GenerateRspecPipeline
 
   def tier_2_or_above?
     ENV['CI_MERGE_REQUEST_LABELS']&.match?(/pipeline::tier-[23]/)
+  end
+
+  def tier_3?
+    ENV['CI_MERGE_REQUEST_LABELS']&.include?('pipeline::tier-3')
   end
 
   def spec_only?

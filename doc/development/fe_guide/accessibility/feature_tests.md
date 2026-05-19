@@ -47,12 +47,18 @@ We want to make sure that users are able to interact with all available componen
 
 ### Create new spec file
 
-We want automated accessibility tests to follow already defined [user journeys](https://handbook.gitlab.com/handbook/product/ux/user-journeys/).
+For automated accessibility tests, we want to follow already defined steps for various user journeys.
 To achieve this we are reusing test cases defined for E2E tests.
 
-To add a new accessibility spec for your team, you can:
+#### Golden user journeys
 
-Browse the list of test cases for your team by either:
+We want to make sure that already defined [golden user journeys](https://handbook.gitlab.com/handbook/product/ux/user-journeys/) have accessibility test coverage. To do this, we translated Figma files to YAML format that can be used to generate accessibility specs.
+
+Follow [Accessibility journeys README](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/accessibility_journeys/README.md) to learn how to implement these specs.
+
+#### Specific user flows
+
+To add a new accessibility spec for your feature, browse the list of test cases for your group by either:
 
 - [Looking through Test Cases page](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases),
   which you can filter by your group's label.

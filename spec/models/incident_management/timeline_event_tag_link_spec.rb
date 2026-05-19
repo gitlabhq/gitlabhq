@@ -6,5 +6,6 @@ RSpec.describe IncidentManagement::TimelineEventTagLink do
   describe 'associations' do
     it { is_expected.to belong_to(:timeline_event) }
     it { is_expected.to belong_to(:timeline_event_tag) }
+    it { is_expected.to belong_to(:project) }
   end
 end

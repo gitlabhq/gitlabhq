@@ -1,12 +1,16 @@
 #import "./work_item_linked_items.fragment.graphql"
+#import "./work_item_linked_items_features.fragment.graphql"
 
 # @feature_category: team_planning
-query workItemLinkedItems($fullPath: ID!, $iid: String!) {
+query workItemLinkedItems($fullPath: ID!, $iid: String!, $useWorkItemFeatures: Boolean = false) {
   namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id
-      ...WorkItemLinkedItemsFragment
+      ...WorkItemLinkedItemsFragment @skip(if: $useWorkItemFeatures)
+      features @include(if: $useWorkItemFeatures) {
+        ...WorkItemLinkedItemsFeaturesFragment
+      }
     }
   }
 }

@@ -45,9 +45,39 @@ class MergeRequestsFinder < IssuableFinder
   include MergedAtFilter
   include MergeUserFilter
 
+  # The optimization is activated only when we can satisfy the
+  # full index prefix of:
+  #
+  #   idx_mrs_on_target_id_and_created_at_and_state_id
+  #   (target_project_id, state_id, created_at, id)
+  #
+  # A specific state_id equality filter is therefore required (see
+  # specific_state_filter?) so that PostgreSQL can pin the first two columns
+  # before ranging over (created_at, id).
+  IN_OPERATOR_OPTIMIZABLE_SORTS = %w[created_at_asc created_at_desc].freeze
+
+  # The complete set of params that are safe to have present when the
+  # in-operator optimization is active.  Any param outside this list adds a
+  # WHERE clause beyond what idx_mrs_on_target_id_and_created_at_and_state_id
+  # covers and therefore blocks the optimization.
+  #
+  # Derived directly from the params shape the group MR API endpoint sends:
+  #   state, sort/order_by, group_id, include_subgroups      - handled separately
+  #   page, per_page, non_archived
+  #   with_labels_details, with_merge_status_recheck, attempt_group_search_optimizations - not query filters
+  OPTIMIZABLE_FILTER_PARAMS = %i[
+    state
+    sort order_by
+    group_id include_subgroups
+    page per_page
+    non_archived
+    with_labels_details
+    with_merge_status_recheck
+    attempt_group_search_optimizations
+  ].freeze
+
   def self.scalar_params
     @scalar_params ||= super + [
-      :approved,
       :approved_by_ids,
       :deployed_after,
       :deployed_before,
@@ -76,6 +106,39 @@ class MergeRequestsFinder < IssuableFinder
 
   def params_class
     MergeRequestsFinder.const_get(:Params, false) # rubocop: disable CodeReuse/Finder
+  end
+
+  override :execute
+  def execute
+    @group_mr_in_optimization_applied = false
+    return super unless use_in_operator_optimization?
+
+    result = execute_with_in_operator_optimization
+    @group_mr_in_optimization_applied = true
+
+    Gitlab::AppLogger.info({
+      message: "MergeRequestsFinder: in-operator optimization applied",
+      group_id: params.group.id,
+      sort: params[:sort],
+      state: params[:state]
+    })
+
+    result
+  rescue Gitlab::Pagination::Keyset::UnsupportedScopeOrder => e
+    # Fall back to the standard execution if the keyset order is not supported
+    @group_mr_in_optimization_applied = false
+
+    Gitlab::AppLogger.info({
+      message: "MergeRequestsFinder: in-operator optimization fell back due to UnsupportedScopeOrder",
+      group_id: params.group&.id,
+      Labkit::Fields::ERROR_MESSAGE => e.message
+    })
+
+    super
+  end
+
+  def group_mr_in_optimization_applied?
+    @group_mr_in_optimization_applied
   end
 
   def filter_items(_items)
@@ -109,6 +172,89 @@ class MergeRequestsFinder < IssuableFinder
   end
 
   private
+
+  def use_in_operator_optimization?
+    return false unless Feature.enabled?(:group_mr_in_operator_optimization, params.group)
+
+    group_present = params.group?
+    include_subgroups_set = params[:include_subgroups].present?
+    sort_optimizable = IN_OPERATOR_OPTIMIZABLE_SORTS.include?(params[:sort].to_s)
+    specific_state = specific_state_filter?
+    no_active_filters = !any_active_filters?
+
+    unless group_present && include_subgroups_set && sort_optimizable && specific_state && no_active_filters
+      Gitlab::AppLogger.info({
+        message: "MergeRequestsFinder: in-operator optimization skipped",
+        group_id: params.group&.id,
+        group_present: group_present,
+        include_subgroups_set: include_subgroups_set,
+        sort_optimizable: sort_optimizable,
+        specific_state: specific_state,
+        no_active_filters: no_active_filters
+      })
+
+      return false
+    end
+
+    true
+  end
+
+  # Returns true only when params[:state] resolves to a single state_id equality
+  # predicate.  'all' and a blank value produce no WHERE state_id = ? clause,
+  # leaving the second column of the index prefix unused and forcing a broader
+  # range scan over every state for each project.
+  def specific_state_filter?
+    %w[opened closed merged locked].include?(params[:state].to_s)
+  end
+
+  # Returns true if any param outside OPTIMIZABLE_FILTER_PARAMS has a value, or
+  # if the not:/or: sub-hashes contain any non-blank values.  In that case the
+  # query adds WHERE clauses the index cannot satisfy and the standard execution
+  # path is faster.
+  def any_active_filters?
+    params.to_h.deep_symbolize_keys.except(*OPTIMIZABLE_FILTER_PARAMS, :not,
+      :or).values.any? { |v| filter_value_present?(v) } ||
+      params[:not].to_h.values.any? { |v| filter_value_present?(v) } ||
+      params[:or].to_h.values.any? { |v| filter_value_present?(v) }
+  end
+
+  def filter_value_present?(value)
+    value.is_a?(ActiveRecord::Relation) || value.present?
+  end
+
+  def execute_with_in_operator_optimization
+    # Temporarily skip the parent (project IN subquery) filter so we can hand off
+    # the per-project iteration to InOperatorOptimization::QueryBuilder. The
+    # project scope is enforced via `array_scope` instead, which is already
+    # restricted to projects that are visible to the current user.
+    @skip_parent_filter = true
+    non_archived = params.delete(:non_archived).present?
+
+    items = init_collection
+    items = filter_items(items)
+    items = filter_negated_items(items) if should_filter_negated_args?
+    items = by_search(items)
+    items = sort(items)
+
+    projects = non_archived ? accessible_projects.non_archived : accessible_projects
+
+    Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
+      scope: items,
+      array_scope: projects.select(:id),
+      array_mapping_scope: MergeRequest.method(:in_optimization_array_mapping_scope),
+      finder_query: MergeRequest.method(:in_optimization_finder_query)
+    ).execute
+  ensure
+    @skip_parent_filter = false
+    params[:non_archived] = true if non_archived
+  end
+
+  override :by_parent
+  def by_parent(items)
+    return items if @skip_parent_filter
+
+    super
+  end
 
   override :sort
   def sort(items)
@@ -198,7 +344,7 @@ class MergeRequestsFinder < IssuableFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_draft(items)
-    draft_param = Gitlab::Utils.to_boolean(params.fetch(:draft) { params.fetch(:wip, nil) })
+    draft_param = Gitlab::Utils.to_boolean(params[:draft].nil? ? params[:wip] : params[:draft])
     return items if draft_param.nil?
 
     if draft_param

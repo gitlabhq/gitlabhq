@@ -346,6 +346,7 @@ RSpec.describe 'Work items list filters', :js, feature_category: :portfolio_mana
           expect(page).to have_link(org1_issue2.title)
 
           click_button 'Clear'
+          expect(page).to have_link(incident.title)
 
           select_tokens 'Organization', crm_organization2.name, submit: true
 
@@ -363,6 +364,7 @@ RSpec.describe 'Work items list filters', :js, feature_category: :portfolio_mana
           expect(page).to have_link(org1_issue1.title)
 
           click_button 'Clear'
+          expect(page).to have_link(incident.title)
 
           select_tokens 'Contact', contact2.first_name, submit: true
 

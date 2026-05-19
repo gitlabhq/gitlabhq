@@ -61,7 +61,8 @@ module Gitlab
         end
 
         def extract_value(node)
-          return unless node.is_a?(Gitlab::Ci::Pipeline::Expression::Lexeme::String)
+          return unless node.is_a?(Gitlab::Ci::Pipeline::Expression::Lexeme::String) ||
+            node.is_a?(Gitlab::Ci::Pipeline::Expression::Lexeme::Boolean)
 
           node.evaluate
         end

@@ -92,25 +92,6 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
     end
   end
 
-  describe '#fetch_component' do
-    where(:component_name, :content, :path) do
-      'secret-detection' | "spec:\n inputs:\n  website:\n---\nimage: alpine_1" | 'templates/secret-detection.yml'
-      'dast'             | 'image: alpine_2'                                   | 'templates/dast/template.yml'
-      'template'         | 'image: alpine_3'                                   | 'templates/template.yml'
-      'blank-yaml'       | ''                                                  | 'templates/blank-yaml.yml'
-      'non/exist'        | nil                                                 | nil
-    end
-
-    with_them do
-      it 'fetches the content for a component' do
-        data = components_project.fetch_component(component_name)
-
-        expect(data.path).to eq(path)
-        expect(data.content).to eq(content)
-      end
-    end
-  end
-
   describe '#find_catalog_components' do
     let_it_be(:version) do
       release = create(:release, project: project, tag: '2.0.0', sha: project.commit.sha)

@@ -12,7 +12,7 @@ module Issues
 
     private
 
-    # overriden in EE
+    # overridden in EE
     def after_reopen(issue, _status)
       event_service.reopen_issue(issue, current_user)
 
@@ -34,7 +34,7 @@ module Issues
       track_work_item_reopen(issue)
     end
 
-    # overriden in EE
+    # overridden in EE
     def reopen_issue(issue)
       issue.reopen
     end

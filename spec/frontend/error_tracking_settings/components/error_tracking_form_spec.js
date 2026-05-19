@@ -1,27 +1,27 @@
 import { GlFormInput, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import ErrorTrackingForm from '~/error_tracking_settings/components/error_tracking_form.vue';
-import createStore from '~/error_tracking_settings/store';
-import { defaultProps } from '../mock';
+import { useErrorTrackingSettings } from '~/error_tracking_settings/store';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('error tracking settings form', () => {
   let wrapper;
   let store;
 
   function mountComponent() {
+    const pinia = createTestingPinia({ stubActions: false });
+    store = useErrorTrackingSettings();
+
     wrapper = shallowMount(ErrorTrackingForm, {
-      store,
-      propsData: defaultProps,
+      pinia,
     });
   }
 
   beforeEach(() => {
-    store = createStore();
     mountComponent();
   });
 
@@ -54,7 +54,7 @@ describe('error tracking settings form', () => {
 
   describe('loading projects', () => {
     beforeEach(() => {
-      store.state.isLoadingProjects = true;
+      store.isLoadingProjects = true;
     });
 
     it('shows loading spinner', () => {
@@ -67,7 +67,7 @@ describe('error tracking settings form', () => {
 
   describe('after a successful connection', () => {
     beforeEach(() => {
-      store.state.connectSuccessful = true;
+      store.connectSuccessful = true;
     });
 
     it('shows the success checkmark', () => {
@@ -81,7 +81,7 @@ describe('error tracking settings form', () => {
 
   describe('after an unsuccessful connection', () => {
     beforeEach(() => {
-      store.state.connectError = true;
+      store.connectError = true;
     });
 
     it('does not show the check mark', () => {

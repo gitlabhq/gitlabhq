@@ -108,7 +108,7 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
       it 'creates builds from the ref given in the URL, not in the body' do
         expect do
           post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), params: { ref: 'refs/heads/other-branch' }
-        end.to change(project.builds, :count).by(5)
+        end.to change { project.builds.count }.by(5)
 
         expect(response).to have_gitlab_http_status(:created)
       end
@@ -119,7 +119,7 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
 
           expect do
             post api("/projects/#{project.id}/ref/v.1-branch/trigger/pipeline?token=#{trigger_token}"), params: { ref: 'refs/heads/other-branch' }
-          end.to change(project.builds, :count).by(4)
+          end.to change { project.builds.count }.by(4)
 
           expect(response).to have_gitlab_http_status(:created)
         end
@@ -178,7 +178,7 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
           post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{trigger_token}"),
             params: { ref: 'refs/heads/other-branch' },
             headers: { ::Gitlab::WebHooks::GITLAB_EVENT_HEADER => 'Pipeline Hook' }
-        end.not_to change(Ci::Pipeline, :count)
+        end.not_to change { Ci::Pipeline.count }
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -205,7 +205,7 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
       end
 
       shared_examples 'sending request using inputs' do
-        shared_examples 'creating a succesful pipeline' do
+        shared_examples 'creating a successful pipeline' do
           it 'creates a pipeline using inputs' do
             expect { post_request }.to change { Ci::Pipeline.count }.by(1)
 
@@ -231,7 +231,7 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
               params: { ref: 'refs/heads/other-branch', inputs: inputs }.to_json
           end
 
-          it_behaves_like 'creating a succesful pipeline'
+          it_behaves_like 'creating a successful pipeline'
         end
 
         context 'when passing parameters as form data' do
@@ -249,7 +249,7 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
               params: { ref: 'refs/heads/other-branch', inputs: transformed_values }
           end
 
-          it_behaves_like 'creating a succesful pipeline'
+          it_behaves_like 'creating a successful pipeline'
         end
       end
 

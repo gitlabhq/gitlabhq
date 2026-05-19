@@ -1,18 +1,26 @@
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 
 import IntegrationSectionAppleAppStore from '~/integrations/edit/components/sections/apple_app_store.vue';
 import UploadDropzoneField from '~/integrations/edit/components/upload_dropzone_field.vue';
-import { createStore } from '~/integrations/edit/store';
+import { useIntegrationForm } from '~/integrations/edit/store';
+
+Vue.use(PiniaVuePlugin);
 
 describe('IntegrationSectionAppleAppStore', () => {
   let wrapper;
 
   const createComponent = (componentFields) => {
-    const store = createStore({
+    const pinia = createTestingPinia({ stubActions: false });
+    const store = useIntegrationForm();
+    Object.assign(store, {
       customState: { ...componentFields },
     });
+
     wrapper = shallowMount(IntegrationSectionAppleAppStore, {
-      store,
+      pinia,
     });
   };
 

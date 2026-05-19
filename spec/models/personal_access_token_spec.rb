@@ -124,7 +124,9 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   end
 
   describe 'associations' do
-    subject(:project_access_token) { create(:personal_access_token) }
+    let_it_be(:project_access_token) { create(:personal_access_token) }
+
+    subject { project_access_token }
 
     it { is_expected.to belong_to(:previous_personal_access_token).class_name('PersonalAccessToken') }
     it { is_expected.to belong_to(:organization).class_name('Organizations::Organization') }
@@ -259,9 +261,9 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe 'expires scopes', :time_freeze do
-      let!(:expires_last_month_token) { create(:personal_access_token, expires_at: 1.month.ago) }
-      let!(:expires_next_month_token) { create(:personal_access_token, expires_at: 1.month.from_now) }
-      let!(:expires_two_months_token) { create(:personal_access_token, expires_at: 2.months.from_now) }
+      let_it_be(:expires_last_month_token) { create(:personal_access_token, expires_at: 1.month.ago) }
+      let_it_be(:expires_next_month_token) { create(:personal_access_token, expires_at: 1.month.from_now) }
+      let_it_be(:expires_two_months_token) { create(:personal_access_token, expires_at: 2.months.from_now) }
 
       describe '.expires_before' do
         it 'finds tokens that expire before or on date' do
@@ -383,7 +385,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, developers: user) }
     let_it_be(:boundary) { Authz::Boundary.for(project) }
-    let_it_be(:granular_pat) { create(:granular_pat, user: user, boundary: boundary, permissions: :write_work_item) }
+    let_it_be(:granular_pat) { create(:granular_pat, user: user, boundary: boundary, permissions: :create_work_item) }
 
     let(:methods) { PolicyActor.instance_methods }
 
@@ -419,7 +421,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
     context 'with a granular personal access token' do
       let_it_be(:user) { create(:user) }
-      let(:personal_access_token) { create(:granular_pat, user: user) }
+      let_it_be(:personal_access_token) { create(:granular_pat, user: user) }
 
       context 'when the granular_personal_access_tokens feature flag is enabled for the token owner' do
         before do

@@ -1,4 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
 
 # @feature_category: portfolio_management
 query savedViews(
@@ -24,6 +25,13 @@ query savedViews(
         description
         subscribed
         isPrivate
+        updatedAt
+        author {
+          ...User
+        }
+        lastUpdatedBy {
+          ...User
+        }
         userPermissions {
           updateSavedView
           deleteSavedView

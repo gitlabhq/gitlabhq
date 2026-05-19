@@ -6,6 +6,10 @@ RSpec.describe 'Email OTP enrollment callout', :js, feature_category: :system_ac
   let_it_be(:user) { create(:user, :with_namespace) }
   let(:expected_title) { s_('EmailOTP|Enhanced authentication coming soon') }
 
+  before do
+    stub_current_organization(user.organization)
+  end
+
   context 'when user is eligible for the callout' do
     let(:email_otp_required_after) { 8.days.from_now }
 
@@ -47,7 +51,7 @@ RSpec.describe 'Email OTP enrollment callout', :js, feature_category: :system_ac
           click_link(s_('EmailOTP|Review email addresses'))
         end
 
-        expect(URI.parse(current_url).path).to eq(profile_emails_path)
+        expect(page).to have_current_path(profile_emails_path)
         expect(page).not_to have_content(expected_title)
 
         # Verify it stays dismissed after page reload

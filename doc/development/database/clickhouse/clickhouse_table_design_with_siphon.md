@@ -44,11 +44,20 @@ In this example, we are replicating the `labels` table to ClickHouse.
 
 ### ClickHouse Table Creation
 
-You can generate a ClickHouse database migration using a Rake task. This transforms the PostgreSQL schema for the specified table into a Siphon-compatible ClickHouse table definition.
+You can generate a ClickHouse database migration and Siphon configuration with a Rake task.
+The Rake task transforms the PostgreSQL schema for the specified table into a Siphon-compatible
+ClickHouse table definition.
 
 ```shell
 bundle exec rails generate gitlab:click_house:siphon labels
 ```
+
+The generator creates two files:
+
+- `db/click_house/migrate/main/<TIMESTAMP>_create_siphon_labels.rb`: The ClickHouse migration with
+  the table definition.
+- `db/siphon/tables/labels.yml`: The Siphon configuration metadata file that registers the table
+  for replication.
 
 Generated `CREATE TABLE` statement:
 
@@ -94,9 +103,10 @@ Examples for such columns:
 
 ### Siphon Configuration
 
-After the table is created, you should configure Siphon to replicate it by creating a YAML file in `db/siphon/tables/`. GDK detects these files automatically during `gdk reconfigure`.
+The generator writes the Siphon metadata file to `db/siphon/tables/<table>.yml`. GDK detects these
+files automatically during `gdk reconfigure`. Edit the file to customize the replication targets.
 
-For example, create `db/siphon/tables/labels.yml`:
+The generated `db/siphon/tables/labels.yml` looks like:
 
 ```yaml
 table: labels
@@ -114,7 +124,58 @@ The configuration fields are:
 - **`replication_targets`**: Specifies destination details:
   - **`name`**: Must be `clickhouse_main` for ClickHouse replication.
   - **`target`**: The destination table name in ClickHouse.
-  - **`priority`** *(optional)*: Lower values replicate first during the initial snapshot.
+  - **`priority`** *(optional)*: Lower values replicate first during the initial snapshot (used only in GDK).
+  - **`dedup_by`** *(optional)*: Columns the consumer uses to locate existing rows when applying `UPDATE`
+    and `DELETE` events. Must match the PostgreSQL primary key columns. Required when the ClickHouse
+    primary key includes columns beyond the PostgreSQL primary key (for example, `traversal_path`).
+  - **`dedup_by_table`** *(optional)*: A different ClickHouse table to inspect for matching primary keys
+    when the `target` is not the table that stores the rows (for example, when `target` is a `Null`
+    landing table and the actual storage table has a different name). The configured table's primary
+    keys must contain the PostgreSQL primary key columns at the end.
+  - **`dedup_by_columns_lookup_table`** *(optional)*: A secondary ClickHouse table used to look up the
+    full primary key from the PostgreSQL primary key columns. The lookup table's primary keys must
+    start with the PostgreSQL primary key columns. Use this when the main `target` table's primary key
+    starts with columns that are not part of the PostgreSQL primary key (for example, ordering by
+    `(merge_request_diff_id, relative_order, traversal_path)` while the PostgreSQL primary key is
+    `(merge_request_diff_id, relative_order)`).
+  - **`reconcile`** *(optional)*: Configuration for the periodic consistency check job that repairs
+    denormalized columns.
+    - **`column`**: The denormalized column to reconcile (for example, `traversal_path`).
+    - **`expression_key_columns`**: The source columns used to compute the denormalized value. Must
+      match the sharding key columns defined in `db/docs/<table>.yml`.
+
+The following example replicates `merge_requests` and reconciles the `traversal_path` column from
+`target_project_id`:
+
+```yaml
+table: merge_requests
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_merge_requests
+    dedup_by_table: merge_requests
+    dedup_by:
+      - id
+    reconcile:
+      column: traversal_path
+      expression_key_columns:
+        - target_project_id
+```
+
+The following example uses a separate lookup table to resolve the full ClickHouse primary key from the
+PostgreSQL primary key columns:
+
+```yaml
+table: merge_request_diff_files_99208b8fac
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_merge_request_diff_files
+    dedup_by_columns_lookup_table: siphon_merge_request_diff_files_pg_pkey_ordered
+    dedup_by:
+      - merge_request_diff_id
+      - relative_order
+```
 
 After creating the file, apply the configuration and restart Siphon:
 
@@ -224,22 +285,23 @@ Generated `CREATE TABLE` statement:
           '0/'
         ),
         _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
-        _siphon_deleted Bool DEFAULT FALSE,
-        PROJECTION pg_pkey_ordered (
-          SELECT *
-          ORDER BY id
-        )
+        _siphon_deleted Bool DEFAULT FALSE
       )
       ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
       PRIMARY KEY (traversal_path, id)
-      SETTINGS deduplicate_merge_projection_mode = 'rebuild'
 ```
 
-The primary keys for the table are: `(traversal_path, id)`. Additionally, the generator adds an extra [projection](https://clickhouse.com/docs/data-modeling/projections) for looking up records via the original PostgreSQL primary keys (name: `pg_pkey_ordered`). This is needed for Siphon to quickly locate existing records when replicating `DELETE` statements.
+The primary keys for the table are: `(traversal_path, id)`. The generator also creates a secondary
+table `siphon_labels_pg_pkey_ordered` and a materialized view `siphon_labels_pg_pkey_ordered_mv`.
+The materialized view syncs the primary key columns from the main table into the secondary table,
+which is ordered by the PostgreSQL primary key columns first. Siphon uses the secondary table to
+locate existing rows by their PostgreSQL primary keys when replicating `DELETE` and `UPDATE` events.
 
-#### The `deduplicate_merge_projection_mode` setting
-
-For tables utilizing projections, we explicitly set `deduplicate_merge_projection_mode` to `rebuild`. This configuration, which is automatically injected by our generator script, is critical for maintaining strict consistency between the parent table and its projections. During a merge, specifically when rows are being deduplicated, this mode instructs ClickHouse to discard the existing projection data and recalculate it from scratch using the newly deduplicated rows. Without this setting, the projection risks becoming stale or mathematically inconsistent with the source data.
+> [!note]
+> Some older tables implement the same PostgreSQL primary key lookup with a ClickHouse
+> [projection](https://clickhouse.com/docs/data-modeling/projections) named `pg_pkey_ordered`
+> instead of a secondary table. Projections do not perform well above a certain scale, so new
+> tables use the materialized view approach.
 
 #### Querying the Table
 
@@ -406,7 +468,7 @@ First, generate a Siphon table for `merge_requests`:
 bundle exec rails generate gitlab:click_house:siphon merge_requests --with-traversal-path
 ```
 
-The resulting schema (after removing the projection and non-essential columns) appears as follows:
+The resulting schema (after removing non-essential columns) appears as follows:
 
 ```sql
 CREATE TABLE IF NOT EXISTS siphon_merge_requests
@@ -455,15 +517,11 @@ CREATE TABLE IF NOT EXISTS siphon_merge_request_reviewers
   project_id Int64,
   traversal_path String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
   _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
-  _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1)),
-  PROJECTION pg_pkey_ordered (
-    SELECT *
-    ORDER BY id
-  )
+  _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, merge_request_id, id)
-SETTINGS deduplicate_merge_projection_mode = 'rebuild', index_granularity = 1024;
+SETTINGS index_granularity = 1024;
 ```
 
 **Modifications made:**
@@ -492,15 +550,10 @@ CREATE TABLE IF NOT EXISTS merge_requests
   traversal_path String DEFAULT multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', target_project_id, '0/'), '0/') CODEC(ZSTD(3)),
   reviewers Array(Tuple(UInt64, Int8)),
   _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
-  _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1)),
-  PROJECTION pg_pkey_ordered (
-    SELECT *
-    ORDER BY id
-  )
+  _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, id)
-SETTINGS deduplicate_merge_projection_mode = 'rebuild'
 ```
 
 ##### 4. Creating the JOIN Materialized View

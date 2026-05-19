@@ -5,6 +5,7 @@ import UpdateKeepLatestArtifactProjectSetting from './graphql/mutations/update_k
 import GetKeepLatestArtifactProjectSetting from './graphql/queries/get_keep_latest_artifact_project_setting.query.graphql';
 
 export default {
+  name: 'KeepLatestArtifactToggle',
   errors: {
     fetchError: __('There was a problem fetching the keep latest artifacts setting.'),
     updateError: __('There was a problem updating the keep latest artifacts setting.'),

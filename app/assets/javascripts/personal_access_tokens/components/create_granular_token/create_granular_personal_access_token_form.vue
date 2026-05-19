@@ -11,6 +11,7 @@ import {
   GlSprintf,
   GlLoadingIcon,
 } from '@gitlab/ui';
+import { union } from 'lodash-es';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { scrollTo, scrollToElement } from '~/lib/utils/scroll_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -28,6 +29,7 @@ import {
   MAX_DESCRIPTION_LENGTH,
   ACCESS_USER_ENUM,
   ACCESS_NAMESPACE_ENUMS,
+  NAMESPACE_ACCESS_TYPES,
 } from '~/personal_access_tokens/constants';
 import ConfirmUnsavedChangesDialog from '~/vue_shared/components/confirm_unsaved_changes_dialog.vue';
 import { defaultDate } from '~/vue_shared/access_tokens/utils';
@@ -67,13 +69,14 @@ export default {
   data() {
     return {
       sourceTokenId: getParameterByName('source_token_id'),
-      prefillNamespaces: [],
+      // form is the source of truth for all token data
+      // the data is passed down to all child components using v-model
       form: {
         name: '',
         description: '',
         expirationDate: defaultDate(this.accessTokenMaxDate),
         access: null,
-        namespaceIds: [],
+        namespaces: [],
         permissions: {
           namespace: [],
           user: [],
@@ -84,16 +87,16 @@ export default {
         description: '',
         expirationDate: '',
         access: '',
-        namespaceIds: '',
+        namespaces: '',
         permissions: '',
+      },
+      aiPermissions: {
+        suggested: [],
+        removed: [],
       },
       isFormDirty: false,
       isSubmitting: false,
       createdToken: null,
-      permissionsToSelect: [],
-      permissionsToClear: [],
-      prefillNamespacePermissions: [],
-      prefillUserPermissions: [],
     };
   },
   apollo: {
@@ -114,8 +117,8 @@ export default {
         if (!data) return;
         const token = data.user.personalAccessTokens.nodes[0];
 
-        if (token) {
-          this.applySourceTokenPrefill(token);
+        if (token?.granular) {
+          this.duplicateToken(token);
         }
       },
       error(error) {
@@ -146,7 +149,7 @@ export default {
       if (this.form.permissions.namespace.length) {
         scopes.push({
           access: this.form.access,
-          resourceIds: this.form.namespaceIds,
+          resourceIds: this.form.namespaces.map((namespace) => namespace.id),
           permissions: this.form.permissions.namespace,
         });
       }
@@ -171,35 +174,41 @@ export default {
   },
   methods: {
     handlePermissionsSelected(permissionNames) {
-      this.permissionsToSelect = [...permissionNames];
-      // Clear prefill arrays so the ternary fallback in the template doesn't
-      // re-apply them after the user has interacted with permissions via DAP.
-      this.prefillNamespacePermissions = [];
-      this.prefillUserPermissions = [];
+      this.aiPermissions.suggested = [...permissionNames];
     },
     handlePermissionsCleared(permissionNames) {
-      this.permissionsToClear = [...permissionNames];
-      this.prefillNamespacePermissions = [];
-      this.prefillUserPermissions = [];
+      this.aiPermissions.removed = [...permissionNames];
     },
-    applySourceTokenPrefill(token) {
-      const granularScopes = token.scopes.filter((s) => Boolean(s.access));
-      const namespaceScopes = granularScopes.filter((s) => s.access !== 'USER');
+    duplicateToken(token) {
+      let access = '';
+      const namespaces = [];
 
-      this.form.name = sprintf(this.$options.i18n.duplicateName, { name: token.name });
-      this.form.description = token.description || '';
-      this.form.access = namespaceScopes[0]?.access || null;
+      let namespacePermissions = [];
+      let userPermissions = [];
 
-      // For project scopes, use the project directly so IDs and types match the namespace selector
-      this.prefillNamespaces = namespaceScopes.map((s) => s.project || s.namespace).filter(Boolean);
-      this.form.namespaceIds = this.prefillNamespaces.map((s) => s.id);
+      for (const scope of token.scopes) {
+        const scopePermissions = scope.permissions.map((p) => p.name);
 
-      const toPermissionNames = (scopes) =>
-        scopes.flatMap((s) => (s.permissions || []).map((p) => `${p.action}_${p.resource}`));
-      const userScopes = granularScopes.filter((s) => s.access === 'USER');
+        if (NAMESPACE_ACCESS_TYPES.includes(scope.access)) {
+          access = scope.access;
+          namespaces.push(scope.project || scope.namespace);
+          namespacePermissions = union(namespacePermissions, scopePermissions);
+        } else if (scope.access === ACCESS_USER_ENUM) {
+          userPermissions = union(userPermissions, scopePermissions);
+        }
+      }
 
-      this.prefillNamespacePermissions = toPermissionNames(namespaceScopes);
-      this.prefillUserPermissions = toPermissionNames(userScopes);
+      this.form = {
+        name: sprintf(this.$options.i18n.duplicateTokenName, { name: token.name }),
+        description: token.description || '',
+        expirationDate: defaultDate(this.accessTokenMaxDate),
+        access,
+        namespaces: namespaces.filter(Boolean),
+        permissions: {
+          namespace: namespacePermissions,
+          user: userPermissions,
+        },
+      };
     },
     validateForm() {
       // reset the validation
@@ -208,7 +217,7 @@ export default {
         description: '',
         expirationDate: '',
         access: '',
-        namespaceIds: '',
+        namespaces: '',
         permissions: '',
       };
 
@@ -228,8 +237,8 @@ export default {
         this.errors.access = this.$options.i18n.scopeError;
       }
 
-      if (this.renderNamespaceSelector && !this.form.namespaceIds.length) {
-        this.errors.namespaceIds = this.$options.i18n.namespaceError;
+      if (this.renderNamespaceSelector && !this.form.namespaces.length) {
+        this.errors.namespaces = this.$options.i18n.namespaceError;
       }
 
       if (!this.form.permissions.namespace.length && !this.form.permissions.user.length) {
@@ -298,7 +307,7 @@ export default {
     scopeError: s__('AccessTokens|Set group and project access.'),
     namespaceError: s__('AccessTokens|At least one group or project is required.'),
     permissionsError: s__('AccessTokens|Add at least one resource with permissions.'),
-    duplicateName: s__('AccessTokens|%{name} (copy)'),
+    duplicateTokenName: s__('AccessTokens|%{name} (copy)'),
     sourceTokenFetchError: s__(
       'AccessTokens|Failed to load source token. Please fill in the form manually.',
     ),
@@ -309,8 +318,14 @@ export default {
     addPermissionsDescription: s__(
       'AccessTokens|Add only the %{linkStart}minimum resource and permissions %{linkEnd} needed for your token. Permissions not included in your assigned role have no effect.',
     ),
+    publicAccessNote: s__(
+      'AccessTokens|Publicly visible resources are accessible without a permission. See the %{linkStart}list of publicly accessible endpoints%{linkEnd}.',
+    ),
   },
   fineGrainedTokensDocPath: helpPagePath('auth/tokens/fine_grained_access_tokens.md'),
+  publiclyAccessibleEndpointsDocPath: helpPagePath('auth/tokens/fine_grained_access_tokens.md', {
+    anchor: 'publicly-accessible-endpoints',
+  }),
   MAX_NAME_LENGTH,
   MAX_DESCRIPTION_LENGTH,
 };
@@ -319,7 +334,11 @@ export default {
 <template>
   <div>
     <confirm-unsaved-changes-dialog :has-unsaved-changes="isFormDirty" />
-    <created-personal-access-token v-if="createdToken" v-model="createdToken" />
+    <created-personal-access-token
+      v-if="createdToken"
+      :token="createdToken"
+      :href="accessTokenTableUrl"
+    />
 
     <div v-else>
       <page-heading>
@@ -377,10 +396,9 @@ export default {
             <template #namespace-selector>
               <personal-access-token-namespace-selector
                 v-if="renderNamespaceSelector"
-                :prefill-namespaces="prefillNamespaces"
-                :error="errors.namespaceIds"
+                v-model="form.namespaces"
+                :error="errors.namespaces"
                 class="gl-mt-4 gl-w-full lg:gl-w-1/2"
-                @input="form.namespaceIds = $event"
               />
             </template>
           </personal-access-token-scope-selector>
@@ -391,6 +409,13 @@ export default {
             <gl-sprintf :message="$options.i18n.addPermissionsDescription">
               <template #link="{ content }">
                 <gl-link :href="$options.fineGrainedTokensDocPath" target="_blank">
+                  {{ content }}
+                </gl-link>
+              </template>
+            </gl-sprintf>
+            <gl-sprintf :message="$options.i18n.publicAccessNote">
+              <template #link="{ content }">
+                <gl-link :href="$options.publiclyAccessibleEndpointsDocPath" target="_blank">
                   {{ content }}
                 </gl-link>
               </template>
@@ -408,20 +433,14 @@ export default {
               v-model="form.permissions.namespace"
               :error="errors.permissions"
               :target-boundaries="targetBoundaries.namespace"
-              :permissions-to-select="
-                permissionsToSelect.length ? permissionsToSelect : prefillNamespacePermissions
-              "
-              :permissions-to-clear="permissionsToClear"
+              :ai-permissions="aiPermissions"
             />
 
             <personal-access-token-permissions-selector
               v-model="form.permissions.user"
               :error="errors.permissions"
               :target-boundaries="targetBoundaries.user"
-              :permissions-to-select="
-                permissionsToSelect.length ? permissionsToSelect : prefillUserPermissions
-              "
-              :permissions-to-clear="permissionsToClear"
+              :ai-permissions="aiPermissions"
             />
           </gl-tabs>
         </section>

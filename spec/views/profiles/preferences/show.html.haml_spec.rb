@@ -12,7 +12,7 @@ RSpec.describe 'profiles/preferences/show' do
     allow(controller).to receive(:current_user).and_return(user)
   end
 
-  context 'appearance' do
+  describe 'appearance' do
     before do
       render
     end
@@ -22,7 +22,7 @@ RSpec.describe 'profiles/preferences/show' do
     end
   end
 
-  context 'syntax highlighting theme' do
+  describe 'syntax highlighting theme' do
     before do
       render
     end
@@ -32,7 +32,7 @@ RSpec.describe 'profiles/preferences/show' do
     end
   end
 
-  context 'behavior' do
+  describe 'behavior' do
     before do
       render
     end
@@ -52,7 +52,7 @@ RSpec.describe 'profiles/preferences/show' do
     end
   end
 
-  context 'localization' do
+  describe 'localization' do
     before do
       render
     end

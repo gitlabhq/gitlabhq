@@ -3,6 +3,8 @@ import { __ } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { clearDraft } from '~/lib/utils/autosave';
+import { getNoteIdFromHash, discussionsContainNote } from '~/notes/utils/note_hash';
+import { hasScrolled } from '~/rapid_diffs/utils/scroll_to_linked_fragment';
 import DiffFileDiscussionExpansion from '~/diffs/components/diff_file_discussion_expansion.vue';
 import NoteForm from './note_form.vue';
 import DiffDiscussions from './diff_discussions.vue';
@@ -53,7 +55,17 @@ export default {
       if (value.length === 0) this.$emit('empty');
     },
   },
+  mounted() {
+    this.expandDiscussionForLinkedNoteFragment();
+  },
   methods: {
+    expandDiscussionForLinkedNoteFragment() {
+      if (hasScrolled()) return;
+      const noteId = getNoteIdFromHash();
+      if (!noteId) return;
+      if (!discussionsContainNote(this.collapsedDiscussions, noteId)) return;
+      this.store.expandFileDiscussions(this.filePaths.oldPath, this.filePaths.newPath);
+    },
     cancelReplyForm: ignoreWhilePending(async function cancelReplyForm() {
       if (this.formDiscussion?.noteBody) {
         const confirmed = await confirmAction(

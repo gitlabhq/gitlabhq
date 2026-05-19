@@ -12,7 +12,7 @@ class NotePolicy < BasePolicy
 
   condition(:editable, scope: :subject) { @subject.editable? }
 
-  condition(:can_read_noteable) { can?(:"read_#{@subject.noteable_ability_name}") }
+  condition(:can_read_noteable) { can?(:"read_#{@subject.noteable_ability_name}", @subject.noteable) }
   condition(:commit_is_deleted) { @subject.for_commit? && @subject.noteable.blank? }
   condition(:for_personal_snippet) { @subject.for_personal_snippet? }
 

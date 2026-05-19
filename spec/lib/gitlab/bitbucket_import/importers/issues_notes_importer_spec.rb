@@ -21,6 +21,22 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssuesNotesImporter, :clean_g
         .to match_array(%w[1 2])
     end
 
+    context 'when a max issue IID was cached during pre-allocation' do
+      before do
+        Gitlab::Cache::Import::Caching.write(
+          "bitbucket-importer/max-iid/#{project.id}/issues", issue_1.iid.to_s
+        )
+      end
+
+      it 'only schedules jobs for issues with IID at or below the cached max' do
+        expect(Gitlab::BitbucketImport::ImportIssueNotesWorker).to receive(:perform_in).once
+
+        waiter = importer.execute
+
+        expect(waiter.jobs_remaining).to eq(1)
+      end
+    end
+
     context 'when an error is raised' do
       before do
         allow(importer).to receive(:mark_as_enqueued).and_raise(StandardError)

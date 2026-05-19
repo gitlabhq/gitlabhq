@@ -2,6 +2,7 @@
 
 module RapidDiffs
   class AppComponent < ViewComponent::Base
+    renders_one :empty_state
     renders_one :before_diffs_list
     renders_one :diffs_list
     renders_one :after_diffs_list
@@ -69,7 +70,7 @@ module RapidDiffs
     end
 
     def empty_state_visible?
-      !diffs_stream_url && !lazy? && diff_collection.empty?
+      empty_state? || (!diffs_stream_url && !lazy? && diff_collection.empty?)
     end
 
     def browser_visible?

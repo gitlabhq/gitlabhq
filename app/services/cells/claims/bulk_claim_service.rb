@@ -6,13 +6,17 @@ module Cells
       # @param model [Class] The ActiveRecord model class (e.g. RedirectRoute).
       #   Must include Cells::Claimable.
       # @param attribute [Symbol] The claimable attribute to claim (e.g. :path)
-      # @param records [ActiveRecord::Relation, Array<ActiveRecord::Base>] The
-      #   records to create claims for. Each record must respond to the attribute
-      #   and have a persisted primary key.
-      def initialize(model:, attribute:, records:)
+      # @param creates [Array<Hash>] Claim metadata hashes for records to create
+      #   claims for. Each hash must contain the full claim metadata structure
+      #   expected by BaseService#commit_changes.
+      # @param destroys [Array<Hash>] Claim metadata hashes for records to destroy
+      #   claims for. Each hash must contain the full claim metadata structure
+      #   expected by BaseService#commit_changes.
+      def initialize(model:, attribute:, creates: [], destroys: [])
         @model = model
         @attribute = attribute
-        @records = records
+        @creates = creates
+        @destroys = destroys
       end
 
       def execute
@@ -22,46 +26,32 @@ module Cells
             message: "#{model.name} model is not claimable, skipping bulk claim",
             feature_category: :cell
           )
-          return { created: 0, chunk_count: 0 }
+          return { created: 0, destroyed: 0, chunk_count: 0 }
         end
 
-        return { created: 0, chunk_count: 0 } unless enabled?
+        return { created: 0, destroyed: 0, chunk_count: 0 } if creates.empty? && destroys.empty?
 
-        claim_metadata = build_claim_metadata
-        return { created: 0, chunk_count: 0 } if claim_metadata.empty?
-
-        chunk_count = commit_changes(creates: claim_metadata)
-        created_count = claim_metadata.size
+        chunk_count = commit_changes(creates: creates, destroys: destroys)
+        created_count = creates.size
+        destroyed_count = destroys.size
 
         Gitlab::AppLogger.info(
           class: self.class.name,
           message: "Cells::Claims::BulkClaimService batch processed",
           table_name: model.table_name,
           created: created_count,
+          destroyed: destroyed_count,
           chunk_count: chunk_count,
           cell_id: claim_service.cell_id,
           feature_category: :cell
         )
 
-        { created: created_count, chunk_count: chunk_count }
+        { created: created_count, destroyed: destroyed_count, chunk_count: chunk_count }
       end
 
       private
 
-      attr_reader :attribute, :records
-
-      def enabled?
-        return false unless Gitlab.config.cell.enabled
-
-        attribute_config = model.cells_claims_attributes[attribute]
-        return false unless attribute_config
-
-        model.cells_claims_enabled_for_attribute?(attribute_config)
-      end
-
-      def build_claim_metadata
-        records.filter_map { |record| record.cells_claims_metadata_for_attribute(attribute) }
-      end
+      attr_reader :attribute, :creates, :destroys
     end
   end
 end

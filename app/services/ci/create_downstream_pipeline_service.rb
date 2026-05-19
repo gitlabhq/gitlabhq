@@ -143,13 +143,14 @@ module Ci
     end
 
     def can_create_downstream_pipeline?(target_ref)
-      can?(current_user, :update_pipeline, project) &&
-        can?(current_user, :create_pipeline, downstream_project) &&
-        can_update_branch?(target_ref)
+      return false unless can?(current_user, :update_pipeline, project)
+      return false unless can?(current_user, :create_pipeline, downstream_project)
+
+      can_run_pipeline_on_branch?(target_ref)
     end
 
-    def can_update_branch?(target_ref)
-      ::Gitlab::UserAccess.new(current_user, container: downstream_project).can_update_branch?(target_ref)
+    def can_run_pipeline_on_branch?(target_ref)
+      ::Gitlab::UserAccess.new(current_user, container: downstream_project).can_run_pipeline_on_branch?(target_ref)
     end
 
     def downstream_project

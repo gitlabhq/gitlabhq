@@ -26,7 +26,8 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
               allow_duplicate: nil,
               push_options: nil,
               gitaly_context: {},
-              pipeline_creation_request: { 'key' => '123', 'id' => '456' }
+              pipeline_creation_request: { 'key' => '123', 'id' => '456' },
+              defer_request_completion: nil
             }) do |service|
             expect(service).to receive(:execute).with(merge_request)
           end
@@ -58,7 +59,8 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
                 allow_duplicate: nil,
                 push_options: { ci: { skip: true } },
                 gitaly_context: {},
-                pipeline_creation_request: { 'key' => '123', 'id' => '456' }
+                pipeline_creation_request: { 'key' => '123', 'id' => '456' },
+                defer_request_completion: nil
               }) do |service|
               expect(service).to receive(:execute).with(merge_request)
             end
@@ -152,6 +154,96 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
     end
   end
 
+  describe 'deferred request completion' do
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be(:merge_request) { create(:merge_request) }
+    let(:worker) { described_class.new }
+    let(:pipeline_creation_request) { Ci::PipelineCreation::Requests.start_for_merge_request(merge_request) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+    let(:params) do
+      {
+        'pipeline_creation_request' => pipeline_creation_request,
+        'defer_request_completion' => defer_request_completion,
+        'gitaly_context' => {}
+      }
+    end
+
+    subject { worker.perform(project.id, user.id, merge_request.id, params) }
+
+    shared_examples_for 'triggers GraphQL subscription' do
+      it 'triggers GraphQL subscription' do
+        expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated).with(merge_request)
+
+        subject
+      end
+    end
+
+    context 'when defer_request_completion is true' do
+      let(:defer_request_completion) { true }
+
+      context 'when pipeline creation succeeds' do
+        before do
+          allow_next_instance_of(MergeRequests::CreatePipelineService) do |service|
+            allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: pipeline))
+          end
+        end
+
+        it 'marks the request as succeeded after update_head_pipeline' do
+          expect(MergeRequest).to receive(:find_by_id).with(merge_request.id).and_return(merge_request)
+          expect(merge_request).to receive(:update_head_pipeline).ordered
+          expect(::Ci::PipelineCreation::Requests).to receive(:succeeded).and_call_original.ordered
+
+          subject
+
+          result = Ci::PipelineCreation::Requests.hget(pipeline_creation_request)
+          expect(result['status']).to eq(Ci::PipelineCreation::Requests::SUCCEEDED)
+        end
+
+        it_behaves_like 'triggers GraphQL subscription'
+      end
+
+      context 'when pipeline creation fails with a non-retriable error' do
+        let(:error_message) { 'Cannot create a pipeline for this merge request: duplicate pipeline.' }
+
+        before do
+          allow_next_instance_of(MergeRequests::CreatePipelineService) do |service|
+            allow(service).to receive(:execute)
+              .and_return(ServiceResponse.error(message: error_message))
+          end
+        end
+
+        it 'marks the request as failed after update_head_pipeline' do
+          subject
+
+          result = Ci::PipelineCreation::Requests.hget(pipeline_creation_request)
+          expect(result['status']).to eq(Ci::PipelineCreation::Requests::FAILED)
+          expect(result['error']).to eq(error_message)
+        end
+
+        it_behaves_like 'triggers GraphQL subscription'
+      end
+    end
+
+    context 'when defer_request_completion is nil' do
+      let(:defer_request_completion) { nil }
+
+      before do
+        allow_next_instance_of(MergeRequests::CreatePipelineService) do |service|
+          allow(service).to receive(:execute)
+            .and_return(ServiceResponse.success(payload: pipeline))
+        end
+      end
+
+      it 'does not call complete_pipeline_creation_request' do
+        expect(GraphqlTriggers).not_to receive(:ci_pipeline_creation_requests_updated)
+
+        subject
+      end
+    end
+  end
+
   describe 'sidekiq_retries_exhausted' do
     let(:merge_request) { create(:merge_request) }
     let(:pipeline_creation_request) do
@@ -168,19 +260,50 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
     end
 
     context 'when pipeline_creation_request is present' do
-      it 'marks the request as failed' do
-        described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new)
+      context 'when defer_request_completion is true' do
+        let(:job) do
+          {
+            'args' => [
+              1, 2, 3,
+              {
+                'pipeline_creation_request' => pipeline_creation_request,
+                'defer_request_completion' => true
+              }
+            ]
+          }
+        end
 
-        result = Ci::PipelineCreation::Requests.hget(pipeline_creation_request)
-        expect(result['status']).to eq('failed')
-        expect(result['error']).to include('after multiple retries')
+        it 'marks the request as failed' do
+          described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new)
+
+          result = Ci::PipelineCreation::Requests.hget(pipeline_creation_request)
+          expect(result['status']).to eq('failed')
+          expect(result['error']).to include('after multiple retries')
+        end
+
+        it 'triggers GraphQL subscription' do
+          expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated)
+            .with(merge_request)
+
+          described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new)
+        end
       end
 
-      it 'triggers GraphQL subscription' do
-        expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated)
-          .with(merge_request)
+      context 'when defer_request_completion is not set' do
+        it 'marks the request as failed' do
+          described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new)
 
-        described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new)
+          result = Ci::PipelineCreation::Requests.hget(pipeline_creation_request)
+          expect(result['status']).to eq('failed')
+          expect(result['error']).to include('after multiple retries')
+        end
+
+        it 'triggers GraphQL subscription' do
+          expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated)
+            .with(merge_request)
+
+          described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new)
+        end
       end
     end
 

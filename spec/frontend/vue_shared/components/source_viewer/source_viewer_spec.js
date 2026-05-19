@@ -146,6 +146,19 @@ describe('Source Viewer component', () => {
         });
       });
 
+      it('defers blame entries until their chunk emits highlighted', async () => {
+        jest.spyOn(utils, 'calculateBlameOffset').mockReturnValue(null);
+        createComponent();
+        await triggerChunkAppear();
+        expect(findBlameComponents().at(0).props('blameInfo')).toEqual([]);
+
+        utils.calculateBlameOffset.mockReturnValue('42px');
+        findChunks().at(0).vm.$emit('highlighted');
+        await nextTick();
+
+        expect(findBlameComponents().at(0).props('blameInfo')).toHaveLength(1);
+      });
+
       describe('per-chunk skeleton loaders', () => {
         const emitAppear = (index = 0) => findChunks().at(index).vm.$emit('appear');
 

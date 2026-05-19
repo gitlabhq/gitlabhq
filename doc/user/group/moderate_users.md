@@ -103,7 +103,14 @@ The following actions count as activity:
 > Activity has not been recorded for members added before 2025-01-22. These members will not be removed until 2025-04-22, even if they have been dormant for over 90 days.
 
 - Dormant group owners are neither deactivated nor removed from the group.
-- Dormant [enterprise users](../enterprise_user/_index.md) are not removed, but [deactivated](../../administration/moderate_users.md#deactivate-and-reactivate-users). When these users sign back in, their accounts are reactivated and their access is restored.
+- Dormant [enterprise users](../enterprise_user/_index.md) are not removed, but
+  [deactivated](../../administration/moderate_users.md#deactivate-and-reactivate-users).
+  When these users sign back in, their accounts are reactivated and their access
+  is restored. However, when
+  [restricted access](manage.md#restricted-access) is active on the enterprise
+  group and no seats are available, the user is set to pending approval instead
+  of being reactivated. For more information, see
+  [dormant enterprise user reactivation](manage.md#dormant-enterprise-user-reactivation).
 
 To turn on automatic dormant member removal:
 

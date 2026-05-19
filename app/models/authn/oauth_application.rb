@@ -4,7 +4,7 @@ module Authn
   class OauthApplication < Doorkeeper::Application
     include Doorkeeper::Concerns::TokenFallback
 
-    belongs_to :organization, class_name: 'Organizations::Organization'
+    belongs_to :organization, class_name: 'Organizations::Organization', optional: false
 
     scope :with_token_digests, ->(hashed_tokens) do
       return none if hashed_tokens.blank?

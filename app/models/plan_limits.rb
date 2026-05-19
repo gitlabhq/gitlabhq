@@ -28,6 +28,7 @@ class PlanLimits < ApplicationRecord
     if: :web_hook_calls_mid_changed?
   validates :web_hook_calls_low, numericality: { only_integer: true, greater_than_or_equal_to: 0 },
     if: :web_hook_calls_low_changed?
+  validates :max_pipelines_per_merge_train, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
   def exceeded?(limit_name, subject, alternate_limit: 0)
     limit = limit_for(limit_name, alternate_limit: alternate_limit)

@@ -1,0 +1,178 @@
+---
+name: ci_finished_builds
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(version, deleted) PARTITION BY toYear(finished_at)
+  ORDER BY (status, runner_type, project_id, finished_at, id) SETTINGS index_granularity
+  = 8192, use_async_block_ids_cache = true, deduplicate_merge_projection_mode = 'rebuild'
+partition_key: toYear(finished_at)
+primary_key: status, runner_type, project_id, finished_at, id
+sorting_key: status, runner_type, project_id, finished_at, id
+settings:
+  index_granularity: '8192'
+  deduplicate_merge_projection_mode: "'rebuild'"
+columns:
+- name: id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: project_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: pipeline_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: status
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: queued_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: finished_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: '0'
+  is_in_partition_key: true
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: started_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: runner_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: runner_manager_system_xid
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: runner_run_untagged
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: runner_type
+  type: UInt8
+  default_kind: DEFAULT
+  default_expression: '0'
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: runner_manager_version
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: runner_manager_revision
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: runner_manager_platform
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: runner_manager_architecture
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: duration
+  type: Int64
+  default_kind: MATERIALIZED
+  default_expression: if((started_at > 0) AND (finished_at > started_at), age('ms',
+    started_at, finished_at), 0)
+- name: queueing_duration
+  type: Int64
+  default_kind: MATERIALIZED
+  default_expression: if((queued_at > 0) AND (started_at > queued_at), age('ms', queued_at,
+    started_at), 0)
+- name: root_namespace_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: name
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: date
+  type: Date32
+  default_kind: MATERIALIZED
+  default_expression: toStartOfMonth(finished_at)
+- name: runner_owner_namespace_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: stage_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: stage_name
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: version
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: group_name
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: namespace_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'0/'"
+- name: failure_reason
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: when
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: manual
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: allow_failure
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: user_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: artifacts_filename
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: artifacts_size
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: retries_count
+  type: UInt16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: runner_tags
+  type: Array(String)
+  default_kind: DEFAULT
+  default_expression: "[]"
+- name: job_definition_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'

@@ -224,7 +224,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
      --data '{"destination_storage_name":"storage2"}' \
      --url "https://gitlab.example.com/api/v4/groups/1/repository_storage_moves"
@@ -265,7 +266,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
      --data '{"source_storage_name":"default"}' \
      --url "https://gitlab.example.com/api/v4/group_repository_storage_moves"

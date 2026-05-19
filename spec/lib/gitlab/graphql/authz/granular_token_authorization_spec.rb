@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Graphql::Authz::GranularTokenAuthorization, feature_categ
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, developer_of: project) }
-  let_it_be(:access_token) { create(:granular_pat) }
+  let_it_be(:access_token) { create(:granular_pat, user: user) }
 
   let(:object) { project }
   let(:arguments) { {} }
@@ -47,14 +47,6 @@ RSpec.describe Gitlab::Graphql::Authz::GranularTokenAuthorization, feature_categ
       it { is_expected.to eq('field_value') }
     end
 
-    context 'when the `granular_personal_access_tokens_for_graphql` flag is disabled' do
-      before do
-        stub_feature_flags(granular_personal_access_tokens_for_graphql: false)
-      end
-
-      it { is_expected.to eq('field_value') }
-    end
-
     context 'when field authorization should be skipped' do
       before do
         allow_next_instance_of(Gitlab::Graphql::Authz::SkipRules, field) do |skip_rules|
@@ -68,7 +60,7 @@ RSpec.describe Gitlab::Graphql::Authz::GranularTokenAuthorization, feature_categ
     context 'with a granular token' do
       let_it_be(:access_token) do
         boundary = Authz::Boundary.for(project)
-        create(:granular_pat, boundary: boundary, permissions: [:read_wiki, :write_work_item], user: user)
+        create(:granular_pat, boundary: boundary, permissions: [:read_wiki, :create_work_item], user: user)
       end
 
       it { is_expected.to eq('field_value') }
@@ -211,14 +203,108 @@ RSpec.describe Gitlab::Graphql::Authz::GranularTokenAuthorization, feature_categ
         context 'when the first directive does not extract a boundary and a later directive matches' do
           before do
             allow(field).to receive(:directives).and_return([group_directive, project_directive])
-            allow(extension).to receive(:boundary).with(object, arguments, context,
-              group_directive).and_return(nil)
-            allow(extension).to receive(:boundary).with(object, arguments, context, project_directive)
-              .and_call_original
+            allow(extension).to receive(:boundary).with(object, arguments, context, group_directive).and_return(nil)
+            allow(extension).to receive(:boundary).with(object, arguments, context, project_directive).and_call_original
           end
 
           it 'skips the non-extractable directive and keeps searching' do
             expect { resolve }.not_to raise_error
+          end
+        end
+
+        context 'when a later matching directive uses a registered boundary proc' do
+          let(:owner_with_proc) do
+            Class.new(Types::BaseObject) { graphql_name 'GranularTokenProcOwnerType' }
+          end
+
+          let(:boundary_proc) { ->(_obj) { project } }
+
+          let(:field) do
+            create_field_with_directive(
+              owner: owner_with_proc,
+              boundary_type: 'project',
+              permissions: ['read_wiki']
+            )
+          end
+
+          before do
+            allow(field).to receive(:directives).and_return([group_directive, project_directive])
+            allow(extension).to receive(:boundary).and_call_original
+            allow(extension).to receive(:boundary)
+              .with(object, arguments, context, group_directive)
+              .and_return(nil)
+            allow(owner_with_proc).to receive(:granular_token_boundary_procs)
+              .and_return({ 'project' => boundary_proc })
+            allow(Gitlab::Graphql::Authz::BoundaryExtractor).to receive(:new).and_call_original
+          end
+
+          it 'passes the proc to BoundaryExtractor for the matching directive' do
+            expect(Gitlab::Graphql::Authz::BoundaryExtractor).to receive(:new).with(
+              hash_including(boundary_proc: boundary_proc)
+            ).at_least(:once).and_call_original
+
+            expect { resolve }.not_to raise_error
+          end
+        end
+      end
+
+      context 'with a boundary proc registered on the field owner' do
+        let(:owner_with_proc) do
+          Class.new(Types::BaseObject) { graphql_name 'GranularTokenProcOwnerType' }
+        end
+
+        let(:boundary_proc) { ->(_obj) { project } }
+
+        let(:field) do
+          create_field_with_directive(
+            owner: owner_with_proc,
+            boundary_type: 'project',
+            permissions: ['read_wiki']
+          )
+        end
+
+        before do
+          allow(owner_with_proc).to receive(:granular_token_boundary_procs)
+            .and_return({ 'project' => boundary_proc })
+        end
+
+        it 'passes the proc to BoundaryExtractor' do
+          expect(Gitlab::Graphql::Authz::BoundaryExtractor).to receive(:new).with(
+            hash_including(boundary_proc: boundary_proc)
+          ).and_call_original
+
+          expect { resolve }.not_to raise_error
+        end
+
+        context 'when no proc is registered for the boundary_type' do
+          before do
+            allow(owner_with_proc).to receive(:granular_token_boundary_procs).and_return({})
+          end
+
+          it 'passes nil boundary_proc to BoundaryExtractor' do
+            expect(Gitlab::Graphql::Authz::BoundaryExtractor).to receive(:new).with(
+              hash_including(boundary_proc: nil)
+            ).and_call_original
+
+            expect { resolve }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+          end
+        end
+
+        context 'when the field owner does not respond to granular_token_boundary_procs' do
+          let(:field) do
+            create_field_with_directive(
+              owner: owner_without_directive,
+              boundary_type: 'project',
+              permissions: ['read_wiki']
+            )
+          end
+
+          it 'passes nil boundary_proc to BoundaryExtractor' do
+            expect(Gitlab::Graphql::Authz::BoundaryExtractor).to receive(:new).with(
+              hash_including(boundary_proc: nil)
+            ).and_call_original
+
+            expect { resolve }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
           end
         end
       end

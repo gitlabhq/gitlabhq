@@ -42,7 +42,7 @@ module QA
 
         Flow::Login.sign_in
         project.visit!
-        Support::Waiter.wait_until(message: 'Wait for pipeline creation') { project.pipelines.length == 1 }
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
 
         # Navigate to Run Pipeline page
         Page::Project::Menu.perform(&:go_to_pipelines)
@@ -52,6 +52,8 @@ module QA
       it 'shows only variables with description as prefill variables on the run pipeline page',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378977' do
         Page::Project::Pipeline::New.perform do |new|
+          new.wait_until(reload: false) { new.has_text?('Variable type') }
+
           aggregate_failures do
             expect(new).to have_field('Variable key', with: 'TEST1')
             expect(new).to have_field('Variable value', with: prefill_variable_value1)
@@ -73,6 +75,8 @@ module QA
       it 'shows dropdown for variables with description, value, and options defined',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/383820' do
         Page::Project::Pipeline::New.perform do |new|
+          new.wait_until(reload: false) { new.has_text?('Variable type') }
+
           aggregate_failures do
             expect(new.variable_dropdown).to have_text('FOO')
 

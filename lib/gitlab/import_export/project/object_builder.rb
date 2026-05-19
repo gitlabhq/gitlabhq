@@ -27,7 +27,6 @@ module Gitlab
           return find_diff_commit_user if diff_commit_user?
           return find_merge_request_commits_metadata if commits_metadata?
           return find_diff_commit if diff_commit?
-          return find_work_item_type if work_item_type?
           return find_pipeline if pipeline?
 
           super
@@ -202,10 +201,6 @@ module Gitlab
           klass == MergeRequestDiffCommit
         end
 
-        def work_item_type?
-          klass == ::WorkItems::TypesFramework::SystemDefined::Type
-        end
-
         def pipeline?
           klass == ::Ci::Pipeline
         end
@@ -233,15 +228,6 @@ module Gitlab
 
         def group_level_object?
           epic?
-        end
-
-        def find_work_item_type
-          base_type = @attributes['base_type']
-
-          find_with_cache([:system_defined_work_item_type, base_type]) do
-            ::WorkItems::TypesFramework::Provider.new.find_by_base_type(base_type) ||
-              ::WorkItems::TypesFramework::Provider.new.default_issue_type
-          end
         end
 
         def find_pipeline

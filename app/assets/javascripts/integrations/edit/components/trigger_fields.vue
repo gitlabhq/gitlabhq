@@ -1,8 +1,8 @@
 <script>
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import { placeholderForType } from 'jh_else_ce/integrations/constants';
+import { useIntegrationForm } from '../store';
 
 export default {
   name: 'TriggerFields',
@@ -23,7 +23,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['isInheriting']),
+    ...mapState(useIntegrationForm, ['isInheriting']),
     defaultPlaceholder() {
       return placeholderForType[this.type];
     },

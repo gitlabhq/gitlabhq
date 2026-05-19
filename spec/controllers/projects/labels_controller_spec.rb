@@ -16,7 +16,7 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
   end
 
   describe 'GET #index' do
-    let_it_be(:label_1) { create(:label, project: project, priority: 1, title: 'Label 1') }
+    let_it_be(:label_1, freeze: false) { create(:label, project: project, priority: 1, title: 'Label 1') }
     let_it_be(:label_2) { create(:label, project: project, priority: 3, title: 'Label 2') }
     let_it_be(:label_3) { create(:label, project: project, priority: 1, title: 'Label 3') }
     let_it_be(:label_4) { create(:label, project: project, title: 'Label 4') }
@@ -182,7 +182,7 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
 
   describe 'POST #promote' do
     let_it_be(:promoted_label_name) { "Promoted Label" }
-    let_it_be(:label_1) { create(:label, title: promoted_label_name, project: project) }
+    let_it_be(:label_1, freeze: false) { create(:label, title: promoted_label_name, project: project) }
 
     context 'not group reporters' do
       it 'denies access' do

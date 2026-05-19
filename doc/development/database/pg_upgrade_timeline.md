@@ -19,9 +19,9 @@ The following sections detail the specific responsibilities assigned to each tea
 
 **Owner: All Cross-functional Teams**
 
-Teams: [Database Operations Team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-operations/), [Database Frameworks Team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/),
-Build Team, [Durability Team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/durability/), [Geo Team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/tenant-scale/geo/),
-[Dedicated Team](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/)
+Teams: [Database Operations Team](https://handbook.gitlab.com/handbook/engineering/data-engineering/database-excellence/database-operations/), [Database Frameworks Team](https://handbook.gitlab.com/handbook/engineering/data-engineering/database-excellence/database-frameworks/),
+[Build Team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/build/), [Geo Team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/tenant-scale/geo/),
+[Dedicated Team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-dedicated/)
 
 This foundational phase initiates the mobilization of resources, with all teams conducting strategic planning for the forthcoming PostgreSQL version implementation.
 

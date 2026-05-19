@@ -28,7 +28,7 @@ module Authn
         @options = options
       end
 
-      def find_token_authenticatable(token_owner_record, unscoped = false)
+      def find_token_authenticatable(token_owner_record, unscoped = false, uniqueness_check: false)
         raise NotImplementedError
       end
 
@@ -124,7 +124,7 @@ module Authn
       def generate_available_token(token_owner_record)
         loop do
           token = generate_token(token_owner_record)
-          break token unless unique && find_token_authenticatable(token, true)
+          break token unless unique && find_token_authenticatable(token, true, uniqueness_check: true)
         end
       end
 

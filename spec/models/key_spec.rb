@@ -13,8 +13,12 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
 
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
-    it { is_expected.to belong_to(:organization) }
+    it { is_expected.to belong_to(:organization).class_name('Organizations::Organization').required }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+
+    it 'is invalid without an organization' do
+      expect(build(:key, organization: nil, organization_id: nil)).not_to be_valid
+    end
   end
 
   describe 'factory' do

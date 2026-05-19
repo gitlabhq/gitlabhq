@@ -6,42 +6,6 @@ module QA
     describe 'Gitlab migration', :import, :orchestrated, requires_admin: 'creates a user via API' do
       include_context 'with gitlab project migration'
 
-      # this spec is used as a sanity test for gitlab migration because it can run outside of orchestrated setup
-      context 'with import within same instance', :skip_live_env, orchestrated: false, import: false do
-        let!(:source_project_with_readme) { true }
-        let!(:source_gitlab_address) { Runtime::Scenario.gitlab_address }
-        let!(:source_admin_api_client) { admin_api_client }
-
-        # do not use top level group (sandbox) to avoid issues when applying permissions etc. because it will contain
-        # a lot subgroups and projects on live envs
-        let!(:source_sandbox) { create(:group, api_client: admin_api_client) }
-
-        let!(:source_group) do
-          create(:group,
-            api_client: admin_api_client,
-            sandbox: source_sandbox,
-            path: "source-group-for-import-#{SecureRandom.hex(4)}",
-            avatar: File.new(Runtime::Path.fixture('designs', 'tanuki.jpg'), 'r'))
-        end
-
-        let!(:target_sandbox) { source_sandbox }
-
-        let(:destination_group_path) { "target-group-for-import-#{SecureRandom.hex(4)}" }
-
-        it(
-          'successfully imports project',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/383351',
-          quarantine: { issue: '/gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/38278', type: :flaky }
-        ) do
-          expect_project_import_finished_successfully
-
-          aggregate_failures do
-            expect(imported_project.name).to eq(source_project.name)
-            expect(imported_project.description).to eq(source_project.description)
-          end
-        end
-      end
-
       context 'with uninitialized project' do
         it(
           'successfully imports project',
@@ -65,17 +29,11 @@ module QA
           end
         end
 
-        let(:source_branches) do
-          source_project.repository_branches.tap do |branches|
-            branches.each do |b|
-              b.delete(:web_url)
-              # Exclude protected field as it reflects project-level branch protection rules
-              # which may legitimately differ between source and imported projects
-              b.delete(:protected)
-              b[:commit].delete(:web_url)
-            end
-          end
-        end
+        # Extract only git-data fields from branches for comparison.
+        # Excludes project-level settings (protected, can_push, developers_can_merge,
+        # developers_can_push) and instance-specific fields (web_url) that legitimately
+        # differ between source and imported projects.
+        let(:source_branches) { comparable_branches(source_project.repository_branches) }
 
         let(:imported_commits) { imported_project.commits.map { |c| c.except(:web_url) } }
         let(:imported_tags) do
@@ -84,15 +42,16 @@ module QA
           end
         end
 
-        let(:imported_branches) do
-          imported_project.repository_branches.tap do |branches|
-            branches.each do |b|
-              b.delete(:web_url)
-              # Exclude protected field as it reflects project-level branch protection rules
-              # which may legitimately differ between source and imported projects
-              b.delete(:protected)
-              b[:commit].delete(:web_url)
-            end
+        let(:imported_branches) { comparable_branches(imported_project.repository_branches) }
+
+        def comparable_branches(branches)
+          branches.map do |b|
+            {
+              name: b[:name],
+              default: b[:default],
+              merged: b[:merged],
+              commit: b[:commit].except(:web_url)
+            }
           end
         end
 
@@ -104,15 +63,12 @@ module QA
 
         it(
           'successfully imports repository',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347570',
-          quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/38685',
-            type: :flaky
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347570'
         ) do
           expect_project_import_finished_successfully
 
           aggregate_failures do
+            expect(imported_project.default_branch).to eq('main')
             expect(imported_commits).to match_array(source_commits)
             expect(imported_tags).to match_array(source_tags)
             expect(imported_branches).to match_array(source_branches)

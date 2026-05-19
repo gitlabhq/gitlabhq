@@ -176,7 +176,9 @@ module Gitlab
           @empty = false
 
           options = { expanded: expand_diff?(raw) }
-          options[:generated] = @generated_files.include?(raw.from_path) if @generated_files
+          path = raw.to_path
+          path = raw.from_path if path.nil? || path.empty?
+          options[:generated] = @generated_files.include?(path) if @generated_files
 
           diff = Gitlab::Git::Diff.new(raw, **options)
 

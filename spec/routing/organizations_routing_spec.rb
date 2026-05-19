@@ -31,6 +31,15 @@ RSpec.describe 'Organization routes', feature_category: :organization do
       it_behaves_like 'organization route exclusion', '/o/my-org/api/graphql'
       it_behaves_like 'organization route exclusion', '/o/my-org/api/glql'
     end
+
+    context 'for group SAML routes', :saas, feature_category: :system_access do
+      before do
+        allow(Group).to receive(:find_by_full_path).with('gitlabhq', any_args).and_return(true)
+      end
+
+      it_behaves_like 'organization route exclusion', '/o/my-org/groups/gitlabhq/-/saml/callback'
+      it_behaves_like 'organization route exclusion', '/o/my-org/groups/gitlabhq/-/saml/sso'
+    end
   end
 
   describe 'included routes from organization routing' do

@@ -1,0 +1,5 @@
+---
+event: MergeRequests::OverrideRequestedChangesStateEvent
+description: Published when a reviewer's "requested changes" status is overridden
+  on a merge request.
+feature_category: code_review_workflow

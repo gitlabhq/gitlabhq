@@ -4,6 +4,8 @@ description: Grants the ability to read a group
 boundaries:
   - group
   - user
+available_for:
+  - granular_access_token
 permissions:
   - read_descendant_group
   - read_group

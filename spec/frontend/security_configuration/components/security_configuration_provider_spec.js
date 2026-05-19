@@ -37,6 +37,7 @@ describe('SecurityConfigurationProvider', () => {
     licenseConfigurationSource: 'gitlab',
     secretDetectionConfigurationPath: '/secret_detection',
     secretPushProtectionAvailable: false,
+    secretPushProtectionEnforced: false,
     secretPushProtectionEnabled: false,
     securityTrainingEnabled: false,
     userIsProjectAdmin: true,

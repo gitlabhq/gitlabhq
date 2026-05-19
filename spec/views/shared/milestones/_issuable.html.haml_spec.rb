@@ -14,7 +14,7 @@ RSpec.describe 'shared/milestones/_issuable.html.haml' do
 
   subject(:rendered) { render 'shared/milestones/issuable', issuable: issuable, show_project_name: true }
 
-  context 'issue' do
+  context 'for issue' do
     let(:issuable) { create(:issue, project: project, assignees: [user]) }
 
     it 'links to the page for the issue' do
@@ -26,7 +26,7 @@ RSpec.describe 'shared/milestones/_issuable.html.haml' do
     end
   end
 
-  context 'merge request' do
+  context 'for merge request' do
     let(:issuable) { create(:merge_request, source_project: project, target_project: project, assignees: [user]) }
 
     it 'links to merge requests page for user' do

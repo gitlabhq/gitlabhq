@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Projects::Members::EffectiveAccessLevelPerUserFinder, '#execute' do
@@ -13,7 +14,7 @@ RSpec.describe Projects::Members::EffectiveAccessLevelPerUserFinder, '#execute' 
     let_it_be(:another_user) { create(:user) }
     let_it_be(:shared_with_group) { create(:group) }
 
-    before do
+    before_all do
       create(:project_group_link, :maintainer, project: project, group: shared_with_group)
       create(:group_group_link, :reporter, shared_group: project.group, shared_with_group: shared_with_group)
 

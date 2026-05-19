@@ -23,9 +23,22 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
       allow(collection).to receive_messages(collection_name: 'test', redact_unauthorized_results!: [[], []])
     end
 
-    it 'calls search on the Opensearch client' do
-      expect(opensearch_client).to receive(:search)
+    it 'calls search on the Opensearch client without _source by default' do
+      expect(opensearch_client).to receive(:search).with(
+        index: 'test',
+        body: hash_not_including(:_source)
+      )
       client.search(collection: collection, query: query, user: user)
+    end
+
+    context 'when source_fields is provided' do
+      it 'includes _source with the specified fields' do
+        expect(opensearch_client).to receive(:search).with(
+          index: 'test',
+          body: hash_including(_source: { includes: ['content'] })
+        )
+        client.search(collection: collection, query: query, user: user, source_fields: ['content'])
+      end
     end
 
     it 'logs search duration and result count' do

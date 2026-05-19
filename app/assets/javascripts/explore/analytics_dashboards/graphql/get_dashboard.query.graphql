@@ -1,0 +1,13 @@
+# @feature_category: custom_dashboards_foundation
+query getDashboard($id: AnalyticsCustomDashboardsDashboardID!) {
+  customDashboard(id: $id) {
+    id
+    name
+    description
+    config
+    organization {
+      id
+      name
+    }
+  }
+}

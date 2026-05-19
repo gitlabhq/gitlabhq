@@ -39,6 +39,9 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
           CI_COMMIT_TIMESTAMP
           CI_COMMIT_AUTHOR
           CI_COMMIT_USER_LOGIN
+          CI_OPEN_MERGE_REQUESTS
+          CI_KUBERNETES_ACTIVE
+          CI_DEPLOY_FREEZE
         ])
       end
     end
@@ -178,6 +181,9 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
           CI_COMMIT_USER_LOGIN
           CI_COMMIT_TAG
           CI_COMMIT_TAG_MESSAGE
+          CI_OPEN_MERGE_REQUESTS
+          CI_KUBERNETES_ACTIVE
+          CI_DEPLOY_FREEZE
         ])
       end
     end
@@ -271,7 +277,6 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
               ).to_s,
               'CI_MERGE_REQUEST_TITLE' => merge_request.title,
               'CI_MERGE_REQUEST_DRAFT' => merge_request.work_in_progress?.to_s,
-              'CI_MERGE_REQUEST_DESCRIPTION' => merge_request.description,
               'CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED' => 'false',
               'CI_MERGE_REQUEST_ASSIGNEES' => merge_request.assignee_username_list,
               'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
@@ -402,7 +407,6 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
               'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA' => merge_request.source_branch_sha,
               'CI_MERGE_REQUEST_TITLE' => merge_request.title,
               'CI_MERGE_REQUEST_DRAFT' => merge_request.work_in_progress?.to_s,
-              'CI_MERGE_REQUEST_DESCRIPTION' => merge_request.description,
               'CI_MERGE_REQUEST_ASSIGNEES' => merge_request.assignee_username_list,
               'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
               'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).sort.join(','),
@@ -599,6 +603,142 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
             'CI_COMMIT_TAG',
             'CI_COMMIT_TAG_MESSAGE'
           )
+      end
+    end
+
+    context 'with lazy variable evaluation', :request_store do
+      let_it_be(:merge_request) do
+        create(:merge_request, :simple, source_project: project, target_project: project)
+      end
+
+      let(:pipeline) do
+        create(:ci_pipeline, :detached_merge_request_pipeline,
+          ci_ref_presence: false,
+          user: user,
+          merge_request: merge_request)
+      end
+
+      it 'does not call expensive Gitaly operations during collection building' do
+        allow(pipeline).to receive(:git_commit_message).and_call_original
+        allow(pipeline).to receive(:git_commit_full_title).and_call_original
+        allow(pipeline).to receive(:git_commit_description).and_call_original
+        allow(pipeline).to receive(:git_commit_timestamp).and_call_original
+        allow(pipeline).to receive(:git_author_full_text).and_call_original
+        allow(pipeline).to receive(:git_author_login).and_call_original
+
+        subject
+
+        expect(pipeline).not_to have_received(:git_commit_message)
+        expect(pipeline).not_to have_received(:git_commit_full_title)
+        expect(pipeline).not_to have_received(:git_commit_description)
+        expect(pipeline).not_to have_received(:git_commit_timestamp)
+        expect(pipeline).not_to have_received(:git_author_full_text)
+        expect(pipeline).not_to have_received(:git_author_login)
+      end
+
+      it 'does not call expensive DB query operations during collection building' do
+        allow(pipeline).to receive(:open_merge_requests_refs).and_call_original
+        allow(pipeline).to receive(:has_kubernetes_active?).and_call_original
+        allow(pipeline).to receive(:freeze_period?).and_call_original
+
+        subject
+
+        expect(pipeline).not_to have_received(:open_merge_requests_refs)
+        expect(pipeline).not_to have_received(:has_kubernetes_active?)
+        expect(pipeline).not_to have_received(:freeze_period?)
+      end
+
+      it 'calls expensive operations only when variable value is accessed' do
+        allow(pipeline).to receive(:git_commit_message).and_call_original
+        allow(pipeline).to receive(:open_merge_requests_refs).and_call_original
+
+        variables = subject
+        hash = variables.to_lazy_hash
+
+        expect(pipeline).not_to have_received(:git_commit_message)
+        expect(pipeline).not_to have_received(:open_merge_requests_refs)
+
+        hash.fetch('CI_COMMIT_MESSAGE')
+        expect(pipeline).to have_received(:git_commit_message).once
+
+        hash.fetch('CI_OPEN_MERGE_REQUESTS')
+        expect(pipeline).to have_received(:open_merge_requests_refs).once
+      end
+
+      it 'memoizes expensive operations after first access' do
+        allow(pipeline).to receive(:git_commit_message).and_call_original
+
+        variables = subject
+        hash = variables.to_hash
+
+        hash['CI_COMMIT_MESSAGE']
+        hash['CI_COMMIT_MESSAGE']
+        hash['CI_COMMIT_MESSAGE']
+
+        expect(pipeline).to have_received(:git_commit_message).once
+      end
+
+      it 'returns correct values for lazy variables' do
+        expect(subject.to_hash).to include(
+          'CI_COMMIT_MESSAGE' => a_kind_of(String),
+          'CI_COMMIT_TITLE' => a_kind_of(String),
+          'CI_COMMIT_DESCRIPTION' => a_kind_of(String),
+          'CI_COMMIT_TIMESTAMP' => a_kind_of(String),
+          'CI_COMMIT_AUTHOR' => a_kind_of(String)
+        )
+      end
+
+      context 'for tag pipelines' do
+        let(:pipeline) do
+          build(:ci_pipeline, project: project, ref: 'test', tag: true)
+        end
+
+        it 'does not call Gitaly tag lookup during collection building' do
+          allow(project.repository).to receive(:find_tag).and_call_original
+
+          subject
+
+          expect(project.repository).not_to have_received(:find_tag)
+        end
+
+        it 'calls Gitaly tag lookup only when CI_COMMIT_TAG_MESSAGE is accessed' do
+          allow(project.repository).to receive(:find_tag).and_call_original
+
+          variables = subject
+          hash = variables.to_lazy_hash
+          expect(project.repository).not_to have_received(:find_tag)
+
+          hash.fetch('CI_COMMIT_TAG_MESSAGE')
+          expect(project.repository).to have_received(:find_tag).once
+        end
+      end
+
+      context 'for branch pipelines (non-MR)' do
+        let(:pipeline) do
+          create(:ci_pipeline, project: project, ref: 'main')
+        end
+
+        it 'does not call expensive Gitaly operations during collection building' do
+          allow(pipeline).to receive(:git_commit_message).and_call_original
+          allow(pipeline).to receive(:git_commit_full_title).and_call_original
+
+          subject
+
+          expect(pipeline).not_to have_received(:git_commit_message)
+          expect(pipeline).not_to have_received(:git_commit_full_title)
+        end
+
+        it 'calls expensive operations only when variable value is accessed' do
+          allow(pipeline).to receive(:git_commit_message).and_call_original
+
+          variables = subject
+          hash = variables.to_lazy_hash
+
+          expect(pipeline).not_to have_received(:git_commit_message)
+
+          hash.fetch('CI_COMMIT_MESSAGE')
+          expect(pipeline).to have_received(:git_commit_message).once
+        end
       end
     end
 

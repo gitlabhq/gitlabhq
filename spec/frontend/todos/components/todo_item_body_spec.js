@@ -23,6 +23,7 @@ import {
   TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
   TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
   TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED,
+  TODO_ACTION_TYPE_DUO_WORKFLOW_INPUT_REQUIRED,
 } from '~/todos/constants';
 import { SAML_HIDDEN_TODO } from '../mock_data';
 
@@ -102,6 +103,23 @@ describe('TodoItemBody', () => {
       createComponent({ action: actionName, memberAccessType: 'group', body: text });
       expect(wrapper.text()).toContain(text);
       expect(wrapper.text().includes('John Doe')).toBe(showsAuthor);
+    });
+
+    it('renders workflow definition and project name for duo_workflow_input_required action', () => {
+      createComponent({
+        action: TODO_ACTION_TYPE_DUO_WORKFLOW_INPUT_REQUIRED,
+        targetEntity: {
+          name: 'workflow',
+          workflowDefinition: 'software_development',
+        },
+        project: {
+          nameWithNamespace: 'my-project',
+        },
+      });
+      expect(wrapper.text()).toContain(
+        'software_development: Approval needed to proceed with next step in my-project.',
+      );
+      expect(wrapper.text().includes('John Doe')).toBe(false);
     });
   });
 

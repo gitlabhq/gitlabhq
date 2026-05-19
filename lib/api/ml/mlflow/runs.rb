@@ -195,7 +195,7 @@ module API
               requires :timestamp, type: Integer, desc: 'Unix timestamp in milliseconds when metric was recorded'
               optional :step, type: Integer, desc: 'Step at which the metric was recorded'
             end
-            optional :params, type: Array, desc: 'Array that contains paramater information', default: [] do
+            optional :params, type: Array, desc: 'Array that contains parameter information', default: [] do
               requires :key, type: String, desc: 'Name for the metric.'
               requires :value, type: String, desc: 'Value of the metric.'
             end

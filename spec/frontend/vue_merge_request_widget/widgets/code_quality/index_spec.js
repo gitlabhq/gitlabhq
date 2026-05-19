@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
@@ -186,6 +187,29 @@ describe('Code Quality widget', () => {
 
       it('is collapsible', () => {
         expect(findWidget().props('isCollapsible')).toBe(true);
+      });
+    });
+
+    describe('tracking', () => {
+      const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+      it('onClick tracks click_view_report_on_merge_request_widget', async () => {
+        mockApi(HTTP_STATUS_OK, responseNewFindings);
+
+        createComponent();
+        await waitForPromises();
+
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        const actionButtons = findWidget().props('actionButtons');
+        const event = { preventDefault: jest.fn() };
+        actionButtons[0].onClick(actionButtons[0], event);
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_view_report_on_merge_request_widget',
+          { label: 'code_quality' },
+          undefined,
+        );
       });
     });
   });

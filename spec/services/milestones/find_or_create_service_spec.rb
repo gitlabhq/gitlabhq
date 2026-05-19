@@ -42,7 +42,7 @@ RSpec.describe Milestones::FindOrCreateService, feature_category: :team_planning
 
         context 'when params are valid' do
           it 'creates a new milestone at project level using params' do
-            expect { service.execute }.to change(project.milestones, :count).by(1)
+            expect { service.execute }.to change { project.milestones.count }.by(1)
 
             milestone = project.reload.milestones.last
 
@@ -70,7 +70,7 @@ RSpec.describe Milestones::FindOrCreateService, feature_category: :team_planning
         end
 
         it 'does not create a new milestone' do
-          expect { service.execute }.not_to change(project.milestones, :count)
+          expect { service.execute }.not_to change { project.milestones.count }
         end
 
         it 'returns nil' do

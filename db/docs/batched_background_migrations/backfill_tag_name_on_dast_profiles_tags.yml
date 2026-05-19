@@ -5,4 +5,4 @@ feature_category: dynamic_application_security_testing
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227567
 milestone: '18.11'
 queued_migration_version: 20260316230000
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: 20260420214921

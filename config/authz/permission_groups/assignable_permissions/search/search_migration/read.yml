@@ -3,5 +3,7 @@ name: read_search_migration
 description: Grants the ability to read search migrations
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - read_search_migration

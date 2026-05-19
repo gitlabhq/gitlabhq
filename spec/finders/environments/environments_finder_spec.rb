@@ -9,7 +9,7 @@ RSpec.describe Environments::EnvironmentsFinder do
   let_it_be(:environment_stopped) { create(:environment, :stopped, name: 'test/test2', project: project) }
   let_it_be(:environment_available) { create(:environment, :available, name: 'test/test3', project: project) }
 
-  before do
+  before_all do
     project.add_maintainer(user)
   end
 

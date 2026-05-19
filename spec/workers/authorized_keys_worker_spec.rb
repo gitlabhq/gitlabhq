@@ -6,7 +6,7 @@ RSpec.describe AuthorizedKeysWorker, feature_category: :source_code_management d
   let(:worker) { described_class.new }
 
   describe '#perform' do
-    context 'authorized_keys is enabled' do
+    context 'when authorized_keys is enabled' do
       before do
         stub_application_setting(authorized_keys_enabled: true)
       end
@@ -52,7 +52,7 @@ RSpec.describe AuthorizedKeysWorker, feature_category: :source_code_management d
       end
     end
 
-    context 'authorized_keys is disabled' do
+    context 'when authorized_keys is disabled' do
       before do
         stub_application_setting(authorized_keys_enabled: false)
       end

@@ -584,6 +584,54 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
     end
   end
 
+  describe 'GET #merge_requests' do
+    let_it_be(:sha) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
+
+    let_it_be(:older_mr) do
+      create(
+        :merge_request,
+        source_project: project,
+        source_branch: 'feature',
+        target_branch: 'master',
+        merge_commit_sha: sha
+      )
+    end
+
+    let_it_be(:newer_mr) do
+      create(
+        :merge_request, :merged,
+        source_project: project,
+        source_branch: 'fix',
+        target_branch: 'master',
+        merge_commit_sha: sha
+      )
+    end
+
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: sha,
+        format: :json
+      }
+    end
+
+    it 'returns merge requests ordered oldest first', :aggregate_failures do
+      sign_in(user)
+
+      get merge_requests_namespace_project_commit_path(params)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.content_type).to eq('application/json; charset=utf-8')
+
+      iids = Gitlab::Json.parse(response.body).pluck('iid')
+
+      expect(iids.count).to eq(2)
+      expect(iids.first).to eq(older_mr.iid)
+      expect(iids.last).to eq(newer_mr.iid)
+    end
+  end
+
   describe 'GET #diff_file' do
     let(:sha) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
     let(:commit) { project.commit_by(oid: sha) }

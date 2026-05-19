@@ -1,3 +1,18 @@
+dap-foundational-flows-release-notes:
+  stage: ai-gateway
+  timeout: 10m
+  needs: []
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
+  script:
+    - ruby scripts/dap_foundational_flows_release_notes.rb
+  rules:
+    - if: '$DAP_RELEASE_NOTES_TOKEN == null || $DAP_RELEASE_NOTES_TOKEN == ""'
+      when: never
+    - if: '$DAP_PROJECT_ID == null || $DAP_PROJECT_ID == ""'
+      when: never
+    - !reference [.ai-gateway:rules:tagging, rules]
+  allow_failure: true
+
 trigger-ai-gateway-tagging:
   stage: ai-gateway
   # We need the tagging process to be executed even if other jobs in the gitlab pipeline fails

@@ -61,7 +61,7 @@ To install the GDK:
 1. For the message `Which GitLab repo URL would you like to clone?`, enter the GitLab community fork URL:
 
    ```shell
-   https://gitlab.com/gitlab-community/gitlab.git
+   https://gitlab.com/gitlab-community/gitlab-org/gitlab.git
    ```
 
 1. For the message `GitLab would like to collect basic error and usage data`,
@@ -121,7 +121,7 @@ If you have an existing GDK installation, you should update it to use the commun
 
    ```shell
    cd gdk
-   git clone https://gitlab.com/gitlab-community/gitlab.git
+   git clone https://gitlab.com/gitlab-community/gitlab-org/gitlab.git
    ```
 
 To confirm it was successful:

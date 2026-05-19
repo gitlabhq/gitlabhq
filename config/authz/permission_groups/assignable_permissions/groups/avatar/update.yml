@@ -1,0 +1,9 @@
+---
+name: update_avatar
+description: Grants the ability to update avatar
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - update_user_avatar

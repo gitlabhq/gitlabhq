@@ -21,3 +21,5 @@ export const WIKI_RESTORE_VERSION_TRACKING_LABEL = 'wiki_restore_version';
 export const WIKI_RESTORE_VERSION_ACTION = 'wiki_restore_version_initiated';
 
 export const WIKI_RESTORE_VERSION_LABEL = 'wiki_restore_version_label';
+
+export const WIKI_ICON = 'book';

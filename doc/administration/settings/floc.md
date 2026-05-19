@@ -1,7 +1,7 @@
 ---
-stage: None - Facilitated functionality, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
-group: Unassigned - Facilitated functionality, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+stage: Facilitated functionality
+group: Facilitated functionality
+info: For more information, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
 title: Federated Learning of Cohorts (FLoC)
 ---
 
@@ -34,7 +34,7 @@ Prerequisites:
 To enable user tracking for interest-based advertising:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Federated Learning of Cohorts (FLoC)**.
 1. Select the **Participate in FLoC** checkbox.
 1. Select **Save changes**.

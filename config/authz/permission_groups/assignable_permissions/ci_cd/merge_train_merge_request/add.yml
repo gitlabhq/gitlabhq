@@ -3,5 +3,7 @@ name: add_merge_train_merge_request
 description: Grants the ability to add merge requests to merge trains
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - add_merge_train_merge_request

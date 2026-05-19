@@ -312,6 +312,10 @@ export default {
       this.$refs.commentForm.append(text);
     },
     discussionIsIndividualNoteAndNotConverted(discussion) {
+      if (discussion.notes?.[0]?.system && discussion.notes?.length === 1) {
+        return true;
+      }
+
       return (
         discussion.individual_note &&
         !this.convertedDisscussionIds.includes(discussion.id) &&

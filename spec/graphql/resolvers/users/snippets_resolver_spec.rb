@@ -7,7 +7,7 @@ RSpec.describe Resolvers::Users::SnippetsResolver, feature_category: :source_cod
 
   describe '#resolve' do
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:other_user) { create(:user) }
+    let_it_be(:other_user, freeze: false) { create(:user) }
     let_it_be(:project) { create(:project) }
 
     let_it_be(:private_personal_snippet) { create(:personal_snippet, :private, author: current_user) }

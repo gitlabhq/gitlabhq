@@ -5,6 +5,7 @@ import { findStartAndDueDateWidget, newWorkItemId } from '~/work_items/utils';
 import { s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import { localeDateFormat, newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   TRACKING_CATEGORY_SHOW,
@@ -27,7 +28,7 @@ export default {
     GlFormGroup,
     WorkItemSidebarWidget,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [glFeatureFlagsMixin(), Tracking.mixin()],
   inject: {
     viewContext: { default: VIEW_CONTEXT.fullScreen },
   },
@@ -112,6 +113,22 @@ export default {
     },
     optimisticResponse() {
       const workItemDatesWidget = findStartAndDueDateWidget(this.workItem);
+      const updatedDates = {
+        dueDate: this.localDueDate ? toISODateFormat(this.localDueDate) : null,
+        startDate: this.localStartDate ? toISODateFormat(this.localStartDate) : null,
+      };
+
+      const editedFeatures = this.workItem?.features
+        ? {
+            features: {
+              ...this.workItem.features,
+              startAndDueDate: {
+                ...(this.workItem.features.startAndDueDate || {}),
+                ...updatedDates,
+              },
+            },
+          }
+        : {};
 
       return {
         workItemUpdate: {
@@ -124,10 +141,10 @@ export default {
               ),
               {
                 ...workItemDatesWidget,
-                dueDate: this.localDueDate ? toISODateFormat(this.localDueDate) : null,
-                startDate: this.localStartDate ? toISODateFormat(this.localStartDate) : null,
+                ...updatedDates,
               },
             ],
+            ...editedFeatures,
           },
         },
       };
@@ -200,6 +217,7 @@ export default {
                 startDate: this.localStartDate ? toISODateFormat(this.localStartDate) : null,
               },
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
           optimisticResponse: this.optimisticResponse,
         })

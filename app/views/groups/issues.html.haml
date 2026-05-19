@@ -1,9 +1,0 @@
-- page_title _('Issues')
-- add_page_specific_style 'page_bundles/issuable_list'
-- add_page_specific_style 'page_bundles/issues_list'
-= content_for :meta_tags do
-  = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@group.name} issues")
-
-%h1.gl-sr-only= page_title
-
-#js-work-items{ data: work_item_views_only_data(@group) }

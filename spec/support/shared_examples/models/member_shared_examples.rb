@@ -384,6 +384,61 @@ RSpec.shared_examples_for "member creation" do
   end
 end
 
+RSpec.shared_examples_for 'member creation with organization isolation' do
+  let_it_be(:organization) { create(:organization) }
+  let(:isolated_source) { create(source_type.model_name.param_key.to_sym, organization: organization) }
+
+  context 'when source organization is isolated' do
+    before_all do
+      organization.mark_as_isolated!
+    end
+
+    context 'when user is a member of the source organization' do
+      let(:new_user) { create(:user, organization: organization) }
+
+      it 'adds the user as a member' do
+        expect(isolated_source).not_to have_user(new_user)
+
+        described_class.add_member(isolated_source, new_user, :maintainer)
+
+        expect(isolated_source.reload).to have_user(new_user)
+      end
+    end
+
+    context 'when user is not a member of the source organization' do
+      let(:new_user) { create(:user) }
+
+      it 'does not add the user as a member', :aggregate_failures do
+        expect(isolated_source).not_to have_user(new_user)
+
+        member = described_class.add_member(isolated_source, new_user, :maintainer)
+
+        expect(isolated_source.reload).not_to have_user(new_user)
+        expect(member).not_to be_persisted
+        expect(member.errors.full_messages).to include(s_('InviteUserToOrganization|already belongs to another organization'))
+      end
+    end
+  end
+
+  context 'when source organization is not isolated' do
+    let(:new_user) { create(:user) }
+
+    before_all do
+      organization.mark_as_not_isolated!
+    end
+
+    context 'when user is not a member of the source organization' do
+      it 'adds the user as a member' do
+        expect(isolated_source).not_to have_user(new_user)
+
+        described_class.add_member(isolated_source, new_user, :maintainer)
+
+        expect(isolated_source.reload).to have_user(new_user)
+      end
+    end
+  end
+end
+
 RSpec.shared_examples_for "bulk member creation" do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user1) { create(:user, email: 'bob@example.com') }

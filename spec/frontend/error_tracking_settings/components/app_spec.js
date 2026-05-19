@@ -1,17 +1,17 @@
 import { GlFormRadioGroup, GlFormRadio, GlFormInputGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ErrorTrackingSettings from '~/error_tracking_settings/components/app.vue';
 import ErrorTrackingForm from '~/error_tracking_settings/components/error_tracking_form.vue';
 import ProjectDropdown from '~/error_tracking_settings/components/project_dropdown.vue';
-import createStore from '~/error_tracking_settings/store';
+import { useErrorTrackingSettings } from '~/error_tracking_settings/store';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 const TEST_GITLAB_DSN = 'https://gitlab.example.com/123456';
 
@@ -35,15 +35,18 @@ describe('error tracking settings app', () => {
     props = defaultProps,
     stubs = {},
   } = {}) {
+    const pinia = createTestingPinia({ stubActions: false });
+    store = useErrorTrackingSettings();
+
     wrapper = extendedWrapper(
       shallowMount(ErrorTrackingSettings, {
-        store, // Override the imported store
+        pinia,
         propsData: { ...props },
         provide: {
           glFeatures,
         },
         stubs: {
-          GlFormInputGroup, // we need this non-shallow to query for a component within a slot
+          GlFormInputGroup,
           ...stubs,
         },
       }),
@@ -66,8 +69,6 @@ describe('error tracking settings app', () => {
   };
 
   beforeEach(() => {
-    store = createStore();
-
     mountComponent();
   });
 
@@ -86,7 +87,7 @@ describe('error tracking settings app', () => {
     });
 
     it('disables the button when saving', async () => {
-      store.state.settingsLoading = true;
+      store.settingsLoading = true;
 
       await nextTick();
       expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBeDefined();
@@ -195,14 +196,13 @@ describe('error tracking settings app', () => {
       it.each([true, false])(
         'calls the `updateIntegrated` action when the setting changes to `%s`',
         (integrated) => {
-          jest.spyOn(store, 'dispatch').mockImplementation();
-
-          expect(store.dispatch).toHaveBeenCalledTimes(0);
+          // The component's created() fires updateIntegrated once on mount; clear before asserting.
+          store.updateIntegrated.mockClear();
 
           findBackendSettingsRadioGroup().vm.$emit('change', integrated);
 
-          expect(store.dispatch).toHaveBeenCalledTimes(1);
-          expect(store.dispatch).toHaveBeenCalledWith('updateIntegrated', integrated);
+          expect(store.updateIntegrated).toHaveBeenCalledTimes(1);
+          expect(store.updateIntegrated).toHaveBeenCalledWith(integrated);
         },
       );
     });

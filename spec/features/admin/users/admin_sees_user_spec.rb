@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin::Users::User', feature_category: :user_management, quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24859' do
+RSpec.describe 'Admin::Users::User', :enable_admin_mode, feature_category: :user_management, quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24859' do
   include Features::AdminUsersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
@@ -11,7 +11,6 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management, quarant
 
   before do
     sign_in(current_user)
-    enable_admin_mode!(current_user, use_ui: true)
   end
 
   describe 'GET /admin/users/:id' do

@@ -1,0 +1,11 @@
+---
+name: delete_webhook
+description: Grants the ability to delete webhooks
+boundaries:
+  - group
+  - project
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_webhook

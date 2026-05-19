@@ -78,6 +78,10 @@ export function fetchDrafts() {
         }
       });
     })
+    .catch((e) => {
+      this.fetchDraftsPromise = null;
+      throw e;
+    })
     .finally(() => {
       this.isDraftsFetched = true;
     });

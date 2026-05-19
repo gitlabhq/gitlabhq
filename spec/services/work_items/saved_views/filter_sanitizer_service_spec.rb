@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe WorkItems::SavedViews::FilterSanitizerService, feature_category: :portfolio_management do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:project, freeze: false) { create(:project, group: group) }
 
   let(:namespace) { group }
   let(:filter_data) { {} }
@@ -336,7 +336,7 @@ RSpec.describe WorkItems::SavedViews::FilterSanitizerService, feature_category: 
     end
 
     describe 'release validation' do
-      let_it_be(:release) { create(:release, project: project) }
+      let_it_be(:release, freeze: false) { create(:release, project: project) }
       let(:namespace) { project.project_namespace }
 
       context 'with valid release ID' do

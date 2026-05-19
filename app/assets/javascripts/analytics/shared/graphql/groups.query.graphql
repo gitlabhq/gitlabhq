@@ -1,0 +1,12 @@
+# @feature_category: product_analytics
+
+query analyticsGetGroups($search: String!, $first: Int!, $topLevelOnly: Boolean = false) {
+  groups(search: $search, first: $first, topLevelOnly: $topLevelOnly, sort: "name_asc") {
+    nodes {
+      id
+      name
+      avatarUrl
+      fullPath
+    }
+  }
+}

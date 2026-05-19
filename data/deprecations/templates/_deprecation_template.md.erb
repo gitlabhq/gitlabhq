@@ -34,7 +34,7 @@ located at `lib/tasks/gitlab/docs/compile_deprecations.rake`,
 For deprecation authors (usually Product Managers and Engineering Managers):
 
 - To add a deprecation, use the example.yml file in `/data/deprecations/templates` as a template.
-- For more information about authoring deprecations, check the the deprecation item guidance:
+- For more information about authoring deprecations, check the deprecation item guidance:
   <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
 
 For deprecation reviewers (Technical Writers only):

@@ -137,7 +137,7 @@ for Wiki and Design Repository cases.
 
 Personal and project snippets, and group wiki content, are stored in Git repositories.
 
-Project forks are deduplicated in live a GitLab site using pool repositories.
+Project forks are deduplicated in a GitLab site using pool repositories.
 
 The backup command produces a Git bundle for each repository and tars them all up. This duplicates pool repository data into every fork. In our testing, 100 GB of Git repositories took a little over 2 hours to back up and upload to S3. At around 400 GB of Git data, the backup command is likely not viable for regular backups. For more information, see [alternative backup strategies](#alternative-backup-strategies).
 
@@ -179,6 +179,13 @@ GitLab container registry storage can be configured in either:
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
 The backup command does not back up registry data when they are stored in Object Storage.
+
+#### Metadata database
+
+If you have enabled the [container registry metadata database](https://docs.gitlab.com/charts/charts/registry/metadata_database), you must configure access to the registry database during the backup. Follow the instructions for your GitLab installation to configure the required credentials:
+
+- [Linux packaged instructions](https://docs.gitlab.com/omnibus/settings/backups/#container-registry-metadata-database-backup-credentials)
+- [GitLab Helm chart](https://docs.gitlab.com/charts/charts/gitlab/toolbox/#registry-metadata-database-credentials)
 
 See also:
 
@@ -462,7 +469,7 @@ DECOMPRESS_CMD=tee gitlab-backup restore
 An example of compressing backups with `pigz` using 4 processes:
 
 ```shell
-sudo COMPRESS_CMD="pigz --compress --stdout --fast --processes=4" gitlab-backup create
+sudo COMPRESS_CMD="pigz --stdout --fast --processes 4" gitlab-backup create
 ```
 
 Because `pigz` compresses to the `gzip` format, it is not required to use `pigz` to decompress backups which were compressed by `pigz`. However, it can still have a performance benefit over `gzip`. An example of decompressing backups with `pigz`:

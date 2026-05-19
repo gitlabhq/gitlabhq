@@ -59,7 +59,7 @@ export default {
         });
     },
     onClose() {
-      this.$emit('promotionModalVisible', false);
+      this.$emit('promotion-modal-visible', false);
     },
   },
   primaryAction: {

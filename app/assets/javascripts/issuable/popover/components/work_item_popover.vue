@@ -6,6 +6,7 @@ import {
   GlTooltipDirective,
   GlAvatarsInline,
 } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { n__ } from '~/locale';
 import query from 'ee_else_ce/issuable/popover/queries/issue.query.graphql';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
@@ -44,6 +45,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   mixins: [glFeatureFlagsMixin(), timeagoMixin],
   props: {
@@ -60,6 +62,11 @@ export default {
       required: true,
     },
     cachedTitle: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    cachedTitleHtml: {
       type: String,
       required: false,
       default: '',
@@ -175,7 +182,11 @@ export default {
             {{ __('Opened') }} <time :datetime="workItem.createdAt">{{ formattedTime }}</time>
           </span>
         </div>
-        <div class="gl-heading-5 gl-my-3" data-testid="popover-title">{{ workItem.title }}</div>
+        <div
+          v-safe-html="workItem.titleHtml"
+          class="gl-heading-5 gl-my-3"
+          data-testid="popover-title"
+        ></div>
         <div>
           <work-item-type-icon
             :work-item-type="workItemTypeName"
@@ -216,7 +227,10 @@ export default {
         </div>
       </template>
       <template v-else>
-        <div class="gl-heading-5 gl-my-3" data-testid="popover-title">{{ cachedTitle }}</div>
+        <div class="gl-heading-5 gl-my-3" data-testid="popover-title">
+          <span v-if="cachedTitleHtml" v-safe-html="cachedTitleHtml"></span>
+          <template v-else>{{ cachedTitle }}</template>
+        </div>
       </template>
     </div>
   </gl-popover>

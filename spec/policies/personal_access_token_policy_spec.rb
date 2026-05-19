@@ -60,4 +60,77 @@ RSpec.describe PersonalAccessTokenPolicy do
       it { is_expected.to be_disallowed(:revoke_personal_access_token) }
     end
   end
+
+  context "for a service account's token", feature_category: :user_management do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+
+    shared_examples 'follows admin_service_accounts on the provisioning scope' do
+      context 'when the actor owns the provisioning scope' do
+        before do
+          scope_owner.add_owner(current_user)
+        end
+
+        it { is_expected.to be_allowed(:revoke_personal_access_token) }
+
+        context 'when the actor is blocked' do
+          let(:current_user) { create(:user, :blocked) }
+
+          it { is_expected.to be_disallowed(:revoke_personal_access_token) }
+        end
+      end
+
+      context 'when the actor is not a member of the provisioning scope' do
+        it { is_expected.to be_disallowed(:revoke_personal_access_token) }
+      end
+    end
+
+    context 'group-provisioned' do
+      let_it_be(:service_account) { create(:user, :service_account, provisioned_by_group: group) }
+      let_it_be(:token) { create(:personal_access_token, user: service_account) }
+      let(:current_user) { create(:user) }
+      let(:scope_owner) { group }
+
+      it_behaves_like 'follows admin_service_accounts on the provisioning scope'
+
+      context 'when the actor is a group maintainer (no admin_service_accounts at group level)' do
+        let_it_be(:maintainer) { create(:user) }
+        let(:current_user) { maintainer }
+
+        before_all do
+          group.add_maintainer(maintainer)
+        end
+
+        it { is_expected.to be_disallowed(:revoke_personal_access_token) }
+      end
+    end
+
+    context 'project-provisioned' do
+      let_it_be(:service_account) { create(:user, :service_account, provisioned_by_project: project) }
+      let_it_be(:token) { create(:personal_access_token, user: service_account) }
+      let(:current_user) { create(:user) }
+      let(:scope_owner) { project }
+
+      it_behaves_like 'follows admin_service_accounts on the provisioning scope'
+
+      context 'when the actor is a project maintainer (has admin_service_accounts at project level)' do
+        let_it_be(:maintainer) { create(:user) }
+        let(:current_user) { maintainer }
+
+        before_all do
+          project.add_maintainer(maintainer)
+        end
+
+        it { is_expected.to be_allowed(:revoke_personal_access_token) }
+      end
+    end
+
+    context 'with no provisioning scope' do
+      let_it_be(:service_account) { create(:user, :service_account) }
+      let_it_be(:token) { create(:personal_access_token, user: service_account) }
+      let(:current_user) { create(:user) }
+
+      it { is_expected.to be_disallowed(:revoke_personal_access_token) }
+    end
+  end
 end

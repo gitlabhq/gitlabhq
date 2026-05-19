@@ -5,7 +5,9 @@ require_relative '../../../../../../tooling/ai_harness/doctor/steps/perform_doct
 
 RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::CheckForbiddenFiles, feature_category: :tooling do
   let(:repo_root) { Dir.mktmpdir }
-  let(:context) { { repo_root: repo_root, fix: false, results: [] } }
+  let(:allowed_prefix) { '.claude/skills/example-allowed-skill/SKILL.md' }
+  let(:config) { { 'allowed_committed_files' => [allowed_prefix] } }
+  let(:context) { { repo_root: repo_root, config: config, fix: false, results: [] } }
 
   after do
     FileUtils.rm_rf(repo_root)
@@ -39,7 +41,35 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::CheckForbiddenFile
       end
     end
 
-    context 'when .claude/skills/ file is committed' do
+    context 'when an allowed file from the allowlist is committed' do
+      before do
+        add_tracked_file(allowed_prefix)
+      end
+
+      it 'reports OK (intentionally committed project content)' do
+        result = described_class.check(context)
+
+        expect(result[:results].last[:status]).to eq('OK')
+      end
+    end
+
+    context 'when allowed and forbidden files are both committed' do
+      before do
+        add_tracked_file(allowed_prefix)
+        add_tracked_file('.claude/skills/my-personal-skill.md')
+      end
+
+      it 'reports FAIL only for the non-allowlisted file' do
+        result = described_class.check(context)
+
+        check = result[:results].last
+        expect(check[:status]).to eq('FAIL')
+        expect(check[:details].join).to include('my-personal-skill.md')
+        expect(check[:details].join).not_to include(allowed_prefix)
+      end
+    end
+
+    context 'when a file outside the allowlist is committed' do
       before do
         add_tracked_file('.claude/skills/my-skill.md')
       end
@@ -182,7 +212,7 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::CheckForbiddenFile
     end
 
     context 'with --fix when forbidden files are committed' do
-      let(:context) { { repo_root: repo_root, fix: true, results: [] } }
+      let(:context) { { repo_root: repo_root, config: config, fix: true, results: [] } }
 
       before do
         add_tracked_file('.claude/rules/foo.md')
@@ -196,13 +226,19 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::CheckForbiddenFile
     end
 
     it 'destructures context with type assertions' do
-      bad_context = { repo_root: 123, results: [] }
+      bad_context = { repo_root: 123, config: config, results: [] }
 
       expect { described_class.check(bad_context) }.to raise_error(NoMatchingPatternError)
     end
 
+    it 'raises NoMatchingPatternKeyError when config key is missing' do
+      bad_context = { repo_root: repo_root, results: [] }
+
+      expect { described_class.check(bad_context) }.to raise_error(NoMatchingPatternKeyError)
+    end
+
     it 'raises when git ls-files fails and includes git stderr in the message' do
-      bad_context = { repo_root: '/nonexistent/path', results: [] }
+      bad_context = { repo_root: '/nonexistent/path', config: config, results: [] }
 
       expect { described_class.check(bad_context) }.to raise_error(
         RuntimeError, /git ls-files failed.*cannot change to/

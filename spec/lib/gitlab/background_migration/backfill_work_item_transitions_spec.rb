@@ -117,7 +117,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillWorkItemTransitions, feature
       end
 
       before do
-        # Since we have a trigger thats creates a work_item_transitions record, we need to destroy it for the spec.
+        # Since we have a trigger that creates a work_item_transitions record, we need to destroy it for the spec.
         work_item_transitions_table.find_by!(work_item_id: issue_without_transitions.id).destroy!
       end
 

@@ -182,7 +182,7 @@ In these cases, refer to [scaling an environment](_index.md#scaling-an-environme
 Our testing environment uses:
 
 - HAProxy for Linux package environments
-- Cloud Provider equivalents with NGINX Ingress for Cloud Native Hybrids
+- Cloud Provider equivalents with a Gateway API or Ingress implementation for Cloud Native Hybrids
 
 ## Set up components
 
@@ -2316,11 +2316,11 @@ least 9 Webservice pods.
 
 For further information on Webservice resource usage, see the Charts documentation on [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
 
-##### NGINX
+##### Gateway API / Ingress
 
-It's also recommended deploying the NGINX controller pods across the Webservice nodes as a DaemonSet. It allows the controllers to scale dynamically with the Webservice pods they serve and take advantage of the higher network bandwidth larger machine types typically have.
+It's also recommended deploying the Gateway API or Ingress controller pods across the Webservice nodes as a DaemonSet. It allows the controllers to scale dynamically with the Webservice pods they serve and take advantage of the higher network bandwidth larger machine types typically have.
 
-This isn't a strict requirement. The NGINX controller pods can be deployed as desired as long as they have enough resources to handle the web traffic.
+This isn't a strict requirement. The Gateway API or Ingress controller pods can be deployed as desired as long as they have enough resources to handle the web traffic.
 
 #### Sidekiq
 

@@ -202,6 +202,25 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
+      it 'returns :bad_request when the service returns a validation error' do
+        put api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", admin, admin_mode: true), params: { value: '' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to include(a_string_matching(/Value can't be blank/))
+      end
+
+      it 'returns :forbidden when the service returns an unauthorized error' do
+        expect_next_instance_of(::CustomAttributes::UpsertService) do |service|
+          expect(service).to receive(:execute).and_return(
+            ServiceResponse.error(message: 'unauthorized', reason: :unauthorized)
+          )
+        end
+
+        put api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", admin, admin_mode: true), params: { value: 'new' }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
       it_behaves_like 'authorizing granular token permissions', :update_custom_attribute do
         let(:boundary_object) { boundary_type }
         let(:user) { admin }
@@ -233,6 +252,11 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
 
       it "returns :not_found when #{attributable_name} does not exist" do
         delete api("/#{attributable_name}/#{non_existing_record_id}/custom_attributes/foo", admin, admin_mode: true)
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns :not_found when the custom attribute does not exist' do
+        delete api("/#{attributable_name}/#{attributable.id}/custom_attributes/nonexistent", admin, admin_mode: true)
         expect(response).to have_gitlab_http_status(:not_found)
       end
 

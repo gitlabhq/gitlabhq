@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Resolvers::Projects::BranchRulesResolver, feature_category: :source_code_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user) }
 
-  let_it_be(:protected_branch_a) { create(:protected_branch, project: project, name: 'a') }
+  let_it_be(:protected_branch_a, freeze: false) { create(:protected_branch, project: project, name: 'a') }
   let_it_be(:protected_branch_b) { create(:protected_branch, project: project, name: 'b') }
   let_it_be(:protected_branch_c) { create(:protected_branch, project: project, name: 'g') }
   let_it_be(:protected_branch_d) { create(:protected_branch, project: project, name: 'd') }
@@ -34,8 +34,7 @@ RSpec.describe Resolvers::Projects::BranchRulesResolver, feature_category: :sour
     end
 
     subject(:resolved) do
-      field = ::Types::BaseField.from_options(
-        'field_value',
+      field = ::Types::BaseField.new(
         name: 'branch_rules',
         owner: resolver_parent,
         resolver_class: described_class,
@@ -87,8 +86,7 @@ RSpec.describe Resolvers::Projects::BranchRulesResolver, feature_category: :sour
 
     context 'with after cursor' do
       let(:first_page) do
-        field = ::Types::BaseField.from_options(
-          'field_value',
+        field = ::Types::BaseField.new(
           name: 'branch_rules',
           owner: resolver_parent,
           resolver_class: described_class,

@@ -10,8 +10,8 @@ module ActiveContext
           ActiveContext::Tracker.track!(objects, collection: self, queue: queue)
         end
 
-        def search(user:, query:)
-          ActiveContext.adapter.search(query: query, user: user, collection: self)
+        def search(user:, query:, source_fields: nil)
+          ActiveContext.adapter.search(query: query, user: user, collection: self, source_fields: source_fields)
         end
 
         def collection_name

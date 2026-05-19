@@ -10,11 +10,13 @@ export const ACTION_DELETE = 'delete';
 export const ACTION_DELETE_IMMEDIATELY = 'delete-immediately';
 export const ACTION_REQUEST_ACCESS = 'request-access';
 export const ACTION_WITHDRAW_ACCESS_REQUEST = 'withdraw-access-request';
+export const ACTION_TRANSFER = 'transfer';
 
 // The order the actions are defined in the array is the order they will render.
 export const ORDERED_GENERAL_ACTIONS = [
   ACTION_COPY_ID,
   ACTION_EDIT,
+  ACTION_TRANSFER,
   ACTION_ARCHIVE,
   ACTION_UNARCHIVE,
   ACTION_RESTORE,
@@ -34,6 +36,9 @@ export const DEFAULT_ACTION_ITEM_DEFINITIONS = {
   },
   [ACTION_EDIT]: {
     text: __('Edit'),
+  },
+  [ACTION_TRANSFER]: {
+    text: __('Transfer'),
   },
   [ACTION_ARCHIVE]: {
     text: __('Archive'),

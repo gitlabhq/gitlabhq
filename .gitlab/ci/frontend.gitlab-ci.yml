@@ -53,7 +53,6 @@ compile-production-assets:
     - !reference [.compile-assets-base, before_script]
     - !reference [.buildx-setup, before_script]
   after_script:
-    - !reference [.compile-assets-base, after_script]
     - source scripts/utils.sh
     - echo "GLCI_ASSETS_IMAGE_TAG=$(assets_image_tag)" > $GLCI_ASSETS_TAG_ENV_FILE_PATH
   artifacts:
@@ -167,7 +166,6 @@ generate-js-routes:
     - .base-script
     - .ruby-cache
     - .repo-from-artifacts
-    - .cache-analytics
   stage: fixtures
   needs:
     - setup-test-env
@@ -551,14 +549,18 @@ jest-msw-integration:
     - .repo-from-artifacts
     - .frontend:rules:jest-msw-integration
   script:
-    - yarn jest:msw-integration --ci --passWithNoTests
+    - yarn jest:msw-integration --ci --passWithNoTests --forceExit
   needs:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
+    - !reference [.frontend-test-base, needs]
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
-    - job: compile-fe-islands
-      optional: true
+
+jest-msw-integration vue3:
+  extends:
+    - jest-msw-integration
+    - .vue3
 
 jest-integration:
   extends:

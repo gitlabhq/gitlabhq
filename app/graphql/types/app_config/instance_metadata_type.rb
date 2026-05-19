@@ -6,6 +6,7 @@ module Types
       graphql_name 'Metadata'
 
       authorize :read_instance_metadata
+      authorize_granular_token permissions: :read_metadata, boundary: :instance, boundary_type: :instance
 
       field :enterprise, GraphQL::Types::Boolean, null: false,
         description: 'Enterprise edition.'

@@ -10,7 +10,7 @@ RSpec.describe 'shared/issuable/_sidebar.html.haml' do
       .represent(issuable, serializer: 'sidebar'), assignees: []
   end
 
-  context 'project in a group' do
+  context 'with project in a group' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
     let_it_be(:issue) { create(:issue, project: project) }
@@ -20,7 +20,7 @@ RSpec.describe 'shared/issuable/_sidebar.html.haml' do
       assign(:project, project)
     end
 
-    context 'issuable that does not support escalations' do
+    context 'for issuable that supports escalations' do
       let(:issuable) { incident }
 
       it 'shows escalation policy dropdown' do
@@ -28,7 +28,7 @@ RSpec.describe 'shared/issuable/_sidebar.html.haml' do
       end
     end
 
-    context 'issuable that supports escalations' do
+    context 'for issuable that does not support escalations' do
       let(:issuable) { issue }
 
       it 'does not show escalation policy dropdown' do
@@ -36,7 +36,7 @@ RSpec.describe 'shared/issuable/_sidebar.html.haml' do
       end
     end
 
-    context 'crm contacts widget' do
+    context 'for crm contacts widget' do
       let(:issuable) { issue }
 
       context 'without permission' do

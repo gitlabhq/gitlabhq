@@ -57,7 +57,7 @@ Prerequisites:
 To create an incident from the **Incidents** page:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Monitor** > **Incidents**.
+1. In the left sidebar, select **Monitor** > **Incidents**.
 1. Select **Create incident**.
 
 ### From the Work items page
@@ -69,7 +69,7 @@ Prerequisites:
 To create an incident from the **Work items** page:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, and select **New item**.
+1. In the left sidebar, select **Plan** > **Work items**, and select **New item**.
 1. From the **Type** dropdown list, select **Incident**. Only fields relevant to
    incidents are available on the page.
 1. Select **Create incident**.
@@ -86,7 +86,7 @@ Prerequisites:
 To create an incident from an alert:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Monitor** > **Alerts**.
+1. In the left sidebar, select **Monitor** > **Alerts**.
 1. Select your desired alert.
 1. Select **Create incident**.
 
@@ -127,7 +127,7 @@ Prerequisites:
 To set up a webhook with PagerDuty:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Monitor**
+1. In the left sidebar, select **Settings** > **Monitor**
 1. Expand **Incidents**.
 1. Select the **PagerDuty integration** tab.
 1. Turn on the **Active** toggle.
@@ -143,7 +143,7 @@ check if a GitLab incident is created from the incident.
 To view a list of the [incidents](incidents.md#incidents-list):
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Monitor** > **Incidents**.
+1. In the left sidebar, select **Monitor** > **Incidents**.
 
 To view an incident's [details page](incidents.md#incident-details), select it from the list.
 
@@ -285,7 +285,7 @@ Prerequisites:
 To configure the setting:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Monitor**.
+1. In the left sidebar, select **Settings** > **Monitor**.
 1. Expand the **Incidents** section.
 1. Select the **Automatically close associated incident** checkbox.
 1. Select **Save changes**.

@@ -82,6 +82,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['fetch-suggestions', 'input'],
   data() {
     return {
       hasFetched: false, // use this to avoid flash of `No suggestions found` before fetching

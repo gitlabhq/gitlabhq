@@ -1,14 +1,32 @@
-query getCatalogResourcesCount($searchTerm: String) {
-  all: ciCatalogResources(scope: ALL, search: $searchTerm) {
+# @feature_category: pipeline_composition
+
+query getCatalogResourcesCount(
+  $searchTerm: String
+  $verificationLevel: CiCatalogResourceVerificationLevel
+  $topics: [String!]
+) {
+  all: ciCatalogResources(
+    scope: ALL
+    search: $searchTerm
+    verificationLevel: $verificationLevel
+    topics: $topics
+  ) {
     count
   }
-  namespaces: ciCatalogResources(scope: NAMESPACES, search: $searchTerm) {
+  namespaces: ciCatalogResources(
+    scope: NAMESPACES
+    search: $searchTerm
+    verificationLevel: $verificationLevel
+    topics: $topics
+  ) {
     count
   }
   analytics: ciCatalogResources(
     scope: NAMESPACES
     minAccessLevel: MAINTAINER
     search: $searchTerm
+    verificationLevel: $verificationLevel
+    topics: $topics
   ) {
     count
   }

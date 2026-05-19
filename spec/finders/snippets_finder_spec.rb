@@ -366,6 +366,21 @@ RSpec.describe SnippetsFinder do
           expect(described_class.new(user, only_project: true).execute).to be_empty
         end
       end
+
+      context 'when a project is provided' do
+        before_all do
+          project.add_developer(user)
+        end
+
+        it 'returns project snippets even without read_cross_project' do
+          snippets = described_class.new(user, project: project).execute
+          expect(snippets).to contain_exactly(
+            private_project_snippet,
+            internal_project_snippet,
+            public_project_snippet
+          )
+        end
+      end
     end
 
     context 'when project snippets are disabled' do
@@ -432,13 +447,13 @@ RSpec.describe SnippetsFinder do
       end
 
       context 'when including project snippets' do
-        it 'returns project snippets regardless of organization' do
+        it 'returns only project snippets from the specified organization' do
           snippets = described_class.new(user_org1, scope: :all, organization_id: org1.id).execute
 
-          # Should include both org1 personal snippets AND all visible project snippets
-          expect(snippets).to include(snippet_org1_private, snippet_org1_public, project_snippet_org1, project_snippet_org2)
-          # Should NOT include personal snippets from other orgs
-          expect(snippets).not_to include(snippet_org2_private, snippet_org2_public)
+          # Should include org1 personal snippets AND org1 project snippets
+          expect(snippets).to include(snippet_org1_private, snippet_org1_public, project_snippet_org1)
+          # Should NOT include snippets from other orgs (personal OR project)
+          expect(snippets).not_to include(snippet_org2_private, snippet_org2_public, project_snippet_org2)
         end
       end
 

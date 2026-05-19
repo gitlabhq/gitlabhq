@@ -300,6 +300,12 @@ Settings.ci_secure_files['storage_path'] = Settings.absolute(Settings.ci_secure_
 Settings.ci_secure_files['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ci_secure_files['object_store'], 'secure_files')
 
 #
+# Agent Plan Content
+#
+Settings['agent_plan_content'] ||= {}
+Settings.agent_plan_content['storage_path'] = Settings.absolute(Settings.agent_plan_content['storage_path'] || File.join(Settings.shared['path'], "agent_plan_content"))
+Settings.agent_plan_content['object_store'] = ObjectStoreSettings.legacy_parse(Settings.agent_plan_content['object_store'], 'agent_plan_content')
+
 # AI Catalog
 #
 Settings['ai_catalog'] ||= {}
@@ -518,6 +524,14 @@ Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary']['args'] = {
   'table_name' => 'emails',
   'column_name' => 'id'
 }
+Settings.cron_jobs['background_operation_environments_auto_delete'] ||= {}
+Settings.cron_jobs['background_operation_environments_auto_delete']['cron'] ||= '24 * * * *'
+Settings.cron_jobs['background_operation_environments_auto_delete']['job_class'] = 'Database::BackgroundOperation::CronEnqueueWorker'
+Settings.cron_jobs['background_operation_environments_auto_delete']['args'] = {
+  'job_class_name' => 'EnvironmentsAutoDelete',
+  'table_name' => 'environments',
+  'column_name' => 'id'
+}
 
 Settings.cron_jobs['adjourned_group_deletion_worker'] ||= {}
 Settings.cron_jobs['adjourned_group_deletion_worker']['cron'] ||= '0 2 * * *'
@@ -541,9 +555,6 @@ Settings.cron_jobs['drop_timed_out_worker']['job_class'] = 'Ci::TimedOutBuilds::
 Settings.cron_jobs['pipeline_schedule_worker'] ||= {}
 Settings.cron_jobs['pipeline_schedule_worker']['cron'] ||= '3-59/10 * * * *'
 Settings.cron_jobs['pipeline_schedule_worker']['job_class'] = 'PipelineScheduleWorker'
-Settings.cron_jobs['expire_build_artifacts_worker'] ||= {}
-Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '*/7 * * * *'
-Settings.cron_jobs['expire_build_artifacts_worker']['job_class'] = 'ExpireBuildArtifactsWorker'
 Settings.cron_jobs['ci_schedule_bulk_delete_job_artifact_cron_worker'] ||= {}
 Settings.cron_jobs['ci_schedule_bulk_delete_job_artifact_cron_worker']['cron'] ||= '*/30 * * * *'
 Settings.cron_jobs['ci_schedule_bulk_delete_job_artifact_cron_worker']['job_class'] = 'Ci::ScheduleBulkDeleteJobArtifactCronWorker'
@@ -562,9 +573,7 @@ Settings.cron_jobs['ci_schedule_delete_objects_worker']['job_class'] = 'Ci::Sche
 Settings.cron_jobs['environments_auto_stop_cron_worker'] ||= {}
 Settings.cron_jobs['environments_auto_stop_cron_worker']['cron'] ||= '24 * * * *'
 Settings.cron_jobs['environments_auto_stop_cron_worker']['job_class'] = 'Environments::AutoStopCronWorker'
-Settings.cron_jobs['environments_auto_delete_cron_worker'] ||= {}
-Settings.cron_jobs['environments_auto_delete_cron_worker']['cron'] ||= '34 * * * *'
-Settings.cron_jobs['environments_auto_delete_cron_worker']['job_class'] = 'Environments::AutoDeleteCronWorker'
+
 Settings.cron_jobs['repository_check_worker'] ||= {}
 Settings.cron_jobs['repository_check_worker']['cron'] ||= '20 * * * *'
 Settings.cron_jobs['repository_check_worker']['job_class'] = 'RepositoryCheck::DispatchWorker'
@@ -686,7 +695,7 @@ Settings.cron_jobs['postgres_dynamic_partitions_manager'] ||= {}
 Settings.cron_jobs['postgres_dynamic_partitions_manager']['cron'] ||= '21 */6 * * *'
 Settings.cron_jobs['postgres_dynamic_partitions_manager']['job_class'] ||= 'Database::PartitionManagementWorker'
 Settings.cron_jobs['postgres_dynamic_partitions_dropper'] ||= {}
-Settings.cron_jobs['postgres_dynamic_partitions_dropper']['cron'] ||= '45 12 * * *'
+Settings.cron_jobs['postgres_dynamic_partitions_dropper']['cron'] ||= '20 3 * * *'
 Settings.cron_jobs['postgres_dynamic_partitions_dropper']['job_class'] ||= 'Database::DropDetachedPartitionsWorker'
 Settings.cron_jobs['analytics_usage_trends_count_job_trigger_worker'] ||= {}
 Settings.cron_jobs['analytics_usage_trends_count_job_trigger_worker']['cron'] ||= '50 23 */1 * *'
@@ -905,6 +914,9 @@ Gitlab.ee do
   Settings.cron_jobs['geo_secondary_registry_consistency_worker'] ||= {}
   Settings.cron_jobs['geo_secondary_registry_consistency_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['geo_secondary_registry_consistency_worker']['job_class'] ||= 'Geo::Secondary::RegistryConsistencyWorker'
+  Settings.cron_jobs['geo_ci_job_artifact_verification_summary_calculator_worker'] ||= {}
+  Settings.cron_jobs['geo_ci_job_artifact_verification_summary_calculator_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['geo_ci_job_artifact_verification_summary_calculator_worker']['job_class'] ||= 'Geo::CiJobArtifactVerificationSummaryCalculatorWorker'
   Settings.cron_jobs['historical_data_worker'] ||= {}
   Settings.cron_jobs['historical_data_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['historical_data_worker']['job_class'] = 'HistoricalDataWorker'
@@ -939,8 +951,8 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_cluster_reindexing_cron_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['elastic_cluster_reindexing_cron_worker']['job_class'] ||= 'ElasticClusterReindexingCronWorker'
   Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker'] ||= {}
-  Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker']['cron'] ||= '10 3 * * *'
-  Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker']['job_class'] ||= 'ElasticRemoveExpiredNamespaceSubscriptionsFromIndexCronWorker'
+  Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker']['cron'] ||= '10 * * * *'
+  Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker']['job_class'] ||= 'Search::Elastic::RemoveExpiredNamespaceSubscriptionsFromIndexCronWorker'
   Settings.cron_jobs['elastic_migration_worker'] ||= {}
   Settings.cron_jobs['elastic_migration_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['elastic_migration_worker']['job_class'] ||= 'Elastic::MigrationWorker'
@@ -971,6 +983,9 @@ Gitlab.ee do
   Settings.cron_jobs['users_create_statistics_worker'] ||= {}
   Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
   Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'
+  Settings.cron_jobs['merge_trains_unstick_stuck_merges_cron_worker'] ||= {}
+  Settings.cron_jobs['merge_trains_unstick_stuck_merges_cron_worker']['cron'] ||= '*/30 * * * *'
+  Settings.cron_jobs['merge_trains_unstick_stuck_merges_cron_worker']['job_class'] = 'MergeTrains::UnstickStuckMergesCronWorker'
   Settings.cron_jobs['iterations_update_status_worker'] ||= {}
   Settings.cron_jobs['iterations_update_status_worker']['cron'] ||= '5 0 * * *'
   Settings.cron_jobs['iterations_update_status_worker']['job_class'] = 'IterationsUpdateStatusWorker'
@@ -1052,9 +1067,6 @@ Gitlab.ee do
   Settings.cron_jobs['users_delete_unconfirmed_users_worker'] ||= {}
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['job_class'] = 'Users::UnconfirmedUsersDeletionCronWorker'
-  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker'] ||= {}
-  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['cron'] ||= '10 * * * *'
-  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['job_class'] = 'Users::UnconfirmedSecondaryEmailsDeletionCronWorker'
   Settings.cron_jobs['package_metadata_advisories_sync_worker'] ||= {}
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['job_class'] = 'PackageMetadata::AdvisoriesSyncWorker'
@@ -1158,9 +1170,15 @@ Gitlab.ee do
   Settings.cron_jobs['project_secrets_manager_maintenance_tasks_cron_worker'] ||= {}
   Settings.cron_jobs['project_secrets_manager_maintenance_tasks_cron_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['project_secrets_manager_maintenance_tasks_cron_worker']['job_class'] = 'SecretsManagement::ProjectSecretsManagerMaintenanceTasksCronWorker'
+  Settings.cron_jobs['group_secrets_manager_maintenance_tasks_cron_worker'] ||= {}
+  Settings.cron_jobs['group_secrets_manager_maintenance_tasks_cron_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['group_secrets_manager_maintenance_tasks_cron_worker']['job_class'] = 'SecretsManagement::GroupSecretsManagerMaintenanceTasksCronWorker'
   Settings.cron_jobs['virtual_registries_cleanup_enqueue_policy_worker'] ||= {}
   Settings.cron_jobs['virtual_registries_cleanup_enqueue_policy_worker']['cron'] ||= '40 * * * *'
   Settings.cron_jobs['virtual_registries_cleanup_enqueue_policy_worker']['job_class'] = 'VirtualRegistries::Cleanup::EnqueuePolicyWorker'
+  Settings.cron_jobs['minimal_access_provisioning_notification_worker'] ||= {}
+  Settings.cron_jobs['minimal_access_provisioning_notification_worker']['cron'] ||= '0 1 * * *'
+  Settings.cron_jobs['minimal_access_provisioning_notification_worker']['job_class'] = 'GitlabSubscriptions::MemberManagement::MinimalAccessProvisioningNotificationWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -1296,6 +1314,7 @@ Settings.iam_auth_service['grpc'] ||= {}
 Settings.iam_auth_service.grpc['host'] ||= 'localhost'
 Settings.iam_auth_service.grpc['port'] ||= 8085
 Settings.iam_auth_service['jwt_audience'] ||= 'gitlab-rails'
+Settings.iam_auth_service['jwt_issuer'] ||= 'http://localhost'
 
 #
 # Gitlab Secrets Manager Openbao Integration

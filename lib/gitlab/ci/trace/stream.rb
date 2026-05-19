@@ -71,6 +71,16 @@ module Gitlab
           end.force_encoding(Encoding.default_external)
         end
 
+        def raw_range(byte_offset:, byte_limit:)
+          return unless valid?
+
+          byte_offset = [byte_offset, size].min
+
+          stream.seek(byte_offset, IO::SEEK_SET)
+          data = stream.read(byte_limit)
+          data.to_s.dup.force_encoding(Encoding.default_external)
+        end
+
         def html(last_lines: nil, max_size: nil)
           text = raw(last_lines: last_lines, max_size: max_size)
           buffer = StringIO.new(text)

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { project.owner }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
 
   let(:service) do
     described_class.new(

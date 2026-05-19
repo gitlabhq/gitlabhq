@@ -29,12 +29,13 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   end
 
   def rapid_diff_options
-    permitted = params.permit(:diff_id, :start_sha, :commit_id)
+    permitted = params.permit(:diff_id, :start_sha, :commit_id, :only_context_commits)
 
     {
       diff_id: permitted[:diff_id],
       start_sha: permitted[:start_sha],
-      commit_id: permitted[:commit_id]
+      commit_id: permitted[:commit_id],
+      only_context_commits: permitted[:only_context_commits]
     }.compact.merge(diff_options)
   end
 

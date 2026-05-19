@@ -26,7 +26,7 @@ When you're ready to create a merge request, use a method that fits your workflo
 When you create a merge request, GitLab enforces your project's branch naming rules.
 To connect your merge request to a branch, follow [branch naming patterns](../repository/branches/_index.md#name-your-branch).
 
-Merge request titles have [limited formatting support](../../../user/markdown.md#work-item-and-merge-request-titles).
+Merge request titles have [limited formatting support](../../markdown.md#work-item-and-merge-request-titles).
 
 ## From the top bar
 
@@ -61,7 +61,7 @@ After merging the merge request, the issue is closed automatically, unless
 To create a branch and a merge request at the same time:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. Go to the bottom of the issue description.
 1. Select **Create merge request** > **Create merge request and branch**.
 1. On the dialog, review the suggested branch name. It's based on your project's
@@ -86,7 +86,7 @@ Prerequisites:
 To create a merge request when a branch is already linked in Development:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the **Development** section, find the linked branch.
 1. Select the branch actions menu ({{< icon name="ellipsis_v" >}}).
 1. Select **Create merge request**.
@@ -116,7 +116,7 @@ Prerequisites:
 To create a branch and a merge request at the same time:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. Go to the bottom of the task description.
 1. Select **Create merge request**.
 1. On the dialog, review the suggested branch name.
@@ -141,7 +141,7 @@ Prerequisites:
 To create a merge request when a branch is already linked in Development:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. In the **Development** section, find the linked branch.
 1. Select the branch actions menu ({{< icon name="ellipsis_v" >}}).
 1. Select **Create merge request**.
@@ -169,6 +169,12 @@ GitLab cross-links the issue or task and merge request, and adds the
 to the description of the merge request. In most cases, this looks like `Closes #ID`,
 where `ID` is the ID of the issue or task. If your project is configured with a
 closing pattern, the issue or task closes when the merge request merges.
+
+> [!note]
+> Work items linked with closing patterns (like `Closes #123`) or mentioned with
+> keywords (like `Related to #456`) appear automatically in the **Work items** widget in the
+> merge request sidebar. For more information, see
+> [work items in merge requests](../../work_items/_index.md#work-items-in-merge-requests).
 
 ## From the Web Editor
 
@@ -202,7 +208,7 @@ You can create a merge request from your fork to contribute back to the main pro
       default target for your fork.
    1. Select a branch from the upstream repository:
 
-      ![Selecting branches](img/forking_workflow_branch_select_v15_9.png)
+      ![The dropdown list for selecting the target branch in the upstream repository.](img/forking_workflow_branch_select_v15_9.png)
 
    > [!note]
    > If your fork's visibility is more restricted than the parent repository, the target branch
@@ -246,7 +252,7 @@ Prerequisites:
 To do this:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **Target project** section, select the option you want to use for
    your default target project.
 1. Select **Save changes**.

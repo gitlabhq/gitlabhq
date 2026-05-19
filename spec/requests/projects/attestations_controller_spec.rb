@@ -162,14 +162,9 @@ RSpec.describe Projects::AttestationsController, feature_category: :artifact_sec
               .with(project.id, attestation.iid.to_s)
               .and_return(attestation)
 
-            call_count = 0
             allow(Gitlab::Json).to receive(:safe_parse).and_wrap_original do |method, arg|
-              call_count += 1
+              raise JSON::ParserError, 'Invalid JSON' if arg.include?('"_type":"https://in-toto.io')
 
-              # second call is for parsing the metadata
-              raise JSON::ParserError, 'Invalid JSON' if call_count == 2
-
-              # first call parses the attestation file normally
               method.call(arg)
             end
           end

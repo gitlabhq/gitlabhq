@@ -44,6 +44,10 @@ export const SECRET_DETECTION = 'secret_detection';
 
 export const LICENSE_INFORMATION_SOURCE = 'license_information_source';
 
+export const CVS_CONTAINER_SCANNING = 'cvs_for_container_scanning';
+
+export const CVS_DEPENDENCY_SCANNING = 'cvs_for_dependency_scanning';
+
 export const featureToMutationMap = {
   [REPORT_TYPE_SAST]: {
     mutationId: 'configureSast',
@@ -108,12 +112,18 @@ export const TEMP_PROVIDER_URLS = {
 
 export const TAB_VULNERABILITY_MANAGEMENT_INDEX = 1;
 
+// tracking for security training
 export const TRACK_TOGGLE_TRAINING_PROVIDER_ACTION = 'toggle_security_training_provider';
 export const TRACK_TOGGLE_TRAINING_PROVIDER_LABEL = 'update_security_training_provider';
 export const TRACK_CLICK_TRAINING_LINK_ACTION = 'click_security_training_link';
 export const TRACK_PROVIDER_LEARN_MORE_CLICK_ACTION = 'click_link';
 export const TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL = 'security_training_provider';
 export const TRACK_TRAINING_LOADED_ACTION = 'security_training_link_loaded';
+
+// tracking for scan profiles
+export const EVENT_VIEW_SCAN_PROFILE_TABLE = 'view_scan_profile_list';
+export const EVENT_CLICK_SCAN_PROFILE_LEARN_MORE_LINK = 'click_scan_profile_learn_more_link';
+export const EVENT_PREVIEW_SCAN_PROFILE = 'preview_scan_profile';
 
 export const i18n = {
   configurationHistory: s__('SecurityConfiguration|Configuration history'),
@@ -229,6 +239,7 @@ export const SCAN_PROFILE_I18N = {
   noProfile: s__('SecurityProfiles|No profile applied'),
   notConfigured: s__('SecurityProfiles|Unconfigured'),
   applyToEnable: s__('SecurityProfiles|Apply profile to enable'),
+  awaitingFirstPipeline: s__('SecurityProfiles|Awaiting first pipeline'),
   coverageMayBeOutdated: s__('SecurityProfiles|Coverage may be outdated'),
   active: s__('SecurityProfiles|Active'),
   profileHelpTitle: s__('SecurityProfiles|What are configuration profiles?'),
@@ -240,6 +251,7 @@ export const SCAN_PROFILE_I18N = {
   disable: s__('SecurityProfiles|Disable'),
   troubleshootFailure: s__('SecurityProfiles|Troubleshoot failure'),
   errorLoadingProfiles: s__('SecurityProfiles|Error loading profiles. Please try again.'),
+  errorLoadingStatuses: s__('SecurityProfiles|Error loading statuses. Please try again.'),
   errorApplying: s__('SecurityProfiles|Error applying profile. Please try again.'),
   errorDetaching: s__('SecurityProfiles|Error detaching profile. Please try again.'),
   errorLoadingJobData: s__('SecurityProfiles|Failed to load scan details. Please try again.'),
@@ -255,6 +267,7 @@ export const SCAN_PROFILE_STATUS_APPLIED = 'enabled';
 export const SCAN_PROFILE_STATUS_MIXED = 'mixed';
 export const SCAN_PROFILE_STATUS_DISABLED = 'disabled';
 
+export const SCAN_PROFILE_SCANNER_HEALTH_PENDING = 'pending';
 export const SCAN_PROFILE_SCANNER_HEALTH_UNCONFIGURED = 'unconfigured';
 export const SCAN_PROFILE_SCANNER_HEALTH_ACTIVE = 'active';
 export const SCAN_PROFILE_SCANNER_HEALTH_WARNING = 'warning';

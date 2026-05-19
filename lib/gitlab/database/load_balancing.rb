@@ -18,13 +18,17 @@ module Gitlab
         ActiveRecord::ConnectionNotEstablished
       ].freeze
 
-      mattr_accessor :base_models
+      mattr_accessor :base_model_names
       mattr_accessor :all_database_names
       mattr_accessor :default_pool_size
       mattr_accessor :enabled, default: true
 
       def self.configure!
         yield(self)
+      end
+
+      def self.base_models
+        base_model_names.map(&:constantize).freeze
       end
 
       def self.each_load_balancer

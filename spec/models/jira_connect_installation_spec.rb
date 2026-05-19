@@ -24,6 +24,8 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
 
     it { is_expected.to allow_value('https://test.atlassian.net').for(:instance_url) }
     it { is_expected.not_to allow_value('not/a/url').for(:instance_url) }
+    it { is_expected.not_to allow_value("https://example.coצ").for(:instance_url) }
+    it { is_expected.not_to allow_value('https://user:p@ss@example.com').for(:instance_url) }
   end
 
   describe 'scopes' do
@@ -82,7 +84,7 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
     subject { installation.oauth_authorization_url }
 
     before do
-      allow(Gitlab).to receive_message_chain('config.gitlab.url') { 'http://test.host' }
+      allow(Gitlab.config.gitlab).to receive(:url).and_return('http://test.host')
     end
 
     it { is_expected.to eq('http://test.host') }

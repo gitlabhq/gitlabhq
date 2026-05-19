@@ -4,5 +4,7 @@ description: Grants the ability to create CI minutes
 boundaries:
   - group
   - user
+available_for:
+  - granular_access_token
 permissions:
   - create_ci_minute

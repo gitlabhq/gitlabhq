@@ -1,0 +1,22 @@
+---
+name: admin
+description: Instance-wide administrator with full access to all projects and groups,
+  including instance-level settings and custom attributes.
+inherits_from:
+- owner
+project:
+  permissions: []
+  raw_permissions:
+  - delete_custom_attribute
+  - read_custom_attribute
+  - read_storage_disk_path
+  - update_custom_attribute
+  - update_max_artifacts_size
+group:
+  permissions: []
+  raw_permissions:
+  - create_projects
+  - delete_custom_attribute
+  - read_custom_attribute
+  - update_custom_attribute
+  - update_max_artifacts_size

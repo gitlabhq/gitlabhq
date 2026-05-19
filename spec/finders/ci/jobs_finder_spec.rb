@@ -174,7 +174,7 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
     subject { described_class.new(current_user: user, project: project, params: params).execute }
 
     context 'with user being project maintainer' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -222,7 +222,7 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
     end
 
     context 'with user being project guest' do
-      before do
+      before_all do
         project.add_guest(user)
       end
 
@@ -318,7 +318,7 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
 
       let(:user) { guest }
 
-      before do
+      before_all do
         project.add_guest(guest)
       end
 
@@ -477,7 +477,7 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
       described_class.new(current_user: user, project: project, params: params).execute
     end
 
-    before do
+    before_all do
       project.add_maintainer(user)
     end
 

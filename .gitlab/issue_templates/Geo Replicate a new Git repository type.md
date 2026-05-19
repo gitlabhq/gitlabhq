@@ -552,6 +552,17 @@ That's all of the required database changes.
   end
   ```
 
+- [ ] For the `cool_widget_registry_oldest_unsynced_time` metric, the code
+      assumes the model responds to `updated_at` to track when the model was last
+      updated. If it responds to another method, add a `self.model_update_last`
+      method inside the `CoolWidgetRegistry` class:
+
+      ```ruby
+      def self.model_updated_last
+        :updated_last_method
+      end
+      ```
+
 - [ ] Update `REGISTRY_CLASSES` in `ee/app/workers/geo/secondary/registry_consistency_worker.rb`.
 - [ ] Add a custom factory name if needed in `def model_class_factory_name` in `ee/spec/support/helpers/ee/geo_helpers.rb`.
 - [ ] Update `it 'creates missing registries for each registry class'` in `ee/spec/workers/geo/secondary/registry_consistency_worker_spec.rb`.
@@ -703,6 +714,7 @@ Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in `GeoNodeStatus`
   - `cool_widgets_verification_failed_count`
   - `cool_widgets_synced_in_percentage`
   - `cool_widgets_verified_in_percentage`
+  - `cool_widgets_oldest_unsynced_time`
 - [ ] Add the same fields to `GET /geo_nodes/status` example response in
   `ee/spec/fixtures/api/schemas/public_api/v4/geo_node_status.json` and `ee/spec/fixtures/api/schemas/public_api/v4/geo_site_status.json`.
 - [ ] Add the following fields to the `Sidekiq metrics` table in `doc/administration/monitoring/prometheus/gitlab_metrics.md`:
@@ -717,8 +729,9 @@ Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in `GeoNodeStatus`
   | `geo_cool_widgets_verification_total` | Gauge | XX.Y | Number of Cool Widgets to attempt to verify on secondary | `url` |
   | `geo_cool_widgets_verified` | Gauge | XX.Y | Number of Cool Widgets successfully verified on secondary | `url` |
   | `geo_cool_widgets_verification_failed` | Gauge | XX.Y | Number of Cool Widgets that failed verification on secondary | `url` |
+  | `geo_cool_widgets_oldest_unsynced_time` | Gauge | XX.Y | Timestamp of the last update to the oldest unsynchronized object | `url` |
   ```
-- [ ] Run the rake task `geo:dev:ssf_metrics` and commit the changes to `ee/config/metrics/object_schemas/geo_node_usage.json`
+- [ ] Run the rake task `gitlab:geo:dev:ssf_metrics` and commit the changes to `ee/config/metrics/object_schemas/geo_node_usage.json`
 
 Cool Widget replication and verification metrics should now be available in the API, the `Admin > Geo > Sites` view, and Prometheus.
 

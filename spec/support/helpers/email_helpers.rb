@@ -48,10 +48,6 @@ module EmailHelpers
     expect(ActionMailer::Base.deliveries).to be_empty
   end
 
-  def should_email_anyone
-    expect(ActionMailer::Base.deliveries).not_to be_empty
-  end
-
   def email_recipients(kind: :to)
     ActionMailer::Base.deliveries.flat_map(&kind)
   end
@@ -78,12 +74,12 @@ module EmailHelpers
   end
 
   def enqueue_mail_with(mailer_class, mail_method_name, *args)
-    args.map! { |arg| arg.is_a?(ActiveRecord::Base) ? arg.id : arg }
+    args.map! { |arg| arg.is_a?(ActiveRecord::Base) ? eq(arg.id).or(eq(arg)) : arg }
     have_enqueued_mail(mailer_class, mail_method_name).with(*args)
   end
 
   def not_enqueue_mail_with(mailer_class, mail_method_name, *args)
-    args.map! { |arg| arg.is_a?(ActiveRecord::Base) ? arg.id : arg }
+    args.map! { |arg| arg.is_a?(ActiveRecord::Base) ? eq(arg.id).or(eq(arg)) : arg }
 
     matcher = have_enqueued_mail(mailer_class, mail_method_name).with(*args)
     description = proc { 'email has not been enqueued' }

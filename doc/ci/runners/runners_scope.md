@@ -58,7 +58,7 @@ When you create a runner, it is assigned a runner authentication token that you 
 To create an instance runner:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **CI/CD** > **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. Select **Create instance runner**.
 1. Select the operating system where GitLab Runner is installed.
 1. In the **Tags** section, in the **Tags** field, enter the job tags to specify jobs the runner can run.
@@ -98,7 +98,7 @@ Prerequisites:
 To create an instance runner:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **CI/CD** > **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. Select **Register an instance runner**.
 1. Copy the registration token.
 1. [Register the runner](https://docs.gitlab.com/runner/register/#register-with-a-runner-registration-token-legacy).
@@ -112,7 +112,7 @@ Prerequisites:
 You can pause a runner so that it does not accept jobs from groups and projects in the GitLab instance.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **CI/CD** > **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. In the search box, enter the runner description or filter the runner list.
 1. In the runner list, to the right of the runner:
    - To pause the runner, select **Pause** ({{< icon name="pause" >}}).
@@ -131,7 +131,7 @@ jobs, you can [pause](#pause-or-resume-an-instance-runner) the runner instead.
 To delete a single or multiple instance runners:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **CI/CD** > **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. In the search box, enter the runner description or filter the list of runners.
 1. Delete the instance runner:
    - To delete a single runner, next to the runner, select **Delete runner** ({{< icon name="remove" >}}).
@@ -154,7 +154,7 @@ For existing projects, an administrator must
 To enable instance runners for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Enable the **Turn on instance runners for this project** toggle.
 
@@ -163,7 +163,7 @@ To enable instance runners for a project:
 To enable instance runners for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Enable the **Turn on instance runners for this group** toggle.
 
@@ -176,7 +176,7 @@ or group.
 To disable instance runners for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Instance runners** area, turn off the **Turn on runners for this project** toggle.
 
@@ -190,7 +190,7 @@ Instance runners are automatically disabled for a project:
 To disable instance runners for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Turn off the **Enable instance runners for this group** toggle.
 1. Optional. To allow instance runners to be enabled for individual projects or subgroups,
@@ -262,7 +262,7 @@ The runner uses the token to authenticate with GitLab when it picks up jobs from
 To create a group runner:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Build** > **Runners**.
+1. In the left sidebar, select **Build** > **Runners**.
 1. Select **Create group runner**.
 1. In the **Tags** section, in the **Tags** field, enter the job tags to specify jobs the runner can run.
    If there are no job tags for this runner, select **Run untagged**.
@@ -310,7 +310,7 @@ To create a group runner:
 
 1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Build** > **Runners**.
+1. In the left sidebar, select **Build** > **Runners**.
 1. In the upper-right corner, select **Register a group runner**.
 1. Select **Show runner installation and registration instructions**.
    These instructions include the token, URL, and a command to register a runner.
@@ -334,7 +334,7 @@ You can view all runners for a group and its subgroups and projects.
 You can do this for GitLab Self-Managed or for GitLab.com.
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Build** > **Runners**.
+1. In the left sidebar, select **Build** > **Runners**.
 
 #### Filter group runners to show only inherited
 
@@ -354,7 +354,7 @@ To show all runners available in the instance, including instance runners and
 those in other groups:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Build** > **Runners**.
+1. In the left sidebar, select **Build** > **Runners**.
 1. Above the list, turn off the **Show only inherited** toggle.
 
 ### Pause or resume a group runner
@@ -367,7 +367,7 @@ You can pause a runner so that it does not accept jobs from subgroups and projec
 instance. If you pause a group runner that is used by multiple projects, the runner pauses for all projects.
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Build** > **Runners**.
+1. In the left sidebar, select **Build** > **Runners**.
 1. In the search box, enter the runner description or filter the runner list.
 1. In the runner list, to the right of the runner:
    - To pause the runner, select **Pause** ({{< icon name="pause" >}}).
@@ -392,7 +392,7 @@ jobs, you can [pause](#pause-or-resume-a-group-runner) the runner instead.
 To delete a single or multiple group runners:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Build** > **Runners**.
+1. In the left sidebar, select **Build** > **Runners**.
 1. In the search box, enter the runner description or filter the list of runners.
 1. Delete the group runner:
    - To delete a single runner, next to the runner, select **Delete runner** ({{< icon name="remove" >}}).
@@ -424,7 +424,7 @@ You can clean up group runners that have been inactive for more than three month
 Group runners are those that were created in a specific group.
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Turn on the **Enable stale runner cleanup** toggle.
 
@@ -507,7 +507,7 @@ authenticate with GitLab when it picks up jobs from the job queue.
 To create a project runner:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand the **Runners** section.
 1. Select **Create project runner**.
 1. Select the operating system where GitLab Runner is installed.
@@ -551,7 +551,7 @@ To create a project runner:
 
 1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Project runners** section, note the URL and token.
 1. [Register the runner](https://docs.gitlab.com/runner/register/#register-with-a-runner-registration-token-legacy).
@@ -568,7 +568,7 @@ You can pause a project runner so that it does not accept jobs from projects it'
 in the GitLab instance.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Assigned project runners** section, find the runner.
 1. To the right of the runner:
@@ -612,7 +612,7 @@ You must have the Maintainer or Owner role for:
 To enable a project runner for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Project runners** area, by the runner you want, select **Enable for this project**.
 
@@ -631,7 +631,7 @@ but can also be changed later.
 To lock or unlock a project runner:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Find the project runner you want to lock or unlock. Make sure it's enabled. You cannot lock instance or group runners.
 1. Select **Edit** ({{< icon name="pencil" >}}).
@@ -682,7 +682,7 @@ median value.
 To view runner statistics:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **CI/CD** > **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. Select **View metrics**.
 
 ## Determine which runners need to be upgraded
@@ -744,7 +744,7 @@ Prerequisites:
 To determine the IP address of an instance runner:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **CI/CD** > **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
 ![Admin area showing the IP address column for an instance runner](img/shared_runner_ip_address_v14_5.png)
@@ -807,6 +807,6 @@ Prerequisites:
 To enable the use of runner registration token in project and groups:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Turn on the **Allow members of projects and groups to create runners with runner registration tokens** toggle.

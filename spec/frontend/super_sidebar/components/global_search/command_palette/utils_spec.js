@@ -46,4 +46,32 @@ describe('fileMapper', () => {
       },
     });
   });
+
+  it('should handle an un-encoded non-ASCII branch name in projectBlobPath', () => {
+    const file = 'CODEOWNERS';
+    const projectBlobPath = 'project/blob/Abhängigkeiten';
+    expect(fileMapper(projectBlobPath, file)).toEqual({
+      icon: 'doc-code',
+      text: file,
+      href: 'project/blob/Abhängigkeiten/CODEOWNERS',
+      extraAttrs: {
+        'data-track-action': 'click_command_palette_item',
+        'data-track-label': 'file',
+      },
+    });
+  });
+
+  it('should not double-encode a percent-encoded non-ASCII branch name in projectBlobPath', () => {
+    const file = 'CODEOWNERS';
+    const projectBlobPath = 'project/blob/Abh%C3%A4ngigkeiten';
+    expect(fileMapper(projectBlobPath, file)).toEqual({
+      icon: 'doc-code',
+      text: file,
+      href: 'project/blob/Abh%C3%A4ngigkeiten/CODEOWNERS',
+      extraAttrs: {
+        'data-track-action': 'click_command_palette_item',
+        'data-track-label': 'file',
+      },
+    });
+  });
 });

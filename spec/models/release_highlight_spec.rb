@@ -214,4 +214,50 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
       expect(described_class.file_paths.first).to eq("#{Rails.root}/a.yml")
     end
   end
+
+  describe '.release_date_reached?' do
+    it 'returns true when the release date is today' do
+      travel_to(Date.new(2026, 4, 16)) do
+        expect(described_class.release_date_reached?('/data/whats_new/202604160001_18_11.yml')).to be true
+      end
+    end
+
+    it 'returns true when the release date is in the past' do
+      travel_to(Date.new(2026, 5, 1)) do
+        expect(described_class.release_date_reached?('/data/whats_new/202604160001_18_11.yml')).to be true
+      end
+    end
+
+    it 'returns false when the release date is in the future' do
+      travel_to(Date.new(2026, 4, 15)) do
+        expect(described_class.release_date_reached?('/data/whats_new/202604160001_18_11.yml')).to be false
+      end
+    end
+
+    it 'returns true for filenames that do not match the expected pattern' do
+      expect(described_class.release_date_reached?('/data/whats_new/templates/template.yml')).to be true
+    end
+
+    it 'returns true for filenames with an invalid date' do
+      expect(described_class.release_date_reached?('/data/whats_new/999913320001_99_99.yml')).to be true
+    end
+  end
+
+  describe '.relative_file_paths' do
+    it 'excludes files with a future release date' do
+      future_date = (Date.current + 30).strftime('%Y%m%d')
+      past_date = (Date.current - 30).strftime('%Y%m%d')
+
+      future_path = Rails.root.join("data/whats_new/#{future_date}0001_99_0.yml").to_s
+      past_path = Rails.root.join("data/whats_new/#{past_date}0001_98_0.yml").to_s
+
+      allow(Dir).to receive(:glob).and_call_original
+      allow(Dir).to receive(:glob).with(described_class.whats_new_path).and_return([past_path, future_path])
+
+      paths = described_class.relative_file_paths
+
+      expect(paths).to include("/data/whats_new/#{past_date}0001_98_0.yml")
+      expect(paths).not_to include("/data/whats_new/#{future_date}0001_99_0.yml")
+    end
+  end
 end

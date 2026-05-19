@@ -86,7 +86,7 @@ pre-push:
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://vale.sh/docs/vale-cli/installation/."; exit 1; fi'
     gettext:
       tags: backend frontend view haml
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
       glob: '*.{haml,rb,js,vue}'
       run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot
       fail_text: PO files need to be updated. Try running tooling/bin/gettext_extractor locale/gitlab.pot
@@ -168,11 +168,8 @@ pre-push:
     permissions_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{config/authz/permissions/**/*.yml,config/authz/permission_groups/**/*.yml,lib/tasks/gitlab/permissions/**/*.rb,{,ee/}app/policies/**/*.rb,{,ee/}lib/api/**/*.rb}'
+      glob: '{config/authz/permissions/**/*.yml,config/authz/permission_groups/**/*.yml,config/authz/roles/**/*.yml,lib/tasks/gitlab/permissions/**/*.rb,{,ee/}app/policies/**/*.rb,{,ee/}lib/api/**/*.rb}'
       run: bundle exec rake gitlab:permissions:validate
-    check-deprecated-files:
-      tags: backend frontend view haml
-      run: scripts/lint/check_deprecated_files.rb
     unused-methods-linter:
       tags: backend
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
@@ -188,6 +185,11 @@ pre-push:
       files: git diff --name-only --diff-filter=A $(git merge-base origin/master HEAD)..HEAD
       glob: 'db/click_house/main.sql'
       run: scripts/lint-clickhouse-migrations.sh
+    ai-harness-doctor:
+      tags: ai-harness
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      # We need to specify {files} as part of the command, otherwise it won't execute the hook
+      run: echo {files} >/dev/null && scripts/ai_harness/doctor
 
   scripts:
     'merge_conflicts':
@@ -200,6 +202,9 @@ pre-push:
 pre-commit:
   parallel: true
   commands:
+    ai-harness-doctor:
+      tags: ai-harness
+      run: scripts/ai_harness/doctor
     rubocop:
       tags: backend style
       files: git diff --name-only --diff-filter=d --staged

@@ -4,10 +4,9 @@ require 'spec_helper'
 
 # Features not yet implemented in the REST API
 UNIMPLEMENTED_FEATURES = %w[
-  ai_session award_emoji crm_contacts current_user_todos custom_fields designs development
-  email_participants error_tracking hierarchy linked_items linked_resources notes
-  notifications participants requirement_legacy status test_reports time_tracking
-  verification_status vulnerabilities
+  agent_plan ai_session award_emoji crm_contacts current_user_todos custom_fields development
+  email_participants linked_items linked_resources notes
+  notifications participants test_reports vulnerabilities
 ].freeze
 
 RSpec.describe API::Entities::WorkItems::Features::Entity, feature_category: :team_planning do
@@ -101,6 +100,31 @@ RSpec.describe API::Entities::WorkItems::Features::Entity, feature_category: :te
 
       it 'omits the milestone payload' do
         expect(representation).not_to have_key(:milestone)
+      end
+    end
+  end
+
+  describe 'hierarchy feature' do
+    let(:requested_features) { [:hierarchy] }
+    let(:widget_available) { true }
+    let(:parent) { nil }
+    let(:widget_instance) { instance_double(WorkItems::Widgets::Hierarchy, parent: parent) }
+
+    before do
+      allow(work_item).to receive(:has_widget?) { |widget| widget == :hierarchy && widget_available }
+      allow(work_item).to receive(:get_widget).with(:hierarchy).and_return(widget_instance)
+    end
+
+    it 'includes the hierarchy payload with no parent' do
+      expect(representation).to include(hierarchy: a_hash_including(parent: nil, has_parent: false))
+    end
+
+    context 'when the widget is unavailable' do
+      let(:widget_available) { false }
+      let(:widget_instance) { nil }
+
+      it 'omits the hierarchy payload' do
+        expect(representation).not_to have_key(:hierarchy)
       end
     end
   end

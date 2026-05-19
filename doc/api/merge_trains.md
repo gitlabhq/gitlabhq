@@ -66,7 +66,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the 
 | `pipeline.status`           | string   | Status of the pipeline. |
 | `pipeline.updated_at`       | datetime | Timestamp when the pipeline was last updated. |
 | `pipeline.web_url`          | string   | Web URL of the pipeline. |
-| `status`                    | string   | Status of the merge train. Possible values: `idle`, `stale`, `fresh`, `merging`, `merged`, `skip_merged`. |
+| `status`                    | string   | Status of the merge request on the merge train. Possible values for active merge trains: `idle`, `fresh`, or `stale`. Possible values for complete merge trains: `merging`, `merged`, or `skip_merged`. |
 | `target_branch`             | string   | Name of the target branch. |
 | `updated_at`                | datetime | Timestamp when the merge train was last updated. |
 | `user`                      | object   | User who added the merge request to the merge train. |
@@ -174,7 +174,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the 
 | `pipeline.status`           | string   | Status of the pipeline. |
 | `pipeline.updated_at`       | datetime | Timestamp when the pipeline was last updated. |
 | `pipeline.web_url`          | string   | Web URL of the pipeline. |
-| `status`                    | string   | Status of the merge train. Possible values: `idle`, `stale`, `fresh`, `merging`, `merged`, `skip_merged`. |
+| `status`                    | string   | Status of the merge request on the merge train. Possible values for active merge trains: `idle`, `fresh`, or `stale`. Possible values for complete merge trains: `merging`, `merged`, or `skip_merged`. |
 | `target_branch`             | string   | Name of the target branch. |
 | `updated_at`                | datetime | Timestamp when the merge train was last updated. |
 | `user`                      | object   | User who added the merge request to the merge train. |
@@ -283,7 +283,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the 
 | `pipeline.status`           | string   | Status of the pipeline. |
 | `pipeline.updated_at`       | datetime | Timestamp when the pipeline was last updated. |
 | `pipeline.web_url`          | string   | Web URL of the pipeline. |
-| `status`                    | string   | Status of the merge train. Possible values: `idle`, `stale`, `fresh`, `merging`, `merged`, `skip_merged`. |
+| `status`                    | string   | Status of the merge request on the merge train. Possible values for active merge trains: `idle`, `fresh`, or `stale`. Possible values for complete merge trains: `merging`, `merged`, or `skip_merged`. |
 | `target_branch`             | string   | Name of the target branch. |
 | `updated_at`                | datetime | Timestamp when the merge train was last updated. |
 | `user`                      | object   | User who added the merge request to the merge train. |
@@ -399,7 +399,7 @@ The following response attributes are returned:
 | `pipeline.status`           | string   | Status of the pipeline. |
 | `pipeline.updated_at`       | datetime | Timestamp when the pipeline was last updated. |
 | `pipeline.web_url`          | string   | Web URL of the pipeline. |
-| `status`                    | string   | Status of the merge train. Possible values: `idle`, `stale`, `fresh`, `merging`, `merged`, `skip_merged`. |
+| `status`                    | string   | Status of the merge request on the merge train. Possible values for active merge trains: `idle`, `fresh`, or `stale`. Possible values for complete merge trains: `merging`, `merged`, or `skip_merged`. |
 | `target_branch`             | string   | Name of the target branch. |
 | `updated_at`                | datetime | Timestamp when the merge train was last updated. |
 | `user`                      | object   | User who added the merge request to the merge train. |

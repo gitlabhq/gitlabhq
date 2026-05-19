@@ -138,7 +138,7 @@ export const formatSearchResultCount = (count) => {
 
 export const getAggregationsUrl = () => {
   const currentUrl = new URL(window.location.href);
-  currentUrl.pathname = joinPaths('/search', 'aggregations');
+  currentUrl.pathname = joinPaths(gon.relative_url_root || '/', 'search', 'aggregations');
   return currentUrl.toString();
 };
 

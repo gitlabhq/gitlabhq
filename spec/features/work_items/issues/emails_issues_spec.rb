@@ -106,7 +106,7 @@ RSpec.describe "E-Mails > Issues", :js, feature_category: :team_planning do
   end
 
   def quick_action(command)
-    fill_in 'Add a reply', with: command
+    fill_in 'Add a reply', with: "#{command}\n"
     click_button 'Comment'
   end
 

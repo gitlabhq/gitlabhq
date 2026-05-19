@@ -75,7 +75,7 @@ describe('YamlCreatorExtension', () => {
     });
 
     it("Prefers values loaded with the load constructor option over the editor's existing value", () => {
-      const editorValue = 'oldValue: this should be overriden';
+      const editorValue = 'oldValue: this should be overridden';
       const model = { thisShould: 'be the actual value' };
       const expected = 'thisShould: be the actual value\n';
       const instance = getEditorInstanceWithExtension({ model }, { value: editorValue });
@@ -323,8 +323,8 @@ foo:
     });
 
     it('causes the editor value to be updated', () => {
-      const initialModel = { foo: 'this should be overriden' };
-      const initialValue = 'foo: this should be overriden\n';
+      const initialModel = { foo: 'this should be overridden' };
+      const initialValue = 'foo: this should be overridden\n';
       const newValue = { thisShould: 'be the actual value' };
       const expected = 'thisShould: be the actual value\n';
       const instance = getEditorInstanceWithExtension({ model: initialModel });

@@ -1,0 +1,40 @@
+#import "~/work_items/graphql/timelog.fragment.graphql"
+
+# @feature_category: team_planning
+query workItemTimeTracking($fullPath: ID!, $iid: String!, $useWorkItemFeatures: Boolean = false) {
+  namespace(fullPath: $fullPath) {
+    id
+    workItem(iid: $iid) {
+      id
+      widgets @skip(if: $useWorkItemFeatures) {
+        type
+        ... on WorkItemWidgetTimeTracking {
+          timeEstimate
+          humanReadableAttributes {
+            timeEstimate
+          }
+          timelogs {
+            nodes {
+              ...TimelogFragment
+            }
+          }
+          totalTimeSpent
+        }
+      }
+      features @include(if: $useWorkItemFeatures) {
+        timeTracking {
+          timeEstimate
+          humanReadableAttributes {
+            timeEstimate
+          }
+          timelogs {
+            nodes {
+              ...TimelogFragment
+            }
+          }
+          totalTimeSpent
+        }
+      }
+    }
+  }
+}

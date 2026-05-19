@@ -88,7 +88,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
 
         expect(service).not_to receive(:sleep)
 
-        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+        expect(Gitlab::Database::LoadBalancing::Callbacks).not_to receive(:track_exception)
 
         service.perform_service_discovery
       end
@@ -96,7 +96,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
 
     context 'with StandardError' do
       before do
-        allow(Gitlab::ErrorTracking).to receive(:track_exception)
+        allow(Gitlab::Database::LoadBalancing::Callbacks).to receive(:track_exception)
         allow(service).to receive(:sleep)
       end
 
@@ -139,7 +139,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
           .to receive(:refresh_if_necessary)
                 .and_raise(error).exactly(described_class::MAX_DISCOVERY_RETRIES).times
 
-        expect(Gitlab::ErrorTracking)
+        expect(Gitlab::Database::LoadBalancing::Callbacks)
           .to receive(:track_exception)
                 .with(error).exactly(described_class::MAX_DISCOVERY_RETRIES).times
 

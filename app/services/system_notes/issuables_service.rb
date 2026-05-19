@@ -28,12 +28,12 @@ module SystemNotes
     #
     # Example Note text:
     #
-    #   "marked this issue as related to gitlab-foss#9001"
-    #   "marked this issue as related to gitlab-foss#9001, gitlab-foss#9002, and gitlab-foss#9003"
+    #   "marked as related to gitlab-foss#9001"
+    #   "marked as related to gitlab-foss#9001, gitlab-foss#9002, and gitlab-foss#9003"
     #
     # Returns the created Note object
     def relate_issuable(noteable_ref)
-      body = "marked this #{noteable_name} as related to #{extract_issuable_reference(noteable_ref)}"
+      body = "marked as related to #{extract_issuable_reference(noteable_ref)}"
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'relate'))
     end
@@ -199,7 +199,7 @@ module SystemNotes
     #
     # Example Note text:
     #
-    #   "added #1 as child Task"
+    #   "added #1 as child item"
     #
     # Returns the created Note object
     def hierarchy_changed(work_item, action)
@@ -352,7 +352,7 @@ module SystemNotes
     #
     # Example Note text:
     #
-    #   "made the issue confidential"
+    #   "made the item confidential"
     #
     # Returns the created Note object
     def change_issue_confidentiality
@@ -462,10 +462,9 @@ module SystemNotes
       create_resource_state_event(status: 'closed', close_auto_resolve_prometheus_alert: true)
     end
 
-    def change_issue_type(previous_type)
-      previous = previous_type.humanize(capitalize: false)
-      new = noteable.issue_type.humanize(capitalize: false)
-      body = "changed type from #{previous} to #{new}"
+    def change_issue_type
+      new_type = noteable.work_item_type_with_default.name
+      body = format(_("changed type to **%{new_type}**"), new_type: new_type)
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'issue_type'))
     end
@@ -551,8 +550,6 @@ module SystemNotes
     def hierarchy_note_params(action, parent, child)
       return {} unless child && parent
 
-      child_type = child.issue_type.humanize(capitalize: false)
-      parent_type = parent.issue_type.humanize(capitalize: false)
       child_reference, parent_reference = if child.namespace_id == parent.namespace_id
                                             [child.to_reference, parent.to_reference]
                                           else
@@ -561,15 +558,15 @@ module SystemNotes
 
       if action == 'relate'
         {
-          parent_note_body: "added #{child_reference} as child #{child_type}",
-          child_note_body: "added #{parent_reference} as parent #{parent_type}",
+          parent_note_body: "added #{child_reference} as child item",
+          child_note_body: "added #{parent_reference} as parent item",
           parent_action: 'relate_to_child',
           child_action: 'relate_to_parent'
         }
       else
         {
-          parent_note_body: "removed child #{child_type} #{child_reference}",
-          child_note_body: "removed parent #{parent_type} #{parent_reference}",
+          parent_note_body: "removed child item #{child_reference}",
+          child_note_body: "removed parent item #{parent_reference}",
           parent_action: 'unrelate_from_child',
           child_action: 'unrelate_from_parent'
         }
@@ -582,8 +579,15 @@ module SystemNotes
       issue_activity_counter.public_send(event_name, author: author, project: project || noteable.project) # rubocop: disable GitlabSecurity/PublicSend
     end
 
+    # System notes intentionally use the generic word "item" instead of the
+    # specific noteable type (e.g. "issue", "task", "incident"). The user is
+    # already viewing the item, so the type is redundant in the note copy.
     def noteable_name
-      name = noteable.try(:issue_type) || noteable.to_ability_name
+      name = if noteable.respond_to?(:issue_type)
+               'item'
+             else
+               noteable.to_ability_name
+             end
 
       name.humanize(capitalize: false)
     end

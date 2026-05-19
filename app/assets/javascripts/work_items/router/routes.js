@@ -3,7 +3,7 @@ import PlanningView from 'ee_else_ce/work_items/pages/planning_view.vue';
 import CreateWorkItem from '../pages/create_work_item.vue';
 import WorkItemDetail from '../pages/work_item_root.vue';
 import DesignDetail from '../components/design_management/design_preview/design_details.vue';
-import { getDraftWorkItemType, getAllItemsDraftFiltersStorageKey } from '../utils';
+import { getDraftWorkItemType } from '../utils';
 import {
   CREATION_CONTEXT_NEW_ROUTE,
   ROUTES,
@@ -42,15 +42,6 @@ function getRoutes(fullPath) {
       path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})`,
       name: ROUTES.index,
       component: PlanningView,
-      beforeEnter(to, from, next) {
-        // we didn't navigate here from another known route (e.g. via a SSR page load)
-        // so we clear any persisted filters that might be hanging around.
-        if (from.name === null) {
-          const storageKey = getAllItemsDraftFiltersStorageKey(fullPath);
-          localStorage.removeItem(storageKey);
-        }
-        next();
-      },
     },
     {
       path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})/views/:view_id`,

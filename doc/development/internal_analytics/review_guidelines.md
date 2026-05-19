@@ -25,6 +25,12 @@ In most cases, an Analytics Instrumentation review is automatically added, but i
 
 ### Roles and process
 
+Three roles participate in an Analytics Instrumentation review:
+
+- **Merge request author**: The developer making the analytics change.
+- **Analytics Instrumentation reviewer**: A member of the Analytics Instrumentation team. Owns the full review, including edge cases and exceptions.
+- **External reviewer**: A stage-level CODEOWNER who approves typical analytics changes for their stage. Defers to the Analytics Instrumentation team for anything outside the checklist below.
+
 #### The merge request **author** should
 
 - Decide whether a Analytics Instrumentation review is needed. You can skip the Analytics Instrumentation
@@ -68,3 +74,25 @@ In most cases, an Analytics Instrumentation review is automatically added, but i
     - Is the meaning or effect of every input clear?
     - If we describe edge cases or caveats, are there instructions to validate whether the user needs to worry about it?
 - Approve the MR, and relabel the MR with `~"analytics instrumentation::approved"`.
+
+#### The external **reviewer** should
+
+Schema validators and linters catch missing required fields and malformed YAML, so this checklist focuses on judgment calls that automation cannot make.
+
+- For a new event:
+  - Check the `action` name follows the [naming convention](internal_event_instrumentation/quick_start.md#defining-event-and-metrics).
+  - Check the `description` is clear to readers outside the team.
+  - Check the file is in `ee/config/events` if the event fires only from EE code.
+  - Check that tracking parameters and `additional_properties` do not contain [sensitive or personal data](https://handbook.gitlab.com/handbook/security/data-classification-standard/).
+  - Check that the event uses `track_internal_event` (backend) or `trackEvent` (frontend). Direct Snowplow calls such as `Gitlab::Tracking.event` and Redis or RedisHLL tracking are [deprecated](internal_event_instrumentation/migration.md).
+- For an updated event:
+  - If the `action` field changed, confirm the author considered the [renaming implications](internal_event_instrumentation/event_definition_guide.md#changing-the-action-property-in-event-definitions).
+- For a removed event:
+  - Check that the [event removal process](internal_event_instrumentation/event_lifecycle.md#remove-an-event) was followed.
+- For a new metric:
+  - Spot-check the YAML: `description`, `key_path`, `product_group`, `tiers`, and that the file is under `ee/config/metrics` for EE-only metrics.
+  - Prefer `data_source: internal_events`, which is the recommended source for new metrics.
+  - If the metric has `data_source: database`, hand the review to the Analytics Instrumentation team.
+  - Check that the metric is not based on the deprecated `redis` or `redis_hll` data sources. See the [migration guide](internal_event_instrumentation/migration.md).
+- For an updated metric:
+  - Check that the [metric change procedure](metrics/metrics_lifecycle.md#change-an-existing-metric) was followed.

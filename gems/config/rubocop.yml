@@ -113,6 +113,10 @@ Rails/MigrationTimestamp:
 RSpec/AvoidConditionalStatements:
   Enabled: false
 
+# This cop doesn't make sense in the context of gems (no spec/features/ directory)
+RSpec/FeatureSpecMaxExamples:
+  Enabled: false
+
 RSpec/ContextWording:
   Prefixes:
   - 'when'

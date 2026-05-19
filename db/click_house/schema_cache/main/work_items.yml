@@ -1,0 +1,139 @@
+---
+name: work_items
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (traversal_path, id) ORDER BY (traversal_path, id) SETTINGS index_granularity =
+  2048, deduplicate_merge_projection_mode = 'rebuild'
+primary_key: traversal_path, id
+sorting_key: traversal_path, id
+settings:
+  index_granularity: '2048'
+  deduplicate_merge_projection_mode: "'rebuild'"
+columns:
+- name: id
+  type: Int64
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: title
+  type: String
+  compression_codec: CODEC(ZSTD(3))
+- name: author_id
+  type: Nullable(Int64)
+- name: project_id
+  type: Nullable(Int64)
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: description
+  type: String
+  compression_codec: CODEC(ZSTD(3))
+- name: milestone_id
+  type: Nullable(Int64)
+- name: iid
+  type: Int64
+- name: updated_by_id
+  type: Nullable(Int64)
+- name: weight
+  type: Nullable(Int64)
+- name: confidential
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: due_date
+  type: Nullable(Date32)
+- name: moved_to_id
+  type: Nullable(Int64)
+- name: time_estimate
+  type: Nullable(Int64)
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: relative_position
+  type: Nullable(Int64)
+- name: service_desk_reply_to
+  type: Nullable(String)
+- name: cached_markdown_version
+  type: Nullable(Int64)
+- name: last_edited_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: last_edited_by_id
+  type: Nullable(Int64)
+- name: discussion_locked
+  type: Nullable(Bool)
+  compression_codec: CODEC(ZSTD(1))
+- name: closed_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: closed_by_id
+  type: Nullable(Int64)
+- name: state_id
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '1'
+- name: duplicated_to_id
+  type: Nullable(Int64)
+- name: promoted_to_epic_id
+  type: Nullable(Int64)
+- name: health_status
+  type: Nullable(Int16)
+- name: sprint_id
+  type: Nullable(Int64)
+- name: blocking_issues_count
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: upvotes_count
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: work_item_type_id
+  type: Int64
+- name: namespace_id
+  type: Int64
+- name: start_date
+  type: Nullable(Date32)
+- name: imported_from
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: namespace_traversal_ids
+  type: Array(Int64)
+  default_kind: DEFAULT
+  default_expression: "[]"
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(namespace_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.namespace_traversal_paths_dict',
+    'traversal_path', namespace_id, '0/'), '0/')
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: metric_first_mentioned_in_commit_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: metric_first_associated_with_milestone_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: metric_first_added_to_board_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: assignees
+  type: Array(UInt64)
+- name: label_ids
+  type: Array(Tuple(label_id UInt64, created_at DateTime64(6, 'UTC')))
+- name: award_emojis
+  type: Array(Tuple(name String, user_id UInt64, created_at DateTime64(6, 'UTC')))
+- name: system_defined_status_id
+  type: Nullable(Int64)
+- name: custom_status_id
+  type: Nullable(Int64)

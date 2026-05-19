@@ -54,9 +54,27 @@ RSpec.describe Sidebars::Groups::Menus::WorkItemsMenu, feature_category: :naviga
     end
   end
 
+  describe '#has_pill?' do
+    context 'when show_work_items_sidebar_count is enabled' do
+      it 'returns true' do
+        stub_feature_flags(show_work_items_sidebar_count: true)
+
+        expect(menu.has_pill?).to be(true)
+      end
+    end
+
+    context 'when show_work_items_sidebar_count is disabled' do
+      it 'returns false' do
+        stub_feature_flags(show_work_items_sidebar_count: false)
+
+        expect(menu.has_pill?).to be(false)
+      end
+    end
+  end
+
   describe '#pill_count_field' do
     it 'returns the correct GraphQL field name' do
-      expect(menu.pill_count_field).to eq('openIssuesCount')
+      expect(menu.pill_count_field).to eq('openWorkItemsCount')
     end
   end
 
@@ -72,58 +90,6 @@ RSpec.describe Sidebars::Groups::Menus::WorkItemsMenu, feature_category: :naviga
     it { is_expected.to eq 'issues' }
   end
 
-  describe '#show_work_items_badge?' do
-    subject { menu.send(:show_work_items_badge?) }
-
-    describe 'when user is not logged in' do
-      let(:user) { nil }
-
-      it { is_expected.to be(false) }
-    end
-
-    describe 'when user is logged in' do
-      it 'does not show the badge when user has dismissed the callout' do
-        allow(user).to receive(:dismissed_callout?).with(feature_name: 'work_items_nav_badge').and_return(true)
-
-        expect(menu.send(:show_work_items_badge?)).to be(false)
-      end
-
-      describe 'when the callout is not dismissed' do
-        before do
-          allow(user).to receive(:dismissed_callout?).with(feature_name: 'work_items_nav_badge').and_return(false)
-        end
-
-        it 'does not show the badge after the expiry date' do
-          travel_to(Sidebars::Concerns::ShowWorkItemsBadge::WORK_ITEMS_BADGE_EXPIRES_ON + 1.day) do
-            expect(menu.send(:show_work_items_badge?)).to be(false)
-          end
-        end
-
-        it 'shows the badge before the expiry date' do
-          travel_to(Sidebars::Concerns::ShowWorkItemsBadge::WORK_ITEMS_BADGE_EXPIRES_ON - 1.day) do
-            expect(menu.send(:show_work_items_badge?)).to be(true)
-          end
-        end
-      end
-    end
-  end
-
-  describe '#work_items_badge_tooltip_text' do
-    before do
-      allow(group).to receive(:licensed_feature_available?).and_call_original
-    end
-
-    it 'contains correct text when epics feature is available' do
-      allow(group).to receive(:licensed_feature_available?).with(:epics).and_return(true)
-      expect(menu.send(:work_items_badge_tooltip_text)).to eq('Epics and issues are now work items.')
-    end
-
-    it 'contains correct text when epics feature is not available' do
-      allow(group).to receive(:licensed_feature_available?).with(:epics).and_return(false)
-      expect(menu.send(:work_items_badge_tooltip_text)).to eq('Issues are now work items.')
-    end
-  end
-
   it_behaves_like 'serializable as super_sidebar_menu_args' do
     let(:extra_attrs) do
       {
@@ -135,8 +101,7 @@ RSpec.describe Sidebars::Groups::Menus::WorkItemsMenu, feature_category: :naviga
         pill_count: menu.pill_count,
         pill_count_field: menu.pill_count_field,
         has_pill: menu.has_pill?,
-        super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::PlanMenu,
-        badge: menu.send(:work_items_badge)
+        super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::PlanMenu
       }
     end
   end

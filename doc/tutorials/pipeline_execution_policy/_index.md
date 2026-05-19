@@ -35,7 +35,7 @@ To complete this tutorial, you need:
 To begin, create a test project to apply your pipeline execution policy to:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **New project**.
+1. In the left sidebar, select **New project**.
 1. Select **Create blank project**.
 1. Complete the fields.
    - **Project name**: `my-pipeline-execution-policy`.

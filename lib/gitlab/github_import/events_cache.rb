@@ -33,7 +33,7 @@ module Gitlab
       # Reads issue events from cache
       #
       # @param record [ActiveRecord::Model] Model that responds to :iid
-      # @retun [Array<GitLab::GitHubImport::Representation::IssueEvent>] List of issue events
+      # @return [Array<GitLab::GitHubImport::Representation::IssueEvent>] List of issue events
       def events(record)
         events = Gitlab::Cache::Import::Caching.values_from_list(events_cache_key(record)).map do |event|
           Representation::IssueEvent.from_json_hash(Gitlab::Json.safe_parse(event))

@@ -1,3 +1,5 @@
+# @feature_category: pipeline_composition
+
 mutation catalogResourcesDestroy($input: CatalogResourcesDestroyInput!) {
   catalogResourcesDestroy(input: $input) {
     errors

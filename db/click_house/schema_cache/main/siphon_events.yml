@@ -1,0 +1,67 @@
+---
+name: siphon_events
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PARTITION
+  BY toYear(created_at) PRIMARY KEY (path, id) ORDER BY (path, id) SETTINGS index_granularity
+  = 2048, deduplicate_merge_projection_mode = 'rebuild'
+partition_key: toYear(created_at)
+primary_key: path, id
+sorting_key: path, id
+settings:
+  index_granularity: '2048'
+  deduplicate_merge_projection_mode: "'rebuild'"
+columns:
+- name: project_id
+  type: Nullable(Int64)
+- name: author_id
+  type: Int64
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+  is_in_partition_key: true
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: action
+  type: Int16
+- name: target_type
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: group_id
+  type: Nullable(Int64)
+- name: fingerprint
+  type: Nullable(String)
+- name: id
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: target_id
+  type: Nullable(Int64)
+- name: imported_from
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: personal_namespace_id
+  type: Nullable(Int64)
+- name: path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
+    'traversal_path', project_id, '0/'), coalesce(group_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.namespace_traversal_paths_dict',
+    'traversal_path', group_id, '0/'), coalesce(personal_namespace_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.namespace_traversal_paths_dict',
+    'traversal_path', personal_namespace_id, '0/'), '0/')
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))

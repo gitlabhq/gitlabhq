@@ -1,0 +1,10 @@
+---
+name: package_metadata_sync_using_labels
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590584
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230816
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/599534
+milestone: '19.0'
+group: group::composition analysis
+type: beta
+default_enabled: true

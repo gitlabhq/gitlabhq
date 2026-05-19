@@ -186,37 +186,76 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
   describe 'state machine transitions', :clean_gitlab_redis_shared_state do
     describe '#finish!' do
       let_it_be(:project) { create(:project) }
-
+      let_it_be(:offline_export) { create(:offline_export) }
       let(:export) { create(:bulk_import_export, :started, project: project) }
-      let(:cache_key) { "bulk_imports/#{project.class.name}/#{project.id}/user_contribution_ids" }
 
       subject(:finish_export) { export.finish! }
-
-      before do
-        Gitlab::Cache::Import::Caching.set_add(cache_key, [1, 2, 3])
-      end
 
       it 'sets the status to finished' do
         expect { finish_export }.to change { export.status }.from(0).to(1)
       end
 
-      context 'when export is for user_contributions' do
-        let(:export) { create(:bulk_import_export, :started, project: project, relation: 'user_contributions') }
+      context 'when the export is offline' do
+        let(:cache_key) { "offline_export/#{offline_export.id}/Project/#{project.id}/user_contribution_ids" }
+        let(:export) do
+          create(:bulk_import_export, :started, project: project, offline_export: offline_export, relation: relation)
+        end
 
-        it 'clears cached contributing user_ids' do
-          expect { finish_export }.to change {
-            Gitlab::Cache::Import::Caching.values_from_set(cache_key).length
-          }.from(3).to(0)
+        before do
+          Gitlab::Cache::Import::Caching.set_add(cache_key, [1, 2, 3])
+        end
+
+        context 'and relation is not user_contributions' do
+          let(:relation) { 'issues' }
+
+          it 'does clear cached contributing user_ids' do
+            expect { finish_export }.not_to change {
+              Gitlab::Cache::Import::Caching.values_from_set(cache_key).length
+            }.from(3)
+          end
+        end
+
+        context 'and relation is user_contributions' do
+          let(:relation) { 'user_contributions' }
+
+          it 'clears cached contributing user_ids' do
+            expect { finish_export }.to change {
+              Gitlab::Cache::Import::Caching.values_from_set(cache_key).length
+            }.from(3).to(0)
+          end
         end
       end
 
-      context 'when export is not for user_contributions' do
-        let(:export) { create(:bulk_import_export, :started, project: project, relation: 'issues') }
+      context 'when the export is not offline' do
+        # Contributing users shouldn't be cached unless part of an offline export,
+        # but these specs ensure the cache is cleared anyway
+        let(:cache_key) { "offline_export//Project/#{project.id}/user_contribution_ids" }
+        let(:export) { create(:bulk_import_export, :started, project: project, relation: relation) }
 
-        it 'does clear cached contributing user_ids' do
-          expect { finish_export }.not_to change {
-            Gitlab::Cache::Import::Caching.values_from_set(cache_key).length
-          }.from(3)
+        before do
+          Gitlab::Cache::Import::Caching.set_add(cache_key, [1, 2, 3])
+        end
+
+        context 'and relation is not user_contributions' do
+          let(:relation) { 'issues' }
+
+          it 'does not clear cached contributing user_ids' do
+            expect { finish_export }.not_to change {
+              Gitlab::Cache::Import::Caching.values_from_set(cache_key).length
+            }.from(3)
+          end
+        end
+
+        context 'and relation is user_contributions' do
+          # Direct transfer doesn't create exports with user_contributions relation so this type of
+          # export would never exist to call #finish! on in practice. This spec only exists for completeness
+          let(:relation) { 'user_contributions' }
+
+          it 'clears cached contributing user_ids' do
+            expect { finish_export }.to change {
+              Gitlab::Cache::Import::Caching.values_from_set(cache_key).length
+            }.from(3).to(0)
+          end
         end
       end
     end

@@ -259,7 +259,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger, feature_category: :continuous_int
       end
 
       context 'when project is not passed and pipeline is not persisted' do
-        let(:project) {}
+        let(:project) { nil }
         let(:pipeline) { build(:ci_pipeline) }
 
         let(:expected_data) do

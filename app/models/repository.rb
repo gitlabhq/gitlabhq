@@ -200,6 +200,7 @@ class Repository
     ref:,
     query: nil,
     author: nil,
+    path: nil,
     committed_before: nil,
     committed_after: nil,
     pagination_params: { page_token: nil, limit: 1000 }
@@ -212,6 +213,7 @@ class Repository
       ref: ref,
       query: query,
       author: expand_author_with_user_emails(author),
+      path: path,
       committed_before: committed_before,
       committed_after: committed_after,
       pagination_params: pagination_params

@@ -64,7 +64,8 @@ module Groups
             group_path: group.full_path,
             group_id: group.id,
             timestamp: Time.current.iso8601,
-            action: 'group_ci_cd_settings_page_viewed'
+            action: 'group_ci_cd_settings_page_viewed',
+            user_agent: Gitlab::Audit::Sanitizer.sanitize_user_agent(request.user_agent)
           }
         }
 

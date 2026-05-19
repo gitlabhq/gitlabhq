@@ -33,10 +33,8 @@ function findFiles() {
         // Storybook stories
         '**/*.stories.js',
 
-        // These files import the `mermaid` / `mermaid-v11` node modules, which
-        // are written in ES module format, and Jest isn't configured to transpile
-        // them.
-        '**/app/assets/javascripts/lib/mermaid_v10.js',
+        // This file imports the `mermaid-v11` Node module, which is written in
+        // ES module format, and Jest isn't configured to transpile it.
         '**/app/assets/javascripts/lib/mermaid_v11.js',
 
         // These *should* be in /pages/ 🤷

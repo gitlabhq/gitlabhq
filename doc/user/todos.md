@@ -1,6 +1,6 @@
 ---
-stage: Growth
-group: Engagement
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: To-Do List
 description: Task management, actions, and access changes.
@@ -157,8 +157,11 @@ To-do items are **not** marked as done if you:
 - Assign yourself.
 - Change the health status of an issue.
 
-If someone else closes, merges, or takes action on an issue, merge request, or
-epic, your to-do item remains pending.
+If someone else closes or takes action on an issue or epic, your to-do item
+remains pending.
+
+When a merge request is merged or closed, to-do items for all users that were
+assigned, requested to review, required to approve, or added as approvers are marked as done.
 
 ## Mark a to-do item as done
 

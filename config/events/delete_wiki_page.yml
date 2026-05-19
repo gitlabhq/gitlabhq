@@ -12,6 +12,8 @@ additional_properties:
   property:
     description: "Name of the markup language used by the page"
 product_group: knowledge
+product_categories:
+- wiki
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149271
 tiers:

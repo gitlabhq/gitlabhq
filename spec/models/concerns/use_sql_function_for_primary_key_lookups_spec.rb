@@ -44,6 +44,26 @@ RSpec.describe UseSqlFunctionForPrimaryKeyLookups, feature_category: :groups_and
     expect(recorder.cached).to include(query.tr("\n", ''))
   end
 
+  context 'when organization isolation is enabled', :use_sql_query_cache do
+    let_it_be(:user) { create(:user) }
+    let(:organization) { user.organization }
+
+    before do
+      stub_current_organization(organization)
+      allow(Gitlab::Organizations::Isolation).to receive(:enabled?).and_return(true)
+    end
+
+    it 'uses the function-based finder query' do
+      query = <<~SQL
+        SELECT "users".* FROM find_users_by_id_and_organization_id(#{user.id}, #{organization.id})#{' '}
+        AS users WHERE ("users"."id" IS NOT NULL) LIMIT 1
+      SQL
+      query_log = ActiveRecord::QueryRecorder.new { model.find(user.id) }.log
+
+      expect(query_log).to match_array(include(query.tr("\n", '')))
+    end
+  end
+
   context 'when the model has ignored columns' do
     around do |example|
       model.ignored_columns = %i[encrypted_password]

@@ -17,7 +17,7 @@ RSpec.describe ResourceStateEventPolicy, feature_category: :team_planning do
     end
 
     context 'with member user' do
-      before do
+      before_all do
         project.add_guest(user)
       end
 

@@ -7,7 +7,7 @@ module API
       expose :short_id, documentation: { type: 'String', example: '2695effb' }
       expose :created_at, documentation: { type: 'DateTime', example: '2017-07-26T11:08:53.000+02:00' }
       expose :parent_ids,
-        documentation: { type: 'String', is_array: true, example: '2a4b78934375d7f53875269ffd4f45fd83a84ebe' }
+        documentation: { type: 'String', is_array: true, example: ['2a4b78934375d7f53875269ffd4f45fd83a84ebe'] }
       expose :full_title, as: :title, documentation: { type: 'String', example: 'Initial commit' }
       expose :safe_message, as: :message, documentation: { type: 'String', example: 'Initial commit' }
       expose :author_name, documentation: { type: 'String', example: 'John Smith' }
@@ -16,10 +16,10 @@ module API
       expose :committer_name, documentation: { type: 'String', example: 'Jack Smith' }
       expose :committer_email, documentation: { type: 'String', example: 'jack@example.com' }
       expose :committed_date, documentation: { type: 'DateTime', example: '2012-05-28T04:42:42-07:00' }
-      expose :trailers, documentation: { type: 'object', example: '{ "Merged-By": "Jane Doe janedoe@gitlab.com" }' }
+      expose :trailers, documentation: { type: 'Hash', example: { "Merged-By" => "Jane Doe janedoe@gitlab.com" } }
       expose :extended_trailers, documentation: {
-        type: 'object',
-        example: '{ "Signed-off-by": ["John Doe <johndoe@gitlab.com>", "Jane Doe <janedoe@gitlab.com>"] }'
+        type: 'Hash',
+        example: { "Signed-off-by" => ["John Doe <johndoe@gitlab.com>", "Jane Doe <janedoe@gitlab.com>"] }
       }
 
       expose :web_url,

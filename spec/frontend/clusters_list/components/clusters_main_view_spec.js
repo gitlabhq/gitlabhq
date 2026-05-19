@@ -87,7 +87,7 @@ describe('ClustersMainViewComponent', () => {
         'when the child component emits the tab change event for $tabName tab',
         ({ tab, tabName }) => {
           beforeEach(() => {
-            findComponent().vm.$emit('changeTab', tabName);
+            findComponent().vm.$emit('change-tab', tabName);
           });
 
           it(`changes the tab value to ${tab}`, () => {
@@ -110,7 +110,7 @@ describe('ClustersMainViewComponent', () => {
         });
 
         it('passes kasDisabled param if received from the component to the modal', async () => {
-          findComponent().vm.$emit('kasDisabled', true);
+          findComponent().vm.$emit('kas-disabled', true);
           await nextTick();
 
           expect(findModal().props('kasDisabled')).toBe(true);
@@ -131,15 +131,15 @@ describe('ClustersMainViewComponent', () => {
       beforeEach(() => {
         createWrapper({ displayClusterAgents: true });
         findModal().vm.showModalForAgent = modalSpy;
-        findComponent().vm.$emit('registerAgent', 'new-agent-name');
+        findComponent().vm.$emit('register-agent', 'new-agent-name');
       });
 
-      it('calls showModalForAgent when registerAgent is received from the component', () => {
+      it('calls showModalForAgent when register-agent is received from the component', () => {
         expect(modalSpy).toHaveBeenCalledWith('new-agent-name');
       });
 
       it('should not render a success alert', async () => {
-        findModal().vm.$emit('clusterAgentCreated', 'new-agent-name');
+        findModal().vm.$emit('cluster-agent-created', 'new-agent-name');
         await nextTick();
 
         expect(findAlert().exists()).toBe(false);
@@ -151,7 +151,7 @@ describe('ClustersMainViewComponent', () => {
 
       beforeEach(async () => {
         createWrapper();
-        findModal().vm.$emit('clusterAgentCreated', newAgentName);
+        findModal().vm.$emit('cluster-agent-created', newAgentName);
         await nextTick();
       });
 

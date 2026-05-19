@@ -42,6 +42,4 @@ module Gitlab
   end
 end
 
-# rubocop:disable Layout/LineLength
 Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter.prepend_mod_with('Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter')
-# rubocop:enable Layout/LineLength

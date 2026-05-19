@@ -75,6 +75,14 @@ Fine-grained token scope checks are not applied to these endpoints.
 
 <%= public_endpoints %>
 
+## Publicly accessible endpoints
+
+A fine-grained personal access token can access these endpoints without an
+explicit scope when the target resource is publicly visible and the relevant
+feature is enabled.
+
+<%= publicly_accessible_endpoints %>
+
 ## Unavailable endpoints
 
 The following endpoints cannot authenticate with fine-grained tokens.

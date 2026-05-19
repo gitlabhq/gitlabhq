@@ -3,7 +3,7 @@ stage: AI-powered
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 高度な検索
-description: "高度な検索を使用して、GitLabインスタンス全体でコード、コミット、イシュー、マージリクエストを検索します。"
+description: "高度な検索を使用して、GitLabインスタンス全体でコード、コミット、作業アイテム、マージリクエストを検索します。"
 ---
 
 {{< details >}}
@@ -28,8 +28,7 @@ description: "高度な検索を使用して、GitLabインスタンス全体で
 - コード
 - コメント
 - コミット
-- エピック
-- イシュー
+- 作業アイテム
 - マージリクエスト
 - マイルストーン
 - プロジェクト
@@ -70,8 +69,7 @@ description: "高度な検索を使用して、GitLabインスタンス全体で
 | コード                        | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | コメント                    | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | コミット                     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
-| エピック                       | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
-| イシュー<sup>3</sup>         | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| 作業アイテム<sup>3</sup>     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | マージリクエスト<sup>3</sup> | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | マイルストーン<sup>4</sup>     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | プロジェクト                    | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
@@ -82,7 +80,7 @@ description: "高度な検索を使用して、GitLabインスタンス全体で
 
 1. 管理者は、[グローバル検索のスコープを無効にできます](_index.md#disable-global-search-scopes)。GitLab Self-Managedでは、制限付きインデックス作成がデフォルトで有効になっている場合、グローバル検索は使用できません。管理者は、[グローバル検索で制限付きインデックス作成を有効にできます](../../integration/advanced_search/elasticsearch.md#indexed-namespaces)。
 1. GitLab.comでは、コード、コミット、Wikiに対してグローバル検索は有効になっていません。
-1. イシューとマージリクエストを検索すると、検索語に一致するコメントが結果に含まれます。
+1. 作業アイテムとマージリクエストを検索すると、検索語に一致するコメントが結果に含まれます。
 1. 高度な検索では、グループのマイルストーンがElasticsearchにインデックスされないため、プロジェクトのマイルストーンのみが返されます。詳細については、[イシュー428589](https://gitlab.com/gitlab-org/gitlab/-/issues/428589)を参照してください。
 
 ## 構文 {#syntax}

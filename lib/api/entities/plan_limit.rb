@@ -19,8 +19,10 @@ module API
       expose :helm_max_file_size, documentation: { type: 'Integer', example: 5242880 }
       expose :limits_history, documentation: {
         type: 'object',
-        example: '{"enforcement_limit"=>[{"timestamp"=>1686909124, "user_id"=>1, "username"=>"x", "value"=>5}],
-                   "notification_limit"=>[{"timestamp"=>1686909124, "user_id"=>2, "username"=>"y", "value"=>7}]}'
+        example: {
+          "enforcement_limit" => [{ "timestamp" => 1686909124, "user_id" => 1, "username" => "x", "value" => 5 }],
+          "notification_limit" => [{ "timestamp" => 1686909124, "user_id" => 2, "username" => "y", "value" => 7 }]
+        }
       }
       expose :maven_max_file_size, documentation: { type: 'Integer', example: 3221225472 }
       expose :notification_limit, documentation: { type: 'Integer', example: 15000 }
@@ -33,6 +35,7 @@ module API
       expose :web_hook_calls, documentation: { type: 'Integer', example: 500 }
       expose :web_hook_calls_low, documentation: { type: 'Integer', example: 500 }
       expose :web_hook_calls_mid, documentation: { type: 'Integer', example: 500 }
+      expose :max_pipelines_per_merge_train, documentation: { type: 'Integer', example: 20 }
     end
   end
 end

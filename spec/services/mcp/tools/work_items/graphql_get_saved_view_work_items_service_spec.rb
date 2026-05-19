@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mcp::Tools::WorkItems::GraphqlGetSavedViewWorkItemsService, feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :public, group: group) }
+  let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
 
   let(:service) { described_class.new(name: 'get_saved_view_work_items') }
   let(:request) { instance_double(ActionDispatch::Request) }
@@ -1036,6 +1036,155 @@ RSpec.describe Mcp::Tools::WorkItems::GraphqlGetSavedViewWorkItemsService, featu
           variables: hash_including(:sort),
           context: anything
         )
+      end
+    end
+
+    context 'with date range filters' do
+      let_it_be(:saved_view) do
+        create(:saved_view,
+          namespace: group,
+          author: user,
+          name: 'Date ranges',
+          filter_data: {
+            created_after: '2026-01-01T00:00:00Z',
+            created_before: '2026-12-31T23:59:59Z',
+            updated_after: '2026-01-01T00:00:00Z',
+            updated_before: '2026-12-31T23:59:59Z',
+            closed_after: '2026-01-01T00:00:00Z',
+            closed_before: '2026-12-31T23:59:59Z',
+            due_after: '2026-01-01T00:00:00Z',
+            due_before: '2026-12-31T23:59:59Z'
+          }
+        )
+      end
+
+      let(:params_arguments) { { group_id: group.id.to_s, saved_view_id: saved_view.to_global_id.to_s } }
+
+      it 'passes all date range filters to the work items query' do
+        result = execute_and_verify_variables(
+          createdAfter: '2026-01-01T00:00:00Z',
+          createdBefore: '2026-12-31T23:59:59Z',
+          updatedAfter: '2026-01-01T00:00:00Z',
+          updatedBefore: '2026-12-31T23:59:59Z',
+          closedAfter: '2026-01-01T00:00:00Z',
+          closedBefore: '2026-12-31T23:59:59Z',
+          dueAfter: '2026-01-01T00:00:00Z',
+          dueBefore: '2026-12-31T23:59:59Z'
+        )
+
+        expect(result[:structuredContent]).not_to have_key('warnings')
+      end
+    end
+
+    context 'with subscribed filter' do
+      let_it_be(:saved_view) do
+        create(:saved_view,
+          namespace: group,
+          author: user,
+          name: 'Subscribed only',
+          filter_data: { subscribed: 'EXPLICITLY_SUBSCRIBED' }
+        )
+      end
+
+      let(:params_arguments) { { group_id: group.id.to_s, saved_view_id: saved_view.to_global_id.to_s } }
+
+      it 'passes subscribed to the work items query' do
+        result = execute_and_verify_variables(subscribed: 'EXPLICITLY_SUBSCRIBED')
+
+        expect(result[:structuredContent]).not_to have_key('warnings')
+      end
+    end
+
+    context 'with releaseTag filter resolved from release_ids' do
+      let_it_be(:release, freeze: false) { create(:release, project: project, tag: 'v1.0') }
+      let_it_be(:saved_view) do
+        create(:saved_view,
+          namespace: group,
+          author: user,
+          name: 'Release v1.0',
+          filter_data: { release_ids: [release.id] }
+        )
+      end
+
+      let(:params_arguments) { { group_id: group.id.to_s, saved_view_id: saved_view.to_global_id.to_s } }
+
+      it 'passes releaseTag (resolved from release_ids) to the work items query' do
+        result = execute_and_verify_variables(releaseTag: [release.tag])
+
+        expect(result[:structuredContent]).not_to have_key('warnings')
+      end
+    end
+
+    context 'with releaseTagWildcardId filter' do
+      let_it_be(:saved_view) do
+        create(:saved_view,
+          namespace: group,
+          author: user,
+          name: 'Any release',
+          filter_data: { release_tag_wildcard_id: 'ANY' }
+        )
+      end
+
+      let(:params_arguments) { { group_id: group.id.to_s, saved_view_id: saved_view.to_global_id.to_s } }
+
+      it 'passes releaseTagWildcardId to the work items query' do
+        result = execute_and_verify_variables(releaseTagWildcardId: 'ANY')
+
+        expect(result[:structuredContent]).not_to have_key('warnings')
+      end
+    end
+
+    context 'with crmContactId filter' do
+      let_it_be(:contact_id) { 42 }
+      let_it_be(:saved_view) do
+        create(:saved_view,
+          namespace: group,
+          author: user,
+          name: 'CRM contact filter',
+          filter_data: { crm_contact_id: contact_id.to_s }
+        )
+      end
+
+      let(:params_arguments) { { group_id: group.id.to_s, saved_view_id: saved_view.to_global_id.to_s } }
+
+      before do
+        # The sanitizer requires an IssueContact to exist for the contact_id
+        # before forwarding crm_contact_id to the GraphQL filters.
+        allow(CustomerRelations::IssueContact).to receive(:exists?)
+          .with(contact_id: contact_id.to_s).and_return(true)
+      end
+
+      it 'passes crmContactId to the work items query' do
+        result = execute_and_verify_variables(crmContactId: contact_id.to_s)
+
+        expect(result[:structuredContent]).not_to have_key('warnings')
+      end
+    end
+
+    context 'with crmOrganizationId filter' do
+      let_it_be(:organization_id) { 99 }
+      let_it_be(:saved_view) do
+        create(:saved_view,
+          namespace: group,
+          author: user,
+          name: 'CRM organization filter',
+          filter_data: { crm_organization_id: organization_id.to_s }
+        )
+      end
+
+      let(:params_arguments) { { group_id: group.id.to_s, saved_view_id: saved_view.to_global_id.to_s } }
+
+      before do
+        # The sanitizer requires a Contact under the org to exist before
+        # forwarding crm_organization_id to the GraphQL filters.
+        allow(CustomerRelations::Contact).to receive(:exists?)
+          .with(organization_id: organization_id.to_s).and_return(true)
+      end
+
+      it 'passes crmOrganizationId to the work items query' do
+        result = execute_and_verify_variables(crmOrganizationId: organization_id.to_s)
+
+        expect(result[:structuredContent]).not_to have_key('warnings')
       end
     end
   end

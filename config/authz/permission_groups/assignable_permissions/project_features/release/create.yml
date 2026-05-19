@@ -1,8 +1,10 @@
 ---
 name: create_release
 description: Grants the ability to create releases
+boundaries:
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - create_release
   - create_release_evidence
-boundaries:
-  - project

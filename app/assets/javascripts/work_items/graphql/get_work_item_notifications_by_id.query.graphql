@@ -1,10 +1,16 @@
 # @feature_category: team_planning
-query getWorkItemNotificationsById($id: WorkItemID!) {
+query getWorkItemNotificationsById($id: WorkItemID!, $useWorkItemFeatures: Boolean = false) {
   workItem(id: $id) {
     id
     iid
-    widgets(onlyTypes: [NOTIFICATIONS]) {
+    widgets(onlyTypes: [NOTIFICATIONS]) @skip(if: $useWorkItemFeatures) {
       ... on WorkItemWidgetNotifications {
+        type
+        subscribed
+      }
+    }
+    features @include(if: $useWorkItemFeatures) {
+      notifications {
         type
         subscribed
       }

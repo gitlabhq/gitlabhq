@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import { initIssuableSidebar } from '~/issuable';
+import { pinia } from '~/pinia/instance';
 import MergeConflictsResolverApp from './merge_conflict_resolver_app.vue';
-import { createStore } from './store';
+import { useMergeConflicts } from './store';
 
 export default function initMergeConflicts() {
   const conflictsEl = document.querySelector('#conflicts');
@@ -11,19 +12,16 @@ export default function initMergeConflicts() {
 
   initIssuableSidebar();
 
-  const store = createStore();
+  useMergeConflicts(pinia).fetchConflictsData(conflictsPath);
 
   return new Vue({
     el: conflictsEl,
     name: 'MergeConflictsResolverAppRoot',
-    store,
+    pinia,
     provide: {
       sourceBranchPath,
       mergeRequestPath,
       resolveConflictsPath,
-    },
-    created() {
-      store.dispatch('fetchConflictsData', conflictsPath);
     },
     render(createElement) {
       return createElement(MergeConflictsResolverApp);

@@ -7,7 +7,7 @@ module RapidDiffs
     delegate :mr_path, :project_path, :code_review_enabled, :discussions_endpoint, :user_permissions,
       :noteable_type, :preview_markdown_endpoint, :markdown_docs_path, :register_path, :sign_in_path,
       :report_abuse_path, :versions, :linked_file, :suggestions_help_path,
-      :default_suggestion_commit_message, to: :presenter
+      :default_suggestion_commit_message, :new_comment_template_paths, :preparing?, to: :presenter
 
     def initialize(presenter)
       @presenter = presenter
@@ -30,6 +30,7 @@ module RapidDiffs
         markdown_docs_path: markdown_docs_path,
         suggestions_help_path: suggestions_help_path,
         default_suggestion_commit_message: default_suggestion_commit_message,
+        new_comment_template_paths: new_comment_template_paths,
         versions: versions
       }
     end

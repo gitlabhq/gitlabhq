@@ -61,7 +61,8 @@ module Gitlab
         # reset tracker if any of the features used for creation of tracker changed
         feature_map = {
           track_struct_event_logger: Feature.enabled?(:track_struct_event_logger, Feature.current_request),
-          snowplow_sync_emitter: Feature.enabled?(:snowplow_sync_emitter, Feature.current_request)
+          snowplow_sync_emitter: Feature.enabled?(:snowplow_sync_emitter, Feature.current_request),
+          snowplow_job_emitter: Feature.enabled?(:snowplow_job_emitter, Feature.current_request)
         }
 
         no_feature_changes = feature_map == @feature_map

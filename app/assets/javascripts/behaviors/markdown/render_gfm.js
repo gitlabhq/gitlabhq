@@ -9,6 +9,7 @@ import { renderJSONTable, renderJSONTableHTML } from './render_json_table';
 import { addAriaLabels } from './accessibility';
 import { renderImageLightbox } from './render_image_lightbox';
 import renderStickyTableHeaders from './render_table_headers';
+import { GFM_POPOVER_SELECTOR } from './constants';
 
 function initPopovers(elements) {
   if (!elements.length) return;
@@ -45,9 +46,7 @@ export function renderGFM(element) {
   const tableHTMLEls = arrayFromAll('table[data-table-fields]');
   const glqlEls = arrayFromAll('[data-canonical-lang="glql"], .language-glql');
   const userEls = arrayFromAll('.gfm-project_member');
-  const popoverEls = arrayFromAll(
-    '.gfm-issue, .gfm-work_item, .gfm-merge_request, .gfm-epic, .gfm-milestone',
-  );
+  const popoverEls = arrayFromAll(GFM_POPOVER_SELECTOR);
   const taskListCheckboxEls = arrayFromAll('.task-list-item-checkbox');
   // eslint-disable-next-line @gitlab/require-i18n-strings
   const imageEls = arrayFromAll('a>img');

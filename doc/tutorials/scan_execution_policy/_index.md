@@ -38,7 +38,7 @@ tutorial, you're starting with nothing, so the first step is to create a project
 To create project A:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **New project**.
+1. In the left sidebar, select **New project**.
 1. Select **Create blank project**.
 1. Complete the fields. For **Project name**, enter `go-example-a`.
 1. Select **Create project**.
@@ -125,7 +125,7 @@ You've seen the policy work for one project. Create another project and apply th
 To create project B:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **New project**.
+1. In the left sidebar, select **New project**.
 1. Select **Create blank project**.
 1. Complete the fields. For **Project name**, enter `go-example-b`.
 1. Select **Create project**.

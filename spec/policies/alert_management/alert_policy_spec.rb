@@ -15,7 +15,7 @@ RSpec.describe AlertManagement::AlertPolicy, :models do
     it { is_expected.to be_disallowed :update_alert_management_alert }
 
     context 'when developer' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -51,7 +51,7 @@ RSpec.describe AlertManagement::AlertPolicy, :models do
     end
 
     context 'when user is a guest' do
-      before do
+      before_all do
         project.add_guest(user)
       end
 
@@ -60,7 +60,7 @@ RSpec.describe AlertManagement::AlertPolicy, :models do
     end
 
     context 'when user is a developer' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 

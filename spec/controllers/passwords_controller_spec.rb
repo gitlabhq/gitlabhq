@@ -273,7 +273,7 @@ RSpec.describe PasswordsController, feature_category: :system_access do
       # unconfirmed secondary emails should not be linked with any users till they are confirmed
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/356665
       #
-      # In https://gitlab.com/gitlab-org/gitlab/-/issues/367823, it is considerd
+      # In https://gitlab.com/gitlab-org/gitlab/-/issues/367823, it is considered
       # to prevent reserving emails on Gitlab by unconfirmed secondary emails.
       # As per this issue, there might be cases that there are multiple users
       # with the same unconfirmed secondary emails. It would be impossible to identify for

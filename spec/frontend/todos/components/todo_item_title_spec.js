@@ -1,11 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
 import TodoItemTitle from '~/todos/components/todo_item_title.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import {
   TODO_ACTION_TYPE_ASSIGNED,
   TODO_TARGET_TYPE_ALERT,
   TODO_TARGET_TYPE_DESIGN,
-  TODO_TARGET_TYPE_EPIC,
   TODO_TARGET_TYPE_ISSUE,
   TODO_TARGET_TYPE_MERGE_REQUEST,
   TODO_TARGET_TYPE_PIPELINE,
@@ -30,6 +30,7 @@ describe('TodoItemTitle', () => {
     action: TODO_ACTION_TYPE_ASSIGNED,
     targetEntity: {
       name: 'Target title',
+      webPath: '/flightjs/Flight/-/issues/1',
     },
     targetType: TODO_TARGET_TYPE_ISSUE,
   };
@@ -75,10 +76,7 @@ describe('TodoItemTitle', () => {
       targetType                        | icon               | showsIcon
       ${TODO_TARGET_TYPE_ALERT}         | ${'status-alert'}  | ${true}
       ${TODO_TARGET_TYPE_DESIGN}        | ${'media'}         | ${true}
-      ${TODO_TARGET_TYPE_EPIC}          | ${'epic'}          | ${true}
-      ${TODO_TARGET_TYPE_ISSUE}         | ${'issues'}        | ${true}
       ${TODO_TARGET_TYPE_MERGE_REQUEST} | ${'merge-request'} | ${true}
-      ${TODO_TARGET_TYPE_PIPELINE}      | ${'pipeline'}      | ${true}
       ${TODO_TARGET_TYPE_PIPELINE}      | ${'pipeline'}      | ${true}
       ${TODO_TARGET_TYPE_SSH_KEY}       | ${'token'}         | ${true}
       ${'UNKNOWN_TYPE'}                 | ${''}              | ${false}
@@ -109,6 +107,52 @@ describe('TodoItemTitle', () => {
       if (showsIcon) {
         expect(glIcon.props('name')).toBe(icon);
       }
+    });
+  });
+
+  describe('work item todo', () => {
+    const workItemTodo = {
+      ...mockToDo,
+      targetType: TODO_TARGET_TYPE_ISSUE,
+      targetEntity: {
+        name: 'My Epic',
+        webPath: '/groups/gitlab-duo/-/work_items/3',
+        workItemType: { name: 'Epic', iconName: 'epic' },
+      },
+    };
+
+    it.each`
+      workItemType    | iconName
+      ${'Epic'}       | ${'epic'}
+      ${'Task'}       | ${'issue-type-task'}
+      ${'Objective'}  | ${'issue-type-objective'}
+      ${'Key Result'} | ${'issue-type-keyresult'}
+    `('renders correct WorkItemTypeIcon for $workItemType', ({ workItemType, iconName }) => {
+      createComponent({
+        ...workItemTodo,
+        targetEntity: {
+          ...workItemTodo.targetEntity,
+          workItemType: { name: workItemType, iconName },
+        },
+      });
+
+      const workItemIcon = wrapper.findComponent(WorkItemTypeIcon);
+      expect(workItemIcon.props('workItemType')).toBe(workItemType);
+      expect(workItemIcon.props('typeIconName')).toBe(iconName);
+    });
+
+    it('does not render WorkItemTypeIcon for non-work-item todos', () => {
+      createComponent({
+        ...mockToDo,
+        targetType: TODO_TARGET_TYPE_ISSUE,
+        targetEntity: {
+          name: 'A regular issue',
+          webPath: '/flightjs/Flight/-/issues/5',
+        },
+      });
+
+      const workItemIcon = wrapper.findComponent(WorkItemTypeIcon);
+      expect(workItemIcon.exists()).toBe(false);
     });
   });
 });

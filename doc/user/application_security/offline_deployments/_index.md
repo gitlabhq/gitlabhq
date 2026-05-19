@@ -100,7 +100,7 @@ You can find more information at each of the pages below:
 - [DAST offline directions](../dast/browser/configuration/offline_configuration.md)
 - [API fuzzing offline directions](../api_fuzzing/configuration/offline_configuration.md)
 - [License Scanning offline directions](../../compliance/license_scanning_of_cyclonedx_files/_index.md#running-in-an-offline-environment)
-- [Gemnasium: dependency scanning offline directions](../dependency_scanning/_index.md#offline-environment)
+- [Dependency scanning offline directions](../dependency_scanning/dependency_scanning_sbom/_index.md#offline-environment)
 - [IaC scanning offline directions](../iac_scanning/_index.md#offline-configuration)
 
 ## Loading Docker images onto your offline host

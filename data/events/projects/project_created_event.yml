@@ -1,0 +1,4 @@
+---
+event: Projects::ProjectCreatedEvent
+description: Published after a new project is successfully created.
+feature_category: groups_and_projects

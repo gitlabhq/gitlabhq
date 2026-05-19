@@ -159,7 +159,7 @@ To view placeholder users created during imports to a top-level group and its su
 
 1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 
 ### Filter for placeholder users
@@ -184,7 +184,7 @@ Placeholder users are created on the destination instance while a group or proje
 To filter for placeholder users created during imports for an entire instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Users**.
+1. In the left sidebar, select **Overview** > **Users**.
 1. In the search box, filter users by **type**.
 
 ### Creating placeholder users

@@ -1,25 +1,4 @@
 <% audit_event_types_by_feature_category = Gitlab::Audit::Type::Definition.definitions.map(&:last).group_by(&:feature_category) %>
-<% def boolean_to_docs(boolean) %>
-<%   if boolean %>
-<%     "{{< yes >}}" %>
-<%   else %>
-<%     "{{< no >}}" %>
-<%   end %>
-<% end %>
-<% def humanize(feature_category) %>
-<%   case feature_category %>
-<%   when 'duo_workflow' %>
-<%     "GitLab Duo Agent Platform" %>
-<%   when 'mlops' %>
-<%     "MLOps" %>
-<%   when 'not_owned' %>
-<%     "Not categorized" %>
-<%   when 'service_desk' %>
-<%     "Service Desk" %>
-<%   else %>
-<%     "#{feature_category.humanize}" %>
-<%   end %>
-<% end %>
 ---
 stage: Software Supply Chain Security
 group: Compliance
@@ -73,7 +52,7 @@ An audit event type's scope limits the availability of the audit event type to e
 Audit event types belong to the following product categories.
 <% audit_event_types_by_feature_category.sort.each do |category, audit_event_types| %>
 
-### <%= "#{humanize(category)}" %>
+### <%= "#{humanize_feature_category(category)}" %>
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|

@@ -192,6 +192,77 @@ func TestRoundTripper_RoundTrip(t *testing.T) {
 		assert.Len(t, body, ActionResponseBodyLimit)
 		assert.Equal(t, strings.Repeat("x", ActionResponseBodyLimit), string(body))
 	})
+
+	t.Run("includes X-Duo-Workflow-Session-Id after SetWorkflowID", func(t *testing.T) {
+		var capturedRequest *http.Request
+		var transportFunc = func(req *http.Request) (*http.Response, error) {
+			capturedRequest = req
+			return &http.Response{
+				StatusCode: 200,
+				Body:       http.NoBody,
+				Header:     make(http.Header),
+			}, nil
+		}
+
+		state := &workflowState{}
+		rt := &roundTripper{
+			next:     &mockTransportFunc{fn: transportFunc},
+			headers:  map[string]string{},
+			workflow: state,
+		}
+
+		// Before SetWorkflowID — header should be absent
+		req := httptest.NewRequest("GET", "http://example.com", nil)
+		r, err := rt.RoundTrip(req)
+		require.NoError(t, err)
+		require.NoError(t, r.Body.Close())
+		assert.Empty(t, capturedRequest.Header.Get("X-Duo-Workflow-Session-Id"))
+
+		// After setting workflowID — header should be present
+		state.SetWorkflowID("test-workflow-id-123")
+
+		req = httptest.NewRequest("GET", "http://example.com", nil)
+		r, err = rt.RoundTrip(req)
+		require.NoError(t, err)
+		require.NoError(t, r.Body.Close())
+		assert.Equal(t, "test-workflow-id-123", capturedRequest.Header.Get("X-Duo-Workflow-Session-Id"))
+	})
+}
+
+func TestManager_SetWorkflowID(t *testing.T) {
+	t.Run("sets workflowID via shared state", func(t *testing.T) {
+		state := &workflowState{}
+		m := &manager{workflow: state}
+
+		m.SetWorkflowID("workflow-abc")
+		assert.Equal(t, "workflow-abc", state.WorkflowID())
+	})
+
+	t.Run("shared state is visible to roundTripper", func(t *testing.T) {
+		var captured *http.Request
+		state := &workflowState{}
+		rt := &roundTripper{
+			next: &mockTransportFunc{fn: func(req *http.Request) (*http.Response, error) {
+				captured = req
+				return &http.Response{StatusCode: 200, Body: http.NoBody, Header: make(http.Header)}, nil
+			}},
+			headers:  map[string]string{},
+			workflow: state,
+		}
+
+		state.SetWorkflowID("workflow-abc")
+
+		req := httptest.NewRequest("GET", "http://example.com", nil)
+		r, err := rt.RoundTrip(req)
+		require.NoError(t, err)
+		require.NoError(t, r.Body.Close())
+		assert.Equal(t, "workflow-abc", captured.Header.Get("X-Duo-Workflow-Session-Id"))
+	})
+
+	t.Run("no-op on nil manager", func(_ *testing.T) {
+		var m *manager
+		m.SetWorkflowID("workflow-abc") // should not panic
+	})
 }
 
 func TestNewMcpManager(t *testing.T) {
@@ -857,7 +928,7 @@ func TestBuildSession(t *testing.T) {
 			Headers: map[string]string{},
 		}
 
-		session, err := buildSession(nil, req, "server-name", serverCfg)
+		session, err := buildSession(nil, req, "server-name", serverCfg, &workflowState{})
 
 		require.NoError(t, err)
 		require.NotNil(t, session)
@@ -873,7 +944,7 @@ func TestBuildSession(t *testing.T) {
 			Headers: map[string]string{},
 		}
 
-		session, err := buildSession(nil, req, "test-server", serverCfg)
+		session, err := buildSession(nil, req, "test-server", serverCfg, &workflowState{})
 
 		require.Error(t, err)
 		require.Nil(t, session)
@@ -981,7 +1052,7 @@ func TestBuildSession_orbitRouting(t *testing.T) {
 			PreApprovedTools: &tools,
 		}
 
-		session, err := buildSession(rails, req, "orbit", serverCfg)
+		session, err := buildSession(rails, req, "orbit", serverCfg, &workflowState{})
 
 		require.NoError(t, err)
 		require.NotNil(t, session)
@@ -1003,7 +1074,7 @@ func TestBuildSession_orbitRouting(t *testing.T) {
 			Headers: map[string]string{"Authorization": "Bearer test-token"},
 		}
 
-		session, err := buildSession(rails, req, "gitlab", serverCfg)
+		session, err := buildSession(rails, req, "gitlab", serverCfg, &workflowState{})
 
 		require.NoError(t, err)
 		require.NotNil(t, session)

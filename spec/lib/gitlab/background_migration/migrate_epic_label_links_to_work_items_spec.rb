@@ -10,6 +10,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateEpicLabelLinksToWorkItems, fe
   let(:namespaces) { table(:namespaces) }
   let(:users) { table(:users) }
   let(:organizations) { table(:organizations) }
+  let(:work_item_types) { table(:work_item_types) }
 
   let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
   let(:group) { namespaces.create!(name: 'group', path: 'group', type: 'Group', organization_id: organization.id) }
@@ -27,7 +28,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateEpicLabelLinksToWorkItems, fe
   let(:label2) { labels.create!(title: 'label2', color: '#00FF00', group_id: group.id) }
   let(:label3) { labels.create!(title: 'label3', color: '#00FF00', group_id: group.id) }
 
-  let(:epic_work_item_type_id) { 8 }
+  let(:epic_work_item_type_id) { work_item_types.create!(id: 8, name: 'Epic').id }
   let!(:work_item1) do
     issues.create!(
       title: 'Issue 1',

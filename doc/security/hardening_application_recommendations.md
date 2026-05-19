@@ -17,7 +17,7 @@ You must have administrator access.
 ## System hooks
 
 1. In the upper-right corner, select **Admin**.
-1. Select **System hooks**.
+1. In the left sidebar, select **System hooks**.
 
 In a typical hardened environment, internal information is not transmitted or stored
 outside of the system. For an offline environment system, this is
@@ -35,7 +35,7 @@ encouraged for communications through system hooks.
 ## Push rules
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Push rules**.
+1. In the left sidebar, select **Push rules**.
 
 Ensure that the following items are selected:
 
@@ -49,9 +49,9 @@ The adjustments help limit pushes to established and authorized users.
 ## Deploy keys
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Deploy keys**.
+1. In the left sidebar, select **Deploy keys**.
 
-Public deploy keys at are used to give read or read/write access to
+Public deploy keys are used to give read or read/write access to
 **all** projects on the instance, and are intended for remote automation to access
 projects. Public deploy keys should not be used in a hardened environment. If you
 must use deploy keys, use project deploy keys instead. For more information, refer to
@@ -61,7 +61,7 @@ the documentation on [deploy keys](../user/project/deploy_keys/_index.md) and
 ## General
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 
 Hardening adjustments can be made in 4 sections.
 
@@ -179,7 +179,7 @@ For more detailed information, see
 ## Integrations
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 
 In general, as long as administrators control and monitor usage, integrations
 are fine in a hardened environment. Be cautious about integrations that allow
@@ -190,7 +190,7 @@ process or authenticated user.
 ## Metrics and profiling
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Metrics and profiling**.
+1. In the left sidebar, select **Settings** > **Metrics and profiling**.
 
 The main focus for hardening is **Usage statistics**:
 
@@ -205,7 +205,7 @@ The main focus for hardening is **Usage statistics**:
 ## Network
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 
 For any setting that enables rate limiting, make sure it is selected. Default values
 should be fine. Additionally there are numerous settings that enable access, and all

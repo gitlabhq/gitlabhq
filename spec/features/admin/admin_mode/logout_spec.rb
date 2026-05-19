@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
+RSpec.describe 'Admin mode logout', :js, feature_category: :system_access do
   include TermsHelper
   include UserLoginHelper
 
@@ -10,9 +10,8 @@ RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
   let(:current_organization) { user.organization }
 
   before do
-    gitlab_sign_in(user)
-    enable_admin_mode!(user, use_ui: true)
-    visit admin_root_path
+    sign_in(user)
+    enter_admin_mode(user)
   end
 
   context 'when leaving the admin mode' do

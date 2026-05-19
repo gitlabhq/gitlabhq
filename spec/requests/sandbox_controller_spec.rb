@@ -109,10 +109,6 @@ RSpec.describe SandboxController, feature_category: :shared do
     end
   end
 
-  describe 'GET #mermaid_v10' do
-    it_behaves_like 'mermaid sandbox endpoint', :sandbox_mermaid_v10_path
-  end
-
   describe 'GET #mermaid_v11' do
     it_behaves_like 'mermaid sandbox endpoint', :sandbox_mermaid_v11_path
   end

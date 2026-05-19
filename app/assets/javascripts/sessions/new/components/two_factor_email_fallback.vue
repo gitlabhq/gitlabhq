@@ -30,15 +30,17 @@ export default {
     return {
       alert: null,
       showEmailVerification: false,
+      initialShowResendAfter: null,
     };
   },
   methods: {
     sendEmailOTPError({ message }) {
       createAlert({ message, variant: 'danger' });
     },
-    sendEmailOTPSuccess() {
+    sendEmailOTPSuccess(showResendAfter) {
       this.alert?.dismiss();
       this.showEmailVerification = true;
+      this.initialShowResendAfter = showResendAfter;
     },
   },
 };
@@ -54,6 +56,10 @@ export default {
       @error="sendEmailOTPError"
     />
 
-    <email-verification v-if="showEmailVerification" v-bind="emailVerificationData" />
+    <email-verification
+      v-if="showEmailVerification"
+      v-bind="emailVerificationData"
+      :initial-show-resend-after="initialShowResendAfter"
+    />
   </div>
 </template>

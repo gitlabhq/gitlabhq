@@ -1,5 +1,5 @@
 ---
-stage: none
+stage: Tutorials
 group: Tutorials
 info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: 'Tutorial: Automate runner creation and registration'
@@ -86,7 +86,7 @@ gives access to all projects in the group.
 To create a project access token:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Access tokens**.
+1. In the left sidebar, select **Settings** > **Access tokens**.
 1. Select **Add new token**
 1. Enter a name. The token name is visible to any user with permissions to view
    the group or project.
@@ -241,7 +241,7 @@ Now that you've automated your runner creation and registration, you can view
 the runners that use the same configuration in the GitLab UI.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **CI/CD** > **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. In the search box, enter the runner description or search the list of runners.
 1. To view the runners that use the same configuration, in the **Details** tab,
    next to **Runners**, select **Show details**.

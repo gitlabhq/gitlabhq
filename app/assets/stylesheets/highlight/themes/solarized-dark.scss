@@ -104,7 +104,7 @@ $solarized-dark-il: #2aa198;
 }
 
 .code.solarized-dark,
-.code.code-syntax-highlight-theme {
+.code-syntax-highlight-theme {
   --code-dark-theme: 1;
   --code-border-lightness-adjust: 0.1;
   --diff-expansion-background-color: #{color.adjust($solarized-dark-pre-bg, $lightness: 10%)};

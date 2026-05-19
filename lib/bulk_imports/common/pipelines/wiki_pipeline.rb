@@ -24,11 +24,7 @@ module BulkImports
 
           Gitlab::HTTP_V2::UrlBlocker.validate!(
             url,
-            schemes: %w[http https],
-            allow_local_network: allow_local_requests?,
-            allow_localhost: allow_local_requests?,
-            deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
-            outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
+            **Import::Framework::UrlBlockerParams.new.to_h
           )
 
           wiki.create_wiki_repository
@@ -41,10 +37,6 @@ module BulkImports
           wiki_path = parent_path + ".wiki.git"
           root = context.configuration.url
           Gitlab::Utils.append_path(root, wiki_path)
-        end
-
-        def allow_local_requests?
-          Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
         end
 
         def source_wiki_exists?

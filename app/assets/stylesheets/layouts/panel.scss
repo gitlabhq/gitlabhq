@@ -1,0 +1,89 @@
+// All panels
+.paneled-view.static-panel,
+.paneled-view.contextual-panel,
+.paneled-view.ai-panels .ai-panel {
+  @media (forced-colors: active) {
+    border: 1px solid;
+  }
+}
+
+// Static and Contextual panels
+.paneled-view.static-panel,
+.paneled-view.contextual-panel {
+  @apply gl-relative;
+  @apply gl-flex-1;
+  @apply gl-overflow-y-auto;
+  @apply gl-bg-default;
+  @apply gl-overflow-clip;
+  @apply gl-p-0;
+  @apply gl-rounded-[1rem];
+}
+
+// Panel header
+.panel-header-inner {
+  @apply gl-relative;
+  @apply gl-flex;
+  @apply gl-items-center;
+  @apply gl-justify-start;
+  @apply gl-gap-3;
+  @apply gl-bg-default;
+  @apply gl-pl-[--container-padding-x];
+  @apply gl-pr-3;
+  @apply gl-rounded-t-lg;
+  @apply gl-border-b;
+  z-index: $panel-header-inner-z-index;
+  min-height: $panel-header-inner-height;
+
+  @media (forced-colors: active) {
+    border-bottom: 1px solid;
+  }
+}
+
+.panel-header-inner-text {
+  @apply gl-text-sm;
+  @apply gl-font-bold;
+}
+
+.panel-header-inner-actions {
+  @apply gl-ml-auto;
+  @apply gl-flex;
+  @apply gl-gap-3;
+  @apply gl-items-center;
+}
+
+.panel-header-panel-actions {
+  @apply gl-border;
+  @apply gl-leading-0;
+  @apply gl-ml-2;
+  border-radius: calc(var(--gl-border-radius-lg) + 1px);
+}
+
+.panel-header-inner-actions-portal-target {
+  display: none;
+
+  &:has(> .vue-portal-target) {
+    display: block;
+  }
+
+  > .vue-portal-target {
+    @apply gl-flex;
+    @apply gl-gap-3;
+    @apply gl-items-center;
+  }
+}
+
+.panel-content-inner > .container-fluid {
+  @apply gl-px-[--container-padding-x];
+}
+
+// Only display breadcrumb-free panel-header when it has action buttons or feedback badges
+// See `page_breadcrumbs_in_top_bar` feature flag
+.panel-header .panel-header-inner.without-breadcrumbs {
+  display: none;
+
+  /* stylelint-disable-next-line gitlab/no-gl-class */
+  &:has(> :is(.gl-badge, .gl-button)) {
+    display: flex;
+    justify-content: end;
+  }
+}

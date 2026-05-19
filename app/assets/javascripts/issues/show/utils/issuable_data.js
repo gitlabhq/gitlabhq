@@ -1,5 +1,3 @@
-export const SUPPORT_BOT_USERNAME = 'support-bot';
-
 export const issuableInitialDataById = (id) => {
   try {
     const el = document.getElementById(id);

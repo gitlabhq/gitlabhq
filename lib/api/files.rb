@@ -51,6 +51,26 @@ module API
         @blob = @repo.blob_at(@commit.sha, params[:file_path], limit: Gitlab::Git::Blob::LFS_POINTER_MAX_SIZE)
 
         not_found!('File') unless @blob
+
+        audit_repository_file_api_access
+      end
+
+      def audit_repository_file_api_access
+        return unless current_user
+
+        ::Gitlab::Audit::Auditor.audit({
+          name: 'repository_file_accessed_api',
+          author: current_user,
+          scope: user_project,
+          target: user_project,
+          message: "User accessed repository file '#{params[:file_path]}' at ref '#{params[:ref]}' via API",
+          additional_details: {
+            file_path: params[:file_path],
+            ref: params[:ref],
+            project_path: user_project.full_path,
+            project_id: user_project.id
+          }
+        })
       end
 
       def ai_workflow_scope?

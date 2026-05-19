@@ -24,15 +24,15 @@ export default {
     GlSprintf,
   },
   props: {
+    value: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     error: {
       type: String,
       required: false,
       default: '',
-    },
-    prefillNamespaces: {
-      type: Array,
-      required: false,
-      default: () => [],
     },
   },
   emits: ['input'],
@@ -69,11 +69,18 @@ export default {
     return {
       groupsAndProjects: { groups: [], projects: [] },
       searchTerm: '',
-      selectedIds: this.prefillNamespaces.map((n) => n.id),
-      selectedItems: [...this.prefillNamespaces],
+      selectedIds: this.value.map((namespace) => namespace.id),
     };
   },
   computed: {
+    selectedItems: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit('input', val);
+      },
+    },
     isLoading() {
       return this.$apollo.queries.groupsAndProjects.loading;
     },
@@ -139,8 +146,6 @@ export default {
     },
     removeNamespace(namespaceId) {
       this.selectedIds = this.selectedIds.filter((item) => item !== namespaceId);
-
-      this.$emit('input', this.selectedIds);
     },
     isGroup(item) {
       // eslint-disable-next-line no-underscore-dangle
@@ -191,7 +196,6 @@ export default {
           :searching="isLoading"
           :toggle-text="$options.i18n.addButton"
           @search="onSearch"
-          @select="$emit('input', $event)"
         />
       </template>
 

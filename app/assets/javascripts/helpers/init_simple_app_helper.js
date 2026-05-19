@@ -1,5 +1,7 @@
+import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
 
 /**
@@ -25,6 +27,14 @@ const getApolloProvider = (apolloProviderOption) => {
   return undefined;
 };
 
+const registerVueRouter = () => {
+  Vue.use(VueRouter);
+};
+
+const registerGlToast = () => {
+  Vue.use(GlToast);
+};
+
 /**
  * Initializes a component as a simple vue app, passing the necessary props. If the element
  * has a data attribute named `data-view-model`, the content of that attributed will be
@@ -35,9 +45,14 @@ const getApolloProvider = (apolloProviderOption) => {
  * converted from json and passed on to the component as a provide values.
  *
  * @param {string} selector css selector for where to build
- * @param {Vue.component} component The Vue compoment to be built as the root of the app
+ * @param {Vue.component} component The Vue component to be built as the root of the app
  * @param {{withApolloProvider: boolean|VueApollo}} options. extra options to be passed to the vue app
  *      withApolloProvider: if true, instantiates a default apolloProvider. Also accepts and instance of VueApollo
+ *      withVueRouter: if true, registers Vue Router as a Vue plugin. Use when the root component (or any of
+ *        its descendants) declares its own router via the `router` option, or uses `<router-view>`,
+ *        `<router-link>`, `$route`, or `$router`.
+ *      withGlToast: if true, registers GlToast as a Vue plugin. Use when the root component (or any of
+ *        its descendants) calls `this.$toast.show(...)` to display toast notifications.
  * @param {{name: string}} Name of the app
 
  *
@@ -68,12 +83,26 @@ const getApolloProvider = (apolloProviderOption) => {
 export const initSimpleApp = (
   selector,
   component,
-  { withApolloProvider, name, additionalProvide = {} } = {},
+  {
+    withApolloProvider,
+    withVueRouter = false,
+    withGlToast = false,
+    name,
+    additionalProvide = {},
+  } = {},
 ) => {
   const element = document.querySelector(selector);
 
   if (!element) {
     return null;
+  }
+
+  if (withVueRouter) {
+    registerVueRouter();
+  }
+
+  if (withGlToast) {
+    registerGlToast();
   }
 
   const apolloProvider = getApolloProvider(withApolloProvider);

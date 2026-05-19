@@ -8,6 +8,11 @@
       "type": "boolean",
       "default": true,
       "description": "Enable or disable the Duo Agent Platform feature"
+    },
+    "duo_cli_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable or disable GitLab Duo CLI access for this instance"
     }
   }
 }

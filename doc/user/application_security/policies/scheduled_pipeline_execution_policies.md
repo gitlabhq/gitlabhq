@@ -148,6 +148,7 @@ To prevent overwhelming your CI/CD infrastructure when applying policies to mult
 - All pipelines are scheduled at `random`. Pipelines are randomly distributed during the specified time window.
 - The minimum time window is 10 minutes (600 seconds), and the maximum is approximately 1 month (2,629,746 seconds).
 - For monthly schedules, if you specify dates that don't exist in certain months (like 31 for February), those runs are skipped.
+- A security policy project can contain up to five scheduled pipeline execution policies.
 - A scheduled policy can only have one schedule configuration at a time.
 - When you apply a policy to multiple projects, ensure your time window is large enough to accommodate the number of projects, based on your available runner capacity. For example, a policy applied to 1000 projects with a one hour time window distributes pipeline creation evenly throughout that hour (approximately 16 pipelines per minute). Verify that your runners can handle this pipeline creation rate or choose a larger time window to avoid queuing or delays.
 - For monthly schedules, the interval between consecutive runs may vary due to random distribution during the time window. For example, a monthly schedule might run 20 days after the previous run, then 30 days later. This distribution is the expected behavior because it helps distribute load across your infrastructure.
@@ -244,30 +245,86 @@ pipeline_execution_schedule_policy:
 
 In this example, if all of the specified branches exist in the project, the policy creates four separate pipelines (one for each branch).
 
-## Requirements
+## Prerequisites
 
-To use scheduled pipeline execution policies:
+To use scheduled pipeline execution policies, your project must meet the following requirements:
 
-1. Store all CI/CD configuration in your security policy project. Scheduled pipelines are executed by the Security Policy Bot User, which has limited privileges and cannot access files from other private projects. Including CI/CD configuration files from other projects causes access errors.
-1. In your security policy project's **Settings** > **General** > **Visibility, project features, permissions** section, enable the **Grant security policy project access to CI/CD configuration** setting.
-1. Ensure your CI/CD configuration includes appropriate workflow rules for scheduled pipelines.
+- Your CI/CD configuration file is stored in one of the following locations:
+  - Your security policy project
+  - A public project
+  - A private project with access enabled (see [Enable access to CI/CD configuration files](#enable-access-to-cicd-configuration-files))
+- Your CI/CD configuration file must include appropriate workflow rules for scheduled pipelines.
 
-### Security Policy Bot User
+## Enable access to CI/CD configuration files
+
+When your policy references CI/CD configuration files, the Security Policy Bot must have access to them.
+Files in public projects are accessible by default.
+For files in your security policy project or other private projects, enable access using one of the following options.
+
+### Option 1: Grant access to files in the security policy project
+
+If your CI/CD configuration files are stored in the security policy project itself, use this option.
+This setting applies to any user who triggers a pipeline with pipeline execution policies injected.
+
+1. In your security policy project, in the left sidebar, select **Settings** > **General**.
+1. Expand **Visibility, project features, permissions**.
+1. Turn on **Grant security policy project access to CI/CD configuration**.
+1. Select **Save changes**.
+
+### Option 2: Allow Security Policy Bot access to private projects
+
+If your policy `include:` value references a CI/CD configuration file stored in a private project
+other than the security policy project, use this option.
+This setting applies only to Security Policy Bot users and can be enabled on any project.
+
+1. Enable the `pipeline_execution_policy_bot_access` experiment in your security policy project.
+   In the `.gitlab/security-policies/policy.yml` file, add the following lines:
+
+   ```yaml
+   experiments:
+     pipeline_execution_policy_bot_access:
+       enabled: true
+   ```
+
+   > [!note]
+   > Your private project or one of its parent groups must be linked to this security policy project.
+   > If it is not already linked, you must [link the security policy project](enforcement/security_policy_projects.md#link-to-a-security-policy-project).
+
+1. In the private project that stores CI/CD files, in the left sidebar, select **Settings** >
+   **General**.
+1. Expand **Visibility, project features, permissions**.
+1. In **Security policy bot access**, select
+   **Allow security policy bots to access CI/CD configuration files in this project**.
+1. In **Allowed file patterns**, add one or more glob patterns to specify the files that bots can access, separated by commas.
+1. Select **Save changes**.
+
+The glob patterns for the allowed files must match the paths specified in the `include:file:` value. For example:
+
+- For `include:file: ci/security-scan.yml`, use `ci/**/*.yml` or `ci/security-scan.yml`.
+- For `include:file: policy-ci.yml`, use `*.yml` or `policy-ci.yml`.
+- For multiple directories, use multiple patterns, separated by commas, like `ci/**/*.yml, templates/**/*.yml`.
+
+## Security Policy Bot User
 
 Scheduled pipelines are executed by the Security Policy Bot User, a dedicated system account that GitLab automatically creates for each project the security policy applies to.
 To ensure that policy execution remains isolated and secure, the bot user has the following security restrictions:
 
 - The bot user is a member of that specific project only. It cannot be added to groups or other projects.
-- The bot user can access files only in the security policy project and in public projects. It cannot access files from other private projects, even if those projects are in the same group.
+- The bot user can access files in the security policy project and public projects.
+- The bot user can access files in private projects only if those projects explicitly enable
+  **Security policy bot access** and the file path matches the pattern specified in the project.
 
 Because the bot user is not a member of other projects, it cannot complete any of the following actions:
 
-- Access CI/CD configuration files from other private projects.
+- Access CI/CD configuration files from private projects that do not allow bot access or do not
+  match allowed file patterns.
 - Start multi-project child pipelines that target private projects.
 - Access artifacts or resources from private projects.
 
 > [!important]
-> Because of these privilege limitations, you must store all pipeline configuration files (including any files referenced with an `include:` statement) directly in your security policy project. Do not reference CI/CD configuration files from other private projects, as this results in access errors during pipeline execution.
+> When you include files from a private project, enable **Security policy bot access** in that
+> private project and set matching file patterns. Without these settings, pipeline execution fails
+> with an access error.
 
 ## Scheduling limits
 
@@ -286,7 +343,8 @@ If your scheduled pipelines are not running as expected, follow these troublesho
 
 1. **Verify experimental flag**: Ensure that the `pipeline_execution_schedule_policy: enabled: true` flag is set in the `experiments` section of your `policy.yml` file.
 1. **Check policy access**: Verify that:
-   - The CI/CD configuration file is stored in your security policy project, not linked from another project.
+   - The CI/CD configuration file is in the security policy project, in a public project, or in a
+     private project with bot access enabled and matching file patterns.
    - The **Pipeline execution policies** setting is enabled in the security policy project (**Settings** > **General** > **Visibility, project features, permissions**).
 1. **Validate CI configuration**:
    - Check that the CI/CD configuration file exists at the specified path.

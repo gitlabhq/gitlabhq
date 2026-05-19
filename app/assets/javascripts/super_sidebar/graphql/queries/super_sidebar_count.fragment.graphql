@@ -1,4 +1,5 @@
 fragment SuperSideBarCount on NamespaceSidebar {
   openIssuesCount
   openMergeRequestsCount
+  openWorkItemsCount
 }

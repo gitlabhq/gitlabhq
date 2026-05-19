@@ -24,7 +24,7 @@ Prerequisites:
 On either the primary or secondary site:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 
 ## Common settings
 
@@ -95,7 +95,7 @@ display in the Admin Area at **Geo** > **Sites** > **Project Repositories**.
 The internal URL defaults to external URL. To change it:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 1. Select **Edit** on the site you want to customize.
 1. Edit the internal URL.
 1. Select **Save changes**.

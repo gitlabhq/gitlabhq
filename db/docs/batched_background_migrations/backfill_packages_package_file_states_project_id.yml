@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillPackagesPackageFileStatesProjectId
-description: Backfills sharding key `packages_package_file_states.project_id` from `packages_package_files`.
+description: Backfills sharding key `packages_package_file_states.project_id` from
+  `packages_package_files`.
 feature_category: geo_replication
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225220
 milestone: '18.10'
 queued_migration_version: 20260227005516
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20260420232456'

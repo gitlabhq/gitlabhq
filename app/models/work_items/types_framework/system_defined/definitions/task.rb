@@ -8,6 +8,7 @@ module WorkItems
           class << self
             def widgets
               %w[
+                agent_plan
                 ai_session
                 assignees
                 award_emoji
@@ -45,8 +46,12 @@ module WorkItems
               }
             end
 
-            def filterable_board_view?(resource_parent)
-              !!resource_parent.try(:work_item_tasks_on_boards_feature_flag_enabled?)
+            def filterable_board_view?
+              false
+            end
+
+            def configurable?
+              false
             end
           end
         end

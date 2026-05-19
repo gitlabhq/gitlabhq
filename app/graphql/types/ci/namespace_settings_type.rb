@@ -5,7 +5,7 @@ module Types
     class NamespaceSettingsType < BaseObject
       graphql_name 'CiCdSettings'
 
-      authorize :maintainer_access
+      authorize :read_ci_namespace_settings
 
       field :pipeline_variables_default_role, GraphQL::Types::String,
         null: true,

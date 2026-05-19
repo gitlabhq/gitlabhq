@@ -12,6 +12,20 @@ module TestApis
     get '/api/:version/hidden' do
       { message: 'directive' }
     end
+
+    desc 'Create resource with directive' do
+      detail 'Is marked as hidden'
+      success TestEntities::UserEntity
+      tags %w[deprecated_api]
+      hidden true
+    end
+    params do
+      requires :name, type: String, desc: 'Name'
+      optional :description, type: String, desc: 'Description'
+    end
+    post '/api/:version/hidden' do
+      { message: 'directive' }
+    end
   end
 end
 # rubocop:enable API/Base

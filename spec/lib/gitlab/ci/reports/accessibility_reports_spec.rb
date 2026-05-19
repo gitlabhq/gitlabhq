@@ -195,7 +195,8 @@ RSpec.describe Gitlab::Ci::Reports::AccessibilityReports do
       end
 
       it 'overwrites the existing message' do
-        expect { set_accessibility_error }.to change(accessibility_report, :error_message).from('old error').to('error')
+        expect { set_accessibility_error }
+          .to change { accessibility_report.error_message }.from('old error').to('error')
       end
     end
   end

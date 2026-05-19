@@ -2,11 +2,7 @@
 
 module QA
   RSpec.describe 'Manage', :github, :requires_admin, feature_category: :importers do
-    describe 'GitHub import',
-      quarantine: {
-        type: :investigating,
-        issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24018"
-      } do
+    describe 'GitHub import' do
       include_context 'with github import'
 
       context 'when imported via UI' do
@@ -16,7 +12,7 @@ module QA
             project.group = group
             project.github_personal_access_token = Runtime::Env.github_access_token
             project.github_repository_path = github_repo
-            project.api_client = admin_api_client
+            project.api_client = api_client
           end
         end
 
@@ -24,7 +20,7 @@ module QA
           build(:issue,
             project: imported_project,
             iid: imported_project.issues.first[:iid],
-            api_client: admin_api_client).reload!
+            api_client: api_client).reload!
         end
 
         let(:imported_issue_events) do

@@ -26,7 +26,7 @@ RSpec.describe IncidentManagement::TimelineEventsFinder do
     subject(:execute) { described_class.new(user, incident, params).execute }
 
     context 'when user has permissions' do
-      before do
+      before_all do
         project.add_guest(user)
       end
 

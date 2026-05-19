@@ -264,7 +264,7 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :groups_and_pro
     let_it_be(:project_bot_member) { group.add_developer(project_bot) }
 
     context 'when the user is an owner' do
-      before do
+      before_all do
         group.add_owner(user1)
       end
 

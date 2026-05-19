@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "propertyNames": {
+    "$comment": "Permit group and project full path characters, not intended to support exports before v19.3",
+    "type": "string",
+    "pattern": "^[a-zA-Z0-9/_\\-\\.]+$"
+  },
+  "additionalProperties": {
+    "type": "string",
+    "pattern": "^(group|project)_[0-9]+$"
+  }
+}

@@ -6,14 +6,17 @@ import SectionLoader from '~/vue_shared/security_configuration/components/sectio
 describe('Section Layout component', () => {
   let wrapper;
 
-  const createComponent = (propsData) => {
+  const createComponent = (
+    propsData,
+    scopedSlots = {
+      description: '<span>foo</span>',
+      features: '<span>bar</span>',
+    },
+  ) => {
     wrapper = extendedWrapper(
       mount(SectionLayout, {
         propsData,
-        scopedSlots: {
-          description: '<span>foo</span>',
-          features: '<span>bar</span>',
-        },
+        scopedSlots,
       }),
     );
   };
@@ -34,6 +37,13 @@ describe('Section Layout component', () => {
     it('should render heading when passed in as props', () => {
       expect(findHeading().exists()).toBe(true);
       expect(findHeading().text()).toBe('testheading');
+    });
+
+    it('should render slot content when no heading prop is passed', () => {
+      createComponent({}, { heading: '<span>custom heading</span>' });
+
+      expect(findHeading().exists()).toBe(false);
+      expect(wrapper.text()).toBe('custom heading');
     });
 
     Object.keys(slots).forEach((slot) => {

@@ -1,0 +1,9 @@
+---
+name: read_association
+description: Grants the ability to read association information
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_user_association

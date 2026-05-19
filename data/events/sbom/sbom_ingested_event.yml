@@ -1,0 +1,6 @@
+---
+event: Sbom::SbomIngestedEvent
+description: Published after an SBOM report has been ingested for a pipeline and at
+  least one occurrence was recorded. Carries the `pipeline_id` of the ingestion.
+feature_category: software_composition_analysis
+ee_only: true

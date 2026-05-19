@@ -56,16 +56,21 @@ module Gitlab
       end
 
       def validate_data!(data)
+        validate_data_against_schema!(data, schema)
+      end
+
+      def validate_data_against_schema!(data, data_schema)
         unless data.is_a?(Hash)
           raise Gitlab::EventStore::InvalidEvent, "Event data must be a Hash"
         end
 
-        errors = JSONSchemer.schema(schema).validate(data.deep_stringify_keys).map do |error|
+        errors = JSONSchemer.schema(data_schema).validate(data.deep_stringify_keys).map do |error|
           JSONSchemer::Errors.pretty(error)
         end
 
         unless errors.empty?
-          raise Gitlab::EventStore::InvalidEvent, "Data for event #{self.class} does not match the defined schema: #{errors.inspect}"
+          error = "Data for event #{self.class.name} does not match the defined schema: #{errors.inspect}"
+          raise Gitlab::EventStore::InvalidEvent, error
         end
       end
 

@@ -15,7 +15,6 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
 
   before do
     stub_feature_flags(mask_page_urls: true)
-    allow(::Current).to receive(:organization_assigned).and_return(true)
     stub_current_organization(organization)
   end
 
@@ -264,7 +263,7 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
     end
 
     context 'when organization path is present' do
-      let(:masked_url) { "http://localhost/o/organization#{organization.id}/-/organizations/organization#{organization.id}" }
+      let(:masked_url) { "http://localhost/o/organization#{organization.id}/-/overview" }
       let(:request) do
         double(
           :Request,
@@ -287,7 +286,7 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
     end
 
     context 'when organization is nil and organization_path is in path' do
-      let(:masked_url) { "http://localhost/o/organization/-/organizations/organization" }
+      let(:masked_url) { "http://localhost/o/organization/-/overview" }
       let(:request) do
         double(
           :Request,
@@ -330,7 +329,7 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
       end
 
       it 'masks organization id in path' do
-        expect(subject).to eq("http://localhost/o/organization#{organization.id}/-/organizations/organization#{organization.id}")
+        expect(subject).to eq("http://localhost/o/organization#{organization.id}/-/overview")
       end
 
       context 'when organization is nil' do
@@ -339,7 +338,7 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
         end
 
         it 'masks without id' do
-          expect(subject).to eq('http://localhost/o/organization/-/organizations/organization')
+          expect(subject).to eq('http://localhost/o/organization/-/overview')
         end
       end
     end
@@ -512,8 +511,8 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
     end
 
     context 'with controller for organizations' do
-      let(:original_url) { "http://localhost/-/organizations/#{organization.path}" }
-      let(:masked_url) { 'http://localhost/o/organization/-/organizations/organization' }
+      let(:original_url) { "http://localhost/o/#{organization.path}/-/overview" }
+      let(:masked_url) { 'http://localhost/o/organization/-/overview' }
 
       it 'masks organization path in the URL for organizations controller' do
         allow(Rails.application.routes).to receive(:recognize_path)

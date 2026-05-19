@@ -10,6 +10,10 @@ class Admin::JobsController < Admin::ApplicationController
     push_frontend_feature_flag(:admin_jobs_filter_runner_type, type: :ops)
   end
 
+  before_action do
+    push_frontend_feature_flag(:vue3_migrate_jobs, current_user)
+  end
+
   def index; end
 
   def cancel_all

@@ -1,8 +1,10 @@
 ---
 name: read_push_rule
 description: Grants the ability to read push rules
-permissions:
-  - read_push_rule
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_push_rule

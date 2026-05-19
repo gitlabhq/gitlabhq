@@ -1,5 +1,5 @@
 <script>
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
@@ -7,6 +7,7 @@ import {
   userCounts,
   useCachedUserCounts,
 } from '~/super_sidebar/user_counts_manager';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
@@ -28,6 +29,7 @@ import BaseWidget from './base_widget.vue';
 
 export default {
   components: {
+    IndexLayout,
     GreetingHeader,
     ActivityWidget,
     TodosWidget,
@@ -173,6 +175,7 @@ export default {
     },
   },
   i18n: {
+    pageTitle: __('Home'),
     mergeRequestsErrorText: s__(
       'HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard.',
     ),
@@ -185,7 +188,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <index-layout :page-heading-sr-only="true" :heading="$options.i18n.pageTitle">
     <greeting-header />
     <div class="gl-grid gl-grid-cols-1 gl-gap-6 @md/panel:gl-grid-cols-3">
       <section class="gl-flex gl-flex-col gl-gap-6 @md/panel:gl-col-span-2">
@@ -247,5 +250,5 @@ export default {
         <quick-access-widget />
       </aside>
     </div>
-  </div>
+  </index-layout>
 </template>

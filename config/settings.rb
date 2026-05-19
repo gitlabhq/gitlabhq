@@ -133,7 +133,7 @@ Settings = GitlabSettings.load(file, Rails.env) do
 
   # Don't use this in new code, use db_key_base_keys_32_bytes instead!
   def db_key_base_keys_truncated
-    db_key_base_keys.map do |key| # rubocop:disable Rails/Pluck -- No Rails context
+    db_key_base_keys.map do |key|
       key[0..31]
     end
   end

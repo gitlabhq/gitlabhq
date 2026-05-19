@@ -13,9 +13,13 @@ module Types
         implements ::Types::WorkItems::WidgetInterface
         implements ::Types::CurrentUserTodos
 
+        def self.authorization_scopes
+          super + [:ai_workflows]
+        end
+
         private
 
-        # Overriden as `Types::CurrentUserTodos` relies on `unpresented` being the Issuable record.
+        # Overridden as `Types::CurrentUserTodos` relies on `unpresented` being the Issuable record.
         def unpresented
           object.work_item
         end

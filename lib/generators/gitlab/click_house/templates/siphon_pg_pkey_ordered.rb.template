@@ -1,0 +1,18 @@
+# frozen_string_literal: true
+
+class CreateSiphon<%= table_name.camelize %>PgPkeyOrdered < ClickHouse::Migration
+  def up
+    execute <<-SQL
+      <%= pg_pkey_ordered_table_definition %>
+    SQL
+
+    execute <<-SQL
+      <%= pg_pkey_ordered_mv_definition %>
+    SQL
+  end
+
+  def down
+    execute "DROP VIEW IF EXISTS <%= pg_pkey_ordered_mv_name %>"
+    execute "DROP TABLE IF EXISTS <%= pg_pkey_ordered_table_name %>"
+  end
+end

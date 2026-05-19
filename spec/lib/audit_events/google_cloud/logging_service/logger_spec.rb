@@ -33,28 +33,42 @@ RSpec.describe AuditEvents::GoogleCloud::LoggingService::Logger, feature_categor
 
       context 'when URI::InvalidURIError is raised' do
         before do
-          allow(Gitlab::HTTP).to receive(:post).and_raise(URI::InvalidURIError)
+          allow(Gitlab::HTTP).to receive(:post).and_raise(URI::InvalidURIError.new('bad uri'))
         end
 
-        it 'logs the exception' do
-          expect(Gitlab::ErrorTracking).to receive(:log_exception)
+        it 'propagates the error to the caller' do
+          expect { log }.to raise_error(URI::InvalidURIError, /bad uri/)
+        end
+      end
 
-          log
+      context 'when a Gitlab::HTTP::HTTP_ERRORS member is raised' do
+        Gitlab::HTTP::HTTP_ERRORS.each do |error_klass|
+          context "with #{error_klass}" do
+            before do
+              allow(Gitlab::HTTP).to receive(:post).and_raise(error_klass.new('http error'))
+            end
+
+            it 'propagates the error to the caller' do
+              expect { log }.to raise_error(error_klass)
+            end
+          end
         end
       end
     end
 
-    context 'when access token is not available' do
-      let(:access_token) { nil }
+    context 'when generate_access_token raises an error' do
+      let(:error) { OpenSSL::PKey::RSAError.new('invalid private key') }
 
-      it 'does not call Gitlab::HTTP.post' do
+      before do
         allow_next_instance_of(AuditEvents::GoogleCloud::Authentication) do |instance|
-          allow(instance).to receive(:generate_access_token).with(client_email, private_key).and_return(access_token)
+          allow(instance).to receive(:generate_access_token).with(client_email, private_key).and_raise(error)
         end
+      end
 
+      it 'propagates the error and does not call Gitlab::HTTP.post' do
         expect(Gitlab::HTTP).not_to receive(:post)
 
-        log
+        expect { log }.to raise_error(OpenSSL::PKey::RSAError, 'invalid private key')
       end
     end
   end

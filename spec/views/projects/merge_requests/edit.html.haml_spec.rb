@@ -40,9 +40,9 @@ RSpec.describe 'projects/merge_requests/edit.html.haml' do
       render
 
       expect(rendered).to have_field('merge_request[title]')
-      expect(rendered).to have_selector('input[name="merge_request[description]"]', visible: false)
+      expect(rendered).to have_selector('input[name="merge_request[description]"]', visible: :hidden)
       expect(rendered).to have_selector('.js-milestone-dropdown-root')
-      expect(rendered).to have_selector('#merge_request_target_branch', visible: false)
+      expect(rendered).to have_selector('#merge_request_target_branch', visible: :hidden)
     end
   end
 
@@ -55,7 +55,7 @@ RSpec.describe 'projects/merge_requests/edit.html.haml' do
 
       render
 
-      expect(rendered).not_to have_selector('#merge_request_target_branch', visible: false)
+      expect(rendered).not_to have_selector('#merge_request_target_branch', visible: :hidden)
       expect(rendered).to have_selector('.js-issuable-form-label-selector')
     end
   end
@@ -66,7 +66,7 @@ RSpec.describe 'projects/merge_requests/edit.html.haml' do
     it "shows editable fields" do
       render
 
-      expect(rendered).to have_selector('#merge_request_target_branch', visible: false)
+      expect(rendered).to have_selector('#merge_request_target_branch', visible: :hidden)
       expect(rendered).to have_selector('.js-issuable-form-label-selector')
     end
   end

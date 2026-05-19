@@ -53,6 +53,24 @@ module ApplicationWorker
     end
   end
 
+  # This is a hook for EE
+  #
+  # @param sharding_object [Object] the sharding object to check, such as an
+  # organization, namespace, or project
+  # @yield [block] Executed if the sharding object is an SSOT, not a replica
+  def skip_writes_if_replica(_sharding_object)
+    yield
+  end
+
+  # This is a hook for EE
+  #
+  # @param sharding_object [Object] the sharding object to check, such as an
+  # organization, namespace, or project
+  # @return [Boolean] true if the sharding object is a replica, false if SSOT
+  def skip_writes_if_replica?(_sharding_object)
+    false
+  end
+
   class_methods do
     extend ::Gitlab::Utils::Override
 
@@ -229,7 +247,7 @@ module ApplicationWorker
       # `schedule_at` could be one of
       # - nil.
       # - a single Numeric that represents time, like `30.minutes.from_now.to_i`.
-      # - an array, where each element is a Numeric that reprsents time.
+      # - an array, where each element is a Numeric that represents time.
       #    - Each element in this array would correspond to the time at which
       #    - the job in `args_list` at the corresponding index needs to be scheduled.
 

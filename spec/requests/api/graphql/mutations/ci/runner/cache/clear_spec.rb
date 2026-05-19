@@ -14,6 +14,17 @@ RSpec.describe 'RunnerCacheClear', feature_category: :runner_core do
 
   let(:mutation_response) { graphql_mutation_response(:runner_cache_clear) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :clear_runner_cache do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+
+    before_all do
+      project.add_maintainer(current_user)
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when the user has admin pipeline permission on the given project' do
     before_all do
       project.add_maintainer(current_user)

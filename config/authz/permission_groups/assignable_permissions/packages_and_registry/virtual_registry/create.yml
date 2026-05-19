@@ -1,7 +1,10 @@
+---
 name: create_virtual_registry
 description: Grants the ability to create virtual registries
 boundaries:
   - group
+available_for:
+  - granular_access_token
 permissions:
   - associate_container_virtual_registry_upstream
   - associate_maven_virtual_registry_upstream

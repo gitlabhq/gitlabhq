@@ -70,6 +70,8 @@ module RuboCop
           end
         end
 
+        alias_method :on_numblock, :on_block
+
         def check_node(node)
           return unless send_node?(node)
 

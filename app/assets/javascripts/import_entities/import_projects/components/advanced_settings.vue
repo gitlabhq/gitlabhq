@@ -35,6 +35,7 @@ export default {
       default: false,
     },
   },
+  emits: ['input'],
   docsLink: helpPagePath('user/project/import/github', {
     anchor: 'use-a-github-personal-access-token',
   }),

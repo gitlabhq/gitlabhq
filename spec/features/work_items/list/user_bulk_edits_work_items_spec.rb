@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Work items bulk editing', :js, feature_category: :team_planning do
+  include FilteredSearchHelpers
   include WorkItemsHelpers
 
   let_it_be(:user) { create(:user) }
@@ -64,6 +65,11 @@ RSpec.describe 'Work items bulk editing', :js, feature_category: :team_planning 
         wait_for_requests
         # clear the type filter as we will also update task
         click_button 'Clear'
+        # After clearing, the filtered search activates the last token which can
+        # open the suggestion dropdown that overlays other elements. Blur the active
+        # element to deactivate the search and dismiss the dropdown.
+        page.execute_script('document.activeElement.blur()')
+        expect_hidden_suggestions_list
         click_bulk_edit
       end
 
@@ -96,6 +102,8 @@ RSpec.describe 'Work items bulk editing', :js, feature_category: :team_planning 
 
         # clear the type filter as we will also update task
         click_button 'Clear'
+        page.execute_script('document.activeElement.blur()')
+        expect_hidden_suggestions_list
         click_bulk_edit
       end
 

@@ -154,6 +154,52 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
       end
     end
 
+    context 'with suspend_on_success' do
+      let(:workload_definition) do
+        ::Ci::Workloads::WorkloadDefinition.new.tap do |definition|
+          definition.image = image
+          definition.commands = commands
+          definition.suspend_on_success = true
+        end
+      end
+
+      it 'sets suspend_on_success in build options under suspend_options' do
+        result = execute
+        expect(result).to be_success
+
+        build = result.payload.pipeline.builds.first
+        expect(build.options.dig(:suspend_options, :suspend_on_success)).to be(true)
+      end
+    end
+
+    context 'with environment_key for resume' do
+      let(:workload_definition) do
+        ::Ci::Workloads::WorkloadDefinition.new.tap do |definition|
+          definition.image = image
+          definition.commands = commands
+          definition.environment_key = 'runner-abc/executor-specific-data'
+        end
+      end
+
+      it 'sets environment_key in build options under suspend_options' do
+        result = execute
+        expect(result).to be_success
+
+        build = result.payload.pipeline.builds.first
+        expect(build.options.dig(:suspend_options, :environment_key)).to eq('runner-abc/executor-specific-data')
+      end
+    end
+
+    context 'without suspend options' do
+      it 'does not include suspend_options in build options' do
+        result = execute
+        expect(result).to be_success
+
+        build = result.payload.pipeline.builds.first
+        expect(build.options).not_to have_key(:suspend_options)
+      end
+    end
+
     context 'when duo_workflow_definition is provided' do
       subject(:execute) do
         described_class
@@ -175,7 +221,8 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
               ignore_skip_ci: true,
               save_on_errors: false,
               content: anything,
-              duo_workflow_definition: 'sast_fp_detection/v1')
+              duo_workflow_definition: 'sast_fp_detection/v1',
+              suspend_options: nil)
             .and_call_original
         end
 

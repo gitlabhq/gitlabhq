@@ -17,7 +17,7 @@ RSpec.describe 'projects/settings/integrations/edit', feature_category: :integra
     expect(rendered).not_to have_text('Recent events')
   end
 
-  context 'integration using WebHooks' do
+  context 'when integration uses WebHooks' do
     before do
       assign(:web_hook_logs, [])
     end

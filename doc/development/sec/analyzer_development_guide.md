@@ -5,6 +5,12 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Sec section analyzer development
 ---
 
+<style>
+table.token-rotation-table tbody tr:nth-child(odd) {
+    background-color: transparent;
+}
+</style>
+
 Analyzers are shipped as Docker images to execute within a CI pipeline context. This guide describes development and testing
 practices across analyzers.
 
@@ -291,7 +297,7 @@ After the above steps have been completed, the automatic release process execute
 | Member of                              | [`gitlab-org/security-products`](https://gitlab.com/groups/gitlab-org/security-products/-/group_members?search=gl-service-dev-secure-analyzers-automation) |
 | Maximum role                           | `Developer`                                                                                                                       |
 | Scope of the associated `GITLAB_TOKEN` | `api`                                                                                                                             |
-| Expiry date of `GITLAB_TOKEN`          | `December 3, 2025`                                                                                                              |
+| Expiry date of `GITLAB_TOKEN`          | `November 11, 2026`                                                                                                               |
 
 > [!warning]
 > Any changes to the service account's access token scopes or the `GITLAB_TOKEN`
@@ -314,23 +320,83 @@ The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https:/
    > [!note]
    > It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the following variables.
 
-   1. `GITLAB_TOKEN` CI/CD variable for the [`gitlab-org/security-products/analyzers`](https://gitlab.com/groups/gitlab-org/security-products/analyzers/-/settings/ci_cd#js-cicd-variables-settings) group.
+   <!-- markdownlint-disable MD044 -->
+   <table class="token-rotation-table">
+     <thead>
+       <tr>
+         <th>
+           Variable
+         </th>
+         <th>
+           Project/Group
+         </th>
+         <th>
+           Reason
+         </th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td rowspan="5">
+           <code>GITLAB_TOKEN</code>
+         </td>
+         <td>
+           <a href="https://gitlab.com/groups/gitlab-org/security-products/analyzers/-/settings/ci_cd#js-cicd-variables-settings"><code>gitlab-org/security-products/analyzers</code></a>
+         </td>
+         <td>
+           Allows all projects under the <code>gitlab-org/security-products/analyzers</code> namespace to inherit this <code>GITLAB_TOKEN</code> value.
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <a href="https://gitlab.com/groups/gitlab-org/security-products/license-db/-/settings/ci_cd#ci-variables"><code>gitlab-org/security-products/license-db</code></a>
+         </td>
+         <td rowspan="4">
+           The <code>GITLAB_TOKEN</code> must be explicitly configured because this project/group is not nested under the <code>gitlab-org/security-products/analyzers</code> namespace, and therefore <i>does not inherit</i> the <code>GITLAB_TOKEN</code> value.
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <a href="https://gitlab.com/groups/security-products/dependency-management/-/settings/ci_cd#ci-variables"><code>groups/security-products/dependency-management</code></a>
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <a href="https://gitlab.com/gitlab-org/security-products/post-analyzers/tracking-calculator/-/settings/ci_cd#js-cicd-variables-settings"><code>gitlab-org/security-products/post-analyzers/tracking-calculator</code></a><b><sup>1</sup></b>
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <a href="https://gitlab.com/gitlab-org/security-products/ci-templates/-/settings/ci_cd#js-cicd-variables-settings"><code>gitlab-org/security-products/ci-templates</code></a><b><sup>2</sup></b>
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <code>SEC_REGISTRY_PASSWORD</code>
+         </td>
+         <td>
+           <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-advanced-sast/-/settings/ci_cd#js-cicd-variables-settings"><code>gitlab-advanced-sast</code></a>
+         </td>
+         <td>
+           This allows our <a href="https://gitlab.com/gitlab-org/security-products/ci-templates/blob/cfe285a/scripts/tag_image.sh">tagging script</a> to pull from the private container registry in the development project <code>registry.gitlab.com/gitlab-org/security-products/analyzers/&lt;analyzer-name&gt;/tmp</code>, and push to the publicly accessible container registry <code>registry.gitlab.com/security-products/&lt;analyzer-name&gt;</code>.
+         </td>
+       </tr>
+     </tbody>
+   </table>
+   <!-- markdownlint-enable MD044 -->
 
-      This allows all projects under the `gitlab-org/security-products/analyzers` namespace to inherit this `GITLAB_TOKEN` value.
+   <!-- markdownlint-disable MD029 -->
+   **Footnotes**:
 
-   1. `GITLAB_TOKEN` CI/CD variable for the [`gitlab-org/security-products/ci-templates`](https://gitlab.com/gitlab-org/security-products/ci-templates/-/settings/ci_cd#js-cicd-variables-settings) project.
+   1. Explicitly setting the `GITLAB_TOKEN` for this project can be removed after [Move post-analyzer projects to analyzers namespace (#582004)](https://gitlab.com/gitlab-org/gitlab/-/work_items/582004) has been completed.
+   2. The `ci-templates` project requires the `GITLAB_TOKEN` to allow the [`upsert git tag`](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/2a3519d/includes-dev/upsert-git-tag.yml) job to create new releases.
+   <!-- markdownlint-enable MD029 -->
 
-      This must be explicitly configured because the `ci-templates` project is not nested under the `gitlab-org/security-products/analyzers` namespace, and therefore _does not inherit_ the `GITLAB_TOKEN` value.
+### Other tokens that require rotation
 
-      The `ci-templates` project requires the `GITLAB_TOKEN` to allow certain scripts to execute API calls. This step can be removed after [allow JOB-TOKEN access to CI/lint endpoint](https://gitlab.com/gitlab-org/gitlab/-/issues/438781) has been completed.
-
-   1. `GITLAB_TOKEN` CI/CD variable for [`gitlab-org/security-products/license-db`](https://gitlab.com/groups/gitlab-org/security-products/license-db/-/settings/ci_cd#ci-variables) group.
-
-      This must be explicitly configured because the `license-db` project is not nested under the `gitlab-org/security-products/analyzers` namespace, and therefore _does not inherit_ the `GITLAB_TOKEN` value.
-
-   1. `SEC_REGISTRY_PASSWORD` CI/CD variable for [`gitlab-advanced-sast`](https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-advanced-sast/-/settings/ci_cd#js-cicd-variables-settings).
-
-      This allows our [tagging script](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/cfe285a/scripts/tag_image.sh) to pull from the private container registry in the development project `registry.gitlab.com/gitlab-org/security-products/analyzers/<analyzer-name>/tmp`, and push to the publicly accessible container registry `registry.gitlab.com/security-products/<analyzer-name>`.
+| Token                      | Project                                                                                       | Expiry Date      | Note                                                                                                                                                                                                                                                                                                                 |
+|----------------------------|-----------------------------------------------------------------------------------------------|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `VERIFY_CI_TEMPLATE_TOKEN` | [ci-templates](https://gitlab.com/gitlab-org/security-products/ci-templates/-/settings/ci_cd) | January 22, 2027 | Used by the [verify ci templates](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/ddb0087/.gitlab-ci.yml#L35-37) job. Explicitly setting this variable can be removed after [allow JOB-TOKEN access to CI/lint endpoint (#438781)](https://gitlab.com/gitlab-org/gitlab/-/issues/438781) has been completed. |
 
 ### Steps to perform after releasing an analyzer
 
@@ -800,7 +866,7 @@ This issue will guide you through the whole release process. In general, you hav
 
 - Check the list of supported technologies in GitLab documentation.
   - [Supported languages in SAST](../../user/application_security/sast/_index.md#supported-languages-and-frameworks)
-  - [Supported languages in DS](../../user/application_security/dependency_scanning/_index.md#supported-languages-and-package-managers)
+  - [Supported languages in DS](../../user/application_security/dependency_scanning/dependency_scanning_sbom/_index.md#supported-languages-and-files)
   - [Supported languages in LS](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md#supported-languages-and-package-managers)
 - Check that CI **_job definitions are still accurate_** in vendored CI/CD templates and **_all of the ENV vars are propagated_** to the Docker containers upon `docker run` per tool.
   - [SAST vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)

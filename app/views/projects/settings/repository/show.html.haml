@@ -5,6 +5,8 @@
 - if can?(current_user, :admin_project, @project)
   = render_if_exists "projects/settings/repository/general", project: @project
   = render "projects/branch_defaults/show"
+
+- if can?(current_user, :read_branch_rule, @project)
   = render "projects/branch_rules/show"
 
 - if can?(current_user, :admin_push_rules, @project)

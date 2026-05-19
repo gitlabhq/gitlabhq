@@ -13,7 +13,7 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker, feature_
   it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
 
   describe '#perform' do
-    context 'checks if project authorization update is required' do
+    context 'when checking if project authorization update is required' do
       it 'checks if a project_authorization refresh is needed for each of the users' do
         User.where(id: start_user_id..end_user_id).find_each do |user|
           expect(AuthorizedProjectUpdate::FindRecordsDueForRefreshService).to(

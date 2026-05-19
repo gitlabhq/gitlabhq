@@ -1,66 +1,71 @@
-- user = user_email = nil
-- if @tag.user_email
-  - user_email = @tag.user_email
-  - user = User.find_by_any_email(user_email)
 - add_to_breadcrumbs s_('TagsPage|Tags'), project_tags_path(@project)
-- breadcrumb_title @tag.name
-- page_title @tag.name, s_('TagsPage|Tags')
+- page_title params[:id], s_('TagsPage|Tags')
 
-.top-area.multi-line.gl-border-b-0
-  .nav-text
-    .title
-      %span.item-title.ref-name{ data: { testid: 'tag-name-content' } }
-        = sprite_icon('tag')
-        = @tag.name
-      - if protected_tag?(@project, @tag)
-        = gl_badge_tag s_('TagsPage|protected'), variant: :success
+- if @gitaly_unavailable
+  = render 'shared/errors/gitaly_unavailable', reason: s_('TagsPage|Unable to load tag')
+- else
+  - user = user_email = nil
+  - if @tag.user_email
+    - user_email = @tag.user_email
+    - user = User.find_by_any_email(user_email)
+  - breadcrumb_title @tag.name
 
-    - if user
-      = link_to user_path(user) do
-        %div
-          = user_avatar_without_link(user: user, size: 32, css_class: "mt-1 mb-1")
+  .top-area.multi-line.gl-border-b-0
+    .nav-text
+      .title
+        %span.item-title.ref-name{ data: { testid: 'tag-name-content' } }
+          = sprite_icon('tag')
+          = @tag.name
+        - if protected_tag?(@project, @tag)
+          = gl_badge_tag s_('TagsPage|protected'), variant: :success
 
-        %div
-          %strong= user.name
-          %div= user.to_reference
+      - if user
+        = link_to user_path(user) do
+          %div
+            = user_avatar_without_link(user: user, size: 32, css_class: "mt-1 mb-1")
 
-    - elsif user_email
-      = mail_to user_email do
-        %div
-          = user_avatar_without_link(user_email: user_email, size: 32, css_class: "mt-1 mb-1")
+          %div
+            %strong= user.name
+            %div= user.to_reference
 
-        %div{ :class => "clearfix" }
-          %strong= user_email
+      - elsif user_email
+        = mail_to user_email do
+          %div
+            = user_avatar_without_link(user_email: user_email, size: 32, css_class: "mt-1 mb-1")
 
-    - if @commit
-      = render 'projects/branches/commit', commit: @commit, project: @project
-    - else
-      = s_("TagsPage|Can't find HEAD commit for this tag")
+          %div{ :class => "clearfix" }
+            %strong= user_email
 
-    - if @release
-      = render 'release_link', project: @project, release: @release
+      - if @commit
+        = render 'projects/branches/commit', commit: @commit, project: @project
+      - else
+        = s_("TagsPage|Can't find HEAD commit for this tag")
 
-  .nav-controls.gl-flex-wrap.gl-items-center{ class: '!gl-flex' }
-    - if @tag.has_signature?
-      - signature_object = tag_view_signature(@tag)
-      .gl-mr-3
-        = render partial: 'projects/commit/signature', object: signature_object
+      - if @release
+        = render 'release_link', project: @project, release: @release
 
-    - if @pipeline_status
-      .gl-mr-3
-        = render 'ci/status/icon', status: @pipeline_status
+    .nav-controls.gl-flex-wrap.gl-items-center{ class: '!gl-flex' }
+      - if @tag.has_signature?
+        - signature_object = tag_view_signature(@tag)
+        - if signature_object.present?
+          .gl-mr-3
+            = render partial: 'projects/commit/signature', object: signature_object
 
-    - if can?(current_user, :admin_tag, @project)
-      = render 'edit_release_button', tag: @tag, project: @project, release: @release
-    = link_button_to nil, project_tree_path(@project, @tag.name, ref_type: :tags), class: 'has-tooltip', title: s_('TagsPage|Browse files'), icon: 'folder-open'
-    = link_button_to nil, project_commits_path(@project, @tag.name), class: 'has-tooltip', title: s_('TagsPage|Browse commits'), icon: 'history'
-    = render 'projects/buttons/download', project: @project, ref: @tag.name, ref_type: :tags
-    - if can?(current_user, :admin_tag, @project)
-      = render 'projects/buttons/remove_tag', project: @project, tag: @tag
+      - if @pipeline_status
+        .gl-mr-3
+          = render 'ci/status/icon', status: @pipeline_status
 
-- if @tag.message.present?
-  %pre.wrap{ data: { testid: 'tag-message-content' } }
-    = strip_signature(@tag.message)
+      - if can?(current_user, :admin_tag, @project)
+        = render 'edit_release_button', tag: @tag, project: @project, release: @release
+      = link_button_to nil, project_tree_path(@project, @tag.name, ref_type: :tags), class: 'has-tooltip', title: s_('TagsPage|Browse files'), icon: 'folder-open'
+      = link_button_to nil, project_commits_path(@project, @tag.name), class: 'has-tooltip', title: s_('TagsPage|Browse commits'), icon: 'history'
+      = render 'projects/buttons/download', project: @project, ref: @tag.name, ref_type: :tags
+      - if can?(current_user, :admin_tag, @project)
+        = render 'projects/buttons/remove_tag', project: @project, tag: @tag
 
-- if can?(current_user, :admin_tag, @project)
-  .js-delete-tag-modal
+  - if @tag.message.present?
+    %pre.wrap{ data: { testid: 'tag-message-content' } }
+      = strip_signature(@tag.message)
+
+  - if can?(current_user, :admin_tag, @project)
+    .js-delete-tag-modal

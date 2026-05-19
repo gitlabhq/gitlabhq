@@ -37,6 +37,10 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
       this.fileTreeBrowserIsExpanded = false;
       this.fileTreeBrowserIsPeekOn = false;
     },
+    collapseForBlame() {
+      this.setFileTreeBrowserIsExpanded(false);
+      this.fileTreeBrowserIsPeekOn = false;
+    },
     loadFileTreeBrowserExpandedFromLocalStorage() {
       try {
         const storedValue = localStorage.getItem(FILE_TREE_BROWSER_VISIBILITY);

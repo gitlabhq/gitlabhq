@@ -162,7 +162,7 @@ module RelativePositioning
     end
   end
 
-  # To be overriden on child classes whenever
+  # To be overridden on child classes whenever
   # blocking position updates is necessary.
   def check_repositioning_allowed!
     nil

@@ -26,7 +26,7 @@ module WorkItems
         move_link(link, adjacent_work_item, relative_position)
       end
 
-      # overriden in EE
+      # overridden in EE
       def move_link(link, adjacent_work_item, relative_position)
         if relative_position
           link.move_before(adjacent_work_item.parent_link) if relative_position == 'BEFORE'

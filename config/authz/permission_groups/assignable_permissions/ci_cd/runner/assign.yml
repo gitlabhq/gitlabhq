@@ -3,6 +3,8 @@ name: assign_runner
 description: Grants the ability to assign runners
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - assign_runner
   - unassign_runner

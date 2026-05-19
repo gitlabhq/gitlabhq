@@ -18,8 +18,14 @@ module RapidDiffs
           ]
         end
 
+        def hunks_with_row_counts
+          @hunks_with_row_counts ||= @diff_file.viewer_hunks.index_with do |hunk|
+            (hunk.header ? 1 : 0) + hunk.lines.to_a.size
+          end
+        end
+
         def total_rows
-          @diff_file.viewer_hunks.sum { |hunk| (hunk.header ? 1 : 0) + hunk.lines.to_a.size }
+          @total_rows ||= hunks_with_row_counts.values.sum
         end
       end
     end

@@ -7,21 +7,51 @@ title: Authorization code review guidelines
 
 This page provides guidance from the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authorization) on how to prepare a merge request that involve policy changes, permission definitions, and authorization logic for review.
 
-## File organisation
+## Role YAML files are the source of truth
 
-All permissions for the same condition should be in one `.policy` block, not
-scattered across the file. This makes it easy to see the full set of
-permissions a role or condition grants without searching the file.
+[Role definition YAML files](role_definitions.md) (`config/authz/roles/*.yml`)
+are the single source of truth for which permissions each role has. Policy files
+should not contain `enable` rules that grant permissions based on role conditions.
+Instead, add the permission to the appropriate role YAML file and use `prevent`
+rules in the policy to restrict access when a feature or setting is not available.
 
 ```ruby
-# bad - conditions and rules interleaved, rules scattered by role
-rule { guest }.enable :read_issue
-rule { guest }.enable :read_project
+# bad - enabling a permission for a role in a policy file
+rule { developer & model_registry_enabled }.policy do
+  enable :write_model_registry
+end
 
-# good - all conditions first, then rules grouped by role
-rule { guest }.policy do
-  enable :read_issue
-  enable :read_project
+# good - permission is in the developer role YAML
+# (config/authz/roles/developer.yml)
+#   raw_permissions:
+#     - write_model_registry
+#
+# Policy only restricts when the feature is unavailable:
+rule { ~model_registry_enabled }.prevent :write_model_registry
+```
+
+This pattern makes role permissions:
+
+- **Machine-readable**: External systems like GATE can determine a role's
+  permissions without evaluating policy logic.
+- **Enumerable**: You can see every permission a role has by reading one YAML file.
+- **Predictable**: Roles always start with their full set of permissions.
+  Conditions only remove access, never expand it.
+
+## File organisation
+
+All `prevent` rules for the same condition should be in one `.policy` block, not
+scattered across the file.
+
+```ruby
+# bad - prevents for the same condition scattered across the file
+rule { ~security_dashboard_enabled }.prevent :read_vulnerability
+rule { ~security_dashboard_enabled }.prevent :admin_vulnerability
+
+# good - all prevents for the same condition grouped together
+rule { ~security_dashboard_enabled }.policy do
+  prevent :admin_vulnerability
+  prevent :read_vulnerability
 end
 ```
 
@@ -104,26 +134,23 @@ Example fix: [MR !224604](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/
 ### Avoid cascading permissions through intermediate abilities
 
 Avoid chaining permissions through intermediate abilities, such as having
-`developer` enable `read_security_resource`, and `read_security_resource` then
-enable `read_vulnerability`. Instead, `developer` should directly enable
-`read_vulnerability`.
+`read_security_resource` enable `read_vulnerability`. Cascading makes it
+difficult to understand which roles have which permissions without tracing
+through multiple levels of indirection.
 
-Cascading makes it difficult to understand which roles have which permissions
-without tracing through multiple levels of indirection. Permissions should be
-explicit and traceable.
+Instead, add each permission directly to the appropriate
+[role YAML file](role_definitions.md).
 
 ```ruby
-# bad - developer enables an intermediate ability which then fans out
-rule { developer }.enable :read_security_resource
-
+# bad - an intermediate ability fans out to other permissions
 rule { can?(:read_security_resource) }.enable :read_vulnerability
 rule { can?(:read_security_resource) }.enable :read_security_dashboard
 
-# good - each role directly enables the permissions it should have
-rule { developer }.policy do
-  enable :read_vulnerability
-  enable :read_security_dashboard
-end
+# good - each permission is in the role YAML directly
+# (config/authz/roles/developer.yml)
+#   raw_permissions:
+#     - read_vulnerability
+#     - read_security_dashboard
 ```
 
 #### Exception: private permissions
@@ -153,8 +180,10 @@ rule { can?(:read_security_resource) }.enable :read_vulnerability
 ### Avoid nested conditions
 
 Avoid combining a role check and a settings/flag check into a single `rule`
-with `&`. Instead, enable the permission for the role unconditionally and use
-a separate `rule` with `prevent` to restrict it when the condition is not met. [Reference](https://gitlab.com/gitlab-org/ruby/gems/declarative-policy/-/blob/main/doc/optimization.md?ref_type=heads#flat-is-better-than-nested)
+with `&`. Instead, add the permission to the
+[role YAML file](role_definitions.md) and use a separate `rule` with `prevent`
+to restrict it when the condition is not met.
+[Reference](https://gitlab.com/gitlab-org/ruby/gems/declarative-policy/-/blob/main/doc/optimization.md?ref_type=heads#flat-is-better-than-nested)
 
 ```ruby
 # bad - mixes role and settings check in a single rule
@@ -162,69 +191,30 @@ rule { developer & model_registry_enabled }.policy do
   enable :write_model_registry
 end
 
-# good - enable unconditionally for the role, prevent when the setting blocks it
-rule { developer }.enable :write_model_registry
+# good - permission is in the developer role YAML, policy only prevents
 rule { ~model_registry_enabled }.prevent :write_model_registry
 ```
 
 ### Avoid  `admin | owner` rules
 
-`admin` users will now return true for `condition(:owner)` so we don't need to define the rule for `admin | owner` anymore. The same is true for organization owners.
+`admin` users return true for `condition(:owner)` so there is no need
+to define the rule for `admin | owner`. The same is true for organization
+owners. Permissions should be in the [role YAML file](role_definitions.md)
+rather than enabled in the policy.
 
 ```ruby
-# bad
+# bad - redundant admin/org owner check, and enabling in policy
 rule { admin | organization_owner | owner }.enable :delete_project
 
-# good
-rule { owner }.enable :delete_project
+# good - permission is in the owner role YAML
+# (config/authz/roles/owner.yml)
+#   raw_permissions:
+#     - delete_project
 ```
-
-### Avoid OR in rules
-
-Do not use conditions such as `planner_or_reporter_access` as a shorthand. Use separate rules for
-each role instead. This keeps permissions explicit and enumerable, and avoids
-hiding which roles actually have access.
-
-```ruby
-# bad
-condition(:planner_or_reporter_access) do
-  can?(:reporter_access) || can?(:planner_access)
-end
-
-rule { can?(:planner_or_reporter_access) }.enable :read_issue
-
-# good
-rule { can?(:planner_access) }.enable :read_issue
-rule { can?(:reporter_access) }.enable :read_issue
-```
-
-## Common gotchas
-
-### `condition(:guest)` is not the same as `can?(:guest_access)`
-
-These look interchangeable but behave very differently:
-
-- `condition(:guest)` returns `true` only if the user has been **explicitly added** to the project or group as a guest member.
-- `can?(:guest_access)` returns `true` if the user is **accessing a public project** — regardless of whether they are a member.
-
-This means replacing one with the other can silently expand or restrict access,
-particularly on public projects where non-members have implicit guest-level access.
-
-```ruby
-# condition(:guest) - only explicit members with guest role
-rule { guest }.enable :read_issue
-
-# can?(:guest_access) - any user on a public project
-rule { can?(:guest_access) }.enable :read_issue
-```
-
-Do not swap between the two without consulting the teams that introduced the
-original rule. An unintentional switch could grant permissions to logged-in
-non-members on public projects that they did not previously have.
 
 ## Examples
 
-### Refactoring combined conditions to use `prevent`
+### Refactoring combined conditions to use role YAML and `prevent`
 
 ```ruby
 # bad - permission only enabled when all conditions are true, meaning the role's
@@ -238,11 +228,13 @@ rule { ai_flow_triggers_enabled & (amazon_q_enabled | duo_workflow_available) & 
   enable :trigger_ai_flow
 end
 
-# good - developer_access unconditionally enables the permission.
-# Each condition then independently prevents it when not satisfied,
+# good - trigger_ai_flow is in the developer role YAML.
+# (config/authz/roles/developer.yml)
+#   raw_permissions:
+#     - trigger_ai_flow
+#
+# Each condition independently prevents it when not satisfied,
 # so the role's base permissions are always enumerable.
-rule { can?(:developer_access) }.enable :trigger_ai_flow
-
 rule { ~user_confirmed? }.prevent :trigger_ai_flow
 rule { ~ai_flow_triggers_enabled }.prevent :trigger_ai_flow
 rule { ~amazon_q_enabled & ~duo_workflow_available }.prevent :trigger_ai_flow

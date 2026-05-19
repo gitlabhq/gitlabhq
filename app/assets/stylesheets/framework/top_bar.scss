@@ -1,28 +1,3 @@
-.top-bar-container {
-  min-height: $top-bar-height;
-}
-
-.top-bar-fixed {
-  @apply gl-bg-default;
-  @apply gl-border-b;
-  position: fixed;
-  left: var(--application-bar-left);
-  right: var(--application-bar-right);
-  top: $calc-application-bars-height;
-  width: calc(100% - var(--application-bar-left));
-  z-index: $top-bar-z-index;
-
-  @media (forced-colors: active) {
-    border-bottom: 1px solid;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    @apply gl-transition-[width,left,right];
-  }
-
-  @include translucent-glass-background;
-}
-
 .top-app-header {
   top: $calc-application-header-height;
 }

@@ -324,8 +324,12 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
 
       context 'with all optional parameters' do
         context 'when creating a commit status' do
-          subject do
-            post api(post_url, developer), params: {
+          subject(:send_request) do
+            post api(post_url, developer), params: params
+          end
+
+          let(:params) do
+            {
               state: 'success',
               context: 'coverage',
               ref: 'master',
@@ -336,7 +340,7 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
           end
 
           it 'creates commit status' do
-            subject
+            send_request
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['sha']).to eq(commit.id)
@@ -354,10 +358,46 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
             end
 
             it 'sets head pipeline', :sidekiq_inline do
-              subject
+              send_request
 
               expect(response).to have_gitlab_http_status(:created)
               expect(merge_request.reload.head_pipeline).not_to be_nil
+            end
+
+            context 'when the merge request head pipeline has a config error' do
+              let!(:config_error_pipeline) { create(:ci_pipeline, :detached_merge_request_pipeline, :invalid_config_error, merge_request: merge_request) }
+              let(:params) do
+                {
+                  state: 'success',
+                  context: 'External',
+                  ref: merge_request.ref_path,
+                  target_url: 'https://example.com/external'
+                }
+              end
+
+              before do
+                project.update!(only_allow_merge_if_pipeline_succeeds: true)
+                merge_request.update!(head_pipeline: config_error_pipeline)
+              end
+
+              it 'creates a new external pipeline and keeps the merge request blocked', :sidekiq_inline do
+                expect do
+                  send_request
+                end.to change { Ci::Pipeline.count }.by(1)
+
+                expect(response).to have_gitlab_http_status(:created)
+
+                external_pipeline = Ci::Pipeline.find(json_response['pipeline_id'])
+
+                expect(external_pipeline.id).not_to eq(config_error_pipeline.id)
+                expect(external_pipeline.source).to eq('external')
+
+                merge_request.reload
+
+                expect(merge_request.diff_head_pipeline).to eq(config_error_pipeline)
+                expect(merge_request.diff_head_pipeline).to be_config_error
+                expect(merge_request.mergeable_state?(use_cache: false)).to be(false)
+              end
             end
           end
         end

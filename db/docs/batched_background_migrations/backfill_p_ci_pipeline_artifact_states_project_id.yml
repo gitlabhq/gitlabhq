@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillPCiPipelineArtifactStatesProjectId
-description: Backfills sharding key `p_ci_pipeline_artifact_states.project_id` from `ci_pipeline_artifacts`.
+description: Backfills sharding key `p_ci_pipeline_artifact_states.project_id` from
+  `ci_pipeline_artifacts`.
 feature_category: geo_replication
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224803
 milestone: '18.10'
 queued_migration_version: 20260224212749
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20260420072301'

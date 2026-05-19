@@ -355,6 +355,30 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
         end
       end
     end
+
+    context 'when tag name exceeds maximum length' do
+      let(:pipeline) { build(:ci_empty_pipeline, project: project, ref: 'master', user: user) }
+      let(:stage) { build(:ci_stage, pipeline: pipeline, project: project) }
+      let(:job) { build(:ci_build, ci_stage: stage, pipeline: pipeline, project: project, tag_list: ['a' * 256]) }
+
+      before do
+        pipeline.stages = [stage]
+        stage.statuses = [job]
+
+        error_message = "value too long for type character varying(255)"
+        allow(pipeline).to receive(:save!).and_raise(ActiveRecord::ValueTooLong.new(error_message))
+        step.perform!
+      end
+
+      it 'breaks the chain' do
+        expect(step.break?).to be true
+      end
+
+      it 'appends error message about value too long' do
+        expect(pipeline.errors.to_a)
+          .to include(/value too long for type character varying/)
+      end
+    end
   end
 
   # shared_examples 'pipeline creation'
@@ -488,25 +512,140 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
     end
 
     context 'with more than 500 builds' do
-      let(:pipeline) { build(:ci_empty_pipeline, project: project, ref: 'master', user: user) }
-      let(:stage) { build(:ci_stage, pipeline: pipeline, project: project) }
+      def create_large_pipeline(build_count: 550)
+        test_pipeline = build(:ci_empty_pipeline, project: project, ref: 'master', user: user)
+        test_stage = build(:ci_stage, pipeline: test_pipeline, project: project)
 
-      before do
-        builds = Array.new(550) do |i|
+        test_builds = Array.new(build_count) do |i|
           build(:ci_build,
             :without_job_definition,
-            ci_stage: stage,
-            pipeline: pipeline,
+            ci_stage: test_stage,
+            pipeline: test_pipeline,
             project: project,
             name: "job#{i}",
             options: { script: ['echo test'] }
-          )
+          ).tap do |b|
+            b.needs = []
+            b.association(:job_source).target = nil
+            b.association(:job_source).loaded!
+          end
         end
 
-        pipeline.stages = [stage]
-        stage.statuses = builds
+        test_pipeline.stages = [test_stage]
+        test_stage.statuses = test_builds
 
-        builds.each do |job|
+        test_builds.each do |job|
+          config = { options: { script: ['echo test'] } }
+          job_def = Ci::JobDefinition.fabricate(
+            config: config,
+            project_id: project.id,
+            partition_id: test_pipeline.partition_id
+          )
+          job.temp_job_definition = job_def
+        end
+
+        [test_pipeline, command]
+      end
+
+      it 'batches inserts efficiently and persists all builds', :allowed_to_be_slow do
+        test_pipeline, test_command = create_large_pipeline
+
+        query_count = ActiveRecord::QueryRecorder.new do
+          described_class.new(test_pipeline, test_command).perform!
+        end.count
+
+        expect(test_pipeline).to be_persisted
+        expect(test_pipeline.reload.builds.count).to eq(550)
+        expect(query_count).to be < 100
+      end
+
+      # TODO: Remove this test once ci_bulk_insert_pipeline_records FF is removed
+      it 'executes many queries without bulk insert', :allowed_to_be_slow do
+        stub_feature_flags(ci_bulk_insert_pipeline_records: false)
+        test_pipeline, test_command = create_large_pipeline
+
+        query_count = ActiveRecord::QueryRecorder.new do
+          described_class.new(test_pipeline, test_command).perform!
+        end.count
+
+        expect(query_count).to be > 500
+      end
+    end
+
+    context 'with complex pipeline including needs and build sources' do
+      let(:pipeline) { build(:ci_empty_pipeline, project: project, ref: 'master', user: user) }
+      let(:stage1) { build(:ci_stage, pipeline: pipeline, project: project, name: 'build', position: 0) }
+      let(:stage2) { build(:ci_stage, pipeline: pipeline, project: project, name: 'test', position: 1) }
+      let(:stage3) { build(:ci_stage, pipeline: pipeline, project: project, name: 'deploy', position: 2) }
+
+      before do
+        stub_feature_flags(ci_bulk_insert_pipeline_records: true)
+
+        build_jobs = Array.new(50) do |i|
+          build(:ci_build,
+            :without_job_definition,
+            ci_stage: stage1,
+            pipeline: pipeline,
+            project: project,
+            name: "build_job#{i}",
+            options: { script: ['echo build'] }
+          ).tap do |b|
+            b.needs = []
+            b.association(:job_source).target = nil
+            b.association(:job_source).loaded!
+          end
+        end
+
+        test_jobs = Array.new(100) do |i|
+          job = build(:ci_build,
+            :without_job_definition,
+            ci_stage: stage2,
+            pipeline: pipeline,
+            project: project,
+            name: "test_job#{i}",
+            options: { script: ['echo test'] }
+          )
+
+          job.needs = [
+            build(:ci_build_need, name: "build_job#{i % 50}", partition_id: pipeline.partition_id)
+          ]
+
+          job.job_source = build(:ci_build_source,
+            source: :pipeline,
+            partition_id: pipeline.partition_id
+          )
+
+          job
+        end
+
+        deploy_jobs = Array.new(20) do |i|
+          job = build(:ci_build,
+            :without_job_definition,
+            ci_stage: stage3,
+            pipeline: pipeline,
+            project: project,
+            name: "deploy_job#{i}",
+            options: { script: ['echo deploy'] }
+          )
+
+          job.needs = [
+            build(:ci_build_need, name: "test_job#{i * 5}", partition_id: pipeline.partition_id),
+            build(:ci_build_need, name: "test_job#{(i * 5) + 1}", partition_id: pipeline.partition_id)
+          ]
+
+          job.association(:job_source).target = nil
+          job.association(:job_source).loaded!
+
+          job
+        end
+
+        pipeline.stages = [stage1, stage2, stage3]
+        stage1.statuses = build_jobs
+        stage2.statuses = test_jobs
+        stage3.statuses = deploy_jobs
+
+        all_jobs = build_jobs + test_jobs + deploy_jobs
+        all_jobs.each do |job|
           config = { options: { script: ['echo test'] } }
           job_def = Ci::JobDefinition.fabricate(
             config: config,
@@ -517,11 +656,23 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
         end
       end
 
-      it 'batches inserts and persists all builds' do
+      it 'persists all stages, builds, needs, and build sources' do
         step.perform!
 
         expect(pipeline).to be_persisted
-        expect(pipeline.reload.builds.count).to eq(550)
+        expect(pipeline.reload.stages.count).to eq(3)
+        expect(pipeline.reload.builds.count).to eq(170)
+        expect(Ci::BuildNeed.where(partition_id: pipeline.partition_id).count).to eq(140)
+        expect(Ci::BuildSource.where(partition_id: pipeline.partition_id).count).to eq(100)
+      end
+
+      it 'executes under 100 queries with needs and build sources' do
+        control = ActiveRecord::QueryRecorder.new { step.perform! }
+
+        expect(pipeline).to be_persisted
+        expect(control.count).to be < 100
+        expect(pipeline.reload.stages.count).to eq(3)
+        expect(pipeline.reload.builds.count).to eq(170)
       end
     end
 
@@ -620,6 +771,38 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       end
     end
 
+    context 'when build has invalid needs' do
+      let(:build_with_invalid_needs) do
+        build(:ci_build,
+          :without_job_definition,
+          ci_stage: stage,
+          pipeline: pipeline,
+          project: project,
+          name: 'test_job'
+        )
+      end
+
+      before do
+        invalid_need = build(:ci_build_need, name: nil, partition_id: pipeline.partition_id)
+        build_with_invalid_needs.needs = [invalid_need]
+
+        pipeline.stages = [stage]
+        stage.statuses = [build_with_invalid_needs]
+      end
+
+      it 'breaks the chain' do
+        step.perform!
+
+        expect(step.break?).to be true
+      end
+
+      it 'does not persist the pipeline' do
+        step.perform!
+
+        expect(pipeline).not_to be_persisted
+      end
+    end
+
     context 'with empty stages' do
       before do
         pipeline.stages = []
@@ -666,6 +849,37 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
         persisted_build = Ci::Build.find_by(name: 'job_without_stage')
         expect(persisted_build).to be_present
         expect(persisted_build.stage_id).to be_nil
+      end
+    end
+
+    context 'with deployment jobs' do
+      let(:pipeline) { build(:ci_empty_pipeline, project: project, ref: 'master', user: user) }
+      let(:stage) { build(:ci_stage, pipeline: pipeline, project: project, name: 'deploy') }
+      let(:environment) { create(:environment, project: project, name: 'production') }
+      let(:deploy_job) do
+        build(:ci_build, :start_review_app, ci_stage: stage, pipeline: pipeline, project: project).tap do |job|
+          job.persisted_environment = environment
+          config = { options: { script: ['echo deploy'] } }
+          job_def = Ci::JobDefinition.fabricate(config: config, project_id: project.id,
+            partition_id: pipeline.partition_id)
+          job.temp_job_definition = job_def
+        end
+      end
+
+      before do
+        stub_feature_flags(ci_bulk_insert_pipeline_records: true)
+        pipeline.stages = [stage]
+        stage.statuses = [deploy_job]
+        Gitlab::Ci::Pipeline::Chain::EnsureEnvironments.new(pipeline, command).perform!
+      end
+
+      it 'bulk inserts job_environments records' do
+        step.perform!
+
+        job_env = Environments::Job.find_by(ci_pipeline_id: pipeline.id, ci_job_id: deploy_job.id)
+        expect(job_env).to be_present
+        expect(job_env.environment_id).to eq(environment.id)
+        expect(job_env.expanded_environment_name).to eq(environment.name)
       end
     end
   end

@@ -30,7 +30,12 @@ permissions:
   - read_issue_analytics
   - read_issue_board
   - read_issue_board_list
+  - read_issue_closing_merge_request
   - read_issue_iid
+  - read_issue_merge_request
+  - read_issue_participant
+  - read_issue_statistic
+  - read_issue_time_statistic
   - read_work_item
   - reopen_issue
   - reorder_issue

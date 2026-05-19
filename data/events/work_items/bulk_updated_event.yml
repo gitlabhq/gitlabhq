@@ -1,0 +1,6 @@
+---
+event: WorkItems::BulkUpdatedEvent
+description: Published after a batch of work items is updated in bulk (for example,
+  milestone cleared on milestone destroy, parent link changes). Each event batch covers
+  up to EVENTS_BATCH_SIZE work items; published via publish_group.
+feature_category: team_planning

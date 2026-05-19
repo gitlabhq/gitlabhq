@@ -33,6 +33,12 @@ RSpec.describe Mutations::Ci::Runner::UnassignFromProject, feature_category: :ru
 
   specify { expect(described_class).to require_graphql_authorizations(:unassign_runner) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :unassign_runner do
+    let(:user) { group_owner }
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'with invalid parameters' do
     context 'when project_path is missing' do
       let(:mutation_params) do

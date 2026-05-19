@@ -194,6 +194,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       end
 
       expect(described_class).to receive(:deferred).and_return(setter)
+      expect(setter).to receive(:set).and_return(setter)
       expect(setter).to receive(:perform_in).with(
         described_class::DEFER_ON_HEALTH_DELAY,
         pipeline_tracker.id,
@@ -510,7 +511,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     it 'runs the pipeline successfully' do
       allow_next_instance_of(BulkImports::ExportStatus) do |status|
         allow(status).to receive(:in_progress?).and_return(false)
-        allow(status).to receive(:empty?).and_return(false)
+        allow(status).to receive(:waiting_on_export?).and_return(false)
         allow(status).to receive(:failed?).and_return(false)
         allow(status).to receive(:batched?).and_return(false)
       end
@@ -524,7 +525,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       it 'reenqueues pipeline worker' do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
           allow(status).to receive(:in_progress?).and_return(true)
-          allow(status).to receive(:empty?).and_return(false)
+          allow(status).to receive(:waiting_on_export?).and_return(false)
           allow(status).to receive(:failed?).and_return(false)
           allow(status).to receive(:batched?).and_return(false)
         end
@@ -542,11 +543,11 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       end
     end
 
-    context 'when export status is empty' do
+    context 'when waiting on export to start' do
       before do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
           allow(status).to receive(:in_progress?).and_return(false)
-          allow(status).to receive(:empty?).and_return(true)
+          allow(status).to receive(:waiting_on_export?).and_return(true)
           allow(status).to receive(:failed?).and_return(false)
           allow(status).to receive(:batched?).and_return(false)
         end
@@ -573,7 +574,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         end
       end
 
-      context 'when empty export timeout is reached' do
+      context 'when export timeout is reached while waiting for export to start' do
         let(:created_at) { 10.minutes.ago }
 
         it 'raises sidekiq error' do
@@ -625,7 +626,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           allow(status).to receive(:batched?).and_return(true)
           allow(status).to receive(:batches_count).and_return(batches_count)
           allow(status).to receive(:in_progress?).and_return(false)
-          allow(status).to receive(:empty?).and_return(false)
+          allow(status).to receive(:waiting_on_export?).and_return(false)
           allow(status).to receive(:failed?).and_return(false)
           allow(status).to receive(:batches).and_return(batches)
           allow(status).to receive(:batch) do |batch_number|
@@ -816,6 +817,206 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
               expect(described_class.jobs).to be_empty
             end
           end
+        end
+      end
+    end
+  end
+
+  context 'when processing offline transfer pipeline' do
+    let(:file_extraction_pipeline) do
+      Class.new do
+        def initialize(_); end
+
+        def run; end
+
+        def self.file_extraction_pipeline?
+          true
+        end
+
+        def self.relation
+          'test'
+        end
+      end
+    end
+
+    let_it_be(:offline_bulk_import) { create(:bulk_import, :with_offline_configuration) }
+    let_it_be_with_reload(:offline_entity) { create(:bulk_import_entity, bulk_import: offline_bulk_import) }
+
+    let(:pipeline_tracker) do
+      create(
+        :bulk_import_tracker,
+        entity: offline_entity,
+        pipeline_name: 'NdjsonPipeline',
+        status_event: 'enqueue'
+      )
+    end
+
+    let(:export_status) { Import::Offline::ExportStatus.new(pipeline_tracker, file_extraction_pipeline.relation) }
+
+    before do
+      stub_const('NdjsonPipeline', file_extraction_pipeline)
+
+      allow_next_instance_of(Import::Offline::Imports::Groups::Stage) do |instance|
+        allow(instance).to receive(:pipelines)
+              .and_return([{ stage: 0, pipeline: file_extraction_pipeline }])
+      end
+
+      allow(Import::ExportStatus).to receive(:for_context)
+        .with(anything, file_extraction_pipeline.relation)
+        .and_return(export_status)
+      allow(export_status).to receive(:failed?).and_return(false)
+      allow(export_status).to receive(:batched?).and_return(false)
+
+      allow(worker).to receive(:log_extra_metadata_on_done).and_call_original
+    end
+
+    it 'runs the pipeline successfully' do
+      worker.perform(pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id)
+
+      expect(pipeline_tracker.reload.status_name).to eq(:finished)
+    end
+
+    it 'does not re-enqueue when in_progress? and waiting_on_export? return false' do
+      expect(described_class).not_to receive(:perform_in)
+
+      worker.perform(pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id)
+
+      expect(pipeline_tracker.reload.status_name).to eq(:finished)
+    end
+
+    context 'when export status is failed' do
+      before do
+        allow(export_status).to receive(:failed?).and_return(true)
+        allow(export_status).to receive(:error).and_return('Export files not found for relation: test')
+      end
+
+      it 'raises with offline error message' do
+        expect { worker.perform(pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id) }
+          .to raise_error(
+            BulkImports::Pipeline::FailedError,
+            'Export file error: Export files not found for relation: test'
+          )
+      end
+    end
+
+    context 'when export is batched', :aggregate_failures do
+      let(:batch_numbers) { [1, 2, 3] }
+
+      before do
+        allow(export_status).to receive(:batched?).and_return(true)
+        allow(export_status).to receive(:batches_count).and_return(batch_numbers.length)
+        allow(export_status).to receive(:all_batch_numbers).and_return(batch_numbers)
+        allow(export_status).to receive(:batch_failed?).and_return(false)
+      end
+
+      it 'enqueues pipeline batches using actual batch numbers' do
+        expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).exactly(3).times
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [1, 2, 3])
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, true)
+
+        worker.perform(pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id)
+
+        pipeline_tracker.reload
+
+        expect(pipeline_tracker.status_name).to eq(:started)
+        expect(pipeline_tracker.batched).to eq(true)
+        expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
+        expect(described_class.jobs).to be_empty
+      end
+
+      it 'enqueues only missing pipeline batches' do
+        create(:bulk_import_batch_tracker, tracker: pipeline_tracker, batch_number: 2)
+
+        expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).twice
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [1, 3])
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, true)
+
+        worker.perform(pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id)
+
+        pipeline_tracker.reload
+
+        expect(pipeline_tracker.status_name).to eq(:started)
+        expect(pipeline_tracker.batched).to eq(true)
+        expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
+      end
+
+      context 'when corresponding export batch failed' do
+        let(:batch_numbers) { [1, 2] }
+
+        before do
+          allow(export_status).to receive(:batch_failed?).with(1).and_return(false)
+          allow(export_status).to receive(:batch_failed?).with(2).and_return(true)
+          allow(export_status).to receive(:batch_error).with(2)
+            .and_return('Export relation batch file not found for relation: test, batch: 2')
+        end
+
+        it 'marks corresponding tracker batch as failed' do
+          worker.perform(pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id)
+
+          pipeline_tracker.reload
+
+          expect(pipeline_tracker.batches.find_by(batch_number: 1).failed?).to eq(false)
+          expect(pipeline_tracker.batches.find_by(batch_number: 2).failed?).to eq(true)
+        end
+
+        it 'records failure with batch_error message' do
+          expect(BulkImports::Failure)
+            .to receive(:create)
+            .with(
+              a_hash_including(
+                bulk_import_entity_id: offline_entity.id,
+                pipeline_class: pipeline_tracker.pipeline_name,
+                pipeline_step: 'pipeline_worker_run',
+                exception_class: '',
+                exception_message: 'Batch export 2 from source instance failed: ' \
+                  'Export relation batch file not found for relation: test, batch: 2',
+                correlation_id_value: anything
+              )
+            )
+
+          worker.perform(pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id)
+        end
+      end
+
+      context 'when batches count is less than 1' do
+        let(:batch_numbers) { [] }
+
+        before do
+          allow(export_status).to receive(:batches_count).and_return(0)
+        end
+
+        it 'marks tracker as finished' do
+          expect(BulkImports::PipelineBatchWorker).not_to receive(:perform_async)
+
+          worker.perform(pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id)
+
+          expect(pipeline_tracker.reload.status_name).to eq(:finished)
+        end
+      end
+
+      context 'when pipeline batch enqueuing should be limited' do
+        before do
+          allow(::Gitlab::CurrentSettings).to receive(:bulk_import_concurrent_pipeline_batch_limit).and_return(2)
+        end
+
+        it 'only enqueues limited batches and reenqueues itself' do
+          expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).twice
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [1, 2])
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, false)
+
+          worker.perform(pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id)
+
+          pipeline_tracker.reload
+
+          expect(pipeline_tracker.status_name).to eq(:started)
+          expect(pipeline_tracker.batched).to eq(true)
+          expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2)
+          expect(described_class.jobs).to contain_exactly(
+            hash_including(
+              'args' => [pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id],
+              'scheduled_at' => be_within(1).of(10.seconds.from_now.to_i)
+            )
+          )
         end
       end
     end

@@ -23,6 +23,7 @@ export default {
       default: '',
     },
   },
+  emits: ['toggle'],
   computed: {
     tooltipLabel() {
       return this.collapsed ? __('Expand sidebar') : __('Collapse sidebar');

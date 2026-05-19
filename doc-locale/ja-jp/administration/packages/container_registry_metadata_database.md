@@ -39,7 +39,7 @@ Helm Chartのインストールについては、Helm Chartのドキュメント
 - [保護タグ](../../user/packages/container_registry/protected_container_tags.md)
 - [クリーンアップポリシー](../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy)のパフォーマンス改善により、大規模なリポジトリのクリーンアップを正常に実行できるようになります
 - リポジトリタグのリスト表示のパフォーマンスが向上
-- タグ公開タイムスタンプの追跡と表示 ([イシュー290949](https://gitlab.com/gitlab-org/gitlab/-/issues/290949)を参照)
+- タグ公開タイムスタンプの追跡と表示（[イシュー290949](https://gitlab.com/gitlab-org/gitlab/-/issues/290949)を参照）
 - 名前以外の追加の属性によるリポジトリタグの並べ替え
 
 従来のメタデータストレージの技術的な制約により、新機能はメタデータデータベースバージョンでのみ実装されます。セキュリティ以外のバグ修正は、メタデータデータベースバージョンに限定される場合があります。
@@ -49,7 +49,6 @@ Helm Chartのインストールについては、Helm Chartのドキュメント
 - 既存のレジストリへのメタデータインポートには、読み取り専用の時間が必要です。
 - バージョンをアップグレードする場合、18.3より前のレジストリの通常のスキーマとデプロイ後のデータベースの移行は、手動で実行する必要があります。
 - マルチノードLinuxパッケージ環境では、レジストリの[アップグレード中の停止時間ゼロ](../../update/zero_downtime.md)は保証されません。
-- バックアップと復元のジョブには、レジストリデータベースは含まれません。詳細については、[メタデータデータベースを使用したバックアップ](#backup-with-metadata-database)を参照してください。
 - 既存のレジストリのメタデータインポート中、イメージタグの`createdAt`と`publishedAt`のタイムスタンプ値はインポート日に設定されます。これは、整合性を確保するために意図的に行われます。従来のレジストリがすべてのイメージのタグ公開日を収集しないためです。一部のイメージのメタデータにはビルド日が含まれていますが、そうでないイメージも多くあります。詳細については、[イシュー1384](https://gitlab.com/gitlab-org/container-registry/-/issues/1384)を参照してください。
 
 ## メタデータデータベース機能のサポート {#metadata-database-feature-support}
@@ -96,7 +95,7 @@ Helm Chartのインストールについては、Helm Chartのドキュメント
 - オフラインガベージコレクションの実行: この操作自体に害はありませんが、オフラインガベージコレクションはインポート処理を短縮する効果はほとんどなく、コマンドの実行に要する時間を取り戻すほどの効果はありません。
 
 > [!note]
-> メタデータインポートは、タグ付きイメージのみを対象とします。タグなしおよび参照されていないマニフェスト、およびそれらによって排他的に参照されるレイヤーは、背後に残され、アクセスできなくなります。タグ付けされていないイメージは、GitLabのUIやAPIからはもともと表示されませんが、バックエンド上では「dangling（ダングリング）」状態となり、残存してしまうことがあります。新しいレジストリへのインポート後、すべてのイメージは継続的なオンラインガベージコレクションの対象となります。デフォルトでは、タグ付けされておらず参照もされていないマニフェストやレイヤーは、24時間以上残っている場合に自動的に削除されます
+> メタデータインポートは、タグ付きイメージのみを対象とします。タグなしおよび参照されていないマニフェスト、およびそれらによって排他的に参照されるレイヤーは、背後に残され、アクセスできなくなります。タグ付けされていないイメージは、GitLabのUIやAPIからはもともと表示されませんが、バックエンド上では「dangling（ダングリング）」状態となり、残存してしまうことがあります。新しいレジストリへのインポート後、すべてのイメージは継続的なオンラインガベージコレクションの対象となります。デフォルトでは、タグ付けされておらず参照もされていないマニフェストやレイヤーは、24時間以上残っている場合に自動的に削除されます。
 
 #### 適切なインポート方法の選択方法 {#how-to-choose-the-right-import-method}
 
@@ -139,17 +138,134 @@ Helm Chartのインストールについては、Helm Chartのドキュメント
 
 レジストリストレージの減少を確認するには、インポート後約48時間かかる場合があります。これはオンラインガベージコレクションの正常かつ想定された動作です。この遅延は、オンラインガベージコレクションがイメージのプッシュ処理に干渉しないようにするためのものです。オンラインガベージコレクターの進捗とヘルスをモニタリングする方法については、[オンラインガベージコレクションのモニタリング](#online-garbage-collection-monitoring)セクションを確認してください。
 
+## Preferモード {#prefer-mode}
+
+{{< history >}}
+
+- GitLab 18.7で[導入](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9411)されました。
+
+{{< /history >}}
+
+Preferモードは、既存のレジストリがまだデータベースにインポートされていない場合に、レジストリがレガシーメタデータストレージにフォールバックできるようにするメタデータデータベースの設定オプションです。
+
+### Preferモードを有効にする {#enable-prefer-mode}
+
+Preferモードを有効にするには:
+
+1. `/etc/gitlab/gitlab.rb`で、`database.enabled`を`true`または`false`の代わりに`"prefer"`に設定します:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => 'prefer',
+     'host' => '<your_database_host>',
+     'port' => 5432,
+     'user' => '<your_database_user>',
+     'password' => '<your_database_password>',
+     'dbname' => '<your_database_name>',
+   }
+   ```
+
+1. ファイルを保存し、[GitLabを再設定](../restart_gitlab.md)します。
+
+GitLabを再設定すると、レジストリは、ファイルシステムまたはデータベースへの以前の書き込みを追跡するロックファイルに基づいて、起動時に使用するメタデータバックエンドを評価します:
+
+- ファイルシステムのロックファイルが存在する場合: レジストリには既存のファイルシステムメタデータがあります。レガシーメタデータストレージにフォールバックし、警告をログに記録します。[メタデータインポート](#enable-the-database-for-existing-registries)が完了するまで、レジストリは`enabled: false`と同一に動作します。
+- データベースのロックファイルが存在する場合: レジストリはすでにデータベースを使用しています。`enabled: true`と同一に、正常にデータベースに接続します。
+- ロックファイルが存在しない場合: レジストリは新規インストールです。起動するには設定済みで到達可能なデータベースが必要であり、レガシーストレージへのフォールバックは行いません。
+- 両方のロックファイルが存在する場合: レジストリは起動を拒否します。これは、手動で解決する必要がある設定エラーを示しています。
+
+フォールバックの決定は起動時に一度だけ行われ、レジストリの実行中は変更されません。フォールバック後にデータベースへの自動再試行または再接続はありません。フォールバック後にファイルシステムからデータベースモードに移行するには、標準の[メタデータインポート](#enable-the-database-for-existing-registries)を完了し、レジストリを再起動します。
+
+### どのメタデータバックエンドがアクティブかを確認する {#verify-which-metadata-backend-is-active}
+
+レジストリが使用しているメタデータバックエンドを確認するには、次のいずれかの方法を使用します。
+
+#### レジストリAPI応答ヘッダーを確認する {#check-the-registry-api-response-header}
+
+1. レジストリ`/v2/`エンドポイントにリクエストを送信します:
+
+   ```shell
+   curl --silent --head "https://registry.example.com/v2/" | grep --ignore-case gitlabcontainer-registry-database-enabled
+   ```
+
+1. `gitlab-container-registry-database-enabled`応答ヘッダーを検査します:
+
+   - `true`の値は、レジストリがメタデータデータベースを使用していることを意味します。
+   - `false`の値は、レガシーファイルシステムストレージを使用していることを意味します。
+
+#### ディスク上のロックファイルを確認する {#check-lockfiles-on-disk}
+
+ディスク上のロックファイルを確認するには、`<rootdirectory>/docker/registry/lockfiles/`にある設定済みのストレージバックエンドでこれらのファイルを探します:
+
+- `database-in-use`: レジストリはメタデータデータベースを使用しています。
+- `filesystem-in-use`: レジストリはレガシーファイルシステムストレージを使用しています。
+
+両方のロックファイルが存在する場合、レジストリは無効な状態であり、起動しません。
+
+#### レジストリのログを確認する {#check-registry-logs}
+
+レジストリは、起動時に選択するメタデータバックエンドをログに記録します。
+
+レジストリのログを確認するには、次のいずれかのメッセージを探します:
+
+- レジストリがレガシーストレージにフォールバックする場合 (Preferモードのみ):
+
+  ```plaintext
+  database prefer mode enabled, but found filesystem metadata: falling back to legacy metadata
+  ```
+
+- レジストリがデータベースに接続する場合:
+
+  ```plaintext
+  using the metadata database
+  ```
+
 ## データベースの移行 {#database-migrations}
 
 コンテナレジストリは、2種類の移行をサポートしています:
 
 - 通常のスキーマ移行: 新しいアプリケーションコードをデプロイする前に実行する必要があるデータベース構造の変更、いわゆるプレデプロイ後の移行です。これらの処理はデプロイの遅延を防ぐため、数分以内で完了することが望まれます。
-
 - デプロイ後の移行: アプリケーションの稼働中に実行できるデータベース構造の変更です。大規模なテーブルへのインデックス作成など、時間のかかる処理に使用され、起動時の遅延やアップグレード時の長時間停止を回避できます。
 
 デフォルトでは、レジストリは通常のスキーマ移行とポストデプロイ後の移行の両方を同時に適用します。アップグレード時のダウンタイムを短縮するには、ポストデプロイ後の移行をスキップし、アプリケーションの起動後に手動で実行することができます。
 
 ### データベース移行の適用 {#apply-database-migrations}
+
+{{< tabs >}}
+
+{{< tab title="GitLab 18.7以降" >}}
+
+アプリケーションの起動前に、通常のスキーマとデプロイ後の移行の両方を適用するには、以下を実行します:
+
+1. データベース移行を実行します:
+
+   ```shell
+   sudo gitlab-ctl registry-database migrate up
+   ```
+
+デプロイ後の移行をスキップするには、以下を実行します:
+
+1. 通常のスキーマ移行のみを実行します:
+
+   ```shell
+   sudo gitlab-ctl registry-database migrate up --skip-post-deployment
+   ```
+
+   `--skip-post-deployment`フラグの代わりに、`SKIP_POST_DEPLOYMENT_MIGRATIONS`環境変数を`true`に設定することもできます:
+
+   ```shell
+   SKIP_POST_DEPLOYMENT_MIGRATIONS=true sudo gitlab-ctl registry-database migrate up
+   ```
+
+1. アプリケーションの起動後、保留中のデプロイ後の移行を適用します:
+
+   ```shell
+   sudo gitlab-ctl registry-database migrate up
+   ```
+
+{{< /tab >}}
+
+{{< tab title="GitLab 18.6以前" >}}
 
 アプリケーションの起動前に、通常のスキーマとデプロイ後の移行の両方を適用するには、以下を実行します:
 
@@ -179,6 +295,10 @@ Helm Chartのインストールについては、Helm Chartのドキュメント
    sudo -u registry gitlab-ctl registry-database migrate up
    ```
 
+{{< /tab >}}
+
+{{< /tabs >}}
+
 > [!note]
 > `migrate up`コマンドには、移行の適用方法を制御するために使用できる追加のフラグがいくつか用意されています。詳細については、`sudo gitlab-ctl registry-database migrate up --help`を実行してください。
 
@@ -201,6 +321,91 @@ PrometheusやGrafanaなどのモニタリングツールを使用してガベー
 Blobおよびマニフェストのガベージコレクションタスクキューのヘルスとステータスをモニタリングします。
 
 #### オンラインガベージコレクションのヘルスをチェックします {#check-the-health-of-online-garbage-collection}
+
+{{< tabs >}}
+
+{{< tab title="GitLab 18.10以降" >}}
+
+次のコマンドは、オンラインガベージコレクションに関連する情報を表示します。
+
+```shell
+sudo gitlab-ctl registry-database gc-stats
+```
+
+出力例:
+
+```shell
+=== Blob Review Queue ===
+
+Tasks Pending Removal: 42
+Tasks ready for GC review (review_after has passed).
+
+┌───────────────────────────────────────────────────────────────────┬─────────────────────┬─────────────────┐
+│                              DIGEST                               │    REVIEW AFTER     │      EVENT      │
+├───────────────────────────────────────────────────────────────────┼─────────────────────┼─────────────────┤
+│ sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22e  │ 2026-01-16 21:56:13 │ blob_upload     │
+│ sha256:b4f5e6d7c8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2 │ 2026-01-16 19:56:13 │ manifest_delete │
+│ sha256:c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3 │ 2026-01-16 17:56:13 │ layer_delete    │
+└───────────────────────────────────────────────────────────────────┴─────────────────────┴─────────────────┘
+
+Long Overdue Tasks: 5
+Tasks pending longer than configured delay - may need attention.
+
+┌───────────────────────────────────────────────────────────────────┬─────────────────────┬──────────────┬─────────┐
+│                              DIGEST                               │    REVIEW AFTER     │    EVENT     │ OVERDUE │
+├───────────────────────────────────────────────────────────────────┼─────────────────────┼──────────────┼─────────┤
+│ sha256:d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4 │ 2026-01-11 23:56:13 │ blob_upload  │ 4d 0h   │
+│ sha256:e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5 │ 2026-01-13 23:56:13 │ layer_delete │ 2d 0h   │
+└───────────────────────────────────────────────────────────────────┴─────────────────────┴──────────────┴─────────┘
+
+High Retry Tasks: 2
+Tasks with >10 review attempts - may indicate persistent issues.
+
+┌───────────────────────────────────────────────────────────────────┬─────────────────────┬─────────────────┬─────────┐
+│                              DIGEST                               │    REVIEW AFTER     │      EVENT      │ RETRIES │
+├───────────────────────────────────────────────────────────────────┼─────────────────────┼─────────────────┼─────────┤
+│ sha256:f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6 │ 2026-01-17 00:56:13 │ blob_upload     │ 15      │
+│ sha256:a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7 │ 2026-01-17 01:56:13 │ manifest_delete │ 12      │
+└───────────────────────────────────────────────────────────────────┴─────────────────────┴─────────────────┴─────────┘
+
+=== Manifest Review Queue ===
+
+Tasks Pending Removal: 128
+Tasks ready for GC review (review_after has passed).
+
+┌───────────────┬─────────────┬─────────────────────┬──────────────────────┐
+│ REPOSITORY ID │ MANIFEST ID │    REVIEW AFTER     │        EVENT         │
+├───────────────┼─────────────┼─────────────────────┼──────────────────────┤
+│ 1001          │ 12345       │ 2026-01-16 22:56:13 │ tag_delete           │
+│ 1002          │ 67890       │ 2026-01-16 20:56:13 │ manifest_upload      │
+│ 1003          │ 11111       │ 2026-01-16 18:56:13 │ tag_switch           │
+│ 2001          │ 22222       │ 2026-01-16 16:56:13 │ manifest_list_delete │
+└───────────────┴─────────────┴─────────────────────┴──────────────────────┘
+
+Long Overdue Tasks: 8
+Tasks pending longer than configured delay - may need attention.
+
+┌───────────────┬─────────────┬─────────────────────┬─────────────────┬─────────┐
+│ REPOSITORY ID │ MANIFEST ID │    REVIEW AFTER     │      EVENT      │ OVERDUE │
+├───────────────┼─────────────┼─────────────────────┼─────────────────┼─────────┤
+│ 3001          │ 33333       │ 2026-01-12 23:56:13 │ tag_delete      │ 3d 0h   │
+│ 3002          │ 44444       │ 2026-01-14 23:56:13 │ manifest_delete │ 1d 0h   │
+└───────────────┴─────────────┴─────────────────────┴─────────────────┴─────────┘
+
+High Retry Tasks: 3
+Tasks with >10 review attempts - may indicate persistent issues.
+
+┌───────────────┬─────────────┬─────────────────────┬─────────────────┬─────────┐
+│ REPOSITORY ID │ MANIFEST ID │    REVIEW AFTER     │      EVENT      │ RETRIES │
+├───────────────┼─────────────┼─────────────────────┼─────────────────┼─────────┤
+│ 4001          │ 55555       │ 2026-01-17 00:26:13 │ tag_delete      │ 18      │
+│ 4002          │ 66666       │ 2026-01-17 00:41:13 │ manifest_upload │ 11      │
+└───────────────┴─────────────┴─────────────────────┴─────────────────┴─────────┘
+```
+
+{{< /tab >}}
+
+{{< tab title="GitLab 18.9以前" >}}
 
 次のクエリは、10回以上再試行されたタスク、または24時間以上レビュー待ちの状態にあるタスクを返します。通常、オンラインガベージコレクターは、失敗がごくわずかな場合には、24時間以内にレビュー対象のアイテムを処理します。もしクエリの結果に行が返された場合は、オンラインガベージコレクターのヘルスを調査してください。
 
@@ -251,30 +456,44 @@ LIMIT
   20;
 ```
 
-これらのクエリが行を返す場合は、ガベージコレクションに関連するメッセージがないかレジストリログを確認してください。`component="registry.gc.*`でエントリをフィルタリングし、エラーメッセージを調査します。
-
-`gc_manifest_review_queue`と`gc_blob_review_queue`の未フィルタ状態でのサイズは、オンラインガベージコレクターのヘルスを示す適切な指標ではありません。これらのキューは、アクティブなレジストリでは完全に空になることはありません。
-
-レビュー対象となっているタスクが大量に存在していても、必ずしも問題があるとは限りません。ガベージコレクターが、一時的なアクティビティの増加によって発生したアイテムを処理している最中である可能性があります。
-
-同様に、これらのタスクの`created_at`の日付だけでは、ヘルス指標として適切ではありません。イベントが同じblobまたはマニフェストをキューに追加すると、既存のタスクの`review_after`が更新され、レビューが延期されます。重複タスクは作成されません。
-
-これは何度でも発生する可能性があるため、数か月前に作成されたタスクがあっても心配する必要はありません。
-
 #### オンラインガベージコレクションに関連する情報クエリ {#informational-queries-related-to-online-garbage-collection}
 
 次のクエリを実行して、レビューの対象となるタスクの数を確認します:
 
-  ```sql
-  SELECT COUNT(*) FROM gc_blob_review_queue WHERE review_after < NOW();
-  SELECT COUNT(*) FROM gc_manifest_review_queue WHERE review_after < NOW();
-  ```
+```sql
+SELECT COUNT(*) FROM gc_blob_review_queue WHERE review_after < NOW();
+SELECT COUNT(*) FROM gc_manifest_review_queue WHERE review_after < NOW();
+```
 
-通常、これらのクエリは比較的少ない件数（多くの場合はほぼゼロ）を返します。ただし、次のような場合には、クエリからより大きな値が返されることがあります:
+{{< /tab >}}
 
-- インポートが24〜48時間前に開始された
-- 大量のタグが削除されたか、コンテナリポジトリが削除された
-- オンラインガベージコレクションが長期間無効になっていた
+{{< /tabs >}}
+
+一般的に、レビューの準備ができているアイテムの数は比較的少なく、多くの場合ゼロに近づくはずです。しかし、次のような場合にはさらに多くなる可能性があります:
+
+- インポートが24〜48時間前に開始された場合。
+- 大量のタグが削除されたか、コンテナリポジトリが削除された場合。
+- オンラインガベージコレクションが長期間無効になっていた場合。
+
+再試行を伴うタスクがある場合、または期限が大幅に過ぎているタスクがある場合は、レジストリのログでガベージコレクション関連のメッセージを確認してください。`component="registry.gc.*`でエントリをフィルタリングし、エラーメッセージを調査します。
+
+#### トラブルシューティングの前に確認する {#check-before-troubleshooting}
+
+##### GCキューサイズ {#gc-queue-sizes}
+
+`gc_manifest_review_queue`と`gc_blob_review_queue`の未フィルタ状態でのサイズは、オンラインガベージコレクターのヘルスを示す適切な指標ではありません。これらのキューには常に新しいエントリが追加されるため、アクティブなレジストリではこれらのキューが完全にクリアされることはありません。
+
+さらに、これらのキュー内のすべてのアイテムがストレージから削除されるわけではありません。これらのキューの詳細については、[オンラインガベージコレクション](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/online-garbage-collection.md)の仕様を参照してください。
+
+##### レビューの準備ができている大量のタスク {#lots-of-tasks-ready-to-review}
+
+レビュー対象となっているタスクが大量に存在していても、必ずしも問題があるとは限りません。ガベージコレクターが、一時的なアクティビティの増加によって発生したアイテムを処理している最中である可能性があります。
+
+##### 古いタスクがいくつかある {#some-tasks-are-old}
+
+同様に、これらのタスクの`created_at`日付だけでは、良好なヘルスインジケータとは言えません。イベントが同じblobまたはマニフェストをキューに追加すると、既存のタスクの`review_after`が更新され、レビューが延期されます。重複タスクは作成されません。
+
+これは何度でも発生する可能性があるため、数か月前に作成されたタスクがあっても心配する必要はありません。
 
 ### ガベージコレクターワーカー間隔の調整 {#adjust-the-garbage-collector-worker-interval}
 
@@ -328,15 +547,182 @@ registry['database'] = {
 }
 ```
 
-> [!note]
-> 外部データベースを使用する場合は、このドキュメント全体でコマンドから`-u registry`オプションを省略してください。
-
 ## メタデータベースを使用したバックアップ {#backup-with-metadata-database}
 
-> [!note]
-> コンテナレジストリメタデータ用に独自のデータベースを構成している場合は、バックアップを手動で管理する必要があります。`gitlab-backup`は、メタデータデータベースをバックアップしません。自動データベースバックアップの進捗状況については、[イシュー532507](https://gitlab.com/gitlab-org/gitlab/-/issues/532507)を参照してください。
+{{< history >}}
 
-メタデータデータベースが有効になっている場合、バックアップは、以前と同様に、レジストリで使用されるオブジェクトストレージとデータベースの両方をキャプチャする必要があります。オブジェクトストレージとデータベースのバックアップは、レジストリの状態を可能な限り相互に近くキャプチャするように調整する必要があります。レジストリを復元するには、両方のバックアップをまとめて適用する必要があります。
+- GitLab 18.10で、レジストリメタデータデータベースの自動バックアップサポートが[導入されました](https://gitlab.com/gitlab-org/gitlab/-/work_items/581279)。
+
+{{< /history >}}
+
+メタデータデータベースが有効になっている場合、バックアップにはレジストリストレージバックエンドとデータベースの両方を含める必要があります。
+
+バックアップ方法はストレージの種類によって異なります:
+
+- ローカルファイルシステムストレージ: `gitlab-backup`は自動的にレジストリを含めます。
+- オブジェクトストレージ: オブジェクトストレージは別途バックアップする必要があります。
+
+一貫性のあるレジストリの状態を確保するため、ストレージとデータベースのバックアップは可能な限り同時に行う必要があります。レジストリを復元するには、両方のバックアップを適用する必要があります。
+
+### 自動バックアップ {#automatic-backup}
+
+GitLab 18.10以降では、`gitlab-backup create`と`gitlab-backup restore`は、メタデータデータベースが設定されている場合、自動的にレジストリメタデータデータベースを含めます。Helmチャート（Kubernetes）のインストールでは、`backup-utility`も同様に動作します。
+
+メタデータデータベースは`gitlab.rb`またはHelmのvaluesファイルで設定する必要があります。
+
+追加の設定は必要ありません。バックアップツールは、既存の設定からレジストリデータベースの接続設定を読み取ります。
+
+バックアップRakeタスクを直接呼び出す場合、バックアップを実行するノードで次の環境変数を設定する必要があります:
+
+| 変数 | 必須 | 説明 |
+|---|---|---|
+| `REGISTRY_DATABASE_HOST` | はい | データベースホスト。 |
+| `REGISTRY_DATABASE_NAME` | はい | データベース名。 |
+| `REGISTRY_DATABASE_USER` | はい | データベースユーザー。 |
+| `REGISTRY_DATABASE_PORT` | いいえ | データベースポート。`5432`がデフォルトです。 |
+| `REGISTRY_DATABASE_PASSWORD` | いいえ | データベースパスワード。 |
+| `REGISTRY_DATABASE_SSLMODE` | いいえ | SSLモードを必須とするかどうか。`require`に設定するか、省略します。 |
+| `REGISTRY_DATABASE_SSLCERT` | いいえ | クライアント証明書へのパス。 |
+| `REGISTRY_DATABASE_SSLKEY` | いいえ | クライアント秘密キーへのパス。 |
+| `REGISTRY_DATABASE_SSLROOTCERT` | いいえ | CA証明書へのパス。 |
+| `REGISTRY_DATABASE_CONNECT_TIMEOUT` | いいえ | 接続タイムアウト（秒）。 |
+
+バックアップRakeタスクは、次のいずれかの認証情報を検出すると、レジストリデータベースバックアップをアクティブ化します:
+
+- `REGISTRY_DATABASE_PASSWORD`
+- `REGISTRY_DATABASE_SSLCERT`
+- `REGISTRY_DATABASE_SSLKEY`
+- `REGISTRY_DATABASE_SSLROOTCERT`
+
+認証情報がない場合、レジストリデータベースはバックアップに含まれません。復元するときにも同じ環境変数を設定する必要があります。
+
+### 手動バックアップ {#manual-backup}
+
+GitLab 18.9以前を使用している場合、またはレジストリデータベースのバックアップを個別に管理したい場合は、`pg_dump`や`pg_restore`のような標準的なPostgreSQLツールを使用して、レジストリデータベースを個別にバックアップおよび復元することができます。
+
+### Helmチャート（Kubernetes）のバックアップと復元する {#helm-chart-kubernetes-backup-and-restore}
+
+{{< history >}}
+
+- GitLab 18.10で[導入](https://gitlab.com/gitlab-org/charts/gitlab/-/work_items/6207)されました。
+
+{{< /history >}}
+
+Helmチャート（Kubernetes）のデプロイでは、バックアップおよび復元する操作専用のデータベース認証情報を使用して、ツールボックスポッドを設定します。2つの個別のPostgreSQLユーザーが必要です:
+
+- バックアップユーザーには読み取り専用の権限が必要です。
+- 復元するユーザーには書き込み権限が必要です。
+
+必要な操作に応じて、どちらか一方または両方のユーザーを設定します。
+
+開始する前に、`registry.database.enabled: true`を設定してコンテナレジストリメタデータデータベースを有効にします。
+
+#### Kubernetesシークレットを作成する {#create-the-kubernetes-secret}
+
+デプロイする前に、Kubernetesシークレットを手動で作成する必要があります。チャートはこのシークレットを自動生成しません。
+
+例えば、バックアップと復元するの両方のパスワードを持つシークレットを作成するには:
+
+```shell
+kubectl create secret generic my-registry-db-password-secret \
+  --from-literal=backupPassword="BACKUP_USER_PASSWORD" \
+  --from-literal=restorePassword="RESTORE_USER_PASSWORD"
+```
+
+#### レジストリデータベース認証情報を設定する {#configure-registry-database-credentials}
+
+必要なYAMLをHelmの`values.yaml`に追加して、バックアップユーザーと復元するユーザーを設定します。設定設定の定義については、次の表を参照してください。 
+
+| 設定 | デフォルト | 説明 |
+|---|---|---|
+| `backupUser` | | バックアップ操作用のPostgreSQLユーザー名。レジストリデータベースバックアップを有効にするために必要です。 |
+| `restoreUser` | | 復元する操作用のPostgreSQLユーザー名。レジストリデータベースの復元を有効にするために必要です。 |
+| `password.secret` | `<release-name>-toolbox-registry-database-password` | パスワードを含むKubernetesシークレットの名前。 |
+| `password.backupPasswordKey` | `backupPassword` | バックアップユーザーのパスワードのKubernetesシークレット内のキー。 |
+| `password.restorePasswordKey` | `restorePassword` | 復元するユーザーのパスワードのKubernetesシークレット内のキー。 |
+
+次の例は、バックアップユーザーと復元するユーザーの両方を設定します:
+
+```yaml
+gitlab:
+  toolbox:
+    backups:
+      registry:
+        database:
+          # PostgreSQL username for backing up the registry database
+          backupUser: "registry_backup"
+          # PostgreSQL username for restoring the registry database
+          restoreUser: "registry_restore"
+          password:
+            # Name of the Kubernetes Secret containing the passwords
+            secret: "my-registry-db-password-secret"
+            # Key in the Secret for the backup user's password
+            backupPasswordKey: "backupPassword"
+            # Key in the Secret for the restore user's password
+            restorePasswordKey: "restorePassword"
+```
+
+`backupUser`または`restoreUser`が設定されていない場合、レジストリデータベースバックアップは静かにスキップされ、ツールボックスポッドは正常に動作します。
+
+#### PostgreSQLユーザー権限 {#postgresql-user-permissions}
+
+バックアップユーザーには、レジストリデータベースをダンプするための読み取り専用アクセスが必要です。復元するユーザーには、それを復元するためのスーパーユーザー権限が必要です。
+
+Linuxパッケージインストールの場合、`database_backup_username`、`database_backup_password`、`database_restore_username`、および`database_restore_password`が設定されると、これらのユーザーと権限が自動的に作成されます。
+
+自己コンパイルまたは外部データベースインストールの場合は、ユーザーを手動で作成し、権限を付与します:
+
+```sql
+-- Create the backup user with minimal privileges for pg_dump.
+-- The registry database uses both the 'public' and 'partitions' schemas.
+CREATE ROLE registry_backup WITH LOGIN PASSWORD 'password'
+  NOINHERIT NOCREATEDB NOSUPERUSER NOREPLICATION;
+
+GRANT CONNECT ON DATABASE registry TO registry_backup;
+
+-- Grant read-only access on both schemas
+GRANT USAGE ON SCHEMA public TO registry_backup;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO registry_backup;
+GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO registry_backup;
+ALTER DEFAULT PRIVILEGES FOR ROLE registry IN SCHEMA public
+  GRANT SELECT ON TABLES TO registry_backup;
+ALTER DEFAULT PRIVILEGES FOR ROLE registry IN SCHEMA public
+  GRANT SELECT ON SEQUENCES TO registry_backup;
+
+GRANT USAGE ON SCHEMA partitions TO registry_backup;
+GRANT SELECT ON ALL TABLES IN SCHEMA partitions TO registry_backup;
+GRANT SELECT ON ALL SEQUENCES IN SCHEMA partitions TO registry_backup;
+ALTER DEFAULT PRIVILEGES FOR ROLE registry IN SCHEMA partitions
+  GRANT SELECT ON TABLES TO registry_backup;
+ALTER DEFAULT PRIVILEGES FOR ROLE registry IN SCHEMA partitions
+  GRANT SELECT ON SEQUENCES TO registry_backup;
+
+-- Create the restore user with superuser privileges.
+-- SUPERUSER is required for database restore operations because the
+-- restore process must SET ROLE to the registry owner and
+-- CREATE TRIGGER on all tables.
+CREATE ROLE registry_restore WITH LOGIN PASSWORD 'password' SUPERUSER;
+```
+
+#### 認証情報ボリュームワークフロー {#credential-volume-workflow}
+
+設定すると、チャートはツールボックスデプロイとバックアップCronJobの両方で`/etc/gitlab/registry-db/`にマウントされたボリュームを作成します。ボリュームは読み取り専用で、以下が含まれます:
+
+- 接続パラメータ: レジストリチャートによって作成されたConfigMapで、データベースホスト、ポート、名前、SSLモード、および接続タイムアウトが含まれています。
+- バックアップおよび復元するユーザー名: 設定された`backupUser`および`restoreUser`を含むツールボックスチャートによって作成されたConfigMap。
+- パスワード: バックアップと復元するのパスワードを含むユーザー提供のKubernetesシークレット。
+
+ツールボックスポッド内の`backup-utility`はこれらのファイルを読み取り、レジストリメタデータデータベースをバックアップおよび復元する操作に含めます。
+
+必要な認証情報ファイルが不足している場合、`backup-utility`は警告をログに記録し、他のリソースのバックアップを続行します。
+
+#### 相互TLSの制限 {#mutual-tls-limitation}
+
+PostgreSQLでの相互TLS認証用のSSL証明書パスは、SSLがグローバルに設定されている場合（`global.psql.ssl`）にのみ含まれます。SSLがレジストリサブチャートレベル（`registry.database.ssl`）でのみ設定されている場合、その設定はツールボックスに渡されません。
+
+### Geoに関する考慮事項 {#geo-considerations}
+
+コンテナレジストリで[Geo](#database-architecture-with-geo)を使用する場合、各サイトでレジストリ用に個別のデータベースとオブジェクトストレージのスタックを設定する必要があります。各サイトのレジストリデータベースとオブジェクトストレージを個別にバックアップします。Geoはサイト間でレジストリデータベースをレプリケートしません。
 
 ## レジストリのダウングレード {#downgrade-a-registry}
 
@@ -410,7 +796,7 @@ flowchart TB
    }
    ```
 
-1. ファイルを保存して[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
+1. ファイルを保存し、[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
 
 ## トラブルシューティング {#troubleshooting}
 

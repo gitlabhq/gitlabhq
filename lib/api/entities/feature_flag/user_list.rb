@@ -10,11 +10,11 @@ module API
         expose :created_at, documentation: { type: 'DateTime', example: '2020-02-04T08:13:10.507Z' }
         expose :updated_at, documentation: { type: 'DateTime', example: '2020-02-04T08:13:10.507Z' }
 
-        expose :path do |list|
+        expose :path, documentation: { type: 'String' } do |list|
           project_feature_flags_user_list_path(list.project, list)
         end
 
-        expose :edit_path do |list|
+        expose :edit_path, documentation: { type: 'String' } do |list|
           edit_project_feature_flags_user_list_path(list.project, list)
         end
       end

@@ -38,6 +38,7 @@ query getProjectSecurityConfiguration($projectId: ProjectID!) {
     licenseConfigurationSource
     secretDetectionConfigurationPath
     secretPushProtectionAvailable
+    secretPushProtectionEnforced
     secretPushProtectionEnabled
     securityTrainingEnabled
     userIsProjectAdmin

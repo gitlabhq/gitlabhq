@@ -39,7 +39,7 @@ Prerequisites:
 `Git operations using SSH` is enabled by default. Defaults to 600 per user per minute.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Git SSH operations rate limit**.
 1. Enter a value for **Maximum number of Git operations per minute**.
    - To disable the rate limit, set it to `0`.

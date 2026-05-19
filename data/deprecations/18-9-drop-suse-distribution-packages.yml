@@ -27,3 +27,9 @@
     For customers on one of these distributions, we recommend migrating to a
     [Docker deployment of GitLab](https://docs.gitlab.com/install/docker/installation/) on your existing distribution.
     This avoids having to migrate to a different Linux distribution to continue to receive GitLab upgrades.
+
+    **Update**: Due to [RPM package size constraints on SLES 12.5](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9716),
+    [Mattermost](https://docs.gitlab.com/update/deprecations/#mattermost-bundled-with-linux-package) and
+    [Spamcheck](https://docs.gitlab.com/update/deprecations/#spamcheck-support-in-the-linux-package-and-gitlab-helm-chart)
+    were removed from SLES 12.5 packages in GitLab 18.11 ahead of their planned removal from all distributions
+    in GitLab 19.0.

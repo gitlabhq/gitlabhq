@@ -102,8 +102,8 @@ describe('Commit Diffs File Options Menu Adapter', () => {
 
     const items = Array.from(get('menuItems'));
 
-    expect(items[0].textContent.trim()).toBe('Copy link to the file');
-    expect(items[1].textContent.trim()).toBe(item1.text);
-    expect(items[1].querySelector('a').getAttribute('href')).toBe(item1.href);
+    expect(items[0].textContent.trim()).toBe(item1.text);
+    expect(items[0].querySelector('a').getAttribute('href')).toBe(item1.href);
+    expect(items[1].textContent.trim()).toBe('Copy link to the file');
   });
 });

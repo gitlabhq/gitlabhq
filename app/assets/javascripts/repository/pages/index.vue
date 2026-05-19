@@ -29,5 +29,5 @@ export default {
 </script>
 
 <template>
-  <tree-page path="/" :ref-type="refType" />
+  <tree-page :ref-type="refType" />
 </template>

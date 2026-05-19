@@ -28,7 +28,7 @@ RSpec.describe Autocomplete::DeployKeysWithWriteAccessFinder, feature_category: 
       end
 
       context 'and current user can admin project' do
-        before do
+        before_all do
           project.add_maintainer(user)
         end
 

@@ -1,27 +1,3 @@
-/* eslint-disable no-new */
+import { initUserLists } from '~/user_lists/init_user_lists';
 
-import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
-import UserLists from '~/user_lists/components/user_lists.vue';
-import createStore from '~/user_lists/store/index';
-
-Vue.use(Vuex);
-
-const el = document.querySelector('#js-user-lists');
-
-const { featureFlagsHelpPagePath, errorStateSvgPath, projectId, newUserListPath } = el.dataset;
-
-new Vue({
-  el,
-  name: 'UserListsRoot',
-  store: createStore({ projectId }),
-  provide: {
-    featureFlagsHelpPagePath,
-    errorStateSvgPath,
-    newUserListPath,
-  },
-  render(createElement) {
-    return createElement(UserLists);
-  },
-});
+initUserLists();

@@ -1,0 +1,9 @@
+---
+name: delete_alias
+description: Grants the ability to delete aliases for accessing projects by alternative names
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_project_alias

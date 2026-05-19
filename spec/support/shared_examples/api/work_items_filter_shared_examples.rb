@@ -271,6 +271,44 @@ RSpec.shared_examples 'work item listing filters' do
       it_behaves_like 'contains only matching work items'
     end
 
+    context 'with search filter' do
+      before do
+        work_item_1.update!(title: 'unique special keyword')
+        work_item_2.update!(title: 'something else')
+      end
+
+      context 'when searching across default fields' do
+        let(:params) { { search: 'special keyword' } }
+
+        it_behaves_like 'contains only matching work items'
+      end
+
+      context 'when restricting search to title only' do
+        let(:params) { { search: 'unique special keyword', in: 'title' } }
+
+        it_behaves_like 'contains only matching work items'
+      end
+
+      context 'when searching in description and title does not match' do
+        let(:params) { { search: 'unique special keyword', in: 'description' } }
+
+        it_behaves_like 'does not contain matching work items'
+      end
+    end
+
+    context 'with timeframe filter' do
+      let(:start_date) { Date.new(2024, 1, 1) }
+      let(:end_date) { Date.new(2024, 3, 31) }
+      let(:params) { { timeframe: { start: start_date.iso8601, end: end_date.iso8601 } } }
+
+      before do
+        create(:work_items_dates_source, :fixed, work_item: work_item_1,
+          start_date: start_date, due_date: end_date)
+      end
+
+      it_behaves_like 'contains only matching work items'
+    end
+
     context 'with my_reaction_emoji filter' do
       let(:params) { { my_reaction_emoji: 'thumbsup' } }
 

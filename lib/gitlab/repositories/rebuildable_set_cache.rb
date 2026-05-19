@@ -368,18 +368,25 @@ module Gitlab
       end
 
       def log_event(event, key, level: :info, **extra)
+        return if level != :error && !Feature.enabled?(:ref_cache_verbose_logging, repository.project)
+
         payload = {
-          message: 'RebuildableSetCache',
-          event: event,
-          cache_key: key,
-          class: self.class.name
+          message: event.to_s,
+          class: self.class.name,
+          rebuildable_cache: { **extra, event: event, cache_key: key }
         }
 
+        Gitlab::ApplicationContext.with_context(project: repository.project) do
+          log_payload(level, payload)
+        end
+      end
+
+      def log_payload(level, payload)
         case level
         when :error
-          Gitlab::AppLogger.error(payload.merge(**extra))
+          Gitlab::AppLogger.error(payload)
         else
-          Gitlab::AppLogger.info(payload.merge(**extra))
+          Gitlab::AppLogger.info(payload)
         end
       end
 

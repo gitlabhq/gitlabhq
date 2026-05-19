@@ -10,6 +10,10 @@ module Types
 
     authorize :read_group
 
+    authorize_granular_token permissions: :read_group,
+      boundary: :itself,
+      boundary_type: :group
+
     expose_permissions Types::PermissionTypes::Group
 
     field :web_url,
@@ -348,18 +352,15 @@ module Types
     field :work_items,
       null: true,
       description: 'Work items that belong to the namespace.',
-      experiment: { milestone: '16.3' },
       resolver: ::Resolvers::Namespaces::WorkItemsResolver
 
     field :work_item, Types::WorkItemType,
       resolver: Resolvers::Namespaces::WorkItemResolver,
-      experiment: { milestone: '16.4' },
       description: 'Find a work item by IID directly associated with the group.'
 
     field :work_item_state_counts,
       Types::WorkItemStateCountsType,
       null: true,
-      experiment: { milestone: '16.7' },
       description: 'Counts of work items by state for the namespace.',
       resolver: Resolvers::Namespaces::WorkItemStateCountsResolver
 

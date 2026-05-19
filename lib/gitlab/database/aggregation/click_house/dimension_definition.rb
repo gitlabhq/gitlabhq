@@ -23,6 +23,10 @@ module Gitlab
           def to_outer_arel(context)
             Arel::Table.new(context[:inner_query_name])[context.fetch(:local_alias, name)]
           end
+
+          def requires_window?
+            false
+          end
         end
       end
     end

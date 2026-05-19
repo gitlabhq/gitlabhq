@@ -58,6 +58,7 @@
     }
   }
 
+  /* stylelint-disable gitlab/no-js-class */
   header,
   nav,
   .super-sidebar,
@@ -73,11 +74,12 @@
   .note-action-button,
   .right-sidebar,
   .flash-container,
-  .top-bar-fixed,
+  .panel-header,
   copy-code,
   #js-peek {
     display: none !important;
   }
+  /* stylelint-enable gitlab/no-js-class */
 
   pre {
     page-break-before: avoid;
@@ -102,7 +104,7 @@
   }
 
   .panels-container .panel-content-inner,
-  .panels-container .vue-portal-target .work-item-drawer-content {
+  .panels-container .vue-portal-target .work-item-detail-panel-content {
     height: auto !important;
     overflow: visible !important;
   }

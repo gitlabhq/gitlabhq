@@ -4,7 +4,7 @@ module API
   module Entities
     module Unleash
       class ClientFeatureFlags < Grape::Entity
-        expose :unleash_api_version, as: :version
+        expose :unleash_api_version, as: :version, documentation: { type: 'Integer' }
         expose :unleash_api_features, as: :features, using: ::API::Entities::UnleashFeature
       end
     end

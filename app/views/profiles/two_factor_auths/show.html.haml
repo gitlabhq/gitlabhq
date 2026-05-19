@@ -32,19 +32,18 @@
           = render Pajamas::ButtonComponent.new(variant: :default, href: edit_user_settings_password_path, button_options: { data: { testid: 'change-password-button' }}) do
             = s_('ProfilesAuthentication|Change password')
 
-- if Feature.enabled?(:passkeys, current_user)
-  = render ::Layouts::SettingsSectionComponent.new(s_("ProfilesAuthentication|Passkeys sign-in")) do |c|
-    - c.with_description do
-      %div
-        - learn_more_link = link_to('', help_page_path('auth/passkeys.md'), target: '_blank', rel: 'noreferrer')
-        = safe_format(s_("ProfilesAuthentication|Passkeys allow you to sign in securely with your device instead of a password. %{link_start}Learn more about passkeys%{link_end}."), tag_pair(learn_more_link, :link_start, :link_end))
-    - c.with_body do
-      %p
-        %span.gl-font-bold
-          = _('Status:')
-        - passkey_status = current_user.allow_passkey_authentication? && @passkeys.present? ? _('Active') : _('Inactive')
-        = passkey_status
-      = render 'passkeys'
+= render ::Layouts::SettingsSectionComponent.new(s_("ProfilesAuthentication|Passkeys sign-in")) do |c|
+  - c.with_description do
+    %div
+      - learn_more_link = link_to('', help_page_path('auth/passkeys.md'), target: '_blank', rel: 'noreferrer')
+      = safe_format(s_("ProfilesAuthentication|Passkeys allow you to sign in securely with your device instead of a password. %{link_start}Learn more about passkeys%{link_end}."), tag_pair(learn_more_link, :link_start, :link_end))
+  - c.with_body do
+    %p
+      %span.gl-font-bold
+        = _('Status:')
+      - passkey_status = current_user.allow_passkey_authentication? && @passkeys.present? ? _('Active') : _('Inactive')
+      = passkey_status
+    = render 'passkeys'
 
 - if display_providers_on_profile?
   = render ::Layouts::SettingsSectionComponent.new(s_('ProfilesAuthentication|Service sign-in')) do |c|

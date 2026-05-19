@@ -1,7 +1,9 @@
 ---
 name: create_code_suggestion_direct_access
 description: Grants the ability to create direct access tokens for code suggestions
-permissions:
-  - create_code_suggestion_direct_access
 boundaries:
   - user
+available_for:
+  - granular_access_token
+permissions:
+  - create_code_suggestion_direct_access

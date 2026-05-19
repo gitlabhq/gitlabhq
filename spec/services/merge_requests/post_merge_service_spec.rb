@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:merge_request, reload: true) { create(:merge_request, assignees: [user]) }
   let_it_be(:project, reload: true) { merge_request.project }
   let(:params) { {} }

@@ -39,7 +39,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter, 
 
       expect { |b| subject.each_object_to_import(&b) }.to yield_with_args(note)
 
-      subject.each_object_to_import {}
+      subject.each_object_to_import { nil }
 
       expect(
         Gitlab::Cache::Import::Caching.set_includes?(
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter, 
         .exactly(:once) # ensure to be cached on the second call
         .with(:pull_request_comments, resume_url, 'github/repo', merge_request.iid, {})
 
-      subject.each_object_to_import {}
+      subject.each_object_to_import { nil }
     end
 
     it 'skips cached merge requests' do
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter, 
 
       expect(client).not_to receive(:each_page)
 
-      subject.each_object_to_import {}
+      subject.each_object_to_import { nil }
     end
 
     context 'when the project has merge requests not imported from GitHub' do

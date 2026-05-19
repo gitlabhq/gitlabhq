@@ -207,7 +207,7 @@ RSpec.describe 'Mail quoted-printable transfer encoding patch and Unicode charac
     end
   end
 
-  context 'empty text mail with unsual body encoding' do
+  context 'empty text mail with unusual body encoding' do
     it 'decodes email successfully' do
       email = Mail::Message.new(nil)
 
@@ -221,7 +221,7 @@ RSpec.describe 'Mail quoted-printable transfer encoding patch and Unicode charac
     end
   end
 
-  context 'frozen email boy content with unsual body encoding' do
+  context 'frozen email body content with unusual body encoding' do
     let(:content) { fixture_file("emails/ios_default.eml") }
 
     it 'decodes email successfully' do

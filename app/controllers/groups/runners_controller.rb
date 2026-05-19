@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Groups::RunnersController < Groups::ApplicationController
-  # overrriden in EE
+  # overridden in EE
   def self.needs_authorize_read_runners
     [:index, :show]
   end

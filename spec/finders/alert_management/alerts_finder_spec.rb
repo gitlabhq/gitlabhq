@@ -20,7 +20,7 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
     end
 
     context 'user is developer' do
-      before do
+      before_all do
         project.add_developer(current_user)
       end
 
@@ -288,7 +288,7 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
   describe '.counts_by_status' do
     subject { described_class.counts_by_status(current_user, project, params) }
 
-    before do
+    before_all do
       project.add_developer(current_user)
     end
 

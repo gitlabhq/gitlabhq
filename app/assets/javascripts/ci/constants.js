@@ -65,3 +65,9 @@ export const DEFAULT_MANUAL_ACTIONS_LIMIT = 50;
 
 export const CI_FORM_POLLING_INTERVAL = 3000;
 export const CI_FORM_MAX_POLLING_TIME = 15000;
+
+export const PIPELINE_CREATION_STATUSES = {
+  failed: 'FAILED',
+  inProgress: 'IN_PROGRESS',
+  succeeded: 'SUCCEEDED',
+};

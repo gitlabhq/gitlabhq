@@ -1,0 +1,22 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
+import UserSelect from './components/user_select.vue';
+
+Vue.use(VueApollo);
+
+export function initFogbugzUserMap() {
+  const apolloProvider = new VueApollo({
+    defaultClient: createDefaultClient(),
+  });
+
+  return Array.from(document.querySelectorAll('.js-gitlab-user')).map(
+    (node) =>
+      new Vue({
+        el: node,
+        name: 'UserSelectRoot',
+        apolloProvider,
+        render: (h) => h(UserSelect, { props: { name: node.dataset.name } }),
+      }),
+  );
+}

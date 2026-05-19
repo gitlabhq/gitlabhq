@@ -15,7 +15,9 @@ RSpec.describe BulkImports::UserContributionsExportService, :clean_gitlab_redis_
 
   describe '#execute' do
     shared_examples 'exports cached user contributions as a relation' do
-      let(:cache_key) { "bulk_imports/#{portable.class.name}/#{portable.id}/user_contribution_ids" }
+      let(:cache_key) do
+        "offline_export/#{offline_export.id}/#{portable.class.name}/#{portable.id}/user_contribution_ids"
+      end
 
       before do
         Gitlab::Cache::Import::Caching.set_add(cache_key, cached_users.map(&:id))
@@ -51,6 +53,16 @@ RSpec.describe BulkImports::UserContributionsExportService, :clean_gitlab_redis_
     context 'when exporting a project' do
       it_behaves_like 'exports cached user contributions as a relation' do
         let!(:portable) { project }
+      end
+    end
+
+    context 'when offline_export_id is nil' do
+      subject(:service) { described_class.new(user.id, group, jid, nil) }
+
+      it 'does not export user contributions relation', :aggregate_failures do
+        expect(BulkImports::RelationExportService).not_to receive(:new)
+
+        service.execute
       end
     end
   end

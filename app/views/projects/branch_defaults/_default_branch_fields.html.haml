@@ -11,7 +11,7 @@
 %fieldset#default-branch-settings
   - if @project.empty_repo?
     .gl-text-subtle
-      = s_('ProjectSettings|A default branch cannot be chosen for an empty project.')
+      = s_('ProjectSettings|You cannot set a default branch for an empty project. Contact an Owner or administrator for help.')
   - else
     .form-group
       = f.label :default_branch, _("Default branch"), class: 'label-bold'

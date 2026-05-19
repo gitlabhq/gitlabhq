@@ -43,9 +43,27 @@ module Gitlab
         delegate :execute, :quote_table_name, :quote_column_name, to: :connection
 
         def find_sequence(table, column)
-          connection.select_value(<<~SQL, nil, [table, column])
+          sequence = connection.select_value(<<~SQL, nil, [table, column])
             SELECT pg_get_serial_sequence($1, $2)::regclass
           SQL
+
+          # pg_get_serial_sequence returns NULL when the sequence is not OWNED BY the column.
+          # Fall back to parsing the column default expression to recover the sequence name.
+          sequence || find_sequence_from_column_default(table, column)
+        end
+
+        def find_sequence_from_column_default(table, column)
+          default = connection.select_value(<<~SQL, nil, [table, column])
+            SELECT column_default
+            FROM information_schema.columns
+            WHERE table_schema = current_schema()
+              AND table_name = $1
+              AND column_name = $2
+          SQL
+
+          return unless default
+
+          default[/nextval\('([^']+)'/, 1]
         end
 
         def default_primary_key(table)

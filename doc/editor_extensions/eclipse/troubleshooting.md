@@ -8,8 +8,7 @@ title: Troubleshooting Eclipse
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
+- Tier: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
@@ -18,6 +17,7 @@ title: Troubleshooting Eclipse
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/163) from experiment to beta in GitLab 17.11.
+- Access to GitLab Duo Non-Agentic Chat removed for GitLab Duo Core customers on May 21, 2026 as part of GitLab 19.0, with a feature flag named `no_duo_classic_for_duo_core_users`. Enabled by default.
 
 {{< /history >}}
 
@@ -34,9 +34,9 @@ If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-
 1. Expand **Show View**, then select **Error Log**.
 1. Search for errors referencing the `gitlab-eclipse-plugin` plugins.
 
-## Locate the Workspace Log file
+## Locate the Eclipse workspace log file
 
-The Workspace log file, named `.log` is located in the directory `<your-eclipse-workspace>/.metadata`.
+The Eclipse workspace log file, named `.log` is located in the directory `<your-eclipse-workspace>/.metadata`.
 
 ## Enable GitLab Language Server debug logs
 
@@ -77,7 +77,7 @@ When creating a support request, provide the following information:
 1. Are you using a GitLab.com, GitLab Self-Managed, or GitLab Dedicated instance?
 1. Are you using a proxy?
 1. Are you using a self-signed certificate?
-1. The workspace logs.
+1. The Eclipse workspace logs.
 1. The Language Server debug logs.
 1. If applicable, a video or a screenshot of the issue.
 1. If applicable, the steps to reproduce the issue.

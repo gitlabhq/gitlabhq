@@ -118,7 +118,7 @@ export const I18N_AGENT_MODAL = {
   modalTitle: s__('ClusterAgents|Connect a Kubernetes cluster'),
   modalBody: s__('ClusterAgents|Create a new agent to register with GitLab.'),
   enableKasText: s__(
-    "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it.",
+    "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Relay (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it.",
   ),
   altText: s__('ClusterAgents|GitLab agent for Kubernetes'),
   registrationSuccess: s__('ClusterAgents|%{agentName} successfully created.'),

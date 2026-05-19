@@ -1,0 +1,4 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/raw/master/config/user_experience_slis/schema.json
+description: "Read the latest update on an issue"
+feature_category: "team_planning"
+urgency: "sync_fast"

@@ -81,7 +81,7 @@ after each security scan and provides confidence scores with explanations for ea
 
 [Agentic SAST Vulnerability Resolution](../vulnerabilities/agentic_vulnerability_resolution.md) automatically generates merge requests with context-aware code fixes for High and Critical severity SAST vulnerabilities. This agentic approach uses multi-shot reasoning to resolve vulnerabilities with minimal human intervention.
 
-For Ultimate tier customers with GitLab Duo Enterprise, agentic vulnerability resolution runs automatically
+For Ultimate tier customers, agentic vulnerability resolution runs automatically
 after each security scan when vulnerabilities meet specific conditions.
 
 ## Features
@@ -97,7 +97,7 @@ The following table lists the GitLab tiers in which each feature is available.
 | New findings in [merge request changes view](#merge-request-changes-view)                                                        | {{< no >}}        | {{< yes >}} |
 | [Vulnerability Management](../vulnerabilities/_index.md)                                                                         | {{< no >}}        | {{< yes >}} |
 | [GitLab Duo false positive detection](../vulnerabilities/false_positive_detection.md) (requires GitLab Duo add-on)               | {{< no >}}        | {{< yes >}} |
-| [Agentic SAST Vulnerability Resolution](../vulnerabilities/agentic_vulnerability_resolution.md) (requires GitLab Duo Enterprise) | {{< no >}}        | {{< yes >}} |
+| [Agentic SAST Vulnerability Resolution](../vulnerabilities/agentic_vulnerability_resolution.md) | {{< no >}}        | {{< yes >}} |
 | [UI-based scanner configuration](#enable-sast-by-using-the-ui)                                                                   | {{< no >}}        | {{< yes >}} |
 | [Ruleset customization](customize_rulesets.md)                                                                                   | {{< no >}}        | {{< yes >}} |
 | [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                                                              | {{< no >}}        | {{< yes >}} |
@@ -149,7 +149,7 @@ Prerequisites:
 To enable and configure SAST with customizations:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. If the latest pipeline for the default branch of the project has completed and produced valid
    SAST artifacts, select **Configure SAST**, otherwise select **Enable SAST** in the static
    application security testing (SAST) row.
@@ -179,7 +179,7 @@ Prerequisites:
 To enable and configure SAST with default settings:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. In the SAST section, select **Configure with a merge request**.
 
    The merge request page opens.
@@ -682,7 +682,7 @@ it by using [custom CI/CD variables](#available-cicd-variables).
 If your private Maven repository requires login credentials,
 you can use the `MAVEN_CLI_OPTS` CI/CD variable.
 
-For more information, see [how to use private Maven repositories](../dependency_scanning/_index.md#authenticate-with-a-private-maven-repository).
+For more information, see [how to use private Maven repositories](../dependency_scanning/legacy_dependency_scanning/_index.md#authenticate-with-a-private-maven-repository).
 
 ### Enabling Kubesec analyzer
 

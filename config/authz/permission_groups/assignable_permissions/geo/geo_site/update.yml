@@ -3,5 +3,7 @@ name: update_geo_site
 description: Grants the ability to update Geo sites
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - update_geo_site

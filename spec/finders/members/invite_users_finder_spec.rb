@@ -105,5 +105,57 @@ RSpec.describe Members::InviteUsersFinder, feature_category: :groups_and_project
 
       include_examples 'searchable'
     end
+
+    context 'when filtering ineligible service accounts' do
+      let_it_be(:subgroup) { create(:group, parent: root_group) }
+      let_it_be(:other_root) { create(:group) }
+      let_it_be(:subgroup_sa) { create(:user, :service_account, provisioned_by_group: subgroup) }
+      let_it_be(:project_in_root) { create(:project, namespace: root_group) }
+      let_it_be(:project_sa) do
+        create(:user, :service_account).tap do |user|
+          user.user_detail.update!(provisioned_by_project_id: project_in_root.id)
+        end
+      end
+
+      context 'when inviting to the root group' do
+        let_it_be(:resource) { root_group }
+
+        it 'excludes subgroup-provisioned SAs (cannot escape upward)' do
+          expect(finder.execute).not_to include(subgroup_sa)
+        end
+
+        it 'excludes project-provisioned SAs (cannot escape to a group)' do
+          expect(finder.execute).not_to include(project_sa)
+        end
+      end
+
+      context 'when inviting to an unrelated group' do
+        let_it_be(:resource) { other_root }
+
+        before_all do
+          other_root.add_owner(current_user)
+        end
+
+        it 'excludes subgroup-provisioned SAs from other hierarchies' do
+          expect(finder.execute).not_to include(subgroup_sa)
+        end
+      end
+
+      context 'when inviting to the origin subgroup' do
+        let_it_be(:resource) { subgroup }
+
+        it 'includes the subgroup-provisioned SA' do
+          expect(finder.execute).to include(subgroup_sa)
+        end
+      end
+
+      context 'when inviting to the origin project' do
+        let_it_be(:resource) { project_in_root }
+
+        it 'includes the project-provisioned SA' do
+          expect(finder.execute).to include(project_sa)
+        end
+      end
+    end
   end
 end

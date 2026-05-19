@@ -33,6 +33,14 @@ GitLab Duo and SDLC trends measure the impact of GitLab Duo on software developm
 This dashboard provides visibility into key SDLC metrics in the context of AI adoption for projects or groups.
 You can use the dashboard to measure which metrics have improved from your AI investments.
 
+The metrics display a trend indicator showing the percentage change compared to the previous time period.
+If no data is available for the previous time period, the percentage change displays **n/a**.
+
+Values in green indicate positive changes, and values in red indicate negative changes.
+The icons next to the values indicate upward trends {{< icon name="trend-up" >}} or downward trends {{< icon name="trend-down" >}}.
+
+Upward trends are positive (green) for some metrics (like [deployment frequency](dora_metrics.md#deployment-frequency)), but negative (red) for others (like [mean time to merge](merge_request_analytics.md)).
+
 Use GitLab Duo and SDLC trends to:
 
 - Track SDLC trends in relation to your GitLab Duo journey: Examine how trends in GitLab Duo usage in a project or group influence other crucial productivity metrics such as mean time to merge and CI/CD statistics. GitLab Duo usage metrics are displayed for the last six months, including the current one.
@@ -43,8 +51,6 @@ see [GitLab Duo add-ons](../../subscriptions/subscription-add-ons.md).
 
 To learn more about GitLab Duo and SDLC trends, see the blog post
 [Developing GitLab Duo: AI impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/).
-
-For a click-through demo, see the [GitLab Duo and SDLC trends product tour](https://gitlab.navattic.com/ai-impact).
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [GitLab Duo AI Impact Dashboard](https://youtu.be/FxSWX64aUOE?si=7Yfc6xHm63c3BRwn).
@@ -58,25 +64,19 @@ For an overview, see [GitLab Duo AI Impact Dashboard](https://youtu.be/FxSWX64aU
 - Assigned GitLab Duo seat engagement metric [replaced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587298) with GitLab Duo users in GitLab 18.10.
 - GitLab Duo Code Suggestions usage metric [changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/592813) from percentage rate to absolute user count in GitLab 18.10.
 - Code Suggestions acceptance rate metric [replaced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587300) with GitLab Duo agent/flow users in GitLab 18.11.
+- Trend indicators [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590535) in GitLab 19.0.
+- Code Suggestions users metric [replaced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587299) with GitLab Duo power users in GitLab 19.0.
 
 {{< /history >}}
 
 - **GitLab Duo users**: Number of users who used at least one GitLab Duo or GitLab Duo Agent Platform feature in the last 30 days.
-- **Code Suggestions users**: Number of users who used Code Suggestions in the last 30 days.
-  For calculating Code Suggestions metrics, GitLab collects data only from code editor extensions.
+- **GitLab Duo power users**: Number of users who used at least three GitLab Duo features in the last 30 days.
 - **GitLab Duo agent/flow users**: Number of users who used at least one GitLab Duo agent or flow in the last 30 days.
 - **GitLab Duo Agent chat sessions**: Number of chat sessions initiated in GitLab Duo Agent Platform in the last 30 days.
 
 ## Metric trends
 
 The **Metric trends** table displays metrics for the last six months, with monthly values, percentage changes in the past six months, and trend sparklines.
-
-The change percentage compares the first full month of available statistics to the last completed month, excluding the current month.
-
-Values in green indicate positive changes, and values in red indicate negative changes.
-The icons next to the values indicate upward trends {{< icon name="trend-up" >}} or downward trends {{< icon name="trend-down" >}}.
-
-Upward trends are positive (green) for some metrics (like [deployment frequency](dora_metrics.md#deployment-frequency)), but negative (red) for others (like [mean time to merge](merge_request_analytics.md)).
 
 ### GitLab Duo usage metrics
 
@@ -122,6 +122,19 @@ The Pipeline metrics table displays metrics for the pipelines run in the selecte
 - **Median duration**: Median duration (in minutes) of a pipeline run.
 - **Success rate**: Percentage of pipeline runs that completed successfully.
 - **Failure rate**: Percentage of pipeline runs that completed with failures.
+
+## Pipelines using GitLab Duo Agent Platform
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587303) in GitLab 19.0.
+
+{{< /history >}}
+
+The **Pipelines using GitLab Duo Agent Platform** chart displays the number of pipelines run over the last 180 days, aggregated by month. The chart shows:
+
+- **With Agent Platform**: Number of pipelines triggered by GitLab Duo Agent Platform.
+- **All pipelines**: Total number of pipelines run in the namespace.
 
 ## GitLab Duo Code Suggestions acceptance by language
 
@@ -218,6 +231,7 @@ The user metrics tables display usage of different GitLab Duo features by indivi
 - **GitLab Duo Code Review usage by user**: Number of code reviews requested as the merge request author from GitLab Duo, and number of reactions (:thumbsup: and :thumbsdown:) to code review comments.
 - **GitLab Duo Root Cause Analysis usage by user**: Number of troubleshooting requests from GitLab Duo.
 - **GitLab Duo usage by user**: Number of GitLab Duo events made by the user.
+- **Flows usage by user**: Number of times a user triggers a specific flow.
 
 ## View GitLab Duo and SDLC trends
 
@@ -229,7 +243,7 @@ Prerequisites:
 - For GitLab Self-Managed, [ClickHouse for contribution analytics](../group/contribution_analytics/_index.md#contribution-analytics-with-clickhouse) must be configured.
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Analyze** > **Analytics Dashboards**.
+1. In the left sidebar, select **Analyze** > **Analytics dashboards**.
 1. Select **GitLab Duo and SDLC trends**.
 
 To retrieve GitLab Duo and SDLC metrics, you can also use the `AiMetrics`, `AiUserMetrics`, and `AiUsageData` [GraphQL APIs](../../api/graphql/duo_and_sdlc_trends.md).

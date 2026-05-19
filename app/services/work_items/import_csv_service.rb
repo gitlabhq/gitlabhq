@@ -49,15 +49,11 @@ module WorkItems
     end
 
     def match_work_item_type(work_item_type)
-      available_work_item_types[work_item_type&.downcase]
+      available_work_item_types[work_item_type&.strip&.downcase]
     end
 
-    # todo: This should be updated once we can determine available work item types based on namespace,
-    #       see https://gitlab.com/gitlab-org/gitlab/-/issues/524828
     def available_work_item_types
-      # TODO: When we add the types filter in the provider, we can remove the reject.
-      # See https://gitlab.com/groups/gitlab-org/-/work_items/20287
-      ::WorkItems::TypesFramework::Provider.new(project).all.reject { |wit| wit.base_type == :epic }
+      ::WorkItems::TypesFramework::Provider.new(project).all
         .index_by(&:name).with_indifferent_access.transform_keys(&:strip).transform_keys(&:downcase)
     end
     strong_memoize_attr :available_work_item_types
@@ -101,8 +97,13 @@ module WorkItems
 
     def work_item_type_allowed?(work_item_type)
       strong_memoize_with(:work_item_type_allowed, work_item_type) do
-        # .tr is needed for work items with spaces in their names (e.g. Key Result)
-        create_issue_type_allowed?(project, work_item_type.tr(' ', '_'))
+        wit = available_work_item_types[work_item_type]
+        next false unless wit
+        next false unless wit.enabled?
+
+        # Use the type's base_type for the permission check so that renamed or custom
+        # types (whose names are not system-defined base type identifiers) resolve correctly.
+        create_issue_type_allowed?(project, wit.base_type.to_s)
       end
     end
 

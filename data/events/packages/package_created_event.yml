@@ -1,0 +1,4 @@
+---
+event: Packages::PackageCreatedEvent
+description: Published after a package is created in the package registry.
+feature_category: package_registry

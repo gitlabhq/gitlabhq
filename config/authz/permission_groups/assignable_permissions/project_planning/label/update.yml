@@ -1,8 +1,10 @@
 ---
 name: update_label
 description: Grants the ability to update labels
-permissions:
-  - update_label
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_label

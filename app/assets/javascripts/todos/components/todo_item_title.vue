@@ -2,12 +2,12 @@
 import { GlIcon } from '@gitlab/ui';
 import StatusBadge from '~/issuable/components/status_badge.vue';
 import { STATUS_OPEN, TYPE_ALERT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import { s__ } from '~/locale';
 import {
   TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED,
   TODO_TARGET_TYPE_ALERT,
   TODO_TARGET_TYPE_DESIGN,
-  TODO_TARGET_TYPE_EPIC,
   TODO_TARGET_TYPE_ISSUE,
   TODO_TARGET_TYPE_MERGE_REQUEST,
   TODO_TARGET_TYPE_PIPELINE,
@@ -19,6 +19,7 @@ export default {
   components: {
     StatusBadge,
     GlIcon,
+    WorkItemTypeIcon,
   },
   props: {
     todo: {
@@ -38,6 +39,15 @@ export default {
     },
     isDesign() {
       return this.todo.targetType === TODO_TARGET_TYPE_DESIGN;
+    },
+    isWorkItem() {
+      return this.todo.targetEntity?.workItemType;
+    },
+    workItemTypeName() {
+      return this.todo.targetEntity?.workItemType?.name;
+    },
+    workItemTypeIconName() {
+      return this.todo.targetEntity?.workItemType?.iconName;
     },
     isMemberAccessRequestAction() {
       return this.todo.action === TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED;
@@ -140,8 +150,6 @@ export default {
       if (this.isDuoActionType) return 'book';
 
       switch (this.todo.targetType) {
-        case TODO_TARGET_TYPE_ISSUE:
-          return 'issues';
         case TODO_TARGET_TYPE_MERGE_REQUEST:
           return 'merge-request';
         case TODO_TARGET_TYPE_PIPELINE:
@@ -152,8 +160,6 @@ export default {
           return 'media';
         case TODO_TARGET_TYPE_SSH_KEY:
           return 'token';
-        case TODO_TARGET_TYPE_EPIC:
-          return 'epic';
         default:
           return null;
       }
@@ -165,7 +171,15 @@ export default {
 <template>
   <div>
     <status-badge v-if="showStatusBadge" :issuable-type="issuableType" :state="issuableState" />
-    <gl-icon v-if="icon" :name="icon" class="gl-shrink-0" :size="12" />
+    <work-item-type-icon
+      v-if="isWorkItem"
+      :work-item-type="workItemTypeName"
+      :type-icon-name="workItemTypeIconName"
+      icon-class="!gl-w-4 !gl-h-4 gl-flex"
+      show-tooltip-on-hover
+      icon-variant="subtle"
+    />
+    <gl-icon v-else-if="icon" :name="icon" class="gl-shrink-0" :size="12" />
     <span class="gl-overflow-hidden gl-text-ellipsis" data-testid="todo-title">
       {{ todoTitle }}
     </span>

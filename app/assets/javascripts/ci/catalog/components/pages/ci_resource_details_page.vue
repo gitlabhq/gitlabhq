@@ -1,5 +1,6 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
+import { debounce } from 'lodash-es';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
@@ -9,6 +10,8 @@ import getCatalogCiResourceSharedData from '../../graphql/queries/get_ci_catalog
 import getCiCatalogResourceVersions from '../../graphql/queries/get_ci_catalog_resource_versions.query.graphql';
 import CiResourceDetails from '../details/ci_resource_details.vue';
 import CiResourceHeader from '../details/ci_resource_header.vue';
+
+const SEARCH_DEBOUNCE_MS = 300;
 
 export default {
   name: 'CiResourceDetailsPage',
@@ -25,6 +28,8 @@ export default {
       versions: [],
       initialVersionId: null,
       selectedVersion: null,
+      latestVersionName: null,
+      searchTerm: '',
     };
   },
   apollo: {
@@ -33,6 +38,7 @@ export default {
       variables() {
         return {
           fullPath: this.cleanFullPath,
+          search: this.searchTerm,
         };
       },
       update(data) {
@@ -43,19 +49,19 @@ export default {
           createdAt: formatDate(version.createdAt, ISO_SHORT_FORMAT),
         }));
 
-        if (formatted.length > 0) {
+        if (formatted.length > 0 && !this.selectedVersion) {
           const versionParam = this.$route.query.version;
           const versionFromUrl = formatted.find((v) => v.text === versionParam);
+          const emptyVersion =
+            versionParam && !versionFromUrl ? { text: versionParam, value: '0' } : undefined;
 
-          const versionToSelect = versionFromUrl || formatted[0];
+          const versionToSelect = versionFromUrl || emptyVersion || formatted[0];
 
           this.initialVersionId = versionToSelect.value;
           this.selectedVersion = versionToSelect.text;
+          this.latestVersionName = formatted[0].text;
 
-          if (versionParam && !versionFromUrl) {
-            const { version, ...restQuery } = this.$route.query;
-            this.$router.replace({ query: restQuery });
-          }
+          return [...formatted, emptyVersion].filter(Boolean);
         }
 
         return formatted;
@@ -90,11 +96,28 @@ export default {
     },
     isLoadingData() {
       return (
-        this.$apollo.queries.versions.loading || this.$apollo.queries.resourceSharedData.loading
+        (this.$apollo.queries.versions.loading && !this.versions.length) ||
+        this.$apollo.queries.resourceSharedData.loading
       );
+    },
+    isSearchingVersions() {
+      return this.$apollo.queries.versions.loading;
     },
     version() {
       return this.selectedVersion || this.resourceSharedData?.versions?.nodes[0]?.name || '';
+    },
+  },
+  created() {
+    this.debouncedSearch = debounce((searchTerm) => {
+      this.searchTerm = searchTerm;
+    }, SEARCH_DEBOUNCE_MS);
+  },
+  beforeDestroy() {
+    this.debouncedSearch?.cancel();
+  },
+  methods: {
+    onVersionSearch(searchTerm) {
+      this.debouncedSearch(searchTerm);
     },
   },
   i18n: {
@@ -118,10 +141,13 @@ export default {
   <div v-else>
     <ci-resource-header
       :is-loading-data="isLoadingData"
+      :is-searching-versions="isSearchingVersions"
       :resource="resourceSharedData"
       :versions="versions"
       :initial-version-id="initialVersionId"
+      :latest-version-name="latestVersionName"
       @version-selected="selectedVersion = $event"
+      @version-search="onVersionSearch"
     />
     <ci-resource-details v-if="!isLoadingData" :resource-path="cleanFullPath" :version="version" />
   </div>

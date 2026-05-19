@@ -29,14 +29,6 @@ module Bitbucket
     private
 
     def api_connection?
-      app_password_connection? || api_token_connection?
-    end
-
-    def app_password_connection?
-      options.key?(:username) && options.key?(:app_password)
-    end
-
-    def api_token_connection?
       options.key?(:email) && options.key?(:api_token)
     end
   end

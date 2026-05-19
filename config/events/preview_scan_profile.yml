@@ -1,0 +1,17 @@
+---
+description: User previewed a scan profile
+internal_events: true
+status: active
+action: preview_scan_profile
+identifiers:
+- user
+product_group: security_platform_management
+product_categories:
+- security_asset_inventories
+- security_testing_configuration
+milestone: '19.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223115
+tiers:
+- free
+- premium
+- ultimate

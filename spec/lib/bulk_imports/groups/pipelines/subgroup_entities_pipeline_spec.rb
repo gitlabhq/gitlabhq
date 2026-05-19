@@ -31,7 +31,7 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, feature
     end
 
     it 'creates entities for the subgroups' do
-      expect { subject.run }.to change(BulkImports::Entity, :count).by(1)
+      expect { subject.run }.to change { BulkImports::Entity.count }.by(1)
 
       subgroup_entity = BulkImports::Entity.last
 
@@ -42,8 +42,8 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, feature
     end
 
     it 'does not create duplicate entities on rerun' do
-      expect { subject.run }.to change(BulkImports::Entity, :count).by(1)
-      expect { subject.run }.not_to change(BulkImports::Entity, :count)
+      expect { subject.run }.to change { BulkImports::Entity.count }.by(1)
+      expect { subject.run }.not_to change { BulkImports::Entity.count }
     end
   end
 
@@ -59,7 +59,7 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, feature
         destination_namespace: parent_entity.group.full_path,
         parent_id: parent_entity.id
       }
-      expect { subject.load(context, data) }.to change(BulkImports::Entity, :count).by(1)
+      expect { subject.load(context, data) }.to change { BulkImports::Entity.count }.by(1)
       subgroup_entity = BulkImports::Entity.last
 
       expect(subgroup_entity.source_full_path).to eq 'parent/subgroup'

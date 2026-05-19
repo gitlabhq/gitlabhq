@@ -1348,7 +1348,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         end
       end
 
-      context 'with a non-existant milestone' do
+      context 'with a non-existent milestone' do
         let(:milestone_params) { { milestones: ['xyz'] } }
 
         it 'returns a 400 error as milestone not found' do

@@ -57,6 +57,7 @@ module RuboCop
 
         MSG = 'Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.'
         MISSING_TYPE = 'Entity field is missing type declaration. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.'
+        CLASS_NAME_REGEX = /\A(::)?API::Entities::/
 
         RESTRICT_ON_SEND = %i[expose].freeze
 
@@ -110,7 +111,25 @@ module RuboCop
         end
 
         def invalid_type?(node)
+          return false if api_entity_string_coercion?(node)
+
           !node.str_type? || !valid_string_type?(node)
+        end
+
+        def api_entity_string_coercion?(node)
+          return false unless node.send_type?
+
+          # SomeEntity.to_s or SomeEntity.name
+          if node.receiver&.const_type? && node.receiver.source.match?(CLASS_NAME_REGEX)
+            return node.method_name.in?(%i[to_s name])
+          end
+
+          # String(SomeEntity)
+          node.method?(:String) &&
+            node.first_argument.const_type? &&
+            node.first_argument.source.match?(CLASS_NAME_REGEX) &&
+            node.arguments.size == 1 &&
+            node.receiver.nil?
         end
 
         def valid_string_type?(node)
@@ -133,7 +152,7 @@ module RuboCop
             return const_name if VALID_TYPES.include?(const_name)
 
             # Handle API::Entities::SomeType -> 'API::Entities::SomeType'
-            return node.source if node.source.match?(/\A(::)?API::Entities::/)
+            return node.source if node.source.match?(CLASS_NAME_REGEX)
           end
 
           nil

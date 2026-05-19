@@ -1,0 +1,9 @@
+---
+name: retry_external_status_check
+description: Grants the ability to retry external status checks
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - retry_external_status_check

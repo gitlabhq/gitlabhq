@@ -24,7 +24,7 @@ In this tutorial, you'll learn how to:
 
 > [!note]
 > The Tanuki Shop application in this tutorial doesn't require authentication. If your application requires login,
-> see [DAST authentication](../../../application_security/dast/browser/configuration/authentication.md).
+> see [DAST authentication](configuration/authentication.md).
 
 ## Before you begin
 
@@ -174,7 +174,7 @@ After completing this tutorial, you can:
 
 - Configure [advanced DAST settings](configuration/customize_settings.md) for your specific requirements.
 - Set up [on-demand DAST scans](../on-demand_scan.md) for ad-hoc testing.
-- Integrate DAST with [vulnerability management workflows](../../../application_security/vulnerabilities/_index.md).
+- Integrate DAST with [vulnerability management workflows](../../vulnerabilities/_index.md).
 - Explore the [DAST demos repository](https://gitlab.com/gitlab-org/security-products/demos/dast/) for more examples.
 
 ## Troubleshooting
@@ -211,6 +211,6 @@ To resolve this issue:
 ## Related topics
 
 - [DAST configuration reference](configuration/customize_settings.md)
-- [Security policies](../../../application_security/policies/_index.md)
-- [Vulnerability management](../../../application_security/vulnerabilities/_index.md)
+- [Security policies](../../policies/_index.md)
+- [Vulnerability management](../../vulnerabilities/_index.md)
 - [Application security testing solutions](https://about.gitlab.com/solutions/application-security-testing/)

@@ -4,7 +4,7 @@ module Gitlab
   module Slug
     class Path
       LEADING_DASHES = /\A-+/
-      # Eextract local email part if given an email. Will remove @ sign and everything following it.
+      # Extract local email part if given an email. Will remove @ sign and everything following it.
       EXTRACT_LOCAL_EMAIL_PART = /@.*\z/
       FORBIDDEN_CHARACTERS = /[^a-zA-Z0-9_\-.]/
       PATH_TRAILING_VIOLATIONS = %w[.git .atom .].freeze

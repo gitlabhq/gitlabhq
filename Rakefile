@@ -19,5 +19,7 @@ Gitlab::Application.load_tasks
 
 Knapsack.load_tasks if defined?(Knapsack)
 
-require 'gitlab-dangerfiles'
-Gitlab::Dangerfiles.load_tasks
+if Gem.loaded_specs.key?('gitlab-dangerfiles')
+  require 'gitlab-dangerfiles'
+  Gitlab::Dangerfiles.load_tasks
+end

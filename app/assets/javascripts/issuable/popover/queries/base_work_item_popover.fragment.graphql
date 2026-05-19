@@ -8,6 +8,7 @@ fragment BaseWorkItemPopover on WorkItem {
   fullReference: reference(full: true)
   state
   title
+  titleHtml
   workItemType {
     id
     name

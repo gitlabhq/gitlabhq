@@ -77,7 +77,7 @@ describe('ClustersViewAllComponent', () => {
 
   describe('when both agents and clusters are loaded', () => {
     beforeEach(() => {
-      findAgentsComponent().vm.$emit('onAgentsLoad', 6);
+      findAgentsComponent().vm.$emit('on-agents-load', 6);
     });
 
     it("shouldn't show the loading icon", () => {
@@ -110,18 +110,18 @@ describe('ClustersViewAllComponent', () => {
       expect(findAgentsComponent().props('defaultBranchName')).toBe(defaultBranchName);
     });
 
-    it('should emit `kasDisabled` event when received from Agents component', async () => {
-      findAgentsComponent().vm.$emit('kasDisabled', true);
+    it('should emit `kas-disabled` event when received from Agents component', async () => {
+      findAgentsComponent().vm.$emit('kas-disabled', true);
       await nextTick();
 
-      expect(wrapper.emitted('kasDisabled')).toEqual([[true]]);
+      expect(wrapper.emitted('kas-disabled')).toEqual([[true]]);
     });
 
-    it('should emit `registerAgent` event when received from Agents component', async () => {
-      findAgentsComponent().vm.$emit('registerAgent', 'new-agent-name');
+    it('should emit `register-agent` event when received from Agents component', async () => {
+      findAgentsComponent().vm.$emit('register-agent', 'new-agent-name');
       await nextTick();
 
-      expect(wrapper.emitted('registerAgent')).toEqual([['new-agent-name']]);
+      expect(wrapper.emitted('register-agent')).toEqual([['new-agent-name']]);
     });
 
     describe('when there are no agents', () => {
@@ -135,7 +135,7 @@ describe('ClustersViewAllComponent', () => {
       const agentsNumber = 7;
 
       beforeEach(() => {
-        findAgentsComponent().vm.$emit('onAgentsLoad', agentsNumber);
+        findAgentsComponent().vm.$emit('on-agents-load', agentsNumber);
       });
 
       it('should show the correct title', () => {
@@ -158,7 +158,7 @@ describe('ClustersViewAllComponent', () => {
         });
 
         it('should trigger tab change', () => {
-          expect(wrapper.emitted('changeTab')).toEqual([[AGENT]]);
+          expect(wrapper.emitted('change-tab')).toEqual([[AGENT]]);
         });
       });
     });
@@ -210,7 +210,7 @@ describe('ClustersViewAllComponent', () => {
         });
 
         it('should trigger tab change', () => {
-          expect(wrapper.emitted('changeTab')).toEqual([[CERTIFICATE_BASED]]);
+          expect(wrapper.emitted('change-tab')).toEqual([[CERTIFICATE_BASED]]);
         });
       });
     });

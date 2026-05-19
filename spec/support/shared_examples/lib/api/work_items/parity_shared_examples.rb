@@ -67,25 +67,24 @@ RSpec.shared_examples 'work item API field parity' do
         award_emoji
         crm_contacts
         current_user_todos
-        designs
         development
         email_participants
-        error_tracking
-        hierarchy
         linked_items
         linked_resources
         notes
         notifications
         participants
-        time_tracking
       ]).merge(extra_graphql_feature_exceptions)
     end
 
     # REST currently reuses generic entities for the assignee and milestone widgets, so their
     # field sets don't match the dedicated GraphQL widget types. Skip them until REST exposes
     # feature-specific entities and the payloads can be aligned.
+    # error_tracking exposes only identifier, stack_trace and status require external API calls.
+    # hierarchy exposes only parent / has_parent. children, ancestors, and rolled-up counts
+    # require separate paginated endpoints.
     let(:skipped_feature_comparison) do
-      Set.new(%w[assignees milestone]).merge(extra_skipped_feature_comparison)
+      Set.new(%w[assignees milestone error_tracking hierarchy]).merge(extra_skipped_feature_comparison)
     end
 
     it 'keeps feature payloads aligned with known differences' do
@@ -175,7 +174,7 @@ RSpec.shared_examples 'work item API field parity' do
 end
 
 RSpec.shared_examples 'work item API create parity' do
-  let(:widget_exceptions) { Set.new(%w[crm_contacts_widget]) }
+  let(:widget_exceptions) { Set.new }
 
   # GraphQL mutation args not yet implemented in the REST API
   let(:create_parity_wip) { %w[discussions_to_resolve] }
@@ -198,6 +197,12 @@ RSpec.shared_examples 'work item API create parity' do
   let(:widget_field_exceptions) do
     { 'start_and_due_date_widget' => %w[is_fixed] }
   end
+
+  # Widgets whose REST/GraphQL input fields are structurally incompatible (e.g. REST uses
+  # separate integer IDs where GraphQL uses a single GlobalID) and therefore cannot be
+  # aligned via `widget_field_exceptions`. Add the widget name (e.g. 'status_widget') to
+  # skip the field-name comparison for that widget entirely.
+  let(:widget_field_skipped) { Set.new }
 
   let(:create_route) do
     API::API.routes.find do |r|
@@ -247,7 +252,7 @@ RSpec.shared_examples 'work item API create parity' do
     it 'keeps widget field names in sync with known exceptions', :aggregate_failures do
       shared_widgets = rest_widget_params & graphql_widget_args.keys.to_set
 
-      shared_widgets.each do |widget_key|
+      (shared_widgets - widget_field_skipped).each do |widget_key|
         graphql_fields = graphql_widget_args[widget_key].type.unwrap.arguments.keys
           .map { |k| k.to_s.underscore }.to_set
         feature_key = widget_key.delete_suffix('_widget')
@@ -267,12 +272,12 @@ end
 RSpec.shared_examples 'work item API filter parity' do
   # These are filters that we have not yet migrated to the REST API. See EE parity_spec where we override them.
   let(:filter_parity_wip) do
-    %w[exclude_group_work_items exclude_projects timeframe]
+    %w[exclude_group_work_items exclude_projects]
   end
 
   let(:not_filter_parity_wip) { [] }
   let(:or_filter_parity_wip) { [] }
-  let(:parity_wip) { Set.new(%w[in search]).merge(filter_parity_wip).to_a }
+  let(:parity_wip) { filter_parity_wip }
 
   let(:graphql_filter_params) do
     # instad of `iid` we have `iids`
@@ -309,7 +314,12 @@ RSpec.shared_examples 'work item API filter parity' do
   end
 
   let(:rest_filter_params) do
-    rest_params.reject { |key| key.starts_with?("or") || key.starts_with?("not") }
+    # Normalize nested bracket params (e.g. `timeframe[start]` -> `timeframe`) so that
+    # Hash-typed filter params compare correctly against single GraphQL argument names.
+    rest_params
+      .reject { |key| key.starts_with?("or") || key.starts_with?("not") }
+      .map { |key| key.split('[').first }
+      .uniq
   end
 
   let(:rest_not_filter_params) do

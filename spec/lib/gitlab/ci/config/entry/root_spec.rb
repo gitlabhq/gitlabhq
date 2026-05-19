@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Root do
-  let(:user) {}
-  let(:project) {}
+  let(:user) { nil }
+  let(:project) { nil }
   let(:logger) { Gitlab::Ci::Pipeline::Logger.new(project: project) }
   let(:root) { described_class.new(hash, user: user, project: project, logger: logger) }
 

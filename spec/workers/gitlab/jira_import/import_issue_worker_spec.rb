@@ -6,7 +6,7 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:label) { create(:label, project: project) }
-  let_it_be(:issue_type) { create(:work_item_type, :issue) }
+  let(:issue_type) { build(:work_item_system_defined_type, :issue) }
 
   let(:some_key) { 'some-key' }
 

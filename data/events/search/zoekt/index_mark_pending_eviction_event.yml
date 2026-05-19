@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::IndexMarkPendingEvictionEvent
+description: Published when Zoekt indices that meet the criteria to be marked as pending
+  eviction are detected, so they can be transitioned to the pending-eviction state.
+feature_category: global_search
+ee_only: true

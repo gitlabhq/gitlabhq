@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Highlight do
       end
 
       it 'returns plain version for long content' do
-        expect(result).to eq(%[<span id="LC1" class="line" lang="">(make-pathname :defaults name</span>\n<span id="LC2" class="line" lang="">:type "assem")</span>])
+        expect(result).to eq(%[<span id="LC1" class="line">(make-pathname :defaults name</span>\n<span id="LC2" class="line">:type "assem")</span>])
       end
     end
 

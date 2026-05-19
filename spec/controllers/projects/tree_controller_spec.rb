@@ -396,5 +396,24 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
         end
       end
     end
+
+    describe 'when gitaly is unavailable' do
+      let(:params) do
+        {
+          namespace_id: project.namespace.to_param, project_id: project, id: 'master'
+        }
+      end
+
+      before do
+        allow(Gitlab::Git::Commit).to receive(:find)
+          .and_raise(Gitlab::Git::CommandError, 'Gitaly unavailable')
+      end
+
+      it 'returns 503' do
+        get :show, params: params
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+      end
+    end
   end
 end

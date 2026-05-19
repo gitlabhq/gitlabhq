@@ -29,7 +29,7 @@ Prerequisites:
 To add a group README:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. In the **Group README** section, select **Add README**. This action creates a new project `gitlab-profile` that contains the `README.md` file.
 1. On the prompt for creating a README, select **Create and add README**. You're redirected to the Web IDE, where a README file is created.
 1. In the Web IDE, edit and commit the `README.md` file.
@@ -67,7 +67,7 @@ create a new group and transfer projects to it instead.
 To change your group path (group URL):
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. Under **Change group URL**, enter a new name.
 1. Select **Change group URL**.
@@ -125,7 +125,7 @@ Prerequisites:
 To archive a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Archive group** section, select **Archive**.
 
@@ -173,6 +173,12 @@ This action is also available on other list pages.
 
 ## Transfer a group
 
+{{< history >}}
+
+- Asynchronous transfers for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594575) in GitLab 18.11 [with a feature flag](../../administration/feature_flags/_index.md) named `groups_and_projects_async_transfer`. Disabled by default.
+
+{{< /history >}}
+
 Transfer a group to move it from one location to another in the same GitLab instance. You can:
 
 - Transfer a subgroup to a different parent group.
@@ -181,8 +187,8 @@ Transfer a group to move it from one location to another in the same GitLab inst
 
 Prerequisites:
 
-- The Owner role for the source and target groups.
-- Enable subgroup creation in the target group (if applicable).
+- The Owner role for the source and destination groups.
+- Enable subgroup creation in the destination group (if applicable).
 
 > [!note]
 > You cannot transfer a group if it's archived or pending deletion.
@@ -190,11 +196,17 @@ Prerequisites:
 To transfer a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. Select **Transfer group**.
 1. From the dropdown list, select the group.
 1. Select **Transfer group**.
+
+After you confirm the transfer:
+
+- The group is transferred asynchronously.
+- A confirmation email is sent after the transfer completes or fails.
+- The old group URL is redirected to the new group URL. Refresh the page to see the new group URL. For large groups, you must wait until the transfer completes before you can view the group under the destination namespace.
 
 After you transfer a group, make sure you:
 
@@ -227,13 +239,13 @@ Membership restrictions:
 
 Visibility and access restrictions:
 
-- If a target parent group has lower visibility, the visibility settings of all subgroups and projects
-  are adjusted to match the visibility of the target parent group.
+- If a destination parent group has lower visibility, the visibility settings of all subgroups and projects
+  are adjusted to match the visibility of the destination parent group.
 - Repository URLs change. You must update your local repositories to point to the new location. For more information, see [Repository page changes](../project/repository/_index.md#repository-path-changes).
 
 Package and container registry restrictions:
 
-- Transfers fail if the target group is a top-level group where npm packages that follow the [npm naming convention](../packages/npm_registry/_index.md#naming-convention) exist in any of the projects in the group, or in any of its subgroups.
+- Transfers fail if the destination group is a top-level group where npm packages that follow the [npm naming convention](../packages/npm_registry/_index.md#naming-convention) exist in any of the projects in the group, or in any of its subgroups.
 - Existing packages that use a group endpoint must be updated per the package's steps for setting up the group-level endpoint.
 - Existing package names must be updated if the package uses an instance-level endpoint and the group was moved to another top-level group.
 
@@ -248,7 +260,7 @@ You can disable all email notifications related to the group, which includes its
 To disable email notifications:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Enable email notifications** checkbox.
 
@@ -274,7 +286,7 @@ Prerequisites:
 To disable diff previews for all projects in a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Clear **Include diff previews**.
 1. Select **Save changes**.
@@ -296,12 +308,12 @@ The following group and project members receive notification emails about access
   - In GitLab 17.7 and later, members who inherit the Owner role for the group, if that group or its parent group has the appropriate setting configured.
 - For project access tokens:
   - Members of the project with the Maintainer or Owner role.
-  - In GitLab 17.7 and later, project members who have inherited the Owner or Maintainer role due to the project belonging to a group, if that group or its parent group has the appropriate setting configured.
+  - In GitLab 17.7 and later, project members who have inherited the Maintainer or Owner role due to the project belonging to a group, if that group or its parent group has the appropriate setting configured.
 
 You can enable notifications to inherited members of a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Expiry notification emails about group and project access tokens within this group should be sent to:**, select **All direct and inherited members of the group or project**.
 1. Optional. Check the **Enforce for all subgroups** checkbox.
@@ -328,7 +340,7 @@ before a group token expires. By default, these webhooks trigger 7 days before a
 To configure these webhooks to also trigger 60 days and 30 days before a token expires:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select the **Add additional webhook triggers for group access token expiration** checkbox.
 1. Select **Save changes**.
@@ -346,7 +358,7 @@ These visual cues are particularly helpful for groups with many users.
 To disable group mentions:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Group mentions are disabled**.
 1. Select **Save changes**.
@@ -378,7 +390,7 @@ Prerequisites:
 To restrict personal snippets for enterprise users:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Allow personal snippets** checkbox.
 1. Select **Save changes**.
@@ -408,7 +420,7 @@ Prerequisites:
 To prevent invitations to a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Disable Group/Project members invitation**.
 1. Select **Save changes**.
@@ -515,6 +527,22 @@ Additionally, restricted access might block the standard non-overage flows:
 - Service bots that are updated or added to a billable role are incorrectly blocked.
 - Inviting or updating existing billable users through email is blocked unexpectedly.
 
+### Dormant enterprise user reactivation
+
+When restricted access is active and no seats are available, dormant
+[enterprise users](../enterprise_user/_index.md) who attempt to sign back in are
+set to [pending approval](#approve-pending-members-for-a-group) instead of being reactivated. Their existing group and
+project memberships are preserved. A group Owner can approve the users when seats
+become available.
+
+Non-enterprise dormant members have their group membership removed instead of
+being deactivated. When they rejoin through SAML, SCIM, or LDAP sync,
+[provisioning behavior](#provisioning-behavior-with-saml-scim-and-ldap)
+applies and they receive the Minimal Access role if no seats are available.
+
+For more information, see
+[automatically remove dormant members](moderate_users.md#automatically-remove-dormant-members).
+
 ## User cap for groups
 
 {{< details >}}
@@ -572,7 +600,7 @@ Prerequisites:
 To remove the user cap:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. From **Seat control**, select **Open access**.
 1. Select **Save changes**.
@@ -593,7 +621,7 @@ Prerequisites:
 To approve members that are pending because they've exceeded the user cap:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Usage quotas**.
+1. In the left sidebar, select **Settings** > **Usage quotas**.
 1. On the **Seats** tab, under the alert, select **View pending approvals**.
 1. For each member you want to approve, select **Approve**.
 
@@ -655,7 +683,7 @@ For more information, see [group-level project templates](custom_project_templat
 To enable group file templates:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Templates** section.
 1. Choose a project to act as the template repository.
 1. Select **Save changes**.
@@ -695,7 +723,7 @@ Prerequisites:
 To enable this setting:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**, select **Pipelines must succeed**.
    This setting also prevents merge requests from being merged if there is no pipeline.
@@ -714,7 +742,7 @@ Prerequisites:
 To change this behavior:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**:
    - Select **Pipelines must succeed**.
@@ -732,7 +760,7 @@ Prerequisites:
 To enable this setting:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**, select **All threads must be resolved**.
 1. Select **Save changes**.
@@ -746,14 +774,18 @@ To enable this setting:
 
 {{< /details >}}
 
-Group approval settings manage [project merge request approval settings](../project/merge_requests/approvals/settings.md)
-for all projects in a top-level group. These settings [cascade to all projects](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
-that belong to the group.
+Group approval settings define the defaults for
+[project merge request approval settings](../project/merge_requests/approvals/settings.md)
+in a top-level group's subgroups and projects. When you enable a prevention setting for a group,
+the equivalent project setting is locked and project Maintainers cannot change it. When a
+prevention setting is left disabled, project Maintainers can configure it for individual projects.
+For more information, see
+[cascade settings from the instance or top-level group](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group).
 
 To view the merge request approval settings for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Merge request approvals** section.
 1. Select the settings you want.
 1. Select **Save changes**.
@@ -780,7 +812,7 @@ Changes to [group wikis](../project/wiki/group.md) do not appear in group activi
 You can view the most recent actions taken in a group, either in your browser or in an RSS feed:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Manage** > **Activity**.
+1. In the left sidebar, select **Manage** > **Activity**.
 
 To view the activity feed in Atom format, select the
 **RSS** ({{< icon name="rss" >}}) icon.
@@ -811,7 +843,7 @@ Prerequisites:
 To display user data on the [GitLab Credits dashboard](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard):
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. For the **GitLab Credits dashboard**, select the **Display user data** checkbox.
 1. Select **Save changes**.

@@ -15,15 +15,15 @@ RSpec.describe Timelogs::TimelogsFinder, feature_category: :team_planning do
   let_it_be(:issue_c) { create(:issue, project: project_c) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project_a) }
 
-  let_it_be(:timelog1) do
+  let_it_be(:timelog1, freeze: false) do
     create(:issue_timelog, issue: issue_a, user: current_user, spent_at: 2.days.ago.beginning_of_day, time_spent: 3000)
   end
 
-  let_it_be(:timelog2) do
+  let_it_be(:timelog2, freeze: false) do
     create(:issue_timelog, issue: issue_a, user: create(:user), spent_at: 2.days.ago.end_of_day, time_spent: 4000)
   end
 
-  let_it_be(:timelog3) do
+  let_it_be(:timelog3, freeze: false) do
     create(:merge_request_timelog,
       merge_request: merge_request,
       user: current_user,
@@ -31,11 +31,11 @@ RSpec.describe Timelogs::TimelogsFinder, feature_category: :team_planning do
       time_spent: 2000)
   end
 
-  let_it_be(:timelog4) do
+  let_it_be(:timelog4, freeze: false) do
     create(:issue_timelog, issue: issue_b, user: current_user, spent_at: 1.hour.ago, time_spent: 500)
   end
 
-  let_it_be(:timelog5) do
+  let_it_be(:timelog5, freeze: false) do
     create(:issue_timelog, issue: issue_c, user: create(:user), spent_at: 7.days.ago.end_of_day, time_spent: 6000)
   end
 

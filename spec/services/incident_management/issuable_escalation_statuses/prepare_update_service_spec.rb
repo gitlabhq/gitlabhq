@@ -68,7 +68,7 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::PrepareUpdateServ
     it_behaves_like 'successful response', { status_event: :acknowledge }
 
     it 'initializes an issuable escalation status record' do
-      expect { result }.not_to change(::IncidentManagement::IssuableEscalationStatus, :count)
+      expect { result }.not_to change { ::IncidentManagement::IssuableEscalationStatus.count }
       expect(issue.escalation_status).to be_present
     end
   end

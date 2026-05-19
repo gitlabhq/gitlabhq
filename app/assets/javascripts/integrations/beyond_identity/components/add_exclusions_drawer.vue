@@ -21,6 +21,7 @@ export default {
       required: true,
     },
   },
+  emits: ['add'],
   data() {
     return {
       isLoading: false,

@@ -35,25 +35,19 @@ RSpec.shared_examples 'groups controller with active parameter' do
       end
     end
 
-    context 'when inactive group has active subgroup' do
-      let_it_be(:active_subgroup) { create(:group, parent: inactive_group) }
+    context 'when inactive group has subgroups' do
+      let_it_be(:inactive_subgroup) { create(:group, parent: inactive_group) }
+      let_it_be(:active_inactive_subgroup) { create(:group, :archived, parent: active_group) }
 
-      it 'returns inactive group with subgroup' do
-        expect(assigns(:groups)).to contain_exactly(inactive_group, active_subgroup)
+      it 'returns inactive subgroups' do
+        expect(assigns(:groups))
+          .to contain_exactly(inactive_group, inactive_subgroup, active_inactive_subgroup)
       end
     end
 
-    context 'when inactive group has inactive subgroup' do
-      let_it_be(:inactive_subgroup) { create(:group, :archived, parent: inactive_group) }
-
-      it 'returns inactive group with subgroup' do
-        expect(assigns(:groups)).to contain_exactly(inactive_group, inactive_subgroup)
-      end
-    end
-
-    context "when groups has lower-level inactive subgroup" do
+    context "when filter matches lower-level subgroup" do
       let_it_be(:inactive_subgroup) { create(:group, :archived, parent: active_group) }
-      let_it_be(:inactive_subsubgroup) { create(:group, :archived, parent: inactive_subgroup) }
+      let_it_be(:inactive_subsubgroup) { create(:group, parent: inactive_subgroup) }
 
       let(:params) { { active: false, filter: inactive_subsubgroup.name } }
 

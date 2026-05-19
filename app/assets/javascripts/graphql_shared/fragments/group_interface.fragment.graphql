@@ -8,6 +8,7 @@ fragment GroupInterface on GroupInterface {
   userPermissions {
     archiveGroup
     canLeave
+    changeGroup
     removeGroup
     viewEditPage
   }

@@ -107,19 +107,32 @@ RSpec.describe Gitlab::Database::MigrationHelpers::GranularScopePermissions, fea
   describe '#perform' do
     let(:migration_class) do
       Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+        const_set(:RENAMES, {
+          'write_work_item' => %w[create_work_item update_work_item],
+          'manage_deploy_key' => 'admin_deploy_key'
+        }.freeze)
+
         include Gitlab::Database::MigrationHelpers::GranularScopePermissions
       end
     end
 
-    let!(:scope_with_old) do
+    let!(:scope_with_both) do
       granular_scopes.create!(
         organization_id: organization.id,
-        permissions: %w[write_work_item read_wiki],
+        permissions: %w[write_work_item manage_deploy_key read_wiki],
         access: 0
       )
     end
 
-    let!(:scope_without_old) do
+    let!(:scope_with_one) do
+      granular_scopes.create!(
+        organization_id: organization.id,
+        permissions: %w[manage_deploy_key read_code],
+        access: 0
+      )
+    end
+
+    let!(:scope_with_none) do
       granular_scopes.create!(
         organization_id: organization.id,
         permissions: %w[read_wiki read_code],
@@ -129,34 +142,42 @@ RSpec.describe Gitlab::Database::MigrationHelpers::GranularScopePermissions, fea
 
     let(:migration) do
       migration_class.new(
-        start_cursor: [scope_with_old.id],
-        end_cursor: [scope_without_old.id],
+        start_cursor: [scope_with_both.id],
+        end_cursor: [scope_with_none.id],
         batch_table: :granular_scopes,
         batch_column: :id,
         sub_batch_size: 100,
         pause_ms: 0,
-        job_arguments: [old_permission, new_permissions],
+        job_arguments: [],
         connection: ApplicationRecord.connection
       )
     end
 
-    it 'renames the old permission to new permissions' do
+    it 'renames all matching permissions in a single pass' do
       migration.perform
 
-      expect(parse_permissions(scope_with_old)).to match_array(%w[create_work_item update_work_item read_wiki])
+      expect(parse_permissions(scope_with_both)).to match_array(
+        %w[create_work_item update_work_item admin_deploy_key read_wiki]
+      )
     end
 
-    it 'leaves rows without the old permission untouched' do
+    it 'handles rows with only some of the old permissions' do
       migration.perform
 
-      expect(parse_permissions(scope_without_old)).to match_array(%w[read_wiki read_code])
+      expect(parse_permissions(scope_with_one)).to match_array(%w[admin_deploy_key read_code])
+    end
+
+    it 'leaves rows without any old permission untouched' do
+      migration.perform
+
+      expect(parse_permissions(scope_with_none)).to match_array(%w[read_wiki read_code])
     end
 
     context 'when a row is outside the cursor range' do
       let!(:scope_outside_range) do
         granular_scopes.create!(
           organization_id: organization.id,
-          permissions: %w[write_work_item],
+          permissions: %w[write_work_item manage_deploy_key],
           access: 0
         )
       end
@@ -164,7 +185,38 @@ RSpec.describe Gitlab::Database::MigrationHelpers::GranularScopePermissions, fea
       it 'does not process the row' do
         migration.perform
 
-        expect(parse_permissions(scope_outside_range)).to match_array(%w[write_work_item])
+        expect(parse_permissions(scope_outside_range)).to match_array(%w[write_work_item manage_deploy_key])
+      end
+    end
+
+    context 'when a new permission already exists alongside the old one' do
+      let!(:scope_with_overlap) do
+        granular_scopes.create!(
+          organization_id: organization.id,
+          permissions: %w[write_work_item create_work_item manage_deploy_key admin_deploy_key],
+          access: 0
+        )
+      end
+
+      let(:migration) do
+        migration_class.new(
+          start_cursor: [scope_with_overlap.id],
+          end_cursor: [scope_with_overlap.id],
+          batch_table: :granular_scopes,
+          batch_column: :id,
+          sub_batch_size: 100,
+          pause_ms: 0,
+          job_arguments: [],
+          connection: ApplicationRecord.connection
+        )
+      end
+
+      it 'deduplicates the result' do
+        migration.perform
+
+        expect(parse_permissions(scope_with_overlap)).to match_array(
+          %w[create_work_item update_work_item admin_deploy_key]
+        )
       end
     end
   end

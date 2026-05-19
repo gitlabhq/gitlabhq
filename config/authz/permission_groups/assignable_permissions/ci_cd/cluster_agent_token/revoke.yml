@@ -3,5 +3,7 @@ name: revoke_cluster_agent_token
 description: Grants the ability to revoke cluster agent tokens
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - revoke_cluster_agent_token

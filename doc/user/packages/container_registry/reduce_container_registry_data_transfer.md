@@ -110,12 +110,8 @@ To avoid transferring data when using large and rarely updated images, consider 
 
 ## Use Docker layer caching
 
-When running `docker build`, each command in `Dockerfile` results in a layer. These layers are kept
-as a cache and can be reused if there haven't been any changes. You can specify a tagged image to be
-used as a cache source for the `docker build` command by using the `--cache-from` argument. Multiple
-images can be specified as a cache source by using multiple `--cache-from` arguments. This can speed
-up your builds and reduce the amount of data transferred. For more information, see the
-[documentation on Docker layer caching](../../../ci/docker/using_docker_build.md#make-docker-in-docker-builds-faster-with-docker-layer-caching).
+Docker layer caching can speed up your builds and reduce the amount of data transferred.
+For more information, see [Cache Docker layers in Docker-in-Docker builds](../../../ci/docker/docker_layer_caching.md).
 
 ## Check automation frequency
 

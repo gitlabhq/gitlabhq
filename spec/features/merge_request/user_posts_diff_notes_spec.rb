@@ -3,20 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :code_review_workflow do
-  include MergeRequestDiffHelpers
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.source_project }
   let(:user) { project.creator }
-  let(:comment_button_class) { '.add-diff-note' }
-  let(:notes_holder_input_class) { 'js-temp-notes-holder' }
-  let(:notes_holder_input_xpath) { '..//following-sibling::*[contains(concat(" ", @class, " "), " notes_holder ")]' }
   let(:test_note_comment) { 'this is a test note!' }
 
   before do
     project.add_developer(user)
     sign_in(user)
+    set_cookie('rapid_diffs_enabled', 'true')
   end
 
   context 'when hovering over a parallel view diff file' do
@@ -26,67 +23,64 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
     context 'with an old line on the left and no line on the right' do
       it 'allows commenting on the left side' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]'), 'left')
+        should_allow_commenting(find_line('line_6eb14e003_23'), 'left')
       end
 
       it 'does not allow commenting on the right side' do
-        should_not_allow_commenting(find_in_page_or_panel_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]').find(:xpath, '..'), 'right')
+        should_not_allow_commenting(find_line('line_6eb14e003_23'), 'right')
       end
     end
 
     context 'with no line on the left and a new line on the right' do
       it 'does not allow commenting on the left side' do
-        should_not_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..'), 'left')
+        should_not_allow_commenting(find_line('line_2f6fcd96b_A15'), 'left')
       end
 
       it 'allows commenting on the right side' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..'), 'right')
+        should_allow_commenting(find_line('line_2f6fcd96b_A15'), 'right')
       end
     end
 
     context 'with an old line on the left and a new line on the right' do
-      it 'allows commenting on the left side', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9330' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'left')
+      it 'allows commenting on the left side' do
+        should_allow_commenting(find_line('line_2f6fcd96b_9'), 'left')
       end
 
-      it 'allows commenting on the right side', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9330' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'right')
+      it 'allows commenting on the right side' do
+        should_allow_commenting(find_line('line_2f6fcd96b_9'), 'right')
       end
     end
 
     context 'with an unchanged line on the left and an unchanged line on the right' do
-      it 'allows commenting on the left side', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9326' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'left')
+      it 'allows commenting on the left side' do
+        should_allow_commenting(find_line('line_2f6fcd96b_7'), 'left')
       end
 
       it 'allows commenting on the right side' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'right')
+        should_allow_commenting(find_line('line_2f6fcd96b_7'), 'right')
       end
     end
 
     context 'with a match line' do
       it 'does not allow commenting' do
-        line_holder = find_in_page_or_panel_by_scrolling('.match', match: :first)
-        match_should_not_allow_commenting(line_holder)
+        match_should_not_allow_commenting(find('[data-hunk-header]', match: :first))
       end
     end
 
     context 'with an unfolded line' do
       before do
-        page.within find_in_page_or_panel_by_scrolling('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"]') do
-          find('.js-unfold', match: :first).click
+        within_diff_file('a5cc2925ca8258af241be7e5b0381edf30266302') do
+          find('button[data-expand-direction]', match: :first).click
         end
-
-        wait_for_requests
       end
 
       it 'allows commenting on the left side' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('#a5cc2925ca8258af241be7e5b0381edf30266302').first('.line_holder [data-testid="left-side"]'))
+        should_allow_commenting(first_unfolded_line('a5cc2925ca8258af241be7e5b0381edf30266302'), 'left')
       end
 
       it 'allows commenting on the right side' do
         # Automatically shifts comment box to left side.
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('#a5cc2925ca8258af241be7e5b0381edf30266302').first('.line_holder [data-testid="right-side"]'))
+        should_allow_commenting(first_unfolded_line('a5cc2925ca8258af241be7e5b0381edf30266302'), 'right')
       end
     end
   end
@@ -98,53 +92,55 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
     context 'after deleting a note' do
       it 'allows commenting' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+        should_allow_commenting(find_line('line_2f6fcd96b_A9'))
 
         accept_gl_confirm(button_text: 'Delete comment') do
-          first('.more-actions-toggle button').click
-          first('.js-note-delete').click
+          find('[title="More actions"] button', match: :first).click
+          click_button 'Delete comment'
         end
 
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+        # Wait for the discussion row to be removed before commenting again,
+        # so the second click doesn't race the in-flight delete request.
+        expect(find_line('line_2f6fcd96b_A9')).to have_no_xpath('./following-sibling::*[@data-discussion-row][1]')
+
+        should_allow_commenting(find_line('line_2f6fcd96b_A9'))
       end
     end
 
     context 'with a new line' do
       it 'allows commenting' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+        should_allow_commenting(find_line('line_2f6fcd96b_A9'))
       end
     end
 
     context 'with an old line' do
       it 'allows commenting' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
+        should_allow_commenting(find_line('line_6eb14e003_22'))
       end
     end
 
     context 'with an unchanged line' do
       it 'allows commenting' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
+        should_allow_commenting(find_line('line_2f6fcd96b_7'))
       end
     end
 
     context 'with a match line' do
       it 'does not allow commenting' do
-        match_should_not_allow_commenting(find_in_page_or_panel_by_scrolling('.match', match: :first))
+        match_should_not_allow_commenting(find('[data-hunk-header]', match: :first))
       end
     end
 
     context 'with an unfolded line' do
       before do
-        page.within find_in_page_or_panel_by_scrolling('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"]') do
-          find('.js-unfold', match: :first).click
+        within_diff_file('a5cc2925ca8258af241be7e5b0381edf30266302') do
+          find('button[data-expand-direction]', match: :first).click
         end
-
-        wait_for_requests
       end
 
-      # The first `.js-unfold` unfolds upwards, therefore the first
-      # `.line_holder` will be an unfolded line.
-      let(:line_holder) { find_in_page_or_panel_by_scrolling('[id="a5cc2925ca8258af241be7e5b0381edf30266302_1_1"]') }
+      # The first expand button unfolds upwards, so the first line of the file
+      # becomes the first hunk-lines row.
+      let(:line_holder) { first_unfolded_line('a5cc2925ca8258af241be7e5b0381edf30266302') }
 
       it 'allows commenting' do
         should_allow_commenting line_holder
@@ -153,76 +149,103 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
     context 'when hovering over a diff discussion' do
       before do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
+        should_allow_commenting(find_line('line_2f6fcd96b_7'))
         click_on 'Overview'
       end
 
+      # The Overview tab renders diff discussions with legacy markup outside of
+      # the rapid-diffs root, so the new-discussion toggle controller has no
+      # rows to attach to and the toggle stays hidden along with the (now
+      # display:none) Changes pane.
       it 'does not allow commenting' do
-        should_not_allow_commenting(find('.line_holder', match: :first))
+        expect(page).to have_no_testid('new_discussion_toggle')
       end
     end
   end
 
-  context 'when cancelling the comment addition',
-    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6734' do
+  context 'when cancelling the comment addition' do
     before do
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
     end
 
     context 'with a new line' do
-      it 'allows dismissing a comment', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6734' do
-        should_allow_dismissing_a_comment(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+      it 'allows dismissing a comment' do
+        should_allow_dismissing_a_comment(find_line('line_2f6fcd96b_A9'))
       end
     end
   end
 
-  describe 'with multiple note forms',
-    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2195' do
+  describe 'with multiple note forms' do
     before do
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
-      click_diff_line(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+      click_diff_line(find_line('line_2f6fcd96b_A9'))
     end
 
     describe 'posting a note' do
       it 'adds as discussion' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'), asset_form_reset: false)
-        expect(page).to have_css('.notes_holder .note.note-discussion', count: 1)
+        should_allow_commenting(find_line('line_6eb14e003_22'), asset_form_reset: false)
+        expect(page).to have_css('[data-testid="noteable-note-container"]', count: 1)
         expect(page).to have_field('Reply…')
       end
     end
   end
 
-  context 'when the MR only supports legacy diff notes' do
-    before do
-      merge_request.merge_request_diff.update!(start_commit_sha: nil)
-      visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
-    end
+  def find_line(id)
+    find("##{id}")
+  end
 
-    context 'with a new line' do
-      it 'allows commenting', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4320' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
-      end
-    end
+  def within_diff_file(file_hash, &block)
+    within("diff-file##{file_hash}", &block)
+  end
 
-    context 'with an old line',
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6048' do
-      it 'allows commenting' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
-      end
-    end
+  def first_unfolded_line(file_hash)
+    find("diff-file##{file_hash} [data-hunk-lines][data-expanded]", match: :first)
+  end
 
-    context 'with an unchanged line',
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4317' do
-      it 'allows commenting' do
-        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
-      end
+  def line_cell(line_holder, diff_side = nil)
+    if diff_side.nil?
+      line_holder.find('[data-position="old"]', match: :first)
+    else
+      position = diff_side == 'left' ? 'old' : 'new'
+      line_holder.find("[data-position='#{position}']", match: :first)
     end
+  end
 
-    context 'with a match line' do
-      it 'does not allow commenting', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9305' do
-        match_should_not_allow_commenting(find_in_page_or_panel_by_scrolling('.match', match: :first))
-      end
+  def line_link(line_holder, diff_side = nil)
+    if diff_side.nil?
+      line_holder.find('[data-line-number]', match: :first)
+    else
+      position = diff_side == 'left' ? 'old' : 'new'
+      line_holder.find("[data-position='#{position}'] [data-line-number]")
     end
+  end
+
+  def next_discussion_row(line_holder)
+    line_holder.find(:xpath, './following-sibling::*[@data-discussion-row][1]')
+  end
+
+  # Hovers the row's line-number link until the new-discussion toggle actually
+  # lands inside the row, then clicks it. Retrying the hover guards against
+  # the toggle controller not having attached its listeners yet -- the first
+  # hover can be dropped silently if the rapid-diffs init has not finished.
+  # The retry is what a human would do when nothing happens on first move.
+  def click_diff_line(line_holder, diff_side = nil)
+    scroll_to_center(line_holder)
+    link = line_link(line_holder, diff_side)
+    wait_for('new-discussion toggle to appear on the row') do
+      link.hover
+      has_testid?('new_discussion_toggle', context: line_holder, wait: 0.2)
+    end
+    find_by_testid('new_discussion_toggle', context: line_holder).click
+  end
+
+  def scroll_to_center(element)
+    page.execute_script("arguments[0].scrollIntoView({ block: 'center' })", element.native)
+  end
+
+  def write_comment_on_line(line_holder, diff_side)
+    click_diff_line(line_holder, diff_side)
+    next_discussion_row(line_holder).fill_in('note[note]', with: test_note_comment)
   end
 
   def should_allow_commenting(line_holder, diff_side = nil, asset_form_reset: true)
@@ -230,62 +253,51 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
     click_button 'Add comment now'
 
-    wait_for_requests
-
     assert_comment_persistence(line_holder, asset_form_reset: asset_form_reset)
   end
 
   def should_allow_dismissing_a_comment(line_holder, diff_side = nil)
     write_comment_on_line(line_holder, diff_side)
 
-    accept_gl_confirm(s_('Notes|Are you sure you want to cancel creating this comment?'), button_text: _('Discard changes')) do
-      find('.js-close-discussion-note-form').click
+    accept_gl_confirm(_('Are you sure you want to cancel creating this comment?'), button_text: _('Discard changes')) do
+      within(next_discussion_row(line_holder)) { find_by_testid('cancel').click }
     end
 
     assert_comment_dismissal(line_holder)
   end
 
+  # Scoping the assertion to the row matches the actual contract -- the toggle
+  # must not appear *for this line*. A wider page-level matcher is brittle: the
+  # mouse trajectory to the side cell can graze adjacent rows on the way and
+  # leave the toggle visible somewhere unrelated.
   def should_not_allow_commenting(line_holder, diff_side = nil)
-    line = get_line_components(line_holder, diff_side)
-    line[:content].hover
-    expect(line[:num]).not_to have_css comment_button_class
+    scroll_to_center(line_holder)
+    line_cell(line_holder, diff_side).hover
+    expect(line_holder).to have_no_testid('new_discussion_toggle')
   end
 
   def match_should_not_allow_commenting(line_holder)
-    expect(line_holder).not_to have_css comment_button_class
-  end
-
-  def write_comment_on_line(line_holder, diff_side)
-    click_diff_line(line_holder, diff_side)
-
-    notes_holder_input = line_holder.find(:xpath, notes_holder_input_xpath)
-
-    expect(notes_holder_input[:class]).to include(notes_holder_input_class)
-
-    notes_holder_input.fill_in 'note[note]', with: test_note_comment
+    scroll_to_center(line_holder)
+    line_holder.hover
+    expect(line_holder).to have_no_testid('new_discussion_toggle')
   end
 
   def assert_comment_persistence(line_holder, asset_form_reset:)
-    notes_holder_saved = line_holder.find(:xpath, notes_holder_input_xpath)
+    discussion_row = next_discussion_row(line_holder)
 
-    expect(notes_holder_saved[:class]).not_to include('note-edit-form')
-    expect(notes_holder_saved).to have_content test_note_comment
+    expect(discussion_row).to have_content(test_note_comment)
 
     assert_form_is_reset if asset_form_reset
   end
 
   def assert_comment_dismissal(line_holder)
-    expect(line_holder).not_to have_xpath notes_holder_input_xpath
-    expect(page).not_to have_content test_note_comment
+    expect(line_holder).to have_no_xpath('./following-sibling::*[@data-discussion-row][1]')
+    expect(page).not_to have_content(test_note_comment)
 
     assert_form_is_reset
   end
 
   def assert_form_is_reset
-    expect(page).to have_no_css('.note-edit-form')
-  end
-
-  def find_in_page_or_panel_by_scrolling(selector, **options)
-    find_in_panel_by_scrolling(selector, **options)
+    expect(page).to have_no_field('note[note]')
   end
 end

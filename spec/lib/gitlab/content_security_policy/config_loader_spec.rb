@@ -527,7 +527,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
     end
 
     context 'Snowplow Micro event collector' do
-      let(:snowplow_micro_hostname) { 'localhost:9090' }
+      let(:snowplow_micro_hostname) { 'localhost:9091' }
       let(:snowplow_micro_url) { "http://#{snowplow_micro_hostname}/" }
 
       before do

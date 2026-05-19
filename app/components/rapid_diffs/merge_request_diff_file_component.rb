@@ -47,7 +47,7 @@ module RapidDiffs
       return unless @diff_file.text?
 
       editor_path = helpers.project_edit_blob_path(
-        @diff_file.repository.project,
+        @merge_request.source_project,
         helpers.tree_join(@merge_request.source_branch, @diff_file.new_path),
         from_merge_request_iid: @merge_request.iid
       )

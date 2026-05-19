@@ -98,7 +98,8 @@ RSpec::Matchers.define :have_correct_reconcile_config do
     end
 
     doc = YAML.safe_load_file(doc_path)
-    expected_columns = doc['sharding_key']&.keys&.sort || []
+    sharding_keys = doc['sharding_key'] || doc['desired_sharding_key']
+    expected_columns = sharding_keys.keys&.sort || []
 
     if expected_columns.empty?
       @errors << "no sharding_key found in db/docs/#{content['table']}.yml"
@@ -186,6 +187,20 @@ RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_nam
     elsif clickhouse_primary_keys != postgresql_primary_keys
       @errors << "the ClickHouse primary keys (#{clickhouse_primary_keys.join(', ')}) don't match with " \
         "the PostgreSQL table's primary keys (#{postgresql_primary_keys.join(', ')})"
+    end
+
+    lookup_table = target['dedup_by_columns_lookup_table']
+    if lookup_table
+      if clickhouse_table_names.exclude?(lookup_table)
+        @errors << "dedup_by_columns_lookup_table '#{lookup_table}' does not exist"
+      else
+        lookup_primary_keys = ch_primary_keys(lookup_table)
+        if lookup_primary_keys.first(postgresql_primary_keys.length) != postgresql_primary_keys
+          @errors << "the ClickHouse lookup table '#{lookup_table}' primary keys " \
+            "(#{lookup_primary_keys.join(', ')}) don't start with the PostgreSQL table's primary keys " \
+            "(#{postgresql_primary_keys.join(', ')})"
+        end
+      end
     end
 
     Array(target['refresh_on_change']).each do |roc|

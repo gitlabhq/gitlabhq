@@ -1,5 +1,5 @@
 ---
-stage: none
+stage: Tutorials
 group: Tutorials
 description: Tutorial on how to create a shop application in Python with GitLab Duo.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
@@ -124,11 +124,11 @@ For more information, see [Use GitLab Duo Chat in VS Code](../../gitlab_duo_chat
 
 To use Code Suggestions:
 
-1. Open your Git project in a
-   [supported IDE](../../project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions).
-1. Add the project as a remote of your local repository using
-   [`git remote add`](../../../topics/git/commands.md#git-remote-add).
-1. Add your project directory, including the hidden `.git/` folder, to your IDE workspace or project.
+1. Open your Git project in a [supported IDE](../../project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions).
+
+   The local project must have a Git remote configured that points to a repository on GitLab. If it
+   doesn't already, use [`git remote add`](../../../topics/git/commands.md#git-remote-add) to link the
+   project.
 1. Author your code.
    As you type, suggestions are displayed. Code Suggestions provides code snippets
    or completes the current line, depending on the cursor position.

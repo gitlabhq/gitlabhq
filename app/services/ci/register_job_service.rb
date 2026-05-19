@@ -145,7 +145,7 @@ module Ci
 
       build_and_partition_ids = retrieve_queue(-> { queue.execute(builds) })
       size = build_and_partition_ids.size
-      queue_size = if size > MAX_QUEUE_DEPTH && Feature.enabled?(:ci_register_job_full_queue_count, type: :ops)
+      queue_size = if size > MAX_QUEUE_DEPTH
                      queue.build_candidates.count
                    else
                      size
@@ -282,6 +282,10 @@ module Ci
 
     def runner_matched?(build)
       @logger.instrument(:process_build_runner_matched) do
+        if ::Feature.enabled?(:ci_resume_environment_runner_routing, type: :gitlab_com_derisk)
+          next false unless resume_environment_available_to_runner?(build) # rubocop:disable Style/SoleNestedConditional -- clearer as two separate conditions
+        end
+
         runner.matches_build?(build)
       end
     end
@@ -336,7 +340,7 @@ module Ci
     end
 
     def assign_runner!(build, params)
-      build.runner_id = runner.id
+      build.runner = runner
       build.runner_session_attributes = params[:session] if params[:session].present?
 
       failure_reason, _ = @logger.instrument(:assign_runner_failure_reason) do
@@ -417,6 +421,13 @@ module Ci
         pipeline_id: build.pipeline_id,
         project_id: build.project_id
       }
+    end
+
+    def resume_environment_available_to_runner?(build)
+      env_key = build.options.dig(:suspend_options, :environment_key)
+      return true if env_key.blank?
+
+      ::Gitlab::Ci::Matching::EnvironmentKey.new(env_key).matches_runner?(runner, runner_manager: runner_manager)
     end
 
     def pre_assign_runner_checks

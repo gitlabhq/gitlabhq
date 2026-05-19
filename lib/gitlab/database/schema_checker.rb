@@ -10,8 +10,10 @@ module Gitlab
 
         raise "Invalid database name: #{database_name}" unless database_model
 
-        @database = Gitlab::Schema::Validation::Sources::Database.new(database_model.connection)
-        @structure_sql = Gitlab::Schema::Validation::Sources::StructureSql.new(structure_sql_path)
+        connection = database_model.connection
+        @database = Gitlab::Schema::Validation::Sources::Database.new(connection)
+        @structure_sql = Gitlab::Schema::Validation::Sources::StructureSql.new(structure_sql_path,
+          connection.current_schema)
         @validators = {
           missing_tables: Gitlab::Schema::Validation::Validators::MissingTables,
           missing_indexes: Gitlab::Schema::Validation::Validators::MissingIndexes,

@@ -1,0 +1,9 @@
+# @feature_category: custom_dashboards_foundation
+mutation createCustomDashboard($input: CreateCustomDashboardInput!) {
+  createCustomDashboard(input: $input) {
+    dashboard {
+      id
+    }
+    errors
+  }
+}

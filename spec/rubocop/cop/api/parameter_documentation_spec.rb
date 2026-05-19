@@ -98,6 +98,120 @@ RSpec.describe RuboCop::Cop::API::ParameterDocumentation, :config, feature_categ
     end
   end
 
+  context "when params have a Proc in values hash" do
+    context "without documentation" do
+      it "registers an offense for the lambda in values hash" do
+        expect_offense(<<~RUBY, msg: msg_values)
+        params do
+          requires :key, type: String, values: { value: ->(v) { v.length <= 255 }, message: 'must be 255 characters or less' }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
+        end
+        RUBY
+      end
+
+      it "registers an offense for proc in values hash" do
+        expect_offense(<<~RUBY, msg: msg_values)
+        params do
+          requires :key, type: String, values: { value: proc { |v| v.length <= 255 }, message: 'must be 255 characters or less' }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
+        end
+        RUBY
+      end
+
+      it "registers an offense for Proc.new in values hash" do
+        expect_offense(<<~RUBY, msg: msg_values)
+        params do
+          requires :key,type: String, values: { value: Proc.new { |v| v.length <= 255 }, message: 'must be < 255 characters' }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
+        end
+        RUBY
+      end
+
+      it "registers an offense for to_proc in values hash" do
+        expect_offense(<<~RUBY, msg: msg_values)
+        params do
+          requires :key, type: String, values: { value: (1..255).method(:cover?).to_proc }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
+        end
+        RUBY
+      end
+
+      it "registers an offense for multiline params" do
+        expect_offense(<<~RUBY, msg: msg_values)
+          params do
+            requires :status,
+            ^^^^^^^^^^^^^^^^^ %{msg}
+              type: String,
+              values: { value: (1..255).method(:cover?).to_proc, message: 'must be 255 characters or less' },
+              desc: 'The status'
+          end
+        RUBY
+      end
+    end
+
+    context "with documentation" do
+      it "does not register an offense for a lambda in values hash" do
+        expect_no_offenses(<<~RUBY)
+        params do
+          requires :key, type: String, values: { value: ->(v) { v.length <= 255 }, message: 'must be 255 characters or less' }, documentation: { example: 'my-header' }
+        end
+        RUBY
+      end
+
+      it "does not register an offense for Proc.new in values hash" do
+        expect_no_offenses(<<~RUBY)
+        params do
+          requires :key,
+            type: String, values: { value: Proc.new { |v| v.length <= 255 } }, documentation: { example: 'my-header' }
+        end
+        RUBY
+      end
+
+      it "does not register an offense for to_proc in values hash multiline" do
+        expect_no_offenses(<<~RUBY)
+        params do
+          requires :key,
+            type: String,
+            values: { value: (1..255).method(:cover?).to_proc, message: 'must be 255 characters or less' },
+            documentation: { example: 'my-header' }
+        end
+        RUBY
+      end
+    end
+
+    context "when documentation is explicitly disabled" do
+      it "does not register an offense lambda in values hash" do
+        expect_no_offenses(<<~RUBY)
+        params do
+          requires :key, type: String, values: { value: ->(v) { v.length <= 255 }, message: 'must be 255 characters or less' }, documentation: false
+        end
+        RUBY
+      end
+
+      it "does not register an offense for Proc.new in values hash multiline" do
+        expect_no_offenses(<<~RUBY)
+        params do
+          requires :key,
+            type: String,
+            values: { value: Proc.new { |v| v.length <= 255 }, message: 'must be 255 characters or less' },
+            documentation: false
+        end
+        RUBY
+      end
+
+      it "does not register an offense for to_proc in values hash multiline" do
+        expect_no_offenses(<<~RUBY)
+        params do
+          requires :key,
+            type: String,
+            values: { value: (1..255).method(:cover?).to_proc, message: 'must be 255 characters or less' },
+            documentation: false
+        end
+        RUBY
+      end
+    end
+  end
+
   context "when params have a Proc in default:" do
     context "with documentation" do
       it "does not register an offense for lambda values" do

@@ -4,6 +4,7 @@ import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import { __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import workItemErrorTrackingQuery from '../graphql/work_item_error_tracking.query.graphql';
 import { findErrorTrackingWidget } from '../utils';
 
@@ -15,6 +16,7 @@ export default {
     GlAlert,
     Stacktrace,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     fullPath: {
       type: String,
@@ -39,6 +41,7 @@ export default {
         return {
           fullPath: this.fullPath,
           iid: this.iid,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       update(data) {

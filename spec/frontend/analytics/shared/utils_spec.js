@@ -9,6 +9,7 @@ import {
   getDataZoomOption,
   overviewMetricsRequestParams,
   formatBigInt,
+  mapItemToListboxFormat,
 } from '~/analytics/shared/utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
 
@@ -349,5 +350,41 @@ describe('formatBigInt', () => {
     ${undefined}      | ${'-'}
   `('formats $input as "$output"', ({ input, output }) => {
     expect(formatBigInt(input)).toBe(output);
+  });
+});
+
+describe('mapItemToListboxFormat', () => {
+  const item = { id: 1, name: 'Test Item' };
+
+  it('transforms an item with id and name to listbox format', () => {
+    expect(mapItemToListboxFormat(item)).toEqual({
+      id: 1,
+      name: 'Test Item',
+      value: 1,
+      text: 'Test Item',
+    });
+  });
+
+  it('preserves existing properties while adding value and text', () => {
+    const result = mapItemToListboxFormat({
+      ...item,
+      description: 'Some description',
+      active: true,
+    });
+
+    expect(result).toMatchObject({ description: 'Some description', active: true });
+  });
+
+  it('handles empty object', () => {
+    expect(mapItemToListboxFormat({})).toEqual({ value: undefined, text: undefined });
+  });
+
+  it('handles item with null values', () => {
+    expect(mapItemToListboxFormat({ id: null, name: null })).toEqual({
+      id: null,
+      name: null,
+      value: null,
+      text: null,
+    });
   });
 });

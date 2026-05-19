@@ -1,0 +1,4 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/raw/master/config/user_experience_slis/schema.json
+description: "Sign in and reach the home dashboard"
+feature_category: "system_access"
+urgency: "async_fast"

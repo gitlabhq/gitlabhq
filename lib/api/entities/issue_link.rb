@@ -6,7 +6,7 @@ module API
       expose :id, documentation: { type: 'Integer', example: 1 }
       expose :source, as: :source_issue, using: ::API::Entities::IssueBasic
       expose :target, as: :target_issue, using: ::API::Entities::IssueBasic
-      expose :link_type
+      expose :link_type, documentation: { type: 'String', example: 'relates_to' }
     end
   end
 end

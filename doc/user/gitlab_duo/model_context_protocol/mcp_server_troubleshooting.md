@@ -23,6 +23,14 @@ This error occurs when GitLab Duo Core or beta and experimental features are tur
 
 To resolve this issue, ensure you meet all [prerequisites for the GitLab MCP server](mcp_server.md#prerequisites).
 
+## `/api/v4/mcp` returns `404 Not Found`
+
+After the OAuth flow completes successfully, you might still encounter
+an error where `POST /api/v4/mcp` returns `404 Not Found`.
+
+To resolve this issue, on GitLab Self-Managed,
+[ensure GitLab Duo is turned on for the instance](../../duo_agent_platform/turn_on_off.md#for-an-instance).
+
 ## Error: `Server's protocol version is not supported: 2025-06-18`
 
 In GitLab 18.6 and earlier, you might get this error when the MCP client library

@@ -2,6 +2,7 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Install, configure, and use a GitLab Self-Managed instance in an environment with no internet access.
 title: Install an offline GitLab Self-Managed instance
 ---
 

@@ -32,7 +32,7 @@ module Gitlab
 
         def authorization_enabled?(context)
           token = context[:access_token]
-          token && token.try(:granular?) && Feature.enabled?(:granular_personal_access_tokens_for_graphql, token.user)
+          token && token.try(:granular?)
         end
 
         def authorize_with_cache!(context, boundary, permissions)
@@ -82,7 +82,16 @@ module Gitlab
         def boundary(object, arguments, context, directive)
           return unless directive
 
-          BoundaryExtractor.new(object:, arguments:, context:, directive:).extract
+          boundary_type = directive.arguments[:boundary_type]
+          procs = @field.owner.try(:granular_token_boundary_procs) || {}
+
+          BoundaryExtractor.new(
+            object: object,
+            arguments: arguments,
+            context: context,
+            directive: directive,
+            boundary_proc: procs[boundary_type]
+          ).extract
         end
 
         def permissions(directive)

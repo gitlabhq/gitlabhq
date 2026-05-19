@@ -33,6 +33,7 @@ RSpec.describe 'Database schema',
       ai_code_suggestion_events: %w[user_id],
       ai_duo_chat_events: %w[user_id],
       ai_troubleshoot_job_events: %w[user_id job_id],
+      ai_audit_events: %w[author_id workflow_id cloud_event_id],
       ai_usage_events: %w[user_id],
       ai_events_counts: %w[user_id namespace_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
@@ -67,7 +68,6 @@ RSpec.describe 'Database schema',
       catalog_resource_component_last_usages: %w[used_by_project_id], # No FK constraint because we want to preserve usage data even if project is deleted.
       chat_names: %w[chat_id team_id],
       chat_teams: %w[team_id],
-      ci_build_needs: %w[project_id],
       ci_build_pending_states: %w[project_id],
       ci_build_trace_chunks: %w[project_id],
       ci_builds_runner_session: %w[project_id],
@@ -125,16 +125,16 @@ RSpec.describe 'Database schema',
       members: %w[source_id created_by_id],
       merge_requests: %w[last_edited_by_id state_id],
       merge_request_commits_metadata: %w[project_id commit_author_id committer_id],
-      # merge_request_diff_files_99208b8fac is the temporary table for the
-      # merge_request_diff_files partitioning backfill. It will get foreign keys
-      # after the partitioning is finished.
-      #
-      merge_request_diff_files_99208b8fac: %w[merge_request_diff_id project_id],
       merge_request_diff_commits: %w[project_id commit_author_id committer_id merge_request_commits_metadata_id],
       # merge_request_diff_commits_b5377a7a34 is the temporary table for the merge_request_diff_commits partitioning
       # backfill. It will get foreign keys after the partitioning is finished.
       merge_request_diff_commits_b5377a7a34: %w[merge_request_commits_metadata_id merge_request_diff_id project_id],
-      namespaces: %w[owner_id],
+      # merge_request_diff_files_99208b8fac is a partitioned table. Foreign keys exist on partitions
+      # but are not detected on the parent table by PostgresForeignKey.by_constrained_table_name.
+      merge_request_diff_files_99208b8fac: %w[merge_request_diff_id project_id],
+      # file_template_project_id and custom_project_templates_group_id will be removed from namespaces
+      # as part of https://gitlab.com/gitlab-org/gitlab/-/work_items/592091
+      namespaces: %w[owner_id file_template_project_id custom_project_templates_group_id],
       namespace_descendants: %w[namespace_id],
       notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id],
       notification_settings: %w[source_id],
@@ -164,13 +164,14 @@ RSpec.describe 'Database schema',
       # No LFK needed: daily partitions are dropped after 1 day via retain_for
       # https://gitlab.com/gitlab-org/gitlab/-/blob/ccc2459924e2805e43ad8f97eec15a6932d84f68/ee/app/models/analytics/knowledge_graph/code_indexing_task.rb#L13
       p_knowledge_graph_code_indexing_tasks: %w[project_id],
+      programming_languages: %w[language_id],
       project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
       project_data_transfers: %w[project_id namespace_id],
       project_error_tracking_settings: %w[sentry_project_id],
       project_statistics: %w[namespace_id],
       projects: %w[mirror_user_id],
       redirect_routes: %w[source_id],
-      repository_languages: %w[programming_language_id],
+      repository_languages: %w[programming_language_id language_id],
       routes: %w[source_id],
       security_findings: %w[project_id],
       security_finding_enrichments: %w[project_id cve_enrichment_id],
@@ -258,7 +259,8 @@ RSpec.describe 'Database schema',
       zoekt_indices: %w[namespace_id], # needed for cells sharding key
       zoekt_tasks: %w[partition_id zoekt_repository_id zoekt_node_id], # needed for: cells sharding key, partitioning, and performance reasons
       p_knowledge_graph_tasks: %w[partition_id knowledge_graph_replica_id zoekt_node_id namespace_id], # needed for: partitioning, and performance reasons
-      project_secrets_manager_maintenance_tasks: %w[user_id], # small table, for better performance we don't need fk here
+      project_secrets_manager_maintenance_tasks: %w[user_id project_id root_namespace_id parent_group_id], # plain ID columns for task service path resolution, no FK needed
+      group_secrets_manager_maintenance_tasks: %w[user_id group_id root_namespace_id organization_id], # plain ID columns for task service path resolution, no FK needed
       # TODO: To remove with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155256
       approval_merge_request_rules: %w[approval_policy_rule_id],
       ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
@@ -299,7 +301,6 @@ RSpec.describe 'Database schema',
 
   let(:ignored_tables_with_too_many_indexes) do
     {
-      approval_merge_request_rules: 17,
       deployments: 18,
       epics: 19,
       events: 16,
@@ -308,12 +309,12 @@ RSpec.describe 'Database schema',
       issues: 35,
       members: 19,
       merge_requests: 29,
-      namespaces: 26,
+      namespaces: 24,
       notes: 16,
-      p_ci_builds: 26,
+      p_ci_builds: 24,
       p_ci_pipelines: 24,
       packages_package_files: 16,
-      packages_packages: 27,
+      packages_packages: 28,
       project_type_ci_runners: 16,
       projects: 54, # Decrement by 2 after the removal of temporary indexes https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217449
       sbom_occurrences: 25,

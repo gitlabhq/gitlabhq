@@ -167,7 +167,7 @@ requirements:
   Administrators can remove, block, or trust users flagged in that
   area.
 
-- [Set password storage parameters](password_storage.md).
+- [Set password storage parameters](../user/profile/user_passwords.md).
   Stored secrets must satisfy FIPS 140-2 or 140-3 as outlined in
   SC-13. PBKDF2+SHA512 is supported with FIPS compliant ciphers when
   FIPS mode is enabled.

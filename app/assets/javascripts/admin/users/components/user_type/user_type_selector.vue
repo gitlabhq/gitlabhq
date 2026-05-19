@@ -39,6 +39,7 @@ export default {
       default: () => [USER_TYPE_REGULAR, USER_TYPE_ADMIN],
     },
   },
+  emits: ['access-change'],
   data() {
     return {
       currentUserType: this.userType,

@@ -23,6 +23,20 @@ RSpec.describe WorkItems::RelatedWorkItemLink, type: :model, feature_category: :
     let_it_be(:item_type) { described_class.issuable_name }
   end
 
+  describe '.order_by_created_at_asc' do
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:item1) { create(:work_item, :issue, project: project) }
+    let_it_be(:item2) { create(:work_item, :issue, project: project) }
+    let_it_be(:item3) { create(:work_item, :issue, project: project2) }
+    let_it_be(:item4) { create(:work_item, :issue, project: project2) }
+    let_it_be(:link_old) { create(:work_item_link, source: item1, target: item2, created_at: 3.days.ago) }
+    let_it_be(:link_new) { create(:work_item_link, source: item3, target: item4, created_at: 1.day.ago) }
+
+    it 'returns links sorted by ascending created_at' do
+      expect(described_class.order_by_created_at_asc).to eq([link_old, link_new])
+    end
+  end
+
   describe '.issuable_type' do
     it { expect(described_class.issuable_type).to eq(:issue) }
   end

@@ -48,6 +48,17 @@ RSpec.describe 'SetGroupCustomAttribute', feature_category: :groups_and_projects
   end
 
   context 'when user is an admin', :enable_admin_mode do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_custom_attribute do
+      let(:user) { admin }
+      let(:boundary_object) { group }
+      let(:mutation) do
+        graphql_mutation(:set_group_custom_attribute,
+          { group_path: group.full_path, key: key, value: value }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when creating a new custom attribute' do
       it 'creates the custom attribute' do
         expect { post_graphql_mutation(mutation, current_user: admin) }

@@ -9,7 +9,11 @@ module Mcp
       # description and input_schema
       # rely upon the database and are defined
       # as methods for lazy loading
-      register_version '0.1.0', {}
+      register_version '0.1.0', {
+        annotations: {
+          readOnlyHint: true
+        }
+      }
 
       override :tool_name
       def self.tool_name
@@ -34,11 +38,6 @@ module Mcp
           required: %w[scope search],
           additionalProperties: false
         }
-      end
-
-      override :annotations
-      def annotations
-        { readOnlyHint: true }
       end
 
       private

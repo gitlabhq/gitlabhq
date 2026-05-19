@@ -7,6 +7,9 @@ include:
       gem_name: "action_dispatch-draw_all"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
+      gem_name: "auto_freeze"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
       gem_name: "bundler-checksum"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:

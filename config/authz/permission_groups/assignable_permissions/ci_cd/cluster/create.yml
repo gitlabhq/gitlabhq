@@ -5,5 +5,7 @@ boundaries:
   - group
   - project
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - create_cluster

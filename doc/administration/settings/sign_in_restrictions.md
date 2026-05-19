@@ -30,7 +30,7 @@ disables using passkeys for two-factor authentication.
 To allow password and passkey authentication for the web interface:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section.
 1. Select the **Allow password and passkey authentication for the web interface** checkbox.
 1. Select **Save changes**.
@@ -49,7 +49,7 @@ This setting is enabled by default. When disabled, users must authenticate with 
 To allow password authentication for Git over HTTP(S):
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section.
 1. Select the **Allow password authentication for Git over HTTP(S)** checkbox.
 1. Select **Save changes**.
@@ -64,7 +64,7 @@ web interface. Passkeys can never be used with Git over HTTP(S).
 To disable password and passkey authentication for users with an SSO identity:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section.
 1. Select the **Disable password and passkey authentication for users with an SSO identity** checkbox.
 1. Select **Save changes**.
@@ -80,7 +80,7 @@ This requires all users, including administrators, to register a 2FA method.
 To enforce two-factor authentication for all users:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section.
 1. Select the **Enforce two-factor authentication** checkbox.
 1. Optional. In **Two-factor grace period**, enter a number of hours. users must register a 2FA
@@ -94,7 +94,7 @@ This requires only administrators to register a 2FA method. This also includes u
 To enforce two-factor authentication for administrators:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section.
 1. Select the **Enforce two-factor authentication for administrators** checkbox.
 1. Optional. In **Two-factor grace period**, enter a number of hours. users must register a 2FA
@@ -153,7 +153,7 @@ Open the [Rails console](../operations/rails_console.md) and run the following:
 To enable Admin Mode through the UI:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Sign-in restrictions**.
 1. Select **Enable Admin Mode**.
 1. Select **Save changes**.

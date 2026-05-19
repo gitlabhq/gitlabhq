@@ -93,7 +93,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportRepositoryWorker, fea
       end
     end
 
-    describe 'IID pre-allocation' do
+    describe 'IID pre-allocation', :clean_gitlab_redis_shared_state do
       let(:pull_request) do
         instance_double(BitbucketServer::Representation::PullRequest, iid: 42)
       end
@@ -175,6 +175,37 @@ RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportRepositoryWorker, fea
         end
 
         expect { worker.perform(project.id) }.to raise_error(StandardError, 'connection error')
+      end
+
+      it 'caches the max IID in Redis for use by notes importers' do
+        allow_next_instance_of(BitbucketServer::Client) do |client|
+          allow(client).to receive(:last_pull_request).with('key', 'slug').and_return(pull_request)
+        end
+        allow_next_instance_of(Gitlab::Import::IidPreallocator) do |preallocator|
+          allow(preallocator).to receive(:execute)
+        end
+
+        worker.perform(project.id)
+
+        expect(
+          Gitlab::Cache::Import::Caching.read(
+            "bitbucket-server-importer/max-iid/#{project.id}/merge_requests"
+          )
+        ).to eq('42')
+      end
+
+      it 'does not cache max IID when the API returns nil' do
+        allow_next_instance_of(BitbucketServer::Client) do |client|
+          allow(client).to receive(:last_pull_request).with('key', 'slug').and_return(nil)
+        end
+
+        worker.perform(project.id)
+
+        expect(
+          Gitlab::Cache::Import::Caching.read(
+            "bitbucket-server-importer/max-iid/#{project.id}/merge_requests"
+          )
+        ).to be_nil
       end
 
       it 'still schedules the next stage after pre-allocation' do

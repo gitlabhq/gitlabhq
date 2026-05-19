@@ -1,0 +1,64 @@
+---
+name: siphon_bulk_import_entities
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  id ORDER BY id SETTINGS index_granularity = 8192
+primary_key: id
+sorting_key: id
+settings:
+  index_granularity: '8192'
+columns:
+- name: id
+  type: Int64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: bulk_import_id
+  type: Int64
+- name: parent_id
+  type: Nullable(Int64)
+- name: namespace_id
+  type: Nullable(Int64)
+- name: project_id
+  type: Nullable(Int64)
+- name: source_type
+  type: Int8
+- name: source_full_path
+  type: String
+- name: destination_name
+  type: String
+- name: destination_namespace
+  type: String
+- name: status
+  type: Int8
+- name: jid
+  type: Nullable(String)
+- name: created_at
+  type: DateTime64(6, 'UTC')
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+- name: source_xid
+  type: Nullable(Int64)
+- name: migrate_projects
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'true'
+- name: has_failures
+  type: Nullable(Bool)
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: migrate_memberships
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'true'
+- name: organization_id
+  type: Nullable(Int64)
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: source_xid_convert_to_bigint
+  type: Nullable(Int64)

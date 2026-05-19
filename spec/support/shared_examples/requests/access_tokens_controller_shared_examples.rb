@@ -189,6 +189,23 @@ RSpec.shared_examples 'POST resource access tokens available' do
   it { expect { subject }.to change { User.count }.by(1) }
   it { expect { subject }.to change { PersonalAccessToken.count }.by(1) }
 
+  it 'tracks creation_source as ui' do
+    allow(Gitlab::InternalEvents).to receive(:track_event).and_call_original
+
+    expect(Gitlab::InternalEvents).to receive(:track_event).with(
+      'create_pat',
+      hash_including(
+        additional_properties: {
+          type: 'legacy',
+          scopes: 'api',
+          creation_source: PersonalAccessToken::CREATION_SOURCE_UI
+        }
+      )
+    ).and_call_original
+
+    subject
+  end
+
   context 'when unsuccessful' do
     before do
       allow_next_instance_of(ResourceAccessTokens::CreateService) do |service|

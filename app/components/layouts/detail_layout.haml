@@ -1,0 +1,24 @@
+.gl-detail-layout{ @options }
+  = render ::Layouts::PageHeadingComponent.new(@heading, options: { class: class_names('gl-sr-only': @page_heading_sr_only) }) do |c|
+    - c.with_heading do
+      = heading || @heading
+    - if actions?
+      - c.with_actions do
+        = actions
+    - if description? || @description
+      - c.with_description do
+        = description || @description
+
+  - if alerts?
+    .gl-detail-layout-alerts.js-detail-layout-alerts{ data: { testid: 'detail-layout-alerts' } }
+      = alerts
+
+  - if @loading
+    = render ::Pajamas::SpinnerComponent.new(size: :lg, class: 'gl-detail-layout-loading-icon',  data: { testid: 'detail-layout-loading-icon' } )
+  - else
+    .gl-detail-layout-container{ class: class_names('gl-detail-layout-container-has-sidebar': sidebar?), data: { testid: 'detail-layout-container' } }
+      %div{ data: { testid: 'detail-layout-content' } }
+        = content
+      - if sidebar?
+        %div{ data: { testid: 'detail-layout-sidebar' } }
+          = sidebar

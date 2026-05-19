@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :import_offline_configuration, class: 'Import::Offline::Configuration', aliases: [:offline_configuration] do
-    offline_export
+    offline_export { association(:offline_export) if bulk_import.nil? }
     organization
     bucket { 'gitlab-exports' }
 

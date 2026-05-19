@@ -12,7 +12,7 @@ This guide describes the event dictionary and how it's implemented.
 
 ## Event definition and validation
 
-This process is meant to document all internal events and ensure consistency. Every internal event needs to have such a definition. Event definitions must comply with the [JSON Schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/events/schema.json).
+This process is meant to document all internal events and ensure consistency. Every internal event needs to have such a definition. Event definitions must comply with the [JSON Schema](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/event-definitions-validator/-/blob/main/lib/schemas/schema.json).
 
 All event definitions are stored in the following directories:
 

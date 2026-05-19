@@ -75,7 +75,7 @@ during retrospectives.
 To review an iteration report for a completed iteration:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Iterations**.
+1. In the left sidebar, select **Plan** > **Iterations**.
 1. At the top, select **Done** and select your iteration cadence.
 1. Select the most recently completed iteration.
 

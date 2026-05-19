@@ -50,6 +50,8 @@ module Mutations
           description: 'IID of the merge request to create pipeline for.'
 
         authorize :create_pipeline
+        authorize_granular_token permissions: :create_pipeline, boundary_argument: :project_path,
+          boundary_type: :project
 
         def resolve(project_path:, ref:, async: false, variables: {}, inputs: [], merge_request_iid: nil)
           project = authorized_find!(project_path)

@@ -57,6 +57,8 @@ constraints(Namespaces::GroupUrlConstraint.new) do
         post :create_deploy_token, path: 'deploy_token/create'
       end
 
+      resources :service_accounts, path: 'service_accounts(/*vueroute)', only: [:index]
+
       resources :access_tokens, only: [:index, :create] do
         member do
           put :revoke

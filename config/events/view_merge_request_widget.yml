@@ -11,6 +11,8 @@ additional_properties:
   label:
     description: Type of widget like accessibility, code quality etc.
 product_group: code_review
+product_categories:
+- code_review_workflow
 milestone: '17.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156609
 tiers:

@@ -19,7 +19,7 @@ module Users
         )
         service.execute(hard_delete: job.hard_delete)
       rescue Gitlab::Utils::ExecutionTracker::ExecutionTimeOutError
-        # no-op
+        defer(job)
       rescue StandardError => e
         ::Gitlab::ErrorTracking.track_exception(e)
         reschedule(job)
@@ -36,6 +36,11 @@ module Users
 
     def reschedule(job)
       job.update(consume_after: 30.minutes.from_now)
+    end
+
+    def defer(job)
+      last_consume_after = Users::GhostUserMigration.maximum(:consume_after) || Time.current
+      job.update(consume_after: 30.seconds.after(last_consume_after))
     end
   end
 end

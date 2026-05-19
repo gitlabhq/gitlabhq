@@ -18,6 +18,30 @@ RSpec.shared_examples 'rejects nuget packages access' do |user_type, status, add
   end
 end
 
+RSpec.shared_examples 'setting the X-NuGet-Warning header on error responses' do |expected_warning:|
+  context 'with X-NuGet-Warning header' do
+    it 'includes the X-NuGet-Warning header on error responses' do
+      subject
+
+      expect(response).to have_gitlab_http_status(expected_status)
+      expect(response.headers['X-NuGet-Warning']).to eq(expected_warning)
+    end
+
+    context 'when nuget_warning_header feature flag is disabled' do
+      before do
+        stub_feature_flags(nuget_warning_header: false)
+      end
+
+      it 'does not include the X-NuGet-Warning header' do
+        subject
+
+        expect(response).to have_gitlab_http_status(expected_status)
+        expect(response.headers['X-NuGet-Warning']).to be_nil
+      end
+    end
+  end
+end
+
 RSpec.shared_examples 'process nuget service index request' do |user_type, status, add_member = true, v2 = false|
   context "for user type #{user_type}" do
     before do

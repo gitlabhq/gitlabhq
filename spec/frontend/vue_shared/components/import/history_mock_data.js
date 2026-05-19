@@ -187,6 +187,5 @@ export const apiItems = [
 
 export const basic = {
   items: apiItems,
-  // eslint-disable-next-line no-restricted-syntax
   detailsPath: 'http://docs.gitlab.com/ee/user/project/import/import_file.html',
 };

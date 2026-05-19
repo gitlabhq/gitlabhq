@@ -1,6 +1,6 @@
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { availableGraphQLProjectActions } from '~/vue_shared/components/projects_list/utils';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { projectPath } from '~/lib/utils/path_helpers/project';
 
 export const formatGraphQLProject = (
   {
@@ -27,7 +27,7 @@ export const formatGraphQLProject = (
     accessLevel,
     availableActions: availableGraphQLProjectActions(project),
     fullPath,
-    relativeWebUrl: joinPaths('/', gon.relative_url_root, fullPath),
+    relativeWebUrl: projectPath(fullPath),
   };
 
   return {

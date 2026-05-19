@@ -148,7 +148,7 @@ export const getNodesOrDefault = (queryData, nodesField = 'nodes') => {
   return queryData?.[nodesField] ?? [];
 };
 
-export const toggleQueryPollingByVisibility = (queryRef, interval = 10000) => {
+export const setupQueryPollingByVisibility = (queryRef, interval = 10000) => {
   const stopStartQuery = (query) => {
     if (!Visibility.hidden()) {
       query.startPolling(interval);

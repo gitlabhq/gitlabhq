@@ -125,4 +125,14 @@ RSpec.describe RuboCop::Cop::RSpec::FeatureCategory, feature_category: :tooling 
       expect(cop.external_dependency_checksum).to match(/^\h{64}$/)
     end
   end
+
+  it 'does not flag numbered block parameters in example body' do
+    expect_no_offenses(<<~RUBY)
+      RSpec.describe 'foo', feature_category: :tooling do
+        it 'bar' do
+          [:a].each { _1.to_s }
+        end
+      end
+    RUBY
+  end
 end

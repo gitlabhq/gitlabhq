@@ -37,8 +37,6 @@ class MergeRequests::DeleteSourceBranchWorker
   private
 
   def release_branch_deletion_lease(merge_request)
-    return unless Feature.enabled?(:prevent_merge_race_condition, merge_request.source_project)
-
     lease_key = self.class.lease_key(merge_request.source_project_id, merge_request.source_branch)
     uuid = Gitlab::ExclusiveLease.get_uuid(lease_key)
     return unless uuid

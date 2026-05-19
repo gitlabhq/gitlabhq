@@ -22,6 +22,7 @@ permissions:
   - admin_member_access_request
   - admin_member_role
   - admin_merge_request
+  - admin_merge_request_approval_settings
   - admin_milestone
   - admin_namespace
   - admin_note

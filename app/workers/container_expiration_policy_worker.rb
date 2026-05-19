@@ -48,7 +48,7 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
   end
 
   # data_consistency :delayed not used as this is a cron job and those jobs are
-  # not perfomed with a delay
+  # not performed with a delay
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63635#note_603771207
   def use_replica_if_available(&blk)
     ::Gitlab::Database::LoadBalancing::SessionMap

@@ -1,0 +1,8 @@
+---
+migration_job_name: RenameWriteWorkItemPermissionInGranularScopes
+description: Splits assignable permission write_work_item into create_work_item and update_work_item.
+feature_category: permissions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224558
+milestone: '19.0'
+queued_migration_version: 20260312120000
+finalized_by:

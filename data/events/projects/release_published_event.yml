@@ -1,0 +1,6 @@
+---
+event: Projects::ReleasePublishedEvent
+description: Published when a release in waiting_for_publish_event state is made available,
+  processed in batches of 100. Releases are stamped with release_published_at after
+  the event fires.
+feature_category: release_orchestration

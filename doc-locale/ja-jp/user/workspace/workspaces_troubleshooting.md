@@ -81,9 +81,9 @@ No agents available to create workspaces. Please consult Workspaces documentatio
    kubectl logs -f -l app=gitlab-agent -n gitlab-workspaces
    ```
 
-## エラー: `unsupported scheme in GitLab Kubernetes Agent Server address` {#error-unsupported-scheme-in-gitlab-kubernetes-agent-server-address}
+## エラー: `unsupported scheme in kas address` {#error-unsupported-scheme-in-kas-address}
 
-このエラーは、Kubernetes向けGitLabエージェントサーバー（KAS）アドレスに必要なプロトコルスキーマが不足している場合に発生します。
+このエラーは、GitLab Relay (KAS) アドレスに、必要なプロトコルスキームがない場合に発生します。
 
 この問題を解決するには、次の手順に従います:
 

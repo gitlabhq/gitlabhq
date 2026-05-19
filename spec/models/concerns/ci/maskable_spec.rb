@@ -78,10 +78,10 @@ RSpec.describe Ci::Maskable, feature_category: :pipeline_composition do
       end
 
       it 'does not match strings that span more than one line' do
-        string = <<~EOS
+        string = <<~TEXT
           hello
           world
-        EOS
+        TEXT
 
         expect(subject.match?(string)).to eq(false)
       end
@@ -114,10 +114,10 @@ RSpec.describe Ci::Maskable, feature_category: :pipeline_composition do
       end
 
       it 'does not match strings that span more than one line' do
-        string = <<~EOS
+        string = <<~TEXT
           hello
           world
-        EOS
+        TEXT
 
         expect(subject.match?(string)).to eq(false)
       end

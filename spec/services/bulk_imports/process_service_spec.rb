@@ -198,12 +198,20 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
         subject.execute
       end
 
+      it 'does not cache source ghost user id for offline imports' do
+        bulk_import.update!(source_type: :offline_export)
+
+        expect(source_internal_user_finder).not_to receive(:set_ghost_user_id)
+
+        subject.execute
+      end
+
       context 'when there are created entities to process' do
         before do
           stub_const("#{described_class}::DEFAULT_BATCH_SIZE", 1)
         end
 
-        it 'marks a batch of entities as started, enqueues EntityWorker, ExportRequestWorker and reenqueues' do
+        it 'marks a batch of entities as started, enqueues ExportRequestWorker and reenqueues' do
           create(:bulk_import_entity, :created, bulk_import: bulk_import)
           create(:bulk_import_entity, :created, bulk_import: bulk_import)
 
@@ -224,6 +232,36 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
             expect(BulkImports::ExportRequestWorker).to receive(:perform_async).once
 
             subject.execute
+          end
+        end
+
+        context 'when the import is offline' do
+          before do
+            bulk_import.update!(source_type: :offline_export)
+          end
+
+          it 'marks a batch of entities as started, enqueues EntityWorker directly and reenqueues' do
+            create(:bulk_import_entity, :created, bulk_import: bulk_import)
+            create(:bulk_import_entity, :created, bulk_import: bulk_import)
+
+            expect(BulkImportWorker).to receive(:perform_in).with(described_class::PERFORM_DELAY, bulk_import.id)
+            expect(BulkImports::EntityWorker).to receive(:perform_async).once
+
+            subject.execute
+
+            bulk_import.reload
+
+            expect(bulk_import.entities.map(&:status_name)).to contain_exactly(:created, :started)
+          end
+
+          context 'when there are project entities to process' do
+            it 'enqueues EntityWorker directly' do
+              create(:bulk_import_entity, :created, :project_entity, bulk_import: bulk_import)
+
+              expect(BulkImports::EntityWorker).to receive(:perform_async).once
+
+              subject.execute
+            end
           end
         end
       end

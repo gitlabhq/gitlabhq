@@ -10,6 +10,7 @@ import {
 import { __ } from '~/locale';
 
 export default {
+  name: 'CrudComponent',
   components: {
     GlButton,
     GlIcon,
@@ -89,12 +90,12 @@ export default {
       default: '',
     },
     headerClass: {
-      type: [String, Object],
+      type: [String, Array, Object],
       required: false,
       default: null,
     },
     titleClass: {
-      type: [String, Object],
+      type: [String, Array, Object],
       required: false,
       default: null,
     },
@@ -105,12 +106,12 @@ export default {
       validator: (value) => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div'].includes(value),
     },
     bodyClass: {
-      type: [String, Object],
+      type: [String, Array, Object],
       required: false,
       default: null,
     },
     footerClass: {
-      type: [String, Object],
+      type: [String, Array, Object],
       required: false,
       default: null,
     },
@@ -248,6 +249,7 @@ export default {
           'gl-relative gl-pr-9': isCollapsible,
         },
       ]"
+      data-testid="crud-header"
     >
       <div class="gl-flex gl-grow gl-flex-col gl-self-center gl-py-3">
         <component

@@ -1,6 +1,8 @@
 <script>
 import { GlButton, GlButtonGroup, GlTooltipDirective, GlHoverLoadDirective } from '@gitlab/ui';
 import { InternalEvents } from '~/tracking';
+import InlineBlamePopover from '~/blob/components/inline_blame_popover.vue';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import {
   RICH_BLOB_VIEWER,
   RICH_BLOB_VIEWER_TITLE,
@@ -16,6 +18,8 @@ export default {
   components: {
     GlButtonGroup,
     GlButton,
+    InlineBlamePopover,
+    UserCalloutDismisser,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -74,6 +78,7 @@ export default {
   BLAME_VIEWER,
 };
 </script>
+
 <template>
   <gl-button-group class="js-blob-viewer-switcher">
     <gl-button
@@ -107,6 +112,7 @@ export default {
     >
     <gl-button
       v-if="showBlameToggle"
+      ref="blameButton"
       v-gl-tooltip.hover
       v-gl-hover-load="() => $emit('preload-blame')"
       data-testid="blame-button"
@@ -118,5 +124,14 @@ export default {
       @click="switchToViewer($options.BLAME_VIEWER)"
       >{{ __('Blame') }}</gl-button
     >
+    <user-callout-dismisser v-if="showBlameToggle" feature-name="inline_blame_popover">
+      <template #default="{ dismiss, shouldShowCallout }">
+        <inline-blame-popover
+          v-if="shouldShowCallout"
+          :target-element="() => $refs.blameButton?.$el"
+          @dismiss="dismiss"
+        />
+      </template>
+    </user-callout-dismisser>
   </gl-button-group>
 </template>

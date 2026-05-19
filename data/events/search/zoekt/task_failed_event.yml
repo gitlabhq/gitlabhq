@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::TaskFailedEvent
+description: Published when a Zoekt indexing task exhausts its retries and is moved
+  to the failed state, so subscribers can react to the failure.
+feature_category: global_search
+ee_only: true

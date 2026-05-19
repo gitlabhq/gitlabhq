@@ -1,0 +1,196 @@
+---
+name: siphon_users
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  id ORDER BY id SETTINGS index_granularity = 2048
+primary_key: id
+sorting_key: id
+settings:
+  index_granularity: '2048'
+columns:
+- name: id
+  type: Int64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: email
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: sign_in_count
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: current_sign_in_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: last_sign_in_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: current_sign_in_ip
+  type: Nullable(String)
+- name: last_sign_in_ip
+  type: Nullable(String)
+- name: created_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: updated_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: name
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: admin
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: projects_limit
+  type: Int64
+- name: failed_attempts
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: locked_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: username
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: can_create_group
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'true'
+- name: can_create_team
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'true'
+- name: state
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: color_scheme_id
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '1'
+- name: created_by_id
+  type: Nullable(Int64)
+- name: last_credential_check_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: avatar
+  type: Nullable(String)
+- name: unconfirmed_email
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: hide_no_ssh_key
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: admin_email_unsubscribed_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: notification_email
+  type: Nullable(String)
+- name: hide_no_password
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: password_automatically_set
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: public_email
+  type: Nullable(String)
+- name: dashboard
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: project_view
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '2'
+- name: consumed_timestep
+  type: Nullable(Int64)
+- name: layout
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: hide_project_limit
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: note
+  type: Nullable(String)
+- name: otp_grace_period_started_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: external
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: auditor
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: require_two_factor_authentication_from_group
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: two_factor_grace_period
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '48'
+- name: last_activity_on
+  type: Nullable(Date32)
+- name: notified_of_own_activity
+  type: Nullable(Bool)
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: preferred_language
+  type: Nullable(String)
+- name: theme_id
+  type: Nullable(Int8)
+- name: accepted_term_id
+  type: Nullable(Int64)
+- name: private_profile
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: roadmap_layout
+  type: Nullable(Int8)
+- name: include_private_contributions
+  type: Nullable(Bool)
+- name: commit_email
+  type: Nullable(String)
+- name: group_view
+  type: Nullable(Int64)
+- name: managing_group_id
+  type: Nullable(Int64)
+- name: first_name
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: last_name
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: user_type
+  type: Int8
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: onboarding_in_progress
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: color_mode_id
+  type: Int8
+  default_kind: DEFAULT
+  default_expression: '1'
+- name: composite_identity_enforced
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: organization_id
+  type: Int64
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'

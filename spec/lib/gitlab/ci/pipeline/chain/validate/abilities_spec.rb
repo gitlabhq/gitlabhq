@@ -249,6 +249,16 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
       it { is_expected.to be_falsey }
     end
 
+    context 'when origin_ref refers to a MR but its object is absent' do
+      let(:merge_request) { nil }
+
+      before do
+        allow(command).to receive(:merge_request_ref?).and_return(true)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
     context 'when a merge request comes from a fork' do
       let(:author) { create(:user) }
       let(:fork_user) { create(:user) }

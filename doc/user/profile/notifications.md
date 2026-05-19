@@ -1,6 +1,6 @@
 ---
-stage: Growth
-group: Engagement
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Notification emails
 ---
@@ -618,8 +618,7 @@ message.
 
 ### Email notifications are enabled, but not received
 
-If you've enabled email notifications in GitLab, but users aren't receiving notifications as expected, ensure that
-your email is verified in GitLab and that your email provider isn't blocking emails from your GitLab instance. Many email providers (like Outlook) block emails
+If you've enabled email notifications in GitLab, but users aren't receiving notifications as expected, ensure the affected users' emails are verified in GitLab and that your email provider isn't blocking emails from your GitLab instance. Many email providers (like Outlook) block emails
 coming from lesser-known self-managed mail server IP addresses. To verify, attempt to send an email
 directly from the SMTP server for your instance. For example, a test email from Sendmail might look something like:
 

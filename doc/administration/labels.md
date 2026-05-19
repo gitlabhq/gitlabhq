@@ -21,7 +21,7 @@ Prerequisites:
 To manage labels for the GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Labels**.
+1. In the left sidebar, select **Labels**.
 
 For more information, see [manage labels](../user/project/labels.md).
 

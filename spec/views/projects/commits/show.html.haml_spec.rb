@@ -42,6 +42,12 @@ RSpec.describe 'projects/commits/show.html.haml', feature_category: :source_code
     it 'renders "Browse files" button with link to blob or tree at path' do
       expect(rendered).to have_link("Browse files", href: "/#{project.full_path}/-/blob/#{ref}/#{path}")
     end
+
+    it 'renders the date range select mount element with commits path' do
+      expect(rendered).to have_selector(
+        '#js-date-range-select[data-commits-path]'
+      )
+    end
   end
 
   context 'with commits date headers' do

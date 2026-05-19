@@ -137,8 +137,8 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
         it 'creates notes', :aggregate_failures do
           subject
 
-          expect(parent.notes.last.note).to eq("added #{work_item.to_reference} as child task")
-          expect(work_item.notes.last.note).to eq("added #{parent.to_reference} as parent issue")
+          expect(parent.notes.last.note).to eq("added #{work_item.to_reference} as child item")
+          expect(work_item.notes.last.note).to eq("added #{parent.to_reference} as parent item")
         end
       end
 

@@ -139,7 +139,7 @@ export const contentTop = () => {
 
   const heightCalculators = [
     () => getOuterHeight('#js-peek'),
-    () => getOuterHeight('.top-bar-fixed'),
+    () => getOuterHeight('.js-panel-header-inner'),
     ({ desktop }) => {
       const mrStickyHeader = document.querySelector('.js-merge-request-sticky-header-wrapper');
       if (mrStickyHeader) {

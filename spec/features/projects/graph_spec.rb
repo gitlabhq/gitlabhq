@@ -110,6 +110,8 @@ RSpec.describe 'Project Graph', :js, feature_category: :source_code_management d
       end
 
       it 'renders Pipeline graphs' do
+        visit_path
+
         expect(page).to have_content 'CI/CD Analytics'
         expect(page).to have_content 'Total pipeline runs'
         expect(page).to have_content 'Median duration'

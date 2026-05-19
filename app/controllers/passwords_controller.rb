@@ -29,6 +29,8 @@ class PasswordsController < Devise::PasswordsController
         reset_password_token: reset_password_token
       ).first_or_initialize
 
+      return redirect_blocked_user if user.blocked?
+
       unless user.reset_password_period_valid?
         flash[:alert] = _('Your password reset token has expired.')
         redirect_to(new_user_password_url(user_email: user['email']))
@@ -38,6 +40,9 @@ class PasswordsController < Devise::PasswordsController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def update
+    user = resource_class.with_reset_password_token(resource_params[:reset_password_token])
+    return redirect_blocked_user if user&.blocked?
+
     super do |resource|
       if resource.valid?
         resource.password_automatically_set = false
@@ -52,7 +57,7 @@ class PasswordsController < Devise::PasswordsController
 
   protected
 
-  # overriden in EE
+  # overridden in EE
   def log_audit_reset_failure(_user); end
 
   def resource_from_email
@@ -87,6 +92,12 @@ class PasswordsController < Devise::PasswordsController
 
   def resource_params
     super.permit(:email, :reset_password_token, :password, :password_confirmation)
+  end
+
+  private
+
+  def redirect_blocked_user
+    redirect_to new_user_session_path, alert: I18n.t('devise.failure.blocked')
   end
 end
 

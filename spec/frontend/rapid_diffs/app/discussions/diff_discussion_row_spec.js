@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { defineStore } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import DiffDiscussionRow from '~/rapid_diffs/app/discussions/diff_discussion_row.vue';
 import DiffGutterToggle from '~/rapid_diffs/app/discussions/diff_gutter_toggle.vue';
 import DiffLineDiscussions from '~/rapid_diffs/app/discussions/diff_line_discussions.vue';
@@ -11,7 +12,7 @@ const useMockStore = defineStore('discussionRowTestStore', {
     discussions: [],
   }),
   actions: {
-    findDiscussionsForPosition() {
+    findLineDiscussionsForPosition() {
       return this.discussions;
     },
     setPositionDiscussionsHidden() {},
@@ -377,5 +378,33 @@ describe('DiffDiscussionRow', () => {
     store.discussions = [];
     await nextTick();
     expect(wrapper.emitted('empty')).toStrictEqual([[]]);
+  });
+
+  describe('expandDiscussionForNoteFragment', () => {
+    it('expands collapsed discussions when hash matches a note', () => {
+      setWindowLocation('https://example.com/diffs#note_100');
+      store.discussions = [
+        createDiscussion({ hidden: true, notes: [{ id: 100, author: { id: 1 } }] }),
+      ];
+      createComponent();
+      expect(store.setPositionDiscussionsHidden).toHaveBeenCalledWith(
+        { oldPath, newPath, oldLine: 5, newLine: null },
+        false,
+      );
+    });
+
+    it('does not expand when hash does not match any note', () => {
+      setWindowLocation('https://example.com/diffs#note_999');
+      store.discussions = [createDiscussion({ hidden: true })];
+      createComponent();
+      expect(store.setPositionDiscussionsHidden).not.toHaveBeenCalledWith(expect.anything(), false);
+    });
+
+    it('does not expand when there is no note hash', () => {
+      setWindowLocation('https://example.com/diffs#diff_abc');
+      store.discussions = [createDiscussion({ hidden: true })];
+      createComponent();
+      expect(store.setPositionDiscussionsHidden).not.toHaveBeenCalledWith(expect.anything(), false);
+    });
   });
 });

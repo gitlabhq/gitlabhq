@@ -6,7 +6,7 @@ RSpec.describe DesignManagement::NewVersionWorker, feature_category: :design_man
   describe '#perform' do
     let(:worker) { described_class.new }
 
-    context 'the id is wrong or out-of-date' do
+    context 'when the id is wrong or out-of-date' do
       let(:version_id) { -1 }
 
       it 'does not create system notes' do
@@ -29,7 +29,7 @@ RSpec.describe DesignManagement::NewVersionWorker, feature_category: :design_man
       end
     end
 
-    context 'the version id is valid' do
+    context 'when the version id is valid' do
       let_it_be(:version) { create(:design_version, :with_lfs_file, designs_count: 2) }
 
       it 'creates a system note' do
@@ -55,7 +55,7 @@ RSpec.describe DesignManagement::NewVersionWorker, feature_category: :design_man
       end
     end
 
-    context 'the version includes multiple types of action' do
+    context 'when the version includes multiple types of action' do
       let_it_be(:version) do
         create(
           :design_version, :with_lfs_file,

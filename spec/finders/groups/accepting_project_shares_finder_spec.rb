@@ -31,7 +31,7 @@ RSpec.describe Groups::AcceptingProjectSharesFinder, feature_category: :groups_a
     end
 
     context 'when the user has no access to any group' do
-      before do
+      before_all do
         project.add_maintainer(current_user)
       end
 
@@ -41,10 +41,13 @@ RSpec.describe Groups::AcceptingProjectSharesFinder, feature_category: :groups_a
     end
 
     context "when the project's group has enabled lock on group sharing" do
-      before do
+      before_all do
         project.add_maintainer(current_user)
-        project.namespace.update!(share_with_group_lock: true)
         group_1.add_maintainer(current_user)
+      end
+
+      before do
+        project.namespace.update!(share_with_group_lock: true)
       end
 
       it 'does not return any group' do
@@ -53,9 +56,8 @@ RSpec.describe Groups::AcceptingProjectSharesFinder, feature_category: :groups_a
     end
 
     context 'when the user has access to groups' do
-      before do
+      before_all do
         project.add_maintainer(current_user)
-
         group_1.add_guest(current_user)
         group_2.add_guest(current_user)
       end
@@ -81,9 +83,8 @@ RSpec.describe Groups::AcceptingProjectSharesFinder, feature_category: :groups_a
       let_it_be(:unrelated_group) { create(:group) }
       let_it_be_with_reload(:project) { create(:project, group: child_group) }
 
-      before do
+      before_all do
         project.add_maintainer(current_user)
-
         grandparent_group.add_guest(current_user)
         unrelated_group.add_guest(current_user)
       end

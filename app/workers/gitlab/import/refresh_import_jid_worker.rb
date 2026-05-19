@@ -25,7 +25,7 @@ module Gitlab
       # check_job_id - The ID of the job for which to check the status.
       # params - to avoid multiple releases if parameters change
       def perform(project_id, check_job_id, _params = {})
-        return unless SidekiqStatus.running?(check_job_id)
+        return unless SidekiqStatus.running_or_enqueued?(check_job_id)
 
         import_state_jid = ProjectImportState.jid_by(project_id: project_id, status: :started)&.jid
         return unless import_state_jid

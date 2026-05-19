@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { defineStore } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import DiffFileDiscussions from '~/rapid_diffs/app/discussions/diff_file_discussions.vue';
 import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
 import DiffFileDiscussionExpansion from '~/diffs/components/diff_file_discussion_expansion.vue';
@@ -193,6 +194,34 @@ describe('DiffFileDiscussions', () => {
         createComponent();
         expect(wrapper.findComponent(NoteForm).props('saveDraft')).toBeNull();
       });
+    });
+  });
+
+  describe('expand discussion for linked note fragment', () => {
+    it('expands collapsed file discussions when hash matches a note', () => {
+      setWindowLocation('https://example.com/diffs#note_100');
+      const disc = {
+        ...createFileDiscussion(),
+        hidden: true,
+        notes: [{ id: 100, author: { id: 1 }, created_at: new Date().toISOString() }],
+      };
+      store.setInitialDiscussions([disc]);
+      createComponent();
+      expect(store.discussions[0].hidden).toBe(false);
+    });
+
+    it('does not expand when hash does not match any note', () => {
+      setWindowLocation('https://example.com/diffs#note_999');
+      store.setInitialDiscussions([{ ...createFileDiscussion(), hidden: true }]);
+      createComponent();
+      expect(store.discussions[0].hidden).toBe(true);
+    });
+
+    it('does not expand when there is no note hash', () => {
+      setWindowLocation('https://example.com/diffs');
+      store.setInitialDiscussions([{ ...createFileDiscussion(), hidden: true }]);
+      createComponent();
+      expect(store.discussions[0].hidden).toBe(true);
     });
   });
 });

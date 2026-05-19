@@ -11,7 +11,7 @@ class TestCaseEntity < Grape::Entity
   expose :execution_time, documentation: { type: 'integer', example: 180 }
   expose :system_output, documentation: { type: 'string', example: 'Failure/Error: is_expected.to eq(3)' }
   expose :stack_trace, documentation: { type: 'string', example: 'Failure/Error: is_expected.to eq(3)' }
-  expose :recent_failures, documentation: { example: { count: 3, base_branch: 'develop' } }
+  expose :recent_failures, documentation: { type: 'object', example: { count: 3, base_branch: 'develop' } }
   expose(
     :attachment_url,
     if: ->(*) { can_read_screenshots? },

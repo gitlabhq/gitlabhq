@@ -338,6 +338,31 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
       end
     end
 
+    context 'when diff_id is the latest version and HEAD diff is diffable' do
+      let!(:first_diff) { merge_request.merge_request_diff }
+      let!(:latest_diff) { create(:merge_request_diff, merge_request: merge_request, importing: true) }
+
+      before do
+        merge_request.update_column(:latest_merge_request_diff_id, latest_diff.id)
+        create(:merge_request_diff, :merge_head, merge_request: merge_request, importing: true)
+        merge_request.update_column(:merge_status, :can_be_merged)
+      end
+
+      it 'returns HEAD diff when diff_id matches the latest version' do
+        go(diff_id: latest_diff.id)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:compare)).to eq(merge_request.reload.merge_head_diff)
+      end
+
+      it 'does not return HEAD diff when diff_id is not the latest version' do
+        go(diff_id: first_diff.id)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:compare)).not_to eq(merge_request.reload.merge_head_diff)
+      end
+    end
+
     context 'with MR regular diff params' do
       subject { go }
 

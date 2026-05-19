@@ -7,6 +7,7 @@ require_relative 'contract_pb'
 module DuoWorkflowService
   module DuoWorkflow
     class Service
+
       include ::GRPC::GenericService
 
       self.marshal_class_method = :encode
@@ -18,6 +19,7 @@ module DuoWorkflowService
       rpc :ListTools, ::DuoWorkflowService::ListToolsRequest, ::DuoWorkflowService::ListToolsResponse
       rpc :ListFlows, ::DuoWorkflowService::ListFlowsRequest, ::DuoWorkflowService::ListFlowsResponse
       rpc :TrackSelfHostedExecuteWorkflow, stream(::DuoWorkflowService::TrackSelfHostedClientEvent), stream(::DuoWorkflowService::TrackSelfHostedAction)
+      rpc :ValidateFlowConfig, ::DuoWorkflowService::ValidateFlowConfigRequest, ::DuoWorkflowService::ValidateFlowConfigResponse
     end
 
     Stub = Service.rpc_stub_class

@@ -4,60 +4,63 @@
 
 = render ::Layouts::PageHeadingComponent.new(title)
 
-= render ::Layouts::SettingsSectionComponent.new(_("Programming languages used in this repository")) do |c|
-  - c.with_description do
-    = _("Measured in bytes of code. Excludes generated and vendored code.")
-  - c.with_body do
-    #js-languages-chart{ data: { chart_data: @languages.to_json.html_safe } }
+- if @gitaly_unavailable
+  = render 'shared/errors/gitaly_unavailable', reason: s_('Graphs|Unable to load repository analytics')
+- else
+  = render ::Layouts::SettingsSectionComponent.new(_("Programming languages used in this repository")) do |c|
+    - c.with_description do
+      = _("Measured in bytes of code. Excludes generated and vendored code.")
+    - c.with_body do
+      #js-languages-chart{ data: { chart_data: @languages.to_json.html_safe } }
 
-- if defined?(@daily_coverage_options)
-  #js-code-coverage-chart{ data: project_coverage_chart_data_attributes(@daily_coverage_options, @ref) }
+  - if defined?(@daily_coverage_options)
+    #js-code-coverage-chart{ data: project_coverage_chart_data_attributes(@daily_coverage_options, @ref) }
 
-- start_time = capture do
-  #{@commits_graph.start_date.strftime('%b %d')}
-- end_time = capture do
-  #{@commits_graph.end_date.strftime('%b %d')}
-= render ::Layouts::SettingsSectionComponent.new('', testid: 'commit-statistics') do |c|
-  - c.with_heading do
-    = (_("Commit statistics for %{ref} %{start_time} - %{end_time}") % { ref: "<strong>#{h @ref}</strong>", start_time: start_time, end_time: end_time }).html_safe
-  - c.with_description do
-    = _("Excluding merge commits. Limited to %{limit} commits.") % {limit: number_with_delimiter(@commits_limit, delimiter: ',')}
+  - start_time = capture do
+    #{@commits_graph.start_date.strftime('%b %d')}
+  - end_time = capture do
+    #{@commits_graph.end_date.strftime('%b %d')}
+  = render ::Layouts::SettingsSectionComponent.new('', testid: 'commit-statistics') do |c|
+    - c.with_heading do
+      = (_("Commit statistics for %{ref} %{start_time} - %{end_time}") % { ref: "<strong>#{h @ref}</strong>", start_time: start_time, end_time: end_time }).html_safe
+    - c.with_description do
+      = _("Excluding merge commits. Limited to %{limit} commits.") % {limit: number_with_delimiter(@commits_limit, delimiter: ',')}
 
-    .tree-ref-container.gl-mt-5
-      .tree-ref-holder
-        #js-project-graph-ref-switcher{ data: { project_id: @project.id, graph_path: project_graph_path(@project, @ref), project_branch: current_ref } }
-      %ul.breadcrumb.repo-breadcrumb.gl-mt-3.gl-bg-default.gl-border
-        = commits_breadcrumbs
+      .tree-ref-container.gl-mt-5
+        .tree-ref-holder
+          #js-project-graph-ref-switcher{ data: { project_id: @project.id, graph_path: project_graph_path(@project, @ref), project_branch: current_ref } }
+        %ul.breadcrumb.repo-breadcrumb.gl-mt-3.gl-bg-default.gl-border
+          = commits_breadcrumbs
 
-    %ul.gl-mt-5
-      %li
-        - total = capture do
-          #{@commits_graph.commits.size}
-        = (_("Total: %{total}") % { total: "<strong>#{total} commits</strong>" }).html_safe
-      %li
-        - average = capture do
-          #{@commits_graph.commit_per_day}
-        = (_("Average per day: %{average}") % { average: "<strong>#{average} commits</strong>" }).html_safe
-      %li
-        - authors = capture do
-          #{@commits_graph.authors}
-        = (_("Authors: %{authors}") % { authors: "<strong>#{authors}</strong>" }).html_safe
-  - c.with_body do
-    .repo-charts
-      .row
-        .gl-col-12
-          %h3.gl-heading-4
-            = _("Commits per day of month")
-          %div
-            #js-month-chart{ data: { chart_data: @commits_per_month.to_json.html_safe } }
-      .row.gl-mt-7
-        .gl-col-md-6
-          %h3.gl-heading-4
-            = _("Commits per weekday")
-          %div
-            #js-weekday-chart{ data: { chart_data: @commits_per_week_days.to_json.html_safe } }
-        .gl-col-md-6
-          %h3.gl-heading-4
-            = _("Commits per day hour (UTC)")
-          %div
-            #js-hour-chart{ data: { chart_data: @commits_per_time.to_json.html_safe } }
+      %ul.gl-mt-5
+        %li
+          - total = capture do
+            #{@commits_graph.commits.size}
+          = (_("Total: %{total}") % { total: "<strong>#{total} commits</strong>" }).html_safe
+        %li
+          - average = capture do
+            #{@commits_graph.commit_per_day}
+          = (_("Average per day: %{average}") % { average: "<strong>#{average} commits</strong>" }).html_safe
+        %li
+          - authors = capture do
+            #{@commits_graph.authors}
+          = (_("Authors: %{authors}") % { authors: "<strong>#{authors}</strong>" }).html_safe
+    - c.with_body do
+      .repo-charts
+        .row
+          .gl-col-12
+            %h3.gl-heading-4
+              = _("Commits per day of month")
+            %div
+              #js-month-chart{ data: { chart_data: @commits_per_month.to_json.html_safe } }
+        .row.gl-mt-7
+          .gl-col-md-6
+            %h3.gl-heading-4
+              = _("Commits per weekday")
+            %div
+              #js-weekday-chart{ data: { chart_data: @commits_per_week_days.to_json.html_safe } }
+          .gl-col-md-6
+            %h3.gl-heading-4
+              = _("Commits per day hour (UTC)")
+            %div
+              #js-hour-chart{ data: { chart_data: @commits_per_time.to_json.html_safe } }

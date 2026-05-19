@@ -8,11 +8,11 @@ RSpec.describe "Every controller", feature_category: :scalability do
       Gitlab::FeatureCategories.default.categories.map(&:to_sym).to_set
     end
 
-    let_it_be(:controller_actions) do
+    let_it_be(:controller_actions, freeze: false) do
       Gitlab::RequestEndpoints.all_controller_actions
     end
 
-    let_it_be(:routes_without_category) do
+    let_it_be(:routes_without_category, freeze: false) do
       controller_actions.map do |controller, action|
         next if controller.feature_category_for_action(action)
 

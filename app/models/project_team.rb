@@ -66,14 +66,21 @@ class ProjectTeam
   # NOTE: `immediately_sync_authorizations` can be expensive to run in the foreground. This should only be used in rare
   # cases where asynchronous authorization does not work (e.g. user is created and used immediately in the same
   # request).
-  def add_member(user, access_level, current_user: nil, expires_at: nil, immediately_sync_authorizations: false)
+  def add_member(
+    user, access_level, current_user: nil, expires_at: nil, immediately_sync_authorizations: false,
+    # skip_authorization bypasses all member-creation policy checks.
+    # Use only for system-driven flows (e.g. service-account provisioning)
+    # Never pass values derived from user input.
+    skip_authorization: false
+  )
     Members::Projects::CreatorService.add_member( # rubocop:disable CodeReuse/ServiceClass
       project,
       user,
       access_level,
       current_user: current_user,
       expires_at: expires_at,
-      immediately_sync_authorizations: immediately_sync_authorizations
+      immediately_sync_authorizations: immediately_sync_authorizations,
+      skip_authorization: skip_authorization
     )
   end
 

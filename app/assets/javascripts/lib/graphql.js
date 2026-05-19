@@ -120,6 +120,9 @@ export const typePolicies = {
   AiMetrics: {
     merge: true,
   },
+  Analytics: {
+    merge: true,
+  },
 };
 
 export const stripWhitespaceFromQuery = (url, path) => {

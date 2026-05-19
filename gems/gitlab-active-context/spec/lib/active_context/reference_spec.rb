@@ -189,11 +189,11 @@ RSpec.describe ActiveContext::Reference do
         expect(indexing_embedding_models).to all(be_a(::ActiveContext::EmbeddingModel))
 
         model_1 = indexing_embedding_models.first
-        expect(model_1.model_name).to eq('model-001')
+        expect(model_1.model_key).to eq('model-001')
         expect(model_1.field).to eq(:embeddings_v1)
 
         model_2 = indexing_embedding_models.second
-        expect(model_2.model_name).to eq('model-002')
+        expect(model_2.model_key).to eq('model-002')
         expect(model_2.field).to eq(:embeddings_v2)
       end
     end
@@ -210,7 +210,7 @@ RSpec.describe ActiveContext::Reference do
         models = reference.indexing_embedding_models(next_model_only: true)
 
         expect(models.length).to eq(1)
-        expect(models.first.model_name).to eq('model-002')
+        expect(models.first.model_key).to eq('model-002')
         expect(models.first.field).to eq(:embeddings_v2)
       end
 
@@ -218,7 +218,7 @@ RSpec.describe ActiveContext::Reference do
         models = reference.indexing_embedding_models(next_model_only: false)
 
         expect(models.length).to eq(2)
-        expect(models.map(&:model_name)).to eq(%w[model-001 model-002])
+        expect(models.map(&:model_key)).to eq(%w[model-001 model-002])
       end
 
       it 'returns empty array when next_model_only is true but next model is not set' do

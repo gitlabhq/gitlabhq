@@ -6,6 +6,10 @@ if stable_branch.encourage_package_and_qa_execution?
 
   **@#{helper.mr_author}, the `e2e:test-on-omnibus-ee` job must complete before merging this merge request.***
 
+  The `e2e:test-on-omnibus-ee` pipeline only runs automatically on stable branch merge requests when the
+  ~"pipeline::tier-3" label is applied. If the pipeline has not run yet, please add the ~"pipeline::tier-3"
+  label to this merge request to trigger it.
+
   If the `e2e:test-on-omnibus-ee` pipeline fails and you're unable to diagnose the issue, request assistance in the
   `#s_developer_experience` Slack channel to confirm that the failures are unrelated to the merge request.
   MARKDOWN

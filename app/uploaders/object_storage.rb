@@ -553,7 +553,7 @@ module ObjectStorage
 
         # TODO:
         # We store file internally and force it to be considered as `cached`
-        # This makes CarrierWave to store file in permament location (copy/delete)
+        # This makes CarrierWave to store file in permanent location (copy/delete)
         # once this object is saved, but not sooner
         @cache_id = "force-to-use-cache" # rubocop:disable Gitlab/ModuleWithInstanceVariables
         @file = file # rubocop:disable Gitlab/ModuleWithInstanceVariables

@@ -32,6 +32,7 @@ export default {
       default: __('No commits present here'),
     },
   },
+  emits: ['handle-commit-select'],
 };
 </script>
 <template>

@@ -215,7 +215,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       end
 
       context 'job_execution_status attribute' do
-        context 'when no executing builds present for runners' do
+        context 'when no running builds present for runners' do
           it 'returns "idle" as job execution status' do
             perform_request
 
@@ -223,15 +223,27 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
           end
         end
 
-        context 'when executing build present' do
+        context 'when running build present' do
           before do
-            create(:ci_build, :running, runner: project_runner, project: project)
+            create(:ci_build, :picked, runner: project_runner, project: project)
           end
 
           it 'returns "active" as job execution status' do
             perform_request
 
             expect(json_response.find { |runner| runner['id'] == project_runner.id }['job_execution_status']).to eq 'active'
+          end
+        end
+
+        context 'when only canceling build present' do
+          before do
+            create(:ci_build, :canceling, runner: project_runner, project: project)
+          end
+
+          it 'returns "idle" as job execution status' do
+            perform_request
+
+            expect(json_response.find { |runner| runner['id'] == project_runner.id }['job_execution_status']).to eq 'idle'
           end
         end
 
@@ -273,11 +285,9 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
         let(:runner) { shared_runner }
         let(:manager) { runner.runner_managers.first }
 
-        before do
-          create(:ci_build, :running, runner_manager: manager, runner: shared_runner)
-        end
-
         it 'returns all managers of the runner' do
+          create(:ci_build, :picked, runner_manager: manager, runner: shared_runner)
+
           perform_request
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -289,15 +299,39 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
         end
 
         context 'job_execution_status' do
-          before do
-            create(:ci_build, :running, runner_manager: manager, project: project)
+          context 'when the runner manager does not have running builds' do
+            it 'returns "idle" as job execution status' do
+              perform_request
+
+              expect(json_response).to all(include('job_execution_status'))
+              expect(json_response.find { |runner_manager| runner_manager['id'] == manager.id }['job_execution_status']).to eq 'idle'
+            end
           end
 
-          it 'returns job execution status' do
-            perform_request
+          context 'when the runner manager has running builds' do
+            before do
+              create(:ci_build, :picked, runner_manager: manager, project: project)
+            end
 
-            expect(json_response).to all(include('job_execution_status'))
-            expect(json_response.find { |runner_manager| runner_manager['id'] == manager.id }['job_execution_status']).to eq 'active'
+            it 'returns "active" as job execution status' do
+              perform_request
+
+              expect(json_response).to all(include('job_execution_status'))
+              expect(json_response.find { |runner_manager| runner_manager['id'] == manager.id }['job_execution_status']).to eq 'active'
+            end
+          end
+
+          context 'when the runner manager has only canceling builds' do
+            before do
+              create(:ci_build, :canceling, runner_manager: manager, project: project)
+            end
+
+            it 'returns "idle" as job execution status' do
+              perform_request
+
+              expect(json_response).to all(include('job_execution_status'))
+              expect(json_response.find { |runner_manager| runner_manager['id'] == manager.id }['job_execution_status']).to eq 'idle'
+            end
           end
 
           context 'N+1 query performance' do

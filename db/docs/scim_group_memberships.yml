@@ -3,7 +3,7 @@ table_name: scim_group_memberships
 classes:
 - Authn::ScimGroupMembership
 feature_categories:
-- system_access
+- user_management
 description: Represents a user membership to a particular SCIM group (defined by identity providers)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192157
 milestone: '18.1'

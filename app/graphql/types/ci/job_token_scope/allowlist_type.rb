@@ -10,12 +10,14 @@ module Types
         field :groups_allowlist,
           Types::Ci::JobTokenScope::AllowlistEntryType.connection_type,
           null: true,
+          max_page_size: ::Ci::JobToken::GroupScopeLink::GROUP_LINK_LIMIT,
           description: "Allowlist of groups that can access the current project " \
             "by authenticating with a CI/CD job token."
 
         field :projects_allowlist,
           Types::Ci::JobTokenScope::AllowlistEntryType.connection_type,
           null: true,
+          max_page_size: ::Ci::JobToken::ProjectScopeLink::PROJECT_LINK_DIRECTIONAL_LIMIT,
           description: "Allowlist of projects that can access the current project " \
             "by authenticating with a CI/CD job token."
       end

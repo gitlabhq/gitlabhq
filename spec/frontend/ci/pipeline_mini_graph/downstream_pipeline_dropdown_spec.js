@@ -9,7 +9,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { reportToSentry } from '~/ci/utils';
-import { toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
+import { setupQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
@@ -190,7 +190,17 @@ describe('Downstream Pipeline Dropdown', () => {
   describe('polling', () => {
     it('initializes polling visibility on mount', async () => {
       await createComponent({ mockResponse: true });
-      expect(toggleQueryPollingByVisibility).toHaveBeenCalled();
+      expect(setupQueryPollingByVisibility).toHaveBeenCalled();
+    });
+
+    it('cleans up visibility listener on destroy', async () => {
+      const cleanupFn = jest.fn();
+      setupQueryPollingByVisibility.mockReturnValue(cleanupFn);
+      await createComponent({ mockResponse: true });
+
+      wrapper.destroy();
+
+      expect(cleanupFn).toHaveBeenCalled();
     });
 
     it('starts polling when dropdown is open', async () => {

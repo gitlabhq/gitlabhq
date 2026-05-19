@@ -1007,6 +1007,7 @@ It includes the following fields:
 | `source_branch`                 | String  | The source branch name. |
 | `source`                        | Object  | Source project details. For example, name and description. |
 | `source_project_id`             | Integer | The ID of the source project. |
+| `squash_commit_sha`             | String  | The SHA of the squash commit. Only present when the merge request is merged with squash. |
 | `state_id`                      | Integer | The state ID (`1`: opened, `2`: closed, `3`: merged, `4`:locked). |
 | `state`                         | String  | The state of the merge request (`opened`, `closed`, `merged`, `locked`). |
 | `system_action`                 | String  | The system action (only present if `system` is `true`). |
@@ -1058,6 +1059,7 @@ Each changed field follows this format:
 - `prepared_at`
 - `reviewer_ids`
 - `reviewers`
+- `squash_commit_sha`
 - `state_id`
 - `target_branch`
 - `time_change`
@@ -1250,6 +1252,7 @@ recommended alternatives, see [deprecated fields](#deprecated-fields).
     "milestone_id": 8,
     "source_branch": "feature/booking-validation",
     "source_project_id": 2,
+    "squash_commit_sha": null,
     "state_id": 1,
     "target_branch": "main",
     "target_project_id": 2,

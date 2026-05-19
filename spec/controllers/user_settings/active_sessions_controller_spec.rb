@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe UserSettings::ActiveSessionsController, feature_category: :user_profile do
   describe 'DELETE destroy' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     before do
       sign_in(user)

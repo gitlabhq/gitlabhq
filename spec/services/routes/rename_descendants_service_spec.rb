@@ -150,6 +150,113 @@ RSpec.describe Routes::RenameDescendantsService, feature_category: :groups_and_p
       it_behaves_like 'does not create any redirect_routes'
     end
 
+    context 'when cells claims are enabled' do
+      before do
+        stub_config_cell(enabled: true)
+      end
+
+      let!(:changes) do
+        {
+          path: { saved: true, old_value: 'old-path' },
+          name: { saved: true, old_value: 'old-name' }
+        }
+      end
+
+      context 'for route claims when descendants have "/" in path' do
+        it 'does not schedule BulkClaimsWorker since descendants are not claimable' do
+          # All descendant routes contain '/' so none pass the if condition
+          expect(Cells::BulkClaimsWorker).not_to receive(:perform_async).with('Route', 'path', anything)
+
+          execute
+        end
+      end
+
+      context 'when only name changes' do
+        let!(:changes) do
+          {
+            path: { saved: false, old_value: 'old-path' },
+            name: { saved: true, old_value: 'old-name' }
+          }
+        end
+
+        it 'does not collect route claims metadata' do
+          expect(Cells::BulkClaimsWorker).not_to receive(:perform_async).with('Route', 'path', anything)
+
+          execute
+        end
+      end
+
+      context 'for route claims when descendants are claimable' do
+        before do
+          # Stub the if condition to always return true to exercise full code path
+          # In practice, descendant routes always have '/' and are not claimable
+          allow(Route).to receive(:cells_claims_attributes).and_return({
+            path: {
+              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ROUTES,
+              feature_flag: :cells_claims_routes,
+              if: ->(_record) { true }
+            }
+          })
+          allow(parent_route).to receive(:run_after_commit).and_yield
+        end
+
+        it 'collects destroy metadata and schedules BulkClaimsWorker' do
+          expect(Cells::BulkClaimsWorker).to receive(:perform_async).with(
+            'Route', 'path', hash_including('destroy_metadata')
+          )
+          expect(Cells::BulkClaimsWorker).to receive(:perform_async).with(
+            'Route', 'path', hash_including('create_record_ids')
+          )
+          # RedirectRoute claims are also scheduled via run_after_commit
+          allow(Cells::BulkClaimsWorker).to receive(:perform_async).with(
+            'RedirectRoute', 'path', anything
+          )
+
+          execute
+        end
+      end
+
+      context 'for redirect route claims' do
+        before do
+          allow(parent_route).to receive(:run_after_commit).and_yield
+        end
+
+        it 'schedules BulkClaimsWorker with create_record_ids for inserted redirect routes' do
+          expect(Cells::BulkClaimsWorker).to receive(:perform_async).with(
+            'RedirectRoute', 'path', hash_including('create_record_ids')
+          )
+
+          execute
+        end
+
+        context 'when all redirect route inserts conflict' do
+          before do
+            # Pre-create redirect routes so insert_all returns no new IDs
+            subgroups.each do |subgroup|
+              RedirectRoute.find_or_create_by!(
+                source: subgroup,
+                path: subgroup.route.path
+              )
+            end
+            subgroup_projects.each do |project|
+              RedirectRoute.find_or_create_by!(
+                source: project,
+                path: project.route.path
+              )
+            end
+          end
+
+          it 'does not schedule BulkClaimsWorker for redirect routes' do
+            expect(Cells::BulkClaimsWorker).not_to receive(:perform_async).with(
+              'RedirectRoute', 'path', anything
+            )
+
+            execute
+          end
+        end
+      end
+    end
+
     context 'when `changes` are not in the expected format' do
       let!(:changes) do
         {

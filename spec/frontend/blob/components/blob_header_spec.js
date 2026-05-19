@@ -57,12 +57,20 @@ describe('Blob Header Default Actions', () => {
 
     describe('default render', () => {
       it.each`
-        findComponent        | componentName
-        ${findTableContents} | ${'TableContents'}
-        ${findViewSwitcher}  | ${'ViewSwitcher'}
-        ${findBlobFilePath}  | ${'BlobFilePath'}
+        findComponent       | componentName
+        ${findViewSwitcher} | ${'ViewSwitcher'}
+        ${findBlobFilePath} | ${'BlobFilePath'}
       `('renders $componentName component by default', ({ findComponent }) => {
         expect(findComponent().exists()).toBe(true);
+      });
+
+      it('does not render TableContents outside of rich viewer mode', () => {
+        expect(findTableContents().exists()).toBe(false);
+      });
+
+      it('renders TableContents in rich viewer mode', () => {
+        createComponent({ propsData: { activeViewerType: 'rich' } });
+        expect(findTableContents().exists()).toBe(true);
       });
     });
 

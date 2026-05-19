@@ -117,24 +117,7 @@ InitializerConnections.warn_if_database_connection do
       # Begin of the /-/ scope.
       # Use this scope for all new global routes.
       scope path: '-' do
-        # Autocomplete
-        get '/autocomplete/users' => 'autocomplete#users'
-        get '/autocomplete/users/:id' => 'autocomplete#user'
-        get '/autocomplete/projects' => 'autocomplete#projects'
-        get '/autocomplete/award_emojis' => 'autocomplete#award_emojis'
-        get '/autocomplete/merge_request_target_branches' => 'autocomplete#merge_request_target_branches'
-        get '/autocomplete/merge_request_source_branches' => 'autocomplete#merge_request_source_branches'
-        get '/autocomplete/deploy_keys_with_owners' => 'autocomplete#deploy_keys_with_owners'
-
-        Gitlab.ee do
-          get '/autocomplete/project_groups' => 'autocomplete#project_groups'
-          get '/autocomplete/project_routes' => 'autocomplete#project_routes'
-          get '/autocomplete/namespace_routes' => 'autocomplete#namespace_routes'
-          get '/autocomplete/group_subgroups' => 'autocomplete#group_subgroups'
-        end
-
         # sandbox
-        get '/sandbox/mermaid_v10' => 'sandbox#mermaid_v10'
         get '/sandbox/mermaid_v11' => 'sandbox#mermaid_v11'
         get '/sandbox/swagger' => 'sandbox#swagger'
 
@@ -255,6 +238,13 @@ InitializerConnections.warn_if_database_connection do
           end
         end
 
+        resources :awarded_achievements, only: [], constraints: { id: %r{[^/]+} }, module: :achievements do
+          member do
+            get :accept
+            post :accept
+          end
+        end
+
         # Spam reports
         resources :abuse_reports, only: [:create] do
           collection do
@@ -269,6 +259,7 @@ InitializerConnections.warn_if_database_connection do
         draw :snippets
         draw_all :profile
         draw_all :user_settings
+        draw_all :autocomplete
 
         post '/mailgun/webhooks' => 'mailgun/webhooks#process_webhook'
 

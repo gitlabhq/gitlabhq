@@ -27,7 +27,7 @@ module Ci
     def calculate_reactive_cache(sha, ref)
       config = ::Gitlab::Ci::ProjectConfig.new(project: project, sha: sha)
 
-      return {} unless config.exists?
+      return empty_config_result unless config.exists?
 
       result = execute_yaml_processor(sha, ref, config)
 
@@ -60,6 +60,11 @@ module Ci
     # Overridden in EE
     def valid_config_result(result)
       result.root_variables_with_prefill_data
+    end
+
+    # Overridden in EE
+    def empty_config_result
+      {}
     end
   end
 end

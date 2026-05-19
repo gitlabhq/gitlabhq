@@ -65,7 +65,6 @@ Style/SymbolProc:
     - 'ee/lib/gitlab/geo/oauth/logout_state.rb'
     - 'ee/spec/factories/issues.rb'
     - 'ee/spec/features/billings/qrtly_reconciliation_alert_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/search_results_spec.rb'
     - 'ee/spec/services/groups/participants_service_spec.rb'
     - 'ee/spec/support/helpers/subscription_portal_helpers.rb'
     - 'ee/spec/support/shared_examples/lib/gitlab/graphql/issuables_lazy_links_aggregate_shared_examples.rb'

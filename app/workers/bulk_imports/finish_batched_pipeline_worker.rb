@@ -59,7 +59,7 @@ module BulkImports
     end
 
     def export_status
-      @export_status ||= ExportStatus.new(tracker, tracker.importing_relation)
+      @export_status ||= ::Import::ExportStatus.for_context(tracker, tracker.importing_relation)
     end
 
     def most_recent_batch_stale?

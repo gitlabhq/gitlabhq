@@ -1,8 +1,10 @@
 ---
 name: create_repository
 description: Grants the ability to create and manage repositories
+boundaries:
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - create_repository_changelog
   - create_repository_file
-boundaries:
-  - project

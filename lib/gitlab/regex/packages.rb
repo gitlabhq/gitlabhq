@@ -266,7 +266,7 @@ module Gitlab
           )
           (?<path>
             /(?:
-              [-/$_.+!*'(),0-9a-z] (?# plain URL character)
+              [-/$_.+!*'(),~0-9a-z] (?# plain URL character)
               |
               %[0-9a-f]{2} (?# URL encoded character)
             ){0,1000}

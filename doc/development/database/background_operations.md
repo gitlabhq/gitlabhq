@@ -5,6 +5,10 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Background operations
 ---
 
+> [!warning]
+> This framework is experimental and subject to changes or bugs.
+> Reach out to `#g_database_architecture` on Slack before adopting it.
+
 Background operations provide a framework for performing large-scale
 data operations on GitLab databases. Unlike
 [batched background migrations](batched_background_migrations.md) (BBM), which run
@@ -85,6 +89,31 @@ stored cursor position. Cell-local records in
 `background_operation_workers_cell_local` are not affected by organization
 moves — they remain on the cell where they were created.
 
+### Resume from previous progress
+
+When a new operation is enqueued with the same `job_class_name`,
+`table_name`, `column_name`, and `job_arguments` (see
+[Duplicate detection](#duplicate-detection)), the framework automatically
+resumes from where the previous operation left off instead of re-scanning
+the entire table from the beginning.
+
+Operations that need to start from the beginning of the table on every run
+can declare `reset_cursor!` in the operation class:
+
+```ruby
+class MyOperation < BaseOperationWorker
+  operation_name :delete_all
+  cursor :id
+  reset_cursor!
+
+  def perform
+    each_sub_batch { |sub_batch| sub_batch.delete_all }
+  end
+end
+```
+
+Alternatively, pass an explicit `min_cursor` when calling `.enqueue`.
+
 ### Duplicate detection
 
 A partial unique index on unfinished statuses (`queued`, `active`, `on_hold`)
@@ -126,23 +155,15 @@ Create a file in `lib/gitlab/background_operation/`:
 
 module Gitlab
   module BackgroundOperation
-    class UsersDeleteUnconfirmedSecondaryEmails < BaseOperationWorker
+    class PurgeExpiredTokens < BaseOperationWorker
       operation_name :delete_all
-      feature_category :user_management
+      feature_category :system_access
       cursor :id
 
       def perform
         each_sub_batch do |sub_batch|
-          sub_batch
-            .where('created_at < ? AND confirmed_at IS NULL', created_cut_off)
-            .delete_all
+          sub_batch.where(revoked: true).delete_all
         end
-      end
-
-      private
-
-      def created_cut_off
-        ApplicationSetting::USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS.days.ago
       end
     end
   end
@@ -156,6 +177,11 @@ Key DSL methods:
 - `feature_category`: The feature category that owns this operation.
 - `cursor`: One or more column names used for keyset pagination. Use the table's
   primary key. For composite primary keys: `cursor :partition_id, :id`.
+- `scope_to`: A lambda that filters the relation at both the batching and
+  sub-batch level. See [Filter rows with `scope_to`](#filter-rows-with-scope_to).
+- `reset_cursor!`: Resets the cursor to `MIN(column)` on each run instead
+  of resuming from the previous worker's `max_cursor`. Use with
+  time-dependent filters.
 
 #### 2. Configure the cron job
 
@@ -203,6 +229,9 @@ Parameters:
 - `table_name`: The database table to iterate over.
 - `column_name`: The cursor column.
 - `job_arguments` (optional): An array of string arguments. Defaults to `[]`.
+- `min_cursor` (optional): An array specifying the starting cursor position.
+  When omitted, the framework resumes from the previous operation's last
+  cursor or falls back to `MIN(column)`.
 - `user`: The user initiating the operation. Sets `user_id` and
   `organization_id` on the record.
 
@@ -218,6 +247,56 @@ Gitlab::Database::BackgroundOperation::WorkerCellLocal.enqueue(
   'target_table',
   'id'
 )
+```
+
+### Filter rows with `scope_to`
+
+Use `scope_to` when the operation targets a subset of rows. The filter
+applies to both batch boundary calculation and sub-batch iteration, so
+the batching strategy skips non-matching rows entirely.
+
+Without `scope_to`, filtering happens inside `each_sub_batch` and batches
+still cover the full primary key range.
+
+> [!warning]
+> The scoped condition must be backed by an index. Without a supporting
+> index, `scope_to` degrades batching performance.
+
+```ruby
+scope_to ->(relation) { relation.where('expires_at < ?', Time.current) }
+
+def perform
+  each_sub_batch do |sub_batch|
+    sub_batch.delete_all
+  end
+end
+```
+
+The lambda runs in the context of the job instance, so it can access
+instance methods and job arguments.
+
+> [!note]
+> The `each_sub_batch` block must return an integer for `affected_rows`
+> metrics to be recorded. Methods like `delete_all` return an integer by
+> default. If you add logic after the deletion, return the count
+> explicitly:
+>
+> ```ruby
+> each_sub_batch do |sub_batch|
+>   deleted = sub_batch.delete_all
+>   do_something_else
+>   deleted
+> end
+> ```
+
+By default, recurring operations resume from the previous worker's
+`max_cursor`. Use `reset_cursor!` to start from `MIN(column)` instead.
+This prevents skipping rows that become eligible between runs
+(for example, time-dependent filters like `created_at < 3.days.ago`).
+
+```ruby
+scope_to ->(relation) { relation.where('expires_at < ?', Time.current) }
+reset_cursor!
 ```
 
 ## Monitoring

@@ -38,6 +38,41 @@ success(){
   echo >&2 -e "${GREEN} ${1-}${NC}"
 }
 
+# Relies on globals: KUBECTL, NAMESPACE, PG_POD, PG_PASS.
+create_db_from_production() {
+  local db_name="$1"
+
+  echo ""
+  echo "==> Creating $db_name database (if it does not exist)..."
+
+  local db_exists
+  db_exists=$($KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
+    env PGPASSWORD="$PG_PASS" psql -U postgres -d postgres -tAc \
+      "SELECT 1 FROM pg_database WHERE datname='$db_name'" 2>/dev/null || true)
+
+  if [[ "$db_exists" =~ 1 ]]; then
+    echo "  ✓ $db_name already exists – skipping creation."
+    return 0
+  fi
+
+  echo "  Terminating active sessions on gitlabhq_production..."
+  local terminated
+  terminated=$($KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
+    env PGPASSWORD="$PG_PASS" psql -U postgres -d postgres -tAc \
+      "SELECT count(*) FROM (SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='gitlabhq_production' AND pid <> pg_backend_pid()) t" || echo "?")
+  echo "  Terminated $terminated sessions."
+
+  echo "  Creating $db_name from template gitlabhq_production..."
+  if $KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
+    env PGPASSWORD="$PG_PASS" psql -U postgres -d postgres -c \
+      "CREATE DATABASE \"$db_name\" TEMPLATE gitlabhq_production OWNER gitlab"; then
+    success "  ✓ $db_name created successfully."
+  else
+    error "Failed to create $db_name."
+    exit 1
+  fi
+}
+
 
 # ---------------------------------------------------------------------------
 # 0. Parse arguments / set defaults
@@ -288,7 +323,7 @@ CONTAINER_FILE_POD_PATHS=(
 )
 CONTAINER_FILE_LOCAL_PATHS=(
   "workhorse/workhorse-config.toml"
-  "workhorse/secret"
+  ".gitlab_workhorse_secret"
 )
 
 for i in "${!CONTAINER_FILE_CONTAINERS[@]}"; do
@@ -386,7 +421,7 @@ fi
 # ---------------------------------------------------------------------------
 
 echo ""
-echo "==> Creating gitlabhq_development database (if it does not exist)..."
+echo "==> Locating PostgreSQL pod..."
 
 PG_POD=$($KUBECTL get pod -n "$NAMESPACE" -l app.kubernetes.io/name=postgresql \
   -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
@@ -418,29 +453,71 @@ fi
 
 success "  Authentication OK"
 
-DB_EXISTS=$($KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
-  env PGPASSWORD="$PG_PASS" psql -U postgres -d postgres -tAc \
-    "SELECT 1 FROM pg_database WHERE datname='gitlabhq_development'" 2>/dev/null || true)
+create_db_from_production gitlabhq_development
 
-if [[ "$DB_EXISTS" =~ 1 ]]; then
-  echo "  ✓ gitlabhq_development already exists – skipping creation."
+# ---------------------------------------------------------------------------
+# 5a. Drop amcheck from gitlabhq_development
+#
+#     amcheck is installed on cluster prod and rides along into
+#     gitlabhq_development via the TEMPLATE clone. We drop it so it doesn't
+#     propagate further (e.g. into template1 via the mirror step below).
+#     Idempotent: IF EXISTS makes this a no-op when absent, so it runs
+#     unconditionally — whether gitlabhq_development was created in this
+#     invocation or already existed.
+# ---------------------------------------------------------------------------
+
+echo ""
+echo "==> Dropping amcheck extension from gitlabhq_development..."
+
+if $KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
+  env PGPASSWORD="$PG_PASS" psql -U postgres -d gitlabhq_development -c \
+    "DROP EXTENSION IF EXISTS amcheck;" >/dev/null; then
+  echo "  ✓ amcheck dropped (or already absent)"
 else
-  echo "  Terminating active sessions on gitlabhq_production..."
-  TERMINATED=$($KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
-    env PGPASSWORD="$PG_PASS" psql -U postgres -d postgres -tAc \
-      "SELECT count(*) FROM (SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='gitlabhq_production' AND pid <> pg_backend_pid()) t" || echo "?")
-  echo "  Terminated $TERMINATED sessions."
+  error "Failed to drop amcheck extension from gitlabhq_development."
+  exit 1
+fi
 
-  echo "  Creating gitlabhq_development from template gitlabhq_production..."
-  $KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
-    env PGPASSWORD="$PG_PASS" psql -U postgres -d postgres -c \
-      "CREATE DATABASE gitlabhq_development TEMPLATE gitlabhq_production"
+# ---------------------------------------------------------------------------
+# 5b. Mirror gitlabhq_development extensions into template1
+#
+#     RSpec creates gitlabhq_test by cloning template1 and then replays
+#     db/structure.sql.  Extensions copied from cluster prod (e.g. btree_gist)
+#     end up in structure.sql, and the replay fails because the test role
+#     is not a superuser.  Pre-installing the same extensions into
+#     template1 makes the `CREATE EXTENSION IF NOT EXISTS ...` lines
+#     no-ops, so no superuser is required at replay time.
+#
+#     Idempotent: `CREATE EXTENSION IF NOT EXISTS` skips when present, so
+#     this runs unconditionally — whether gitlabhq_development was created
+#     in this invocation or already existed.
+# ---------------------------------------------------------------------------
 
-  if [[ $? -eq 0 ]]; then
-    success "  ✓ gitlabhq_development created successfully."
-  else
-    error "Failed to create gitlabhq_development. You may need to create it manually."
-  fi
+echo ""
+echo "==> Mirroring gitlabhq_development extensions into template1..."
+
+EXT_ROWS=$($KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
+  env PGPASSWORD="$PG_PASS" psql -U postgres -d gitlabhq_development -tAF '|' -c \
+    "SELECT e.extname, n.nspname \
+     FROM pg_extension e \
+     JOIN pg_namespace n ON e.extnamespace = n.oid \
+     WHERE e.extname <> 'plpgsql' \
+     ORDER BY e.extname" 2>/dev/null || true)
+
+if [[ -z "$EXT_ROWS" ]]; then
+  echo "  (no extensions to mirror)"
+else
+  while IFS='|' read -r ext schema; do
+    [[ -z "$ext" ]] && continue
+    if $KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
+      env PGPASSWORD="$PG_PASS" psql -U postgres -d template1 -c \
+        "CREATE SCHEMA IF NOT EXISTS \"$schema\"; CREATE EXTENSION IF NOT EXISTS \"$ext\" WITH SCHEMA \"$schema\";" >/dev/null; then
+      echo "  ✓ $ext (schema $schema)"
+    else
+      error "Failed to install extension '$ext' in template1."
+      exit 1
+    fi
+  done <<< "$EXT_ROWS"
 fi
 
 echo ""
@@ -451,6 +528,124 @@ if [[ -f "$DB_YML" ]]; then
   echo "  ✓ config/database.yml now references gitlabhq_development"
 else
   warn "config/database.yml not found – skipping database name rewrite"
+fi
+
+# ---------------------------------------------------------------------------
+# 5c. Add test: sections to YAML config files
+#
+#     RSpec requires a `test` environment.  For each config file that was
+#     rewritten from production → development, append a `test:` block by
+#     duplicating the `development:` section.  database.yml gets an extra
+#     rewrite (gitlabhq_development → gitlabhq_test).
+# ---------------------------------------------------------------------------
+
+echo ""
+echo "==> Adding test: sections to config files..."
+
+TEST_SECTION_FILES=(
+  "config/database.yml"
+  "config/gitlab.yml"
+  "config/cable.yml"
+  "config/resque.yml"
+  "config/redis.action_cable.yml"
+  "config/session_store.yml"
+  "config/secrets.yml"
+)
+
+for file in "${TEST_SECTION_FILES[@]}"; do
+  file_path="$GITLAB_DIR/$file"
+  if [[ ! -f "$file_path" ]]; then
+    warn "$file not found – skipping test section"
+    continue
+  fi
+
+  # Skip if test: section already exists
+  if grep -q '^test:' "$file_path"; then
+    echo "  ✓ $file already has a test: section – skipping"
+    continue
+  fi
+
+  if [[ "$file" == "config/gitlab.yml" ]]; then
+    # gitlab.yml: rewrite /srv/gitlab paths to local tmp/tests so tests
+    # don't try to write to cluster-only paths, and rewrite gitaly_address
+    # from tcp:// to a local unix socket for the test Gitaly process.
+    {
+      echo ""
+      awk -v repo="$GITLAB_DIR" '
+        BEGIN { gsub(/[&\\]/, "\\\\&", repo) }
+        /^development:/{found=1; print "test:"; next}
+        found && /^[^ ]/{exit}
+        found{
+          gsub(/\/srv\/gitlab/, repo "/tmp/tests")
+          gsub(/\/home\/git/, repo "/tmp/tests")
+          gsub(/gitaly_address: tcp:\/\/[^ ]+/, "gitaly_address: unix:" repo "/tmp/tests/gitaly/praefect.socket")
+          gsub(/_development/, "_test")
+          print
+        }
+      ' "$file_path"
+    } >> "$file_path"
+  else
+    # Duplicate development: block as test:, rewriting *_development
+    # identifiers to *_test so the test env uses its own database name
+    # (gitlabhq_development → gitlabhq_test).  The same rule defensively
+    # covers any future *_development identifier CNG may emit.
+    {
+      echo ""
+      awk '/^development:/{found=1; print "test:"; next} found && /^[^ ]/{exit} found{gsub(/_development/, "_test"); print}' "$file_path"
+    } >> "$file_path"
+  fi
+  echo "  ✓ $file"
+done
+
+# ---------------------------------------------------------------------------
+# 5d. Enable pages.local_store only in the test: block of gitlab.yml
+#
+#     The cluster config has pages.local_store.enabled: false because prod
+#     uses object storage. RSpec's TestEnv resolves pages_path via
+#     Gitlab::Pages::Settings#path, which raises DiskAccessDenied unless
+#     local_store is enabled. We flip it to true for test: only, leaving
+#     development: matching cluster prod.
+# ---------------------------------------------------------------------------
+
+GITLAB_YML="$GITLAB_DIR/config/gitlab.yml"
+if [[ -f "$GITLAB_YML" ]]; then
+  echo ""
+  echo "==> Enabling pages.local_store in the test: block of config/gitlab.yml..."
+  awk '
+    /^test:/                        { in_test = 1 }
+    in_test && /^    local_store:$/ { print; getline; sub(/false/, "true"); print; next }
+    { print }
+  ' "$GITLAB_YML" > "$GITLAB_YML.tmp" && mv "$GITLAB_YML.tmp" "$GITLAB_YML"
+  echo "  ✓ config/gitlab.yml"
+fi
+
+# ---------------------------------------------------------------------------
+# 5e. Clear /etc/ paths in the test: block of gitlab.yml
+#
+#     The cluster config points various secret/key/keytab/ca_file settings
+#     at /etc/gitlab/... or /etc/krb5.keytab, none of which exist on local
+#     machines during tests.  Any setting whose value points under /etc/ is
+#     blanked.  For features with sensible defaults (workhorse,
+#     gitlab_shell) Rails falls back to the default file relative to
+#     Rails.root.  For features that are disabled (kerberos, smartcard,
+#     iam_auth_service, pages) the value is never read.  For enabled
+#     features that lack a default (registry), specs stub the config.
+# ---------------------------------------------------------------------------
+
+if [[ -f "$GITLAB_YML" ]]; then
+  echo ""
+  echo "==> Clearing /etc/ paths in the test: block of config/gitlab.yml..."
+  awk '
+    /^test:/                             { in_test = 1 }
+    in_test && /^[^ ]/ && !/^test:/      { in_test = 0 }
+    in_test && /^ +[a-zA-Z_]+:[ ]+.*\/etc\// {
+      sub(/:[ ]+.*/, ":")
+      print
+      next
+    }
+    { print }
+  ' "$GITLAB_YML" > "$GITLAB_YML.tmp" && mv "$GITLAB_YML.tmp" "$GITLAB_YML"
+  echo "  ✓ config/gitlab.yml"
 fi
 
 # ---------------------------------------------------------------------------
@@ -481,7 +676,7 @@ EOF
 echo "  ✓ config/vite.gdk.json"
 
 # ---------------------------------------------------------------------------
-# 6. Summary
+# 7. Summary
 # ---------------------------------------------------------------------------
 
 echo ""

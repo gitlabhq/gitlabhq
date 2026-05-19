@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Queueable, feature_categor
   end
 
   describe '.enqueue' do
-    let(:job_class_name) { 'TestWorker' }
+    let(:job_class_name) { 'DummyTest' }
     let(:table_name) { 'users' }
     let(:column_name) { 'id' }
     let(:job_arguments) { %w[arg1 arg2] }
@@ -181,6 +181,23 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Queueable, feature_categor
           ).first
 
           expect(new_worker.min_cursor).to eq(previous_max)
+        end
+
+        context 'when job class uses reset_cursor!' do
+          let(:job_class_name) { 'UsersDeleteUnconfirmedSecondaryEmails' }
+          let(:table_name) { 'emails' }
+          let(:column_name) { 'id' }
+          let(:job_arguments) { [] }
+
+          it 'starts from MIN(column) instead of previous max_cursor' do
+            enqueue_background_operation
+
+            new_worker = worker_klass.unfinished_with_config(
+              job_class_name, table_name, column_name, job_arguments, org_id: user.organization_id
+            ).first
+
+            expect(new_worker.min_cursor).not_to eq(previous_max)
+          end
         end
       end
     end

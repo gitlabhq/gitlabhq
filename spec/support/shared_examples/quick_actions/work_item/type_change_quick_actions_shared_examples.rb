@@ -4,25 +4,38 @@ RSpec.shared_examples 'quick actions that change work item type' do
   include_context 'with work item change type context'
 
   describe 'type command' do
-    let(:command) { "/type #{new_type}" }
+    let(:command) { %(/type "#{new_type}") }
 
-    it 'populates :issue_type: and :work_item_type' do
+    it 'populates :work_item_type' do
       _, updates, message = service.execute(command, work_item)
 
       expect(message).to eq(_('Type changed successfully.'))
       expect(updates).to eq(
-        { issue_type: 'task', work_item_type: build(:work_item_system_defined_type, :task) }
+        { work_item_type: build(:work_item_system_defined_type, :task) }
       )
     end
 
     context 'when new type is invalid' do
-      let(:command) { '/type foo' }
+      let(:command) { '/type "foo"' }
 
       it_behaves_like 'quick command error', 'Provided type is not supported'
     end
 
+    context 'when type name is provided in a different case (e.g. lowercase)' do
+      let(:new_type) { 'TASK' }
+
+      it 'matches the system-defined type case-insensitively' do
+        _, updates, message = service.execute(command, work_item)
+
+        expect(message).to eq(_('Type changed successfully.'))
+        expect(updates).to eq(
+          { work_item_type: build(:work_item_system_defined_type, :task) }
+        )
+      end
+    end
+
     context 'when new type is the same as current type' do
-      let(:command) { '/type issue' }
+      let(:command) { '/type "issue"' }
 
       it_behaves_like 'quick command error', 'Types are the same'
     end
@@ -56,12 +69,12 @@ RSpec.shared_examples 'quick actions that change work item type' do
       let(:new_type) { 'incident' }
       let(:unsupported_type) { 'task' }
 
-      it 'populates :issue_type: and :work_item_type' do
+      it 'populates :work_item_type' do
         _, updates, message = service.execute(command, work_item)
 
         expect(message).to eq(_('Promoted successfully.'))
         expect(updates).to eq(
-          { issue_type: 'incident', work_item_type: build(:work_item_system_defined_type, :incident) }
+          { work_item_type: build(:work_item_system_defined_type, :incident) }
         )
       end
 
@@ -74,12 +87,12 @@ RSpec.shared_examples 'quick actions that change work item type' do
       let(:new_type) { 'issue' }
       let(:unsupported_type) { 'incident' }
 
-      it 'populates :issue_type: and :work_item_type' do
+      it 'populates :work_item_type' do
         _, updates, message = service.execute(command, work_item)
 
         expect(message).to eq(_('Promoted successfully.'))
         expect(updates).to eq(
-          { issue_type: 'issue', work_item_type: build(:work_item_system_defined_type, :issue) }
+          { work_item_type: build(:work_item_system_defined_type, :issue) }
         )
       end
 

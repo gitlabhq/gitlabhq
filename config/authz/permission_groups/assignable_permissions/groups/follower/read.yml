@@ -1,0 +1,9 @@
+---
+name: read_follower
+description: Grants the ability to read follower information
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_user_follower

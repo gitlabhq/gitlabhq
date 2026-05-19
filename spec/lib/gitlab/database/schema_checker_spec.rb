@@ -7,7 +7,8 @@ RSpec.describe Gitlab::Database::SchemaChecker, feature_category: :database do
   let(:structure_sql_path) { Rails.root.join('db/structure.sql') }
   let(:connection) do
     instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter,
-      class: ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
+      class: ActiveRecord::ConnectionAdapters::PostgreSQLAdapter,
+      current_schema: 'public')
   end
 
   let(:database_source) { Gitlab::Schema::Validation::Sources::Database.new(connection) }
@@ -37,7 +38,7 @@ RSpec.describe Gitlab::Database::SchemaChecker, feature_category: :database do
     allow(Gitlab::Schema::Validation::Sources::Database).to receive(:new)
       .and_return(database_source)
     allow(Gitlab::Schema::Validation::Sources::StructureSql).to receive(:new)
-      .with(structure_sql_path).and_return(structure_sql_source)
+      .with(structure_sql_path, 'public').and_return(structure_sql_source)
 
     allow(Gitlab::Schema::Validation::Validators::MissingTables).to receive(:new)
       .with(structure_sql_source, database_source).and_return(missing_tables_validator)
@@ -65,6 +66,28 @@ RSpec.describe Gitlab::Database::SchemaChecker, feature_category: :database do
         expect do
           described_class.new(database_name: invalid_database_name)
         end.to raise_error("Invalid database name: #{invalid_database_name}")
+      end
+    end
+
+    context 'when the current schema is not public' do
+      let(:schema_name) { 'myschema' }
+      let(:custom_connection) do
+        instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter,
+          class: ActiveRecord::ConnectionAdapters::PostgreSQLAdapter,
+          current_schema: schema_name)
+      end
+
+      before do
+        database_model = Gitlab::Database.database_base_models[database_name]
+        allow(database_model).to receive(:connection).and_return(custom_connection)
+      end
+
+      it 'passes the current schema to StructureSql' do
+        expect(Gitlab::Schema::Validation::Sources::StructureSql)
+          .to receive(:new).with(structure_sql_path, schema_name)
+          .and_return(structure_sql_source)
+
+        checker
       end
     end
   end

@@ -67,6 +67,27 @@ RSpec.describe RecoverableByAnyEmail, feature_category: :system_access do
       end
     end
 
+    shared_examples "does not send 'Reset password instructions' email when user is blocked" do
+      it 'finds the user' do
+        expect(send_reset_password_instructions).to eq(expected_user)
+      end
+
+      it 'returns the user with error' do
+        expect(send_reset_password_instructions.errors[:password]).to be_present
+      end
+
+      it 'does not send email to anyone' do
+        reset_delivered_emails!
+
+        expect { send_reset_password_instructions }
+          .not_to have_enqueued_mail(DeviseMailer, :reset_password_instructions)
+
+        perform_enqueued_jobs
+
+        should_not_email_anyone
+      end
+    end
+
     shared_examples "does not send 'Reset password instructions' email when password auth is not allowed" do
       it 'finds the user' do
         expect(send_reset_password_instructions).to eq(expected_user)
@@ -160,6 +181,59 @@ RSpec.describe RecoverableByAnyEmail, feature_category: :system_access do
       end
 
       it_behaves_like "does not send 'Reset password instructions' email"
+    end
+
+    context 'with a blocked user by an admin' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:user_type) do
+        [[:user], [:omniauth_user]]
+      end
+
+      with_them do
+        let(:expected_user) do
+          if user_type == :user
+            create(:user)
+          else
+            create(:omniauth_user)
+          end
+        end
+
+        let(:email) { expected_user.email }
+
+        context 'when user `state: active`' do
+          it_behaves_like "sends 'Reset password instructions' email"
+        end
+
+        %i[blocked ldap_blocked blocked_pending_approval banned].each do |blocked_state|
+          context "when user `state: #{blocked_state}`" do
+            before do
+              expected_user.update!(state: blocked_state)
+            end
+
+            it_behaves_like "does not send 'Reset password instructions' email when user is blocked"
+          end
+        end
+      end
+
+      context 'with user_type: :ldap_user' do
+        let(:expected_user) { create(:omniauth_user, :ldap) }
+        let(:email) { expected_user.email }
+
+        context 'when user `state: active`' do
+          it_behaves_like "does not send 'Reset password instructions' email when password auth is not allowed"
+        end
+
+        %i[blocked ldap_blocked blocked_pending_approval banned].each do |blocked_state|
+          context "when user `state: #{blocked_state}`" do
+            before do
+              expected_user.update!(state: blocked_state)
+            end
+
+            it_behaves_like "does not send 'Reset password instructions' email when user is blocked"
+          end
+        end
+      end
     end
 
     context 'for password authentication availability' do

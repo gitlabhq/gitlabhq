@@ -217,12 +217,12 @@ This error can occur when:
   When epics from different source groups have the same internal ID (which are only unique in a single group), importing them to a single destination group
   causes conflicts. This conflict causes `PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint` errors referencing `index_issues_on_namespace_id_iid_unique` or `index_epics_on_group_id_and_iid`.
 
-## Error: `BulkImports::FileDownloadService::ServiceError Invalid content type`
+## Error: `Import::BulkImports::FileDownloadStrategy::ServiceError Invalid content type`
 
 When using direct transfer between GitLab instances, you might encounter the following error:
 
 ```plaintext
-BulkImports::FileDownloadService::ServiceError Invalid content type
+Import::BulkImports::FileDownloadStrategy::ServiceError Invalid content type
 ```
 
 This error is related to how network traffic is routed between instances.

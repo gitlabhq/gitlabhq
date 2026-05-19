@@ -8,9 +8,9 @@ PATH
   remote: ../gitlab-rspec
   specs:
     gitlab-rspec (0.1.0)
-      activerecord (>= 6.1, < 8)
-      activesupport (>= 6.1, < 8)
-      gitlab_quality-test_tooling (>= 3.8, < 4)
+      activerecord (>= 7, < 9)
+      activesupport (>= 7, < 9)
+      gitlab_quality-test_tooling (>= 3.13, < 4)
       rspec (~> 3.0)
       test-prof (~> 1.5)
 
@@ -207,12 +207,13 @@ GEM
       rubocop-rails (~> 2.26.0)
       rubocop-rspec (~> 3.0.4)
       rubocop-rspec_rails (~> 2.30.0)
-    gitlab_quality-test_tooling (3.8.0)
+    gitlab_quality-test_tooling (3.13.0)
       activesupport (>= 7.0)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
       gitlab (>= 4.19, < 7.0)
       http (~> 5.0)
+      http-cookie (>= 1.0, < 1.1.1)
       nokogiri (~> 1.10)
       parallel (>= 1, < 2)
       rainbow (>= 3, < 4)
@@ -602,7 +603,7 @@ CHECKSUMS
   gitlab-safe_request_store (0.1.0)
   gitlab-styles (13.1.0) sha256=46c7c5729616355868b7b40a4ffcd052b36346076042abe8cafaee1688cbf2c1
   gitlab-utils (0.2.0)
-  gitlab_quality-test_tooling (3.8.0) sha256=fe6153e037426e4c979ae2992cbc3de6b370fc82a9cd2dd624587cf1b4f98a17
+  gitlab_quality-test_tooling (3.13.0) sha256=1d3ddf0a1b8c42649ed4161d8a40a88a3f78160d3212d4539597b178b8449c50
   globalid (1.2.1) sha256=70bf76711871f843dbba72beb8613229a49429d1866828476f9c9d6ccc327ce9
   google-apis-compute_v1 (0.136.0) sha256=04db183803f547265b0489df92e76d9761b2b7ce36be8ead88bc14ed36ab4582
   google-apis-core (0.18.0) sha256=96b057816feeeab448139ed5b5c78eab7fc2a9d8958f0fbc8217dedffad054ee

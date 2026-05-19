@@ -6,7 +6,7 @@
 def filter_ee(types)
   return types if Gitlab.ee?
 
-  expected_types.difference(::WorkItems::Type::EE_BASE_TYPES)
+  expected_types.difference(%w[epic key_result objective requirement])
 end
 
 # rubocop:disabled Layout/LineLength -- in this case it's easier to read as a large table
@@ -64,6 +64,18 @@ RSpec.shared_examples 'lists all work item type values' do
 
     provider = WorkItems::TypesFramework::Provider.new(namespace_object)
     expected_types = provider.all_ordered_by_name.map(&:base_type)
+    expect(types_list).to eq(expected_types)
+  end
+end
+
+RSpec.shared_examples 'lists generally available work item types' do
+  specify do
+    namespace_object = defined?(container) ? container : object
+
+    provider = WorkItems::TypesFramework::Provider.new(namespace_object)
+    expected_types = provider.available_types
+                             .sort_by { |type| type.name.downcase }
+                             .map(&:base_type)
     expect(types_list).to eq(expected_types)
   end
 end

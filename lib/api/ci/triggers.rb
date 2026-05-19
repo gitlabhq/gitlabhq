@@ -118,7 +118,7 @@ module API
           requires :description, type: String, desc: 'The trigger token description',
             documentation: { example: 'my trigger token description' }
           optional :expires_at, type: DateTime, desc: 'Timestamp of when the pipeline trigger token expires.',
-            documentation: { example: '2024-07-01' }
+            documentation: { example: '2024-07-01T00:00:00.000Z' }
         end
         route_setting :authorization, permissions: :create_trigger, boundary_type: :project
         post ':id/triggers' do

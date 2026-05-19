@@ -4,6 +4,8 @@ action: click_edit_button
 extra_properties:
 identifiers:
 product_group: code_review
+product_categories:
+- code_review_workflow
 milestone:
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73809
 tiers:

@@ -7,7 +7,7 @@ module API
       expose :title, documentation: { type: 'String', example: 'test' }
       expose :description, documentation: { type: 'String', example: 'Ruby test snippet' }
       expose :visibility, documentation: { type: 'String', example: 'public' }
-      expose :author, using: Entities::UserBasic, documentation: { type: 'Entities::UserBasic' }
+      expose :author, using: ::API::Entities::UserBasic, documentation: { type: '::API::Entities::UserBasic' }
       expose :created_at, documentation: { type: 'DateTime', example: '2012-06-28T10:52:04Z' }
       expose :updated_at, documentation: { type: 'DateTime', example: '2012-06-28T10:52:04Z' }
       expose :project_id, documentation: { type: 'Integer', example: 1 }

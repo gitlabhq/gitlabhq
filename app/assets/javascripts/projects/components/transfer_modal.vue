@@ -42,14 +42,15 @@ export default {
     },
   },
   methods: {
-    handleError(message) {
+    handleError(error) {
       createAlert({
         message:
-          message ||
+          error ||
           s__(
             'NamespaceTransfer|An error occurred while transferring the project. Please refresh the page to try again.',
           ),
         captureError: true,
+        error,
       });
     },
   },

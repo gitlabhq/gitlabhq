@@ -1,0 +1,15 @@
+- page_title title
+- achievement_name = @user_achievement.achievement.name
+
+%h1.page-title.gl-text-size-h-display
+  = title
+
+%p
+  = html_escape(description) % { achievement_name: achievement_name, bold_start: '<b>'.html_safe, bold_end: '</b>'.html_safe }
+
+%p
+  = form_tag(action_url, method: :post, class: 'gl-inline') do
+    = render Pajamas::ButtonComponent.new(variant: button_variant, button_options: { class: 'gl-mr-3', type: 'submit' }) do
+      = button_text
+  = render Pajamas::ButtonComponent.new(href: (current_user ? user_path(current_user) : new_user_session_path), button_options: { class: 'gl-mr-3' }) do
+    = _('Cancel')

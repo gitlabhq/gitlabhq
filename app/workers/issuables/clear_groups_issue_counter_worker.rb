@@ -25,6 +25,7 @@ module Issuables
     def clear_cached_count(groups)
       groups.each do |group|
         Groups::OpenIssuesCountService.new(group).clear_all_cache_keys
+        Groups::OpenWorkItemsCountService.new(group).clear_all_cache_keys
       end
     end
   end

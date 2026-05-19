@@ -1,0 +1,7 @@
+---
+Lint/DuplicateMethods:
+  Exclude:
+    - 'app/models/group.rb'
+    - 'app/models/note.rb'
+    - 'ee/app/services/analytics/devops_adoption/enabled_namespaces/find_or_create_service.rb'
+    - 'lib/gitlab/legacy_github_import/pull_request_formatter.rb'

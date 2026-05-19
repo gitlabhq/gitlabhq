@@ -50,7 +50,7 @@ Although functionality has not changed, you should [reinstall the app](#reinstal
 To install the GitLab for Slack app from the project or group settings:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**. You're redirected to the Slack confirmation page.
 1. On the Slack confirmation page:
@@ -84,7 +84,7 @@ When GitLab releases new features for the GitLab for Slack app, you might have t
 To reinstall the GitLab for Slack app:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**. You're redirected to the Slack confirmation page.
 1. On the Slack confirmation page:
@@ -108,10 +108,9 @@ For the GitLab for Slack app:
 - You can replace `<project>` with a project full path or
   [create a project alias](#create-a-project-alias) for slash commands.
 
-If you use [Slack slash commands](slack_slash_commands.md) or
-[Mattermost slash commands](mattermost_slash_commands.md) instead:
+If you use [Mattermost slash commands](mattermost_slash_commands.md) instead:
 
-- Replace `/gitlab` with the trigger name you've configured for these integrations.
+- Replace `/gitlab` with the trigger name you've configured for the integration.
 - Remove `<project>`.
 
 The following slash commands are available for GitLab:
@@ -147,7 +146,7 @@ You can use a project alias instead.
 To create a project alias for slash commands in the GitLab for Slack app:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Next to the project path or alias, select **Edit**.
 1. Enter the new alias and select **Save changes**.
@@ -175,7 +174,7 @@ You can receive notifications to Slack channels for certain GitLab [events](#not
 To configure Slack notifications:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. In the **Trigger** section:
    - Select the checkbox for each GitLab [event](#notification-events) you want to receive notifications for in Slack.

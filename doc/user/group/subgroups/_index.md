@@ -65,7 +65,7 @@ Prerequisites:
 To view the subgroups of a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select the **Subgroups and projects** tab.
+1. In the left sidebar, select the **Subgroups and projects** tab.
 1. Select the subgroup you want to view.
    To view nested subgroups, expand ({{< icon name="chevron-down" >}}) a subgroup.
 
@@ -178,7 +178,7 @@ Group permissions for a member can be changed only by:
 To see if a member has inherited the permissions from a parent group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
    The member's inheritance is displayed in the **Source** column.
 
 Members list for an example subgroup **Four**:

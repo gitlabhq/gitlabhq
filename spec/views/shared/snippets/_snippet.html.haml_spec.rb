@@ -12,7 +12,7 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
     @noteable_meta_data = Class.new { include Gitlab::NoteableMetadata }.new.noteable_meta_data([snippet], 'Snippet')
   end
 
-  context 'snippet with statistics' do
+  context 'for snippet with statistics' do
     let_it_be(:snippet) { create(:project_snippet) }
 
     it 'renders correct file count and tooltip' do
@@ -42,7 +42,7 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
     end
   end
 
-  context 'snippet without statistics' do
+  context 'for snippet without statistics' do
     it 'does not render file count if statistics are not present' do
       snippet.statistics = nil
 
@@ -52,7 +52,7 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
     end
   end
 
-  context 'spam icon and tooltip', feature_category: :insider_threat do
+  context 'for snippet with spam icon and tooltip', feature_category: :insider_threat do
     context 'when the author of the snippet is not banned' do
       before do
         render 'shared/snippets/snippet', snippet: snippet

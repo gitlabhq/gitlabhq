@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
 module Projects
-  class BranchRulePolicy < ::ProtectedBranchPolicy
-    rule { can?(:admin_project) }.policy do
-      enable :read_branch_rule
-      enable :create_branch_rule
-      enable :update_branch_rule
-      enable :delete_branch_rule
-    end
+  class BranchRulePolicy < BasePolicy
+    delegate { @subject.project }
 
-    rule { can?(:update_branch_rule) }.enable :update_squash_option
+    # Custom branch rules (AllBranchesRule, AllProtectedBranchesRule) have no
+    # protected_branch so this will evaluate to false for those.
+    condition(:protected_branch_backed, scope: :subject) { @subject.protected_branch.present? }
+
+    rule { protected_branch_backed & can?(:_read_protected_branch_rule) }.enable :read_branch_rule
   end
 end
 

@@ -4,6 +4,8 @@ description: Grants the ability to update wikis
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
 permissions:
   - update_wiki
   - upload_wiki_attachment

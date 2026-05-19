@@ -38,9 +38,9 @@ module API
       def authorize_push_to_branch!(branch)
         authenticate!
 
-        unless user_access.can_push_to_branch?(branch)
-          forbidden!("You are not allowed to push into this branch")
-        end
+        return if user_access.can_push_to_branch?(branch)
+
+        forbidden!("You are not allowed to push into this branch")
       end
 
       def web_ide_request?
@@ -122,17 +122,19 @@ module API
       end
 
       def validate_actions_allow_empty!(attrs)
-        if !attrs.key?(:actions) || (attrs[:actions].is_a?(Array) && attrs[:actions].empty?)
-          if attrs.key?(:allow_empty) && [nil, true, false, "", "true", "false"].exclude?(attrs[:allow_empty])
-            bad_request!('allow_empty must be a boolean')
-          end
+        actions_missing = !attrs.key?(:actions)
+        actions_empty = attrs[:actions].is_a?(Array) && attrs[:actions].empty?
+        return unless actions_missing || actions_empty
 
-          attrs[:allow_empty] = ActiveModel::Type::Boolean.new.cast(attrs[:allow_empty]) == true
-
-          bad_request!('Provide at least one action, or set allow_empty to true') unless attrs[:allow_empty]
-
-          attrs[:actions] = []
+        if attrs.key?(:allow_empty) && [nil, true, false, "", "true", "false"].exclude?(attrs[:allow_empty])
+          bad_request!('allow_empty must be a boolean')
         end
+
+        attrs[:allow_empty] = ActiveModel::Type::Boolean.new.cast(attrs[:allow_empty]) == true
+
+        bad_request!('Provide at least one action, or set allow_empty to true') unless attrs[:allow_empty]
+
+        attrs[:actions] = []
       end
 
       def validate_commit_action!(action, index)
@@ -329,11 +331,10 @@ module API
 
         if attrs[:start_project]
           start_project = find_project!(attrs[:start_project])
+          fork_error = "Project is not included in the fork network for #{start_project.full_name}"
 
-          unless can?(current_user, :read_code, start_project) &&
-              (start_project == user_project || user_project.forked_from?(start_project))
-            forbidden!("Project is not included in the fork network for #{start_project.full_name}")
-          end
+          forbidden!(fork_error) unless can?(current_user, :read_code, start_project)
+          forbidden!(fork_error) unless start_project == user_project || user_project.forked_from?(start_project)
         end
 
         attrs[:branch_name] = attrs.delete(:branch)
@@ -676,14 +677,19 @@ module API
         ]
       end
       params do
-        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag on which to find Merge Requests'
+        requires :sha, type: String,
+          desc: 'A commit sha, or the name of a branch or tag on which to find Merge Requests'
         optional :state, type: String, desc: 'Filter merge-requests by state', documentation: { example: 'merged' }
         use :pagination
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, permissions: :read_commit_merge_request, boundary_type: :project, job_token_policies: :read_repositories,
+      route_setting :authorization,
+        permissions: :read_commit_merge_request,
+        boundary_type: :project,
+        job_token_policies: :read_repositories,
         allow_public_access_for_enabled_project_features: [:repository, :merge_requests]
-      get ':id/repository/commits/:sha/merge_requests', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS, urgency: :low do
+      get ':id/repository/commits/:sha/merge_requests', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS,
+        urgency: :low do
         authorize! :read_merge_request, user_project
 
         commit = user_project.commit(params[:sha])

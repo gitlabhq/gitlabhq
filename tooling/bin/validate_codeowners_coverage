@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/tooling/validate_codeowners_coverage'
+
+codeowners_path = '.gitlab/CODEOWNERS'
+config_path = File.expand_path('../config/validate_codeowners_coverage.yml', __dir__)
+
+checker = Tooling::ValidateCodeownersCoverage.new(
+  codeowners_path: codeowners_path,
+  config_path: config_path
+)
+
+missing = checker.missing_coverage
+covered = checker.covered_exclusions
+
+if missing.empty? && covered.empty?
+  puts "All top-level directories have explicit CODEOWNERS entries."
+  exit 0
+end
+
+if missing.any?
+  puts "The following top-level directories have no explicit entry in #{codeowners_path}:"
+  missing.each { |dir| puts "  #{dir}/" }
+  puts "\nAdd an entry to #{codeowners_path} or list the directory under excluded_directories in #{config_path}."
+end
+
+if covered.any?
+  puts "The following directories are listed in excluded_directories in #{config_path} " \
+    "but already have an explicit entry in #{codeowners_path}:"
+  covered.each { |dir| puts "  #{dir}/" }
+  puts "\nRemove them from excluded_directories in #{config_path}."
+end
+
+exit 1

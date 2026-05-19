@@ -13,7 +13,7 @@ echo "$(date -Iseconds): VS Code initialization started"
 # Start logging
 exec 1>>"${LOG_FILE}" 2>&1
 
-# # This script initilizes the tools injected into the workspace on startup.
+# # This script initializes the tools injected into the workspace on startup.
 # #
 # # It uses the following environment variables
 # # $GL_TOOLS_DIR - directory where the tools are copied.

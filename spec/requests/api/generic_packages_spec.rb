@@ -735,6 +735,103 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         end
       end
 
+      shared_examples 'handling a race condition' do
+        let(:headers) { workhorse_headers.merge(personal_access_token_header) }
+        it 'retries and creates the package and package file successfully' do
+          call_count = 0
+
+          allow(Packages::Generic::FindOrCreatePackageService).to receive(:new).and_wrap_original do |original, *args|
+            call_count += 1
+            service = original.call(*args)
+
+            allow(service).to receive(:execute).and_raise(error) if call_count == 1
+
+            service
+          end
+
+          expect { upload_file(params, headers) }
+            .to change { ::Packages::Generic::Package.for_projects(project).count }.by(1)
+            .and change { Packages::PackageFile.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'when a race condition causes ActiveRecord::RecordNotUnique' do
+        let(:error) { ActiveRecord::RecordNotUnique }
+
+        it_behaves_like 'handling a race condition'
+      end
+
+      context 'when a race condition causes ActiveRecord::RecordInvalid with name taken' do
+        let(:error) do
+          record = Packages::Generic::Package.new
+          record.errors.add(:name, :taken)
+          ActiveRecord::RecordInvalid.new(record)
+        end
+
+        it_behaves_like 'handling a race condition'
+      end
+
+      context 'when service returns an error' do
+        let(:headers) { workhorse_headers.merge(personal_access_token_header) }
+
+        subject { upload_file(params, headers) }
+
+        before do
+          allow_next_instance_of(Packages::Generic::CreatePackageFileService) do |service|
+            allow(service).to receive(:execute).and_return(error)
+          end
+        end
+
+        context 'when error is invalid_parameter' do
+          let(:error) { ServiceResponse.error(message: 'invalid parameter', reason: :invalid_parameter) }
+
+          it_behaves_like 'returning response status with message',
+            status: :bad_request,
+            message: '400 Bad request - invalid parameter'
+        end
+
+        context 'when error is package_already_exists' do
+          let(:error) do
+            ServiceResponse.error(message: 'ActiveRecord::RecordNotUnique', reason: :package_already_exists)
+          end
+
+          it_behaves_like 'returning response status with message',
+            status: :bad_request,
+            message: '400 Bad request - Package already exists'
+        end
+
+        context 'when error has an unrecognized reason' do
+          let(:error) { ServiceResponse.error(message: 'Something went wrong', reason: :unknown_error) }
+
+          it_behaves_like 'returning response status with message',
+            status: :bad_request,
+            message: '400 Bad request - Something went wrong'
+        end
+      end
+
+      context 'when ObjectStorage::RemoteStoreError is raised' do
+        let(:headers) { workhorse_headers.merge(personal_access_token_header) }
+
+        before do
+          allow_next_instance_of(Packages::Generic::CreatePackageFileService) do |service|
+            allow(service).to receive(:execute).and_raise(ObjectStorage::RemoteStoreError)
+          end
+        end
+
+        it 'tracks the exception and returns forbidden' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            an_instance_of(ObjectStorage::RemoteStoreError),
+            extra: { file_name: 'myfile.tar.gz', project_id: project.id }
+          )
+
+          upload_file(params, headers)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
       it 'rejects request without a file from workhorse' do
         headers = workhorse_headers.merge(personal_access_token_header)
         upload_file({}, headers)

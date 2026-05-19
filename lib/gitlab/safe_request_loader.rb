@@ -48,7 +48,7 @@ module Gitlab
     end
 
     def mark_absent_values
-      absent = (missing_resource_ids - resource_data.keys).to_h { [_1, default_value] }
+      absent = (missing_resource_ids - resource_data.keys).index_with { default_value }
       @resource_data.merge!(absent)
     end
   end

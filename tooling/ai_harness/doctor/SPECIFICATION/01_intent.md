@@ -101,8 +101,8 @@ auto-fixable — missing files must be created manually.
 
 **Design note — `@` prefix convention:** The `@` prefix in instruction
 files forces AI tools to eagerly read the referenced file on load.
-`AGENTS.local.md` is the only file referenced this way
-(`@AGENTS.local.md`). All `.ai/` module references use plain paths (no `@`)
+`CLAUDE.local.md` is the only file referenced this way
+(`@CLAUDE.local.md`). All `.ai/` module references use plain paths (no `@`)
 so agents read them on demand based on task context.
 
 **Implementation note:** The doctor's regex extracts `.ai/` paths without
@@ -110,9 +110,9 @@ the `@` prefix, since `.ai/` references never use it.
 
 ### 2.3 .gitignore Coverage
 
-The root `.gitignore` must contain non-rooted entries for `AGENTS.local.md`,
-`CLAUDE.local.md`, and `.ai/*` to ensure user local files are properly
-ignored at all directory levels. `--fix` appends missing entries. Note: committed instruction files
+The root `.gitignore` must contain non-rooted entries for `CLAUDE.local.md`
+and `.ai/*` to ensure user local files are properly ignored at all directory
+levels. `--fix` appends missing entries. Note: committed instruction files
 (like `AGENTS.md`) must be force-added (`git add --force`) since the
 gitignore patterns are non-rooted.
 

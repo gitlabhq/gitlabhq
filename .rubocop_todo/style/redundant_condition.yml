@@ -1,0 +1,19 @@
+---
+# Cop supports --autocorrect.
+Style/RedundantCondition:
+  Exclude:
+    - 'app/helpers/avatars_helper.rb'
+    - 'app/models/user.rb'
+    - 'app/workers/delete_user_worker.rb'
+    - 'ee/app/graphql/ee/resolvers/board_item_filterable.rb'
+    - 'ee/app/models/vulnerabilities/finding.rb'
+    - 'ee/lib/gitlab/duo/chat/parsers/final_answer_parser.rb'
+    - 'ee/lib/gitlab/llm/stage_check.rb'
+    - 'ee/spec/lib/remote_development/workspace_operations/create/desired_config/config_values_extractor_spec.rb'
+    - 'lib/banzai/filter/mermaid_filter.rb'
+    - 'lib/gitlab/gfm/reference_rewriter.rb'
+    - 'qa/qa/page/base.rb'
+    - 'qa/qa/service/shellout.rb'
+    - 'spec/lib/gitlab/usage_data/topology_spec.rb'
+    - 'spec/models/concerns/project_api_compatibility_spec.rb'
+    - 'spec/support/helpers/stubbed_feature.rb'

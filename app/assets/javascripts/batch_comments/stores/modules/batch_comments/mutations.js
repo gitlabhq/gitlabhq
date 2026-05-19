@@ -19,7 +19,7 @@ export default {
   },
 
   [types.SET_BATCH_COMMENTS_DRAFTS](state, drafts) {
-    state.drafts = drafts.map(processDraft);
+    state.drafts = Array.isArray(drafts) ? drafts.map(processDraft) : [];
   },
 
   [types.REQUEST_PUBLISH_DRAFT](state, draftId) {

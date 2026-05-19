@@ -1,0 +1,10 @@
+---
+name: create_relation_import
+description: Grants the ability to create relation imports
+deprecated: true
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_project_relation_import

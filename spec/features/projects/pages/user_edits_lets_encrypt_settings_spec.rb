@@ -163,11 +163,11 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
 
     before do
       stub_application_setting(lets_encrypt_terms_of_service_accepted: false)
-
-      visit project_pages_domain_path(project, domain)
     end
 
     it "does not render the Let's Encrypt field", :js do
+      visit project_pages_domain_path(project, domain)
+
       expect(page).not_to have_selector '.js-auto-ssl-toggle-container'
     end
 

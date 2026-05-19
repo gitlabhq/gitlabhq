@@ -57,5 +57,3 @@ If job is failing on setup stage prior to `gitlab:db:configure`
 due to external dependencies, the job can be disabled by setting
 `DISABLE_DB_MULTI_VERSION_UPGRADE=true` in GitLab project CI variables
 to unblock the [broken master](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master).
-
-Reach out to [Self-Managed Platform team](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/self-managed-platform-team/) to expedite debugging.

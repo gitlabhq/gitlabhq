@@ -1,5 +1,5 @@
 <script>
-import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
+import { GlAvatarLink, GlAvatar, GlSprintf, GlLink } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { createAlert } from '~/alert';
@@ -9,6 +9,7 @@ import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { isCurrentUser } from '~/lib/utils/common_utils';
 import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { updateNoteErrorMessage } from '~/notes/utils';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
 import NoteHeader from './note_header.vue';
@@ -23,7 +24,10 @@ export default {
     NoteBody,
     GlAvatarLink,
     GlAvatar,
+    GlSprintf,
+    GlLink,
     TimelineEntryItem,
+    TimeAgoTooltip,
   },
   inject: {
     store: {
@@ -111,6 +115,11 @@ export default {
     canReportAsAbuse() {
       if (this.isDraft) return false;
       return Boolean(this.endpoints.reportAbuse) && !isCurrentUser(this.authorId);
+    },
+    resolvedText() {
+      return this.note.resolved_by_push
+        ? __('Automatically resolved %{timeago} by %{author}')
+        : __('Resolved %{timeago} by %{author}');
     },
   },
   watch: {
@@ -233,6 +242,12 @@ export default {
         }"
       >
         <div
+          v-if="$scopedSlots.headline"
+          class="gl-border-b gl-border-section gl-px-4 gl-py-3 gl-text-subtle"
+        >
+          <slot name="headline"></slot>
+        </div>
+        <div
           class="gl-flex gl-flex-wrap gl-items-start gl-justify-between gl-gap-2 gl-px-4 gl-pt-2"
         >
           <note-header
@@ -273,6 +288,22 @@ export default {
           />
         </div>
         <div class="gl-pb-4 gl-pr-4" :class="timelineLayout ? 'gl-pl-4' : 'gl-ml-2 gl-pl-8'">
+          <div v-if="isResolved" class="-gl-mt-2 gl-mb-3 gl-text-sm gl-text-subtle">
+            <gl-sprintf :message="resolvedText">
+              <template #timeago>
+                <time-ago-tooltip :time="note.resolved_at" tooltip-placement="bottom" />
+              </template>
+              <template #author>
+                <gl-link
+                  :href="note.resolved_by.path"
+                  :data-user-id="note.resolved_by.id"
+                  class="js-user-link gl-break-words"
+                >
+                  {{ note.resolved_by.name }}
+                </gl-link>
+              </template>
+            </gl-sprintf>
+          </div>
           <note-body
             :note="note"
             :can-edit="canEdit"

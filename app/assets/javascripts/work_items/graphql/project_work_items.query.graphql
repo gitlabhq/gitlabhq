@@ -2,7 +2,6 @@
 query projectWorkItems(
   $searchTerm: String
   $fullPath: ID!
-  $types: [IssueType!]
   $in: [IssuableSearchableField!]
   $iid: String = null
   $searchByIid: Boolean = false
@@ -11,13 +10,8 @@ query projectWorkItems(
 ) {
   namespace: project(fullPath: $fullPath) {
     id
-    workItems(
-      search: $searchTerm
-      types: $types
-      state: opened
-      in: $in
-      workItemTypeIds: $workItemTypeIds
-    ) @include(if: $searchByText) {
+    workItems(search: $searchTerm, state: opened, in: $in, workItemTypeIds: $workItemTypeIds)
+      @include(if: $searchByText) {
       nodes {
         id
         iid
@@ -35,7 +29,7 @@ query projectWorkItems(
         }
       }
     }
-    workItemsByIid: workItems(iid: $iid, types: $types, workItemTypeIds: $workItemTypeIds)
+    workItemsByIid: workItems(iid: $iid, workItemTypeIds: $workItemTypeIds)
       @include(if: $searchByIid) {
       nodes {
         id

@@ -172,6 +172,22 @@ To configure settings, go to **Settings** > **Extensions** > **GitLab**.
 After you authenticate and connect to your repository, the extension automatically associates your
 GitLab account and project based on your Git repository configuration.
 
+In some environments, you might need additional configuration to persist your credentials.
+
+#### Store tokens in environment variables
+
+If you often delete your VS Code storage, such as in Gitpod containers, store your authentication
+tokens in [VS Code environment variables](https://code.visualstudio.com/docs/editor/variables-reference#_environment-variables).
+Environment variables persist when you delete your VS Code storage.
+
+Set these variables before you start VS Code:
+
+- `GITLAB_WORKFLOW_INSTANCE_URL`: Your GitLab instance URL. For example, `https://gitlab.com`.
+- `GITLAB_WORKFLOW_TOKEN`: Your personal access token.
+
+If you configure a token for the same GitLab instance in the extension, the extension token
+overrides the environment variable.
+
 #### Switch accounts
 
 The extension uses one account for each [VS Code workspace](https://code.visualstudio.com/docs/editor/workspaces)
@@ -196,7 +212,7 @@ Alternatively, you can use the Command Palette:
 #### Select a project
 
 The extension uses your Git repository remote to determine which GitLab project to associate with
-your workspace.
+your VS Code workspace.
 
 When your Git repository has multiple remotes that point to different GitLab projects, the extension
 cannot determine which one to use. For example:
@@ -235,9 +251,13 @@ GitLab Duo features are enabled by default in VS Code when you meet the prerequi
 - For agents, you have [foundational agents turned on](../../user/duo_agent_platform/agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off)
   and [custom agents enabled](../../user/duo_agent_platform/agents/custom.md#enable-an-agent), as
   needed.
+- Your project is in a [group namespace](../../user/namespace/_index.md).
 - You have a [default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment)
   set or have a project open that has GitLab Duo access.
 - For GitLab Duo Code Suggestions, you [meet the additional prerequisites](../../user/project/repository/code_suggestions/set_up.md#prerequisites).
+
+To approve Agentic Chat tools once per session instead of individually,
+see [tool approvals](../../user/gitlab_duo_chat/agentic_chat.md#tool-approvals).
 
 #### Turn off GitLab Duo
 

@@ -48,7 +48,7 @@ Prerequisites:
 - You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue**.
 1. Optional. Select additional filters, operators, and values
    to export a subset of issues.
    For more information, see [filter the list of issues](managing_issues.md#filter-the-list-of-issues).

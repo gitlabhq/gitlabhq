@@ -324,6 +324,9 @@ duplicate IDs across partitions. To solve this we enforce that only the database
 can set the ID values and use a sequence to generate them because sequences are
 guaranteed to generate unique values.
 
+> [!note]
+> This step is only required when the table needs to expose the ID externally.
+
 For example:
 
 ```ruby
@@ -364,3 +367,42 @@ end
 ```
 
 Depending on the model, it might be safer to use a [change management issue](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/16387).
+
+Also update the following:
+
+- `config/gitlab_loose_foreign_keys.yml`: Repoint all related tables to the partitioned table.
+- [GitLab exporter](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter): Replace all references to the original table with the partitioned table.
+
+### Step 11 - Move the first partition into the dynamic schema
+
+The first partition lives in the `public` schema. Move it into the
+`gitlab_partitions_dynamic` schema so all partitions are managed consistently.
+
+For example, in a Rails post-deployment migration:
+
+```ruby
+class MoveCiBuildNeedsToDynamicSchema < Gitlab::Database::Migration[2.3]
+  include Gitlab::Database::MigrationHelpers::WraparoundAutovacuum
+
+  milestone '19.0'
+  skip_require_disable_ddl_transactions!
+
+  TABLE_NAME = :ci_build_needs
+  PARENT_TABLE_NAME = :p_ci_build_needs
+  PARTITION_VALUES = (100..111)
+
+  def up
+    return unless can_execute_on?(TABLE_NAME)
+
+    move_table_to_dynamic_schema(TABLE_NAME)
+  end
+
+  def down
+    return unless can_execute_on?(TABLE_NAME)
+
+    move_table_from_dynamic_schema(
+      TABLE_NAME, partition_values: PARTITION_VALUES, parent_table_name: PARENT_TABLE_NAME
+    )
+  end
+end
+```

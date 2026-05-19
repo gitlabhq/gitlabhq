@@ -50,7 +50,7 @@ module MergeRequests
         return cached_result if cached_result.respond_to?(:status)
 
         check.execute.tap do |result|
-          cached_results.write(merge_check: check, result_hash: result.to_hash)
+          cached_results.write(merge_check: check, result_hash: result.to_hash, ttl: check.cache_ttl)
         end
       end
 

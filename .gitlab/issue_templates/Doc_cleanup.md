@@ -28,7 +28,7 @@ Do you want to work on this issue?
 - When you create the merge request, select the **Documentation** merge request description template.
 - In the merge request's description, add a link to this issue.
 - Follow the [commit message guidelines](https://docs.gitlab.com/development/contributing/merge_request_workflow/#commit-messages-guidelines).
-  Use three to five words for your commit message, start with message with a capital letter, and do **not** end it in a period.
+  Use three to five words for your commit message, start the message with a capital letter, and do **not** end it in a period.
   Other commit messages can cause the pipeline to fail.
 
 Thank you again for contributing to the GitLab documentation! :tada:

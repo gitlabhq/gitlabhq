@@ -74,7 +74,7 @@ module Gitlab
     module Gitaly
       extend Gitlab::SetupHelper
       class << self
-        # We cannot create config.toml files for all possible Gitaly configuations.
+        # We cannot create config.toml files for all possible Gitaly configurations.
         # For instance, if Gitaly is running on another machine then it makes no
         # sense to write a config.toml file on the current machine. This method will
         # only generate a configuration for the most common and simplest case: when

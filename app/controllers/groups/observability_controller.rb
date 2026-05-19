@@ -57,27 +57,21 @@ module Groups
       render_404 unless Ability.allowed?(current_user, :read_observability_portal, group)
     end
 
-    # Filters the incoming query string according to the allowlist and size limits
+    # Filters the incoming query string according to the allowlist and size limit
     # defined in the presenter.  Returns a plain Hash of permitted key/value pairs.
     #
     # We use request.query_parameters (bypassing strong params) intentionally: this
     # is read-only forwarding to the iframe, not a model-mutating operation.
-    #
-    # The global byte-size gate measures the URL-encoded query string length (a
-    # conservative upper bound).  The per-value check operates on decoded strings;
-    # this intentional asymmetry means the global gate is slightly stricter, which
-    # is acceptable since it protects against large payloads before any parsing.
     def filtered_query_params
       raw_qs = request.query_string
 
       return {} if raw_qs.bytesize > ::Observability::ObservabilityPresenter::QUERY_STRING_MAX_BYTES
 
       allowed_keys = ::Observability::ObservabilityPresenter::ALLOWED_QUERY_PARAMS
-      max_value    = ::Observability::ObservabilityPresenter::PARAM_VALUE_MAX_BYTES
 
       request.query_parameters
         .slice(*allowed_keys)
-        .reject { |_k, v| !v.is_a?(String) || v.bytesize > max_value }
+        .select { |_k, v| v.is_a?(String) }
     end
   end
 end

@@ -93,6 +93,7 @@ RSpec.describe DashboardHelper, :enable_admin_mode, feature_category: :shared do
       expect(helper.user_roles_mapping).to match({
         planner: 'Planner',
         reporter: 'Reporter',
+        security_manager: 'Security Manager',
         developer: 'Developer',
         maintainer: 'Maintainer',
         owner: 'Owner',

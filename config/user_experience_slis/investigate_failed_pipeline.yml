@@ -1,0 +1,4 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/raw/master/config/user_experience_slis/schema.json
+description: "Investigate a failed pipeline"
+feature_category: "continuous_integration"
+urgency: "async_fast"

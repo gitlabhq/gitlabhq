@@ -32,20 +32,24 @@ requirements such as development style guides.
 
 The following Agent Platform features support custom rules:
 
-- [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md)
-- [Foundational and custom agents](../agents/_index.md)
-- [Foundational and custom flows](../flows/_index.md)
+- [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md) in the GitLab UI and your local
+  environment.
+- [Foundational and custom agents](../agents/_index.md).
+- [Foundational and custom flows](../flows/_index.md), excluding Code Review Flow.
 
 ## Create custom rules
 
 You can create custom rules at two levels, depending on how you use GitLab Duo:
 
-| Level                                                           | Agentic Chat in the GitLab UI | Editor extensions | GitLab Duo CLI |
+| Level                                                           | GitLab UI | Editor extensions | GitLab Duo CLI |
 |-----------------------------------------------------------------|--------------------------|------------------|--------------|
-| User-level: Apply to all of your projects and workspaces        | {{< no >}}  |  {{< yes >}}    | {{< yes >}} |
-| Workspace-level: Apply only to a specific project or workspace  | {{< yes >}} | {{< yes >}}         | {{< yes >}} |
+| User-level: Apply to all of your projects        | {{< no >}}  |  {{< yes >}}    | {{< yes >}} |
+| Project-level: Apply only to a specific project  | {{< yes >}} | {{< yes >}}         | {{< yes >}} |
 
-If both user-level and workspace-level rules exist, GitLab Duo Chat applies both to conversations.
+If you use a multi-root workspace in your IDE, you can create project-level custom rules for
+each project in the workspace.
+
+If both user-level and project-level rules exist, GitLab Duo Chat applies both to conversations.
 
 Prerequisites:
 
@@ -62,7 +66,7 @@ Prerequisites:
 
 ### Create user-level custom rules
 
-User-level custom rules apply to all of your projects and workspaces in your local environment (IDE).
+User-level custom rules apply to all of your projects in your local environment.
 
 1. Create a custom rules file in your home directory:
    - On Linux or macOS, create the file at `~/.gitlab/duo/chat-rules.md`.
@@ -89,13 +93,13 @@ custom rules file in a different location:
 - If you have set the `XDG_CONFIG_HOME` environment variable,
   create the file at `$XDG_CONFIG_HOME/gitlab/duo/chat-rules.md`.
 
-### Create workspace-level custom rules
+### Create project-level custom rules
 
-Workspace-level custom rules apply only to a specific project or workspace.
+Project-level custom rules apply only to a specific project.
 You can use this method to apply a set of custom rules to the project for your team.
 For example, you can apply a set of development style guides that your team uses.
 
-1. In your IDE workspace, create a custom rules file: `.gitlab/duo/chat-rules.md`.
+1. In the root of your project, create a custom rules file: `.gitlab/duo/chat-rules.md`.
 1. Add custom rules to the file. For example:
 
    ```markdown

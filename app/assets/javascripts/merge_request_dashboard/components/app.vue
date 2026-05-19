@@ -4,8 +4,13 @@ import Visibility from 'visibilityjs';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
+import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
+import { RESOURCE_TYPE_MERGE_REQUEST } from '~/vue_shared/components/new_resource_dropdown/constants';
+import searchUserProjectsWithMergeRequestsEnabled from '~/vue_shared/components/new_resource_dropdown/graphql/search_user_projects_with_merge_requests_enabled.query.graphql';
 import eventHub from '../event_hub';
 import userMergeRequestUpdatedSubscription from '../queries/user_merge_request_updated.subscription.graphql';
+import ConfigDropdown from './config_dropdown.vue';
 import TabTitle from './tab_title.vue';
 import MergeRequestsQuery from './merge_requests_query.vue';
 import CollapsibleSection from './collapsible_section.vue';
@@ -14,6 +19,8 @@ import DraftsCount from './drafts_count.vue';
 
 export default {
   name: 'MergeRequestDashboardRoot',
+  resourceType: RESOURCE_TYPE_MERGE_REQUEST,
+  mergeRequestsQuery: searchUserProjectsWithMergeRequestsEnabled,
   apollo: {
     $subscribe: {
       // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
@@ -40,6 +47,9 @@ export default {
     },
   },
   components: {
+    IndexLayout,
+    NewResourceDropdown,
+    ConfigDropdown,
     GlButton,
     GlAlert,
     GlTabs,
@@ -108,7 +118,14 @@ export default {
 </script>
 
 <template>
-  <div>
+  <index-layout :heading="__('Merge requests')">
+    <template #actions>
+      <config-dropdown />
+      <new-resource-dropdown
+        :resource-type="$options.resourceType"
+        :query="$options.mergeRequestsQuery"
+      />
+    </template>
     <gl-tabs no-key-nav>
       <gl-tab
         v-for="tab in tabs"
@@ -278,5 +295,5 @@ export default {
         </template>
       </gl-sprintf>
     </div>
-  </div>
+  </index-layout>
 </template>

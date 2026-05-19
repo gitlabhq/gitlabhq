@@ -2,6 +2,7 @@
 stage: AI-powered
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: "Use exact code search to find code in a specific project or across all of GitLab."
 title: Exact code search
 ---
 
@@ -101,6 +102,12 @@ select **Use regular expression** ({{< icon name="regular-expression" >}}).
 
 ### Syntax
 
+{{< history >}}
+
+- `repo:` filter [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/488467) in GitLab 19.0.
+
+{{< /history >}}
+
 <!-- Remember to also update the table in `doc/drawers/exact_code_search_syntax.md` -->
 
 This table shows some example queries for exact match and regular expression modes.
@@ -121,7 +128,7 @@ This table shows some example queries for exact match and regular expression mod
 | `foo file:\.js$`     | `foo` in files with names that end with `.js`                                   | `foo` in files with names that end with `.js`                                   |
 | `foo.*bar`           | `foo.*bar` (literal)                                                            | `foo.*bar` (regular expression)                                                 |
 | `sym:foo`            | `foo` in symbols like class, method, and variable names                         | `foo` in symbols like class, method, and variable names                         |
-| `test repo:(?i)foo`  | `test` in projects with `foo` in their name (case-insensitive); `repo:` supports regular expressions | `test` in projects with `foo` in their name (case-insensitive); `repo:` supports regular expressions |
+| `test repo:(?i)foo`  | `test` in projects with `foo` in their name (case-insensitive) | `test` in projects with `foo` in their name (case-insensitive) |
 
 ## Known issues
 

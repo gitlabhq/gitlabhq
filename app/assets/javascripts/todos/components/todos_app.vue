@@ -22,6 +22,7 @@ import {
   TODO_WAIT_BEFORE_RELOAD,
   TABS_INDICES,
 } from '~/todos/constants';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import getTodosQuery from './queries/get_todos.query.graphql';
 import getPendingTodosCount from './queries/get_pending_todos_count.query.graphql';
 import TodoItem from './todo_item.vue';
@@ -39,6 +40,7 @@ export default {
     GlTabs,
     GlTab,
     GlFormCheckbox,
+    IndexLayout,
     TodosEmptyState,
     TodosFilterBar,
     TodoItem,
@@ -341,7 +343,7 @@ export default {
 </script>
 
 <template>
-  <div data-testid="todos-list-container">
+  <index-layout :heading="__('To-Do List')" data-testid="todos-list-container">
     <div
       class="gl-flex gl-flex-wrap-reverse gl-justify-between gl-border-b-1 gl-border-default gl-border-b-solid"
     >
@@ -450,7 +452,7 @@ export default {
         </div>
       </div>
     </div>
-  </div>
+  </index-layout>
 </template>
 
 <style>

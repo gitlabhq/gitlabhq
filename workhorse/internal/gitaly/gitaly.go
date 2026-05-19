@@ -88,12 +88,25 @@ func InitializeSidechannelRegistry(logger *logrus.Logger) {
 }
 
 var allowedMetadataKeys = map[string]bool{
-	"user_id":   true,
-	"username":  true,
-	"remote_ip": true,
+	"user_id":     true,
+	"username":    true,
+	"remote_ip":   true,
+	"client_name": true,
 }
 
-const retryConfigKey = "retry_config"
+const (
+	retryConfigKey = "retry_config"
+	// clientNameKey is the call-metadata key Rails uses to forward a per-call
+	// origin client (e.g. "gkg-indexer") into Workhorse. See
+	// lib/gitlab/workhorse.rb#gitaly_server_hash.
+	clientNameKey = "client_name"
+	// clientNameHeaderKey is Labkit's canonical gRPC metadata key for client-name
+	// attribution. We write client_name onto this key (rather than forwarding it
+	// raw) so that Gitaly's request-info middleware, which prefers the Labkit-
+	// extracted value, sees the Rails-supplied origin ahead of the per-connection
+	// "gitlab-workhorse" default appended by our Labkit interceptor.
+	clientNameHeaderKey = "x-gitlab-client-name"
+)
 
 func parseRetryPolicy(server api.GitalyServer) *gitalyclient.RetryPolicy {
 	retryConfig, ok := server.CallMetadata[retryConfigKey]
@@ -113,9 +126,16 @@ func parseRetryPolicy(server api.GitalyServer) *gitalyclient.RetryPolicy {
 func withOutgoingMetadata(ctx context.Context, gs api.GitalyServer) context.Context {
 	md := metadata.New(nil)
 	for k, v := range gs.CallMetadata {
-		if strings.HasPrefix(k, "gitaly-feature-") || allowedMetadataKeys[k] {
-			md.Set(k, v)
+		if !strings.HasPrefix(k, "gitaly-feature-") && !allowedMetadataKeys[k] {
+			continue
 		}
+
+		if k == clientNameKey {
+			md.Set(clientNameHeaderKey, v)
+			continue
+		}
+
+		md.Set(k, v)
 	}
 
 	// Extract correlation ID from context and add to gRPC metadata

@@ -91,7 +91,7 @@ RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
         it { is_expected.to eq(false) }
       end
 
-      context 'when locked longer ago than Devise default time but shorter ago than overriden time' do
+      context 'when locked longer ago than Devise default time but shorter ago than overridden time' do
         before do
           instance.locked_at = (instance.class.unlock_in + 1.minute).ago
         end
@@ -99,7 +99,7 @@ RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
         it { is_expected.to eq(!overridden) }
       end
 
-      context 'when locked longer ago than overriden time' do
+      context 'when locked longer ago than overridden time' do
         before do
           instance.locked_at = (24.hours + 1.minute).ago
         end

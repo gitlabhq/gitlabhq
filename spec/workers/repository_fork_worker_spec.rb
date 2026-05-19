@@ -103,7 +103,7 @@ RSpec.describe RepositoryForkWorker, feature_category: :source_code_management d
       end
     end
 
-    context 'only project ID passed' do
+    context 'when only project ID is passed' do
       def perform!
         subject.perform(forked_project.id)
       end
@@ -121,7 +121,7 @@ RSpec.describe RepositoryForkWorker, feature_category: :source_code_management d
       it_behaves_like 'RepositoryForkWorker performing', 'wip'
     end
 
-    context 'project ID, storage and repo paths passed' do
+    context 'when project ID, storage, and repo paths are passed' do
       def perform!
         subject.perform(forked_project.id, 'repos/path', project.disk_path)
       end

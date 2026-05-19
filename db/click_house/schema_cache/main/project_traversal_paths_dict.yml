@@ -1,0 +1,8 @@
+---
+name: project_traversal_paths_dict
+engine: Dictionary
+columns:
+- name: id
+  type: UInt64
+- name: traversal_path
+  type: String

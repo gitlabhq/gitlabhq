@@ -18,7 +18,9 @@ module Gitlab
       end
 
       def with_value
-        with_availability(proc { instrumentation_object.value })
+        with_availability(proc {
+          Gitlab::UsageData.with_metadata { instrumentation_object.value }
+        })
       end
 
       def with_instrumentation

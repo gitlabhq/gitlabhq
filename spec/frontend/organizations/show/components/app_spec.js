@@ -1,78 +1,116 @@
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { GlEmptyState } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import App from '~/organizations/show/components/app.vue';
-import OrganizationAvatar from '~/organizations/show/components/organization_avatar.vue';
-import OrganizationDescription from '~/organizations/show/components/organization_description.vue';
-import GroupsAndProjects from '~/organizations/show/components/groups_and_projects.vue';
-import AssociationCounts from '~/organizations/show/components/association_counts.vue';
 
 describe('OrganizationShowApp', () => {
   let wrapper;
 
   const defaultPropsData = {
     organization: {
-      id: 1,
       name: 'GitLab',
+      path: 'gitlab',
     },
-    associationCounts: {
-      groups: 10,
-      projects: 5,
-      users: 6,
-    },
-    groupsAndProjectsOrganizationPath: '/-/organizations/default/groups_and_projects',
-    usersOrganizationPath: '/-/organizations/default/users',
+    canReadArtifactRegistry: true,
+    canAdminOrganization: true,
   };
 
   const createComponent = ({ propsData } = {}) => {
-    wrapper = shallowMountExtended(App, { propsData: { ...defaultPropsData, ...propsData } });
+    wrapper = mountExtended(App, { propsData: { ...defaultPropsData, ...propsData } });
   };
 
-  const findAssociationsCount = () => wrapper.findComponent(AssociationCounts);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
-  it('renders organization avatar and passes organization prop', () => {
-    createComponent();
+  const itRendersEmptyStateWithCorrectDescription = (description) => {
+    it('renders empty state with correct description', () => {
+      expect(findEmptyState().text()).toContain(description);
+    });
+  };
+  const itRendersLinkToArtifactRegistry = () => {
+    it('renders link to artifact registry', () => {
+      expect(
+        wrapper.findByRole('link', { name: 'Go to Artifact Registry' }).attributes('href'),
+      ).toBe('/o/gitlab/-/artifact_registry');
+    });
+  };
+  const itDoesNotRenderLinkToArtifactRegistry = () => {
+    it('does not render link to artifact registry', () => {
+      expect(wrapper.findByRole('link', { name: 'Go to Artifact Registry' }).exists()).toBe(false);
+    });
+  };
+  const itRendersLearnMoreLink = () => {
+    it('renders learn more link', () => {
+      expect(wrapper.findByRole('link', { name: 'Learn more' }).attributes('href')).toBe(
+        '/help/user/organization/_index.md',
+      );
+    });
+  };
 
-    expect(wrapper.findComponent(OrganizationAvatar).props('organization')).toEqual(
-      defaultPropsData.organization,
-    );
-  });
-
-  it('renders organization description and passes organization prop', () => {
-    createComponent();
-
-    expect(wrapper.findComponent(OrganizationDescription).props('organization')).toEqual(
-      defaultPropsData.organization,
-    );
-  });
-
-  it('renders groups and projects component and passes `groupsAndProjectsOrganizationPath` prop', () => {
-    createComponent();
-
-    expect(
-      wrapper.findComponent(GroupsAndProjects).props('groupsAndProjectsOrganizationPath'),
-    ).toEqual(defaultPropsData.groupsAndProjectsOrganizationPath);
-  });
-
-  describe('when association counts are available', () => {
+  describe('when user can read artifact registry and admin organization', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    it('renders association counts component and passes expected props', () => {
-      expect(findAssociationsCount().props()).toEqual({
-        associationCounts: defaultPropsData.associationCounts,
-        groupsAndProjectsOrganizationPath: defaultPropsData.groupsAndProjectsOrganizationPath,
-        usersOrganizationPath: defaultPropsData.usersOrganizationPath,
-      });
-    });
+    itRendersEmptyStateWithCorrectDescription(
+      `${defaultPropsData.organization.name} is your organization's home. Manage Artifact Registry and settings from the sidebar. Learn more.`,
+    );
+
+    itRendersLearnMoreLink();
+
+    itRendersLinkToArtifactRegistry();
   });
 
-  describe('when association counts are not available', () => {
+  describe('when user can read artifact registry', () => {
     beforeEach(() => {
-      createComponent({ propsData: { associationCounts: {} } });
+      createComponent({
+        propsData: {
+          canAdminOrganization: false,
+        },
+      });
     });
 
-    it('does not render association counts component', () => {
-      expect(findAssociationsCount().exists()).toBe(false);
+    itRendersEmptyStateWithCorrectDescription(
+      `${defaultPropsData.organization.name} is your organization's home. Manage Artifact Registry from the sidebar. Learn more.`,
+    );
+
+    itRendersLearnMoreLink();
+
+    itRendersLinkToArtifactRegistry();
+  });
+
+  describe('when user can admin organization', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          canReadArtifactRegistry: false,
+        },
+      });
     });
+
+    itRendersEmptyStateWithCorrectDescription(
+      `${defaultPropsData.organization.name} is your organization's home. Manage settings from the sidebar. Learn more.`,
+    );
+
+    itRendersLearnMoreLink();
+
+    itDoesNotRenderLinkToArtifactRegistry();
+  });
+
+  describe('when user cannot read artifact registry or admin organization', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          canReadArtifactRegistry: false,
+          canAdminOrganization: false,
+        },
+      });
+    });
+
+    itRendersEmptyStateWithCorrectDescription(
+      `${defaultPropsData.organization.name} is your organization's home. Learn more.`,
+    );
+
+    itRendersLearnMoreLink();
+
+    itDoesNotRenderLinkToArtifactRegistry();
   });
 });

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::UpsertPackageRevisionService, feature_category: :package_registry do
-  let_it_be(:package) { create(:conan_package, without_package_files: true) }
+  let_it_be(:package, freeze: false) { create(:conan_package, without_package_files: true) }
   let_it_be(:package_reference) { package.conan_package_references.first }
   let_it_be(:revision) { OpenSSL::Digest.hexdigest('MD5', 'valid_package_revision') }
 
@@ -48,7 +48,7 @@ RSpec.describe Packages::Conan::UpsertPackageRevisionService, feature_category: 
     end
 
     context 'when the package revision already exists' do
-      let_it_be(:existing_package_revision) do
+      let_it_be(:existing_package_revision, freeze: false) do
         create(:conan_package_revision, :processing, package: package, package_reference: package_reference,
           revision: revision)
       end

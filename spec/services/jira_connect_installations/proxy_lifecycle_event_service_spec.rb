@@ -38,7 +38,7 @@ RSpec.describe JiraConnectInstallations::ProxyLifecycleEventService, feature_cat
   describe '#execute' do
     let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'https://old_instance_url.example.com') }
 
-    let(:service) { described_class.new(installation, evnet_type, 'https://gitlab.example.com') }
+    let(:service) { described_class.new(installation, event_type, 'https://gitlab.example.com') }
     let(:service_instance_installation) { service.instance_variable_get(:@installation) }
 
     before do
@@ -67,7 +67,7 @@ RSpec.describe JiraConnectInstallations::ProxyLifecycleEventService, feature_cat
         expect_next_instance_of(
           JiraConnect::CreateAsymmetricJwtService,
           service_instance_installation,
-          event: evnet_type
+          event: event_type
         ) do |create_asymmetric_jwt_service|
           expect(create_asymmetric_jwt_service).to receive(:execute).and_return('123456')
         end
@@ -94,7 +94,7 @@ RSpec.describe JiraConnectInstallations::ProxyLifecycleEventService, feature_cat
           expect(Gitlab::IntegrationsLogger).to receive(:info).with(
             integration: 'JiraConnect',
             message: 'Proxy lifecycle event received error response',
-            jira_event_type: evnet_type,
+            jira_event_type: event_type,
             jira_status_code: 422,
             jira_body: 'Error message'
           )
@@ -119,10 +119,35 @@ RSpec.describe JiraConnectInstallations::ProxyLifecycleEventService, feature_cat
           )
         end
       end
+
+      context 'when the installation has an invalid instance_url' do
+        let(:uri_error) { URI::InvalidURIError.new('bad URI') }
+
+        before do
+          allow_next_instance_of(JiraConnect::CreateAsymmetricJwtService) do |jwt_service|
+            allow(jwt_service).to receive(:execute).and_raise(uri_error)
+          end
+        end
+
+        it 'tracks the exception and returns an error ServiceResponse', :aggregate_failures do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            uri_error,
+            hash_including(
+              integration: 'JiraConnect',
+              jira_event_type: event_type,
+              jira_connect_installation_id: installation.id
+            )
+          )
+
+          expect(execute_service).to be_kind_of(ServiceResponse)
+          expect(execute_service[:status]).to eq(:error)
+          expect(execute_service[:message]).to eq({ type: :invalid_url, message: 'bad URI' })
+        end
+      end
     end
 
     context 'when installed event' do
-      let(:evnet_type) { :installed }
+      let(:event_type) { :installed }
       let(:hook_url) { 'https://gitlab.example.com/-/jira_connect/events/installed' }
       let(:expected_request_body) do
         {
@@ -138,7 +163,7 @@ RSpec.describe JiraConnectInstallations::ProxyLifecycleEventService, feature_cat
     end
 
     context 'when uninstalled event' do
-      let(:evnet_type) { :uninstalled }
+      let(:event_type) { :uninstalled }
       let(:hook_url) { 'https://gitlab.example.com/-/jira_connect/events/uninstalled' }
       let(:expected_request_body) do
         {

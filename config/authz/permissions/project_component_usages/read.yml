@@ -1,0 +1,3 @@
+---
+name: read_project_component_usages
+description: Grants the ability to read CI catalog component usage data for a project

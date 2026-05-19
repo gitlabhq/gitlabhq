@@ -74,7 +74,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
         let(:lb) { instance_double(Gitlab::Database::LoadBalancing::LoadBalancer, name: :primary) }
 
         it 'reports error without raising' do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          expect(Gitlab::Database::LoadBalancing::Callbacks).to receive(:track_exception)
             .with(an_instance_of(Gitlab::Database::LoadBalancing::SessionMap::InvalidLoadBalancerNameError))
           expect(current).to be_instance_of(Gitlab::Database::LoadBalancing::Session)
         end

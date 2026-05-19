@@ -16,7 +16,7 @@ RSpec.describe Autocomplete::RoutesFinder do
     let(:current_user) { user }
     let(:search) { 'path' }
 
-    before do
+    before_all do
       group.add_owner(user)
     end
 

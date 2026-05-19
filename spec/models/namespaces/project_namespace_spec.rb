@@ -153,4 +153,18 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model, feature_category: :gr
       expect(project_namespace.max_member_access_for_user(user)).to eq(Gitlab::Access::DEVELOPER)
     end
   end
+
+  describe 'state transitions' do
+    it { is_expected.to reject_events :unarchive, when: :ancestor_inherited }
+    it { is_expected.to reject_events :cancel_deletion, when: :ancestor_inherited }
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(remove_project_ancestor_inherited_transitions: false)
+      end
+
+      it { is_expected.to handle_events :unarchive, when: :ancestor_inherited }
+      it { is_expected.to handle_events :cancel_deletion, when: :ancestor_inherited }
+    end
+  end
 end

@@ -6,6 +6,12 @@ module Types
       graphql_name 'Tag'
 
       authorize :read_code
+      authorize_granular_token permissions: :read_repository_tag,
+        boundary: ->(obj) {
+          container = obj.repository.container
+          container if container.is_a?(Project)
+        },
+        boundary_type: :project
 
       field :name,
         GraphQL::Types::String,

@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::IndexToEvictEvent
+description: Published when Zoekt indices in the pending-eviction state are detected,
+  so the subscribed worker can perform the eviction and free their storage.
+feature_category: global_search
+ee_only: true

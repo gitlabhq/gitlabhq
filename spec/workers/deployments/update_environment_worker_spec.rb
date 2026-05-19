@@ -40,24 +40,22 @@ RSpec.describe Deployments::UpdateEnvironmentWorker, feature_category: :continuo
     end
   end
 
-  context 'idempotent' do
-    include_examples 'an idempotent worker' do
-      let(:project) { create(:project, :repository) }
-      let(:environment) { create(:environment, name: 'production') }
-      let(:deployment) { create(:deployment, :success, project: project, environment: environment) }
-      let(:merge_request) { create(:merge_request, target_branch: 'master', source_branch: 'feature', source_project: project) }
-      let(:job_args) { deployment.id }
+  it_behaves_like 'an idempotent worker' do
+    let(:project) { create(:project, :repository) }
+    let(:environment) { create(:environment, name: 'production') }
+    let(:deployment) { create(:deployment, :success, project: project, environment: environment) }
+    let(:merge_request) { create(:merge_request, target_branch: 'master', source_branch: 'feature', source_project: project) }
+    let(:job_args) { deployment.id }
 
-      before do
-        merge_request.metrics.update!(merged_at: 1.hour.ago)
-      end
+    before do
+      merge_request.metrics.update!(merged_at: 1.hour.ago)
+    end
 
-      it 'updates merge requests metrics' do
-        subject
+    it 'updates merge requests metrics' do
+      subject
 
-        expect(merge_request.reload.metrics.first_deployed_to_production_at)
-            .to be_like_time(deployment.finished_at)
-      end
+      expect(merge_request.reload.metrics.first_deployed_to_production_at)
+          .to be_like_time(deployment.finished_at)
     end
   end
 end

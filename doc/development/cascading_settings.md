@@ -328,59 +328,59 @@ initCascadingSettingsLockTooltips();
 
 ### Using Vue
 
- 1. In the your Ruby helper, you will need to call the following to send do your Vue component. Be sure to switch out `:replace_attribute_here` with your cascading attribute.
+1. In the your Ruby helper, you will need to call the following to send do your Vue component. Be sure to switch out `:replace_attribute_here` with your cascading attribute.
 
- ```ruby
- # Example call from your Ruby helper  method for groups
- cascading_settings_data = cascading_namespace_settings_tooltip_data(:replace_attribute_here, @group, method(:edit_group_path))[:tooltip_data]
- ```
+   ```ruby
+   # Example call from your Ruby helper  method for groups
+   cascading_settings_data = cascading_namespace_settings_tooltip_data(:replace_attribute_here, @group, method(:edit_group_path))[:tooltip_data]
+   ```
 
- ```ruby
- # Example call from your Ruby helper  method for projects
-cascading_settings_data = project_cascading_namespace_settings_tooltip_data(:duo_features_enabled, project, method(:edit_group_path)).to_json
- ```
+   ```ruby
+   # Example call from your Ruby helper  method for projects
+   cascading_settings_data = project_cascading_namespace_settings_tooltip_data(:duo_features_enabled, project, method(:edit_group_path)).to_json
+   ```
 
 1. From your Vue's `index.js` file, be sure to convert the data into JSON and camel case format. This will make it easier to use in Vue.
 
-```javascript
-let cascadingSettingsDataParsed;
-try {
-  cascadingSettingsDataParsed = convertObjectPropsToCamelCase(JSON.parse(cascadingSettingsData), {
-    deep: true,
-  });
-} catch {
-  cascadingSettingsDataParsed = null;
-}
-```
+   ```javascript
+   let cascadingSettingsDataParsed;
+   try {
+     cascadingSettingsDataParsed = convertObjectPropsToCamelCase(JSON.parse(cascadingSettingsData), {
+       deep: true,
+     });
+   } catch {
+     cascadingSettingsDataParsed = null;
+   }
+   ```
 
 1. From your Vue component, either `provide/inject` or pass your `cascadingSettingsDataParsed` variable to the component. You will also want to have a helper method to not show the `cascading-lock-icon` component if the cascading data returned is either null or an empty object.
 
-```vue
-// ./ee/my_component.vue
+   ```vue
+   // ./ee/my_component.vue
 
-<script>
-export default {
-  computed: {
-    showCascadingIcon() {
-      return (
-        this.cascadingSettingsData &&
-        Object.keys(this.cascadingSettingsData).length
-      );
-    },
-  },
-}
-</script>
+   <script>
+   export default {
+     computed: {
+       showCascadingIcon() {
+         return (
+           this.cascadingSettingsData &&
+           Object.keys(this.cascadingSettingsData).length
+         );
+       },
+     },
+   }
+   </script>
 
-<template>
-  <cascading-lock-icon
-    v-if="showCascadingIcon"
-    :is-locked-by-group-ancestor="cascadingSettingsData.lockedByAncestor"
-    :is-locked-by-application-settings="cascadingSettingsData.lockedByApplicationSetting"
-    :ancestor-namespace="cascadingSettingsData.ancestorNamespace"
-    class="gl-ml-1"
-  />
-</template>
-```
+   <template>
+     <cascading-lock-icon
+       v-if="showCascadingIcon"
+       :is-locked-by-group-ancestor="cascadingSettingsData.lockedByAncestor"
+       :is-locked-by-application-settings="cascadingSettingsData.lockedByApplicationSetting"
+       :ancestor-namespace="cascadingSettingsData.ancestorNamespace"
+       class="gl-ml-1"
+     />
+   </template>
+   ```
 
 You can look into the following examples of MRs for implementing `cascading_lock_icon.vue` into other Vue components:
 

@@ -3,7 +3,7 @@ import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { SHORT_DATE_FORMAT_WITH_TIME } from '~/vue_shared/constants';
 import { s__ } from '~/locale';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { projectJobPath } from '~/lib/utils/path_helpers/project';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 export default {
@@ -41,12 +41,7 @@ export default {
       return this.primaryDomain || this.deployment.url;
     },
     ciBuildUrl() {
-      return joinPaths(
-        gon.relative_url_root || '/',
-        this.projectFullPath,
-        '/-/jobs/',
-        `${this.deployment.ciBuildId}`,
-      );
+      return projectJobPath(this.projectFullPath, this.deployment.ciBuildId);
     },
   },
 };

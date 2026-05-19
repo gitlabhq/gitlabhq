@@ -39,19 +39,20 @@ RSpec.describe 'admin visits dashboard' do
       expect(page).to have_content('Users with highest role Guest 5')
       expect(page).to have_content('Users with highest role Planner 7')
       expect(page).to have_content('Users with highest role Reporter 9')
+      expect(page).to have_content('Users with highest role Security Manager 3')
       expect(page).to have_content('Users with highest role Developer 21')
       expect(page).to have_content('Users with highest role Maintainer 6')
       expect(page).to have_content('Users with highest role Owner 5')
       expect(page).to have_content('Bots 2')
 
       if Gitlab.ee?
-        expect(page).to have_content('Billable users 76')
+        expect(page).to have_content('Billable users 79')
       else
-        expect(page).not_to have_content('Billable users 76')
+        expect(page).not_to have_content('Billable users 79')
       end
 
       expect(page).to have_content('Blocked users 7')
-      expect(page).to have_content('Total users (active users + blocked users) 85')
+      expect(page).to have_content('Total users (active users + blocked users) 88')
     end
   end
 

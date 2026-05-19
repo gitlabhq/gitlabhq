@@ -23,11 +23,10 @@ module Gitlab
 
             new(entity[:model], schema_registry).convert
           when Array
-            entity.each do |definition|
-              next unless definition.is_a?(Hash) && definition[:model] && grape_entity?(definition[:model])
-
-              new(definition[:model], schema_registry).convert
-            end
+            # Array elements may be Class (`success [Entities::Foo]`) or
+            # Hash-with-:model (`success [{ code:, model: Foo }]`). Recurse so
+            # both are registered. Mirrors `ResponseConverter`'s handling.
+            entity.each { |item| register(item, schema_registry) }
           end
         end
 
@@ -134,6 +133,7 @@ module Gitlab
 
         def handle_array_property!(property, exposure)
           if nested_entity?(exposure)
+            register_nested_entity(exposure)
             reference = build_reference(exposure)
             set_array_property!(property, reference)
           else
@@ -142,8 +142,19 @@ module Gitlab
         end
 
         def handle_entity_reference!(property, exposure)
+          register_nested_entity(exposure)
           reference = build_reference(exposure)
           set_reference_property!(property, reference)
+        end
+
+        # Ensure schemas reachable from a route via nested `using:` exposures are
+        # registered too, so dropping the over-broad `Grape::Entity.descendants`
+        # seed in the generator does not leave dangling `$ref`s.
+        def register_nested_entity(exposure)
+          nested = nested_entity_class(exposure)
+          return unless nested.is_a?(Class)
+
+          self.class.register(nested, schema_registry)
         end
 
         def set_array_primitive_property!(property)

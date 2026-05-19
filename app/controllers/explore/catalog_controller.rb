@@ -33,3 +33,5 @@ module Explore
     end
   end
 end
+
+Explore::CatalogController.prepend_mod_with('Explore::CatalogController')

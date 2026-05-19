@@ -24,13 +24,18 @@ RSpec.describe ::Gitlab::Housekeeper::Keep do
     using RSpec::Parameterized::TableSyntax
 
     # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands -- binary operator is used in parameterized table
-    where(:already_approved, :push_when_approved, :code_update_required, :expected_result) do
-      true  | false | true  | false
-      true  | false | false | false
-      true  | true  | true  | true
-      true  | true  | false | false
-      false | true  | true  | true
-      false | true  | false | false
+    where(:has_conflicts, :push_when_conflict, :already_approved, :push_when_approved, :code_update_required,
+      :expected_result) do
+      true  | true  | true  | false | false | true
+      true  | true  | false | false | false | true
+      true  | false | true  | false | false | false
+      true  | false | false | false | true  | true
+      false | true  | true  | false | true  | false
+      false | true  | true  | false | false | false
+      false | true  | true  | true  | true  | true
+      false | true  | true  | true  | false | false
+      false | true  | false | true  | true  | true
+      false | true  | false | true  | false | false
     end
     # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
 
@@ -38,10 +43,11 @@ RSpec.describe ::Gitlab::Housekeeper::Keep do
       it "determines if we should push" do
         change = instance_double(::Gitlab::Housekeeper::Change)
 
+        allow(change).to receive(:has_conflicts).and_return(has_conflicts)
         allow(change).to receive(:already_approved?).and_return(already_approved)
         allow(change).to receive(:update_required?).with(:code).and_return(code_update_required)
 
-        result = keep_instance.should_push_code?(change, push_when_approved)
+        result = keep_instance.should_push_code?(change, push_when_approved, push_when_conflict: push_when_conflict)
         expect(result).to eq(expected_result)
       end
     end

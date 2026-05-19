@@ -6,6 +6,7 @@ import { dayAfter, getCurrentUtcDate } from '~/lib/utils/datetime_utility';
 import DateTimeRangePicker from './datetime_range_picker.vue';
 
 export default {
+  name: 'DateRangeFilter',
   components: {
     DateRangesDropdown,
     DateTimeRangePicker,

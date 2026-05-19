@@ -80,5 +80,66 @@ RSpec.describe Users::UnconfirmedSecondaryEmailsDeletionCronWorker, feature_cate
       expect(Email.exists?(confirmed_secondary_email_created_after_cut_off_1.id)).to eq(true)
       expect(Email.exists?(confirmed_secondary_email_created_after_cut_off_2.id)).to eq(true)
     end
+
+    context 'when cells claims are enabled for Email' do
+      let(:cut_off) do
+        ApplicationSetting::USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS.days.ago
+      end
+
+      before do
+        stub_config_cell(enabled: true)
+      end
+
+      it 'schedules BulkClaimsWorker with destroy metadata', :freeze_time do
+        create(:email, created_at: cut_off - 1.second)
+
+        expect(Cells::BulkClaimsWorker).to receive(:perform_async).with(
+          'Email', 'email', hash_including('destroy_metadata' => be_a(Array))
+        )
+
+        worker.perform
+      end
+
+      it 'does not schedule BulkClaimsWorker when there are no records to delete', :freeze_time do
+        expect(Cells::BulkClaimsWorker).not_to receive(:perform_async)
+
+        worker.perform
+      end
+
+      it 'skips scheduling when destroy metadata is empty' do
+        expect(Cells::BulkClaimsWorker).not_to receive(:perform_async)
+
+        worker.send(:schedule_bulk_claims_destroy, [])
+      end
+
+      it 'processes multiple batches and schedules claims for each', :freeze_time do
+        stub_const("#{described_class}::BATCH_SIZE", 1)
+
+        create(:email, created_at: cut_off - 1.second)
+        create(:email, created_at: cut_off - 2.seconds)
+
+        expect(Cells::BulkClaimsWorker).to receive(:perform_async).twice
+
+        worker.perform
+      end
+    end
+
+    context 'when cells claims are disabled' do
+      let(:cut_off) do
+        ApplicationSetting::USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS.days.ago
+      end
+
+      before do
+        stub_config_cell(enabled: false)
+      end
+
+      it 'does not schedule BulkClaimsWorker', :freeze_time do
+        create(:email, created_at: cut_off - 1.second)
+
+        expect(Cells::BulkClaimsWorker).not_to receive(:perform_async)
+
+        worker.perform
+      end
+    end
   end
 end

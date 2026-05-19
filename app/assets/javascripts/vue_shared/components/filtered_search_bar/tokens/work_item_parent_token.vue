@@ -7,18 +7,17 @@ import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { NAME_TO_ENUM_MAP, WIDGET_TYPE_HIERARCHY } from '~/work_items/constants';
+import { WIDGET_TYPE_HIERARCHY } from '~/work_items/constants';
 import allowedParentTypesQuery from '~/work_items/graphql/allowed_parent_types.query.graphql';
 import searchWorkItemParentQuery from '../queries/search_work_item_parent.query.graphql';
 import { OPTIONS_NONE_ANY } from '../constants';
 
 export default {
+  name: 'WorkItemParentToken',
   components: {
     BaseToken,
     GlFilteredSearchSuggestion,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     config: {
       type: Object,
@@ -95,9 +94,7 @@ export default {
             in: refinedSearchText ? 'TITLE' : undefined,
             includeDescendants: !this.config.isProject,
             includeAncestors: true,
-            ...(this.glFeatures?.workItemConfigurableTypes
-              ? { workItemTypeIds: this.allowedParentTypes.map((type) => type.id) }
-              : { types: this.allowedParentTypes.map((type) => NAME_TO_ENUM_MAP[type.name]) }),
+            workItemTypeIds: this.allowedParentTypes.map((type) => type.id),
             isProject: this.config.isProject,
             ids: isSearchedById ? [convertToGraphQLId(TYPENAME_WORK_ITEM, search)] : undefined,
           },

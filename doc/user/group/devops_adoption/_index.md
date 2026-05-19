@@ -42,7 +42,7 @@ DevOps adoption shows feature adoption for development, security, and operations
 A feature shows as **adopted** when a group or subgroup has used the feature in a project in the last full calendar month.
 For example, if an issue was created in a project in a group, the group has adopted issues in that time.
 
-![DevOps adoption report for a group](img/devops_adoption_v17_8.png)
+![The overview tab of a DevOps adoption report.](img/devops_adoption_v17_8.png)
 
 The **Overview** tab illustrates the:
 
@@ -78,7 +78,7 @@ Prerequisites:
 To view DevOps adoption:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Analyze** > **DevOps adoption**.
+1. In the left sidebar, select **Analyze** > **DevOps adoption**.
 1. To view the features adopted by category in a month, hover over a bar.
 
 ## Add a subgroup to DevOps adoption
@@ -90,7 +90,7 @@ Prerequisites:
 To add a subgroup to the DevOps adoption report:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Analyze** > **DevOps adoption**.
+1. In the left sidebar, select **Analyze** > **DevOps adoption**.
 1. From the **Add or remove subgroups** dropdown list, select the subgroup you want to add.
 
 ## Remove a subgroup from DevOps adoption
@@ -102,7 +102,7 @@ Prerequisites:
 To remove a subgroup from the DevOps adoption report:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Analyze** > **DevOps adoption**.
+1. In the left sidebar, select **Analyze** > **DevOps adoption**.
 1. Either:
 
 - From the **Add or remove subgroups** dropdown list, clear the subgroup you want to remove.

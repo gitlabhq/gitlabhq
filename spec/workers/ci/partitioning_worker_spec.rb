@@ -23,6 +23,7 @@ RSpec.describe Ci::PartitioningWorker, feature_category: :ci_scaling do
       it 'does not call services', :aggregate_failures do
         expect(Ci::Partitions::CreateService).not_to receive(:new)
         expect(Ci::Partitions::SyncService).not_to receive(:new)
+        expect(Ci::Partitions::ArchiveService).not_to receive(:new)
 
         perform
       end
@@ -31,6 +32,7 @@ RSpec.describe Ci::PartitioningWorker, feature_category: :ci_scaling do
     context 'when current partition exists' do
       let(:create_service) { instance_double(Ci::Partitions::CreateService) }
       let(:sync_service) { instance_double(Ci::Partitions::SyncService) }
+      let(:archive_service) { instance_double(Ci::Partitions::ArchiveService) }
 
       it 'calls create service' do
         expect(Ci::Partitions::CreateService).to receive(:new).and_return(create_service)
@@ -42,6 +44,13 @@ RSpec.describe Ci::PartitioningWorker, feature_category: :ci_scaling do
       it 'calls sync service' do
         expect(Ci::Partitions::SyncService).to receive(:new).and_return(sync_service)
         expect(sync_service).to receive(:execute)
+
+        perform
+      end
+
+      it 'calls archive service' do
+        expect(Ci::Partitions::ArchiveService).to receive(:new).and_return(archive_service)
+        expect(archive_service).to receive(:execute)
 
         perform
       end

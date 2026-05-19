@@ -186,6 +186,154 @@ RSpec.describe 'Adding a LatestDiffNote', feature_category: :code_review_workflo
       it_behaves_like 'a Note mutation that does not create a Note'
     end
 
+    context 'with multiline note' do
+      let(:variables) do
+        {
+          noteable_id: GitlabSchema.id_from_object(noteable).to_s,
+          body: body,
+          file_path: file_path,
+          new_line: 14,
+          end_new_line: 18,
+          head_sha: diff_refs.head_sha
+        }
+      end
+
+      it 'creates a note with a line_range' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(mutation_response['errors']).to be_empty
+
+        note = Note.last
+        expect(note.position.line_range).to be_present
+        expect(note.position.line_range['start']['new_line']).to eq(14)
+        expect(note.position.line_range['end']['new_line']).to eq(18)
+      end
+
+      it 'marks the note as multiline' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(mutation_response['errors']).to be_empty
+
+        note = Note.last
+        expect(note.position.multiline?).to be true
+      end
+    end
+
+    context 'when endNewLine is less than newLine' do
+      let(:variables) do
+        {
+          noteable_id: GitlabSchema.id_from_object(noteable).to_s,
+          body: body,
+          file_path: file_path,
+          new_line: 14,
+          end_new_line: 10,
+          head_sha: diff_refs.head_sha
+        }
+      end
+
+      it_behaves_like 'a Note mutation that does not create a Note'
+    end
+
+    context 'when endNewLine equals newLine' do
+      let(:variables) do
+        {
+          noteable_id: GitlabSchema.id_from_object(noteable).to_s,
+          body: body,
+          file_path: file_path,
+          new_line: 14,
+          end_new_line: 14,
+          head_sha: diff_refs.head_sha
+        }
+      end
+
+      it_behaves_like 'a Note mutation that does not create a Note'
+    end
+
+    context 'when endOldLine equals oldLine' do
+      let(:variables) do
+        {
+          noteable_id: GitlabSchema.id_from_object(noteable).to_s,
+          body: body,
+          file_path: file_path,
+          old_line: 9,
+          end_old_line: 9,
+          head_sha: diff_refs.head_sha
+        }
+      end
+
+      it_behaves_like 'a Note mutation that does not create a Note'
+    end
+
+    context 'when endNewLine is provided without newLine' do
+      let(:variables) do
+        {
+          noteable_id: GitlabSchema.id_from_object(noteable).to_s,
+          body: body,
+          file_path: file_path,
+          old_line: 9,
+          end_new_line: 14,
+          head_sha: diff_refs.head_sha
+        }
+      end
+
+      it_behaves_like 'a Note mutation that does not create a Note'
+    end
+
+    context 'when endOldLine is provided without oldLine' do
+      let(:variables) do
+        {
+          noteable_id: GitlabSchema.id_from_object(noteable).to_s,
+          body: body,
+          file_path: file_path,
+          new_line: 14,
+          end_old_line: 18,
+          head_sha: diff_refs.head_sha
+        }
+      end
+
+      it_behaves_like 'a Note mutation that does not create a Note'
+    end
+
+    context 'when endOldLine is less than oldLine' do
+      let(:variables) do
+        {
+          noteable_id: GitlabSchema.id_from_object(noteable).to_s,
+          body: body,
+          file_path: file_path,
+          old_line: 9,
+          end_old_line: 5,
+          head_sha: diff_refs.head_sha
+        }
+      end
+
+      it_behaves_like 'a Note mutation that does not create a Note'
+    end
+
+    context 'with multiline note using old lines' do
+      let(:variables) do
+        {
+          noteable_id: GitlabSchema.id_from_object(noteable).to_s,
+          body: body,
+          file_path: file_path,
+          old_line: 9,
+          end_old_line: 13,
+          head_sha: diff_refs.head_sha
+        }
+      end
+
+      it 'creates a multiline note on old lines' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(mutation_response['errors']).to be_empty
+
+        note = Note.last
+        expect(note.position.line_range['start']['old_line']).to eq(9)
+        expect(note.position.line_range['start']['type']).to eq('old')
+        expect(note.position.line_range['end']['old_line']).to eq(13)
+        expect(note.position.line_range['end']['type']).to eq('old')
+      end
+    end
+
     context 'when comparing with the existing CreateDiffNote mutation' do
       let(:old_mutation_variables) do
         {

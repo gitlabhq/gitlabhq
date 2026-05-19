@@ -88,6 +88,24 @@ module Gitlab
             type: 'container_scanning_for_registry',
             required_permission_to_configure: :enable_container_scanning_for_registry
           },
+          cvs_for_container_scanning: {
+            name: _('Continuous Vulnerability Scanning for Container Scanning'),
+            description: _('Automatically detects new container vulnerabilities based on SBOM data ' \
+                           'when new security advisories are ingested.'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/application_security/continuous_vulnerability_scanning/_index.md'),
+            type: 'cvs_for_container_scanning',
+            required_permission_to_configure: :update_cvs_for_container_scanning
+          },
+          cvs_for_dependency_scanning: {
+            name: _('Continuous Vulnerability Scanning for Dependency Scanning'),
+            description: _('Automatically detects new dependency vulnerabilities based on SBOM data ' \
+                           'when new security advisories are ingested.'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/application_security/continuous_vulnerability_scanning/_index.md'),
+            type: 'cvs_for_dependency_scanning',
+            required_permission_to_configure: :update_cvs_for_dependency_scanning
+          },
           license_information_source: {
             name: _('License information source'),
             description: _('Define the preferred source for license information.'),

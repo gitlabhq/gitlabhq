@@ -76,7 +76,7 @@ Prerequisites:
 - [GitLab Silent Mode](../../../../administration/silent_mode/_index.md) is not enabled.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. Enter the **Git repository URL**.
 

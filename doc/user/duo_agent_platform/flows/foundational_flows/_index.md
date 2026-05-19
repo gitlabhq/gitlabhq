@@ -33,6 +33,10 @@ The following foundational flows are available:
 - [SAST false positive detection](sast_false_positive_detection.md): Automatically identify and filter false positives in SAST findings.
 - [Secret false positive detection](secret_false_positive_detection.md): Automatically identify and filter false positives in secret detection findings.
 
+## For developers
+
+To learn how to create and add new foundational flows to GitLab, see the [foundational flows development guide](../../../../development/ai_features/foundational_flows.md).
+
 ## Configure flow execution CI/CD details
 
 You can configure the environment where flows use CI/CD to execute.
@@ -103,11 +107,11 @@ their default GitLab Duo namespace cannot access foundational flows in any names
 
 Prerequisites:
 
-- The Owner or Maintainer role for the project.
+- The Maintainer or Owner role for the project.
 - Flow execution and foundational flows turned on for the top-level group.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. In the left sidebar, select **Settings > General**.
 1. Expand **GitLab Duo**.
 1. Turn on the **GitLab Duo**, **Allow flow execution**, and **Allow foundational flows** toggles.
 1. Select **Save changes**.
@@ -117,6 +121,12 @@ Prerequisites:
 {{< /tabs >}}
 
 ### On GitLab Self-Managed
+
+{{< history >}}
+
+- Full image reference for image registry [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594208) in GitLab 19.0.
+
+{{< /history >}}
 
 {{< tabs >}}
 
@@ -130,8 +140,12 @@ Prerequisites:
 1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Flow execution**, select the **Allow flow execution** and **Allow foundational flows** checkboxes.
-1. Optional. In the **Image registry** text box, enter the container registry URL for foundational flow images.
-   Leave this text box empty to use the default `registry.gitlab.com`.
+1. Optional. In the **Image registry** text box, enter one of the following:
+
+   - A registry hostname to use the default image from that registry.
+   - A full image reference to override the image entirely (for example, `registry.example.com/group/project/image:tag`).
+
+   Leave blank to use the default `registry.gitlab.com`.
 1. Select **Save changes**.
 
 {{< /tab >}}
@@ -140,14 +154,14 @@ Prerequisites:
 
 Prerequisites:
 
-- Administrator access.
+- The Maintainer or Owner role for the group.
 - Flow execution and foundational flows turned on for the instance.
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **Flow execution**, select the **Allow flow execution** and **Allow foundational flows** checkboxes.
-1. Select the checkbox for each foundational flow you want to turn on.
+1. For top-level groups only, select the checkbox for each foundational flow you want to turn on.
 1. Select **Save changes**.
 
 When turned on for the group, foundational flows are available to all subgroups and projects.
@@ -158,11 +172,11 @@ When turned on for the group, foundational flows are available to all subgroups 
 
 Prerequisites:
 
-- The Owner or Maintainer role for the project.
+- The Maintainer or Owner role for the project.
 - Flow execution and foundational flows turned on for the instance and group.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. In the left sidebar, select **Settings > General**.
 1. Expand **GitLab Duo**.
 1. Turn on the **GitLab Duo**, **Allow flow execution**, and **Allow foundational flows** toggles.
 1. Select **Save changes**.

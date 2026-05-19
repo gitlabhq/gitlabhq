@@ -25,7 +25,7 @@ GitLab Duo Vulnerability Resolution helps you automatically resolve security vul
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=VJmsw_C125E&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
-Fo more information, see [how to enable all GitLab Duo features](../../gitlab_duo/turn_on_off.md).
+For more information, see [how to enable all GitLab Duo features](../../gitlab_duo/turn_on_off.md).
 
 ## Use AI assistance responsibly
 

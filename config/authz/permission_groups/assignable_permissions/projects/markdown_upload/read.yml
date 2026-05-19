@@ -1,0 +1,10 @@
+---
+name: read_markdown_upload
+description: Grants the ability to read markdown uploads
+boundaries:
+  - project
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - read_markdown_upload

@@ -6,9 +6,9 @@ import {
   GlLoadingIcon,
   GlModalDirective as GlModal,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { s__, __ } from '~/locale';
+import { useUserListShow } from '~/user_lists/store/show';
 import { states, ADD_USER_MODAL_ID } from '../constants/show';
 import AddUserModal from './add_user_modal.vue';
 
@@ -61,7 +61,7 @@ export default {
   },
   ADD_USER_MODAL_ID,
   computed: {
-    ...mapState(['userList', 'userIds', 'state']),
+    ...mapState(useUserListShow, ['userList', 'userIds', 'state']),
     name() {
       return this.userList?.name ?? '';
     },
@@ -82,7 +82,12 @@ export default {
     this.fetchUserList();
   },
   methods: {
-    ...mapActions(['fetchUserList', 'dismissErrorAlert', 'removeUserId', 'addUserIds']),
+    ...mapActions(useUserListShow, [
+      'fetchUserList',
+      'dismissErrorAlert',
+      'removeUserId',
+      'addUserIds',
+    ]),
   },
 };
 </script>

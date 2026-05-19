@@ -5,7 +5,7 @@ module Projects
     class ProjectExportPresenter < Gitlab::View::Presenter::Delegated
       # NOTE: This is needed because this presenter is serialized to JSON,
       # and we need to make sure that `#as_json` is called in this class so
-      # it will use the overriden attributes below. Otherwise the call is
+      # it will use the overridden attributes below. Otherwise the call is
       # delegated to the model and will use the original methods.
       include ActiveModel::Serializers::JSON
 

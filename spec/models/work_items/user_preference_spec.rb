@@ -11,7 +11,7 @@ RSpec.describe WorkItems::UserPreference, type: :model, feature_category: :team_
   describe 'validations' do
     let_it_be(:namespace) { build_stubbed(:group) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:work_item_type) { create(:work_item_type, :issue) }
+    let(:work_item_type) { build(:work_item_system_defined_type, :issue) }
 
     describe 'validate work_item_type_id' do
       subject(:user_preference) do

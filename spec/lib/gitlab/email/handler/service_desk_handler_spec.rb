@@ -887,7 +887,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
     context 'when the email is forwarded' do
       let(:email_raw) { email_fixture('emails/service_desk_forwarded_new_issue.eml') }
       let(:expected_description) do
-        <<~EOF
+        <<~MARKDOWN
           Service desk stuff!
 
           ---------- Forwarded message ---------
@@ -898,7 +898,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           forwarded content
 
           ![image](uploads/image.png)
-        EOF
+        MARKDOWN
       end
 
       it_behaves_like 'a new ticket request'

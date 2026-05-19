@@ -9,7 +9,7 @@ module Import
 
       belongs_to :organization, class_name: 'Organizations::Organization'
       belongs_to :offline_export, class_name: 'Import::Offline::Export', optional: true
-      belongs_to :bulk_import, optional: true
+      belongs_to :bulk_import, inverse_of: :offline_configuration, optional: true
 
       encrypts :object_storage_credentials
 
@@ -23,6 +23,9 @@ module Import
         filename: 'import_offline_configuration_s3_compatible_credentials', size_limit: 64.kilobytes
       }, if: :s3_compatible?
       validates :endpoint, addressable_url: true, length: { maximum: 255 }, if: :s3_compatible?
+      validates :entity_prefix_mapping, json_schema: {
+        filename: 'import_offline_configuration_entity_prefix_mapping', size_limit: 64.kilobytes
+      }
 
       validates_with ExactlyOnePresentValidator, fields: [:offline_export, :bulk_import],
         message: ->(_fields) { _('must belong to either an offline export or bulk import') }
@@ -34,16 +37,20 @@ module Import
 
       after_initialize :generate_export_prefix
 
+      def entity_prefix_for_path(source_full_path)
+        entity_prefix_mapping[source_full_path]
+      end
+
+      def endpoint
+        object_storage_credentials.with_indifferent_access[:endpoint] if object_storage_credentials.present?
+      end
+
       private
 
       def generate_export_prefix
         return if export_prefix.present?
 
         self.export_prefix = "#{Time.current.strftime('%F_%H-%M-%S')}_export_#{SecureRandom.alphanumeric(8)}"
-      end
-
-      def endpoint
-        object_storage_credentials.with_indifferent_access[:endpoint] if object_storage_credentials.present?
       end
 
       def supported_providers

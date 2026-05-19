@@ -219,7 +219,7 @@ metadata database or legacy metadata storage.
 
 Your registry is likely meant to use the metadata database if:
 
-- You have previously performed one of the [import processes](container_registry_metadata_database.md#how-to-choose-the-right-import-method).
+- You have previously performed one of the [import processes](container_registry_metadata_database.md#choose-the-right-import-method).
 - Your registry configuration indicates the registry is enabled.
 
 Check the file at `/etc/gitlab/gitlab.rb` to see if the registry is enabled:

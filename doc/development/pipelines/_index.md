@@ -120,6 +120,41 @@ In addition, there are a few circumstances where we would always run the full RS
 
 If so, have a look at [the Development Analytics RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/analytics/team/-/blob/main/runbooks/predictive-test-selection.md) for instructions on how to act upon predictive tests issues. Additionally, if you identified any test selection gaps, let `@gl-dx/development-analytics` know so that we can take the necessary steps to optimize test selections.
 
+### GitLab Duo system test selection
+
+On [tier-2](#pipeline-tiers) pipelines, GitLab Duo predicts which system specs are relevant to
+the MR changes. This runs in addition to the `detect-tests` job and is specific to system specs
+(`spec/features/` and `ee/spec/features/`).
+
+#### How it works
+
+The `detect-system-tests-duo-experiment` job invokes the GitLab Duo CLI against the MR diff.
+The `PreparePredictiveSystemPipeline` script then processes the output and prepares the pipeline inputs:
+
+- **GitLab Duo is confident**: GitLab Duo predictions are merged with `detect-tests`-selected system
+  tests (union). The predictive pipeline runs the combined set. If GitLab Duo predicts no system
+  tests are needed, only the `detect-tests`-selected tests run.
+- **GitLab Duo is not confident or fails**: System tests are stripped from the predictive pipeline.
+  The full system test suite runs in a dedicated child pipeline (`rspec-predictive-system-full`).
+
+#### Scope
+
+GitLab Duo system test selection runs only on `gitlab-org/gitlab` tier-2 pipelines. It is
+skipped when:
+
+- The `pipeline:run-all-rspec` label is set (full suite already runs).
+- The `pipeline:spec-only` label is set (`detect-tests` already identifies the spec files directly).
+- The changes match core-backend or workhorse patterns (all system tests already run in the
+  main pipeline for these changes).
+
+On tier-3 pipelines, the job runs for metrics collection but its output does not influence test
+selection.
+
+To disable GitLab Duo system test selection without a code change, set the
+`GLCI_DUO_SYSTEM_TESTS_DISABLED` CI/CD project variable to `"true"`. When disabled,
+the `detect-system-tests-duo-experiment` job is skipped and the full system test suite runs
+as the fallback on tier-2.
+
 ### Jest predictive jobs
 
 #### Determining predictive Jest test files in a merge request

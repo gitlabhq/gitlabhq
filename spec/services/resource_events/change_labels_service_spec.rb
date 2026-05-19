@@ -149,5 +149,23 @@ RSpec.describe ResourceEvents::ChangeLabelsService, feature_category: :team_plan
         end
       end
     end
+
+    context 'with composite identity service account', :request_store do
+      let_it_be(:service_account) do
+        create(:user, :service_account, composite_identity_enforced: true, developer_of: project)
+      end
+
+      let_it_be(:human) { create(:user, developer_of: project) }
+
+      before do
+        ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, human, context: :authentication)
+      end
+
+      it 'attributes ResourceLabelEvent.user to the service account' do
+        described_class.new(issue, human).execute(added_labels: [labels[0]])
+
+        expect(issue.resource_label_events.last.user).to eq(service_account)
+      end
+    end
   end
 end

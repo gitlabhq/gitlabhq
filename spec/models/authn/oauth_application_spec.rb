@@ -5,6 +5,14 @@ require 'spec_helper'
 RSpec.describe Authn::OauthApplication, feature_category: :system_access do
   let(:application) { create(:oauth_application) }
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:organization).class_name('Organizations::Organization').required }
+
+    it 'is invalid without an organization' do
+      expect(build(:oauth_application, organization: nil)).not_to be_valid
+    end
+  end
+
   it 'uses a prefixed secret' do
     expect(application.plaintext_secret).to match(/gloas-\h{64}/)
   end

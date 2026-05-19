@@ -38,13 +38,9 @@ You can use self-hosted models with different deployment options.
 
 Use GitLab Duo Agent Platform Self-Hosted for on-premise models or private cloud-hosted models in the GitLab Duo Agent Platform.
 
-For customers with an offline license, billing is seat based and you must have the [GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md#gitlab-duo-agent-platform-self-hosted) add-on.
+For customers with an offline license, billing uses an Enterprise License Agreement for GitLab Duo, and you must have the [GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md#gitlab-duo-agent-platform-self-hosted) add-on.
 
 For customers with an online license, billing is [usage based](../../subscriptions/gitlab_credits.md). You can also use GitLab-managed models in a hybrid deployment.
-
-Inference data (including code inputs, model prompts, and model responses) does not leave the customer network.
-Anonymized billing metadata (instance ID, call count, anonymized user ID) is sent to GitLab for usage billing.
-GitLab does not capture which model or model provider the customer uses.
 
 ### GitLab Duo
 
@@ -87,6 +83,30 @@ or GitLab Duo Pro when GitLab hosts and connects to those models through the clo
 | [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution)                         | GitLab 18.1.2 and later | Beta                |
 | [GitLab Duo and SDLC trends Dashboard](../../user/analytics/duo_and_sdlc_trends.md)                                                    | GitLab 17.9 and later   | Beta                |
 | [Code Review Summary](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                              | GitLab 18.1.2 and later | Experiment          |
+
+## Data transmission
+
+The following billing metadata is sent to GitLab for usage billing in a JSON object:
+
+- Instance ID
+- User ID
+- Call count
+- Timestamp
+
+For example:
+
+```json
+{
+  "InstanceId": "ccbb3949-9836-471c-b2nb-32a38e8cca99",
+  "GlobalUserId": "KWDTe17sGSADiAzEGJ6IuL1D7RAzsXqa2wun3aX1YuA=",
+  "Quantity": 1, 
+  "Timestamp": "2026-05-04 18:04:30.969000000"
+}
+```
+
+Inference data, including code inputs, model prompts, and model responses, does not leave the customer network.
+
+GitLab does not capture which model or model provider the customer uses.
 
 ## AI Gateway configurations
 

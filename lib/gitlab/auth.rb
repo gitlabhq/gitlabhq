@@ -135,7 +135,7 @@ module Gitlab
           oauth_access_token_check(password) ||
           personal_access_token_check(password, project) ||
           deploy_token_check(login, password, project) ||
-          user_with_password_for_git(login, password, request: request) ||
+          user_with_password_for_git(login, password) ||
           Gitlab::Auth::Result::EMPTY
 
         rate_limit!(rate_limiter, success: result.success?, login: login, request: request)
@@ -156,7 +156,7 @@ module Gitlab
       # different mechanisms, as in `.find_for_git_client`. This may lead to
       # unwanted access locks when the value provided for `password` was actually
       # a PAT, deploy token, etc.
-      def find_with_user_password(login, password, increment_failed_attempts: false, request: nil)
+      def find_with_user_password(login, password, increment_failed_attempts: false)
         # Avoid resource intensive checks if login credentials are not provided
         return unless login.present? && password.present?
 
@@ -169,7 +169,7 @@ module Gitlab
 
           break if user && !user.can_log_in_with_non_expired_password?
 
-          authenticated_user, authenticator =
+          authenticated_user =
             if Feature.enabled?(:cache_find_with_user_password, Feature.current_request)
               # Avoid redundant bcrypt when Rack::Attack and the controller both
               # authenticate the same request (e.g. throttle_authenticated_git_http).
@@ -183,17 +183,6 @@ module Gitlab
 
           # Side effects must run on every call, not just cache misses
           user_auth_attempt!(user, success: !!authenticated_user) if increment_failed_attempts
-
-          # Increase our visibility of authentication methods
-          if !!authenticated_user
-            # To mitigate the risk of large log volume we will log
-            # only when request is present, and use a Feature Flag with
-            # the request actor.
-            if request.present? && Feature.enabled?(:log_find_with_user_password, Feature.current_request)
-              log_authentication('Gitlab::Auth find_with_user_password succeeded',
-                authenticated_user, authenticator, request: request)
-            end
-          end
 
           authenticated_user
         end
@@ -260,11 +249,11 @@ module Gitlab
         Gitlab::Auth::Result.new(nil, project, :ci, build_authentication_abilities)
       end
 
-      def user_with_password_for_git(login, password, request: nil)
+      def user_with_password_for_git(login, password)
         # Prevent LDAP and database authentication attempts when password is a token
         return if password.present? && Authn::AgnosticTokenIdentifier.token?(password)
 
-        user = find_with_user_password(login, password, request: request)
+        user = find_with_user_password(login, password)
         return unless user
 
         if user.ldap_user? &&
@@ -594,7 +583,7 @@ module Gitlab
         # return found user that was authenticated first for given login credentials
         authenticators.find do |auth|
           found_user = auth.login(login, password)
-          break [found_user, auth] if found_user
+          break found_user if found_user
         end
       end
 
@@ -607,22 +596,6 @@ module Gitlab
 
       def valid_composite_identity?(user)
         user.composite_identity_enforced? && user.service_account?
-      end
-
-      def log_authentication(message, user, authenticator, request: nil)
-        # `authenticator` can be an instance or a class
-        authenticator_class_name = authenticator.is_a?(Class) ? authenticator.to_s : authenticator.class.to_s
-
-        Gitlab::AuthLogger.info(
-          message: message,
-          user_id: user.id,
-          username: user.username,
-          authenticator: authenticator_class_name,
-          remote_ip: request&.remote_ip,
-          request_method: request&.request_method,
-          path: request&.filtered_path,
-          ua: request&.user_agent
-        )
       end
     end
   end

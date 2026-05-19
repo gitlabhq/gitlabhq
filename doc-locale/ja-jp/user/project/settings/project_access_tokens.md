@@ -214,7 +214,7 @@ GitLab 17.7以降では、継承されたオーナーまたはメンテナーロ
 
 - 関連付けられたアクセストークンのロールとスコープに対応する権限が付与されます。
 - それらはプロジェクトのメンバーですが、プロジェクトから削除したり、他のグループやプロジェクトに直接追加したりすることはできません。
-- それらは[非請求対象ユーザー](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users)であり、ライセンス制限には含まれません。
+- これらは[課金対象外ユーザー](../../../subscriptions/manage_seats.md#criteria-for-non-billable-users)であり、ライセンス制限の対象にはなりません。
 - 彼らのコントリビュートはボットユーザーアカウントに関連付けられています。
 - 削除されると、彼らのコントリビュートは[ゴーストユーザー](../../profile/account/delete_account.md#associated-records)に移動されます。
 

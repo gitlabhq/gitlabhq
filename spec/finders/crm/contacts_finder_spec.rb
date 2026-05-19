@@ -22,7 +22,7 @@ RSpec.describe Crm::ContactsFinder, feature_category: :team_planning do
       end
 
       context 'when user is member of the root group' do
-        before do
+        before_all do
           root_group.add_developer(user)
         end
 
@@ -34,7 +34,7 @@ RSpec.describe Crm::ContactsFinder, feature_category: :team_planning do
       end
 
       context 'when user is member of the sub group' do
-        before do
+        before_all do
           group.add_developer(user)
         end
 
@@ -48,7 +48,7 @@ RSpec.describe Crm::ContactsFinder, feature_category: :team_planning do
       let_it_be(:group) { create(:group, :crm_disabled) }
       let_it_be(:contact) { create(:contact, group: group) }
 
-      before do
+      before_all do
         group.add_developer(user)
       end
 
@@ -84,7 +84,7 @@ RSpec.describe Crm::ContactsFinder, feature_category: :team_planning do
         )
       end
 
-      before do
+      before_all do
         search_test_group.add_developer(user)
       end
 
@@ -193,7 +193,7 @@ RSpec.describe Crm::ContactsFinder, feature_category: :team_planning do
     let_it_be(:active_contacts) { create_list(:contact, 3, group: group, state: :active) }
     let_it_be(:inactive_contacts) { create_list(:contact, 2, group: group, state: :inactive) }
 
-    before do
+    before_all do
       group.add_developer(user)
     end
 

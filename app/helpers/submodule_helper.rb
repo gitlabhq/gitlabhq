@@ -11,7 +11,7 @@ module SubmoduleHelper
   end
 
   def submodule_links_for_url(submodule_item_id, url, repository, old_submodule_item_id = nil)
-    return [nil, nil, nil] unless url
+    return [nil, nil, nil] unless url.present?
 
     if url == '.' || url == './'
       url = File.join(Gitlab.config.gitlab.url, repository.project.full_path)

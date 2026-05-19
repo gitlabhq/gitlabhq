@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['MlCandidate'], feature_category: :mlops do
-  let_it_be(:model_version) { create(:ml_model_versions, :with_package) }
+  let_it_be(:model_version, freeze: false) { create(:ml_model_versions, :with_package) }
   let_it_be(:project) { model_version.project }
-  let_it_be(:current_user) { project.owner }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: current_user) }
-  let_it_be(:candidate) do
+  let_it_be(:current_user, freeze: false) { project.owner }
+  let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project, user: current_user) }
+  let_it_be(:candidate, freeze: false) do
     model_version.candidate.tap do |c|
       c.update!(ci_build: create(:ci_build, pipeline: pipeline, user: current_user))
       c.metrics = [create(:ml_candidate_metrics, candidate: c)]

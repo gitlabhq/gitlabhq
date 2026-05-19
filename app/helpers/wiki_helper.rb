@@ -19,10 +19,11 @@ module WikiHelper
 
   def wiki_sidebar_toggle_button
     render Pajamas::ButtonComponent.new(
-      category: :tertiary,
+      category: :secondary,
       icon: 'sidebar',
       button_options: {
-        class: 'js-sidebar-wiki-toggle-open wiki-sidebar-toggle toggle-action-open gl-mr-2 @lg/panel:gl-hidden',
+        title: _('Toggle sidebar'),
+        class: 'js-sidebar-wiki-toggle-open wiki-sidebar-toggle toggle-action-open gl-mr-2 has-tooltip',
         "aria-label": _('Toggle sidebar')
       })
   end

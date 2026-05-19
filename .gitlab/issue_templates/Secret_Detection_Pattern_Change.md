@@ -1,7 +1,7 @@
 ## Request
 
 <!--
-Please briefly describe what you are looking to add or change and select the approrpiate check-box.
+Please briefly describe what you are looking to add or change and select the appropriate check-box.
 -->
 - [] This is an update to an existing rule
 - [] This is a new rule

@@ -11,7 +11,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillIssueUserMentionsForEpics, f
   let(:notes) { table(:notes) }
   let(:organizations) { table(:organizations) }
   let(:users) { table(:users) }
-  let(:work_item_types) { table(:work_item_types) }
 
   let!(:organization) { organizations.create!(id: 1, name: 'Default', path: 'default') }
 
@@ -29,7 +28,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillIssueUserMentionsForEpics, f
     namespaces.create!(name: 'test-group', path: 'test-group', type: 'Group', organization_id: 1)
   end
 
-  let(:work_item_type_id) { work_item_types.where(name: 'Epic').pick(:id) }
+  # Work item type IDs are fixed now and only exist in memory. This one belongs to Epic.
+  let(:work_item_type_id) { 8 }
 
   let(:issue) do
     issues.create!(

@@ -1,0 +1,4 @@
+---
+event: Namespaces::Groups::GroupArchivedEvent
+description: Published when a group is archived.
+feature_category: groups_and_projects

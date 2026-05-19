@@ -138,6 +138,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         can_sign_out: helper.current_user_menu?(:sign_out),
         sign_out_link: destroy_user_session_path,
         issues_dashboard_path: work_items_dashboard_path(assignee_username: user.username),
+        explore_analytics_dashboards_path: explore_analytics_dashboards_path,
         todos_dashboard_path: dashboard_todos_path,
         projects_path: dashboard_projects_path,
         groups_path: dashboard_groups_path,
@@ -819,7 +820,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     # Testing this private method because:
     # 1. This helper is just so complex that it isn't feasible to test everything through the few public methods.
     # 2. private really isn't a thing in Rails helpers so the current private segregation is merely communicating use.
-    # 3. EE override of this method is making it public anyway due to how it is overriden in the public space.
+    # 3. EE override of this method is making it public anyway due to how it is overridden in the public space.
 
     let(:project) { build(:project) }
 

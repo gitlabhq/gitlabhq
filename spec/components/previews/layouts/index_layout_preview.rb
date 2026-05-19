@@ -4,11 +4,13 @@ module Layouts
   class IndexLayoutPreview < ViewComponent::Preview
     # @param heading text
     # @param description text
+    # @param loading toggle
     def default(
       heading: 'Page Title',
-      description: 'This is a page description'
+      description: 'This is a page description',
+      loading: false
     )
-      render(::Layouts::IndexLayout.new(heading: heading, description: description)) do
+      render(::Layouts::IndexLayout.new(heading: heading, description: description, loading: loading)) do
         tag.p('Index layout default slot.')
       end
     end
@@ -40,11 +42,13 @@ module Layouts
 
     # @param heading text
     # @param description text
+    # @param loading toggle
     def with_alerts(
       heading: 'Page Title',
-      description: 'This is a page description'
+      description: 'This is a page description',
+      loading: false
     )
-      render(::Layouts::IndexLayout.new(heading: heading, description: description)) do |c|
+      render(::Layouts::IndexLayout.new(heading: heading, description: description, loading: loading)) do |c|
         c.with_alerts do
           c.safe_join([
             c.render(Pajamas::AlertComponent.new(variant: :danger, title: 'Example danger alert title')) do |a|
@@ -66,12 +70,14 @@ module Layouts
     # @param heading text
     # @param description text
     # @param page_heading_sr_only toggle
+    # @param loading toggle
     def page_heading_sr_only(
       heading: 'Page Title',
       description: 'This is a page description',
-      page_heading_sr_only: true
+      page_heading_sr_only: true,
+      loading: false
     )
-      render(::Layouts::IndexLayout.new(heading: heading, description: description,
+      render(::Layouts::IndexLayout.new(heading: heading, description: description, loading: loading,
         page_heading_sr_only: page_heading_sr_only)) do
         tag.p('Index layout default slot.')
       end

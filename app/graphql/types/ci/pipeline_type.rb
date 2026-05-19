@@ -10,6 +10,7 @@ module Types
       connection_type_class Types::CountableConnectionType
 
       authorize :read_pipeline
+      authorize_granular_token permissions: :read_pipeline, boundary: :project, boundary_type: :project
       present_using ::Ci::PipelinePresenter
 
       def self.authorization_scopes
@@ -329,6 +330,17 @@ module Types
             loader.call(key, ::Ci::Build.any_stuck?(pending_builds_by_pipeline[key] || []))
           end
         end
+      end
+
+      # This duplicates the logic in Ci::Pipeline#type (app/models/ci/pipeline.rb) for
+      # performance reasons, avoiding N+1 queries by using pre-loaded GraphQL data.
+      def type
+        return 'merge_train' if object.merge_train_pipeline?
+        return 'merged_result' if object.merge_request_id? && object.target_sha.present?
+        return 'merge_request' if object.merge_request_id?
+        return 'tag' if object.tag?
+
+        'branch'
       end
 
       alias_method :pipeline, :object

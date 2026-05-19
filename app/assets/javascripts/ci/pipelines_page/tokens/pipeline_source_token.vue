@@ -3,6 +3,7 @@ import { GlFilteredSearchToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { PIPELINE_SOURCES } from 'ee_else_ce/ci/pipelines_page/tokens/constants';
 
 export default {
+  name: 'PipelineSourceToken',
   PIPELINE_SOURCES,
   components: {
     GlFilteredSearchToken,

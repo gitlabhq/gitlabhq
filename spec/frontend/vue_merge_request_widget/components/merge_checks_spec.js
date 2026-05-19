@@ -4,7 +4,6 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import MergeChecksComponent from '~/vue_merge_request_widget/components/merge_checks.vue';
-import mergeChecksQuery from '~/vue_merge_request_widget/queries/merge_checks.query.graphql';
 import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
 import StateContainer from '~/vue_merge_request_widget/components/state_container.vue';
 import { COMPONENTS } from '~/vue_merge_request_widget/components/checks/constants';
@@ -16,19 +15,11 @@ Vue.use(VueApollo);
 let wrapper;
 let apolloProvider;
 
-function factory(mountFn, { canMerge = true, mergeabilityChecks = [] } = {}) {
+function factory(
+  mountFn,
+  { canMerge = true, mergeabilityChecks = [], isLoadingMergeChecks = false } = {},
+) {
   apolloProvider = createMockApollo([
-    [
-      mergeChecksQuery,
-      jest.fn().mockResolvedValue({
-        data: {
-          project: {
-            id: 1,
-            mergeRequest: { id: 1, userPermissions: { canMerge }, mergeabilityChecks },
-          },
-        },
-      }),
-    ],
     [
       conflictsStateQuery,
       () =>
@@ -87,6 +78,11 @@ function factory(mountFn, { canMerge = true, mergeabilityChecks = [] } = {}) {
     propsData: {
       mr: {},
       service: {},
+      mergeChecksState: {
+        userPermissions: { canMerge },
+        mergeabilityChecks,
+      },
+      isLoadingMergeChecks,
     },
   });
 }
@@ -97,6 +93,12 @@ const shallowMountComponent = factory.bind(null, shallowMountExtended);
 describe('Merge request merge checks component', () => {
   afterEach(() => {
     apolloProvider = null;
+  });
+
+  it('renders loading state', () => {
+    shallowMountComponent({ isLoadingMergeChecks: true });
+
+    expect(wrapper.findComponent(StateContainer).props('isLoading')).toBe(true);
   });
 
   it('renders ready to merge text if user can merge', async () => {

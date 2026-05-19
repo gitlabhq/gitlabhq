@@ -1,14 +1,14 @@
 #import "ee_else_ce/work_items/graphql/work_item_type.fragment.graphql"
 
 # @feature_category: team_planning
-query namespaceWorkItemTypes($fullPath: ID!, $onlyAvailable: Boolean = false) {
+query namespaceWorkItemTypes($fullPath: ID!) {
   namespace(fullPath: $fullPath) {
     id
     webUrl
     userPermissions {
       setNewWorkItemMetadata
     }
-    workItemTypes(onlyAvailable: $onlyAvailable) {
+    workItemTypes {
       nodes {
         ...WorkItemTypeFragment
       }

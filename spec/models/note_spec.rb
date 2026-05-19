@@ -307,7 +307,7 @@ RSpec.describe Note, feature_category: :team_planning do
     end
 
     describe '#keep_around_commit' do
-      let!(:noteable) { create(:issue) }
+      let_it_be(:noteable) { create(:issue) }
 
       it "skips keep_around_commit if 'skip_keep_around_commits' is true" do
         note = build(:note, project: noteable.project, noteable: noteable, skip_keep_around_commits: true)
@@ -450,7 +450,7 @@ RSpec.describe Note, feature_category: :team_planning do
 
     describe '#ensure_namespace_id' do
       context 'for issues' do
-        let!(:issue) { create(:issue) }
+        let_it_be(:issue) { create(:issue) }
 
         it 'copies the namespace_id of the issue' do
           note = build(:note, noteable: issue)
@@ -462,8 +462,8 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       context 'for group-level work items' do
-        let!(:group) { create(:group) }
-        let!(:work_item) { create(:work_item, namespace: group) }
+        let_it_be(:group) { create(:group) }
+        let_it_be(:work_item) { create(:work_item, namespace: group) }
 
         it 'copies the namespace_id of the work item' do
           note = build(:note, noteable: work_item)
@@ -578,46 +578,44 @@ RSpec.describe Note, feature_category: :team_planning do
   end
 
   describe 'authorization' do
-    before do
-      @p1 = create(:project)
-      @p2 = create(:project)
-      @u1 = create(:user)
-      @u2 = create(:user)
-      @u3 = create(:user)
-    end
+    let_it_be(:p1) { create(:project) }
+    let_it_be(:p2) { create(:project) }
+    let_it_be(:u1) { create(:user) }
+    let_it_be(:u2) { create(:user) }
+    let_it_be(:u3) { create(:user) }
 
     describe 'read' do
-      before do
-        @p1.project_members.create!(user: @u2, access_level: ProjectMember::GUEST)
-        @p2.project_members.create!(user: @u3, access_level: ProjectMember::GUEST)
+      before_all do
+        p1.project_members.create!(user: u2, access_level: ProjectMember::GUEST)
+        p2.project_members.create!(user: u3, access_level: ProjectMember::GUEST)
       end
 
-      it { expect(Ability.allowed?(@u1, :read_note, @p1)).to be_falsey }
-      it { expect(Ability.allowed?(@u2, :read_note, @p1)).to be_truthy }
-      it { expect(Ability.allowed?(@u3, :read_note, @p1)).to be_falsey }
+      it { expect(Ability.allowed?(u1, :read_note, p1)).to be_falsey }
+      it { expect(Ability.allowed?(u2, :read_note, p1)).to be_truthy }
+      it { expect(Ability.allowed?(u3, :read_note, p1)).to be_falsey }
     end
 
     describe 'write' do
-      before do
-        @p1.project_members.create!(user: @u2, access_level: ProjectMember::DEVELOPER)
-        @p2.project_members.create!(user: @u3, access_level: ProjectMember::DEVELOPER)
+      before_all do
+        p1.project_members.create!(user: u2, access_level: ProjectMember::DEVELOPER)
+        p2.project_members.create!(user: u3, access_level: ProjectMember::DEVELOPER)
       end
 
-      it { expect(Ability.allowed?(@u1, :create_note, @p1)).to be_falsey }
-      it { expect(Ability.allowed?(@u2, :create_note, @p1)).to be_truthy }
-      it { expect(Ability.allowed?(@u3, :create_note, @p1)).to be_falsey }
+      it { expect(Ability.allowed?(u1, :create_note, p1)).to be_falsey }
+      it { expect(Ability.allowed?(u2, :create_note, p1)).to be_truthy }
+      it { expect(Ability.allowed?(u3, :create_note, p1)).to be_falsey }
     end
 
     describe 'admin' do
-      before do
-        @p1.project_members.create!(user: @u1, access_level: ProjectMember::REPORTER)
-        @p1.project_members.create!(user: @u2, access_level: ProjectMember::MAINTAINER)
-        @p2.project_members.create!(user: @u3, access_level: ProjectMember::MAINTAINER)
+      before_all do
+        p1.project_members.create!(user: u1, access_level: ProjectMember::REPORTER)
+        p1.project_members.create!(user: u2, access_level: ProjectMember::MAINTAINER)
+        p2.project_members.create!(user: u3, access_level: ProjectMember::MAINTAINER)
       end
 
-      it { expect(Ability.allowed?(@u1, :admin_note, @p1)).to be_falsey }
-      it { expect(Ability.allowed?(@u2, :admin_note, @p1)).to be_truthy }
-      it { expect(Ability.allowed?(@u3, :admin_note, @p1)).to be_falsey }
+      it { expect(Ability.allowed?(u1, :admin_note, p1)).to be_falsey }
+      it { expect(Ability.allowed?(u2, :admin_note, p1)).to be_truthy }
+      it { expect(Ability.allowed?(u3, :admin_note, p1)).to be_falsey }
     end
   end
 
@@ -679,8 +677,8 @@ RSpec.describe Note, feature_category: :team_planning do
   end
 
   describe "#all_references" do
-    let!(:note1) { create(:note_on_issue) }
-    let!(:note2) { create(:note_on_issue) }
+    let_it_be(:note1) { create(:note_on_issue) }
+    let_it_be(:note2) { create(:note_on_issue) }
 
     it "reads the rendered note body from the cache" do
       expect(Banzai::Renderer).to receive(:cache_collection_render)
@@ -727,9 +725,9 @@ RSpec.describe Note, feature_category: :team_planning do
   end
 
   describe "noteable_author?" do
-    let(:user1) { create(:user) }
-    let(:user2) { create(:user) }
-    let(:project) { create(:project, :public, :repository) }
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+    let_it_be(:project) { create(:project, :public, :repository) }
 
     context 'when note is on commit' do
       let(:noteable) { create(:commit, project: project, author: user1) }
@@ -1282,7 +1280,7 @@ RSpec.describe Note, feature_category: :team_planning do
     it 'clears a blank line code before validation' do
       note = build(:note, line_code: ' ')
 
-      expect { note.valid? }.to change(note, :line_code).to(nil)
+      expect { note.valid? }.to change { note.line_code }.to(nil)
     end
   end
 
@@ -1398,15 +1396,9 @@ RSpec.describe Note, feature_category: :team_planning do
   end
 
   describe ".grouped_diff_discussions" do
-    let!(:merge_request) { create(:merge_request) }
-    let(:project) { merge_request.project }
-    let!(:active_diff_note1) { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
-    let!(:active_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, in_reply_to: active_diff_note1) }
-    let!(:active_diff_note3) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: active_position2) }
-    let!(:outdated_diff_note1) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: outdated_position) }
-    let!(:outdated_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, in_reply_to: outdated_diff_note1) }
-
-    let(:active_position2) do
+    let_it_be(:merge_request) { create(:merge_request) }
+    let_it_be(:project) { merge_request.project }
+    let_it_be(:active_position2) do
       Gitlab::Diff::Position.new(
         old_path: "files/ruby/popen.rb",
         new_path: "files/ruby/popen.rb",
@@ -1416,7 +1408,7 @@ RSpec.describe Note, feature_category: :team_planning do
       )
     end
 
-    let(:outdated_position) do
+    let_it_be(:outdated_position) do
       Gitlab::Diff::Position.new(
         old_path: "files/ruby/popen.rb",
         new_path: "files/ruby/popen.rb",
@@ -1425,6 +1417,12 @@ RSpec.describe Note, feature_category: :team_planning do
         diff_refs: project.commit("874797c3a73b60d2187ed6e2fcabd289ff75171e").diff_refs
       )
     end
+
+    let_it_be(:active_diff_note1) { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
+    let_it_be(:active_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, in_reply_to: active_diff_note1) }
+    let_it_be(:active_diff_note3) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: active_position2) }
+    let_it_be(:outdated_diff_note1) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: outdated_position) }
+    let_it_be(:outdated_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, in_reply_to: outdated_diff_note1) }
 
     context 'active diff discussions' do
       subject { merge_request.notes.grouped_diff_discussions }
@@ -1450,13 +1448,10 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       context 'with image discussions' do
-        let(:merge_request2) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, title: "Added images and changes") }
-        let(:image_path) { "files/images/ee_repo_logo.png" }
-        let(:text_path) { "bar/branch-test.txt" }
-        let!(:image_note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request2, position: image_position) }
-        let!(:text_note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request2, position: text_position) }
-
-        let(:image_position) do
+        let_it_be(:merge_request2) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, title: "Added images and changes") }
+        let_it_be(:image_path) { "files/images/ee_repo_logo.png" }
+        let_it_be(:text_path) { "bar/branch-test.txt" }
+        let_it_be(:image_position) do
           Gitlab::Diff::Position.new(
             old_path: image_path,
             new_path: image_path,
@@ -1469,7 +1464,7 @@ RSpec.describe Note, feature_category: :team_planning do
           )
         end
 
-        let(:text_position) do
+        let_it_be(:text_position) do
           Gitlab::Diff::Position.new(
             old_path: text_path,
             new_path: text_path,
@@ -1479,6 +1474,9 @@ RSpec.describe Note, feature_category: :team_planning do
             diff_refs: merge_request2.diff_refs
           )
         end
+
+        let_it_be(:image_note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request2, position: image_position) }
+        let_it_be(:text_note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request2, position: text_position) }
 
         it "groups image discussions by file identifier" do
           diff_discussion = DiffDiscussion.new([image_note])
@@ -1832,8 +1830,8 @@ RSpec.describe Note, feature_category: :team_planning do
   end
 
   describe '#with_notes_filter' do
-    let!(:comment) { create(:note) }
-    let!(:system_note) { create(:note, system: true) }
+    let_it_be(:comment) { create(:note) }
+    let_it_be(:system_note) { create(:note, system: true) }
 
     subject { described_class.with_notes_filter(filter) }
 
@@ -2187,7 +2185,7 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       context 'when user can read the note' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 
@@ -2206,7 +2204,7 @@ RSpec.describe Note, feature_category: :team_planning do
       let_it_be(:noteable) { create(:wiki_page_meta, project: project) }
       let(:note) { create(:note, project: project, author: user, noteable: noteable) }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 

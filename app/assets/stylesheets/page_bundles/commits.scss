@@ -35,20 +35,4 @@
       display: none;
     }
   }
-
-  .commit-list-item + .commit-list-item .commit-card {
-    @apply gl-border-t-0;
-  }
-
-  .commit-card {
-    @apply gl-rounded-none;
-  }
-
-  .commit-list-item:first-child .commit-card:first-child {
-    @apply gl-rounded-t-lg;
-  }
-
-  .commit-list-item:last-child .commit-card:last-child {
-    @apply gl-rounded-b-lg;
-  }
 }

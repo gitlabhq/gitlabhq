@@ -41,15 +41,36 @@ RSpec.describe MergeRequests::VersionedMergeRequest, feature_category: :code_rev
       end
     end
 
+    context 'when show_context_commits_diff? is true' do
+      let(:show_context_commits_diff?) { true }
+      let(:diffs) { instance_double(Gitlab::Diff::FileCollection::Compare) }
+      let(:context_commits_diff) { instance_double(ContextCommitsDiff) }
+
+      before do
+        allow(merge_request)
+          .to receive_messages(
+            show_context_commits_diff?: show_context_commits_diff?,
+            context_commits_diff: context_commits_diff
+          )
+
+        allow(context_commits_diff).to receive(:diffs).and_return(diffs)
+      end
+
+      it 'delegates to context_commits_diff' do
+        versioned.diffs(diff_options)
+
+        expect(context_commits_diff).to have_received(:diffs).with(diff_options)
+      end
+    end
+
     context 'when compare is not present' do
       let(:diff_version) { instance_double(Gitlab::MergeRequests::DiffResolver) }
       let(:resolved_diff) { merge_request_diff }
-      let(:version_params) { {} }
 
       before do
         allow(resolved_diff).to receive(:diffs).and_return(diffs_result)
         allow(Gitlab::MergeRequests::DiffResolver).to receive(:new)
-          .with(merge_request, version_params)
+          .with(merge_request, {})
           .and_return(diff_version)
         allow(diff_version).to receive(:resolve).and_return(resolved_diff)
       end
@@ -59,51 +80,128 @@ RSpec.describe MergeRequests::VersionedMergeRequest, feature_category: :code_rev
         expect(resolved_diff).to have_received(:diffs).with(diff_options)
       end
 
-      context 'with diff_id in options' do
+      it 'strips version params from forwarded options' do
+        versioned.diffs(expanded: true, diff_id: 42, start_sha: 'abc', commit_id: 'def')
+
+        expect(resolved_diff).to have_received(:diffs).with(expanded: true)
+      end
+
+      it 'does not mutate the input diff_options hash' do
+        original_options = { diff_id: 42, start_sha: 'abc123', expanded: true }
+        options_copy = original_options.dup
+
+        versioned.diffs(original_options)
+
+        expect(original_options).to eq(options_copy)
+      end
+
+      context 'with version params in constructor' do
+        subject(:versioned) do
+          described_class.new(merge_request, version_params: { diff_id: 42, start_sha: 'abc123' })
+        end
+
+        before do
+          allow(Gitlab::MergeRequests::DiffResolver).to receive(:new)
+            .with(merge_request, { diff_id: 42, start_sha: 'abc123' })
+            .and_return(diff_version)
+        end
+
+        it 'uses constructor version params for resolution' do
+          versioned.diffs(expanded: true)
+
+          expect(Gitlab::MergeRequests::DiffResolver).to have_received(:new)
+            .with(merge_request, { diff_id: 42, start_sha: 'abc123' })
+        end
+      end
+    end
+  end
+
+  describe '#diff_stats' do
+    let(:diff_stats_result) { instance_double(Gitlab::Git::DiffStatsCollection) }
+
+    context 'when compare is present' do
+      let(:compare) { instance_double(Compare) }
+
+      before do
+        allow(merge_request).to receive_messages(compare: compare, diff_stats: diff_stats_result)
+      end
+
+      it 'delegates to the merge request' do
+        expect(versioned.diff_stats).to eq(diff_stats_result)
+      end
+    end
+
+    context 'when show_context_commits_diff? is true' do
+      let(:show_context_commits_diff?) { true }
+      let(:context_commits_diff) { instance_double(ContextCommitsDiff) }
+
+      before do
+        allow(merge_request)
+          .to receive_messages(
+            show_context_commits_diff?: show_context_commits_diff?,
+            context_commits_diff: context_commits_diff
+          )
+
+        allow(context_commits_diff).to receive(:diff_stats).and_return(diff_stats_result)
+      end
+
+      it 'delegates to context_commits_diff' do
+        expect(versioned.diff_stats).to eq(diff_stats_result)
+      end
+    end
+
+    context 'when compare is not present' do
+      let(:diff_version) { instance_double(Gitlab::MergeRequests::DiffResolver) }
+      let(:resolved_diff) { merge_request_diff }
+
+      before do
+        allow(resolved_diff).to receive(:diff_stats).and_return(diff_stats_result)
+        allow(Gitlab::MergeRequests::DiffResolver).to receive(:new)
+          .with(merge_request, {})
+          .and_return(diff_version)
+        allow(diff_version).to receive(:resolve).and_return(resolved_diff)
+      end
+
+      it 'resolves the diff version and returns its diff_stats' do
+        expect(versioned.diff_stats).to eq(diff_stats_result)
+      end
+
+      context 'with diff_id in constructor options' do
+        subject(:versioned) { described_class.new(merge_request, version_params: { diff_id: 42 }) }
+
         let(:resolved_diff) { instance_double(MergeRequestDiff) }
-        let(:diffs_result) { instance_double(Gitlab::Diff::FileCollection::MergeRequestDiff) }
-        let(:version_params) { { diff_id: 42 } }
 
-        it 'extracts version params and passes remaining options' do
-          result = versioned.diffs(expanded: true, diff_id: 42)
+        before do
+          allow(resolved_diff).to receive(:diff_stats).and_return(diff_stats_result)
+          allow(Gitlab::MergeRequests::DiffResolver).to receive(:new)
+            .with(merge_request, { diff_id: 42 })
+            .and_return(diff_version)
+        end
 
-          expect(result).to eq(diffs_result)
-          expect(resolved_diff).to have_received(:diffs).with(expanded: true)
+        it 'uses the constructor diff_id to resolve the version' do
+          expect(versioned.diff_stats).to eq(diff_stats_result)
+          expect(Gitlab::MergeRequests::DiffResolver).to have_received(:new)
+            .with(merge_request, { diff_id: 42 })
         end
       end
 
-      context 'with start_sha and diff_id in options' do
-        let(:version_params) { { diff_id: 42, start_sha: 'abc123' } }
+      context 'with start_sha and diff_id in constructor options' do
+        subject(:versioned) do
+          described_class.new(merge_request, version_params: { diff_id: 42, start_sha: 'abc123' })
+        end
+
+        before do
+          allow(resolved_diff).to receive(:diff_stats).and_return(diff_stats_result)
+          allow(Gitlab::MergeRequests::DiffResolver).to receive(:new)
+            .with(merge_request, { diff_id: 42, start_sha: 'abc123' })
+            .and_return(diff_version)
+        end
 
         it 'passes both version params to DiffResolver' do
-          versioned.diffs(diff_id: 42, start_sha: 'abc123')
+          versioned.diff_stats
 
           expect(Gitlab::MergeRequests::DiffResolver).to have_received(:new)
-            .with(merge_request, version_params)
-        end
-      end
-
-      context 'with commit_id in options' do
-        let(:version_params) { { commit_id: 'def456' } }
-
-        it 'passes commit_id to DiffResolver' do
-          versioned.diffs(commit_id: 'def456')
-
-          expect(Gitlab::MergeRequests::DiffResolver).to have_received(:new)
-            .with(merge_request, version_params)
-        end
-      end
-
-      context 'when verifying input safety' do
-        let(:version_params) { { diff_id: 42, start_sha: 'abc123' } }
-
-        it 'does not mutate the input diff_options hash' do
-          original_options = { diff_id: 42, start_sha: 'abc123', expanded: true }
-          options_copy = original_options.dup
-
-          versioned.diffs(original_options)
-
-          expect(original_options).to eq(options_copy)
+            .with(merge_request, { diff_id: 42, start_sha: 'abc123' })
         end
       end
     end

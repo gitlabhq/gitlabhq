@@ -8,7 +8,6 @@ import DataPresenter from '~/glql/components/presenters/data.vue';
 import Pagination from '~/glql/components/common/pagination.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { stubCrypto } from 'helpers/crypto';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { MOCK_ISSUES, MOCK_ISSUES_PAGE_2, MOCK_FIELDS } from '../../mock_data';
 
@@ -16,6 +15,9 @@ jest.mock('~/glql/core/parser');
 jest.mock('~/glql/core/transformer');
 jest.mock('~/glql/core/executor', () => ({
   execute: jest.fn(),
+}));
+jest.mock('~/lib/utils/text_utility', () => ({
+  sha256: jest.fn().mockResolvedValue('mock-sha256-hash'),
 }));
 
 const MOCK_PARSE_OUTPUT = {
@@ -27,6 +29,7 @@ const MOCK_PARSE_OUTPUT = {
     before: { value: null, type: 'String' },
   },
   fields: MOCK_FIELDS,
+  mode: 'standard',
 };
 
 describe('Resolver', () => {
@@ -80,10 +83,6 @@ describe('Resolver', () => {
 
   const findPresenter = () => wrapper.findComponent(DataPresenter);
   const findPagination = () => wrapper.findComponent(Pagination);
-
-  beforeEach(() => {
-    stubCrypto();
-  });
 
   describe('when no query is set', () => {
     beforeEach(() => {

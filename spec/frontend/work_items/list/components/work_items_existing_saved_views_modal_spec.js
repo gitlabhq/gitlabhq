@@ -39,6 +39,13 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       filters: {},
       displaySettings: {},
       sort: CREATED_DESC,
+      updatedAt: '2026-04-08T09:50:54Z',
+      author: {
+        id: 'gid://gitlab/User/1',
+      },
+      lastUpdatedBy: {
+        id: 'gid://gitlab/User/1',
+      },
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
@@ -56,6 +63,13 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       filters: {},
       displaySettings: {},
       sort: CREATED_DESC,
+      updatedAt: '2026-04-08T09:50:54Z',
+      author: {
+        id: 'gid://gitlab/User/1',
+      },
+      lastUpdatedBy: {
+        id: 'gid://gitlab/User/1',
+      },
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,

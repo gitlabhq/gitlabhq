@@ -12,11 +12,16 @@ class NamespaceSetting < ApplicationRecord
 
   ignore_column :token_expiry_notify_inherited, remove_with: '17.9', remove_after: '2025-01-11'
   enum :pipeline_variables_default_role, ProjectCiCdSetting::PIPELINE_VARIABLES_OVERRIDE_ROLES, prefix: true
+  enum :enable_duo_code_review_by_default, {
+    never: 0,
+    pending: 1,
+    enabled: 2,
+    disabled: 3
+  }, prefix: true
 
   ignore_column :third_party_ai_features_enabled, remove_with: '16.11', remove_after: '2024-04-18'
   ignore_column :code_suggestions, remove_with: '17.8', remove_after: '2024-05-16'
   ignore_column :job_token_policies_enabled, remove_with: '18.5', remove_after: '2025-09-13'
-  ignore_column :duo_agent_platform_request_count, remove_with: '18.9', remove_after: '2026-01-16'
   ignore_columns :early_access_program_participant, :early_access_program_joined_by_id,
     remove_with: '18.10', remove_after: '2026-03-13'
 
@@ -69,14 +74,26 @@ class NamespaceSetting < ApplicationRecord
 
   validate :validate_step_up_auth_inheritance, if: :will_save_change_to_step_up_auth_required_oauth_provider?
 
+  jsonb_accessor :personal_access_token_settings,
+    enforce_granular_tokens: [:boolean, { default: false }],
+    granular_tokens_enforced_after: [:date, { default: nil }]
+
+  validates :personal_access_token_settings, json_schema: { filename: 'personal_access_token_settings' }
+
+  validates :granular_tokens_enforced_after,
+    presence: true,
+    if: :enforce_granular_tokens?
+
+  validates :granular_tokens_enforced_after,
+    future_date: true,
+    if: :granular_tokens_enforced_after_changed?
+
   sanitizes! :default_branch_name
   nullify_if_blank :default_branch_name
 
   nullify_if_blank :step_up_auth_required_oauth_provider
 
   before_validation :set_pipeline_variables_default_role, on: :create
-
-  after_update :invalidate_namespace_descendants_cache, if: -> { saved_change_to_archived? }
 
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
   chronic_duration_attr :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval
@@ -120,6 +137,13 @@ class NamespaceSetting < ApplicationRecord
 
   def self.enterprise_bypass_max_date
     Date.current.advance(years: 1, days: -1).end_of_day
+  end
+
+  def self.next_namespace_ids(cursor:, limit:)
+    where('namespace_id > ?', cursor)
+      .order(:namespace_id)
+      .limit(limit)
+      .pluck(:namespace_id)
   end
 
   def prevent_sharing_groups_outside_hierarchy
@@ -204,6 +228,12 @@ class NamespaceSetting < ApplicationRecord
     step_up_auth_required_oauth_provider_inherited_namespace_setting&.step_up_auth_required_oauth_provider || step_up_auth_required_oauth_provider
   end
 
+  def granular_tokens_enforced?
+    return false unless Feature.enabled?(:granular_personal_access_tokens_enforcement_saas, namespace.root_ancestor)
+
+    enforce_granular_tokens? && granular_tokens_enforced_after <= Date.current
+  end
+
   private
 
   def validate_enterprise_bypass_expires_at
@@ -251,12 +281,6 @@ class NamespaceSetting < ApplicationRecord
 
   def subgroup?
     !!namespace&.subgroup?
-  end
-
-  def invalidate_namespace_descendants_cache
-    return if namespace.is_a?(Namespaces::UserNamespace)
-
-    Namespaces::Descendants.expire_recursive_for(namespace)
   end
 end
 

@@ -7,7 +7,7 @@ module Harbor
     included do
       before_action :authorize_read_harbor_registry!
 
-      feature_category :integrations
+      feature_category :container_registry
     end
 
     private

@@ -65,6 +65,17 @@ RSpec.describe Mutations::Labels::Create, feature_category: :team_planning do
     let(:extra_params) { { project_path: parent.full_path } }
 
     it_behaves_like 'labels create mutation'
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_label do
+      let(:user) { current_user }
+      let(:boundary_object) { parent }
+      let(:mutation) { graphql_mutation(:label_create, params.merge(extra_params), 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+      before_all do
+        parent.add_developer(current_user)
+      end
+    end
   end
 
   context 'when creating a group label' do
@@ -73,6 +84,17 @@ RSpec.describe Mutations::Labels::Create, feature_category: :team_planning do
     let(:extra_params) { { group_path: parent.full_path } }
 
     it_behaves_like 'labels create mutation'
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_label do
+      let(:user) { current_user }
+      let(:boundary_object) { parent }
+      let(:mutation) { graphql_mutation(:label_create, params.merge(extra_params), 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+      before_all do
+        parent.add_developer(current_user)
+      end
+    end
   end
 
   context 'when neither project_path nor group_path param is given' do

@@ -340,6 +340,7 @@ module Gitlab
         end
 
         request.author = encode_binary(params[:author]) if params[:author]
+        request.paths.push(encode_binary(params[:path])) if params[:path].present?
         request.before = GitalyClient.timestamp(params[:before]) if params[:before]
         request.after = GitalyClient.timestamp(params[:after]) if params[:after]
 
@@ -435,7 +436,7 @@ module Gitlab
         request = Gitaly::CommitLanguagesRequest.new(repository: @gitaly_repo, revision: encode_binary(ref) || '')
         response = gitaly_client_call(@repository.storage, :commit_service, :commit_languages, request, timeout: GitalyClient.long_timeout)
 
-        response.languages.map { |l| { value: l.share.round(2), label: l.name, color: l.color, highlight: l.color } }
+        response.languages.map { |l| { value: l.share.round(2), label: l.name, color: l.color, highlight: l.color, language_id: l.language_id } }
       end
 
       def raw_blame(revision, path, range:, ignore_revisions_blob: nil)

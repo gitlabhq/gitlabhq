@@ -12,7 +12,7 @@ title: Group enterprise users API
 
 {{< /details >}}
 
-Use these API endpoints to interact with enterprise users accounts. For more information, see [enterprise users](../user/enterprise_user/_index.md).
+Use these API endpoints to interact with enterprise users. For more information, see [enterprise users](../user/enterprise_user/_index.md).
 
 These API endpoints only work for top-level groups. Users do not have to be a member of the group.
 
@@ -52,7 +52,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/enterprise_users"
 ```
 
 Example response:
@@ -140,7 +142,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
 ```
 
 Example response:
@@ -227,7 +231,11 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" --data "email=new-email@example.com" --data "name=New name" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
+curl --request PATCH \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "email=new-email@example.com" \
+  --data "name=New name" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
 ```
 
 If successful, returns `200 OK`.
@@ -321,7 +329,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
 ```
 
 If successful, returns `204 No content`.
@@ -356,7 +366,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id/disable_two_factor"
+curl --request PATCH \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id/disable_two_factor"
 ```
 
 If successful, returns `204 No content`.

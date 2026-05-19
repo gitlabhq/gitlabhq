@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Mutations::MergeRequests::SetDraft, feature_category: :api do
   include GraphqlHelpers
-  let_it_be(:merge_request) { create(:merge_request) }
+  let_it_be(:merge_request, freeze: false) { create(:merge_request) }
   let_it_be(:user) { create(:user) }
   let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
   let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }

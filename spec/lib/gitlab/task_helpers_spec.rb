@@ -196,4 +196,14 @@ RSpec.describe Gitlab::TaskHelpers do
       it { expect(subject.get_version(version)).to eq(result) }
     end
   end
+
+  describe '#say' do
+    it 'writes the message to stdout with a trailing newline' do
+      expect { subject.say('hello') }.to output("hello\n").to_stdout
+    end
+
+    it 'defaults to an empty line when no message is given' do
+      expect { subject.say }.to output("\n").to_stdout
+    end
+  end
 end

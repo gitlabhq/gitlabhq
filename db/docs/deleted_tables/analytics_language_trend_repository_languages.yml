@@ -1,0 +1,12 @@
+---
+table_name: analytics_language_trend_repository_languages
+classes: []
+feature_categories:
+  - source_code_management
+description: Contains snapshot data about the used programming languages over time.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16491
+milestone: '12.3'
+gitlab_schema: gitlab_main_org
+table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233067
+removed_in_milestone: '19.0'

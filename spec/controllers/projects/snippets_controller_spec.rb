@@ -36,7 +36,7 @@ RSpec.describe Projects::SnippetsController, feature_category: :source_code_mana
     it 'fetches snippet counts via the snippet count service' do
       service = double(:count_service, execute: {})
       expect(Snippets::CountService)
-        .to receive(:new).with(nil, project: project)
+        .to receive(:new).with(nil, organization_id: current_organization.id, project: project)
         .and_return(service)
 
       subject

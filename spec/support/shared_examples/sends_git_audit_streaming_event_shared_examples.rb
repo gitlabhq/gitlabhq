@@ -7,7 +7,7 @@ RSpec.shared_examples 'sends git audit streaming event' do
     stub_licensed_features(external_audit_events: true)
   end
 
-  subject {}
+  subject { nil }
 
   context 'for public groups and projects' do
     let(:group) { create(:group, :public) }

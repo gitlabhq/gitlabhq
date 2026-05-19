@@ -103,11 +103,11 @@ RSpec.describe AuditEventService, :with_license, feature_category: :audit_events
                                               action: :destroy,
                                               created_at: anything })
 
-      expect { service.security_event }.to change(AuditEvent, :count).by(1)
+      expect { service.security_event }.to change { AuditEvent.count }.by(1)
     end
 
     it 'creates audit event in project audit events' do
-      expect { service.security_event }.to change(AuditEvents::ProjectAuditEvent, :count).by(1)
+      expect { service.security_event }.to change { AuditEvents::ProjectAuditEvent.count }.by(1)
 
       event = AuditEvents::ProjectAuditEvent.last
       audit_event = AuditEvent.last
@@ -139,7 +139,7 @@ RSpec.describe AuditEventService, :with_license, feature_category: :audit_events
                                               target_id: 1,
                                               created_at: anything })
 
-      expect { service.security_event }.to change(AuditEvent, :count).by(1)
+      expect { service.security_event }.to change { AuditEvent.count }.by(1)
 
       details = AuditEvent.last.details
       expect(details[:from]).to be true
@@ -161,7 +161,7 @@ RSpec.describe AuditEventService, :with_license, feature_category: :audit_events
                                                   action: :destroy,
                                                   created_at: 3.weeks.ago })
 
-          expect { service.security_event }.to change(AuditEvent, :count).by(1)
+          expect { service.security_event }.to change { AuditEvent.count }.by(1)
           expect(AuditEvent.last.created_at).to eq(3.weeks.ago)
         end
       end

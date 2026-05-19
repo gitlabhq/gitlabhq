@@ -103,4 +103,45 @@ RSpec.describe ContextCommitsDiff do
       end
     end
   end
+
+  describe '#first_diffs_slice' do
+    let(:limit) { 2 }
+
+    it 'returns limited diffs' do
+      expect(subject.first_diffs_slice(limit).count).to eq(limit)
+    end
+
+    it 'passes the correct options to diffs' do
+      expect(subject).to receive(:diffs).with(hash_including(max_files: limit)).and_call_original
+
+      subject.first_diffs_slice(limit)
+    end
+  end
+
+  describe '#diff_stats' do
+    it 'returns diff stats' do
+      stats = subject.diff_stats
+
+      expect(stats).to be_a(Gitlab::Git::DiffStatsCollection)
+      expect(stats.count).to be > 0
+    end
+
+    it 'calls repository.diff_stats with correct parameters' do
+      expect(project.repository)
+        .to receive(:diff_stats)
+        .with(
+          subject.diff_refs.base_sha,
+          subject.diff_refs.head_sha
+        )
+        .and_call_original
+
+      subject.diff_stats
+    end
+
+    it 'returns nil when diff_refs is nil' do
+      allow(subject).to receive(:diff_refs).and_return(nil)
+
+      expect(subject.diff_stats).to be_nil
+    end
+  end
 end

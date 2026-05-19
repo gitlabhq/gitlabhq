@@ -1,0 +1,20 @@
+---
+name: create_import
+description: Grants the ability to create imports
+boundaries:
+  - project
+  - group
+  - user
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_bitbucket_import
+  - create_bitbucket_server_import
+  - create_bulk_import
+  - create_github_gist_import
+  - create_github_import
+  - create_group_import
+  - create_project_import
+  - create_project_relation_import
+  - create_offline_import

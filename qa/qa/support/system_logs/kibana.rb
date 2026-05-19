@@ -33,7 +33,7 @@ module QA
           return if @base_url.nil?
 
           "#{@base_url}app/discover#/?_a=%28index:%27#{@index}%27%2Cquery%3A%28language%3Akuery%2C" \
-          "query%3A%27json.correlation_id%20%3A%20#{@correlation_id}%27%29%29" \
+          "query%3A%27json.correlation_id%20%3A%20%22#{@correlation_id}%22%27%29%29" \
           "&_g=%28time%3A%28from%3A%27#{start_time}%27%2Cto%3A%27#{end_time}%27%29%29"
         end
 

@@ -1,6 +1,11 @@
 <script>
 import { GlBreadcrumb } from '@gitlab/ui';
+import { STATUS_OPEN } from '~/issues/constants';
 import { s__, __ } from '~/locale';
+import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
+import { urlSortParams } from '~/work_items/list/constants';
+import { planningViewAllItemsFilters } from '~/work_items/pages/planning_view_state';
+
 import { ROUTES, WORK_ITEM_TYPE_NAME_TICKET } from '../constants';
 
 export default {
@@ -37,11 +42,20 @@ export default {
       return 'work_items';
     },
     crumbs() {
+      const session = planningViewAllItemsFilters.value;
+      const indexQuery = session
+        ? {
+            sort: urlSortParams[session.sortKey],
+            state: STATUS_OPEN,
+            first_page_size: DEFAULT_PAGE_SIZE,
+          }
+        : undefined;
+
       const indexCrumb = {
         text: this.listName,
         to: {
           name: ROUTES.index,
-          query: undefined,
+          query: indexQuery,
           params: { type: this.breadcrumbType },
         },
       };

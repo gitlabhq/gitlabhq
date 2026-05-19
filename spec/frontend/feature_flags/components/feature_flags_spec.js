@@ -1,8 +1,8 @@
 import { GlAlert, GlBadge, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { TEST_HOST } from 'spec/test_constants';
@@ -10,13 +10,13 @@ import ConfigureFeatureFlagsModal from '~/feature_flags/components/configure_fea
 import EmptyState from '~/feature_flags/components/empty_state.vue';
 import FeatureFlagsComponent from '~/feature_flags/components/feature_flags.vue';
 import FeatureFlagsTable from '~/feature_flags/components/feature_flags_table.vue';
-import createStore from '~/feature_flags/store/index';
+import { useFeatureFlags } from '~/feature_flags/store/index';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { getRequestData } from '../mock_data';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('Feature flags', () => {
   const mockData = {
@@ -45,9 +45,12 @@ describe('Feature flags', () => {
   let store;
 
   const factory = (provide = mockData, fn = mountExtended) => {
-    store = createStore(mockState);
+    const pinia = createTestingPinia({ stubActions: false });
+    store = useFeatureFlags();
+    store.setInitialState(mockState);
+
     wrapper = fn(FeatureFlagsComponent, {
-      store,
+      pinia,
       provide,
       stubs: {
         EmptyState,
@@ -259,7 +262,6 @@ describe('Feature flags', () => {
           });
 
         factory();
-        jest.spyOn(store, 'dispatch');
         return waitForPromises();
       });
 
@@ -277,12 +279,13 @@ describe('Feature flags', () => {
       });
 
       it('should toggle a flag when receiving the toggle-flag event', () => {
+        jest.spyOn(store, 'toggleFeatureFlag').mockImplementation(() => {});
         const table = findFeatureFlagsTable();
 
         const [flag] = table.props('featureFlags');
         table.vm.$emit('toggle-flag', flag);
 
-        expect(store.dispatch).toHaveBeenCalledWith('toggleFeatureFlag', flag);
+        expect(store.toggleFeatureFlag).toHaveBeenCalledWith(flag);
       });
 
       it('renders configure button', () => {

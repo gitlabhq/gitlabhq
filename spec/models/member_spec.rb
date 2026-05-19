@@ -7,6 +7,12 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
   using RSpec::Parameterized::TableSyntax
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
+    subject_key: :member_namespace_id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_MEMBERS,
+    claiming_attributes: [:invite_email]
+
   describe 'default values' do
     subject(:member) { build(:project_member) }
 
@@ -129,9 +135,9 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
 
     context 'when a child member inherits its access level' do
-      let(:user) { create(:user) }
-      let(:member) { create(:group_member, :developer, user: user) }
-      let(:child_group) { create(:group, parent: member.group) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:member) { create(:group_member, :developer, user: user) }
+      let_it_be(:child_group) { create(:group, parent: member.group) }
       let(:child_member) { build(:group_member, group: child_group, user: user) }
 
       it 'requires a higher level' do
@@ -274,15 +280,15 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
 
     describe 'hierarchy related scopes' do
-      let(:root_ancestor) { create(:group) }
-      let(:project) { create(:project, group: root_ancestor) }
-      let(:subgroup) { create(:group, parent: root_ancestor) }
-      let(:subgroup_project) { create(:project, group: subgroup) }
+      let_it_be(:root_ancestor) { create(:group) }
+      let_it_be(:project) { create(:project, group: root_ancestor) }
+      let_it_be(:subgroup) { create(:group, parent: root_ancestor) }
+      let_it_be(:subgroup_project) { create(:project, group: subgroup) }
 
-      let!(:root_ancestor_member) { create(:group_member, group: root_ancestor) }
-      let!(:project_member) { create(:project_member, project: project) }
-      let!(:subgroup_member) { create(:group_member, group: subgroup) }
-      let!(:subgroup_project_member) { create(:project_member, project: subgroup_project) }
+      let_it_be(:root_ancestor_member) { create(:group_member, group: root_ancestor) }
+      let_it_be(:project_member) { create(:project_member, project: project) }
+      let_it_be(:subgroup_member) { create(:group_member, group: subgroup) }
+      let_it_be(:subgroup_project_member) { create(:project_member, project: subgroup_project) }
 
       describe '.in_hierarchy' do
         let(:hierarchy_members) do
@@ -1379,15 +1385,15 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   end
 
   describe '#pending?' do
-    let(:invited_member) { create(:project_member, invite_email: "user@example.com", user: nil) }
-    let(:requester) { create(:project_member, requested_at: Time.current.utc) }
+    let_it_be(:invited_member) { create(:project_member, invite_email: "user@example.com", user: nil) }
+    let_it_be(:requester) { create(:project_member, requested_at: Time.current.utc) }
 
     it { expect(invited_member).to be_pending }
     it { expect(requester).to be_pending }
   end
 
   describe '#hook_prerequisites_met?' do
-    let(:member) { create(:project_member) }
+    let_it_be_with_reload(:member) { create(:project_member) }
 
     context 'when the member does not have an associated user' do
       it 'returns false' do
@@ -1532,7 +1538,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   end
 
   describe 'generate invite token on create' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let!(:member) { build(:project_member, invite_email: "user@example.com", project: project) }
 
     it 'sets the invite token' do
@@ -1568,7 +1574,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     subject(:send_invitation_reminder) { member.send_invitation_reminder(0) }
 
     context 'an invited group member' do
-      let!(:member) { create(:group_member, :invited) }
+      let_it_be(:member) { create(:group_member, :invited) }
 
       it 'enqueues a reminder email' do
         expect(Members::InviteReminderMailer)
@@ -1579,7 +1585,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
 
     context 'an invited member without a raw invite token set' do
-      let!(:member) { create(:group_member, :invited) }
+      let_it_be(:member) { create(:group_member, :invited) }
 
       before do
         member.instance_variable_set(:@raw_invite_token, nil)
@@ -1594,7 +1600,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
 
     context 'an uninvited member' do
-      let!(:member) { create(:group_member) }
+      let_it_be(:member) { create(:group_member) }
 
       it 'does not send a reminder' do
         expect(Members::InviteReminderMailer).not_to receive(:email)
@@ -2120,11 +2126,11 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
 
     it 'sort users by recent last activity' do
-      expect(described_class.sort_by_attribute('recent_last_activity')).to eq([member1, member2, member3])
+      expect(described_class.sort_by_attribute('last_activity_on_desc')).to eq([member1, member2, member3])
     end
 
     it 'sort users by oldest last activity' do
-      expect(described_class.sort_by_attribute('oldest_last_activity')).to eq([member3, member2, member1])
+      expect(described_class.sort_by_attribute('last_activity_on_asc')).to eq([member3, member2, member1])
     end
   end
 

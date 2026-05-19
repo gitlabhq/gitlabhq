@@ -519,7 +519,7 @@ RSpec.shared_examples 'work items todos' do
 
     click_button s_('WorkItem|Add a to-do item')
 
-    expect(page).to have_button s_('WorkItem|Mark as done')
+    expect(page).to have_button s_('WorkItem|Mark to-do items done')
 
     within_testid 'todos-shortcut-button' do
       expect(page).to have_content '1'
@@ -528,7 +528,7 @@ RSpec.shared_examples 'work items todos' do
 
   it 'marks to-do item as done', :aggregate_failures do
     click_button s_('WorkItem|Add a to-do item')
-    click_button s_('WorkItem|Mark as done')
+    click_button s_('WorkItem|Mark to-do items done')
 
     expect(page).to have_button s_('WorkItem|Add a to-do item')
     within_testid 'todos-shortcut-button' do
@@ -542,20 +542,24 @@ RSpec.shared_examples 'work items award emoji' do
     emoji_upvote
   end
 
-  it 'renders all award emojis across multiple pages', :aggregate_failures do
+  context 'with more than one page of emojis' do
     # Add more than 100 (i.e > page_size) reactions to work item to
     # ensure that page shows all emojis correctly
-    total_emojis = 120
-    emoji_names = TanukiEmoji.index.all.map(&:name).excluding('thumbsup').first(total_emojis)
-    emoji_names.each do |emoji_name|
-      create(:award_emoji, name: emoji_name, awardable: work_item, user: user2)
+    let(:total_emojis) { 120 }
+
+    before do
+      emoji_names = TanukiEmoji.index.all.map(&:name).excluding('thumbsup').first(total_emojis)
+      emoji_names.each do |emoji_name|
+        create(:award_emoji, name: emoji_name, awardable: work_item, user: user2)
+      end
+
+      stub_feature_flags(work_item_features_field: false)
+      visit work_items_path
     end
 
-    page.refresh
-    wait_for_requests
-
-    award_buttons = all('[data-testid="award-button"]')
-    expect(award_buttons.count).to be >= total_emojis
+    it 'renders all award emojis across multiple pages', :aggregate_failures do
+      expect(page).to have_selector('[data-testid="award-button"]', minimum: total_emojis)
+    end
   end
 
   it 'adds and removes award and custom award', :aggregate_failures do

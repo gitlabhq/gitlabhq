@@ -142,7 +142,7 @@ module Tasks
           def validate_assignable_permission(route, permission, boundary_types)
             return unless boundary_types.any?
 
-            assignables = Authz::PermissionGroups::Assignable.for_permission(permission.to_sym)
+            assignables = Authz::PermissionGroups::Assignable.available_for_permission(permission.to_sym)
 
             if assignables.empty?
               violations[:missing_assignable] << base_error(route).merge(permission:, boundary_types:)

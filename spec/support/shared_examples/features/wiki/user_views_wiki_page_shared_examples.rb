@@ -210,7 +210,7 @@ RSpec.shared_examples 'User views a wiki page' do
 
         expect(page).to have_content('by Sidney Jones')
         expect(page).to have_content('created page: home')
-        expect(page).to have_content('Showing 1 changed file with 4 additions and 0 deletions')
+        expect(page).to have_content('Showing 1 changed file with 3 additions and 0 deletions')
         expect(page).to have_content('Look at this')
 
         expect_diff_links(commit)

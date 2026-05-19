@@ -20,7 +20,7 @@ class DeploymentsFinder
 
   # Warning:
   # These const are directly used in Deployment Rest API, thus
-  # modifying these values could implicity change the API interface or introduce a breaking change.
+  # modifying these values could implicitly change the API interface or introduce a breaking change.
   # Also, if you add a sort value, make sure that the new query will stay
   # performant with the other filtering/sorting parameters.
   # The composed query could be significantly slower when the filtering and sorting columns are different.

@@ -1,0 +1,10 @@
+---
+name: download_project_relation_export
+description: Grants the ability to download project relation exports
+deprecated: true
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - download_project_relation_export

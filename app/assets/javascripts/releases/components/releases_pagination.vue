@@ -24,7 +24,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-flex gl-justify-center">
+  <div class="gl-mt-6 gl-flex gl-justify-center">
     <gl-keyset-pagination
       v-bind="pageInfo"
       v-on="$listeners"

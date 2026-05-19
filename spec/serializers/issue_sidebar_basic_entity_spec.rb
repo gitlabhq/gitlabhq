@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, group: group) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
   let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:planner) { create(:user, planner_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }

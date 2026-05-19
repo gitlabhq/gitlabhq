@@ -125,9 +125,10 @@ export const scrollToElement = (element, options = {}) => {
  */
 export const preventScrollToFragment = (event) => {
   const link = event.target.closest('a[href]');
-  if (!link) return;
+  if (!link?.hash) return;
+  if (link.href.split('#')[0] !== window.location.href.split('#')[0]) return;
   event.preventDefault();
-  const hash = link.href.split('#')[1];
+  const hash = link.hash.slice(1);
   const target = document.getElementById(hash);
   if (!target) return;
   target.classList.add(NO_SCROLL_TO_HASH_CLASS);

@@ -1,0 +1,38 @@
+# Accessibility Journey Configuration: Sprint Workflow
+# Stage: Plan
+# Groups: Project Management
+
+stage: plan
+journey_name: sprint_workflow
+feature_category: team_planning
+description: 'Golden user journey for planning and executing sprints using milestones, iterations, and boards in GitLab'
+
+feature_test_hints:
+  - milestones
+  - projects/milestones
+  - groups/milestones
+
+e2e_test_files:
+  # Milestones
+  - path: qa/qa/specs/features/browser_ui/2_plan/milestone/assign_milestone_spec.rb
+    description: Assigns milestones to issues for sprint-like grouping
+    focus_area: Milestones
+    has_ui: true
+
+  # Burndown (EE)
+  - path: qa/qa/specs/features/ee/browser_ui/2_plan/burndown_chart/burndown_chart_spec.rb
+    description: Verifies burndown chart on milestone page including weight-based view
+    focus_area: Burndown tracking
+    has_ui: true
+
+  # Iterations (EE)
+  - path: qa/qa/specs/features/ee/browser_ui/2_plan/iterations/create_group_iteration_spec.rb
+    description: Creates group iterations for time-boxed planning
+    focus_area: Iterations
+    has_ui: true
+
+  # Boards (EE)
+  - path: qa/qa/specs/features/ee/browser_ui/2_plan/issue_boards/project_issue_boards_spec.rb
+    description: Label/milestone/assignee-based project boards for sprint execution
+    focus_area: Sprint boards
+    has_ui: true

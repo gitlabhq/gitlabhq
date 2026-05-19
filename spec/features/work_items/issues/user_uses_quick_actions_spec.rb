@@ -36,6 +36,7 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
     before do
       project.add_maintainer(user)
       sign_in(user)
+      stub_feature_flags(page_breadcrumbs_in_top_bar: false)
       visit project_issue_path(project, issue)
     end
 

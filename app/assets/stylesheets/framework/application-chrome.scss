@@ -13,13 +13,6 @@
     scrollbar-color: var(--gl-color-neutral-950) transparent;
   }
 
-  // Variable overrides
-  @include media-breakpoint-up(xl) {
-    &.page-with-panels .page-with-super-sidebar {
-      --application-bar-left: 0px; // stylelint-disable-line length-zero-no-unit
-    }
-  }
-
   // Fix height
   &, body {
     @apply gl-h-full;
@@ -28,101 +21,12 @@
   body {
     @apply gl-flex gl-flex-col;
     // Application chrome background
-    background-color: var(--super-sidebar-bg);
-  }
-
-  // TODO: Evaluate introducing semantic design tokens for button spacing
-  //
-  // Decrease spacing between buttons to align with optical spacing
-  // of rounded button borders
-  .gl-gap-3:has(> .gl-button) {
-    @apply gl-gap-2-5; //= 6px
-  }
-
-  // When using panels, remove top padding
-  &.page-with-panels .layout-page {
-    @apply gl-pt-0 #{!important};
-    @apply gl-pb-3;
+    background-color: var(--body-background-color);
   }
 
   // Free trial button
   .topbar-signup-button {
     @apply gl-bg-neutral-800 gl-border-neutral-800 dark:gl-bg-neutral-100 dark:gl-border-neutral-100 #{!important};
-  }
-
-  // Super topbar
-  .super-topbar {
-    @apply gl-pl-3 sm:gl-pl-4 gl-pr-3;
-    height: var(--top-bar-height);
-
-    // Placeholder styles
-    .topbar-search-button-placeholder {
-      font-weight: 320;
-      line-height: 1.25;
-    }
-
-    // Search button
-    .topbar-search-button {
-      @apply gl-text-subtle gl-border-alpha-dark-24 #{!important};
-
-      kbd {
-        @apply gl-border-strong gl-font-semibold gl-text-subtle gl-shadow-none dark:gl-border-transparent;
-      }
-
-      @media (forced-colors: active) {
-        border: 1px solid !important;
-      }
-    }
-
-    .topbar-search-button:not(:hover):not(:focus):not(:active) {
-      @apply dark:gl-bg-alpha-light-8 dark:gl-border-alpha-light-16 #{!important};
-    }
-  }
-
-  // Quick search overlay
-  #super-sidebar-search-modal {
-    @apply gl-pt-0;
-
-    /* stylelint-disable scss/at-rule-no-unknown */
-    @media (prefers-reduced-motion: no-preference) {
-      transition-property: opacity;
-      transition-timing-function: $gl-easing-out-cubic;
-
-      &.show {
-        opacity: 1;
-        transition-duration: 0.2s;
-
-        .modal-dialog {
-          scale: 1;
-          transition-duration: 0.2s;
-        }
-      }
-
-      &:not(.show) {
-        opacity: 0;
-        transition-duration: 0.1s;
-
-        .modal-dialog {
-          scale: 0.8;
-          transition-duration: 0.1s;
-        }
-      }
-
-      @starting-style {
-        opacity: 0;
-      }
-
-      .modal-dialog {
-        transform-origin: top center;
-        transform: none !important;
-        transition-property: scale;
-        transition-timing-function: $gl-easing-out-cubic;
-
-        @starting-style {
-          scale: 0.8;
-        }
-      }
-    }
   }
 
   // Super sidebar
@@ -173,11 +77,6 @@
     }
   }
 
-  // Super sidebar item
-  .super-sidebar-nav-item {
-    @apply gl-rounded-lg #{!important};
-  }
-
   // Application background item hover/focus states
   .super-sidebar .super-sidebar-nav-item,
   .dashboard-shortcuts-button,
@@ -190,35 +89,6 @@
     }
   }
 
-  // Position for search overlay when Performance bar is visible
-  &.with-performance-bar #super-sidebar-search-modal {
-    padding-top: $performance-bar-height;
-  }
-
-  // Quick search overlay search input
-  &.page-with-panels .global-search-modal .modal-content {
-    @apply gl-rounded-[1rem] #{!important};
-
-    .gl-search-box-by-type-input-borderless {
-      @apply gl-rounded-[0.75rem];
-    }
-  }
-
-  // work item drawer correct background colors
-  .work-item-drawer {
-    .description-more::before {
-      background: linear-gradient(180deg, transparent 0%, var(--gl-background-color-default) 100%) !important;
-    }
-
-    .show-all-btn {
-      background-color: var(--gl-background-color-default) !important;
-    }
-
-    .timeline-entry:not(.draft-note):last-child::before {
-      @apply gl-bg-default #{!important};
-    }
-  }
-
 }
 
 /*
@@ -226,6 +96,7 @@
  */
 
 .page-with-panels {
+  --container-padding-x: #{$gl-spacing-scale-4};
   --ai-panel-height: 3rem; //= 48px
 
   @include media-breakpoint-up(lg) {
@@ -234,14 +105,16 @@
 
   // Layout
   &.page-with-panels .layout-page {
-    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 sm:gl-pr-3;
+    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row lg:gl-pl-0 lg:gl-pb-3 sm:gl-pr-3;
     min-height: 0;
     flex: 1;
   }
 
   // Unset fixed positions
+  /* stylelint-disable gitlab/no-js-class */
   #js-peek,
   #super-sidebar {
+  /* stylelint-enable gitlab/no-js-class */
     @apply gl-relative #{!important};
     @apply gl-top-0;
   }
@@ -256,10 +129,6 @@
   // Super sidebar height
   #super-sidebar {
     @apply gl-h-full lg:-gl-mr-3;
-
-    .contextual-nav {
-      @apply gl-pt-2;
-    }
   }
 
   // Panels container
@@ -279,20 +148,10 @@
     --top-bar-height: 0px; // stylelint-disable-line length-zero-no-unit
 
     .panel-content-inner,
-    .vue-portal-target .work-item-drawer-content {
+    .vue-portal-target .work-item-detail-panel-content {
       // This prevents the scrollbar transparency rule above from breaking scrollbars in dropdown menus
       .dropdown-menu {
         background: var(--gl-background-color-overlap);
-      }
-
-      .container-fluid {
-        --container-padding-x: #{$gl-spacing-scale-2};
-        padding-left: var(--container-padding-x);
-        padding-right: var(--container-padding-x);
-
-        @container content-panels (width >= #{map.get($breakpoints, 'lg')}) {
-          --container-padding-x: #{$gl-spacing-scale-3};
-        }
       }
 
       // Hide alert wrapper if it's empty
@@ -313,16 +172,6 @@
       .super-sidebar-wrapper ~ .panels-container {
         margin-left: 0;
       }
-    }
-  }
-
-  // All panels
-  .paneled-view.static-panel,
-  .paneled-view.contextual-panel,
-  .paneled-view.ai-panels .ai-panel
-  {
-    @media (forced-colors: active) {
-      border: 1px solid;
     }
   }
 
@@ -347,6 +196,7 @@
       z-index: $top-bar-z-index;
       @apply gl-sticky #{!important};
       @apply gl-top-0 gl-py-3 gl-px-3;
+      @apply gl-border-b;
     }
 
     .ai-nav-icon-active,
@@ -358,19 +208,6 @@
     @media (max-width: $breakpoint-lg - 1) {
       --ai-navigation-rail-size: calc(#{$gl-button-small-size} + var(--gl-spacing-scale-3) * 2);
     }
-  }
-
-  .ai-panel-body {
-    max-height: calc(100vh - #{$header-height} - #{$performance-bar-height} - #{$top-bar-height} - #{-$gl-spacing-scale-7});
-  }
-
-  &.with-performance-bar .ai-panel-body {
-    max-height: calc(100vh - #{$header-height} - #{$top-bar-height} - #{$gl-spacing-scale-9});
-  }
-
-  .ai-panel-header-actions {
-    border-left: 1px solid var(--super-sidebar-bg);
-    @apply gl-pl-3;
   }
 
   .ai-panel-maximized .paneled-view {
@@ -393,14 +230,6 @@
     }
   }
 
-  // Panel header
-  .panel-header .top-bar-fixed,
-  .work-item-drawer-header {
-    @apply gl-bg-default gl-shadow-none gl-relative gl-px-4 lg:gl-px-5 #{!important};
-    z-index: 99;
-    border-bottom: 1px solid var(--super-sidebar-bg);
-  }
-
   .content-wrapper {
     display: flex;
     flex-direction: column;
@@ -408,7 +237,7 @@
 
   // Panel content
   .panel-content,
-  .work-item-drawer {
+  .work-item-detail-panel {
     // a slight padding is added to the panel itself so that scrollbar does not get covered by the rounded edge of the panel
     // we're using padding instead of margin so that fixed elements connect with the bottom edge of the panel
     @apply gl-pb-3;
@@ -417,45 +246,30 @@
     flex: 1;
     min-height: 0;
     contain: layout;
-    // a margin is required for the panel element so that it works exactly like the native viewport,
-    // which compensates for the scrollbar size when using fixed position
-    margin-right: var(--scrollbar-width, 0);
   }
 
   &.issue-boards-page .panel-content,
-  &.issue-boards-page .work-item-drawer {
+  &.issue-boards-page .work-item-detail-panel {
     @apply gl-pb-0;
   }
 
   .panel-content-inner,
-  .work-item-drawer-content {
+  .work-item-detail-panel-content {
     overflow-x: hidden;
-    overflow-y: scroll;
-  }
-
-  .panel-content-inner,
-  .work-item-drawer-content,
-  .work-item-drawer-header {
-    margin-right: calc(var(--scrollbar-width, 0) * -1);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
   }
 
   .panel-content-inner {
-    @apply gl-px-3;
     flex: 1;
   }
 
-  .work-item-drawer-content {
-    @apply gl-px-5;
+  .work-item-detail-panel-content {
+    @apply gl-px-[--container-padding-x];
     flex: 1;
   }
 
-  // duplicate class to override Tailwind
-  .work-item-drawer-header.work-item-drawer-header {
-    @apply gl-py-4;
-    width: auto;
-  }
-
-  .contextual-panel > .vue-portal-target {
+  #contextual-panel-portal > .vue-portal-target {
     flex: 1;
     min-height: 0;
   }
@@ -471,37 +285,22 @@
     @apply gl-rounded-[1rem] #{!important};
 
     // Work item drawer
-    .work-item-drawer {
+    .work-item-detail-panel {
       @apply gl-h-full gl-pt-0;
     }
 
     // Issue sticky header
     .issue-sticky-header:not(.merge-request-sticky-header) {
       @apply gl-w-full gl-border-b-subtle;
-
-      .work-item-sticky-header-text {
-        @apply gl-px-3 @lg/panel:gl-px-4 gl-py-2;
-      }
     }
 
-    .work-item-drawer .issue-sticky-header:not(.merge-request-sticky-header) {
-      top: $header-height !important;
-
-      .work-item-sticky-header-text {
-        @apply gl-px-5;
-      }
+    .work-item-detail-panel .issue-sticky-header:not(.merge-request-sticky-header) {
+      top: $panel-header-inner-height !important;
     }
 
     // Legacy merge request sticky header (Firefox)
     .issue-sticky-header.merge-request-sticky-header .issue-sticky-header-text {
       @apply gl-px-3;
-    }
-
-    // Issue boards height
-    .boards-app,
-    .issue-boards-content,
-    .issue-boards-content > .content {
-      @apply gl-h-full;
     }
 
     // MR sidebar
@@ -550,48 +349,6 @@
     overflow: auto;
   }
 
-  // Override Tailwind
-  .boards-app.boards-app {
-    height: var(--panel-content-inner-height);
-    overflow-y: hidden;
-
-    .issues-details-filters {
-      @apply gl-px-3;
-    }
-  }
-
-  .board-content {
-    @apply gl-pt-5;
-    @apply gl-px-3;
-    min-height: 0;
-    overflow-y: hidden;
-  }
-
-  // Override Tailwind
-  .boards-list.boards-list {
-    display: flex;
-    padding: 0;
-    margin: 0;
-    border: 0;
-    overflow-y: hidden;
-    min-height: 0;
-    @apply gl-mb-3;
-    @apply gl-rounded-b-lg;
-  }
-
-  .boards-list,
-  .board-column {
-    @apply gl-gap-3;
-  }
-
-  .boards-list .board.board {
-    padding: 0;
-  }
-
-  .board-swimlanes .board:first-of-type {
-    padding-left: 0;
-  }
-
   // Sidebar adjustments
   :where(.right-sidebar-expanded) {
     .content-wrapper {
@@ -631,12 +388,6 @@
         padding-right: $right-sidebar-collapsed-width;
       }
     }
-  }
-
-  // Static and Contextual panels
-  .paneled-view.static-panel,
-  .paneled-view.contextual-panel {
-    @apply gl-overflow-clip gl-p-0 gl-rounded-[1rem];
   }
 
   // AI panel
@@ -712,11 +463,6 @@
     // bottom color
     --_shade-4: hsla(from var(--theme-color) calc(h + 20) calc(s + 20) l / 40%);
 
-    // Temporarily unship this change as it introduced some regressions, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204009
-    // --theme-background-color: color-mix(in srgb, var(--gl-background-color-default), var(--theme-color) 2%);
-    --theme-background-color: var(--gl-background-color-default);
-    --theme-border-color: hsl(from var(--theme-color) h 24 90);
-
     body {
       background:
         radial-gradient(circle at top, rgba(255, 255, 255, 0.6), transparent 40vw),
@@ -725,14 +471,12 @@
         radial-gradient(farthest-side at 50% 0%, var(--_shade-2), transparent 70vw),
         linear-gradient(-10deg, var(--_shade-4), transparent 70%),
         var(--gl-background-color-default);
-      background-color: var(--super-sidebar-bg);
+      background-color: var(--body-background-color);
     }
 
     .ai-panels,
-    .super-sidebar,
-    .super-topbar {
+    .super-sidebar {
       --theme-accent-badge-color: var(--theme-accent-color);
-      --super-sidebar-bg: var(--theme-background-color);
       --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h calc(s - 20) 20);
       --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s l / 16%);
       --super-sidebar-nav-item-hover-bg: hsla(from var(--theme-accent-color) h s l / 16%);
@@ -742,14 +486,6 @@
 
     .super-sidebar hr {
       border-color: var(--gl-color-alpha-dark-8);
-    }
-
-    .super-sidebar-main-separator {
-      @apply gl-mx-3;
-    }
-
-    .super-sidebar-is-icon-only .super-sidebar-main-separator {
-      border-color: var(--gl-border-color-strong);
     }
 
     .super-sidebar .super-sidebar-nav-item:not(.super-sidebar-nav-item-current) .badge {
@@ -788,11 +524,6 @@
     // bottom color
     --_shade-5: hsla(from var(--theme-color) h s l / 55%);
 
-    // Temporarily unship this change as it introduced some regressions, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204009
-    // --theme-background-color: color-mix(in srgb, var(--gl-background-color-default), var(--theme-color) 1%);
-    --theme-background-color: var(--gl-background-color-default);
-    --theme-border-color: hsl(from var(--theme-color) h 12 25);
-
     body {
       background:
         linear-gradient(var(--_shade-1), var(--_shade-1)),
@@ -800,31 +531,17 @@
         radial-gradient(farthest-side at 50% 0%, var(--_shade-3), transparent 65vw),
         linear-gradient(-10deg, var(--_shade-5), transparent),
         var(--_shade-2);
-      background-color: var(--super-sidebar-bg);
+      background-color: var(--body-background-color);
     }
 
     .ai-panels,
-    .super-sidebar,
-    .super-topbar {
+    .super-sidebar {
       --theme-accent-badge-color: hsl(from var(--theme-accent-color) h calc(s - 10) calc(l + 20));
-      --super-sidebar-bg: var(--theme-background-color);
       --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s calc(l + 20) / 25%);
       --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h s 88);
       --super-sidebar-nav-item-hover-bg: hsla(from var(--theme-accent-color) h calc(s - 30) l / 16%);
       --super-sidebar-accent-color-badge: hsl(from var(--theme-accent-color) h s 85);
       --super-sidebar-accent-color-bg: hsla(from var(--theme-accent-color) h s l / 32%);
-    }
-
-    .super-sidebar hr {
-      border-color: var(--gl-color-alpha-light-16);
-    }
-
-    .super-sidebar-main-separator {
-      @apply gl-mx-3;
-    }
-
-    .super-sidebar-is-icon-only .super-sidebar-main-separator {
-      border-color: var(--gl-border-color-strong);
     }
 
     .super-sidebar .super-sidebar-nav-item:not(.super-sidebar-nav-item-current) .badge {
@@ -854,11 +571,6 @@
     background: transparent !important;
   }
 
-  .bottom-scrim-visible,
-  .top-scrim-visible {
-    border-color: var(--theme-border-color);
-  }
-
   .organization-switcher-button {
     @apply gl-bg-alpha-dark-8 dark:gl-bg-alpha-light-16;
     @apply gl-border-transparent;
@@ -869,28 +581,13 @@
       gap: var(--gl-spacing-scale-2);
     }
   }
-
-  .panel-header .top-bar-fixed,
-  .work-item-drawer-header,
-  .ai-panel-header {
-    border-bottom: 1px solid var(--theme-border-color);
-  }
-
-  .top-bar-fixed,
-  .static-panel,
-  .contextual-panel,
-  .ai-panel,
-  .settings-sticky-header,
-  .settings-sticky-header::before,
-  .settings-sticky-footer {
-    background-color: var(--theme-background-color) !important;
-  }
 }
 
 /*
  * Animations
  */
 
+/* stylelint-disable scss/at-rule-no-unknown */
 :where(.application-chrome) {
   .nav-flyout-menu {
     @include gl-prefers-reduced-motion-transition;
@@ -965,30 +662,8 @@
     }
   }
 
-  .work-item-drawer .work-item-overview-right-sidebar {
+  .work-item-detail-panel .work-item-overview-right-sidebar {
     @apply gl-pb-10;
-  }
-}
-
-@include gl-container-width-up(xl) {
-  &.application-chrome {
-    .boards-app.boards-app .issues-details-filters {
-      @apply gl-px-5;
-    }
-  }
-}
-
-@include gl-container-width-down(xl) {
-  &.application-chrome {
-    .board-content {
-      @apply gl-pt-3;
-      @apply gl-px-3;
-    }
-
-    // Override Tailwind
-    .boards-list.boards-list {
-      @apply gl-mb-3;
-    }
   }
 }
 

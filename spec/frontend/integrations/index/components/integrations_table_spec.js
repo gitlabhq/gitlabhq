@@ -1,4 +1,4 @@
-import { GlTable, GlLink, GlBadge, GlButton } from '@gitlab/ui';
+import { GlTable, GlButton } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import IntegrationsTable from '~/integrations/index/components/integrations_table.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -9,11 +9,8 @@ describe('IntegrationsTable', () => {
   let wrapper;
 
   const findTable = () => wrapper.findComponent(GlTable);
-  const findDeprecationBadge = () => wrapper.findComponent(GlBadge);
-  const findDeprecationHelpLink = () => wrapper.findByTestId('sscDeprecationLink');
-  const findDeprecationSprint = () => wrapper.findByTestId('deprecation-message');
 
-  const createComponent = (propsData = {}, glFeatures = {}, isAdmin = false) => {
+  const createComponent = (propsData = {}, glFeatures = {}) => {
     wrapper = mountExtended(IntegrationsTable, {
       propsData: {
         integrations: mockActiveIntegrations,
@@ -21,7 +18,6 @@ describe('IntegrationsTable', () => {
       },
       provide: {
         glFeatures,
-        isAdmin,
       },
     });
   };
@@ -64,7 +60,7 @@ describe('IntegrationsTable', () => {
       });
 
       it(`${removeMonitorMetrics ? 'does not render' : 'renders'} prometheus integration`, () => {
-        expect(findTable().findComponent(GlLink).exists()).toBe(!removeMonitorMetrics);
+        expect(wrapper.findByTestId('prometheus-link').exists()).toBe(!removeMonitorMetrics);
       });
     },
   );
@@ -100,53 +96,5 @@ describe('IntegrationsTable', () => {
         expect(findEditButton().props('icon')).toBe('settings');
       });
     }
-  });
-
-  describe('Slack slash command deprecation warning', () => {
-    const slackSlashIntegration = {
-      active: true,
-      configured: true,
-      title: 'Slack slash command',
-      description: 'Perform common operations in Slack.',
-      updated_at: '2021-03-18T00:27:09.634Z',
-      edit_path:
-        '/gitlab-qa-sandbox-group/project_with_jenkins_6a55a67c-57c6ed0597c9319a/-/services/slack_slash_commands/edit',
-      name: 'slack_slash_commands',
-    };
-
-    it('does not render when there is no active slack slash integration', () => {
-      createComponent();
-      expect(findDeprecationBadge().exists()).toBe(false);
-    });
-
-    describe('when there is an active slack slash integration', () => {
-      it('renders when user is not admin', () => {
-        createComponent({ integrations: [slackSlashIntegration] });
-        expect(findDeprecationBadge().exists()).toBe(true);
-        expect(findDeprecationBadge().text()).toContain('Deprecated');
-        expect(findDeprecationSprint().text()).toContain(
-          'This integration is deprecated and replaced with the',
-        );
-        const link = findDeprecationHelpLink();
-        expect(link.text()).toBe('GitLab for Slack app');
-        expect(link.attributes('href')).toBe(
-          '/help/user/project/integrations/gitlab_slack_application',
-        );
-        expect(findDeprecationSprint().text()).toContain(
-          'Contact your GitLab administrator for help.',
-        );
-      });
-    });
-
-    it('renders when user is admin', () => {
-      createComponent({ integrations: [slackSlashIntegration] }, {}, true);
-      expect(findDeprecationBadge().exists()).toBe(true);
-      expect(findDeprecationSprint().text()).toContain(
-        'This integration is deprecated. Install the',
-      );
-      const link = findDeprecationHelpLink();
-      expect(link.text()).toBe('GitLab for Slack app');
-      expect(link.attributes('href')).toBe('/help/administration/settings/slack_app');
-    });
   });
 });

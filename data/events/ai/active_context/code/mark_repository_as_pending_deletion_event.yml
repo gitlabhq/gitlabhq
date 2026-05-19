@@ -1,0 +1,8 @@
+---
+event: Ai::ActiveContext::Code::MarkRepositoryAsPendingDeletionEvent
+description: Published to mark Ai::ActiveContext::Code::Repository records as pending
+  deletion when their enabled namespace is gone, Duo features are disabled, or there
+  has been no recent activity. Re-emitted by the subscriber worker to continue batched
+  processing.
+feature_category: global_search
+ee_only: true

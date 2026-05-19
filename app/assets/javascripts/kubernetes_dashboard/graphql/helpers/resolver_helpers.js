@@ -31,6 +31,7 @@ export const handleClusterError = async (err) => {
 };
 
 export const buildWatchPath = ({ resource, api = 'api/v1', namespace = '' }) => {
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- REST API URL
   return namespace ? `/${api}/namespaces/${namespace}/${resource}` : `/${api}/${resource}`;
 };
 

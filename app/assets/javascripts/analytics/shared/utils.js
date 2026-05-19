@@ -285,3 +285,5 @@ export const formatBigInt = (value) => {
     return '-';
   }
 };
+
+export const mapItemToListboxFormat = (item) => ({ ...item, value: item.id, text: item.name });

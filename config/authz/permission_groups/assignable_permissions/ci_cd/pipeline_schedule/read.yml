@@ -1,8 +1,10 @@
 ---
 name: read_pipeline_schedule
 description: Grants the ability to read pipeline schedules
+boundaries:
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - read_pipeline_schedule
   - read_pipeline_schedule_variable
-boundaries:
-  - project

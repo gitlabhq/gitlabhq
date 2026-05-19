@@ -78,7 +78,11 @@ This password has the following properties:
   [`friendly_token` method](https://github.com/heartcombo/devise/blob/f26e05c20079c9acded3c0ee16da0df435a28997/lib/devise.rb#L492)
 - Unique and secure
 
-You don't need to know or use this password.
+Generally, you don't need to know or use this password. However, you may need to enter it to create a passkey or in other similar situations.
+
+If you need to enter your GitLab password, you can follow the [reset password process](#reset-your-password) to create a new one that you can use.
+
+This does not affect the password for your external identity provider.
 
 ## Change your password
 

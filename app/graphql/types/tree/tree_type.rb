@@ -8,6 +8,9 @@ module Types
       graphql_name 'Tree'
 
       present_using ::Projects::TreePresenter
+      authorize_granular_token permissions: :read_repository_tree,
+        boundary: ->(obj) { obj.repository&.project },
+        boundary_type: :project
 
       # Complexity 10 as it triggers a Gitaly call on each render
       field :last_commit, Types::Repositories::CommitType,

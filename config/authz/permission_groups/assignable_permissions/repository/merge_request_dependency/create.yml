@@ -1,7 +1,10 @@
 ---
 name: create_merge_request_dependency
+deprecated: true
 description: Grants the ability to create merge request dependencies
-permissions:
-  - create_merge_request_dependency
 boundaries:
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_merge_request_dependency

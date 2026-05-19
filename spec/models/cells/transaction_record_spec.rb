@@ -166,7 +166,60 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
         end.to raise_error(described_class::Error, "Attributes can now only be claimed on main DB")
       end
 
-      context "when GRPC error occurs" do
+      context "when a transient GRPC error occurs" do
+        using RSpec::Parameterized::TableSyntax
+
+        let(:model) { build(:organization) }
+        let(:metadata) do
+          {
+            bucket: {
+              value: model.path
+            },
+            record: model
+          }
+        end
+
+        before do
+          record.create_record(metadata)
+        end
+
+        where(:error_class) do
+          [[GRPC::Unavailable], [GRPC::DeadlineExceeded]]
+        end
+
+        with_them do
+          it "retries and succeeds" do
+            call_count = 0
+            allow(Cells::OutstandingLease).to receive(:create_from_request!) do
+              call_count += 1
+              raise error_class, "transient" if call_count == 1
+
+              lease
+            end
+
+            record.before_committed!
+            expect(record.send(:outstanding_lease)).to eq(lease)
+            expect(call_count).to eq(2)
+          end
+        end
+
+        it "raises Error after exhausting retries on transient errors" do
+          allow(Cells::OutstandingLease).to receive(:create_from_request!)
+            .and_raise(GRPC::Unavailable.new("unavailable"))
+
+          expect { record.before_committed! }.to raise_error(described_class::Error, /Failed to create lease/)
+        end
+
+        it "does not retry non-transient GRPC errors" do
+          allow(Cells::OutstandingLease).to receive(:create_from_request!)
+            .and_raise(GRPC::AlreadyExists.new("claim conflict"))
+
+          expect { record.before_committed! }.to raise_error(described_class::Error, /Failed to create lease/)
+          expect(Cells::OutstandingLease).to have_received(:create_from_request!).once
+        end
+      end
+
+      context "when a non-transient GRPC error occurs" do
         let(:grpc_error) { GRPC::AlreadyExists.new("claim conflict") }
         let(:model) { build(:organization) }
         let(:metadata) do
@@ -219,6 +272,52 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
         new_record = described_class.new(connection, transaction)
         expect { new_record.committed! }.not_to raise_error
       end
+
+      context "when a transient GRPC error occurs" do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:error_class) do
+          [[GRPC::Unavailable], [GRPC::DeadlineExceeded]]
+        end
+
+        with_them do
+          it "retries and succeeds" do
+            call_count = 0
+            allow(lease).to receive(:send_commit_update!) do
+              call_count += 1
+              raise error_class, "transient" if call_count == 1
+            end
+
+            record.committed!
+            expect(record.send(:done)).to be true
+            expect(call_count).to eq(2)
+          end
+        end
+
+        it "swallows error after exhausting retries and tracks exception" do
+          allow(lease).to receive(:send_commit_update!)
+            .and_raise(GRPC::Unavailable.new("unavailable"))
+          allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+          expect { record.committed! }.not_to raise_error
+          expect(record.send(:done)).to be true
+          expect(Gitlab::ErrorTracking).to have_received(:track_exception)
+            .with(an_instance_of(GRPC::Unavailable), feature_category: :cell)
+        end
+      end
+
+      context "when a non-transient GRPC error occurs" do
+        it "swallows the error and tracks exception" do
+          allow(lease).to receive(:send_commit_update!)
+            .and_raise(GRPC::AlreadyExists.new("conflict"))
+          allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+          expect { record.committed! }.not_to raise_error
+          expect(record.send(:done)).to be true
+          expect(Gitlab::ErrorTracking).to have_received(:track_exception)
+            .with(an_instance_of(GRPC::AlreadyExists), feature_category: :cell)
+        end
+      end
     end
 
     describe "#rolledback!" do
@@ -248,6 +347,62 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
         record.rolledback!
 
         expect { record.rolledback! }.to raise_error(described_class::Error, "Already done")
+      end
+
+      context "when a transient GRPC error occurs" do
+        using RSpec::Parameterized::TableSyntax
+
+        before do
+          record.create_record(metadata)
+          record.before_committed!
+        end
+
+        where(:error_class) do
+          [[GRPC::Unavailable], [GRPC::DeadlineExceeded]]
+        end
+
+        with_them do
+          it "retries and succeeds" do
+            call_count = 0
+            allow(lease).to receive(:send_rollback_update!) do
+              call_count += 1
+              raise error_class, "transient" if call_count == 1
+            end
+
+            record.rolledback!
+            expect(record.send(:done)).to be true
+            expect(call_count).to eq(2)
+          end
+        end
+
+        it "swallows error after exhausting retries and tracks exception" do
+          allow(lease).to receive(:send_rollback_update!)
+            .and_raise(GRPC::Unavailable.new("unavailable"))
+          allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+          expect { record.rolledback! }.not_to raise_error
+          expect(record.send(:done)).to be true
+          expect(Gitlab::ErrorTracking).to have_received(:track_exception)
+            .with(an_instance_of(GRPC::Unavailable), feature_category: :cell)
+        end
+      end
+
+      context "when a non-transient GRPC error occurs" do
+        before do
+          record.create_record(metadata)
+          record.before_committed!
+        end
+
+        it "swallows the error and tracks exception" do
+          allow(lease).to receive(:send_rollback_update!)
+            .and_raise(GRPC::AlreadyExists.new("conflict"))
+          allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+          expect { record.rolledback! }.not_to raise_error
+          expect(record.send(:done)).to be true
+          expect(Gitlab::ErrorTracking).to have_received(:track_exception)
+            .with(an_instance_of(GRPC::AlreadyExists), feature_category: :cell)
+        end
       end
     end
   end

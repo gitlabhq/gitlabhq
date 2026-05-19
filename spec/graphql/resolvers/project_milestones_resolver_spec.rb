@@ -6,7 +6,7 @@ RSpec.describe 'Resolvers::ProjectMilestonesResolver' do
   include GraphqlHelpers
 
   describe '#resolve' do
-    let_it_be(:described_class) { Resolvers::ProjectMilestonesResolver }
+    let_it_be(:described_class, freeze: false) { Resolvers::ProjectMilestonesResolver }
     let_it_be(:project) { create(:project, :private) }
     let_it_be(:current_user) { create(:user) }
     let_it_be(:now) { Time.now }

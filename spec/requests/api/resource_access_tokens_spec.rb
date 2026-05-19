@@ -12,13 +12,13 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
       context "when the user has valid permissions" do
         let_it_be(:project_bot) { create(:user, :project_bot, bot_namespace: namespace) }
-        let_it_be(:active_access_tokens) { create_list(:personal_access_token, 5, user: project_bot) }
+        let_it_be(:active_access_tokens) { create_list(:personal_access_token, 5, name: 'b_test', user: project_bot) }
         let_it_be(:expired_token) do
           create(:personal_access_token, :expired, expires_at: 2.days.ago, last_used_at: 2.days.ago, name: 'a_test_1',
             user: project_bot)
         end
 
-        let_it_be(:revoked_token) { create(:personal_access_token, :revoked, user: project_bot) }
+        let_it_be(:revoked_token) { create(:personal_access_token, :revoked, name: 'c_test', user: project_bot) }
         let_it_be(:inactive_access_tokens) { [expired_token, revoked_token] }
         let_it_be(:all_access_tokens) { active_access_tokens + inactive_access_tokens }
         let_it_be(:resource_id) { resource.id }
@@ -235,14 +235,14 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         end
 
         context 'when sorting' do
-          it 'sorts tokens by last_used_desc when specified' do
+          it 'sorts tokens by name_desc when specified' do
             get api("/#{source_type}s/#{resource_id}/access_tokens", user), params: { sort: 'name_desc' }
 
             token_ids = json_response.map { |token| token['id'] }
             expect(token_ids.last).to eq(expired_token.id)
           end
 
-          it 'sorts tokens by last_used_asc when specified' do
+          it 'sorts tokens by name_asc when specified' do
             get api("/#{source_type}s/#{resource_id}/access_tokens", user), params: { sort: 'name_asc' }
 
             token_ids = json_response.map { |token| token['id'] }
@@ -503,6 +503,23 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
               expect(json_response["access_level"]).to eq(20)
               expect(json_response["expires_at"]).to eq(expires_at.to_date.iso8601)
               expect(json_response["token"]).to be_present
+            end
+
+            it 'tracks creation_source as api' do
+              allow(Gitlab::InternalEvents).to receive(:track_event).and_call_original
+
+              expect(Gitlab::InternalEvents).to receive(:track_event).with(
+                'create_pat',
+                hash_including(
+                  additional_properties: {
+                    type: 'legacy',
+                    scopes: 'api',
+                    creation_source: PersonalAccessToken::CREATION_SOURCE_API
+                  }
+                )
+              ).and_call_original
+
+              create_token
             end
           end
 

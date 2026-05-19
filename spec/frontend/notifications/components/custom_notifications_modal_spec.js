@@ -1,4 +1,4 @@
-import { GlSprintf, GlModal, GlFormGroup, GlFormCheckbox, GlLoadingIcon } from '@gitlab/ui';
+import { GlSprintf, GlModal, GlToggle } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -6,7 +6,6 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import CustomNotificationsModal from '~/notifications/components/custom_notifications_modal.vue';
-import { i18n } from '~/notifications/constants';
 
 const mockNotificationSettingsResponses = {
   default: {
@@ -56,16 +55,16 @@ describe('CustomNotificationsModal', () => {
         },
         stubs: {
           GlModal,
-          GlFormGroup,
-          GlFormCheckbox,
+          GlToggle,
         },
       }),
     );
   }
 
   const findModalBodyDescription = () => wrapper.findComponent(GlSprintf);
-  const findAllCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
-  const findCheckboxAt = (index) => findAllCheckboxes().at(index);
+  const findAllToggles = () => wrapper.findAllComponents(GlToggle);
+  const findToggleAt = (index) => findAllToggles().at(index);
+  const findModal = () => wrapper.findComponent(GlModal);
 
   beforeEach(() => {
     gon.api_version = 'v4';
@@ -81,16 +80,20 @@ describe('CustomNotificationsModal', () => {
       wrapper = createComponent();
     });
 
-    it('displays the body title and the body message', () => {
-      expect(wrapper.findByTestId('modalBodyTitle').text()).toBe(
-        i18n.customNotificationsModal.bodyTitle,
-      );
-      expect(findModalBodyDescription().attributes('message')).toContain(
-        i18n.customNotificationsModal.bodyMessage,
+    it('displays the title and the body message', () => {
+      expect(findModal().text()).toBe('Custom notification events');
+      expect(findModalBodyDescription().attributes('message')).toBe(
+        'With custom notification levels you receive notifications for the same events as in the Participate level, with additional selected events. For more information, see %{notificationLinkStart}notification emails%{notificationLinkEnd}.',
       );
     });
 
-    describe('checkbox items', () => {
+    it('renders a modal without a footer', () => {
+      const modal = findModal();
+      expect(modal.props('actionCancel')).toBeNull();
+      expect(modal.props('actionPrimary')).toBeNull();
+    });
+
+    describe('toggle items', () => {
       beforeEach(async () => {
         const endpointUrl = '/api/v4/notification_settings';
 
@@ -110,19 +113,17 @@ describe('CustomNotificationsModal', () => {
         ${0}  | ${'new_note'}    | ${'Comment is added'}   | ${false} | ${false}
         ${1}  | ${'new_release'} | ${'Release is created'} | ${true}  | ${false}
       `(
-        'renders a checkbox for "$eventName" with checked=$enabled',
+        'renders a toggle for "$eventName" with value=$enabled',
         ({ index, eventName, enabled, loading }) => {
-          const checkbox = findCheckboxAt(index);
-          expect(checkbox.text()).toContain(eventName);
-          expect(checkbox.props('checked')).toBe(enabled);
-          expect(checkbox.findComponent(GlLoadingIcon).exists()).toBe(loading);
+          const toggle = findToggleAt(index);
+          expect(toggle.props('label')).toBe(eventName);
+          expect(toggle.props('value')).toBe(enabled);
+          expect(toggle.props('isLoading')).toBe(loading);
         },
       );
 
-      it('does not render a checkbox without a known translation (i.e., blank)', () => {
-        findAllCheckboxes().wrappers.forEach((checkbox) => {
-          expect(checkbox.text()).not.toMatch(/^\s*$/);
-        });
+      it('only renders toggles for events with a known translation', () => {
+        expect(findAllToggles()).toHaveLength(2);
       });
     });
   });
@@ -207,7 +208,7 @@ describe('CustomNotificationsModal', () => {
         ${null}   | ${1}    | ${'/api/v4/groups/1/notification_settings'}   | ${'group'}       | ${'a groupId is given'}
         ${null}   | ${null} | ${'/api/v4/notification_settings'}            | ${'global'}      | ${'neither projectId nor groupId are given'}
       `(
-        'updates the $notificationType notification settings when $condition and the user clicks the checkbox',
+        'updates the $notificationType notification settings when $condition and the user toggles an event',
         async ({ projectId, groupId, endpointUrl }) => {
           mockAxios
             .onGet(endpointUrl)
@@ -228,7 +229,7 @@ describe('CustomNotificationsModal', () => {
 
           await waitForPromises();
 
-          findCheckboxAt(0).vm.$emit('change', true);
+          findToggleAt(0).vm.$emit('change', true);
 
           await waitForPromises();
 
@@ -257,7 +258,7 @@ describe('CustomNotificationsModal', () => {
 
         await waitForPromises();
 
-        findCheckboxAt(1).vm.$emit('change', true);
+        findToggleAt(1).vm.$emit('change', true);
 
         await waitForPromises();
 

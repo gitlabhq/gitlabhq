@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'mapping jira users' do
-  let(:client) { double }
+  let(:context_path) { '' }
+  let(:client) { instance_double(JIRA::Client, options: { context_path: context_path }) }
 
   let_it_be(:jira_integration) { create(:jira_integration, project: project, active: true) }
 

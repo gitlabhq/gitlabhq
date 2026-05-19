@@ -105,7 +105,7 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
     let_it_be(:owner) { create(:user) }
     let_it_be(:admin) { create(:user, :admin) }
 
-    before do
+    before_all do
       project.add_guest(guest)
       project.add_reporter(reporter)
       project.add_developer(developer)
@@ -192,9 +192,15 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
     end
   end
 
+  describe '.can_update_security_orchestration_policy_project?' do
+    it 'returns false' do
+      expect(described_class.can_update_security_orchestration_policy_project?(build_stubbed(:user), build_stubbed(:project))).to eq(false)
+    end
+  end
+
   describe '.by_name' do
-    let!(:protected_branch) { create(:protected_branch, name: 'master') }
-    let!(:another_protected_branch) { create(:protected_branch, name: 'stable') }
+    let_it_be(:protected_branch) { create(:protected_branch, name: 'master') }
+    let_it_be(:another_protected_branch) { create(:protected_branch, name: 'stable') }
 
     it 'returns protected branches with a matching name' do
       expect(described_class.by_name(protected_branch.name))
@@ -222,7 +228,7 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
 
   describe '.get_ids_by_name' do
     let(:branch_name) { 'branch_name' }
-    let!(:protected_branch) { create(:protected_branch, name: branch_name) }
+    let_it_be(:protected_branch) { create(:protected_branch, name: 'branch_name') }
     let(:branch_id) { protected_branch.id }
 
     it 'returns the id for each protected branch matching name' do
@@ -280,10 +286,10 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
   describe '.after_name_and_id' do
     let_it_be(:project) { create(:project) }
 
-    let!(:branch_1) { create(:protected_branch, project: project, name: 'abranch') }
-    let!(:branch_2) { create(:protected_branch, project: project, name: 'bbranch') }
-    let!(:branch_3) { create(:protected_branch, project: project, name: 'dbranch') }
-    let!(:branch_4) { create(:protected_branch, project: project, name: 'gbranch') }
+    let_it_be(:branch_1) { create(:protected_branch, project: project, name: 'abranch') }
+    let_it_be(:branch_2) { create(:protected_branch, project: project, name: 'bbranch') }
+    let_it_be(:branch_3) { create(:protected_branch, project: project, name: 'dbranch') }
+    let_it_be(:branch_4) { create(:protected_branch, project: project, name: 'gbranch') }
 
     it 'returns branches after the given name and id' do
       result = described_class.where(project: project).after_name_and_id('abranch', branch_1.id)

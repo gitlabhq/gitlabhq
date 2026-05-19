@@ -10,6 +10,7 @@ RSpec.describe Analytics::CycleAnalytics::StageEventHash, type: :model do
 
   describe 'associations' do
     it { is_expected.to have_many(:cycle_analytics_stages) }
+    it { is_expected.to belong_to(:organization).optional }
   end
 
   describe 'validations' do

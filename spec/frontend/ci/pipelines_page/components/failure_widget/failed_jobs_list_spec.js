@@ -5,7 +5,7 @@ import { GlAlert, GlLoadingIcon, GlToast } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
+import { setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import { createAlert } from '~/alert';
 import FailedJobsList from '~/ci/pipelines_page/components/failure_widget/failed_jobs_list.vue';
 import FailedJobDetails from '~/ci/pipelines_page/components/failure_widget/failed_job_details.vue';
@@ -27,7 +27,7 @@ describe('FailedJobsList component', () => {
   const defaultProps = {
     graphqlResourceEtag: 'api/graphql',
     isMaximumJobLimitReached: false,
-    pipelineIid: 1,
+    pipelineIid: 'gid://gitlab/Pipeline/1',
     pipelinePath: 'namespace/project/pipeline',
     projectPath: 'namespace/project/',
   };
@@ -164,7 +164,7 @@ describe('FailedJobsList component', () => {
     });
 
     it('should set up toggle visibility on mount', () => {
-      expect(toggleQueryPollingByVisibility).toHaveBeenCalled();
+      expect(setupQueryPollingByVisibility).toHaveBeenCalled();
     });
   });
 

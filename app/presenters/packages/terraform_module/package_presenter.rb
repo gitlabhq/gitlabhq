@@ -32,7 +32,7 @@ module Packages
           .preload_project
           .map do |package_file|
           package_file
-            .as_json(methods: :download_path, only: [:id, :file_name])
+            .as_json(methods: :download_path, only: %i[id file_name size created_at])
             .merge('pipelines' => pipelines(package_file))
         end
       end

@@ -15,6 +15,7 @@ export default {
       required: true,
     },
   },
+  emits: ['emoji-click'],
   methods: {
     clickEmoji(emoji) {
       this.$emit('emoji-click', emoji);

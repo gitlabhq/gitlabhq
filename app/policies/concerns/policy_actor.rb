@@ -93,6 +93,10 @@ module PolicyActor
     false
   end
 
+  def can_admin_all_resources?
+    false
+  end
+
   def password_expired_if_applicable?
     false
   end

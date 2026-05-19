@@ -14,7 +14,7 @@ module Import
       end
 
       def export_service
-        @export_service ||= config.export_service_for(relation).new(portable, export_path, relation, user)
+        @export_service ||= config.export_service_for(relation).new(export, export_path, user)
       end
 
       def compress_and_upload_export

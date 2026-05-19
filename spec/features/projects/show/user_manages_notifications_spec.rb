@@ -84,7 +84,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js, feature_cate
 
     it 'is disabled' do
       visit project_path(project)
-      expect(page).to have_selector('[data-testid="notification-dropdown"] .disabled', visible: true)
+      expect(page).to have_selector('[data-testid="notification-dropdown"] .disabled', visible: :visible)
     end
   end
 end

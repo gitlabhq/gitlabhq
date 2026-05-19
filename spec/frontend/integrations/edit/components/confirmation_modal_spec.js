@@ -1,16 +1,19 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 
-import { nextTick } from 'vue';
 import ConfirmationModal from '~/integrations/edit/components/confirmation_modal.vue';
-import { createStore } from '~/integrations/edit/store';
+
+Vue.use(PiniaVuePlugin);
 
 describe('ConfirmationModal', () => {
   let wrapper;
 
   const createComponent = () => {
     wrapper = shallowMount(ConfirmationModal, {
-      store: createStore(),
+      pinia: createTestingPinia({ stubActions: false }),
     });
   };
 

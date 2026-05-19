@@ -40,6 +40,27 @@ RSpec.describe 'Query.project.pipeline.stages', feature_category: :continuous_in
     create(:ci_build, pipeline: pipeline, stage: 'deploy')
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL',
+    [:read_project, :read_pipeline, :read_pipeline_stage] do
+    let(:user) { create(:user, developer_of: project) }
+    let(:boundary_object) { project }
+    let(:simple_query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipeline(iid: "#{pipeline.iid}") {
+              stages {
+                nodes { name }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:request) { post_graphql(simple_query, token: { personal_access_token: pat }) }
+  end
+
   it_behaves_like 'a working graphql query' do
     before do
       post_query

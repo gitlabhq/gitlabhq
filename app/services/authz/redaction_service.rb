@@ -51,15 +51,14 @@ module Authz
     }.freeze
 
     PRELOAD_ASSOCIATIONS = {
-      issue: [:namespace, :assignees, { project: [:namespace, :project_feature, :group, :organization] }, :author,
-        :work_item_type],
+      issue: [:namespace, :assignees, { project: [:namespace, :project_feature, :group, :organization] }, :author],
       merge_request: [{ target_project: [:namespace, :project_feature, :group, :organization] }, :author],
       project: [:namespace, :project_feature, :group, :organization],
       milestone: [{ project: [:namespace, :project_feature, :group, :organization] }, :group],
       snippet: [{ project: [:namespace, :project_feature] }, :author],
       user: [],
       group: [:parent, :organization],
-      work_item: [:namespace, :assignees, :author, :work_item_type,
+      work_item: [:namespace, :assignees, :author,
         { project: [:namespace, :project_feature, :group, :organization] }]
     }.freeze
 

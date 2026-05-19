@@ -1,0 +1,38 @@
+---
+name: siphon_merge_request_diff_files_pg_pkey_ordered
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (merge_request_diff_id, relative_order, traversal_path) ORDER BY (merge_request_diff_id,
+  relative_order, traversal_path) SETTINGS index_granularity = 1024
+primary_key: merge_request_diff_id, relative_order, traversal_path
+sorting_key: merge_request_diff_id, relative_order, traversal_path
+settings:
+  index_granularity: '1024'
+columns:
+- name: merge_request_diff_id
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: relative_order
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'0/'"
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))

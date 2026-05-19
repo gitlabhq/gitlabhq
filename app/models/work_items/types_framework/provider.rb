@@ -32,7 +32,7 @@ module WorkItems
       def initialize(namespace = nil)
         # Always try to pass the current namespace or subtypes(Group, Project::Namespace) and not the root ancestor.
         #
-        # We will use it to fetch custom types and apply the TypesFilter.
+        # We will use it to fetch custom types and apply filtering.
         #
         # For custom types we need to either
         # 1. fetch types by organization_id of the namespace for Self-Managed
@@ -69,6 +69,28 @@ module WorkItems
       # TODO: Integrate filtering into .all
       # https://gitlab.com/gitlab-org/gitlab/-/work_items/585707
       def filtered_types
+        all
+      end
+
+      # Returns all types for the namespace with FF/license filters applied,
+      # but without the project-only OKR gating that `filtered_types` applies.
+      #
+      # Use this when callers need OKR types to be visible for both a group
+      # and its projects under the same FF state, instead of being hidden on
+      # groups by the `project_namespace?` guard in `filtered_types`. Typical
+      # use case: surfacing the full set of available types in UI/admin
+      # contexts where group and project should answer identically for OKR.
+      #
+      # Epic gating is unchanged from `filtered_types` (the project-level
+      # `project_epics_enabled?` check still applies on projects).
+      #
+      # In CE there is no FF/license filtering, so this is equivalent to
+      # `all`. The EE override applies the same disabled-workflow and epic
+      # rejects as `filtered_types`, but bypasses the `project_namespace?`
+      # guard for OKR.
+      #
+      # Override in EE
+      def available_types
         all
       end
 
@@ -164,23 +186,59 @@ module WorkItems
       # Override in EE to include custom types via the indexed cache.
       # In CE, resolves from system-defined types only.
       def resolve_by_id(id)
-        type_class.find_by(id: id)
+        type = type_class.find_by(id: id)
+        namespaced_type(type)
       end
 
       # Override in EE to return the converted custom type when one exists.
       # In CE, returns the system-defined type for the given base_type.
       def resolve_by_base_type(name)
-        type_class.default_by_type(name)
+        type = type_class.default_by_type(name)
+        namespaced_type(type)
       end
 
       # Override in EE to return all types (system-defined + custom) from the indexed cache.
       # In CE, returns system-defined types only.
       def resolve_all
-        type_class.all
+        type_class.all.map { |type| namespaced_type(type) }
       end
+
+      def namespaced_type(type)
+        return unless type
+
+        NamespacedType.new(type, enabled: true, is_a_group: group_namespace?, tasks_on_boards: tasks_on_boards?,
+          namespace: namespace)
+      end
+
+      def tasks_on_boards?
+        return false if namespace.nil?
+
+        # Resolve to the underlying Project/Group via resource_parent so the FF check works
+        # regardless of whether the Provider was initialized with a Project, Group, or
+        # Namespaces::ProjectNamespace. resource_parent returns nil for user namespaces and
+        # the Organization itself for organization-scoped namespaces, both of which correctly
+        # fall through to false here (no boards at those scopes).
+        #
+        # Skip the FF check for projects under user namespaces: there is no per-namespace
+        # feature flag gate for these projects (Project#work_item_tasks_on_boards_feature_flag_enabled?
+        # falls back to a global instance flag when group is nil), and user-rooted resources
+        # are treated as restricted across the rest of the Provider. We use `try` because
+        # root_ancestor can be an Organizations::Organization, which does not respond to
+        # owner_entity_name.
+        return false if root_ancestor.try(:owner_entity_name) == :user
+
+        resource_parent.try(:work_item_tasks_on_boards_feature_flag_enabled?) || false
+      end
+      strong_memoize_attr :tasks_on_boards?
 
       def type_class
         WorkItems::TypesFramework::SystemDefined::Type
+      end
+
+      def group_namespace?
+        return false if namespace.nil?
+
+        namespace.is_a?(::Group)
       end
 
       def project_namespace?

@@ -38,6 +38,8 @@ module RuboCop
             message: MESSAGE % page_object_name(node))
         end
 
+        alias_method :on_numblock, :on_block
+
         private
 
         def page_object_name(node)

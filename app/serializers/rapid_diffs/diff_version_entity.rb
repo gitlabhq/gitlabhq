@@ -55,9 +55,5 @@ module RapidDiffs
         .resolve
     end
     strong_memoize_attr :current_merge_request_diff
-
-    def path_options
-      { rapid_diffs: true }
-    end
   end
 end

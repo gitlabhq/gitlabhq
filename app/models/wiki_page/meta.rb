@@ -9,6 +9,7 @@ class WikiPage
     include Subscribable
     include Todoable
     include Awardable
+    include FromUnion
     include IdInOrdered
 
     self.table_name = 'wiki_page_meta'
@@ -47,6 +48,10 @@ class WikiPage
     scope :for_projects_visible_to_user, ->(user) {
       joins(:project).merge(Project.public_or_visible_to_user(user))
     }
+    scope :for_groups_visible_to_user, ->(user) {
+      joins(:namespace).where(namespaces: { type: 'Group' }).merge(Group.public_or_visible_to_user(user)) # rubocop:disable Cop/GroupPublicOrVisibleToUser -- Scoped to a small set of wiki_page_meta records via from_union and id_in_ordered
+    }
+    scope :active, -> { where(deleted_at: nil) }
 
     delegate :wiki, to: :container
     delegate :to_reference, to: :wiki_page, allow_nil: true

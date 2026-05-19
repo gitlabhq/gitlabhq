@@ -3,6 +3,7 @@ stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Scheduled pipelines
+description: Create and manage schedules to run CI/CD pipelines automatically using cron patterns.
 ---
 
 {{< details >}}
@@ -44,7 +45,7 @@ Prerequisites:
 To create a pipeline schedule:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Pipeline schedules**.
+1. In the left sidebar, select **Build** > **Pipeline schedules**.
 1. Select **New schedule**.
 1. Complete the fields.
    - **Interval Pattern**: Select one of the preconfigured intervals, or enter a custom
@@ -76,7 +77,7 @@ Prerequisites:
 To edit a pipeline schedule:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Pipeline schedules**.
+1. In the left sidebar, select **Build** > **Pipeline schedules**.
 1. Next to the schedule, select **Edit** ({{< icon name="pencil" >}}).
 1. Make your changes, then select **Save changes**.
 
@@ -88,7 +89,7 @@ When you run a scheduled pipeline manually, it uses your permissions instead of 
 To trigger a pipeline schedule immediately instead of waiting for the next scheduled time:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Pipeline schedules**.
+1. In the left sidebar, select **Build** > **Pipeline schedules**.
 1. Next to the schedule, select **Run** ({{< icon name="play" >}}).
 
 ## Take ownership
@@ -104,7 +105,7 @@ Prerequisites:
 To take ownership of a schedule:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Pipeline schedules**.
+1. In the left sidebar, select **Build** > **Pipeline schedules**.
 1. Next to the schedule, select **Take ownership**.
 
 ## View your scheduled pipelines

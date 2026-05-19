@@ -1,6 +1,6 @@
 ---
 name: public_anonymous
-description: Unauthenticated users on public projects.
+description: Unauthenticated users on public namespaces.
 inherits_from: []
 project:
   permissions: []
@@ -9,33 +9,109 @@ project:
   - _read_public_ci_cd_analytics
   - _read_public_pipeline_schedule
   - download_code
+  - download_debian_package
+  - download_generic_package
+  - download_go_module
+  - download_helm_chart
+  - download_maven_package_file
+  - download_npm_package
+  - download_nuget_package
+  - download_pypi_package
   - download_wiki_code
   - read_analytics
+  - read_avatar
+  - read_badge
+  - read_branch
   - read_code
+  - read_code_review_analytics
+  - read_commit
+  - read_commit_comment
+  - read_commit_diff
+  - read_commit_merge_request
+  - read_commit_ref
+  - read_commit_sequence
+  - read_commit_signature
   - read_commit_status
+  - read_composer_package
   - read_container_image
   - read_cycle_analytics
   - read_deployment
   - read_environment
+  - read_fork
+  - read_go_module
   - read_insights
   - read_issue
   - read_issue_board
   - read_issue_board_list
+  - read_issue_closing_merge_request
+  - read_issue_merge_request
+  - read_issue_participant
+  - read_issue_statistic
+  - read_issue_time_statistic
   - read_label
   - read_merge_request
+  - read_merge_request_approval_rule
+  - read_merge_request_approval_state
+  - read_merge_request_closes_issue
+  - read_merge_request_commit
+  - read_merge_request_context_commit
+  - read_merge_request_diff
+  - read_merge_request_draft_note
+  - read_merge_request_merge_ref
+  - read_merge_request_participant
+  - read_merge_request_pipeline
+  - read_merge_request_raw_diff
+  - read_merge_request_related_issue
+  - read_merge_request_reviewer
+  - read_merge_request_time_statistic
   - read_milestone
   - read_note
+  - read_npm_package
+  - read_npm_package_tag
+  - read_nuget_package
   - read_package
+  - read_package_pipeline
   - read_pipeline
   - read_project
+  - read_project_for_iids
   - read_project_member
+  - read_pypi_package
   - read_release
+  - read_repository_archive
+  - read_repository_blob
+  - read_repository_changelog
+  - read_repository_comparison
+  - read_repository_contributor
+  - read_repository_file
+  - read_repository_file_blame
+  - read_repository_health
+  - read_repository_merge_base
+  - read_repository_tag
+  - read_repository_tag_signature
+  - read_repository_tree
   - read_snippet
+  - read_starring_user
   - read_upload
   - read_wiki
 group:
   permissions: []
   raw_permissions:
+  - download_maven_package_file
+  - read_avatar
+  - read_badge
+  - read_composer_package
+  - read_descendant_group
+  - read_epic_award_emoji
+  - read_epic_note_award_emoji
   - read_group
+  - read_issue_statistic
+  - read_markdown_upload
+  - read_merge_request
+  - read_milestone_issue
+  - read_milestone_merge_request
+  - read_npm_package_tag
   - read_package
   - read_package_within_public_registries
+  - read_project
+  - read_shared_project
+  - read_subgroup

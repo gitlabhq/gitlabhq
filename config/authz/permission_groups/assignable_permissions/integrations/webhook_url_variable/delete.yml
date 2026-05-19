@@ -1,0 +1,12 @@
+---
+name: delete_webhook_url_variable
+description: Grants the ability to delete webhook URL variables
+deprecated: true
+boundaries:
+  - group
+  - project
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_webhook_url_variable

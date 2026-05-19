@@ -57,6 +57,10 @@ module Ci
 
       return not_found("Pipeline for pipeline_id, sha and ref") unless first_matching_pipeline
 
+      if first_matching_pipeline.config_error?
+        return bad_request("Cannot add status to pipeline with configuration errors")
+      end
+
       return if can_append_jobs_to_existing_pipeline?
 
       error("The number of jobs has exceeded the limit", :unprocessable_entity)
@@ -75,6 +79,7 @@ module Ci
 
     def find_or_create_pipeline
       return create_pipeline unless first_matching_pipeline
+      return create_pipeline if first_matching_pipeline.config_error?
       return first_matching_pipeline if can_append_jobs_to_existing_pipeline?
 
       create_log_entry

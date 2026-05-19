@@ -506,6 +506,84 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
       end
     end
 
+    context 'with package protection rules' do
+      let_it_be_with_reload(:package_protection_rule) { create(:package_protection_rule, :nuget, project:) }
+
+      let_it_be(:pat_project_maintainer) do
+        create(:personal_access_token, user: create(:user, maintainer_of: [project]))
+      end
+
+      let_it_be(:pat_project_owner) { create(:personal_access_token, user: create(:user, owner_of: [project])) }
+      let_it_be(:pat_instance_admin) { create(:personal_access_token, :admin_mode, user: create(:admin)) }
+      let_it_be(:job_from_project_maintainer) do
+        create(:ci_build, :running, user: pat_project_maintainer.user, project: project)
+      end
+
+      let_it_be(:job_from_project_owner) { create(:ci_build, :running, user: pat_project_owner.user, project: project) }
+
+      let(:headers_maintainer) { user_basic_auth_header(pat_project_maintainer.user, pat_project_maintainer) }
+      let(:headers_owner) { user_basic_auth_header(pat_project_owner.user, pat_project_owner) }
+      let(:headers_admin) { user_basic_auth_header(pat_instance_admin.user, pat_instance_admin) }
+      let(:headers_job_maintainer) { job_basic_auth_header(job_from_project_maintainer) }
+      let(:headers_job_owner) { job_basic_auth_header(job_from_project_owner) }
+
+      let(:package_name_no_match) { "#{package_name}_no_match" }
+
+      subject do
+        delete api(url), headers: headers
+        response
+      end
+
+      shared_examples 'deleting nuget package protected' do
+        it_behaves_like 'returning response status with message',
+          status: :forbidden,
+          message: 'Package is deletion protected.'
+
+        it { expect { subject }.not_to change { ::Packages::Nuget::Package.pending_destruction.size } }
+
+        context 'when feature flag :packages_protected_packages_delete is disabled' do
+          before do
+            stub_feature_flags(packages_protected_packages_delete: false)
+          end
+
+          it_behaves_like 'deleting nuget package'
+        end
+      end
+
+      shared_examples 'deleting nuget package' do
+        it 'marks the package for destruction' do
+          expect { subject }.to change { ::Packages::Nuget::Package.pending_destruction.size }.by(1)
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      where(:package_name_pattern, :minimum_access_level_for_delete, :headers, :shared_examples_name) do
+        ref(:package_name)          | :owner | ref(:headers_job_maintainer) | 'deleting nuget package protected'
+        ref(:package_name)          | :owner | ref(:headers_job_owner)      | 'deleting nuget package'
+        ref(:package_name)          | :owner | ref(:headers_maintainer)     | 'deleting nuget package protected'
+        ref(:package_name)          | :owner | ref(:headers_owner)          | 'deleting nuget package'
+        ref(:package_name)          | :owner | ref(:headers_admin)          | 'deleting nuget package'
+
+        ref(:package_name)          | :admin | ref(:headers_job_owner)      | 'deleting nuget package protected'
+        ref(:package_name)          | :admin | ref(:headers_maintainer)     | 'deleting nuget package protected'
+        ref(:package_name)          | :admin | ref(:headers_owner)          | 'deleting nuget package protected'
+        ref(:package_name)          | :admin | ref(:headers_admin)          | 'deleting nuget package'
+
+        ref(:package_name_no_match) | :owner | ref(:headers_owner)          | 'deleting nuget package'
+      end
+
+      with_them do
+        before do
+          package_protection_rule.update!(
+            package_name_pattern: package_name_pattern,
+            minimum_access_level_for_delete: minimum_access_level_for_delete
+          )
+        end
+
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
+
     it_behaves_like 'rejects nuget access with unknown target id'
 
     it_behaves_like 'rejects nuget access with invalid target id'
@@ -576,6 +654,62 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
         let(:checksum) { other_symbol.file_sha256.delete("\n") }
 
         it_behaves_like 'returning response status', :not_found
+      end
+    end
+  end
+
+  describe 'X-NuGet-Warning header' do
+    context 'with an unauthorized request' do
+      let(:url) { "/projects/#{target.id}/packages/nuget/metadata/Dummy.Package/index.json" }
+      let(:expected_status) { :unauthorized }
+
+      subject { get api(url) }
+
+      before do
+        update_visibility_to(Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it_behaves_like 'setting the X-NuGet-Warning header on error responses',
+        expected_warning: '401 Unauthorized'
+    end
+
+    context 'with a forbidden request' do
+      include_context 'workhorse headers'
+
+      let(:url) { "/projects/#{target.id}/packages/nuget/authorize" }
+      let(:expected_status) { :forbidden }
+
+      subject do
+        put api(url),
+          headers: basic_auth_header(user.username, personal_access_token.token).merge(workhorse_headers)
+      end
+
+      before do
+        target.add_guest(user)
+      end
+
+      it_behaves_like 'setting the X-NuGet-Warning header on error responses',
+        expected_warning: '403 Forbidden'
+    end
+
+    context 'with a not found request' do
+      let(:url) { "/projects/#{non_existing_record_id}/packages/nuget/metadata/Dummy.Package/index.json" }
+      let(:expected_status) { :not_found }
+
+      subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
+
+      it_behaves_like 'setting the X-NuGet-Warning header on error responses',
+        expected_warning: '404 Not Found'
+    end
+
+    context 'with a successful request' do
+      let(:url) { "/projects/#{target.id}/packages/nuget/index.json" }
+
+      it 'does not include the X-NuGet-Warning header' do
+        get api(url)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response.headers['X-NuGet-Warning']).to be_nil
       end
     end
   end

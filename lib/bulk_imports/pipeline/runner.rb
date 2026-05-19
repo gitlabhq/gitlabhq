@@ -223,7 +223,7 @@ module BulkImports
 
       def set_source_objects_counter
         # Export status is cached for 24h and read from Redis at this point
-        export_status = ExportStatus.new(tracker, tracker.importing_relation)
+        export_status = ::Import::ExportStatus.for_context(tracker, tracker.importing_relation)
 
         ObjectCounter.set(tracker, ObjectCounter::SOURCE_COUNTER, export_status.total_objects_count)
       end

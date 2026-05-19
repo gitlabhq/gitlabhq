@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Display package version data acording to PyPI
+# Display package version data according to PyPI
 # Simple API: https://warehouse.pypa.io/api-reference/legacy/#simple-project-api
 # Generates the HTML body for PyPI simple API.
 # Basically a list of package download links for a specific

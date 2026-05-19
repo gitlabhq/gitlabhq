@@ -97,11 +97,17 @@ instructions:
             - Group fixed-width columns together in descending size order (8-byte types first, then 4-byte, etc.)
             - Place variable-width columns (text, varchar, arrays, json, jsonb) at the end
           - Ask: "Have you ordered the columns to minimize space usage by grouping fixed-width columns together and placing variable-width columns at the end?"
+          - Ask: "What is the expected data retention policy for this table? (e.g., time_decay, user_lifecycle, indefinite_with_justification, transient)"
+          - Ask: "What is the growth driver for this table? (e.g., per-user, per-project, per-pipeline, per-event)"
           - Remind: "Proper column ordering can significantly reduce storage requirements at scale. See: https://docs.gitlab.com/development/database/ordering_table_columns/"
       14. For migrations that drop or replace an index:
           - Remind: "Before removing an index, verify queries can use other existing indexes efficiently. Confirm the index is unused on GitLab.com and Self-Managed."
           - Suggest: "For investigating index usage you can start by gathering all the metadata available for the index. For GitLab.com, you can view index usage data in [Grafana](https://dashboards.gitlab.net/goto/TsYVxcBHR?orgId=1)"
           - Ask: "Are you following the guidelines for dropping unused indexes? See: https://docs.gitlab.com/development/database/adding_database_indexes/#dropping-unused-indexes"
+      15. For migrations that add indexes:
+          - Ask: "Have you reviewed existing indexes on this table for redundancy or consolidation opportunities before adding a new one?"
+          - If the index is temporary (e.g., to support a backfill or data migration), ask: "Do you have a plan for removing this index after the backfill or when the migration is complete? Include a follow-up issue or post-migration to drop it."
+          - Remind: "Redundant and orphaned indexes increase storage overhead, degrade write performance, and contribute to LockManager LWLock contention: a known bottleneck on high-traffic tables where PostgreSQL's fast-path lock slots (limited to 16 per backend) are exhausted, forcing expensive shared-memory lock table lookups. See: https://gitlab.com/groups/gitlab-org/-/epics/11543 and https://docs.gitlab.com/development/database/adding_database_indexes/#some-tables-should-not-have-any-more-indexes"
 
   - name: Test Coverage
     fileFilters:
@@ -122,7 +128,20 @@ instructions:
          - Fallback logic (|| operators)
          - Error states
       8. Follow the testing pyramid: most tests at unit level, fewer at integration/system level
-      9. Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/testing_levels.md
+      9. Use `:aggregate_failures` tag when an `it` block contains more than one expectation. This avoids hiding subsequent failures when the first expectation fails
+      10. Prefer `build` or `build_stubbed` over `create` when the test does not require a persisted database record. `build_stubbed` is fastest when only attribute access is needed
+      11. Prefer `let_it_be` over `let` or `let!` for database-backed objects that do not need to change between examples. Use `let_it_be_with_reload` when the object is mutated in a `before` block, and `let_it_be_with_refind` only when a fresh ActiveRecord instance is strictly necessary. Do not define a `let_it_be` that depends on stubs or state set up in a `before` block — `let_it_be` runs in `before(:all)` before per-example stubs are active. Reference: https://docs.gitlab.com/development/testing_guide/best_practices/#lets-talk-about-let
+      12. Use `non_existing_record_id` and `non_existing_record_iid` instead of hardcoded IDs like `123` or `999` — hardcoded IDs can collide with real records in CI
+      13. Use `have_gitlab_http_status` with named status symbols (`:ok`, `:not_found`, `:created`) not numeric codes (`200`, `404`)
+      14. Do not wrap constants or static values in `let` blocks — use them inline or as local constants
+      15. Do not define a `let` variable in the top-level `describe` if it is only used in one nested block — define it in that block instead
+      16. Avoid bare `subject` in expectations — use a named subject (e.g., `subject(:result)`) or an explicit method call
+      17. Every top-level `RSpec.describe` block must have a `feature_category:` metadata tag
+      18. Use `fast_spec_helper` instead of `spec_helper` for well-isolated classes in `lib/` that do not need Rails
+      19. Use `be_like_time` matcher for time comparisons to handle precision differences between Ruby and PostgreSQL
+      20. Use `freeze_time` or `travel_to` for time-dependent tests — never use `sleep`
+      21. Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/best_practices.md
+      22. Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/testing_levels.md
 
   - name: Documentation
     fileFilters:
@@ -266,7 +285,7 @@ instructions:
     instructions: |
       For ViewComponent changes, verify:
       1. Composition over inheritance:
-         - Flag ViewComponents that inherit from another ViewComponent (not ViewComponent::Base or ApplicationComponent)
+         - Flag ViewComponents that inherit from another ViewComponent (not ViewComponent::Base)
          - Remind: "Prefer composition (wrapping one component with another) over inheritance between ViewComponents, as inheritance with separate templates leads to confusion"
       2. Instance method visibility:
          - Flag public instance methods that are only used in the component template
@@ -307,6 +326,7 @@ instructions:
          - All required identifiers (user, project, namespace) are passed when the metric uses them
          - If a metric has a unique property like `unique: project.id`, ensure the corresponding argument (e.g., `project`) is passed in the tracking call
          - `additional_properties` match those documented in the event definition
+         - When the call is made from a service object (a class with an `execute` method, typically under `app/services/` or `ee/app/services/`), prefer the declarative `Gitlab::InternalEvents::ServiceTracking` DSL (`tracks_event 'event_name', on: :success`) over manual `track_internal_event` calls in `execute`. The DSL handles success/error detection, payload extraction, and conditions automatically.
       3. For frontend `trackEvent` or `InternalEvents.trackEvent` calls:
          - Event name matches an existing event definition
          - Additional properties are documented in the event definition
@@ -314,8 +334,86 @@ instructions:
          - Event name is valid and defined
          - Labels/properties match event definition's `additional_properties`
       5. Ensure test coverage exists using `trigger_internal_events` and `increment_usage_metrics` matchers for backend and `useMockInternalEventsTracking` helper for frontend
-      6. When testing that an event was not triggered, ensure `not_trigger_internal_events` matcher or `not_to` syntax is used
-      7. For batch events:
+      6. Ensure test matchers (trigger_internal_events, useMockInternalEventsTracking) also asserts all identifiers and additional_properties added in the tracking call.
+      7. When testing that an event was not triggered, ensure `not_trigger_internal_events` matcher or `not_to` syntax is used
+      8. For batch events:
          - When multiple events are emitted at once, ensure `with_batched_redis_writes` is used to batch all of them into a single Redis call
       - Reference: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/development/internal_analytics/internal_event_instrumentation/quick_start.md
       - Reference: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/development/internal_analytics/review_guidelines.md
+
+  - name: Test Efficiency
+    fileFilters:
+      - "spec/**/*.rb"
+      - "ee/spec/**/*.rb"
+    instructions: |
+      1. Prefer `let_it_be` over `let` for DB-backed objects that are not mutated between examples.
+        Use `let_it_be_with_reload` if the object is mutated, and `let_it_be_with_refind` only
+        when a fresh ActiveRecord object is strictly necessary. Reserve plain `let!` for cases
+        where the object must exist before the example runs but is never referenced directly.
+      2. Prefer `build_stubbed` > `build` > `create` when constructing test objects. Only use
+        `create` (and therefore a real DB write) when the test genuinely requires persisted state.
+        Run `FDOC=1 bin/rspec <spec>` (Factory Doctor) to detect unnecessary `create` calls.
+      3. Avoid factory cascades. Use `create_default` / `FactoryDefault` to share a single
+        instance of a nested association across all examples in a context instead of recreating
+        it per example. Run `FPROF=1 bin/rspec <spec>` (Factory Profiler) to surface cascades.
+      4. Do not trigger the same expensive operation in multiple separate examples. Group
+        assertions that share a single invocation under one `it` block with `:aggregate_failures`
+        so the subject is only executed once.
+      5. Use `fast_spec_helper` instead of `spec_helper` for classes well-isolated from Rails.
+        `fast_spec_helper` skips gem loading and Rails boot, reducing load time from ~30 s to ~1 s.
+      6. Only add the `:js` tag when a test requires real JavaScript reactivity in a headless
+        browser. Feature specs that only need to assert HTML output should use `type: :request`
+        instead; headless-browser specs are significantly slower.
+      7. For Capybara negative assertions, prefer `expect(page).to have_no_testid(...)` over
+        `expect(page).not_to have_testid(...)`. The positive form (`have_no_*`) returns
+        immediately when the element is absent; the negative form waits the full Capybara timeout.
+      8. `let_it_be` blocks run in `before(:all)` context. They must not depend on stubs or
+        doubles set up in a `before` block, because those stubs are not active yet when
+        `let_it_be` executes. Use `let` or `let!` when a factory call relies on a stub.
+      9. Slow shared examples have a multiplied cost: a 30-second shared example included in
+        10 spec files costs 300 seconds of CI time. Profile and optimize a shared example as
+        a local spec before extracting it, and avoid `create` in shared examples unless
+        DB state is a hard requirement.
+      10. Stub expensive external operations (Git commands, binary compilation, network calls)
+        in higher-level specs when a lower-level unit spec already verifies the operation's
+        output. Real external operations can cost 10s to 3 min per example and multiply across
+        every example in the shared context.
+      11. Don't define factory attributes not required for validation, and don't supply
+        attributes in tests that aren't needed for the specific scenario under test.
+        Avoid `allow(...).to receive(...)` stubs inside factory definitions — use
+        `stub_method` instead, which is compatible with `let_it_be`.
+      12. Avoid `all()` with `.first` or block iteration. `all()` returns a collection but does
+        not raise an error if the selector is not found, leading to silent no-ops that can mask
+        test failures. Additionally, `all()` does not benefit from Capybara's smart waiting mechanisms,
+        making tests slower and less reliable. Block iteration over `all()` results is particularly
+        slow when filtering by child selectors. Instead of `all('[data-testid="card"]').first`, use
+        `find('[data-testid="unique-card"]')` which raises immediately with a clear error message
+        if not found. Instead of `all('[data-testid="card"]').find { |node| node.has_selector?('h3', text: title) }`,
+        use `find('[data-testid="card"] h3', text: title).ancestor('[data-testid="card"]')` to
+        leverage CSS child selectors and walk back to the parent element.
+      - Reference: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/development/testing_guide/best_practices.md
+
+  - name: View Templates
+    fileFilters:
+      - "app/views/**/*"
+      - "ee/app/views/**/*"
+    instructions: |
+      Views are responsible for presentation only. Flag any logic that belongs in a controller, service, or model:
+      1. No database queries in views.
+         Remind: "Move all data retrieval into the controller or a presenter and pass the result as an instance variable. Queries in views bypass caching layers, are invisible to query analysis tools, and make N+1 problems hard to detect."
+      2. No complex business logic — no conditionals that evaluate model state beyond simple `nil?` / `present?` / boolean attribute checks, no service object instantiation, and no multi-step computations.
+         Remind: "Extract this logic into a helper, presenter, or ViewComponent."
+      - Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/reusing_abstractions.md#views
+
+  - name: View Specs
+    fileFilters:
+      - "spec/views/**/*_spec.rb"
+      - "ee/spec/views/**/*_spec.rb"
+    instructions: |
+      View specs should verify rendered HTML output, not re-test backend logic. Flag specs that overstep this boundary:
+      1. No `ActiveRecord::QueryRecorder` or `exceed_query_limit` assertions. Query performance is a backend concern tested at the request/controller layer, not in view specs.
+      2. No `create(...)` factory calls (enforced by rule `RSpec/FactoryBot/AvoidCreate`) unless the spec genuinely cannot work with `build_stubbed`. If `create` is present, ask: "Does this spec need a persisted record, or can `build_stubbed` provide the same rendering result?"
+      3. No deep service-object mocking chains (e.g., `receive_message_chain`). If the view requires a service to be stubbed with chained calls, the view is doing too much — flag the view itself, not just the spec.
+      4. Keep setup proportional to the assertion. A spec that assigns five instance variables and stubs three helper methods to assert a single `have_css` is a signal that the view has too many responsibilities.
+      5. Assertions should target rendered output (`have_content`, `have_css`, `have_selector`, `have_link`) — not internal Ruby state or return values of view helper methods.
+      - Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/best_practices.md#view-specs

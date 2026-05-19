@@ -13,20 +13,13 @@ module Ci
 
         drop(
           pending_builds(BUILD_PENDING_OUTDATED_TIMEOUT.ago),
-          failure_reason: :stuck_or_timeout_failure
+          failure_reason: :stuck_pending_with_matching_runners
         )
 
-        if Feature.enabled?(:drop_stuck_builds_from_ci_pending_builds_queue, :instance)
-          drop_stuck_from_queue(
-            pending_builds_queue(BUILD_PENDING_STUCK_TIMEOUT.ago),
-            failure_reason: :stuck_or_timeout_failure
-          )
-        else
-          drop_stuck(
-            pending_builds(BUILD_PENDING_STUCK_TIMEOUT.ago),
-            failure_reason: :stuck_or_timeout_failure
-          )
-        end
+        drop_stuck_from_queue(
+          pending_builds_queue(BUILD_PENDING_STUCK_TIMEOUT.ago),
+          failure_reason: :stuck_pending_no_matching_runners
+        )
       end
 
       private

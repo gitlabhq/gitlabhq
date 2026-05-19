@@ -1,0 +1,25 @@
+@@ -0,0 +1,24 @@
++# frozen_string_literal: true
++
++class TestDataDeletionMigration < Gitlab::Database::Migration[2.3]
++  disable_ddl_transaction!
++
++  def up
++    drop_table :users
++    truncate_tables!('events')
++    remove_column :projects, :obsolete_field
++    remove_columns :merge_requests, :legacy_a, :legacy_b
++    User.where(active: false).delete_all
++    Project.destroy_all
++    execute "DROP TABLE IF EXISTS issues"
++    execute "ALTER TABLE merge_requests DROP COLUMN obsolete_field"
++    execute "DELETE FROM ci_builds WHERE status = 'old'"
++    execute "TRUNCATE TABLE ci_pipelines"
++  end
++
++  def down
++    add_column :projects, :obsolete_field, :text
++    add_column :merge_requests, :legacy_a, :text
++    add_column :merge_requests, :legacy_b, :text
++  end
++end

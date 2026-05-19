@@ -20,11 +20,7 @@ module Gitlab
           end
 
           def signature_hex
-            if qualified_signature
-              "#{algorithm_type}:#{signature_sha.unpack1('H*')}"
-            else
-              signature_sha.unpack1("H*")
-            end
+            Digest::SHA1.hexdigest(hex_content)
           end
 
           def to_hash
@@ -44,6 +40,16 @@ module Gitlab
           end
 
           alias_method :==, :eql?
+
+          private
+
+          def hex_content
+            if qualified_signature
+              "#{algorithm_type}:#{signature_sha.unpack1('H*')}"
+            else
+              signature_sha.unpack1("H*")
+            end
+          end
         end
       end
     end

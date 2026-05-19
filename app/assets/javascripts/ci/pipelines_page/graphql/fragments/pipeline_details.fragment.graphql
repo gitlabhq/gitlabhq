@@ -53,6 +53,7 @@ fragment PipelineDetails on Pipeline {
       name
       detailedStatus {
         ...CiIcon
+        name
         tooltip
       }
     }

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Admin::TopicsController, feature_category: :groups_and_projects do
-  let_it_be(:namespace) { create :namespace, organization: current_organization }
+  let_it_be(:namespace, freeze: false) { create :namespace, organization: current_organization }
   let_it_be(:topic) { create(:topic, name: 'topic', organization: namespace.organization) }
-  let_it_be(:admin) { create(:admin, namespace: namespace) }
+  let_it_be(:admin, freeze: false) { create(:admin, namespace: namespace) }
   let_it_be(:user) { create(:user, namespace: namespace) }
 
   before do

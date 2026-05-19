@@ -4,5 +4,7 @@ description: Grants the ability to read approval rules
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
 permissions:
   - read_approval_rule

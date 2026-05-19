@@ -7,19 +7,19 @@ module API
         class ModelVersion < Grape::Entity
           include ::API::Helpers::RelatedResourcesHelpers
 
-          expose :name
-          expose :version
+          expose :name, documentation: { type: 'String' }
+          expose :version, documentation: { type: 'String' }
           expose :creation_timestamp, documentation: { type: 'Integer' }
           expose :last_updated_timestamp, documentation: { type: 'Integer' }
-          expose :user_id
-          expose :current_stage
-          expose :description
-          expose :source
-          expose :run_id
-          expose :status
-          expose :status_message
-          expose :metadata, as: :tags, using: KeyValue
-          expose :run_link
+          expose :user_id, documentation: { type: 'String' }
+          expose :current_stage, documentation: { type: 'String', example: 'development' }
+          expose :description, documentation: { type: 'String' }
+          expose :source, documentation: { type: 'String' }
+          expose :run_id, documentation: { type: 'String' }
+          expose :status, documentation: { type: 'String', example: 'READY' }
+          expose :status_message, documentation: { type: 'String' }
+          expose :metadata, as: :tags, using: ::API::Entities::Ml::Mlflow::KeyValue, documentation: { is_array: true }
+          expose :run_link, documentation: { type: 'String' }
           expose :aliases, documentation: { is_array: true, type: 'String' }
 
           private

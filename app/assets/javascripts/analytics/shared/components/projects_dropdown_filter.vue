@@ -1,17 +1,15 @@
 <script>
 import { GlButton, GlIcon, GlAvatar, GlCollapsibleListbox, GlTruncate } from '@gitlab/ui';
 import { debounce, unionBy } from 'lodash-es';
-import { filterBySearchTerm } from '~/analytics/shared/utils';
+import { filterBySearchTerm, mapItemToListboxFormat } from '~/analytics/shared/utils';
+import { MIN_SEARCH_CHARS } from '~/analytics/shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { n__, __ } from '~/locale';
+import { sprintf, s__, __ } from '~/locale';
 import getProjects from '../graphql/projects.query.graphql';
 
-const MIN_SEARCH_CHARS = 3;
-
 const sortByProjectName = (projects = []) => projects.sort((a, b) => a.name.localeCompare(b.name));
-const mapItemToListboxFormat = (item) => ({ ...item, value: item.id, text: item.name });
 
 export default {
   name: 'ProjectsDropdownFilter',
@@ -69,11 +67,9 @@ export default {
         return this.selectedProjects[0].name;
       }
       if (this.selectedProjects.length > 1) {
-        return n__(
-          'CycleAnalytics|Project selected',
-          'CycleAnalytics|%d projects selected',
-          this.selectedProjects.length,
-        );
+        return sprintf(s__('CycleAnalytics|%{count} projects selected'), {
+          count: this.selectedProjects.length,
+        });
       }
 
       return this.selectedProjectsPlaceholder;

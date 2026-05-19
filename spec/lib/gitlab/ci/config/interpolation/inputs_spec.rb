@@ -86,7 +86,9 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
 
     it 'returns an error' do
       expect(inputs).not_to be_valid
-      expect(inputs.errors).to contain_exactly("`foo` input: Options can only be used with string and number inputs")
+      expect(inputs.errors).to contain_exactly(
+        '`foo` input: Options can only be used with string, number, and array inputs'
+      )
     end
   end
 

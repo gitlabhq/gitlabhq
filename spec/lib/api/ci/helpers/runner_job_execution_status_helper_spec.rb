@@ -7,40 +7,45 @@ RSpec.describe API::Ci::Helpers::RunnerJobExecutionStatusHelper, feature_categor
 
   describe '#lazy_job_execution_status' do
     shared_examples 'job execution status behavior' do |factory_name, build_association|
-      let_it_be(:runners_with_executing_builds) { create_list(factory_name, 2) }
-      let_it_be(:runners_without_executing_builds) { create_list(factory_name, 2) }
+      let_it_be(:runners_with_running_builds) { create_list(factory_name, 2) }
+      let_it_be(:runners_without_running_builds) { create_list(factory_name, 2) }
       let_it_be(:runners_with_completed_builds) { create_list(factory_name, 2) }
+      let_it_be(:runners_with_canceling_builds) { create_list(factory_name, 2) }
 
       before_all do
-        runners_with_executing_builds.each do |runner|
-          create(:ci_build, :running, build_association => runner)
+        runners_with_running_builds.each do |runner|
+          create(:ci_build, :picked, build_association => runner)
         end
 
         runners_with_completed_builds.each do |runner|
           create(:ci_build, :success, build_association => runner)
         end
+
+        runners_with_canceling_builds.each do |runner|
+          create(:ci_build, :canceling, build_association => runner)
+        end
       end
 
-      context 'with executing builds' do
+      context 'with running builds' do
         subject do
-          runners_with_executing_builds.map do |runner|
+          runners_with_running_builds.map do |runner|
             lazy_job_execution_status(object: runner, key: 'test')
           end
         end
 
-        it 'returns :active for runners with executing builds' do
+        it 'returns :active for runners with running builds' do
           is_expected.to all(eq(:active))
         end
 
         it 'batches queries efficiently' do
-          expect(runners_with_executing_builds.first.class).to receive(:id_in).once.and_call_original
+          expect(runners_with_running_builds.first.class).to receive(:ids_with_running_builds).once.and_call_original
           is_expected.to all(eq(:active))
         end
       end
 
-      context 'with no executing builds' do
+      context 'with no running builds' do
         subject do
-          runners_without_executing_builds.map do |runner|
+          runners_without_running_builds.map do |runner|
             lazy_job_execution_status(object: runner, key: 'test')
           end
         end
@@ -58,6 +63,18 @@ RSpec.describe API::Ci::Helpers::RunnerJobExecutionStatusHelper, feature_categor
         end
 
         it 'returns :idle for runners with only completed builds' do
+          is_expected.to all(eq(:idle))
+        end
+      end
+
+      context 'with only canceling builds' do
+        subject do
+          runners_with_canceling_builds.map do |runner|
+            lazy_job_execution_status(object: runner, key: 'test')
+          end
+        end
+
+        it 'returns :idle for runners with only canceling builds' do
           is_expected.to all(eq(:idle))
         end
       end

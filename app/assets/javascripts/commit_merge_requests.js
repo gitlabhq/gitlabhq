@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { createAlert } from '~/alert';
 import axios from './lib/utils/axios_utils';
 import { n__, s__ } from './locale';
@@ -11,64 +10,58 @@ export function getHeaderText(childElementCount, mergeRequestCount) {
 }
 
 export function createHeader(childElementCount, mergeRequestCount) {
-  const headerText = getHeaderText(childElementCount, mergeRequestCount);
-
-  return $('<span />', {
-    class: 'gl-mr-2',
-    text: headerText,
-  });
+  const header = document.createElement('span');
+  header.className = 'gl-mr-2';
+  header.textContent = getHeaderText(childElementCount, mergeRequestCount);
+  return header;
 }
 
 export function createLink(mergeRequest) {
-  return $('<a />', {
-    class: 'gl-mr-2',
-    href: mergeRequest.path,
-    text: `!${mergeRequest.iid}`,
-  });
+  const link = document.createElement('a');
+  link.className = 'gl-mr-2';
+  link.href = mergeRequest.path;
+  link.textContent = `!${mergeRequest.iid}`;
+  return link;
 }
 
 export function createTitle(mergeRequest) {
-  return $('<span />', {
-    text: mergeRequest.title,
-  });
+  const title = document.createElement('span');
+  title.textContent = mergeRequest.title;
+  return title;
 }
 
 export function createItem(mergeRequest) {
-  const $item = $('<span />');
-  const $link = createLink(mergeRequest);
-  const $title = createTitle(mergeRequest);
-  $item.append($link);
-  $item.append($title);
-
-  return $item;
+  const item = document.createElement('span');
+  item.append(createLink(mergeRequest), createTitle(mergeRequest));
+  return item;
 }
 
 export function createContent(mergeRequests) {
-  const $content = $('<span />');
+  const content = document.createElement('span');
 
   if (mergeRequests.length === 0) {
-    $content.text(s__('Commits|No related merge requests found'));
+    content.textContent = s__('Commits|No related merge requests found');
   } else {
     mergeRequests.forEach((mergeRequest) => {
-      const $header = createHeader($content.children().length, mergeRequests.length);
-      const $item = createItem(mergeRequest);
-      $content.append($header);
-      $content.append($item);
+      content.append(
+        createHeader(content.childElementCount, mergeRequests.length),
+        createItem(mergeRequest),
+      );
     });
   }
 
-  return $content;
+  return content;
 }
 
 export function fetchCommitMergeRequests() {
-  const $container = $('#js-commit-merge-requests');
+  const container = document.getElementById('js-commit-merge-requests');
+
+  if (!container) return;
 
   axios
-    .get($container.data('projectCommitPath'))
+    .get(container.dataset.projectCommitPath)
     .then((response) => {
-      const $content = createContent(response.data);
-
-      $container.html($content);
+      container.replaceChildren(createContent(response.data));
     })
     .catch(() =>
       createAlert({

@@ -2,10 +2,11 @@
 
 module Types
   # rubocop: disable Gitlab/BoundedContexts -- generic type shared across Projects, Groups, and Users
-  # rubocop: disable Graphql/AuthorizeTypes -- authorization at field level on parent type
   class CustomAttributeType < BaseObject
     graphql_name 'CustomAttribute'
     description 'A custom attribute key-value pair. Only available to admins.'
+
+    authorize :read_custom_attribute
 
     field :key, GraphQL::Types::String,
       null: false,
@@ -15,6 +16,5 @@ module Types
       null: false,
       description: 'Value of the custom attribute.'
   end
-  # rubocop: enable Graphql/AuthorizeTypes
   # rubocop: enable Gitlab/BoundedContexts
 end

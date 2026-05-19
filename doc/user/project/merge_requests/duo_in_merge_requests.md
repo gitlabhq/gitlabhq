@@ -79,13 +79,19 @@ based on your add-on:
 
 ### Determine which review feature runs
 
-The review feature that runs depends on the add-on of the user that starts the GitLab Duo review:
+The code review feature that runs depends on the user that initiates the GitLab Duo review.
 
-- Manual review requests: The user who requests the review.
-- Automatic reviews: The user who authors the merge request.
-- Merge requests that start in draft: The user who marks the MR as ready.
+If the user has a GitLab Duo Pro Enterprise seat, GitLab Duo Core Review runs. If not, Code Review Flow runs.
 
-Because the review feature is based on the requesting user's add-on, both features can run in the
+When Code Review Flow runs, credit usage is attributed to the initiating user.
+
+| Review trigger                          | Initiating user                      |
+|-----------------------------------------|--------------------------------------|
+| Review requested manually               | The user who requests the review.    |
+| Merge request created (not a draft)     | The merge request author.            |
+| Draft merge request marked as ready     | The merge request author.            |
+
+Because the review feature is based on the initiating user's add-on, both features can run in the
 same project.
 
 To determine which feature runs a review, check the merge request's activity feed. Code Review
@@ -190,6 +196,7 @@ Data usage: When you use this feature, the following data is sent to the large l
 
 - [Control GitLab Duo availability](../../gitlab_duo/turn_on_off.md)
 - [All GitLab Duo features](../../gitlab_duo/_index.md)
+- [Resolve merge conflicts with GitLab Duo](../../project/merge_requests/conflicts.md#resolve-conflicts-with-gitlab-duo)
 
 ## Troubleshooting
 

@@ -14,9 +14,9 @@ module API
           expose :description, documentation: { type: 'String', example: 'My description' }
           expose :valid_time_duration_seconds, documentation: { type: 'Integer', example: 604800 }
 
-          expose :component_names, as: :components, documentation: { is_array: true, type: 'String', example: 'main' }
+          expose :component_names, as: :components, documentation: { is_array: true, type: 'String', example: ['main'] }
           expose :architecture_names, as: :architectures,
-            documentation: { is_array: true, type: 'String', example: 'amd64' }
+            documentation: { is_array: true, type: 'String', example: ['amd64'] }
         end
       end
     end

@@ -24,9 +24,17 @@ The S3 bucket contains logs that are:
 
 If you use [your own encryption keys](encryption.md#customer-managed-encryption), application logs use GitLab-managed keys, not your provided key.
 
-## Manage access to application logs
+## View and manage application log access
 
-You can add, edit, or remove AWS IAM users and roles that have read-only access to your application logs.
+You can add, edit, or remove AWS IAM users and roles that have read-only access to your
+application logs.
+
+Access your application logs to do the following:
+
+- Monitor and troubleshoot your GitLab Dedicated instance.
+- Configure automated log processing and monitoring systems.
+- Set up tools that retrieve logs from the S3 bucket.
+- Retain audit trails for compliance reporting.
 
 Prerequisites:
 
@@ -58,3 +66,29 @@ To verify access, use the [AWS CLI](https://aws.amazon.com/cli/).
 
 For information about how to access S3 buckets in AWS,
 see [Accessing an Amazon S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-bucket-intro.html).
+
+## Enable S3 event notifications
+
+You can enable S3 event notifications on your GitLab Dedicated logging bucket
+to integrate with your security monitoring systems.
+Notifications are sent when log files are created.
+
+S3 event notifications can send notifications to:
+
+- Amazon Simple Queue Service (SQS) queues
+- Amazon Simple Notification Service (SNS) topics
+
+The destination resources must be in the same region as your GitLab Dedicated instance.
+
+To enable S3 event notifications:
+
+1. [Create a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+1. In your support request, include:
+
+   - Whether you want notifications configured for your primary region, secondary region, or both.
+   - Whether you want to use SQS or SNS for notifications.
+   - The ARN of your SQS queue or SNS topic.
+
+1. After GitLab Support provides the required IAM policy, attach it to your SQS queue or SNS topic.
+
+GitLab Support then completes the S3 event notifications configuration on your S3 logs bucket.

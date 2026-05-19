@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Dashboard::SnippetsController do
+RSpec.describe Dashboard::SnippetsController, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
   before do
@@ -21,7 +21,7 @@ RSpec.describe Dashboard::SnippetsController do
     it 'fetches snippet counts via the snippet count service' do
       service = double(:count_service, execute: {})
       expect(Snippets::CountService)
-        .to receive(:new).with(user, author: user)
+        .to receive(:new).with(user, organization_id: current_organization.id, author: user)
         .and_return(service)
 
       get :index

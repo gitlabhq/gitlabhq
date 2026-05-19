@@ -130,12 +130,6 @@ module Ci
     scope :ordered, -> { order(id: :desc) }
 
     scope :with_recent_runner_queue, -> { where(arel_table[:contacted_at].gt(recent_queue_deadline)) }
-    scope :with_executing_builds, -> do
-      where_exists(
-        ::Ci::Build.executing
-          .where("#{::Ci::Build.quoted_table_name}.runner_id = #{quoted_table_name}.id")
-      )
-    end
 
     # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`
     scope :deprecated_shared, -> { instance_type }
@@ -256,7 +250,7 @@ module Ci
     validate :no_groups, unless: :group_type?
     validate :any_project, if: :project_type?
     validate :exactly_one_group, if: :group_type?
-    validate :no_allowed_plan_ids, unless: :instance_type?
+    validate :no_allowed_plan_name_uids, unless: :instance_type?
 
     scope :with_version_prefix, ->(value) { joins(:runner_managers).merge(RunnerManager.with_version_prefix(value)) }
     scope :with_runner_type, ->(runner_type) do
@@ -340,7 +334,7 @@ module Ci
         :run_untagged,
         :access_level,
         Arel.sql("(#{arel_tag_names_array.to_sql})"),
-        :allowed_plan_ids
+        :allowed_plan_name_uids
       ]
 
       group(*unique_params).pluck('array_agg(ci_runners.id)', *unique_params).map do |values|
@@ -352,7 +346,7 @@ module Ci
           run_untagged: values[4],
           access_level: values[5],
           tag_list: values[6],
-          allowed_plan_ids: values[7]
+          allowed_plan_name_uids: values[7]
         })
       end
     end
@@ -365,6 +359,25 @@ module Ci
       ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(CREATED_RUNNER_TOKEN_PREFIX)
     end
 
+    def self.ids_with_running_builds(ids)
+      return [] if ids.empty?
+
+      running_builds_table = ::Ci::RunningBuild.quoted_table_name
+
+      sql = <<~SQL.squish
+        WITH input_runners AS (
+          SELECT unnest(ARRAY[?]) AS runner_id
+        )
+        SELECT runner_id FROM input_runners
+        WHERE EXISTS (
+          SELECT 1 FROM #{running_builds_table}
+          WHERE #{running_builds_table}.runner_id = input_runners.runner_id
+        )
+      SQL
+
+      connection.select_values(sanitize_sql_array([sql, ids]))
+    end
+
     def runner_matcher
       Gitlab::Ci::Matching::RunnerMatcher.new({
         runner_ids: [id],
@@ -374,7 +387,7 @@ module Ci
         run_untagged: run_untagged,
         access_level: access_level,
         tag_list: tag_list,
-        allowed_plan_ids: allowed_plan_ids
+        allowed_plan_name_uids: allowed_plan_name_uids
       })
     end
     strong_memoize_attr :runner_matcher
@@ -562,7 +575,7 @@ module Ci
 
     def ensure_manager(system_xid)
       # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- This is used only in API endpoints outside of transactions
-      RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
+      RunnerManager.safe_find_or_create_by!(runner: self, system_xid: system_xid.to_s) do |m|
         m.runner_type = runner_type
         m.organization_id = organization_id
       end
@@ -672,8 +685,8 @@ module Ci
       errors.add(:runner, 'needs to be assigned to exactly one group') unless runner_namespaces.size == 1
     end
 
-    def no_allowed_plan_ids
-      errors.add(:runner, 'cannot have allowed plans assigned') unless allowed_plan_ids.empty?
+    def no_allowed_plan_name_uids
+      errors.add(:runner, 'cannot have allowed plans assigned') unless allowed_plan_name_uids.empty?
     end
 
     def organization_id_matches_owner

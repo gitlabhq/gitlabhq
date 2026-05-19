@@ -136,11 +136,11 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
         content: '';
         top: $calc-application-header-height;
         height: $merge-request-sticky-header-height;
+        right: var(--scrollbar-width, 0);
         @include translucent-glass-background;
         @apply gl-border-b;
         @apply gl-fixed;
         @apply gl-left-0;
-        @apply gl-right-0;
         @apply gl-z-0;
         @apply gl-hidden;
       }

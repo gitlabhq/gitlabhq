@@ -16,6 +16,7 @@ import {
   restoreGroup,
   archiveGroup,
   unarchiveGroup,
+  transferGroup,
 } from '~/api/groups_api';
 
 const mockApiVersion = 'v4';
@@ -126,6 +127,30 @@ describe('GroupsApi', () => {
 
       expect(axios.get).toHaveBeenCalledWith(expectedUrl, {
         params: { ...params, per_page: DEFAULT_PER_PAGE },
+      });
+    });
+  });
+
+  describe('transferGroup', () => {
+    const destinationId = '123';
+    const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}/transfer`;
+
+    beforeEach(() => {
+      jest.spyOn(axios, 'post');
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, group);
+    });
+
+    it('posts to the correct URL', async () => {
+      await expect(transferGroup(mockGroupId, destinationId)).resolves.toMatchObject({
+        data: group,
+      });
+    });
+
+    it('passes the destinationId in the request body', () => {
+      transferGroup(mockGroupId, destinationId);
+
+      expect(axios.post).toHaveBeenCalledWith(expectedUrl, {
+        group_id: destinationId,
       });
     });
   });

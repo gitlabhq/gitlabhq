@@ -3,11 +3,11 @@
 module API
   module Entities
     class MergeRequestChanges < MergeRequest
-      expose :diffs, as: :changes, using: Entities::Diff do |compare, _|
+      expose :diffs, as: :changes, using: ::API::Entities::Diff, documentation: { is_array: true } do |compare, _|
         Array(diff_collection(compare))
       end
 
-      expose :overflow?, as: :overflow
+      expose :overflow?, as: :overflow, documentation: { type: 'Boolean' }
 
       private
 

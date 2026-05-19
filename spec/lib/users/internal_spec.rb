@@ -153,34 +153,6 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
         expect(bot_user.name).not_to include(organization.name)
       end
     end
-
-    context 'when organization_users_internal FF is disabled' do
-      before do
-        stub_feature_flags(organization_users_internal: false)
-      end
-
-      it 'assigns the default organization to the created user' do
-        expect(bot_user.organizations).to eq([first_organization])
-      end
-
-      it 'does not create a new user if one already exists for the first organization' do
-        described_class.in_organization(first_organization).public_send(bot_type)
-
-        expect do
-          described_class.in_organization(organization).public_send(bot_type)
-        end.not_to change { User.count }
-      end
-
-      it 'creates a user with no username or display name suffix' do
-        expect(bot_user.username).to include(username)
-        expect(bot_user.username).not_to include(organization.path)
-        expect(bot_user.name).not_to include("(#{organization.name})")
-      end
-
-      it 'does not create an organization_user_detail' do
-        expect(bot_user.organization_user_details).to be_empty
-      end
-    end
   end
 
   shared_examples 'bot user avatars' do |bot_type, avatar_filename|

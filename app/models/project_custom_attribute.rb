@@ -7,4 +7,8 @@ class ProjectCustomAttribute < ApplicationRecord
 
   validates :project, :key, :value, presence: true
   validates :key, uniqueness: { scope: [:project_id] }
+
+  def self.declarative_policy_class
+    'Projects::CustomAttributePolicy'
+  end
 end

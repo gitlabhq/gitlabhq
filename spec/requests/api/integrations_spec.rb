@@ -141,56 +141,6 @@ RSpec.describe API::Integrations, feature_category: :integrations do
             end
           end
         end
-
-        describe 'Slack Integration' do
-          let(:integration_name) { 'slack_slash_commands' }
-          let(:params) { { token: 'secrettoken', text: 'help' } }
-
-          context 'when no integration is available' do
-            it 'returns a not found message' do
-              post api("/projects/#{project.id}/#{endpoint}/idonotexist/trigger")
-
-              expect(response).to have_gitlab_http_status(:not_found)
-              expect(json_response["error"]).to eq("404 Not Found")
-            end
-          end
-
-          context 'when the integration exists' do
-            context 'when the integration is not active' do
-              before do
-                project_integrations_map[integration_name].deactivate!
-              end
-
-              it 'when the integration is inactive' do
-                post api("/projects/#{project.id}/#{endpoint}/#{integration_name}/trigger"), params: params
-
-                expect(response).to have_gitlab_http_status(:not_found)
-              end
-            end
-
-            context 'when the integration is active' do
-              before do
-                project_integrations_map[integration_name].activate!
-              end
-
-              it 'returns status 200' do
-                post api("/projects/#{project.id}/#{endpoint}/#{integration_name}/trigger"), params: params
-
-                expect(response).to have_gitlab_http_status(:ok)
-                expect(json_response['response_type']).to eq("ephemeral")
-              end
-            end
-
-            context 'when the project can not be found' do
-              it 'returns a generic 404' do
-                post api("/projects/404/#{endpoint}/#{integration_name}/trigger"), params: params
-
-                expect(response).to have_gitlab_http_status(:not_found)
-                expect(json_response["message"]).to eq("404 Integration Not Found")
-              end
-            end
-          end
-        end
       end
 
       describe 'Mattermost integration' do

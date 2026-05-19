@@ -187,7 +187,7 @@ To configure repository cgroups in Gitaly, use the following settings for `gital
   This value cannot exceed that of the top level`cpu_shares`.
 - `repositories.cpu_quota_us` is the [`cfs_quota_us`](https://docs.kernel.org/scheduler/sched-bwc.html#management)
   that is imposed on all Git processes contained in a repository cgroup. A Git
-  process can't use more then the given quota. We set
+  process can't use more than the given quota. We set
   `cfs_period_us` to `100ms` so 1 core is `100000`. 0 implies no limit.
 - `repositories.max_cgroups_per_repo` is the number of repository cgroups that Git processes
   targeting a specific repository can be distributed across. This enables more conservative

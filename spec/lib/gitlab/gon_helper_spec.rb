@@ -121,6 +121,38 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
         helper.add_gon_variables
       end
     end
+
+    describe 'instance_token_prefix' do
+      it 'exposes instance_token_prefix' do
+        stub_application_setting(instance_token_prefix: 'instanceprefix')
+
+        expect(gon).to receive(:instance_token_prefix=).with('instanceprefix')
+
+        helper.add_gon_variables
+      end
+
+      it 'exposes empty instance_token_prefix when not set' do
+        stub_application_setting(instance_token_prefix: '')
+
+        expect(gon).to receive(:instance_token_prefix=).with('')
+
+        helper.add_gon_variables
+      end
+
+      context 'with feature flag custom_prefix_for_all_token_types disabled' do
+        before do
+          stub_feature_flags(custom_prefix_for_all_token_types: false)
+        end
+
+        it 'does not expose instance_token_prefix' do
+          stub_application_setting(instance_token_prefix: 'instanceprefix')
+
+          expect(gon).not_to receive(:instance_token_prefix=).with('instanceprefix')
+
+          helper.add_gon_variables
+        end
+      end
+    end
   end
 
   describe '#push_frontend_ability' do

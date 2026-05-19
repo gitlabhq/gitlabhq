@@ -28,8 +28,8 @@ describe('OrganizationProjectsEditApp', () => {
       fullName: 'Mock namespace / Foo bar',
       description: 'Mock description',
     },
-    projectsOrganizationPath: '/-/organizations/default/groups_and_projects?display=projects',
-    previewMarkdownPath: '/-/organizations/preview_markdown',
+    projectsOrganizationPath: '/o/default/-/groups_and_projects?display=projects',
+    previewMarkdownPath: '/o/-/preview_markdown',
   };
 
   const createComponent = () => {

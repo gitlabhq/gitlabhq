@@ -8,6 +8,10 @@ module Types
     expose_permissions Types::PermissionTypes::Members::GroupMember
     authorize :read_group
 
+    authorize_granular_token permissions: :read_member,
+      boundary: :group,
+      boundary_type: :group
+
     implements MemberInterface
 
     field :group, Types::GroupType, null: true,

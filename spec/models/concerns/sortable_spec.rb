@@ -116,18 +116,18 @@ RSpec.describe Sortable do
       Group.all.order_by(order).map(&:name)
     end
 
-    let!(:ref_time) { Time.zone.parse('2018-05-01 00:00:00') }
-    let!(:group1) { create(:group, name: 'aa', id: 1, created_at: ref_time - 15.seconds, updated_at: ref_time) }
-    let!(:group2) { create(:group, name: 'AAA', id: 2, created_at: ref_time - 10.seconds, updated_at: ref_time - 5.seconds) }
-    let!(:group3) { create(:group, name: 'BB', id: 3, created_at: ref_time - 5.seconds, updated_at: ref_time - 10.seconds) }
-    let!(:group4) { create(:group, name: 'bbb', id: 4, created_at: ref_time, updated_at: ref_time - 15.seconds) }
+    let_it_be(:ref_time) { Time.zone.parse('2018-05-01 00:00:00') }
+    let_it_be(:group1) { create(:group, name: 'aa', id: 1, created_at: ref_time - 15.seconds, updated_at: ref_time) }
+    let_it_be(:group2) { create(:group, name: 'AAA', id: 2, created_at: ref_time - 10.seconds, updated_at: ref_time - 5.seconds) }
+    let_it_be(:group3) { create(:group, name: 'BB', id: 3, created_at: ref_time - 5.seconds, updated_at: ref_time - 10.seconds) }
+    let_it_be(:group4) { create(:group, name: 'bbb', id: 4, created_at: ref_time, updated_at: ref_time - 15.seconds) }
 
     it 'sorts groups by id' do
       expect(ordered_group_names('id_asc')).to eq(%w[aa AAA BB bbb])
       expect(ordered_group_names('id_desc')).to eq(%w[bbb BB AAA aa])
     end
 
-    it 'sorts groups by name via case-insensitive comparision' do
+    it 'sorts groups by name via case-insensitive comparison' do
       expect(ordered_group_names('name_asc')).to eq(%w[aa AAA BB bbb])
       expect(ordered_group_names('name_desc')).to eq(%w[bbb BB AAA aa])
     end

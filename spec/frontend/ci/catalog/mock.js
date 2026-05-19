@@ -750,6 +750,7 @@ export const longResourceDescription =
 export const mockVersionsResponse = {
   data: {
     ciCatalogResource: {
+      __typename: 'CiCatalogResource',
       id: 'gid://gitlab/CiCatalogResource/1',
       webPath: '/path/to/project',
       versions: {

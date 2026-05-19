@@ -89,7 +89,7 @@ export default {
         >
           <template #list-item>
             <gl-icon
-              name="mobile-issue-close"
+              name="check"
               data-testid="dropdown-item-checkbox"
               :class="[
                 'gl-new-dropdown-item-check-icon',

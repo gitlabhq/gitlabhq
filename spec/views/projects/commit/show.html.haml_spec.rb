@@ -29,7 +29,7 @@ RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code_
     allow(view).to receive(:pagination_params).and_return({})
   end
 
-  context 'parallel diff view' do
+  describe 'parallel diff view' do
     before do
       allow(view).to receive(:diff_view).and_return(:parallel)
       allow(view).to receive(:fluid_layout).and_return(true)

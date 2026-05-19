@@ -212,7 +212,7 @@ The generator handles most of the boilerplate, but some steps still require manu
 #### Step 4. Run post-generation tasks
 
 - [ ] Run: `tooling/bin/gettext_extractor locale/gitlab.pot`
-- [ ] Run: `bundle exec rake geo:dev:ssf_metrics`
+- [ ] Run: `bundle exec rake gitlab:geo:dev:ssf_metrics`
 - [ ] Run: `bundle exec rake gitlab:graphql:compile_docs`
 - [ ] Run: `bundle exec rake gitlab:graphql:generate_all_introspection_schemas`
 - [ ] Run: `bundle exec rake gitlab:openapi:v2:generate`

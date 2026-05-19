@@ -18,8 +18,11 @@ export default () => {
     secretToken: initialSecretToken,
     customHeaders,
     hasGroup,
+    isSystemHook,
     triggers: initialTriggers,
     isNewHook,
+    hasSigningToken,
+    signingTokenDocsPath,
   } = el.dataset;
 
   return new Vue({
@@ -36,7 +39,10 @@ export default () => {
           initialCustomHeaders: JSON.parse(customHeaders),
           initialTriggers: convertObjectPropsToCamelCase(JSON.parse(initialTriggers)),
           hasGroup: parseBoolean(hasGroup),
+          isSystemHook: parseBoolean(isSystemHook),
           isNewHook: parseBoolean(isNewHook),
+          hasSigningToken: parseBoolean(hasSigningToken),
+          signingTokenDocsPath,
         },
       });
     },

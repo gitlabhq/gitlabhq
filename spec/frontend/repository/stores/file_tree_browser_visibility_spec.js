@@ -90,6 +90,25 @@ describe('useFileTreeBrowserVisibility', () => {
     });
   });
 
+  describe('collapseForBlame', () => {
+    it('sets fileTreeBrowserIsExpanded to false and persists to localStorage', () => {
+      store.fileTreeBrowserIsExpanded = true;
+
+      store.collapseForBlame();
+
+      expect(store.fileTreeBrowserIsExpanded).toBe(false);
+      expect(localStorage.setItem).toHaveBeenCalledWith(FILE_TREE_BROWSER_VISIBILITY, 'false');
+    });
+
+    it('sets fileTreeBrowserIsPeekOn to false', () => {
+      store.fileTreeBrowserIsPeekOn = true;
+
+      store.collapseForBlame();
+
+      expect(store.fileTreeBrowserIsPeekOn).toBe(false);
+    });
+  });
+
   describe('loadFileTreeBrowserExpandedFromLocalStorage', () => {
     it.each([
       { storageValue: 'true', expected: true, description: 'true value' },

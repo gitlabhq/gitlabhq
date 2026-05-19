@@ -49,11 +49,45 @@ RSpec.describe ActiveContext::Concerns::Queue do
   end
 
   describe '.queue_size' do
+    before do
+      allow(mock_queue_class).to receive(:number_of_shards).and_return(3)
+
+      allow(redis_double).to receive(:zcard).with('mockmodule:{test_queue}:0:zset').and_return(5)
+      allow(redis_double).to receive(:zcard).with('mockmodule:{test_queue}:1:zset').and_return(3)
+      allow(redis_double).to receive(:zcard).with('mockmodule:{test_queue}:2:zset').and_return(0)
+      allow(redis_double).to receive(:zcard).with('mockmodule:{test_queue}:3:zset').and_return(7)
+    end
+
     it 'returns the total size of all shards' do
-      expect(redis_double).to receive(:zcard).with('mockmodule:{test_queue}:0:zset').and_return(5)
-      expect(redis_double).to receive(:zcard).with('mockmodule:{test_queue}:1:zset').and_return(3)
+      expect(redis_double).to receive(:zcard).with('mockmodule:{test_queue}:0:zset')
+      expect(redis_double).to receive(:zcard).with('mockmodule:{test_queue}:1:zset')
+      expect(redis_double).to receive(:zcard).with('mockmodule:{test_queue}:2:zset')
 
       expect(mock_queue_class.queue_size).to eq(8)
+    end
+
+    context 'when `shards` is given' do
+      it 'returns the total size of the given `shards` within the configured `number_of_shards`' do
+        expect(redis_double).to receive(:zcard).with('mockmodule:{test_queue}:0:zset')
+
+        expect(redis_double).not_to receive(:zcard).with('mockmodule:{test_queue}:1:zset')
+        expect(redis_double).not_to receive(:zcard).with('mockmodule:{test_queue}:2:zset')
+        expect(redis_double).not_to receive(:zcard).with('mockmodule:{test_queue}:3:zset')
+
+        expect(mock_queue_class.queue_size(shards: [0, 3])).to eq(5)
+      end
+
+      context 'when `include_orphaned` is set to true' do
+        it 'returns the total size of the given `shards` without checking the `number_of_shards`' do
+          expect(redis_double).to receive(:zcard).with('mockmodule:{test_queue}:0:zset')
+          expect(redis_double).to receive(:zcard).with('mockmodule:{test_queue}:3:zset')
+
+          expect(redis_double).not_to receive(:zcard).with('mockmodule:{test_queue}:1:zset')
+          expect(redis_double).not_to receive(:zcard).with('mockmodule:{test_queue}:2:zset')
+
+          expect(mock_queue_class.queue_size(shards: [0, 3], include_orphaned: true)).to eq(12)
+        end
+      end
     end
   end
 
@@ -69,6 +103,111 @@ RSpec.describe ActiveContext::Concerns::Queue do
       expect(mock_queue_class.queued_items).to eq({
         0 => [['ref1', 1.0], ['ref2', 2.0]]
       })
+    end
+  end
+
+  describe '.each_queued_items_by_shard' do
+    before do
+      allow(mock_queue_class).to receive_messages(
+        number_of_shards: 3,
+        shard_limit: 10
+      )
+
+      allow(redis_double).to receive(:zrangebyscore)
+        .with('mockmodule:{test_queue}:0:zset', any_args)
+        .and_return([['ref1', 1.0], ['ref2', 2.0]])
+      allow(redis_double).to receive(:zrangebyscore)
+        .with('mockmodule:{test_queue}:1:zset', any_args)
+        .and_return([])
+      allow(redis_double).to receive(:zrangebyscore)
+        .with('mockmodule:{test_queue}:2:zset', any_args)
+        .and_return([['ref3', 1.0]])
+      allow(redis_double).to receive(:zrangebyscore)
+        .with('mockmodule:{test_queue}:3:zset', any_args)
+        .and_return([['ref4', 1.0]])
+    end
+
+    it 'yields items from all shards' do
+      expect(redis_double).to receive(:zrangebyscore)
+        .with('mockmodule:{test_queue}:0:zset', '-inf', '+inf', limit: [0, 10], with_scores: true)
+      expect(redis_double).to receive(:zrangebyscore)
+        .with('mockmodule:{test_queue}:1:zset', '-inf', '+inf', limit: [0, 10], with_scores: true)
+      expect(redis_double).to receive(:zrangebyscore)
+        .with('mockmodule:{test_queue}:2:zset', '-inf', '+inf', limit: [0, 10], with_scores: true)
+
+      expect do |block|
+        mock_queue_class.each_queued_items_by_shard(redis_double, &block)
+      end.to yield_successive_args(
+        [0, [['ref1', 1.0], ['ref2', 2.0]]],
+        [1, []],
+        [2, [['ref3', 1.0]]]
+      )
+    end
+
+    context 'when `shards` is given' do
+      it 'yields items from the given `shards` within the configured `number_of_shards`' do
+        expect(redis_double).to receive(:zrangebyscore)
+          .with('mockmodule:{test_queue}:0:zset', '-inf', '+inf', limit: [0, 10], with_scores: true)
+
+        expect(redis_double).not_to receive(:zrangebyscore).with('mockmodule:{test_queue}:1:zset', any_args)
+        expect(redis_double).not_to receive(:zrangebyscore).with('mockmodule:{test_queue}:2:zset', any_args)
+        expect(redis_double).not_to receive(:zrangebyscore).with('mockmodule:{test_queue}:3:zset', any_args)
+
+        expect do |block|
+          mock_queue_class.each_queued_items_by_shard(redis_double, shards: [0, 3], &block)
+        end.to yield_successive_args(
+          [0, [['ref1', 1.0], ['ref2', 2.0]]]
+        )
+      end
+
+      context 'when `include_orphaned` is set to true' do
+        it 'yields items from the given `shards` without checking the `number_of_shards`' do
+          expect(redis_double).to receive(:zrangebyscore)
+            .with('mockmodule:{test_queue}:0:zset', '-inf', '+inf', limit: [0, 10], with_scores: true)
+          expect(redis_double).to receive(:zrangebyscore)
+            .with('mockmodule:{test_queue}:3:zset', '-inf', '+inf', limit: [0, 10], with_scores: true)
+
+          expect(redis_double).not_to receive(:zrangebyscore).with('mockmodule:{test_queue}:1:zset', any_args)
+          expect(redis_double).not_to receive(:zrangebyscore).with('mockmodule:{test_queue}:2:zset', any_args)
+
+          expect do |block|
+            mock_queue_class.each_queued_items_by_shard(redis_double, shards: [0, 3], include_orphaned: true, &block)
+          end.to yield_successive_args(
+            [0, [['ref1', 1.0], ['ref2', 2.0]]],
+            [3, [['ref4', 1.0]]]
+          )
+        end
+      end
+    end
+
+    context 'when `limit` is given' do
+      it 'uses the `limit` for fetching the items' do
+        expect(redis_double).to receive(:zrangebyscore)
+          .with('mockmodule:{test_queue}:0:zset', '-inf', '+inf', limit: [0, 1], with_scores: true)
+          .and_return([['ref1', 1.0]])
+        expect(redis_double).to receive(:zrangebyscore)
+          .with('mockmodule:{test_queue}:1:zset', '-inf', '+inf', limit: [0, 1], with_scores: true)
+        expect(redis_double).to receive(:zrangebyscore)
+          .with('mockmodule:{test_queue}:2:zset', '-inf', '+inf', limit: [0, 1], with_scores: true)
+
+        expect do |block|
+          mock_queue_class.each_queued_items_by_shard(redis_double, limit: 1, &block)
+        end.to yield_successive_args(
+          [0, [['ref1', 1.0]]],
+          [1, []],
+          [2, [['ref3', 1.0]]]
+        )
+      end
+    end
+  end
+
+  describe '.remove_shard_items' do
+    it 'removes the items in a given shard' do
+      expect(redis_double).to receive(:zremrangebyscore).with(
+        'mockmodule:{test_queue}:2:zset', 5.0, 12.0
+      )
+
+      mock_queue_class.remove_shard_items(redis_double, 2, 5.0, 12.0)
     end
   end
 

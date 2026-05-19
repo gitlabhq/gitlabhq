@@ -8,5 +8,4 @@ Metrics/PerceivedComplexity:
     - 'lib/banzai/renderer.rb'
     - 'lib/gitlab/conflict/file.rb'
     - 'lib/gitlab/database/query_analyzers/prevent_cross_database_modification.rb'
-    - 'lib/gitlab/utils/merge_hash.rb'
     - 'qa/qa/support/repeater.rb'

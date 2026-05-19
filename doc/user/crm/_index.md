@@ -99,7 +99,7 @@ Prerequisites:
 To view a group's contacts:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Customer relations**.
+1. In the left sidebar, select **Plan** > **Customer relations**.
 
 ### Create a contact
 
@@ -110,7 +110,7 @@ Prerequisites:
 To create a contact:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Customer relations**.
+1. In the left sidebar, select **Plan** > **Customer relations**.
 1. Select **New contact**.
 1. Complete all required fields.
 1. Select **Create new contact**.
@@ -127,7 +127,7 @@ Prerequisites:
 To edit an existing contact:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Customer relations**.
+1. In the left sidebar, select **Plan** > **Customer relations**.
 1. Next to the contact you wish to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Edit the required fields.
 1. Select **Save changes**.
@@ -145,7 +145,7 @@ Each contact can be in one of two states:
 To change the state of a contact:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Customer relations**.
+1. In the left sidebar, select **Plan** > **Customer relations**.
 1. Next to the contact you wish to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Select or clear the **Active** checkbox.
 1. Select **Save changes**.
@@ -161,7 +161,7 @@ Prerequisites:
 To view a group's organizations:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Customer relations**.
+1. In the left sidebar, select **Plan** > **Customer relations**.
 1. In the upper right, select **Organizations**.
 
 ### Create an organization
@@ -173,7 +173,7 @@ Prerequisites:
 To create an organization:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Customer relations**.
+1. In the left sidebar, select **Plan** > **Customer relations**.
 1. In the upper right, select **Organizations**.
 1. Select **New organization**.
 1. Complete all required fields.
@@ -191,7 +191,7 @@ Prerequisites:
 To edit an existing organization:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Customer relations**.
+1. In the left sidebar, select **Plan** > **Customer relations**.
 1. In the upper right, select **Organizations**.
 1. Next to the organization you wish to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Edit the required fields.
@@ -214,7 +214,7 @@ Prerequisites:
 To view a contact's work items, select a contact from the work item sidebar, or:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Customer relations**.
+1. In the left sidebar, select **Plan** > **Customer relations**.
 1. Next to the contact whose work items you wish to view, select **View work items** ({{< icon name="work-items" >}}).
 
 ### View work items linked to an organization
@@ -226,7 +226,7 @@ Prerequisites:
 To view an organization's work items:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Customer relations**.
+1. In the left sidebar, select **Plan** > **Customer relations**.
 1. In the upper right, select **Organizations**.
 1. Next to the organization whose work items you wish to view, select **View work items** ({{< icon name="work-items" >}}).
 

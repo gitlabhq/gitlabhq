@@ -24,7 +24,7 @@ RSpec.describe Projects::ImportsController, feature_category: :importers do
 
     context 'when the developer user has project creation rights' do
       let_it_be(:group) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
-      let_it_be(:project) { create(:project_empty_repo, :import_started, group: group) }
+      let_it_be(:project, freeze: false) { create(:project_empty_repo, :import_started, group: group) }
 
       before_all do
         group.add_developer(user)

@@ -89,7 +89,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
 
         it 'imports the note as legacy diff note' do
           expect { subject.execute }
-            .to change(LegacyDiffNote, :count)
+            .to change { LegacyDiffNote.count }
             .by(1)
 
           note = project.notes.diff_notes.take
@@ -125,12 +125,12 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
 
         context 'when the note has suggestions' do
           let(:note_body) do
-            <<~EOB
+            <<~MARKDOWN
             Suggestion:
             ```suggestion
             what do you think to do it like this
             ```
-            EOB
+            MARKDOWN
           end
 
           it 'pushes placeholder references' do
@@ -147,7 +147,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             end
 
             expect { subject.execute }
-              .to change(DiffNote, :count)
+              .to change { DiffNote.count }
               .by(1)
               .and not_change(LegacyDiffNote, :count)
 
@@ -201,7 +201,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
                       )
 
               expect { subject.execute }
-                .to change(LegacyDiffNote, :count)
+                .to change { LegacyDiffNote.count }
                       .and not_change(DiffNote, :count)
             end
           end
@@ -226,7 +226,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
                 )
 
               expect { subject.execute }
-                .to change(LegacyDiffNote, :count)
+                .to change { LegacyDiffNote.count }
                 .and not_change(DiffNote, :count)
             end
           end
@@ -258,7 +258,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
 
             it 'imports the diff note mapped to the personal namespace owner' do
               expect { subject.execute }
-                .to change(DiffNote, :count)
+                .to change { DiffNote.count }
                 .by(1)
 
               note = project.notes.diff_notes.take
@@ -302,7 +302,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
 
           it 'imports the legacy diff note mapped to the personal namespace owner' do
             expect { subject.execute }
-              .to change(LegacyDiffNote, :count)
+              .to change { LegacyDiffNote.count }
               .by(1)
 
             note = project.notes.diff_notes.take
@@ -354,7 +354,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
 
         it 'imports the note as legacy diff note' do
           expect { subject.execute }
-            .to change(LegacyDiffNote, :count)
+            .to change { LegacyDiffNote.count }
             .by(1)
 
           note = project.notes.diff_notes.take
@@ -381,7 +381,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
 
           it 'sets the project creator as the author with a "created by:" note' do
             expect { subject.execute }
-              .to change(LegacyDiffNote, :count)
+              .to change { LegacyDiffNote.count }
               .by(1)
 
             note = project.notes.diff_notes.take
@@ -393,12 +393,12 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
 
         context 'when the note has suggestions' do
           let(:note_body) do
-            <<~EOB
+            <<~MARKDOWN
             Suggestion:
             ```suggestion
             what do you think to do it like this
             ```
-            EOB
+            MARKDOWN
           end
 
           it 'does not push placeholder references' do
@@ -413,7 +413,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             end
 
             expect { subject.execute }
-              .to change(DiffNote, :count)
+              .to change { DiffNote.count }
               .by(1)
 
             note = project.notes.diff_notes.take
@@ -466,7 +466,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
                       )
 
               expect { subject.execute }
-                .to change(LegacyDiffNote, :count)
+                .to change { LegacyDiffNote.count }
                       .and not_change(DiffNote, :count)
             end
           end
@@ -491,7 +491,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
                 )
 
               expect { subject.execute }
-                .to change(LegacyDiffNote, :count)
+                .to change { LegacyDiffNote.count }
                 .and not_change(DiffNote, :count)
             end
           end

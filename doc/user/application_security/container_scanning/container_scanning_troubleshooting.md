@@ -17,7 +17,7 @@ When working with container scanning, you might encounter the following issues.
 ## Enable verbose logging
 
 Enable verbose output when you need to see in detail what the container scanning job does. For details, see
-[debug-level logging](../troubleshooting_application_security.md#debug-level-logging).
+[debug-level logging](../troubleshooting_application_security.md#turn-on-debug-level-logging).
 
 ## `docker: Error response from daemon: failed to copy xattrs`
 

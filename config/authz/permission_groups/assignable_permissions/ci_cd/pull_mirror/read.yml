@@ -1,7 +1,9 @@
 ---
 name: read_pull_mirror
 description: Grants the ability to read pull mirrors
-permissions:
-  - read_pull_mirror
 boundaries:
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_pull_mirror

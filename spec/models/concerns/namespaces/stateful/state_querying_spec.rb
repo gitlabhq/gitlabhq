@@ -133,28 +133,6 @@ RSpec.describe Namespaces::Stateful::StateQuerying, feature_category: :groups_an
       end
     end
 
-    context 'with NULL state during migration' do
-      let_it_be(:root_group) { create(:group) }
-      let_it_be(:child_group) { create(:group, parent: root_group) }
-
-      it 'treats NULL state as ancestor_inherited and resolves to ancestor state' do
-        root_group.update!(state: :archived)
-        child_group.update_column(:state, nil)
-        child_group.reload
-
-        expect(child_group.effective_state).to eq(:archived)
-      end
-
-      it 'returns ancestor_inherited when all ancestors also have NULL state' do
-        root_group.update_column(:state, nil)
-        child_group.update_column(:state, nil)
-        root_group.reload
-        child_group.reload
-
-        expect(child_group.effective_state).to eq(:ancestor_inherited)
-      end
-    end
-
     context 'for N+1 query prevention' do
       let_it_be(:root_group) { create(:group, state: :archived) }
 
@@ -168,32 +146,6 @@ RSpec.describe Namespaces::Stateful::StateQuerying, feature_category: :groups_an
 
         # Should execute exactly 3 queries (one per child), not N (where N is ancestor count)
         expect(queries.count).to eq(3)
-      end
-    end
-  end
-
-  describe 'scopes' do
-    let_it_be_with_reload(:namespace1) { create(:group) }
-
-    describe '.not_deletion_in_progress' do
-      before do
-        namespace1.update!(state: :deletion_in_progress)
-      end
-
-      it 'does not include namespace marked as deleted' do
-        expect(Namespace.not_deletion_in_progress).to contain_exactly(namespace)
-      end
-
-      it 'includes namespaces with NULL state during migration' do
-        namespace.update_column(:state, nil)
-
-        expect(Namespace.not_deletion_in_progress).to contain_exactly(namespace)
-      end
-
-      it 'includes namespaces with ancestor_inherited state' do
-        namespace.update!(state: :ancestor_inherited)
-
-        expect(Namespace.not_deletion_in_progress).to contain_exactly(namespace)
       end
     end
   end

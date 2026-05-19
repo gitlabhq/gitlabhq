@@ -7,8 +7,8 @@
   - c.with_description do
     = render 'shared/web_hooks/description', hook: @hook
   - c.with_body do
-    = gitlab_ui_form_for @hook, as: :hook, url: admin_hook_path do |f|
-      = render partial: 'form', locals: { form: f, hook: @hook }
+    = gitlab_ui_form_for @hook, as: :hook, url: admin_hook_path, html: { class: 'js-webhook-form' } do |f|
+      = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
 
       .settings-sticky-footer.gl-flex.gl-justify-between
         .gl-flex.gl-gap-4

@@ -29,7 +29,7 @@ module SystemCheck
 
       def try_connect_imap
         config.each do |mailbox|
-          $stdout.puts "Checking #{mailbox[:email]}"
+          say "Checking #{mailbox[:email]}"
           imap = Net::IMAP.new(mailbox[:host], port: mailbox[:port], ssl: mailbox[:ssl])
           imap.starttls if mailbox[:start_tls]
           imap.login(mailbox[:email], mailbox[:password])

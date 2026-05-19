@@ -152,7 +152,7 @@ describe('Agents', () => {
     it('should emit agents count to the parent component', async () => {
       await createWrapper();
 
-      expect(wrapper.emitted().onAgentsLoad).toEqual([[expectedAgentsList.length]]);
+      expect(wrapper.emitted('on-agents-load')).toEqual([[expectedAgentsList.length]]);
     });
 
     it('should render a slot for alerts if provided', async () => {
@@ -384,13 +384,13 @@ describe('Agents', () => {
       expect(findAlert().text()).toBe('An error occurred while loading your agents');
     });
 
-    it('emits `kasDisabled` event if the error is related to KAS being disabled', async () => {
+    it('emits `kas-disabled` event if the error is related to KAS being disabled', async () => {
       const error = new Error(KAS_DISABLED_ERROR);
       await createWrapper({
         agentQueryResponse: jest.fn().mockRejectedValue(error),
       });
 
-      expect(wrapper.emitted().kasDisabled).toEqual([[true]]);
+      expect(wrapper.emitted('kas-disabled')).toEqual([[true]]);
     });
   });
 

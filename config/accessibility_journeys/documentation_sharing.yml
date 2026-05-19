@@ -1,0 +1,45 @@
+# Accessibility Journey Configuration: Documentation & Sharing
+# Stage: Plan
+# Groups: Wiki
+
+stage: plan
+journey_name: documentation_sharing
+feature_category: wiki
+description: 'Golden user journey for documenting and sharing knowledge using wikis in GitLab'
+
+feature_test_hints:
+  - projects/wiki
+
+e2e_test_files:
+  # Project wiki - Content
+  - path: qa/qa/specs/features/browser_ui/2_plan/project_wiki/project_based_content_creation_spec.rb
+    description: Creates wiki pages via UI and git push including pages with spaces in path
+    focus_area: Project wiki content
+    has_ui: true
+
+  - path: qa/qa/specs/features/browser_ui/2_plan/project_wiki/project_based_file_upload_spec.rb
+    description: Creates formatted wiki page with uploaded image via content editor
+    focus_area: Project wiki content
+    has_ui: true
+
+  # Project wiki - Structure
+  - path: qa/qa/specs/features/browser_ui/2_plan/project_wiki/project_based_directory_management_spec.rb
+    description: Changes directory path of wiki page and verifies new tree
+    focus_area: Project wiki structure
+    has_ui: true
+
+  - path: qa/qa/specs/features/browser_ui/2_plan/project_wiki/project_based_list_spec.rb
+    description: Navigates lists of wiki pages via sidebar and view all pages
+    focus_area: Project wiki structure
+    has_ui: true
+
+  # Group wiki (EE)
+  - path: qa/qa/specs/features/ee/browser_ui/2_plan/group_wiki/create_group_wiki_page_spec.rb
+    description: Creates wiki pages at group level including first and subsequent pages
+    focus_area: Group wiki
+    has_ui: true
+
+  - path: qa/qa/specs/features/ee/browser_ui/2_plan/group_wiki/file_upload_group_wiki_page_spec.rb
+    description: Creates formatted group wiki page with uploaded image
+    focus_area: Group wiki
+    has_ui: true

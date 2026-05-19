@@ -131,6 +131,27 @@ RSpec.describe X509Certificate, feature_category: :source_code_management do
     it 'rejects invalid serial_number' do
       expect(build(:x509_certificate, x509_issuer: issuer, serial_number: "sgsgfsdgdsfg")).to be_invalid
     end
+
+    it 'rejects serial_number exceeding RFC 5280 maximum (20 octets)' do
+      oversized = X509Certificate::SERIAL_NUMBER_MAX + 1
+      expect(build(:x509_certificate, x509_issuer: issuer, serial_number: oversized)).to be_invalid
+    end
+
+    it 'rejects extremely large serial_number' do
+      expect(build(:x509_certificate, x509_issuer: issuer, serial_number: 2**10000)).to be_invalid
+    end
+
+    it 'rejects zero serial_number' do
+      expect(build(:x509_certificate, x509_issuer: issuer, serial_number: 0)).to be_invalid
+    end
+
+    it 'rejects negative serial_number' do
+      expect(build(:x509_certificate, x509_issuer: issuer, serial_number: -1)).to be_invalid
+    end
+
+    it 'defines SERIAL_NUMBER_MAX matching RFC 5280 20-octet limit' do
+      expect(X509Certificate::SERIAL_NUMBER_MAX).to eq('ffffffffffffffffffffffffffffffffffffffff'.to_i(16))
+    end
   end
 
   describe '#all_emails' do

@@ -49,6 +49,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
             :exceptions,
             :service_map,
             :notification_channels,
+            :api_keys,
             :setup
           ]
 
@@ -105,6 +106,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
           :exceptions,
           :service_map,
           :notification_channels,
+          :api_keys,
           :o11y_settings,
           :setup
         ]
@@ -232,6 +234,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       expect(menu_items.find { |i| i.item_id == :exceptions }.link).to include('exceptions')
       expect(menu_items.find { |i| i.item_id == :service_map }.link).to include('service-map')
       expect(menu_items.find { |i| i.item_id == :notification_channels }.link).to include('settings/channels')
+      expect(menu_items.find { |i| i.item_id == :api_keys }.link).to include('api-keys')
     end
   end
 
@@ -242,7 +245,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       iframe_item_ids = %i[
         services traces_explorer logs_explorer metrics_explorer
         infrastructure_monitoring dashboard messaging_queues api_monitoring
-        alerts exceptions service_map notification_channels
+        alerts exceptions service_map notification_channels api_keys
       ]
 
       menu_items = observability_menu.renderable_items

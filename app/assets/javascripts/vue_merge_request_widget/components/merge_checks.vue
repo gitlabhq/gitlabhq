@@ -1,62 +1,19 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
-import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
 import {
   COMPONENTS,
   FAILURE_REASONS,
 } from '~/vue_merge_request_widget/components/checks/constants';
-import mergeRequestQueryVariablesMixin from '../mixins/merge_request_query_variables';
-import mergeChecksQuery from '../queries/merge_checks.query.graphql';
-import mergeChecksSubscription from '../queries/merge_checks.subscription.graphql';
 import StateContainer from './state_container.vue';
 import BoldText from './bold_text.vue';
 
 export default {
-  apollo: {
-    state: {
-      query: mergeChecksQuery,
-      skip() {
-        return !this.mr;
-      },
-      variables() {
-        return this.mergeRequestQueryVariables;
-      },
-      update: (data) => data?.project?.mergeRequest,
-      subscribeToMore: {
-        document() {
-          return mergeChecksSubscription;
-        },
-        skip() {
-          return !this.mr?.id;
-        },
-        variables() {
-          return {
-            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mr?.id),
-          };
-        },
-        updateQuery(
-          _,
-          {
-            subscriptionData: {
-              data: { mergeRequestMergeStatusUpdated },
-            },
-          },
-        ) {
-          if (mergeRequestMergeStatusUpdated) {
-            this.state = mergeRequestMergeStatusUpdated;
-          }
-        },
-      },
-    },
-  },
   components: {
     GlSkeletonLoader,
     StateContainer,
     BoldText,
   },
-  mixins: [mergeRequestQueryVariablesMixin],
   props: {
     mr: {
       type: Object,
@@ -66,16 +23,28 @@ export default {
       type: Object,
       required: true,
     },
+    mergeChecksState: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    isLoadingMergeChecks: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       collapsed: true,
-      state: {},
     };
   },
   computed: {
     isLoading() {
-      return this.$apollo.queries.state.loading;
+      return this.isLoadingMergeChecks;
+    },
+    state() {
+      return this.mergeChecksState || {};
     },
     statusIcon() {
       if (this.warningChecks.length) {

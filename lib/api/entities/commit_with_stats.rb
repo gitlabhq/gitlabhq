@@ -3,7 +3,7 @@
 module API
   module Entities
     class CommitWithStats < Commit
-      expose :stats, using: Entities::CommitStats
+      expose :stats, using: ::API::Entities::CommitStats, documentation: { type: '::API::Entities::CommitStats' }
     end
   end
 end

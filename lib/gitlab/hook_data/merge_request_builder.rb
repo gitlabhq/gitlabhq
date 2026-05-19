@@ -26,6 +26,7 @@ module Gitlab
           reviewer_ids
           source_branch
           source_project_id
+          squash_commit_sha
           state_id
           system
           target_branch

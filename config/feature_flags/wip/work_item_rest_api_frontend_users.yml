@@ -1,0 +1,9 @@
+---
+name: work_item_rest_api_frontend_users
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594636
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231205
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596882
+milestone: '19.0'
+group: group::product planning
+type: wip
+default_enabled: false

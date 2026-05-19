@@ -313,4 +313,56 @@ describe('IssuableForm', () => {
       );
     });
   });
+
+  describe('Submit button loading state', () => {
+    let submitButton;
+
+    beforeEach(() => {
+      submitButton = document.createElement('button');
+      submitButton.type = 'submit';
+      submitButton.classList.add('js-issuable-submit-button');
+      submitButton.innerHTML = '<span class="gl-button-text">Create merge request</span>';
+      $form.get(0).appendChild(submitButton);
+    });
+
+    it('disables the submit button and prepends a loading icon when submitting', async () => {
+      const issueDescription = $form.find('textarea[name*="[description]"]').get(0);
+      issueDescription.value = 'sample message';
+
+      createIssuable($form);
+
+      $form.submit();
+      await waitForPromises();
+
+      expect(submitButton.disabled).toBe(true);
+      expect(submitButton.firstElementChild.querySelector('.gl-spinner')).not.toBeNull();
+    });
+
+    describe('showSubmitLoading', () => {
+      it('disables the button and prepends a loading icon', () => {
+        instance = createIssuable($form);
+
+        instance.showSubmitLoading();
+
+        expect(submitButton.disabled).toBe(true);
+        expect(submitButton.firstElementChild.querySelector('.gl-spinner')).not.toBeNull();
+      });
+
+      it('does not add a second spinner if the submit button is already disabled', () => {
+        instance = createIssuable($form);
+
+        instance.showSubmitLoading();
+        instance.showSubmitLoading();
+
+        expect(submitButton.querySelectorAll('.gl-spinner')).toHaveLength(1);
+      });
+
+      it('does nothing when the submit button is not present', () => {
+        submitButton.remove();
+        instance = createIssuable($form);
+
+        expect(() => instance.showSubmitLoading()).not.toThrow();
+      });
+    });
+  });
 });

@@ -55,6 +55,7 @@ RSpec.describe 'User can display performance bar', :js, feature_category: :perfo
 
   context 'when user is logged-out' do
     before do
+      stub_current_organization(group.organization)
       visit root_path
     end
 

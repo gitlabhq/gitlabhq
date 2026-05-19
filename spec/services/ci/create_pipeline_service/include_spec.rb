@@ -6,7 +6,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
   include RepoHelpers
 
   context 'include:' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
     let_it_be(:user)    { project.first_owner }
 
     let(:ref)                  { 'refs/heads/master' }
@@ -51,11 +51,11 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'with a local file' do
       let(:config) do
-        <<~EOY
+        <<~YAML
         include: #{file_location}
         job:
           script: exit 0
-        EOY
+        YAML
       end
 
       it_behaves_like 'including the file'
@@ -63,14 +63,14 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'with a local file with rules with a project variable' do
       let(:config) do
-        <<~EOY
+        <<~YAML
         include:
           - local: #{file_location}
             rules:
               - if: $CI_PROJECT_ID == "#{project_id}"
         job:
           script: exit 0
-        EOY
+        YAML
       end
 
       context 'when the rules matches' do
@@ -88,14 +88,14 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'with a local file with rules with a predefined pipeline variable' do
       let(:config) do
-        <<~EOY
+        <<~YAML
         include:
           - local: #{file_location}
             rules:
               - if: $CI_PIPELINE_SOURCE == "#{pipeline_source}"
         job:
           script: exit 0
-        EOY
+        YAML
       end
 
       context 'when the rules matches' do
@@ -113,14 +113,14 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
     context 'with a local file with rules with a run pipeline variable' do
       let(:config) do
-        <<~EOY
+        <<~YAML
         include:
           - local: #{file_location}
             rules:
               - if: $MYVAR == "#{my_var}"
         job:
           script: exit 0
-        EOY
+        YAML
       end
 
       context 'when the rules matches' do
@@ -190,7 +190,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
     end
 
-    context 'with Gitaly timeout handling' do
+    context 'with Gitaly timeout handling', :clean_gitlab_redis_repository_cache do
       before do
         stub_const('Gitlab::Ci::Config::GITALY_TIMEOUT_SECONDS', 0.0001)
       end
@@ -206,20 +206,12 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         end
 
         it 'fails with timeout error' do
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
           expect(pipeline).to be_persisted
           expect(pipeline.error_messages.map(&:content)).to include(
             'CI configuration fetch from Gitaly timed out. This may indicate Gitaly service slowness or an outage.'
           )
-        end
-
-        context 'when ci_config_gitaly_timeout feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_config_gitaly_timeout: false)
-          end
-
-          it_behaves_like 'including the file'
         end
       end
 
@@ -249,20 +241,12 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         end
 
         it 'fails with timeout error' do
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
           expect(pipeline).to be_persisted
           expect(pipeline.error_messages.map(&:content)).to include(
             'CI configuration fetch from Gitaly timed out. This may indicate Gitaly service slowness or an outage.'
           )
-        end
-
-        context 'when ci_config_gitaly_timeout feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_config_gitaly_timeout: false)
-          end
-
-          it_behaves_like 'including the file'
         end
       end
 
@@ -319,7 +303,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         end
 
         it 'fails with the cumulative fetch timeout error' do
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
           expect(pipeline).to be_persisted
           expect(pipeline.error_messages.map(&:content)).to include(

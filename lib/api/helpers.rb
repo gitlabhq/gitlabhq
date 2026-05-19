@@ -99,7 +99,11 @@ module API
             boundaries: boundaries_for_endpoint, permissions: permissions_for_endpoint, token: token
           ).execute
 
-          raise Gitlab::Auth::GranularPermissionsError, result.message if result.error?
+          if result.error?
+            not_found! if result.reason == :resource_not_found
+
+            raise Gitlab::Auth::GranularPermissionsError, result.message
+          end
         end
       end
 
@@ -171,7 +175,7 @@ module API
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # Can be overriden by API endpoints
+    # Can be overridden by API endpoints
     def find_project_scopes
       Project.without_deleted.not_hidden
     end
@@ -1164,7 +1168,7 @@ module API
     end
 
     def authorize_granular_token?
-      access_token.try(:granular?) && !authorization_settings[:skip_granular_token_authorization]
+      access_token.respond_to?(:granular?) && !authorization_settings[:skip_granular_token_authorization]
     end
 
     def permissions_for_endpoint

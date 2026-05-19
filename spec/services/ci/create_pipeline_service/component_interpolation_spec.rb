@@ -281,7 +281,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
     end
 
-    context 'when component include times out' do
+    context 'when component include times out', :clean_gitlab_redis_repository_cache do
       let(:component_path) do
         "#{Gitlab.config.gitlab.host}/#{components_project.full_path}/#{component_name}@#{component_version}"
       end
@@ -295,33 +295,30 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         YAML
       end
 
-      before do
-        stub_const('Gitlab::Ci::Config::GITALY_TIMEOUT_SECONDS', 0.0001)
-      end
-
-      it 'fails with timeout error' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-
-        response = execute
-        pipeline = response.payload
-
-        expect(pipeline).to be_persisted
-        expect(pipeline.error_messages.map(&:content)).to include(
-          'CI configuration fetch from Gitaly timed out. This may indicate Gitaly service slowness or an outage.'
-        )
-      end
-
-      context 'when ci_config_gitaly_timeout feature flag is disabled' do
+      context 'when timeout occurs' do
         before do
-          stub_feature_flags(ci_config_gitaly_timeout: false)
+          stub_const('Gitlab::Ci::Config::GITALY_TIMEOUT_SECONDS', 0.1)
+          stub_feature_flags(ci_cache_component_includes: false)
+
+          allow_next_instance_of(Repository) do |instance|
+            allow(instance).to receive(:blobs_at).and_raise(
+                      GRPC::DeadlineExceeded.new('deadline exceeded')
+                    )
+          end
         end
 
-        it 'creates a pipeline successfully' do
+        it 'fails with timeout error' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+
           response = execute
           pipeline = response.payload
 
-          expect(response).to be_success
-          expect(pipeline).to be_created_successfully
+          expect(pipeline).to be_persisted
+          pipeline.reload
+
+          expect(pipeline.error_messages.map(&:content)).to include(
+            'CI configuration fetch from Gitaly timed out. This may indicate Gitaly service slowness or an outage.'
+          )
         end
       end
     end

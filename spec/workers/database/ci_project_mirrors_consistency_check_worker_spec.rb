@@ -13,7 +13,7 @@ RSpec.describe Database::CiProjectMirrorsConsistencyCheckWorker, feature_categor
       worker.perform
     end
 
-    context 'logs should contain the detailed mismatches' do
+    context 'when logs should contain the detailed mismatches' do
       let(:first_project) { Project.all.order(:id).limit(1).first }
       let(:missing_project) { Project.all.order(:id).limit(2).last }
 

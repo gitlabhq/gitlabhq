@@ -13,6 +13,7 @@ RSpec.describe AntiAbuse::Event, type: :model, feature_category: :insider_threat
   describe "associations" do
     it { is_expected.to belong_to(:user).class_name("User").inverse_of(:abuse_events) }
     it { is_expected.to belong_to(:abuse_report).inverse_of(:abuse_events) }
+    it { is_expected.to belong_to(:organization).optional }
   end
 
   describe "validations" do

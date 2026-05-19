@@ -3,5 +3,7 @@ name: track_internal_event
 description: Grants the ability to track internal events
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - track_internal_event

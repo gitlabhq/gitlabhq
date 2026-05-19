@@ -30,9 +30,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     }
   end
 
-  let(:job) { { 'args' => [1, 2] } }
+  let(:job) { { 'args' => [1, 2], 'jid' => 'abc123' } }
   let(:job_with_wal_locations) do
-    { 'args' => [1, 2], 'wal_locations' => { 'main' => '0/D525E3A8', 'ci' => '0/D525E3A8' } }
+    { 'args' => [1, 2], 'jid' => 'def456', 'wal_locations' => { 'main' => '0/D525E3A8', 'ci' => '0/D525E3A8' } }
   end
 
   subject(:service) { described_class.new(worker_name: worker_class_name, prefix: 'some_prefix') }
@@ -67,6 +67,17 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       end
     end
 
+    it 'stores the jid' do
+      add_to_queue!
+
+      Gitlab::Redis::SharedState.with do |r|
+        set_key = service.redis_key
+        stored_job = service.send(:deserialize, r.lrange(set_key, 0, -1).first)
+
+        expect(stored_job['jid']).to eq(job['jid'])
+      end
+    end
+
     context 'with wal locations' do
       subject(:add_to_queue!) { service.add_to_queue!(job_with_wal_locations, worker_context) }
 
@@ -95,16 +106,17 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     let(:wal_locations) { { 'main' => '0/D525E3A8', 'ci' => '0/D525E3A8' } }
     let(:jobs) do
       [
-        { 'args' => [1], 'wal_locations' => wal_locations },
-        { 'args' => [2], 'wal_locations' => wal_locations },
-        { 'args' => [3], 'wal_locations' => wal_locations }
+        { 'args' => [1], 'jid' => 'jid1', 'wal_locations' => wal_locations },
+        { 'args' => [2], 'jid' => 'jid2', 'wal_locations' => wal_locations },
+        { 'args' => [3], 'jid' => 'jid3', 'wal_locations' => wal_locations }
       ]
     end
 
     let(:buffered_at) { Time.now.utc }
     let(:metadata_key) { service.metadata_key }
     let(:expected_metadata) do
-      { 'concurrency_limit_buffered_at' => be_within(1.second).of(buffered_at.to_f),
+      { 'jid' => anything,
+        'concurrency_limit_buffered_at' => be_within(1.second).of(buffered_at.to_f),
         'concurrency_limit_resume' => true,
         'wal_locations' => wal_locations }.merge(stored_context)
     end

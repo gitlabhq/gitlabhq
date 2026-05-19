@@ -68,6 +68,10 @@ module API
         optional :runner,
           type: String,
           desc: "A runner ID, or comma-separated list of runner IDs"
+        optional :endpoint,
+          type: String,
+          desc: "A caller_id identifying a code path, for example `GET /api/v4/projects/:id` or " \
+            "`ProjectsController#show`. Use comma to separate multiple endpoint paths"
         optional :force, type: Boolean, desc: 'Skip feature flag validation checks, such as a YAML definition'
 
         mutually_exclusive :key, :feature_group
@@ -77,6 +81,7 @@ module API
         mutually_exclusive :key, :project
         mutually_exclusive :key, :repository
         mutually_exclusive :key, :runner
+        mutually_exclusive :key, :endpoint
       end
       post ':name' do
         flag_params = declared_params(include_missing: false)

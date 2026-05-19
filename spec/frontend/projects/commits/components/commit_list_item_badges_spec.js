@@ -10,7 +10,7 @@ describe('CommitListItemBadges', () => {
   let narrowScreenContainer;
   let wideScreenContainer;
 
-  const createComponent = (commit = mockCommit) => {
+  const createComponent = ({ commit = mockCommit } = {}) => {
     wrapper = shallowMountExtended(CommitListItemBadges, {
       propsData: {
         commit,
@@ -54,8 +54,20 @@ describe('CommitListItemBadges', () => {
       tagBadges.wrappers.forEach((badge) => {
         expect(badge.props()).toMatchObject({
           icon: 'tag',
-          variant: 'neutral',
         });
+      });
+    });
+
+    it('renders count tag badge with multiple tags in both containers', () => {
+      createComponent({ commit: { ...mockCommit, tags: ['V1.2.3', 'V2.0.0'] } });
+      const tagBadges = wrapper.findAllComponents(GlBadge);
+      expect(tagBadges).toHaveLength(2);
+
+      tagBadges.wrappers.forEach((badge) => {
+        expect(badge.props()).toMatchObject({
+          icon: 'tag',
+        });
+        expect(badge.text()).toContain('tags');
       });
     });
 

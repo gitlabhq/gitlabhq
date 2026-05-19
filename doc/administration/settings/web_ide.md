@@ -18,10 +18,10 @@ using [Extension Marketplace](../../user/project/web_ide/_index.md#manage-extens
 relies on the web browser's [same origin](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)
 policy to run extensions in a sandbox environment.
 
-GitLab provides a default extension host domain `cdn.web-ide.gitlab-static.net` that is available to all
-GitLab offerings by default. This domain name points to an external HTTP server that hosts VS Code static assets.
-In offline environments, a user's web browser can't connect to this external HTTP server which,
-in turn, limits the Web IDE's capabilities.
+GitLab provides a default extension host domain `*.cdn.web-ide.gitlab-static.net` that is available to all
+GitLab offerings by default. This wildcard domain points to an external HTTP server that hosts VS Code static
+assets. Each extension is served from its own subdomain. In offline environments, a user's web browser can't
+connect to this external HTTP server, which, in turn, limits the Web IDE's capabilities.
 
 To circumvent this limitation, GitLab instance administrators can set up a custom extension host domain. The
 custom extension host domain points to the GitLab instance itself which can also serve the VS Code static
@@ -77,7 +77,7 @@ should adapt this guide to other installation methods.
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect. Then, open the GitLab application.
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Web IDE**.
 1. In the **Extension host domain** text box, enter the custom extension host domain.
 1. Select **Save changes**.
@@ -103,7 +103,7 @@ Prerequisites:
 To configure this setting:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Web IDE**.
 1. Select or clear the **Enable single origin fallback** checkbox.
 1. Select **Save changes**.

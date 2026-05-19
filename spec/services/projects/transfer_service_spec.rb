@@ -207,7 +207,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
   end
 
   context 'when transfer succeeds' do
-    before do
+    before_all do
       group.add_owner(user)
     end
 
@@ -263,7 +263,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     context 'with a project integration' do
       let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
       let_it_be(:instance_integration) { create(:integrations_slack, :instance) }
-      let_it_be(:project_integration) { create(:integrations_slack, project: project) }
+      let_it_be(:project_integration, freeze: false) { create(:integrations_slack, project: project) }
 
       context 'when it inherits from instance_integration' do
         before do
@@ -338,9 +338,11 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       end.to raise_error(ActiveRecord::ActiveRecordError)
     end
 
-    before do
+    before_all do
       group.add_owner(user)
+    end
 
+    before do
       expect_any_instance_of(Labels::TransferService).to receive(:execute).and_raise(ActiveRecord::StatementInvalid, "PG ERROR")
     end
 
@@ -436,8 +438,11 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     let_it_be_with_reload(:project) { create(:project, :repository, :legacy_storage, namespace: group) }
     let(:target) { create(:group, parent: group) }
 
-    before do
+    before_all do
       group.add_owner(user)
+    end
+
+    before do
       allow(project).to receive(:has_container_registry_tags?).and_return(true)
     end
 
@@ -712,7 +717,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     let!(:project) { create(:project, :repository, namespace: user.namespace) }
     let!(:old_disk_path) { project.repository.disk_path }
 
-    before do
+    before_all do
       group.add_owner(user)
     end
 
@@ -806,7 +811,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
   describe 'transferring a design repository' do
     subject { described_class.new(project, user) }
 
-    before do
+    before_all do
       group.add_owner(user)
     end
 
@@ -937,7 +942,10 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
         user.id
       )
 
-      expect(service.schedule_async_transfer(new_namespace)).to be true
+      result = service.schedule_async_transfer(new_namespace)
+
+      expect(result).to be_success
+      expect(result.message).to eq('Project transfer has been queued. You will be notified when it completes.')
 
       project_namespace = project.project_namespace.reload
       expect(project_namespace.state).to eq('transfer_scheduled')
@@ -949,11 +957,13 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
         project.project_namespace.update_column(:state, Namespace.states[:creation_in_progress])
       end
 
-      it 'returns false with an error and does not enqueue the worker' do
+      it 'returns error response and does not enqueue the worker' do
         expect(Projects::TransferWorker).not_to receive(:perform_async)
 
-        expect(service.schedule_async_transfer(new_namespace)).to be false
-        expect(service.error).to eq('Unable to initiate transfer. The project may already have a transfer in progress.')
+        result = service.schedule_async_transfer(new_namespace)
+
+        expect(result).to be_error
+        expect(result.message).to eq('Unable to initiate transfer. The project may already have a transfer in progress.')
       end
     end
   end

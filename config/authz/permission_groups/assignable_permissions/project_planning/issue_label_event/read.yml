@@ -1,7 +1,10 @@
 ---
 name: read_issue_label_event
 description: Grants the ability to read issue label events
+deprecated: true
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - read_issue_label_event

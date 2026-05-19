@@ -227,6 +227,25 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
     end
   end
 
+  context 'user context' do
+    let_it_be(:user) { create(:user) }
+
+    it 'links to a valid cross-project reference' do
+      reference = "#{project.full_path}$#{snippet.id}"
+
+      result = reference_filter("See #{reference}", { project: nil, user: user, skip_project_check: true })
+
+      expect(result.css('a').first.attr('href')).to eq(urls.project_snippet_url(project, snippet))
+    end
+
+    it 'ignores internal references' do
+      act = "See $#{snippet.id}"
+
+      result = reference_filter(act, project: nil, user: user, skip_project_check: true)
+      expect(result.to_html).to include act
+    end
+  end
+
   context 'checking N+1' do
     let_it_be(:namespace2) { create(:namespace) }
     let_it_be(:project2)   { create(:project, :public, namespace: namespace2) }

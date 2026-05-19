@@ -1452,8 +1452,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   end
 
   describe '#raw_changes_between' do
-    let(:old_rev) {}
-    let(:new_rev) {}
+    let(:old_rev) { nil }
+    let(:new_rev) { nil }
     let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
 
     context 'initial commit' do
@@ -2151,10 +2151,10 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       expect(languages).to match_array(
         [
-          { value: a_value_within(0.1).of(66.7), label: "Ruby", color: "#701516", highlight: "#701516" },
-          { value: a_value_within(0.1).of(22.96), label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-          { value: a_value_within(0.1).of(7.9), label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-          { value: a_value_within(0.1).of(2.51), label: "CoffeeScript", color: "#244776", highlight: "#244776" }
+          { value: a_value_within(0.1).of(66.7), label: "Ruby", color: "#701516", highlight: "#701516", language_id: 326 },
+          { value: a_value_within(0.1).of(22.96), label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a", language_id: 183 },
+          { value: a_value_within(0.1).of(7.9), label: "HTML", color: "#e34c26", highlight: "#e34c26", language_id: 146 },
+          { value: a_value_within(0.1).of(2.51), label: "CoffeeScript", color: "#244776", highlight: "#244776", language_id: 63 }
         ])
     end
 
@@ -3133,7 +3133,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       context 'when the manual override is used on non-detectable file' do
         let(:gitattr_content) { "file1.txt gitlab-generated\n" }
 
-        it 'returns both manually overriden file and the detected file' do
+        it 'returns both manually overridden file and the detected file' do
           expect(generated_files).to contain_exactly('file1.txt', 'package-lock.json')
         end
       end
@@ -3141,7 +3141,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       context 'when the manual override is used on the detectable file' do
         let(:gitattr_content) { "package-lock.json gitlab-generated\n" }
 
-        it 'returns the overriden file' do
+        it 'returns the overridden file' do
           expect(generated_files).to contain_exactly('package-lock.json')
         end
       end

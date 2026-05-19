@@ -30,7 +30,6 @@ describe('MrWidgetPipelineContainer', () => {
   let subscriptionHandler;
 
   const createComponent = async ({
-    featureFlags = { mrWidgetPipelineSubscription: false },
     props = {},
     mergePipelineHandler = mergePipelineResponse,
   } = {}) => {
@@ -50,11 +49,6 @@ describe('MrWidgetPipelineContainer', () => {
 
     wrapper = extendedWrapper(
       mount(MrWidgetPipelineContainer, {
-        provide: {
-          glFeatures: {
-            ...featureFlags,
-          },
-        },
         propsData: {
           mr: { ...mockStore },
           ...props,
@@ -199,51 +193,36 @@ describe('MrWidgetPipelineContainer', () => {
     });
   });
 
-  describe('with feature flag disabled', () => {
-    describe('subscription', () => {
-      it('skips subscription setup', async () => {
-        await createComponent();
+  describe('subscription', () => {
+    const mockSetPipelineStatusData = jest.fn();
 
-        expect(subscriptionHandler).not.toHaveBeenCalled();
+    beforeEach(async () => {
+      await createComponent({
+        props: {
+          mr: {
+            ...mockStore,
+            pipeline: {
+              ...mockStore.pipeline,
+              id: 1,
+            },
+            setPipelineStatusData: mockSetPipelineStatusData,
+          },
+        },
       });
     });
-  });
 
-  describe('with feature flag enabled', () => {
-    describe('subscription', () => {
-      const mockSetPipelineStatusData = jest.fn();
-
-      beforeEach(async () => {
-        await createComponent({
-          props: {
-            mr: {
-              ...mockStore,
-              pipeline: {
-                ...mockStore.pipeline,
-                id: 1,
-              },
-              setPipelineStatusData: mockSetPipelineStatusData,
-            },
+    it('when subscription data is received the data is stored in the store', async () => {
+      mockSubscription.next({
+        data: {
+          ciPipelineStatusUpdated: {
+            ...mockPipelineSubscription,
           },
-          featureFlags: {
-            mrWidgetPipelineSubscription: true,
-          },
-        });
+        },
       });
 
-      it('when subscription data is received the data is stored in the store', async () => {
-        mockSubscription.next({
-          data: {
-            ciPipelineStatusUpdated: {
-              ...mockPipelineSubscription,
-            },
-          },
-        });
+      await waitForPromises();
 
-        await waitForPromises();
-
-        expect(mockSetPipelineStatusData).toHaveBeenCalledWith(mockPipelineSubscription, false);
-      });
+      expect(mockSetPipelineStatusData).toHaveBeenCalledWith(mockPipelineSubscription, false);
     });
   });
 });

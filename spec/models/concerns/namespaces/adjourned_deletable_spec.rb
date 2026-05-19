@@ -243,7 +243,7 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
 
     describe '#first_scheduled_for_deletion_in_hierarchy_chain' do
       context 'when the project has been marked for deletion' do
-        let_it_be(:project) { create(:project, :aimed_for_deletion) }
+        let_it_be(:project) { create(:project, marked_for_deletion_at: Date.yesterday, deleting_user: create(:user)) }
 
         it 'returns the project' do
           expect(project.first_scheduled_for_deletion_in_hierarchy_chain).to eq(project)

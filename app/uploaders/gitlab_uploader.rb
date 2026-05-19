@@ -211,3 +211,5 @@ class GitlabUploader < CarrierWave::Uploader::Base
     end
   end
 end
+
+GitlabUploader.prepend_mod

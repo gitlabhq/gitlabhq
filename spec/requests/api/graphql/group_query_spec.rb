@@ -250,6 +250,13 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
 
         expect(graphql_data['group']).to be_nil
       end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :read_group do
+        let(:user) { admin }
+        let(:boundary_object) { private_group }
+        let(:query) { graphql_query_for('group', { fullPath: private_group.full_path }, 'id') }
+        let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+      end
     end
 
     describe 'maxAccessLevel' do

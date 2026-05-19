@@ -5,4 +5,4 @@ feature_category: permissions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227144
 milestone: '18.11'
 queued_migration_version: 20260312123000
-finalized_by:
+finalized_by: '20260423235043'

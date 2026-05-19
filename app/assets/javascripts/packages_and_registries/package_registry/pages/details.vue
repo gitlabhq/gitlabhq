@@ -460,7 +460,7 @@ export default {
 
     <delete-packages
       @start="track($options.trackingActions.DELETE_PACKAGE_TRACKING_ACTION)"
-      @end="navigateToListWithSuccessModal"
+      @success="navigateToListWithSuccessModal"
     >
       <template #default="{ deletePackages }">
         <gl-modal

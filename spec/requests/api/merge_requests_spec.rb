@@ -834,6 +834,31 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         )
       end
 
+      context 'with draft parameter' do
+        let_it_be(:draft_mr) { create(:merge_request, :draft_merge_request, author: user, source_project: project2, target_project: project2) }
+
+        it 'returns only draft merge requests when draft=true' do
+          get api('/merge_requests', user), params: { draft: true }
+
+          expect_response_contain_exactly(draft_mr.id)
+        end
+
+        it 'returns only non-draft merge requests when draft=false' do
+          get api('/merge_requests', user), params: { draft: false }
+
+          expect_response_contain_exactly(
+            merge_request_merged.id, merge_request2.id, merge_request_locked.id,
+            merge_request_closed.id, merge_request.id
+          )
+        end
+
+        it 'returns 400 when both draft and wip are specified' do
+          get api('/merge_requests', user), params: { draft: true, wip: 'yes' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
       it 'does not return unauthorized merge requests' do
         private_project = create(:project, :private)
         merge_request3 = create(:merge_request, :simple, source_project: private_project, target_project: private_project, source_branch: 'other-branch')
@@ -1320,6 +1345,29 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       expect_empty_array_response
     end
 
+    context 'with draft parameter' do
+      let!(:draft_mr) { create(:merge_request, :draft_merge_request, author: user, source_project: project, target_project: project) }
+
+      it 'returns only draft merge requests when draft=true' do
+        get api("/projects/#{project.id}/merge_requests", user), params: { draft: true }
+
+        expect_response_contain_exactly(draft_mr.id)
+      end
+
+      it 'returns only non-draft merge requests when draft=false' do
+        get api("/projects/#{project.id}/merge_requests", user), params: { draft: false }
+
+        expect(json_response).not_to include(a_hash_including('id' => draft_mr.id))
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns 400 when both draft and wip are specified' do
+        get api("/projects/#{project.id}/merge_requests", user), params: { draft: true, wip: 'yes' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     it 'returns merge_request by "iids" array' do
       get api(endpoint_path, user), params: { iids: [merge_request.iid, merge_request_closed.iid] }
 
@@ -1517,6 +1565,134 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let(:boundary_object) { group }
       let(:request) do
         get api(endpoint_path, personal_access_token: pat)
+      end
+    end
+
+    context 'with group_mr_in_operator_optimization' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, :public, :repository, namespace: group) }
+      let!(:mr_opened) { create(:merge_request, :unique_branches, state: 'opened', source_project: project, target_project: project) }
+
+      before do
+        group.add_reporter(user)
+      end
+
+      context 'when the feature flag is enabled' do
+        before do
+          stub_feature_flags(group_mr_in_operator_optimization: true)
+        end
+
+        context 'when params satisfy the optimization index (state + created_at sort)' do
+          let(:params) { { state: 'opened', with_merge_status_recheck: 'true', page: 1, per_page: 1 } }
+
+          it 'passes skip_default_order: true to paginate' do
+            expect_next_instance_of(Gitlab::Pagination::OffsetPagination) do |pagination|
+              expect(pagination).to receive(:paginate).with(anything, hash_including(skip_default_order: true)).and_call_original
+            end
+
+            get api("/groups/#{group.id}/merge_requests", user), params: params
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it 'returns the correct merge requests' do
+            get api("/groups/#{group.id}/merge_requests", user), params: params
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.map { |mr| mr['id'] }).to include(mr_opened.id)
+          end
+        end
+
+        context 'when a filter is present that blocks the optimization' do
+          let(:params) { { state: 'opened', with_merge_status_recheck: 'true', page: 1, per_page: 1, author_id: user.id } }
+
+          it 'passes skip_default_order: false to paginate' do
+            expect_next_instance_of(Gitlab::Pagination::OffsetPagination) do |pagination|
+              expect(pagination).to receive(:paginate).with(anything, hash_including(skip_default_order: false)).and_call_original
+            end
+
+            get api("/groups/#{group.id}/merge_requests", user), params: params
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'pagination with created_at desc across multiple projects' do
+          # Use a dedicated group so no other test data bleeds into these results.
+          let_it_be(:pg_group) { create(:group) }
+          let(:base_params) do
+            { state: 'opened', order_by: 'created_at', sort: 'desc', include_subgroups: 'true', per_page: 2 }
+          end
+
+          # project_a lives in the top-level group, project_b in the subgroup, so the
+          # optimization must merge cursor arrays from both projects correctly.
+          let_it_be(:project_a) { create(:project, :public, namespace: pg_group) }
+          let_it_be(:project_b) { create(:project, :public, namespace: create(:group, parent: pg_group)) }
+          let_it_be(:archived_project) { create(:project, :public, :archived, namespace: pg_group) }
+
+          # Five opened MRs interleaved across the two projects by created_at.
+          # Intentional interleaving:  A, B, A, B, A - so every page boundary falls
+          # between records from different projects, exercising the cross-project merge.
+          let_it_be(:base_time) { Time.current }
+          let_it_be(:mr1) { create(:merge_request, :unique_branches, state: 'opened', source_project: project_a, target_project: project_a, created_at: base_time) }
+          let_it_be(:mr2) { create(:merge_request, :unique_branches, state: 'opened', source_project: project_b, target_project: project_b, created_at: base_time - 1.second) }
+          let_it_be(:mr3) { create(:merge_request, :unique_branches, state: 'opened', source_project: project_a, target_project: project_a, created_at: base_time - 2.seconds) }
+          let_it_be(:archived_mr) { create(:merge_request, :unique_branches, state: 'opened', source_project: archived_project, target_project: archived_project, created_at: base_time - 2.seconds) }
+          let_it_be(:mr4) { create(:merge_request, :unique_branches, state: 'opened', source_project: project_b, target_project: project_b, created_at: base_time - 3.seconds) }
+          let_it_be(:mr5) { create(:merge_request, :unique_branches, state: 'opened', source_project: project_a, target_project: project_a, created_at: base_time - 4.seconds) }
+
+          before_all { pg_group.add_reporter(user) }
+
+          def ids_for_page(page_num)
+            get api("/groups/#{pg_group.id}/merge_requests", user), params: base_params.merge(page: page_num)
+            json_response.map { |mr| mr['id'] }
+          end
+
+          def ids_and_created_at_pairs_for_page(page_num)
+            get api("/groups/#{pg_group.id}/merge_requests", user), params: base_params.merge(page: page_num)
+            json_response.map { |mr| [mr['id'], Time.zone.parse(mr['created_at']).to_i] }
+          end
+
+          it 'returns page 1 with the two most-recent MRs in descending order' do
+            expect(ids_for_page(1)).to eq([mr1.id, mr2.id])
+          end
+
+          it 'returns page 2 with the next two MRs, no overlap with page 1' do
+            page1_ids = ids_for_page(1)
+            page2_ids = ids_for_page(2)
+
+            expect(page2_ids).to eq([mr3.id, mr4.id])
+            expect(page2_ids & page1_ids).to be_empty
+          end
+
+          it 'returns page 3 with the oldest MR' do
+            expect(ids_for_page(3)).to eq([mr5.id])
+          end
+
+          it 'covers every MR exactly once in descending created_at order across all pages' do
+            all_ids_and_created_at = [1, 2, 3].flat_map { |p| ids_and_created_at_pairs_for_page(p) }
+
+            expect(all_ids_and_created_at).to eq([[mr1.id, mr1.created_at.to_i], [mr2.id, mr2.created_at.to_i], [mr3.id, mr3.created_at.to_i], [mr4.id, mr4.created_at.to_i], [mr5.id, mr5.created_at.to_i]])
+          end
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(group_mr_in_operator_optimization: false)
+        end
+
+        it 'passes skip_default_order: false to paginate' do
+          params = { state: 'opened', order_by: 'created_at', sort: 'desc', include_subgroups: 'true' }
+
+          expect_next_instance_of(Gitlab::Pagination::OffsetPagination) do |pagination|
+            expect(pagination).to receive(:paginate).with(anything, hash_including(skip_default_order: false)).and_call_original
+          end
+
+          get api("/groups/#{group.id}/merge_requests", user), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
     end
   end
@@ -2722,39 +2898,20 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(json_response['error']).to eq('target_branch is missing')
       end
 
-      context 'when validate_merge_request_branch_existence feature flag is enabled' do
-        before do
-          stub_feature_flags(validate_merge_request_branch_existence: project)
-        end
+      it "returns 400 when source_branch does not exist in the repository" do
+        post api("/projects/#{project.id}/merge_requests", user),
+          params: { title: "Test merge_request", source_branch: "non-existent-source", target_branch: "master", author: user }
 
-        it "returns 400 when source_branch does not exist in the repository" do
-          post api("/projects/#{project.id}/merge_requests", user),
-            params: { title: "Test merge_request", source_branch: "non-existent-source", target_branch: "master", author: user }
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq({ 'source_branch' => ['does not exist'] })
-        end
-
-        it "returns 400 when target_branch does not exist in the repository" do
-          post api("/projects/#{project.id}/merge_requests", user),
-            params: { title: "Test merge_request", source_branch: "markdown", target_branch: "non-existent-target", author: user }
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq({ 'target_branch' => ['does not exist'] })
-        end
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq({ 'source_branch' => ['does not exist'] })
       end
 
-      context 'when validate_merge_request_branch_existence feature flag is disabled' do
-        before do
-          stub_feature_flags(validate_merge_request_branch_existence: false)
-        end
+      it "returns 400 when target_branch does not exist in the repository" do
+        post api("/projects/#{project.id}/merge_requests", user),
+          params: { title: "Test merge_request", source_branch: "markdown", target_branch: "non-existent-target", author: user }
 
-        it "does not validate branch existence" do
-          post api("/projects/#{project.id}/merge_requests", user),
-            params: { title: "Test merge_request", source_branch: "non-existent-source", target_branch: "master", author: user }
-
-          expect(response).not_to have_gitlab_http_status(:bad_request)
-        end
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq({ 'target_branch' => ['does not exist'] })
       end
 
       it "returns 400 when title is missing" do
@@ -3316,6 +3473,16 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         end
       end
 
+      context 'when human user assigns a service account as assignee (web session)' do
+        it 'attributes the system note to the human user' do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
+            params: { assignee_ids: [service_account.id] }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(merge_request.notes.system.last.author).to eq(user)
+        end
+      end
+
       context 'when service account acts via OAuth token (authentication context)' do
         before do
           ::Gitlab::Auth::Identity.new(service_account).link!(user, context: :authentication)
@@ -3532,6 +3699,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
+      it 'deletes context commit for developer role' do
+        developer = create(:user)
+        project.add_developer(developer)
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/context_commits", developer), params: params
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
       it 'returns 403 when deleting existing context commit for guest role' do
         guest = create(:user)
         project.add_guest(guest)
@@ -3661,25 +3835,11 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       end
 
       context 'when no pipeline exists' do
-        context 'when merge_immediately_when_no_pipeline feature flag is enabled' do
-          it 'merges immediately' do
-            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
+        it 'merges immediately' do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['state']).to eq('merged')
-          end
-        end
-
-        context 'when merge_immediately_when_no_pipeline feature flag is disabled' do
-          before do
-            stub_feature_flags(merge_immediately_when_no_pipeline: false)
-          end
-
-          it 'returns not allowed' do
-            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
-
-            expect(response).to have_gitlab_http_status(:method_not_allowed)
-          end
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['state']).to eq('merged')
         end
       end
 
@@ -3690,28 +3850,12 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           end
         end
 
-        context 'when merge_immediately_when_no_pipeline feature flag is enabled' do
-          it 'sets auto merge' do
-            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
+        it 'sets auto merge' do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
-            expect(merge_request.reload.state).to eq('opened')
-          end
-        end
-
-        context 'when merge_immediately_when_no_pipeline feature flag is disabled' do
-          before do
-            stub_feature_flags(merge_immediately_when_no_pipeline: false)
-          end
-
-          it 'sets auto merge' do
-            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
-            expect(merge_request.reload.state).to eq('opened')
-          end
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
+          expect(merge_request.reload.state).to eq('opened')
         end
       end
 

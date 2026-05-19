@@ -178,6 +178,34 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
   end
 
+  describe '#gitlab_observability_export_variable' do
+    let(:setting) { create(:observability_group_o11y_setting, group: group) }
+
+    context 'when the variable exists' do
+      let!(:variable) do
+        create(:ci_group_variable, group: group, key: 'GITLAB_OBSERVABILITY_EXPORT', value: 'metrics,logs,traces')
+      end
+
+      it 'returns the variable' do
+        expect(setting.gitlab_observability_export_variable).to eq(variable)
+      end
+    end
+
+    context 'when the variable does not exist' do
+      it 'returns nil' do
+        expect(setting.gitlab_observability_export_variable).to be_nil
+      end
+    end
+
+    context 'when group is nil' do
+      let(:setting) { build(:observability_group_o11y_setting, group: nil) }
+
+      it 'returns nil' do
+        expect(setting.gitlab_observability_export_variable).to be_nil
+      end
+    end
+  end
+
   describe '#provisioning?' do
     let(:setting) { build(:observability_group_o11y_setting, group: group) }
 

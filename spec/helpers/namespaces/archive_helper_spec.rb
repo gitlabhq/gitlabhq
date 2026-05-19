@@ -94,4 +94,47 @@ RSpec.describe Namespaces::ArchiveHelper, feature_category: :groups_and_projects
       end
     end
   end
+
+  describe '#archived_banner_message_mobile' do
+    let_it_be_with_reload(:parent) { create(:group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Needs persisted object
+
+    let_it_be(:group) { build_stubbed(:group, :archived, parent: parent) }
+    let_it_be(:project) { build_stubbed(:project, :archived, group: parent) }
+    let_it_be(:project_presenter) { ProjectPresenter.new(project) }
+
+    subject { archived_banner_message_mobile(namespace) }
+
+    where(:namespace_type, :has_archived_ancestor, :expected_message) do
+      :group             | false | 'This group is %{strong_open}read-only%{strong_close}.'
+      :group             | true  | 'This group is %{strong_open}read-only%{strong_close}.'
+      :project           | false | 'This project is %{strong_open}read-only%{strong_close}.'
+      :project           | true  | 'This project is %{strong_open}read-only%{strong_close}.'
+      :project_presenter | false | 'This project is %{strong_open}read-only%{strong_close}.'
+      :project_presenter | true  | 'This project is %{strong_open}read-only%{strong_close}.'
+    end
+
+    with_them do
+      let(:namespace) { namespace_type == :group ? group : project }
+
+      before do
+        parent.namespace_settings.update!(archived: true) if has_archived_ancestor
+      end
+
+      it 'returns expected message' do
+        is_expected.to eq(safe_format(
+          _(expected_message),
+          tag_pair(tag.strong, :strong_open, :strong_close)
+        ))
+      end
+    end
+
+    context 'when namespace type is not supported' do
+      let_it_be(:user_namespace) { build_stubbed(:namespace, type: 'User') }
+
+      it 'raises an error' do
+        expect { archived_banner_message_mobile(user_namespace) }
+          .to raise_error(RuntimeError, "Unsupported namespace type: #{user_namespace.class.name}")
+      end
+    end
+  end
 end

@@ -11,15 +11,6 @@ module Ci
         end
       end
 
-      # Remove with FF `drop_stuck_builds_from_ci_pending_builds_queue`
-      def drop_stuck(builds, failure_reason:)
-        fetch(builds) do |build|
-          break unless build.stuck?
-
-          drop_build :stuck, build, failure_reason
-        end
-      end
-
       def drop_stuck_from_queue(builds_queue, failure_reason:)
         fetch_from_queue(builds_queue) do |build|
           next unless build.stuck?

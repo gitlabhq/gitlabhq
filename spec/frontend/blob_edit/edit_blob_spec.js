@@ -343,4 +343,68 @@ describe('Blob Editing', () => {
       expect(mockManager.destroy).toHaveBeenCalled();
     });
   });
+
+  describe('new file with content query parameter', () => {
+    it('loads blob content from api when filePath is set', async () => {
+      setHTMLFixture(`
+      <div class="js-edit-mode-pane"></div>
+      <div class="js-edit-mode"><a href="#write">Write</a><a href="#preview">Preview</a></div>
+      <form class="js-edit-blob-form">
+        <div id="file_path"></div>
+        <div id="editor" data-ref="main">
+          <pre class="editor-loading-content">ignored content</pre>
+        </div>
+        <textarea id="file-content"></textarea>
+      </form>
+    `);
+
+      blobInstance = new EditBlob({
+        isMarkdown: false,
+        previewMarkdownPath: PREVIEW_MARKDOWN_PATH,
+        filePath: 'path/to/file.js',
+        projectPath: 'path/to/project',
+        projectId,
+      });
+
+      await waitForPromises();
+
+      expect(SourceEditor.prototype.createInstance).toHaveBeenCalledWith(
+        expect.objectContaining({
+          blobContent: 'raw content',
+        }),
+      );
+    });
+
+    it('loads blob content from content query param when filePath is not set', async () => {
+      const preRenderedContent = 'hello world\nfrom query param';
+
+      setHTMLFixture(`
+      <div class="js-edit-mode-pane"></div>
+      <div class="js-edit-mode"><a href="#write">Write</a><a href="#preview">Preview</a></div>
+      <form class="js-edit-blob-form">
+        <div id="file_path"></div>
+        <div id="editor" data-ref="main">
+          <pre class="editor-loading-content">${preRenderedContent}</pre>
+        </div>
+        <textarea id="file-content"></textarea>
+      </form>
+    `);
+
+      blobInstance = new EditBlob({
+        isMarkdown: false,
+        previewMarkdownPath: PREVIEW_MARKDOWN_PATH,
+        filePath: null,
+        projectPath: 'path/to/project',
+        projectId,
+      });
+      await waitForPromises();
+
+      expect(Api.getRawFile).not.toHaveBeenCalled();
+      expect(SourceEditor.prototype.createInstance).toHaveBeenCalledWith(
+        expect.objectContaining({
+          blobContent: preRenderedContent,
+        }),
+      );
+    });
+  });
 });

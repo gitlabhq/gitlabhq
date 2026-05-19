@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import apolloProvider from '~/repository/graphql';
 import ForkInfo from '~/repository/components/fork_info.vue';
 
-export default function initForkInfoApp(apolloProvider) {
+export default function initForkInfoApp() {
   const forkEl = document.getElementById('js-fork-info');
   if (!forkEl) return null;
 

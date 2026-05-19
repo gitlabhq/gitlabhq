@@ -23,7 +23,7 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher, feature_category:
     expect(BulkImports::FinishProjectImportWorker).to receive(:perform_async).with(entity.project_id)
 
     expect { subject.run }
-      .to change(entity, :status_name).to(:finished)
+      .to change { entity.status_name }.to(:finished)
   end
 
   context 'when entity is in a final finished or failed state' do
@@ -35,7 +35,7 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher, feature_category:
         subject = described_class.new(context)
 
         expect { subject.run }
-          .not_to change(entity, :status_name)
+          .not_to change { entity.status_name }
       end
     end
 
@@ -53,6 +53,21 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher, feature_category:
       described_class.new(context).run
 
       expect(entity.reload.failed?).to eq(true)
+    end
+  end
+
+  context 'when entity is a group' do
+    it 'schedules PlacementWorker so imported epics get positioned' do
+      group = create(:group)
+      entity = create(:bulk_import_entity, :group_entity, :started, group: group)
+      pipeline_tracker = create(:bulk_import_tracker, entity: entity)
+      context = BulkImports::Pipeline::Context.new(pipeline_tracker)
+
+      expect(::Issues::PlacementWorker)
+        .to receive(:perform_async)
+        .with({ 'namespace_id' => group.work_item_positioning_root.id })
+
+      described_class.new(context).run
     end
   end
 end

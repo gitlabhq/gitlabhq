@@ -5,4 +5,9 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@project.name} work items")
 
+.js-jira-issues-import-status-root{ data: { can_edit: can?(current_user, :admin_project, @project).to_s,
+  is_jira_configured: @project.jira_integration.present?.to_s,
+  issues_path: project_issues_path(@project),
+  project_path: @project.full_path } }
+
 #js-work-items{ data: work_item_views_only_data(@project) }

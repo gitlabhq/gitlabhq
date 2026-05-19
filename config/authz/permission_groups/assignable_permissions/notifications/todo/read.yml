@@ -3,5 +3,7 @@ name: read_todo
 description: Grants the ability to read todos
 boundaries:
   - user
+available_for:
+  - granular_access_token
 permissions:
   - read_todo

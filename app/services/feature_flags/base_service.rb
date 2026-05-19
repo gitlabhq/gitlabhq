@@ -59,7 +59,7 @@ module FeatureFlags
     private
 
     def audit_message(feature_flag)
-      raise NotImplementedError, "This method should be overriden by subclasses"
+      raise NotImplementedError, "This method should be overridden by subclasses"
     end
   end
 end

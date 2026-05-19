@@ -236,6 +236,18 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
       expect { Namespace.find(namespace.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
+    context 'when the user has no personal namespace' do
+      before do
+        user.namespace.delete
+        user.association(:namespace).reset
+      end
+
+      it 'destroys the user without error' do
+        expect { service.execute }.not_to raise_error
+        expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
     it 'deletes user associations in batches' do
       expect(user).to receive(:destroy_dependent_associations_in_batches)
 

@@ -26,7 +26,7 @@ Prerequisites:
 To limit the number of requests made to the issue and epic creation endpoints:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Issues Rate Limits**.
 1. Under **Max requests per minute**, enter the new value.
 1. Select **Save changes**.

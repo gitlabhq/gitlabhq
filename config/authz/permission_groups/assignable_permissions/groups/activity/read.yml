@@ -1,0 +1,9 @@
+---
+name: read_activity
+description: Grants the ability to read activity
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_user_activity

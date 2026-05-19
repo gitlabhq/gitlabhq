@@ -1,6 +1,7 @@
 ---
 name: read_branch_rule
 description: |-
-  Grants the ability to view branch rules for a project. Branch
-  rules define protections and policies for branches, such as
-  who can push or merge.
+  Grants the ability to view the branch rules settings page for a
+  project. Branch rules define protections and policies applied to
+  branches, such as who can push or merge, required approvals, and
+  status checks.

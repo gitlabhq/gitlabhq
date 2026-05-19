@@ -187,12 +187,11 @@ RSpec.describe WikiHelper, feature_category: :wiki do
       allow(Pajamas::ButtonComponent).to receive(:new).and_call_original
     end
 
-    it 'shows the sidebar icon and is hidden on large screens' do
+    it 'shows the sidebar icon' do
       subject
 
       expect(Pajamas::ButtonComponent).to have_received(:new) do |**kwargs|
         expect(kwargs[:icon]).to eq('sidebar')
-        expect(kwargs[:button_options][:class]).to include('@lg/panel:gl-hidden')
       end
     end
   end

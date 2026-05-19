@@ -1,7 +1,7 @@
-<!-- Title suggestion: [Sha 256] <issue description> -->
+<!-- Title suggestion: [SHA-256] <issue description> -->
 
 This issue describes an anomaly with the GitLab application with projects that
-use SHA256 as the hashing algorithm in the repository.
+use SHA-256 as the hashing algorithm in the repository.
 
 ## Where in the application are you seeing this issue?
 

@@ -7,6 +7,7 @@ class Projects::CommitsController < Projects::ApplicationController
   include RendersCommits
   include ParseCommitDate
   include RedirectsForMissingPathOnTree
+  include HandlesGitalyErrors
 
   COMMITS_DEFAULT_LIMIT = 40
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }

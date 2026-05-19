@@ -1,8 +1,10 @@
 ---
 name: create_resource_access_token
 description: Grants the ability to create resource access tokens
-permissions:
-  - create_resource_access_token
 boundaries:
   - project
   - group
+available_for:
+  - granular_access_token
+permissions:
+  - create_resource_access_token

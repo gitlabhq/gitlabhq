@@ -93,8 +93,8 @@ export const FIELDS = [
     key: FIELD_KEY_LAST_ACTIVITY_ON,
     label: __('Last activity'),
     sort: {
-      asc: 'oldest_last_activity',
-      desc: 'recent_last_activity',
+      asc: 'last_activity_on_asc',
+      desc: 'last_activity_on_desc',
     },
   },
   {

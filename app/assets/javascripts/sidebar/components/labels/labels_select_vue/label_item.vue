@@ -51,7 +51,7 @@ export default normalizeRender({
         'data-testid': 'checked-icon',
       },
       props: {
-        name: 'mobile-issue-close',
+        name: 'check',
       },
     });
 

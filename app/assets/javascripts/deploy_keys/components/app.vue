@@ -110,6 +110,7 @@ export default {
       pageInfo: {},
       currentPage: null,
       currentScope: null,
+      refetching: false,
       deployKeyToRemove: null,
       searchObject: null,
       searchValue: [],
@@ -141,13 +142,14 @@ export default {
       return Boolean(this.searchObject?.search);
     },
     loading() {
-      return this.$apollo.queries.deployKeys.loading;
+      return this.$apollo.queries.deployKeys.loading || this.refetching;
     },
   },
   methods: {
     onChangeTab(scope) {
       this.searchObject = null;
       this.searchValue = [];
+      this.refetching = true;
 
       return this.$apollo
         .mutate({
@@ -155,7 +157,7 @@ export default {
           variables: { scope },
         })
         .then(() => {
-          this.$apollo.queries.deployKeys.refetch();
+          return this.$apollo.queries.deployKeys.refetch();
         })
         .catch((error) => {
           captureException(error, {
@@ -163,6 +165,9 @@ export default {
               deployKeyScope: scope,
             },
           });
+        })
+        .finally(() => {
+          this.refetching = false;
         });
     },
     moveNext() {

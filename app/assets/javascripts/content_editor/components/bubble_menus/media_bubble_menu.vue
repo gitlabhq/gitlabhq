@@ -13,13 +13,14 @@ import {
 import { __ } from '~/locale';
 import Audio from '../../extensions/audio';
 import DrawioDiagram from '../../extensions/drawio_diagram';
+import Iframe from '../../extensions/iframe';
 import Image from '../../extensions/image';
 import Video from '../../extensions/video';
 import EditorStateObserver from '../editor_state_observer.vue';
 import { acceptedMimes } from '../../services/upload_helpers';
 import BubbleMenu from './bubble_menu.vue';
 
-const MEDIA_TYPES = [Audio.name, Image.name, Video.name, DrawioDiagram.name];
+const MEDIA_TYPES = [Audio.name, Iframe.name, Image.name, Video.name, DrawioDiagram.name];
 
 export default {
   name: 'MediaBubbleMenu',
@@ -27,6 +28,7 @@ export default {
     editLabels: {
       [Audio.name]: __('Edit audio description'),
       [DrawioDiagram.name]: __('Edit diagram URL and alt text'),
+      [Iframe.name]: __('Edit embed URL and title'),
       [Image.name]: __('Edit image description'),
       [Video.name]: __('Edit video description'),
     },
@@ -100,15 +102,20 @@ export default {
 
     cancelEditingMedia() {
       this.endEditingMedia();
+      this.tiptapEditor.commands.focus();
       this.updateMediaInfoToState();
     },
 
     async saveEditedMedia() {
       this.isUpdating = true;
 
-      this.mediaSrc = await this.contentEditor.resolveUrl(this.mediaCanonicalSrc);
-
       const position = this.tiptapEditor.state.selection.from;
+
+      if (this.mediaType === Iframe.name) {
+        this.mediaSrc = await this.contentEditor.resolveIframeSrc(this.mediaCanonicalSrc);
+      } else {
+        this.mediaSrc = await this.contentEditor.resolveUrl(this.mediaCanonicalSrc);
+      }
 
       const attrs = {
         src: this.mediaSrc,

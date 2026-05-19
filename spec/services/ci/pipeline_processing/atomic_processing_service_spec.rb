@@ -119,28 +119,6 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         expect(builds.success.count).to eq(5)
       end
 
-      context 'when ci_pipeline_processing_atomic_processing_service_plain_retry_lock is disabled' do
-        before do
-          stub_feature_flags(ci_pipeline_processing_atomic_processing_service_plain_retry_lock: false)
-        end
-
-        it 'processes a pipeline', :sidekiq_inline do
-          expect(process_pipeline).to be_truthy
-
-          succeed_pending
-
-          expect(builds.success.count).to eq(2)
-
-          succeed_pending
-
-          expect(builds.success.count).to eq(4)
-
-          succeed_pending
-
-          expect(builds.success.count).to eq(5)
-        end
-      end
-
       it 'does not process pipeline if existing stage is running' do
         expect(process_pipeline).to be_truthy
         expect(builds.pending.count).to eq(2)
@@ -1309,13 +1287,250 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
     context 'when the exclusive lease is taken' do
       let(:lease_key) { "ci/pipeline_processing/atomic_processing_service::pipeline_id:#{pipeline.id}" }
 
-      it 'skips pipeline processing' do
+      before do
         create_build('linux', stage_idx: 0)
-
         stub_exclusive_lease_taken(lease_key)
+      end
 
+      it 'skips pipeline processing' do
         expect(Gitlab::AppJsonLogger).to receive(:info).with(a_hash_including(message: /^Cannot obtain an exclusive lease/))
         expect(process_pipeline).to be_falsy
+      end
+
+      # Remove with FF `ci_atomic_processing_check_inside_lease`
+      it 'does not call needs_processing? before attempting the lease' do
+        expect(pipeline).not_to receive(:needs_processing?)
+
+        process_pipeline
+      end
+
+      context 'when FF `ci_atomic_processing_check_inside_lease` is disabled' do
+        before do
+          stub_feature_flags(ci_atomic_processing_check_inside_lease: false)
+        end
+
+        it 'skips pipeline processing' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(a_hash_including(message: /^Cannot obtain an exclusive lease/))
+          expect(process_pipeline).to be_falsy
+        end
+
+        it 'calls needs_processing? before attempting the lease' do
+          expect(pipeline).to receive(:needs_processing?).and_call_original
+
+          process_pipeline
+        end
+      end
+    end
+
+    # Remove this context with FF `ci_atomic_processing_log_check_mismatch`
+    describe 'logging needs_processing? vs new_collection.processing_jobs.any? mismatch' do
+      let(:mismatch_message) { 'needs_processing? differs from new_collection.processing_jobs.any?' }
+
+      context 'when there are no stopped jobs at snapshot' do
+        # In this context, `new_alive_jobs` returns early without building `@new_collection`
+        before do
+          create_build('linux', stage_idx: 0)
+        end
+
+        it 'does not log a mismatch' do
+          expect(Gitlab::AppJsonLogger).not_to receive(:info)
+            .with(a_hash_including(message: mismatch_message))
+
+          process_pipeline
+        end
+      end
+
+      context 'when stopped jobs exist at snapshot' do
+        # In this context, `new_alive_jobs` runs and builds `@new_collection`
+        let(:config) do
+          <<-YAML
+          manual1:
+            stage: test
+            when: manual
+            script: exit 0
+
+          test1:
+            stage: test
+            needs: [manual1]
+            script: exit 0
+          YAML
+        end
+
+        let(:pipeline) do
+          Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push).payload
+        end
+
+        let(:manual1) { pipeline.all_jobs.find_by(name: 'manual1') }
+
+        before do
+          stub_ci_pipeline_yaml_file(config)
+          pipeline # create the pipeline
+          process_pipeline # drive jobs to their initial states (manual1: manual, test1: skipped)
+          manual1.enqueue! # play the manual job
+        end
+
+        context 'when new alive jobs are detected' do
+          # The newly-alive jobs always have processed=false (set by `before_save` on their transition).
+          # This guarantees both queries return true, so a mismatch is impossible in this branch.
+          before do
+            mock_play_jobs_during_processing([manual1])
+          end
+
+          it 'does not log a mismatch' do
+            expect(Gitlab::AppJsonLogger).not_to receive(:info)
+              .with(a_hash_including(message: mismatch_message))
+
+            process_pipeline
+          end
+        end
+
+        context 'when no new alive jobs are detected' do
+          context 'and the queries agree' do
+            it 'does not log a mismatch' do
+              expect(Gitlab::AppJsonLogger).not_to receive(:info)
+                .with(a_hash_including(message: mismatch_message))
+
+              process_pipeline
+            end
+          end
+
+          context 'and the queries disagree' do
+            before do
+              # Simulate a job transition slipped in between building
+              # @new_collection and executing pipeline.needs_processing?.
+              # This is a very small window and should rarely happen.
+              allow(pipeline).to receive(:needs_processing?).and_return(true)
+            end
+
+            it 'logs a mismatch' do
+              expect(Gitlab::AppJsonLogger).to receive(:info).with(
+                a_hash_including(
+                  message: mismatch_message,
+                  project_id: project.id,
+                  pipeline_id: pipeline.id,
+                  needs_processing: true,
+                  processing_jobs_any: false
+                )
+              )
+
+              process_pipeline
+            end
+
+            context 'when FF `ci_atomic_processing_log_check_mismatch` is disabled' do
+              before do
+                stub_feature_flags(ci_atomic_processing_log_check_mismatch: false)
+              end
+
+              it 'does not log a mismatch' do
+                expect(Gitlab::AppJsonLogger).not_to receive(:info)
+                  .with(a_hash_including(message: mismatch_message))
+
+                process_pipeline
+              end
+            end
+          end
+        end
+      end
+    end
+
+    describe 'processing delay observation', :sidekiq_inline do
+      context 'with stage-based jobs' do
+        before do
+          create_build('build', stage_idx: 0)
+          create_build('test', stage_idx: 1)
+        end
+
+        it 'observes delay for jobs whose prior stage has completed' do
+          expect(Labkit::UserExperienceSli).to receive(:observed)
+            .with(:ci_job_processing_delay, start_time: an_instance_of(ActiveSupport::TimeWithZone))
+            .at_least(:twice)
+
+          process_pipeline
+          succeed_pending
+        end
+      end
+
+      context 'with DAG jobs' do
+        let!(:build_job) { create_build('build', stage_idx: 0) }
+        let!(:test_job) { create_build('test', stage_idx: 1, scheduling_type: :dag) }
+
+        before do
+          create(:ci_build_need, build: test_job, name: 'build')
+        end
+
+        it 'observes delay for DAG jobs whose needs are met' do
+          expect(Labkit::UserExperienceSli).to receive(:observed)
+            .with(:ci_job_processing_delay, start_time: an_instance_of(ActiveSupport::TimeWithZone))
+            .at_least(:twice)
+
+          process_pipeline
+          succeed_pending
+        end
+      end
+
+      context 'with first stage jobs that have no prior dependencies' do
+        before do
+          create_build('build', stage_idx: 0)
+        end
+
+        it 'observes delay using pipeline created_at as the baseline' do
+          expect(Labkit::UserExperienceSli).to receive(:observed)
+            .with(:ci_job_processing_delay, start_time: pipeline.created_at)
+
+          process_pipeline
+        end
+      end
+
+      context 'with a manual job' do
+        before do
+          create_build('build', stage_idx: 0)
+          create_build('manual-action', stage_idx: 1, when: 'manual')
+        end
+
+        it 'observes delay when the manual job is processed out of created status' do
+          expect(Labkit::UserExperienceSli).to receive(:observed)
+            .with(:ci_job_processing_delay, start_time: an_instance_of(ActiveSupport::TimeWithZone))
+            .at_least(:twice)
+
+          process_pipeline
+          succeed_pending
+
+          expect(builds.find_by(name: 'manual-action').status).to eq('manual')
+        end
+      end
+
+      context 'with a delayed job' do
+        before do
+          create_build('build', stage_idx: 0)
+          create_build('delayed-job', stage_idx: 1, **delayed_options)
+          allow(Ci::BuildScheduleWorker).to receive(:perform_at)
+        end
+
+        it 'observes delay when the delayed job is processed out of created status' do
+          expect(Labkit::UserExperienceSli).to receive(:observed)
+            .with(:ci_job_processing_delay, start_time: an_instance_of(ActiveSupport::TimeWithZone))
+            .at_least(:twice)
+
+          process_pipeline
+          succeed_pending
+
+          expect(pipeline.all_jobs.find_by(name: 'delayed-job').status).to eq('scheduled')
+        end
+      end
+
+      context 'when ci_observe_job_processing_delay feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_observe_job_processing_delay: false)
+          create_build('build', stage_idx: 0)
+          create_build('test', stage_idx: 1)
+        end
+
+        it 'does not observe any delay' do
+          expect(Labkit::UserExperienceSli).not_to receive(:observed)
+
+          process_pipeline
+          succeed_pending
+        end
       end
     end
 
@@ -1434,6 +1649,18 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         #   because it has already been created when 'production-b' was first processed
         expect { process_pipeline }.not_to change { Deployment.count }
         expect(production_b_deploy_job.reload.status).to eq 'manual'
+      end
+    end
+
+    describe 'pipeline cache expiration' do
+      before do
+        create_build('linux', stage_idx: 0)
+      end
+
+      it 'passes skip_cache_expiration: true when updating pipeline status' do
+        expect(pipeline).to receive(:set_status).with(anything, skip_cache_expiration: true).and_call_original
+
+        process_pipeline
       end
     end
 

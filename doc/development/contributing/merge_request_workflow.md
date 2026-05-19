@@ -197,8 +197,16 @@ code. We use the following [definition of done](https://www.agilealliance.org/gl
 To reach the definition of done, the merge request must create no regressions and meet all these criteria:
 
 - Verified as working in production on GitLab.com.
-- Verified as working for GitLab Self-Managed instances.
+- Verified as working for GitLab Self-Managed / Dedicated instances.
 - Verified as supporting [Geo](../../administration/geo/_index.md) through the [self-service framework](../geo/framework.md). For more information, see [Geo is a requirement in the definition of done](../geo/framework.md#geo-is-a-requirement-in-the-definition-of-done).
+- Verified as compatible with the [Cells architecture](../cells/_index.md) for changes that affect GitLab.com.
+  Confirm that:
+  - Compute (web requests, Sidekiq workers) should be scoped to a single organization.
+  - New database rows that belong to a customer have a sharding key.
+  - No new customer-owned resources exist outside of an organization.
+  - Organization data remains migratable to another cell.
+
+  For the more information, see [Cells development principles](../cells/_index.md#cells-development-principles).
 
 If a regression occurs, we prefer you revert the change.
 Your contribution is incomplete until you have made sure it meets all of these

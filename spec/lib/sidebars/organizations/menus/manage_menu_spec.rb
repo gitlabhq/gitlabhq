@@ -17,18 +17,6 @@ RSpec.describe Sidebars::Organizations::Menus::ManageMenu, feature_category: :na
   describe 'Menu items' do
     subject(:item) { menu.renderable_items.find { |e| e.item_id == item_id } }
 
-    describe 'Activity' do
-      let(:item_id) { :organization_activity }
-
-      it { is_expected.not_to be_nil }
-    end
-
-    describe 'Groups and projects' do
-      let(:item_id) { :organization_groups_and_projects }
-
-      it { is_expected.not_to be_nil }
-    end
-
     describe 'Users' do
       let(:item_id) { :organization_users }
 

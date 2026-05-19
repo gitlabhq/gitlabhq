@@ -1,7 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import { hasScrolled, markAsScrolled } from '~/rapid_diffs/utils/scroll_to_linked_fragment';
 import NoteSignedOutWidget from '~/rapid_diffs/app/discussions/note_signed_out_widget.vue';
 import NewLineDiscussionForm from './new_line_discussion_form.vue';
 import DiffDiscussions from './diff_discussions.vue';
@@ -19,7 +18,6 @@ export default {
   inject: {
     userPermissions: { type: Object },
     filePaths: { default: null },
-    linkedFileData: { default: null },
   },
   props: {
     discussions: {
@@ -49,27 +47,7 @@ export default {
       return this.discussions.some((discussion) => discussion.isForm);
     },
   },
-  mounted() {
-    this.scrollToNoteFragment();
-  },
   methods: {
-    scrollToNoteFragment() {
-      if (hasScrolled() || !window.location.hash.startsWith('#note_')) return;
-      if (this.linkedFileData) {
-        if (!this.filePaths) return;
-        if (
-          this.linkedFileData.old_path !== this.filePaths.oldPath ||
-          this.linkedFileData.new_path !== this.filePaths.newPath
-        )
-          return;
-      }
-      const noteId = window.location.hash.substring(1);
-      const target = document.querySelector(`a[href$="#${noteId}"]`);
-      if (!target) return;
-      // :target pseudo class applies to the note only if we click the link since the note is rendered client-side
-      target.click();
-      markAsScrolled();
-    },
     lineRange(discussion) {
       const { position } = discussion;
       if (position?.line_range) return position.line_range;

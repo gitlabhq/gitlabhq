@@ -98,7 +98,7 @@ To view the approval status:
 1. To view the merge request, select its title.
 1. Go to the merge request widget to see the approval status. In this example, you can approve the merge request:
 
-   ![Merge request widget showing approval status](img/approval_and_merge_status_v17_3.png)
+   ![The approval status section where a reviewer can approve the merge request.](img/approval_and_merge_status_v17_3.png)
 
 The widget displays one of these statuses:
 
@@ -122,9 +122,9 @@ shows the approval status for each merge request:
 
 |                                       Example                                       | Description |
 |:-----------------------------------------------------------------------------------:|-------------|
-|         ![Approvals not yet satisfied](img/approvals_unsatisfied_v17_1.png)         | Required approvals are missing. ({{< icon name="approval" >}}) |
-|            ![Approvals are satisfied](img/approvals_satisfied_v17_1.png)            | Approvals are satisfied. ({{< icon name="check" >}}) |
-| ![Approvals are satisfied, and you approved](img/you_approvals_satisfied_v17_1.png) | Approvals are satisfied, and you are one of the approvers. ({{< icon name="approval-solid" >}}) |
+|         ![The indicator for missing approvals.](img/approvals_unsatisfied_v17_1.png)         | Required approvals are missing. ({{< icon name="approval" >}}) |
+|            ![The indicator for satisfied approvals.](img/approvals_satisfied_v17_1.png)            | Approvals are satisfied. ({{< icon name="check" >}}) |
+| ![The indicator showing you have personally approved.](img/you_approvals_satisfied_v17_1.png) | Approvals are satisfied, and you are one of the approvers. ({{< icon name="approval-solid" >}}) |
 
 ### Individual reviewer status
 
@@ -141,7 +141,7 @@ Each reviewer's status is shown next to their name.
 - {{< icon name="comment-lines" >}} Reviewer commented
 - {{< icon name="status_warning" >}} Reviewer requested changes
 
-   ![This reviewer has requested changes, and blocked this merge request.](img/reviewer_blocks_mr_v17_3.png)
+   ![The warning status indicating a reviewer has requested changes.](img/reviewer_blocks_mr_v17_3.png)
 
 To [re-request a review](../reviews/_index.md#re-request-a-review), select the **Re-request a review** icon ({{< icon name="redo" >}}) next to the user.
 

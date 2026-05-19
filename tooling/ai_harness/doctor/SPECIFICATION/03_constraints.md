@@ -156,6 +156,10 @@ The doctor script follows functional programming patterns.
   write files as a side effect when `fix: true`. This is an inherent
   requirement of the fixability rules (see §5) and is the documented
   exception to the pure functions constraint.
+- This rule is also why harness-wide configuration is loaded by a
+  dedicated step (`LoadConfig`) into `context[:config]` rather than via
+  a class-level memoized accessor: a memoized class-method accessor is
+  exactly the "mutable class state" the rule prohibits.
 
 ### 3.3 Higher Order Functions
 

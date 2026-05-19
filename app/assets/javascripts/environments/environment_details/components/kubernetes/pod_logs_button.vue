@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlDisclosureDropdown } from '@gitlab/ui';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
+import { ROUTE_NAME_LOGS } from '~/environments/constants';
 
 export default {
   components: {
@@ -35,17 +35,17 @@ export default {
   },
   methods: {
     getLogsLink(name = '') {
-      let link = joinPaths(
-        gon.relative_url_root || '',
-        `/k8s/namespace/${this.namespace}/pods/${this.podName}/logs`,
-      );
+      const baseRoute = {
+        name: ROUTE_NAME_LOGS,
+        params: { namespace: this.namespace, podName: this.podName },
+      };
 
       const containerName = name || this.containers[0].name;
       if (containerName) {
-        link += `?container=${containerName}`;
+        return { ...baseRoute, query: { container: containerName } };
       }
 
-      return link;
+      return baseRoute;
     },
   },
   i18n: {

@@ -102,7 +102,7 @@ _List the steps to be performed to verify this scenario_
 
 <!-- Example:
 
-1. **GitLab.com:**: Purchase a subscription for a group
+1. **GitLab.com:** Purchase a subscription for a group
 2. **CustomersDot:** Visit Customers Portal at http://customers.staging.gitlab.com
 3. **CustomersDot:** Verify subscription details for purchased subscription
 

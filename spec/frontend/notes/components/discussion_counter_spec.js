@@ -1,7 +1,7 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
-import { PiniaVuePlugin } from 'pinia';
+import { PiniaVuePlugin, defineStore } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import * as types from '~/notes/stores/mutation_types';
@@ -11,19 +11,27 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { createDiscussionMock, noteableDataMock, notesDataMock } from '../mock_data';
 
+const useStubInjectedStore = defineStore('stubInjectedStore', {
+  state: () => ({ allVisibleDiscussionsExpanded: false }),
+  actions: {
+    toggleAllVisibleDiscussions() {},
+  },
+});
+
 Vue.use(PiniaVuePlugin);
 
 describe('DiscussionCounter component', () => {
   let pinia;
   let wrapper;
 
-  const createComponent = (propsData) => {
+  const createComponent = (propsData, { store } = {}) => {
     wrapper = mount(DiscussionCounter, {
       pinia,
       propsData: {
         canResolveDiscussion: true,
         ...propsData,
       },
+      provide: { store: store ?? useMrNotes() },
     });
   };
 
@@ -193,6 +201,43 @@ describe('DiscussionCounter component', () => {
       toggleAllButton.trigger('click');
 
       expect(useMrNotes().toggleAllVisibleDiscussions).toHaveBeenCalled();
+    });
+
+    describe('when an alternative store is injected', () => {
+      const renderWithStubStore = async () => {
+        const note = { ...createDiscussionMock(), expanded: true };
+        useNotes()[types.ADD_OR_UPDATE_DISCUSSIONS]([note]);
+        useNotes().updateResolvableDiscussionsCounts();
+        createComponent({ blocksMerge: true }, { store: useStubInjectedStore() });
+        await wrapper.findComponent(GlDisclosureDropdown).trigger('click');
+        toggleAllButton = wrapper.find('[data-testid="toggle-all-discussions-btn"]');
+      };
+
+      it('routes the toggle to the injected store', async () => {
+        await renderWithStubStore();
+
+        toggleAllButton.trigger('click');
+
+        expect(useStubInjectedStore().toggleAllVisibleDiscussions).toHaveBeenCalled();
+        expect(useMrNotes().toggleAllVisibleDiscussions).not.toHaveBeenCalled();
+      });
+
+      it.each`
+        expanded | label
+        ${true}  | ${'Hide all comments'}
+        ${false} | ${'Show all comments'}
+      `('reads the label state from the injected store ($label)', async ({ expanded, label }) => {
+        const note = { ...createDiscussionMock(), expanded: true };
+        useNotes()[types.ADD_OR_UPDATE_DISCUSSIONS]([note]);
+        useNotes().updateResolvableDiscussionsCounts();
+        const stubStore = useStubInjectedStore();
+        stubStore.allVisibleDiscussionsExpanded = expanded;
+        createComponent({ blocksMerge: true }, { store: stubStore });
+        await wrapper.findComponent(GlDisclosureDropdown).trigger('click');
+        toggleAllButton = wrapper.find('[data-testid="toggle-all-discussions-btn"]');
+
+        expect(toggleAllButton.text()).toBe(label);
+      });
     });
   });
 });

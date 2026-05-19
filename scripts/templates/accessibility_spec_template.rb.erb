@@ -1,0 +1,103 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+# Accessibility Test Boilerplate for Golden User Journey: <%= journey_title %>
+#
+# Purpose: <%= description %>
+#
+# This boilerplate was generated from E2E tests. Review each context block and:
+#   - Implement accessibility checks at key interaction points
+#   - Omit steps unsuitable for UI accessibility checks (e.g., raw file downloads, API operations)
+#   - Use appropriate scoping (.within) for different UI components
+#   - See doc/development/fe_guide/accessibility/feature_tests.md for details
+#
+# E2E Test References (<%= grouped_tests.values.flatten.size %> tests across <%= grouped_tests.size %> focus areas):
+<% grouped_tests.each do |focus_area, tests| -%>
+#   <%= focus_area %>:
+<%   tests.each do |test| -%>
+#     - <%= test['path'] %>
+<%   end -%>
+<% end -%>
+#
+<% if related_feature_tests.any? -%>
+# Feature Test References (<%= related_feature_tests.size %> files for code examples):
+<%   related_feature_tests.each do |file| -%>
+#   - <%= file %>
+<%   end -%>
+#
+<% end -%>
+
+RSpec.describe 'Accessibility: <%= journey_title %>', :js, feature_category: :<%= feature_category %> do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+
+  before_all do
+    project.add_maintainer(user)
+  end
+
+  before do
+    sign_in(user)
+  end
+<% grouped_tests.each do |focus_area, tests| -%>
+
+  context 'when <%= focus_area.downcase %>' do
+    # TODO: Implement accessibility checks for <%= focus_area.downcase %>
+    #
+    # E2E Test References:
+<%   tests.each do |test| -%>
+    #   <%= File.basename(test['path']) %>
+<%     if test['it_blocks'] && test['it_blocks'].any? -%>
+<%       test['it_blocks'].first(2).each do |it_block| -%>
+    #     - <%= it_block['description'] %>
+<%       end -%>
+<%     end -%>
+<%   end -%>
+    #
+    # User Journey Steps:
+<%   tests.each do |test| -%>
+<%     if test['page_interactions'] && test['page_interactions'].any? -%>
+<%       test['page_interactions'].first(8).each do |interaction| -%>
+    #   - <%= interaction %>
+<%       end -%>
+<%     end -%>
+<%   end -%>
+    #
+<% if code_patterns && (code_patterns['setup'].any? || code_patterns['navigation'].any? || code_patterns['interaction'].any?) -%>
+    # Code Examples (from feature tests):
+    #
+<%   if code_patterns['setup'].any? -%>
+    # Setup:
+<%     code_patterns['setup'].each do |pattern| -%>
+    #   <%= pattern %>
+<%     end -%>
+    #
+<%   end -%>
+<%   if code_patterns['navigation'].any? -%>
+    # Navigation:
+<%     code_patterns['navigation'].each do |pattern| -%>
+    #   <%= pattern %>
+<%     end -%>
+    #
+<%   end -%>
+<%   if code_patterns['interaction'].any? -%>
+    # Interactions:
+<%     code_patterns['interaction'].each do |pattern| -%>
+    #   <%= pattern %>
+<%     end -%>
+    #
+<%   end -%>
+<% end -%>
+    # Implementation example:
+    #   it 'passes axe automated accessibility testing' do
+    #     visit project_path(project)
+    #     wait_for_requests
+    #     expect(page).to be_axe_clean.within('#content-body')
+    #
+    #     click_button 'Some Action'
+    #     wait_for_requests
+    #     expect(page).to be_axe_clean.within('.result-container')
+    #   end
+  end
+<% end -%>
+end

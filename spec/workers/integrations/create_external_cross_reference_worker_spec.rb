@@ -79,26 +79,26 @@ RSpec.describe Integrations::CreateExternalCrossReferenceWorker, feature_categor
       end
     end
 
-    context 'project_id does not exist' do
+    context 'when project_id does not exist' do
       let(:project_id) { non_existing_record_id }
       let(:project) { nil }
 
       it_behaves_like 'does not create a cross reference'
     end
 
-    context 'author_id does not exist' do
+    context 'when author_id does not exist' do
       let(:author_id) { non_existing_record_id }
 
       it_behaves_like 'does not create a cross reference'
     end
 
-    context 'mentionable_id does not exist' do
+    context 'when mentionable_id does not exist' do
       let(:mentionable_id) { non_existing_record_id }
 
       it_behaves_like 'does not create a cross reference'
     end
 
-    context 'mentionable_type is not a Mentionable' do
+    context 'when mentionable_type is not a Mentionable' do
       let(:mentionable_type) { 'User' }
 
       before do
@@ -108,7 +108,7 @@ RSpec.describe Integrations::CreateExternalCrossReferenceWorker, feature_categor
       it_behaves_like 'does not create a cross reference'
     end
 
-    context 'mentionable_type is not a defined constant' do
+    context 'when mentionable_type is not a defined constant' do
       let(:mentionable_type) { 'FooBar' }
 
       before do
@@ -118,7 +118,7 @@ RSpec.describe Integrations::CreateExternalCrossReferenceWorker, feature_categor
       it_behaves_like 'does not create a cross reference'
     end
 
-    context 'mentionable is a Commit and mentionable_id does not exist' do
+    context 'when mentionable is a Commit and mentionable_id does not exist' do
       let(:mentionable_type) { 'Commit' }
       let(:mentionable_id) { non_existing_record_id }
 

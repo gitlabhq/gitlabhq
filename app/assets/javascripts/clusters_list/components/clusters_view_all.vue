@@ -82,14 +82,14 @@ export default {
       this.loadingAgents = false;
     },
     onKasDisabled($event) {
-      this.$emit('kasDisabled', $event);
+      this.$emit('kas-disabled', $event);
     },
     onRegisterAgent($event) {
-      this.$emit('registerAgent', $event);
+      this.$emit('register-agent', $event);
     },
     changeTab($event, tab) {
       $event.preventDefault();
-      this.$emit('changeTab', tab);
+      this.$emit('change-tab', tab);
     },
   },
 };
@@ -141,9 +141,9 @@ export default {
           :limit="$options.MAX_CLUSTERS_LIST"
           :default-branch-name="defaultBranchName"
           :is-child-component="true"
-          @onAgentsLoad="onAgentsLoad"
-          @kasDisabled="onKasDisabled"
-          @registerAgent="onRegisterAgent"
+          @on-agents-load="onAgentsLoad"
+          @kas-disabled="onKasDisabled"
+          @register-agent="onRegisterAgent"
         />
 
         <template #footer>

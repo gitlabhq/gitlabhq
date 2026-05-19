@@ -1,0 +1,9 @@
+---
+name: read_freeze_period
+description: Grants the ability to read freeze periods
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_freeze_period

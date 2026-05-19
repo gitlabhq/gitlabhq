@@ -12,7 +12,8 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
   describe '#publish' do
     subject(:result) { publisher.publish }
 
-    let(:attestations) { result.payload[:attestations] }
+    let(:result_status) { result[1] }
+    let(:attestations) { result[0] }
 
     let(:expected_hashes) do
       {
@@ -27,8 +28,7 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
     end
 
     it 'persists the attestations' do
-      expect(result[:status]).to eq(:success)
-      expect(result[:message]).to eq(success_message)
+      expect(result_status).to be(true)
 
       expect(attestations.length).to eq(3)
 
@@ -56,8 +56,7 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
       expect(popen_stdin_file).to receive(:write).exactly(3).times.with(expected_predicate)
       expect(predicate_class).to receive(:from_build).exactly(1).time.and_call_original
 
-      expect(result[:message]).to eq(success_message)
-      expect(result[:status]).to eq(:success)
+      expect(result_status).to be(true)
 
       expected_hashes.each do |path, hash|
         expect(Gitlab::AppJsonLogger).to have_received(:info).with(a_hash_including({
@@ -75,19 +74,20 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
         expect(publisher).to receive(:cosign_attest_blob).with(blob_name: path, hash: hash)
       end
 
-      expect(result[:message]).to eq(success_message)
+      expect(result_status).to be(true)
     end
 
     it 'calls cosign with the appropriate parameters' do
       expected_hashes.each do |path, hash|
         expected_parameters = ["cosign", "attest-blob", "--new-bundle-format", "--predicate", "-", "--type",
           "slsaprovenance1", "--hash", hash, "--identity-token", id_token, "--oidc-issuer",
-          "http://localhost", "--yes", "--bundle", anything, "--", "./#{File.basename(path)}"]
+          "http://localhost", "--yes", "--use-signing-config=false", "--bundle", anything, "--",
+          "./#{File.basename(path)}"]
 
         expect(Gitlab::Popen).to receive(:popen_with_detail).with(expected_parameters).and_return(popen_result)
       end
 
-      expect(result[:message]).to eq(success_message)
+      expect(result_status).to be(true)
     end
 
     context 'when environment variables for optional parameters exist' do
@@ -104,13 +104,13 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
           expected_hashes.each do |path, hash|
             expected_parameters = ["cosign", "attest-blob", "--new-bundle-format", "--predicate", "-", "--type",
               "slsaprovenance1", "--hash", hash, "--identity-token", id_token, "--oidc-issuer",
-              "http://localhost", "--yes", "--bundle", anything, '--fulcio-url', fulcio_url,
-              '--rekor-url', rekor_url, "--", "./#{File.basename(path)}"]
+              "http://localhost", "--yes", "--use-signing-config=false", "--bundle", anything, '--fulcio-url',
+              fulcio_url, '--rekor-url', rekor_url, "--", "./#{File.basename(path)}"]
 
             expect(Gitlab::Popen).to receive(:popen_with_detail).with(expected_parameters).and_return(popen_result)
           end
 
-          expect(result[:message]).to eq(success_message)
+          expect(result_status).to be(true)
         end
       end
 
@@ -121,12 +121,13 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
           expected_hashes.each do |path, hash|
             expected_parameters = ["cosign", "attest-blob", "--new-bundle-format", "--predicate", "-", "--type",
               "slsaprovenance1", "--hash", hash, "--identity-token", id_token, "--oidc-issuer",
-              "http://localhost", "--yes", "--bundle", anything, "--", "./#{File.basename(path)}"]
+              "http://localhost", "--yes", "--use-signing-config=false", "--bundle", anything, "--",
+              "./#{File.basename(path)}"]
 
             expect(Gitlab::Popen).to receive(:popen_with_detail).with(expected_parameters).and_return(popen_result)
           end
 
-          expect(result[:message]).to eq(success_message)
+          expect(result_status).to be(true)
         end
       end
     end
@@ -138,9 +139,7 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
         expect(publisher).to receive(:validate_blob_name!).with(any_args).exactly(3).times.and_raise(StandardError)
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).exactly(3).times
 
-        expect(result[:status]).to eq(:error)
-        expect(result[:message]).to eq("Attestation failure")
-
+        expect(result_status).to be(false)
         expect(attestations.length).to eq(3)
 
         expect(attestations).to all(be_a(SupplyChain::Attestation))
@@ -193,7 +192,6 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
 
       it "deletes it" do
         expect(existing_attestation).to receive(:destroy).and_call_original
-        allow(publisher).to receive(:attestation_by_hash).with(duplicate_hash).and_return(existing_attestation)
 
         expected_args = {
           project: project,
@@ -228,9 +226,7 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
 
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).exactly(3).times
 
-        expect(result[:status]).to eq(:error)
-        expect(result[:message]).to eq("Attestation failure")
-
+        expect(result_status).to be(false)
         expect(attestations.length).to eq(3)
 
         expect(attestations).to all(be_a(SupplyChain::Attestation))
@@ -249,11 +245,25 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
           expect(attestations).to include(an_object_having_attributes(subject_digest: hash))
         end
       end
+
+      it 'handles failures persisting errors gracefully' do
+        expect(publisher).to receive(:validate_blob_name!).with(any_args).exactly(3).times \
+          .and_raise(ActiveRecord::RecordInvalid)
+
+        expect(publisher).to receive(:persist_attestation!).with(any_args).exactly(3).times \
+          .and_raise(StandardError)
+
+        # Once for original exception, and again for failure to persist attestation
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).exactly(6).times
+
+        expect(result_status).to be(false)
+        expect(attestations.length).to eq(0)
+      end
     end
   end
 
   describe '#should_publish?' do
-    subject(:should_publish) { publisher.should_publish? }
+    subject(:should_publish) { described_class.should_publish?(build) }
 
     context 'when ::SupplyChain.publish_artifact_provenance? is true' do
       before do

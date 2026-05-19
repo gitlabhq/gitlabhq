@@ -7,4 +7,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/582675
 milestone: "18.7"
 group: group::duo chat
 type: beta
-default_enabled: false
+default_enabled: true

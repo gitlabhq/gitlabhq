@@ -158,7 +158,7 @@ Prerequisites:
 To enable product analytics on your instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Analytics**.
+1. In the left sidebar, select **Settings** > **Analytics**.
 1. Enter the configuration values.
 1. Select **Save changes**.
 
@@ -173,7 +173,7 @@ Prerequisites:
 - The project must be in a group namespace.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Analytics**.
+1. In the left sidebar, select **Settings** > **Analytics**.
 1. Expand **Data sources** and enter the configuration values.
 1. Select **Save changes**.
 
@@ -194,7 +194,7 @@ Onboarding a GitLab project means preparing it to receive events that are used f
 To onboard a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Analyze** > **Analytics dashboards**.
+1. In the left sidebar, select **Analyze** > **Analytics dashboards**.
 1. Under **Product analytics**, select **Set up**.
 
 Then continue with the setup depending on the provider type.
@@ -351,7 +351,7 @@ Product analytics usage quota is calculated from the number of events received f
 To view product analytics usage quota:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Usage quota**.
+1. In the left sidebar, select **Settings** > **Usage quotas**.
 1. Select the **Product analytics** tab.
 
 The tab displays the monthly totals for the group and a breakdown of usage per project.

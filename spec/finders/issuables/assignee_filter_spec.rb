@@ -12,8 +12,8 @@ RSpec.describe Issuables::AssigneeFilter, feature_category: :team_planning do
 
   describe '#filter' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:issue_assigned_to_user) { create(:issue, project: project, assignees: [user]) }
-    let_it_be(:issue_assigned_to_other) { create(:issue, project: project, assignees: [other_user]) }
+    let_it_be(:issue_assigned_to_user, freeze: false) { create(:issue, project: project, assignees: [user]) }
+    let_it_be(:issue_assigned_to_other, freeze: false) { create(:issue, project: project, assignees: [other_user]) }
     let_it_be(:issues) { Issue.where(id: [issue_assigned_to_user.id, issue_assigned_to_other.id]) }
 
     context 'when assignee_id and assignee_username are both provided' do

@@ -4,6 +4,9 @@ action: failed_attempt
 identifiers:
 - user
 product_group: anti-abuse
+product_categories:
+- instance_resiliency
+- insider_threat
 milestone: '15.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169117
 tiers:

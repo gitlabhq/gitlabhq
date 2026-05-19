@@ -4,11 +4,11 @@ module ActiveContext
   class EmbeddingModel
     LlmClassError = Class.new(StandardError)
 
-    attr_reader :model_name, :field, :llm_class, :llm_params
+    attr_reader :field, :model_key, :llm_class, :llm_params
 
-    def initialize(model_name:, field:, llm_class:, llm_params:)
-      @model_name = model_name
+    def initialize(field:, model_key:, llm_class:, llm_params:)
       @field = field.to_sym
+      @model_key = model_key
 
       @llm_class = llm_class
       @llm_params = llm_params
@@ -44,7 +44,7 @@ module ActiveContext
     def log_embeddings_generation
       ::ActiveContext::Logger.info(
         message: "generate embeddings",
-        model: model_name,
+        model: model_key,
         status: "start",
         class: self.class.name
       )
@@ -53,7 +53,7 @@ module ActiveContext
 
       ::ActiveContext::Logger.info(
         message: "generate embeddings",
-        model: model_name,
+        model: model_key,
         status: "done",
         class: self.class.name
       )

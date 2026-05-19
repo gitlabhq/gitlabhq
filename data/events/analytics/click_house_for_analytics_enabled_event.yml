@@ -1,0 +1,7 @@
+---
+event: Analytics::ClickHouseForAnalyticsEnabledEvent
+description: Published when the instance-wide setting `use_clickhouse_for_analytics`
+  is toggled on, signalling that ClickHouse-backed analytics has just been enabled
+  so downstream backfill jobs can run.
+feature_category: value_stream_management
+ee_only: true

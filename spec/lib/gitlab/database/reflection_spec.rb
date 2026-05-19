@@ -203,8 +203,14 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
       expect(database.postgresql_minimum_supported_version?).to eq(false)
     end
 
-    it 'returns true when using PostgreSQL 16' do
+    it 'returns false when using PostgreSQL 16' do
       allow(database).to receive(:version).and_return('16')
+
+      expect(database.postgresql_minimum_supported_version?).to eq(false)
+    end
+
+    it 'returns true when using PostgreSQL 17' do
+      allow(database).to receive(:version).and_return('17')
 
       expect(database.postgresql_minimum_supported_version?).to eq(true)
     end
@@ -221,6 +227,22 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
       end
 
       expect(queries.count).to eq(0)
+    end
+
+    it 'uses the load balancer to retrieve the connection' do
+      database = described_class.new(Project)
+
+      expect(Project.load_balancer).to receive(:read).and_call_original
+
+      database.cached_column_exists?(:id)
+    end
+
+    it 'falls back to a direct connection when the load balancer is not set up' do
+      database = described_class.new(Project)
+
+      allow(Project).to receive(:respond_to?).with(:load_balancer).and_return(false)
+
+      expect(database.cached_column_exists?(:id)).to be_truthy
     end
   end
 
@@ -248,6 +270,22 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
       end
 
       expect(database.cached_table_exists?).to be(false)
+    end
+
+    it 'uses the load balancer to retrieve the connection' do
+      database = described_class.new(Project)
+
+      expect(Project.load_balancer).to receive(:read).and_call_original
+
+      database.cached_table_exists?
+    end
+
+    it 'falls back to a direct connection when the load balancer is not set up' do
+      database = described_class.new(Project)
+
+      allow(Project).to receive(:respond_to?).with(:load_balancer).and_return(false)
+
+      expect(database.cached_table_exists?).to be_truthy
     end
   end
 

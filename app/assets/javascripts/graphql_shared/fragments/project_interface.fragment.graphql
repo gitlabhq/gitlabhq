@@ -10,5 +10,6 @@ fragment ProjectInterface on ProjectInterface {
     removeProject
     viewEditPage
     canLeave @gl_introduced(version: "18.9.0")
+    changeNamespace
   }
 }

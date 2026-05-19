@@ -1,8 +1,16 @@
 <script>
 import { markRaw } from 'vue';
-import { GlIcon, GlButton, GlLink, GlSprintf, GlTableLite, GlPopover } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlButton,
+  GlLink,
+  GlSprintf,
+  GlTableLite,
+  GlPopover,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import StorageTypeIcon from './storage_type_icon.vue';
 import RepositoryHealthDetailsSection from './repository_health_details/repository_health_details_section.vue';
 
@@ -21,6 +29,9 @@ export default {
     StorageTypeIcon,
     GlPopover,
     NumberToHumanSize,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     storageTypes: {
@@ -83,6 +94,15 @@ export default {
     expandDetailsIcon(show) {
       return show ? 'chevron-down' : 'chevron-right';
     },
+    expandDetailsTooltip(show) {
+      return show ? s__('UsageQuota|Hide details') : s__('UsageQuota|Show details');
+    },
+    expandDetailsAriaLabel(show, itemName) {
+      const message = show
+        ? s__('UsageQuota|Hide details for %{name}')
+        : s__('UsageQuota|Show details for %{name}');
+      return sprintf(message, { name: itemName });
+    },
     tableDataClass(_, __, item) {
       // GlTableLite uses _showDetails attribute to show #row-details slot
       // eslint-disable-next-line no-underscore-dangle
@@ -131,9 +151,12 @@ export default {
             </template>
             <gl-button
               v-if="item.detailsComponent"
+              v-gl-tooltip
               class="gl-self-start"
               size="small"
               :icon="expandDetailsIcon(item._showDetails)"
+              :title="expandDetailsTooltip(item._showDetails)"
+              :aria-label="expandDetailsAriaLabel(item._showDetails, item.name)"
               category="tertiary"
               :data-testid="`${item.id}-show-details-button`"
               @click="toggleRowDetails(item)"

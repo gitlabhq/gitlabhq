@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# Usage: scripts/generate_event_doc app/events/ci/pipeline_created_event.rb
+#        scripts/generate_event_doc ee/app/events/security/scan_event.rb
+#
+# Generates a YAML documentation file for an EventStore event class using
+# GitLab Duo CLI in headless mode, then regenerates the event index.
+#
+# Requires glab with Duo CLI installed:
+#   https://docs.gitlab.com/ee/user/gitlab_duo_cli/
+
+set -e
+
+EVENT_FILE="${1}"
+
+if [[ -z "${EVENT_FILE}" ]]; then
+  echo "Usage: $0 <path/to/(ee/)app/events/your/event_class.rb>"
+  exit 1
+fi
+
+if [[ ! -f "${EVENT_FILE}" ]]; then
+  echo "Error: file not found: ${EVENT_FILE}"
+  exit 1
+fi
+
+# Derive target YAML path and detect whether the event lives under ee/app/events/.
+if [[ "${EVENT_FILE}" == ee/app/events/* ]]; then
+  YAML_FILE="${EVENT_FILE/#ee\/app\/events\//data\/events\/}"
+  EE_ONLY_LINE="ee_only: true"
+elif [[ "${EVENT_FILE}" == app/events/* ]]; then
+  YAML_FILE="${EVENT_FILE/#app\/events\//data\/events\/}"
+  EE_ONLY_LINE=""
+else
+  echo "Error: event file must live under app/events/ or ee/app/events/"
+  exit 1
+fi
+YAML_FILE="${YAML_FILE/.rb/.yml}"
+
+EE_ONLY_INSTRUCTION=""
+if [[ -n "${EE_ONLY_LINE}" ]]; then
+  EE_ONLY_INSTRUCTION="
+The source lives under ee/app/events/, so the YAML MUST include 'ee_only: true'
+as a top-level key (alongside event, description, feature_category)."
+fi
+
+GOAL="Document the GitLab EventStore event class defined in '${EVENT_FILE}'.
+
+Steps:
+1. Read '${EVENT_FILE}' and extract the full Ruby class name and JSON schema.
+2. Search for all Gitlab::EventStore.publish calls that instantiate this class so
+   you understand the timing semantics. Do NOT record locations in the YAML —
+   the description should capture any non-obvious timing or conditional behaviour
+   (deferred via run_after_commit, skipped on no-op, batched, etc.) as prose.
+3. Choose the most appropriate feature_category from config/feature_categories.yml.
+4. Write '${YAML_FILE}' using exactly this schema (see data/events/templates/example.yml):
+
+event: <Full::Ruby::ClassName>
+description: <one or two sentences; fold in timing/conditional semantics as prose>
+feature_category: <value from config/feature_categories.yml>
+${EE_ONLY_LINE}${EE_ONLY_INSTRUCTION}
+5. Run: bin/rake gitlab:docs:compile_events"
+
+if command -v glab &>/dev/null; then
+  echo "Running GitLab Duo CLI for ${EVENT_FILE}..."
+  glab duo cli run --goal "${GOAL}"
+else
+  echo "glab is not installed or not in PATH."
+  echo "Install it and set up Duo CLI: https://docs.gitlab.com/ee/user/gitlab_duo_cli/"
+  echo ""
+  echo "Alternatively, copy data/events/templates/example.yml to:"
+  echo "  ${YAML_FILE}"
+  echo "and fill in the fields manually, then run:"
+  echo "  bin/rake gitlab:docs:compile_events"
+  exit 1
+fi

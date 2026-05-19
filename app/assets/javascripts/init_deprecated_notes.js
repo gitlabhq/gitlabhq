@@ -5,6 +5,6 @@ export default () => {
   const { notesUrl, now, diffView, enableGFM } = JSON.parse(dataEl.innerHTML);
 
   // Create a singleton so that we don't need to assign
-  // into the window object, we can just access the current isntance with Notes.instance
+  // into the window object, we can just access the current instance with Notes.instance
   Notes.initialize(notesUrl, now, diffView, enableGFM);
 };

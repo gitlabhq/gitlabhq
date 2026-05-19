@@ -42,7 +42,7 @@ module API
     resource :bulk_imports do
       desc 'Start a new GitLab Migration' do
         detail 'This feature was introduced in GitLab 14.2.'
-        success code: 200, model: Entities::BulkImport
+        success code: 201, model: Entities::BulkImport
         consumes ['application/x-www-form-urlencoded']
         failure [
           { code: 401, message: 'Unauthorized' },

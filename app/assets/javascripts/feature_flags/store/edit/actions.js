@@ -10,7 +10,7 @@ import * as types from './mutation_types';
  *
  * Will dispatch `requestUpdateFeatureFlag`
  * Serializes the params and makes a put request
- * Dispatches an action acording to the request status.
+ * Dispatches an action according to the request status.
  *
  * @param {Object} params
  */

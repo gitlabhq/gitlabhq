@@ -2,7 +2,7 @@
 
 RSpec.shared_examples "an autodiscoverable RSS feed with current_user's feed token" do
   it "has an RSS autodiscovery link tag with current_user's feed token" do
-    expect(page).to have_css("link[type*='atom+xml'][href*='feed_token=glft-'][href*='-#{user.id}']", visible: false)
+    expect(page).to have_css("link[type*='atom+xml'][href*='feed_token=glft-'][href*='-#{user.id}']", visible: :hidden)
   end
 end
 
@@ -21,7 +21,7 @@ end
 
 RSpec.shared_examples "an autodiscoverable RSS feed without a feed token" do
   it "has an RSS autodiscovery link tag without a feed token" do
-    expect(page).to have_css("link[type*='atom+xml']:not([href*='feed_token'])", visible: false)
+    expect(page).to have_css("link[type*='atom+xml']:not([href*='feed_token'])", visible: :hidden)
   end
 end
 
@@ -47,7 +47,7 @@ RSpec.shared_examples "updates atom feed link" do |type, field_name = 'assignee_
 
     link = find_link('Subscribe to RSS feed')
     params = CGI.parse(URI.parse(link[:href]).query)
-    auto_discovery_link = find("link[type='application/atom+xml']", visible: false)
+    auto_discovery_link = find("link[type='application/atom+xml']", visible: :hidden)
     auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
 
     expect(params).to include({

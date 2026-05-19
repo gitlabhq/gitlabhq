@@ -33,7 +33,6 @@ module Issues
         current_user: support_bot,
         params: {
           work_item_type: work_item_type,
-          issue_type: work_item_type.base_type,
           author: support_bot,
           confidential: target_confidentiality,
           service_desk_reply_to: email

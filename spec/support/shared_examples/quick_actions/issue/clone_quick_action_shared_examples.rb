@@ -15,9 +15,6 @@ RSpec.shared_examples 'clone quick action' do
 
         expect(page).to have_content "Cloned this item to #{project.full_path}."
         expect(issue.reload).to be_open
-
-        visit project_issue_path(project, issue)
-
         expect(page).to have_content issue.title
       end
     end

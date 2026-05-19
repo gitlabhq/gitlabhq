@@ -27,9 +27,7 @@ module BulkImports
     def process_bulk_import
       if bulk_import.created?
         bulk_import.start!
-        # Fetch and cache the source ghost user id to avoid repeated API calls.
-        # This also avoids inconsistent ghost user mapping if concurrent API responses occasionally fail.
-        BulkImports::SourceInternalUserFinder.new(bulk_import.configuration).set_ghost_user_id
+        cache_source_ghost_user
       end
 
       created_entities.first(next_batch_size).each do |entity|
@@ -37,9 +35,7 @@ module BulkImports
 
         entity.start!
 
-        Gitlab::ApplicationContext.with_context(bulk_import_entity_id: entity.id) do
-          BulkImports::ExportRequestWorker.perform_async(entity.id)
-        end
+        import_entity(entity.id)
       end
     end
 
@@ -150,6 +146,24 @@ module BulkImports
     def source_version_out_of_range?(minimum_version, maximum_version, non_patch_source_version)
       (minimum_version && non_patch_source_version < Gitlab::VersionInfo.parse(minimum_version)) ||
         (maximum_version && non_patch_source_version > Gitlab::VersionInfo.parse(maximum_version))
+    end
+
+    def cache_source_ghost_user
+      return if bulk_import.offline_export?
+
+      # Fetch and cache the source ghost user id to avoid repeated API calls.
+      # This also avoids inconsistent ghost user mapping if concurrent API responses occasionally fail.
+      BulkImports::SourceInternalUserFinder.new(bulk_import.configuration).set_ghost_user_id
+    end
+
+    def import_entity(entity_id)
+      Gitlab::ApplicationContext.with_context(bulk_import_entity_id: entity_id) do
+        if bulk_import.offline_export?
+          BulkImports::EntityWorker.perform_async(entity_id)
+        else
+          BulkImports::ExportRequestWorker.perform_async(entity_id)
+        end
+      end
     end
 
     def log_skipped_pipeline(pipeline, entity, minimum_version, maximum_version)

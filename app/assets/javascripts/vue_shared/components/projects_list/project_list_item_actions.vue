@@ -7,6 +7,7 @@ import { createAlert } from '~/alert';
 import { archiveProject, restoreProject, unarchiveProject, deleteProject } from '~/rest_api';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
+import TransferModal from '~/projects/components/transfer_modal.vue';
 import {
   ACTION_COPY_ID,
   ACTION_ARCHIVE,
@@ -18,6 +19,7 @@ import {
   ACTION_REQUEST_ACCESS,
   ACTION_WITHDRAW_ACCESS_REQUEST,
   ACTION_LEAVE,
+  ACTION_TRANSFER,
 } from '~/vue_shared/components/list_actions/constants';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 import { InternalEvents } from '~/tracking';
@@ -26,6 +28,7 @@ import {
   renderRestoreSuccessToast,
   renderUnarchiveSuccessToast,
   renderDeleteSuccessToast,
+  renderTransferSuccessToast,
   deleteParams,
 } from './utils';
 import ProjectsListItemLeaveModal from './projects_list_item_leave_modal.vue';
@@ -36,6 +39,7 @@ export default {
     GlLoadingIcon,
     ListActions,
     DeleteModal,
+    TransferModal,
     ProjectsListItemLeaveModal,
   },
   mixins: [InternalEvents.mixin()],
@@ -56,6 +60,7 @@ export default {
       isDeleteModalVisible: false,
       isDeleteLoading: false,
       isLeaveModalVisible: false,
+      isTransferModalVisible: false,
     };
   },
   computed: {
@@ -108,6 +113,9 @@ export default {
             class: 'js-leave-link',
           },
         },
+        [ACTION_TRANSFER]: {
+          action: this.onActionTransfer,
+        },
       };
 
       if (this.project.requestAccessPath) {
@@ -148,6 +156,9 @@ export default {
     },
     hasActionLeave() {
       return this.project.availableActions?.includes(ACTION_LEAVE);
+    },
+    hasActionTransfer() {
+      return this.project.availableActions?.includes(ACTION_TRANSFER);
     },
   },
   methods: {
@@ -233,6 +244,13 @@ export default {
     onLeaveSuccess() {
       this.$emit('action', ACTION_LEAVE);
     },
+    onActionTransfer() {
+      this.isTransferModalVisible = true;
+    },
+    onTransferSuccess() {
+      this.$emit('action', ACTION_TRANSFER);
+      renderTransferSuccessToast(this.project);
+    },
   },
 };
 </script>
@@ -266,6 +284,12 @@ export default {
       v-model="isLeaveModalVisible"
       :project="project"
       @success="onLeaveSuccess"
+    />
+    <transfer-modal
+      v-if="hasActionTransfer"
+      v-model="isTransferModalVisible"
+      :project="project"
+      @success="onTransferSuccess"
     />
   </div>
 </template>

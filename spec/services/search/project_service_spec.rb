@@ -2,9 +2,21 @@
 
 require 'spec_helper'
 
-RSpec.describe Search::ProjectService, feature_category: :global_search do
+RSpec.describe Search::ProjectService, :with_current_organization, feature_category: :global_search do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
+
+  describe '#execute' do
+    it 'passes organization_id to ProjectSearchResults' do
+      expect(Gitlab::ProjectSearchResults).to receive(:new).with(
+        anything,
+        anything,
+        hash_including(organization_id: current_organization.id)
+      ).and_call_original
+
+      described_class.new(user, project, search: 'test', organization_id: current_organization.id).execute
+    end
+  end
 
   describe '#allowed_scopes' do
     subject(:service) { described_class.new(user, project, search: 'test') }

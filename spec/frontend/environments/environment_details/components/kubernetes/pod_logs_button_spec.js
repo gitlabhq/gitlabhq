@@ -39,9 +39,11 @@ describe('~/environments/environment_details/components/kubernetes/pod_logs_butt
       });
 
       it('provides link to the logs page', () => {
-        expect(findButton().attributes('to')).toBe(
-          `/k8s/namespace/${namespace}/pods/${podName}/logs?container=${container.name}`,
-        );
+        expect(findButton().props('to')).toEqual({
+          name: 'logs',
+          params: { namespace, podName },
+          query: { container: container.name },
+        });
       });
     });
 
@@ -62,11 +64,19 @@ describe('~/environments/environment_details/components/kubernetes/pod_logs_butt
         expect(findDropdown().props('items')).toEqual([
           {
             text: container.name,
-            to: `/k8s/namespace/${namespace}/pods/${podName}/logs?container=${container.name}`,
+            to: {
+              name: 'logs',
+              params: { namespace, podName },
+              query: { container: container.name },
+            },
           },
           {
             text: otherContainer.name,
-            to: `/k8s/namespace/${namespace}/pods/${podName}/logs?container=${otherContainer.name}`,
+            to: {
+              name: 'logs',
+              params: { namespace, podName },
+              query: { container: otherContainer.name },
+            },
           },
         ]);
       });

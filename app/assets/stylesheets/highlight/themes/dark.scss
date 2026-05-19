@@ -128,7 +128,7 @@ $dark-il: #de935f;
 }
 
 .code.dark,
-.code.code-syntax-highlight-theme {
+.code-syntax-highlight-theme {
   --code-dark-theme: 1;
   --code-border-lightness-adjust: 0.1;
   --diff-expansion-background-color: #{$gl-color-neutral-600};

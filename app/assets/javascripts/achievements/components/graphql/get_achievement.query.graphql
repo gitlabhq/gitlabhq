@@ -1,0 +1,15 @@
+# @feature_category: user_profile
+
+query getAchievement($groupFullPath: ID!, $id: AchievementsAchievementID!) {
+  group(fullPath: $groupFullPath) {
+    id
+    achievements(ids: [$id]) {
+      nodes {
+        id
+        name
+        description
+        avatarUrl
+      }
+    }
+  }
+}

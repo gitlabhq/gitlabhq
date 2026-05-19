@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application diff limits",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "diff_max_versions": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum number of diff versions per merge request."
+    },
+    "diff_max_commits": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum number of diff commits per merge request."
+    }
+  }
+}

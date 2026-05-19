@@ -13,6 +13,7 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import EnvironmentsBlock from '~/ci/job_details/components/environments_block.vue';
 import ErasedBlock from '~/ci/job_details/components/erased_block.vue';
 import JobApp from '~/ci/job_details/job_app.vue';
+import JobHeader from '~/ci/job_details/components/job_header.vue';
 import JobLog from '~/ci/job_details/components/log/log.vue';
 import JobLogTopBar from '~/ci/job_details/components/job_log_top_bar.vue';
 import Sidebar from '~/ci/job_details/components/sidebar/sidebar.vue';
@@ -89,6 +90,7 @@ describe('Job App', () => {
   const findJobForm = () => wrapper.findComponent(JobRunForm);
   const findJobLog = () => wrapper.findComponent(JobLog);
   const findJobLogTopBar = () => wrapper.findComponent(JobLogTopBar);
+  const findJobHeader = () => wrapper.findComponent(JobHeader);
 
   const findJobContent = () => wrapper.findByTestId('job-content');
   const findArchivedJob = () => wrapper.findByTestId('archived-job');
@@ -228,6 +230,18 @@ describe('Job App', () => {
             'An error occurred while generating an attestation for build artifacts in this job. Please check the configuration, and try again.',
           );
         });
+      });
+
+      it('displays job header when job ID exists', async () => {
+        await setupAndMount();
+
+        expect(findJobHeader().exists()).toBe(true);
+      });
+
+      it('does not display job header when job ID is missing', async () => {
+        await setupAndMount({ jobData: { id: 0 } });
+
+        expect(findJobHeader().exists()).toBe(false);
       });
     });
 

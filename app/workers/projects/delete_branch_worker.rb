@@ -23,7 +23,7 @@ module Projects
       delete_service_result = ::Branches::DeleteService.new(project, user)
         .execute(branch_name)
 
-      # Only want to raise on 400 to avoid permission and non existant branch error
+      # Only want to raise on 400 to avoid permission and non existent branch error
       return unless delete_service_result[:http_status] == 400
 
       delete_service_result.log_and_raise_exception(as: GitReferenceLockedError)

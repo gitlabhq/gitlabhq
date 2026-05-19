@@ -7,14 +7,14 @@ title: Code Review Flow
 
 {{< details >}}
 
-- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
+- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude Sonnet 4.6 Vertex](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-6)
+- LLM: Anthropic [Claude Sonnet 4 Vertex](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - Available on [GitLab Duo with self-hosted models](../../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
@@ -40,7 +40,7 @@ The Code Review Flow helps you streamline code reviews with agentic AI.
 
 This flow:
 
-- Analyzes code changes, merge request comments, and linked issues.
+- Analyzes code changes.
 - Provides enhanced contextual understanding of repository structure and cross-file dependencies.
 - Delivers detailed review comments with actionable feedback.
 - Supports custom review instructions tailored to your project.
@@ -54,6 +54,8 @@ Prerequisites:
 - Ensure you meet the [Agent Platform prerequisites](../../_index.md#prerequisites).
 - Ensure **Allow foundational flows** and **Code Review** are [turned on](_index.md#turn-foundational-flows-on-or-off) for the top-level group.
 - Ensure you have the Developer, Maintainer, or Owner [role](../../../permissions.md) for the project.
+- Ensure [a runner](../execution.md#configure-runners) is available and configured for the project. 
+- If you belong to multiple GitLab Duo namespaces, ensure you have [a default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace) set in your preferences.
 
 To use the Code Review Flow on a merge request:
 
@@ -79,17 +81,59 @@ your merge request.
 Feedback provided to GitLab Duo does not influence later reviews of other merge requests.
 There is a feature request to add this functionality, see [issue 560116](https://gitlab.com/gitlab-org/gitlab/-/issues/560116).
 
+## Contextual awareness
+
+Code Review Flow runs in two stages:
+
+1. Pre-scan: The flow inspects the merge request diffs and uses them to identify related
+   context to fetch from the project repository. The pre-scan typically includes directory
+   listings and the contents of related files, such as tests and dependencies referenced by the
+   changes. The exact context fetched depends on the diff analysis.
+1. Review: The flow runs the review with the following data in the large language model. The review stage cannot fetch additional context on demand.
+
+   - Results from the pre-scan step.
+   - Merge request title.
+   - Merge request description.
+   - Merge request diffs.
+   - Original versions of the files.
+   - Filenames.
+   - Custom review instructions.
+
+To specify content to exclude, see
+[exclude context from GitLab Duo](../../context.md#exclude-context-from-gitlab-duo).
+
+### File and context limits
+
+Code Review Flow applies two limits to keep the prompt within a workable size:
+
+- For files longer than 10,000 lines, only the diff is sent to the model. The full file contents are not included.
+- The total context that the pre-scan gathers is capped at approximately 1 MiB. When the cap is
+  exceeded, the context is truncated to approximately 800 KiB before the review stage runs.
+
+These limits apply to the data the flow gathers and are separate from the
+[selected model's](../../model_selection.md) context window.
+
+For very large merge requests, the review might miss context that was truncated. To reduce the
+risk:
+
+- Split the merge request into smaller merge requests.
+- [Exclude context](../../context.md#exclude-context-from-gitlab-duo) for files that are not
+  relevant to the review.
+
 ## Custom code review instructions
 
-Customize the behavior of Code Review Flow with repository-specific review instructions. You can
-guide GitLab Duo to:
+Customize the behavior of Code Review Flow with an `mr-review-instructions.yaml` file.
+
+You can guide GitLab Duo with repository-specific review instructions:
 
 - Focus on specific code quality aspects (such as security, performance, and maintainability).
 - Enforce coding standards and best practices unique to your project.
 - Target specific file patterns with tailored review criteria.
 - Provide more detailed explanations for certain types of changes.
 
-To configure custom instructions, see [customize instructions for GitLab Duo](../../../gitlab_duo/customize_duo/review_instructions.md).
+Code Review Flow does not reference `AGENTS.md` and `SKILL.md` files.
+
+To configure custom instructions, see [customize review instructions for GitLab Duo](../../customize/review_instructions.md).
 
 ## Automatic reviews from GitLab Duo for a project
 
@@ -112,9 +156,12 @@ Prerequisites:
 To enable `@GitLabDuo` to automatically review merge requests:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Merge requests**.
+1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
+
+For information on how credit usage is attributed for automatic reviews, see
+[determine which code review feature runs](../../../project/merge_requests/duo_in_merge_requests.md#determine-which-review-feature-runs).
 
 ## Automatic reviews from GitLab Duo for groups and applications
 
@@ -135,7 +182,7 @@ Prerequisites:
 To enable automatic reviews for groups:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Merge requests** section.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
@@ -143,11 +190,14 @@ To enable automatic reviews for groups:
 To enable automatic reviews for all projects:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
 
 Settings cascade from application to group to project. More specific settings override broader ones.
+
+For information on how credit usage is attributed for automatic reviews, see
+[determine which code review feature runs](../../../project/merge_requests/duo_in_merge_requests.md#determine-which-review-feature-runs).
 
 ## Troubleshooting
 
@@ -253,6 +303,33 @@ You might get an error that states
 This error occurs when GitLab Duo Agent Platform is unable to start Code Review Flow due to an internal error.
 
 Try to restart the review. If the error persists, contact your administrator.
+
+### Missing context in large merge request reviews
+
+Code Review Flow might miss context when a merge request contains many large changed files.
+
+This can occur when the pre-scan results exceed the
+[file and context limits](#file-and-context-limits) and the data is truncated before the review
+stage runs.
+
+To improve the review:
+
+- Split the merge request into smaller merge requests.
+- [Exclude context](../../context.md#exclude-context-from-gitlab-duo) for files that are not
+  relevant to the review.
+- Ask a Maintainer or Owner to
+  [select Claude Sonnet 4.6 Vertex](../../../gitlab_duo/model_selection.md#select-a-model-for-a-feature)
+  for Code Review. Sonnet 4.6 Vertex has a larger context window than the default model.
+
+### Configuration diagnostic script
+
+If you cannot identify the cause of a Code Review Flow issue from the documented error codes, you
+can run a diagnostic script to check your GitLab Duo configuration.
+
+The script checks the full configuration chain required for Code Review Flow, including checks that
+apply to all GitLab Duo Agent Platform features.
+
+For more information, see [run the configuration diagnostic script](../../troubleshooting.md#run-the-configuration-diagnostic-script).
 
 ## Related topics
 

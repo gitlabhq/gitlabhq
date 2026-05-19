@@ -5,17 +5,6 @@ module Gitlab
     MAX_RETRIES = 100
 
     class << self
-      def retry_lock_with_transaction(subject, max_retries = MAX_RETRIES, name:, &block)
-        # prevent scope override, see https://gitlab.com/gitlab-org/gitlab/-/issues/391186
-        klass = subject.is_a?(ActiveRecord::Relation) ? subject.klass : subject.class
-
-        retry_lock(subject, max_retries, name: name) do |inner_subject|
-          klass.transaction do
-            yield(inner_subject)
-          end
-        end
-      end
-
       def retry_lock(subject, max_retries = MAX_RETRIES, name:, &block)
         start_time = ::Gitlab::Metrics::System.monotonic_time
         retry_attempts = 0

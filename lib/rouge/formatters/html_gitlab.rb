@@ -23,11 +23,13 @@ module Rouge
           yield "\n" unless is_first
           is_first = false
 
-          id = " id=\"LC#{@line_number}\"" unless @fix_attributes
-          lang = " lang=\"#{@tag}\"" unless @fix_attributes
-          data_lang = " data-lang=\"#{@tag}\"" if @fix_attributes && @tag
-
-          yield %(<span#{id} class="line"#{lang}#{data_lang}>)
+          if @fix_attributes
+            lang_attr = %( data-lang="#{@tag}") if @tag.present?
+            yield %(<span class="line"#{lang_attr}>)
+          else
+            lang_attr = %( lang="#{@tag}") if @tag.present?
+            yield %(<span id="LC#{@line_number}" class="line"#{lang_attr}>)
+          end
 
           line.each do |token, value|
             value = value.chomp! || value

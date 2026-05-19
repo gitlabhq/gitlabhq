@@ -1,0 +1,42 @@
+---
+name: siphon_organizations
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  id ORDER BY id SETTINGS index_granularity = 512
+primary_key: id
+sorting_key: id
+settings:
+  index_granularity: '512'
+columns:
+- name: id
+  type: Int64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: created_at
+  type: DateTime64(6, 'UTC')
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+- name: name
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: visibility_level
+  type: Int8
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: state
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'

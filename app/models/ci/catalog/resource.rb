@@ -59,6 +59,10 @@ module Ci
           .distinct
       end
 
+      scope :in_namespaces, ->(namespace_ids) {
+        joins(:project).where(projects: { namespace_id: namespace_ids })
+      }
+
       # The usage counts are updated daily by Ci::Catalog::Resources::AggregateLast30DayUsageWorker
       scope :order_by_last_30_day_usage_count_desc, -> { reorder(last_30_day_usage_count: :desc) }
       scope :order_by_last_30_day_usage_count_asc, -> { reorder(last_30_day_usage_count: :asc) }

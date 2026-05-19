@@ -1,5 +1,24 @@
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { camelCase } from 'lodash-es';
+
 function cloneResponse(response) {
   return JSON.parse(JSON.stringify(response));
+}
+
+export function loadFixturesMap(basePath) {
+  const files = readdirSync(basePath).filter((f) => f.endsWith('.json'));
+  const map = {};
+
+  files.forEach((file) => {
+    const operationName = camelCase(
+      file.replace(/\.(query|mutation)\.graphql\.json$/, '').replace(/\.json$/, ''),
+    );
+    const content = JSON.parse(readFileSync(join(basePath, file), 'utf-8'));
+    map[operationName] = content;
+  });
+
+  return map;
 }
 
 export function buildUpdateResponse({

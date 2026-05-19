@@ -13,7 +13,7 @@ RSpec.describe Banzai::Filter::FootnoteFilter, feature_category: :markdown do
   # [^_😄_]: three
   # rubocop:enable Style/AsciiComments
   let(:footnote) do
-    <<~EOF.strip_heredoc
+    <<~HTML
       <p>first<sup><a href="#fn-1" id="fnref-1" data-footnote-ref>1</a></sup> and second<sup><a href="#fn-second" id="fnref-second" data-footnote-ref>2</a></sup> and third<sup><a href="#fn-_%F0%9F%98%84_" id="fnref-_%F0%9F%98%84_" data-footnote-ref>3</a></sup></p>
       <p>missing id<sup><a href="#fn-10" data-footnote-ref>1</a></sup></p>
       <section data-footnotes>
@@ -27,11 +27,11 @@ RSpec.describe Banzai::Filter::FootnoteFilter, feature_category: :markdown do
       <p>three <a href="#fnref-_%F0%9F%98%84_" data-footnote-backref data-footnote-backref-idx="3" aria-label="Back to reference 3" title="Back to reference 3">↩</a></p>
       </li>
       </ol>
-    EOF
+    HTML
   end
 
   let(:filtered_footnote) do
-    <<~EOF.strip_heredoc
+    <<~HTML
       <p>first<sup class="footnote-ref"><a href="#fn-1-#{identifier}" id="fnref-1-#{identifier}" data-footnote-ref>1</a></sup> and second<sup class="footnote-ref"><a href="#fn-second-#{identifier}" id="fnref-second-#{identifier}" data-footnote-ref>2</a></sup> and third<sup class="footnote-ref"><a href="#fn-_%F0%9F%98%84_-#{identifier}" id="fnref-_%F0%9F%98%84_-#{identifier}" data-footnote-ref>3</a></sup></p>
       <p>missing id<sup><a href="#fn-10" data-footnote-ref>1</a></sup></p>
       <section data-footnotes class=\"footnotes\">
@@ -47,7 +47,7 @@ RSpec.describe Banzai::Filter::FootnoteFilter, feature_category: :markdown do
       </li>
       </ol>
       </section>
-    EOF
+    HTML
   end
 
   context 'when footnotes exist' do

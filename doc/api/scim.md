@@ -35,7 +35,7 @@ This API differs from the [internal group SCIM API](../development/internal_api/
   - Are for system use for SCIM provider integration.
   - Implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
   - Get a list of SCIM provisioned users for the group or instance.
-  - Create, delete and update SCIM provisioned users for the group or instance.
+  - Create, delete, and update SCIM provisioned users for the group or instance.
 
 ## Retrieve SCIM identities for a group
 

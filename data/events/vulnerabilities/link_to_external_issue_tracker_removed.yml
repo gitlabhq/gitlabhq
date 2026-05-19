@@ -1,0 +1,6 @@
+---
+event: Vulnerabilities::LinkToExternalIssueTrackerRemoved
+description: Published when a vulnerability's link to an external issue tracker is
+  removed.
+feature_category: vulnerability_management
+ee_only: true

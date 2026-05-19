@@ -23,9 +23,7 @@ module RuboCop
       MSG = "Do not use catch or throw unless a gem's API demands it."
 
       def on_send(node)
-        receiver, method_name, _ = *node
-
-        return unless receiver.nil? && %i[catch throw].include?(method_name)
+        return unless node.receiver.nil? && %i[catch throw].include?(node.method_name)
 
         add_offense(node)
       end

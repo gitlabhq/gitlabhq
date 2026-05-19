@@ -306,8 +306,7 @@ For information about writing attribute descriptions, see the [GraphQL API descr
 
 - Use `https://gitlab.example.com/api/v4/` as an endpoint.
 - Wherever needed use this personal access token: `<your_access_token>`.
-- Always put the request first. `GET` is the default so you don't have to
-  include it.
+- Always put the request method first. Specify `--request <METHOD>` for all HTTP methods, including `GET`.
 - Use long option names (`--header` instead of `-H`) for legibility. (Tested in
   [`scripts/lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh).)
 - Declare URLs with the `--url` parameter, and wrap the URL in double quotes (`"`).
@@ -316,12 +315,13 @@ For information about writing attribute descriptions, see the [GraphQL API descr
 - For legibility, use the ` \ ` character and indentation to break long single-line
   commands apart into multiple lines.
 
-| Methods                                         | Description                                            |
-|-------------------------------------------------|--------------------------------------------------------|
+| Methods                                         | Description |
+| ----------------------------------------------- | ----------- |
 | `--header "PRIVATE-TOKEN: <your_access_token>"` | Use this method as is, whenever authentication needed. |
-| `--request POST`                                | Use this method when creating new objects.             |
-| `--request PUT`                                 | Use this method when updating existing objects.        |
-| `--request DELETE`                              | Use this method when removing existing objects.        |
+| `--request GET`                                 | Use this method when retrieving existing objects. |
+| `--request POST`                                | Use this method when creating new objects. |
+| `--request PUT`                                 | Use this method when updating existing objects. |
+| `--request DELETE`                              | Use this method when removing existing objects. |
 
 ## cURL Examples
 
@@ -338,7 +338,8 @@ you can use in the API documentation.
 Get the details of a group:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/gitlab-org"
 ```
 

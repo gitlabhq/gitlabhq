@@ -228,32 +228,16 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
   end
 
   describe '#execute' do
-    context 'when using app password authentication' do
-      let(:params) do
-        {
-          bitbucket_username: 'username',
-          bitbucket_app_password: 'password',
-          repo_path: repo_path,
-          target_namespace: target_namespace,
-          new_name: new_name
-        }
-      end
-
-      it_behaves_like 'bitbucket import service'
+    let(:params) do
+      {
+        bitbucket_email: 'user@example.com',
+        bitbucket_api_token: 'token123',
+        repo_path: repo_path,
+        target_namespace: target_namespace,
+        new_name: new_name
+      }
     end
 
-    context 'when using API token authentication' do
-      let(:params) do
-        {
-          bitbucket_email: 'user@example.com',
-          bitbucket_api_token: 'token123',
-          repo_path: repo_path,
-          target_namespace: target_namespace,
-          new_name: new_name
-        }
-      end
-
-      it_behaves_like 'bitbucket import service'
-    end
+    it_behaves_like 'bitbucket import service'
   end
 end

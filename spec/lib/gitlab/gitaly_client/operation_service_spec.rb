@@ -340,7 +340,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         target_sha: target_sha,
         message: message,
         sign: sign
-      ) {}
+      ) { nil }
     end
 
     it 'succeeds' do
@@ -808,7 +808,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       end
 
       let(:expected_error) { Gitlab::Git::Repository::CreateTreeError }
-      let(:expected_error_message) {}
+      let(:expected_error_message) { nil }
 
       it_behaves_like '#user_cherry_pick with a gRPC error'
     end
@@ -824,7 +824,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     context 'when a non-detailed gRPC error is raised' do
       let(:raised_error) { GRPC::Internal.new('non-detailed error') }
       let(:expected_error) { GRPC::Internal }
-      let(:expected_error_message) {}
+      let(:expected_error_message) { nil }
 
       it_behaves_like '#user_cherry_pick with a gRPC error'
     end
@@ -971,7 +971,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     context 'when a non-detailed gRPC error is raised' do
       let(:raised_error) { GRPC::Internal.new('non-detailed error') }
       let(:expected_error) { GRPC::Internal }
-      let(:expected_error_message) {}
+      let(:expected_error_message) { nil }
 
       it_behaves_like '#user_revert with a gRPC error'
     end
@@ -1051,7 +1051,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         branch_sha: '0b4bc9a49b562e85de7cc9e834518ea6828729b9',
         remote_repository: repository,
         remote_branch: 'master'
-      ) {}
+      ) { nil }
     end
 
     context 'with clean repository' do

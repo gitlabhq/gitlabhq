@@ -23,7 +23,7 @@ module Types
 
           field :function, GraphQL::Types::String,
             null: true,
-            description: 'Name of the function where the error occured.'
+            description: 'Name of the function where the error occurred.'
 
           field :line_number, GraphQL::Types::Int,
             null: true,

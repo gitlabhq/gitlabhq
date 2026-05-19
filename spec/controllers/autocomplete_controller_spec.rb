@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe AutocompleteController do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:user) { project.first_owner }
 
   context 'GET users', feature_category: :user_management do

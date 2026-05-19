@@ -161,7 +161,7 @@ This setting allows group owners to control GitLab Duo Core availability:
 
 | Feature | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise |
 |---------|----------|---------|----------------|
-| Chat | Limited to IDE | Full functionality | Full functionality |
+| Chat | Agentic Chat only. Limited to IDE | Full functionality | Full functionality |
 | Code Suggestions | Available in IDE and Web IDE | Available in IDE and Web IDE | Available in IDE and Web IDE |
 | Additional AI features | Not available | Some Available | All Available |
 

@@ -32,7 +32,8 @@ OpenBao integrates with GitLab as an optional component that runs in parallel to
 
 - The Rails backend and runners connect to the OpenBao API through a load balancer.
 - OpenBao stores data in PostgreSQL.
-  The Helm chart configures OpenBao to store data in the main GitLab database by default.
+  The Helm chart configures OpenBao to use a separate logical database on the same PostgreSQL instance.
+  Configure the connection using `global.openbao.psql` in the Helm chart.
 - OpenBao gets the unseal key from a secret store.
 - OpenBao reads the unseal key from a Kubernetes secret mounted by the Helm chart.
 - OpenBao posts audit logs to the Rails backend when audit logs are enabled.
@@ -43,12 +44,17 @@ flowchart TB
     PostgreSQL[PostgreSQL]
     LB[Load balancer]
     OpenBao[OpenBao active node]
+    Rails[Rails backend]
+    Runner[GitLab Runner]
+    Workhorse[Workhorse]
 
     Rails-- Write secrets and permissions -->LB
     Runner-- Get pipeline secrets -->LB
     LB-->OpenBao
     OpenBao-- Get unseal key -->SecretStore
     OpenBao-- Store -->PostgreSQL
+    OpenBao-- Audit logs -->Workhorse
+    Workhorse-->Rails
 ```
 
 OpenBao runs with a single active node that handles all requests,
@@ -58,93 +64,228 @@ and optionally multiple standby nodes that take over if the active node fails.
 
 Prerequisites:
 
-- You must have administrator access to the instance.
-- You must be running GitLab 18.8 or later.
-- You must have a Kubernetes cluster.
+- Administrator access.
+- GitLab 18.8 or later.
+- For installing OpenBao alongside a Linux package instance, GitLab 19.0 or later.
+- A Kubernetes cluster.
+- For Cloud Native GitLab deployments, an external (non-Omnibus) PostgreSQL instance.
+  The external PostgreSQL instance is required by the GitLab Helm chart for Cloud Native deployments,
+  not by OpenBao specifically. OpenBao uses a separate logical database on that instance.
 
-To install OpenBao, use the [OpenBao Helm chart for Kubernetes deployments](https://docs.gitlab.com/charts/charts/openbao/).
+Choose the installation method based on your GitLab deployment:
 
-After installation, verify that OpenBao is working by following the [GitLab Secrets Manager user documentation](../../ci/secrets/secrets_manager/_index.md)
-to test secret operations.
+- **Cloud Native GitLab**: Use this if you deploy GitLab to Kubernetes.
+  For more information, see [OpenBao Helm chart documentation](https://docs.gitlab.com/charts/charts/openbao/).
+- **Linux package**: Use this if you deploy GitLab with the Linux package, on a single node or
+  across multiple nodes. For more information, see
+  [install OpenBao for a Linux package instance](linux_package_integration.md).
+
+After installation, verify that OpenBao is working by following the
+[GitLab Secrets Manager user documentation](../../ci/secrets/secrets_manager/_index.md).
+
+## Sizing recommendations
 
 OpenBao resource requirements depend on your GitLab instance size and secret usage patterns.
 
-Monitor your deployment and adjust resources as needed based on actual usage patterns.
+These recommendations are validated starting points. Monitor your deployment and adjust
+resources based on actual usage patterns. Your requirements will differ based on
+the number of CI/CD jobs that fetch secrets, and the number of
+groups and projects with Secrets Manager enabled.
 
-### CPU requirements
+### Pod resources
 
-OpenBao CPU usage is primarily driven by:
+OpenBao runs with a single active node that handles all requests.
+Additional replicas provide high-availability failover only.
+Standby nodes do not serve read traffic because OpenBao does not support
+Horizontal Read Scalability (HRS) when connected to a PostgreSQL database.
 
-- How often CI/CD jobs fetch secrets.
-- How often the Secrets Manager is accessed through the GitLab UI.
+| Secret fetches/s | CPU request | Memory request | Replicas |
+|------------------|-------------|----------------|----------|
+| Up to 3          | 500m        | 2 GB           | 2        |
+| Up to 6          | 500m        | 3 GB           | 2        |
+| Up to 12         | 500m        | 4 GB           | 2        |
+| Up to 30         | 500m        | 9 GB           | 2        |
+| Up to 60         | 1,000m      | 16 GB          | 2        |
+| Up to 150        | 2,000m      | 31 GB          | 2        |
 
-Recommended number of CPU cores:
+#### Estimate your secret fetch rate
 
-| Deployment Size | Fetch frequency       | CPU Cores |
-|-----------------|-----------------------|-----------|
-| Small           | Less than 100 ops/sec | 1 core    |
-| Medium          | 100 to 200 ops/sec    | 1-2 cores |
-| Large           | More than 200 ops/sec | 2+ cores  |
+To determine which row applies, estimate your secret fetches per second:
 
-For example, testing a deployment with 100,000 secrets corresponded to 139 fetch operations per second.
-This assumes each secret is fetched by a CI/CD job approximately every 12 minutes,
-and OpenBao makes full use of its memory cache.
+```plaintext
+fetches/s = Git Pull RPS × adoption rate × 3
+```
 
-### Memory requirements
+Where:
 
-OpenBao memory usage primarily depends on the number of projects
-where GitLab Secrets Manager is enabled.
-You should allocate at least 1 GB of memory per 200 projects,
-plus a safety margin of 1 GB.
+- `Git Pull RPS` is the peak Git pull throughput of your GitLab instance.
+  You can measure this from your existing environment monitoring,
+  see
+  [Extract peak traffic metrics](../reference_architectures/sizing.md#extract-peak-traffic-metrics).
+- `adoption rate` is the fraction of CI/CD jobs that use Secrets Manager
+  (for example, 0.05 for 5%, 0.20 for 20%, or 0.50 for 50%).
+- `3` is the assumed average number of secrets fetched per job that uses the Secrets Manager.
 
-Recommended memory allocation:
+Select the row where **Secret fetches/s** meets or just exceeds your result.
+For example, a deployment with a measured 20 Git pull RPS at 20% adoption:
+`20 × 0.20 × 3 = 12 fetches/s`. Use at least the **Up to 12** row.
 
-| Deployment Size | Number of Projects | Memory |
-|-----------------|--------------------|--------|
-| Small           | Less than 200      | 2 GB   |
-| Medium          | 400 to 800         | 5 GB   |
-| Large           | More than 1,000    | 6+ GB  |
+After deployment, verify your estimates against actual usage.
+Use the [monitoring queries](#monitor-your-openbao-deployment) to measure resource usage
+and scale up to the next row when thresholds are exceeded.
 
-#### Storage requirements
+### How resources are calculated
 
-Storage requirements for the PostgreSQL database depends primarily on the number of secrets.
-It takes about 13 KB to store a single version of a secret and the corresponding metadata.
+**CPU** is driven by how frequently CI/CD jobs fetch secrets.
+Secret write operations (creating or updating secrets) are infrequent relative to pipeline
+volume and contribute negligibly to CPU load.
+The table uses Git clone rate (Git Pull RPS) as a proxy for CI job rate,
+because each CI/CD job begins with a Git clone.
+For the formula, see [Estimate your secret fetch rate](#estimate-your-secret-fetch-rate).
+Set the CPU limit to twice the CPU request. This provides burst headroom for startup
+and provisioning spikes without over-reserving on the node during steady state.
 
-Usage example:
+**Memory** is driven by the number of OpenBao namespaces, which corresponds to
+the number of GitLab groups and projects with Secrets Manager enabled.
+Allocate approximately 5 MB per namespace, plus a 1 GB safety margin,
+with a minimum of 2 GB.
+Set the memory limit equal to the memory request (Guaranteed QoS class).
+OpenBao crashes immediately when it exceeds its memory limit with no graceful degradation.
 
-- 100,000 secrets = ~1.5 GB
-- 200,000 secrets = ~3 GB
+**Replicas** provide high-availability failover only. Use 2 replicas for all deployments.
+OpenBao does not support Horizontal Read Scalability (HRS) with the PostgreSQL storage backend,
+so additional replicas provide no throughput benefit.
 
-## Backup and restore
+### Database resources
 
-OpenBao data is stored in PostgreSQL and should be included in your regular GitLab backup procedures.
+OpenBao stores its data in a separate PostgreSQL database.
+You can colocate it on the same PostgreSQL server as the GitLab databases.
+No additional database compute capacity beyond the
+[reference architecture PostgreSQL recommendations](../reference_architectures/_index.md)
+is required.
 
-For detailed backup and restore procedures specific to OpenBao, see the [OpenBao backup documentation](https://docs.gitlab.com/charts/charts/openbao/#back-up-openbao).
+#### Database connection pool
 
-## High availability
+The OpenBao Helm chart configures these PostgreSQL connection pool defaults:
 
-For production deployments, consider:
+| Setting                                              | Default value |
+|------------------------------------------------------|---------------|
+| `config.storage.postgresql.maxParallel`              | 5             |
+| `config.storage.postgresql.maxIdleConnections`       | 2             |
 
-- Running multiple OpenBao replicas for redundancy
-- Using a highly available PostgreSQL backend
-- Implementing proper monitoring and alerting
+Do not increase these values unless you observe database connection wait time in your monitoring.
 
-## Health check and monitoring
+#### Database storage
+
+Database storage requirements depend primarily on the total number of secrets.
+Each secret, including its metadata and stored versions, requires approximately 13 KB of storage.
+
+| Total secrets  | Estimated storage |
+|----------------|-------------------|
+| 10,000         | ~130 MB           |
+| 50,000         | ~650 MB           |
+| 100,000        | ~1.3 GB           |
+| 200,000        | ~2.6 GB           |
+
+Storage growth is negligible for all reference architecture tiers.
+Allocating 5 to 10 GB of database storage provides ample headroom.
+
+## Monitor your OpenBao deployment
+
+Use the following queries to verify that your deployment is correctly sized and to
+detect when scaling is needed.
+
+### CPU utilization
+
+To measure OpenBao CPU usage:
+
+```prometheus
+sum(rate(container_cpu_usage_seconds_total{container="openbao-server"}[5m]))
+```
+
+The result is in CPU cores. Multiply by 1,000 to convert to millicores for comparison
+with the CPU request values in the sizing table.
+If CPU utilization consistently exceeds 50% of the CPU request, consider
+scaling up to the next row in the sizing table.
+
+### Memory utilization
+
+To measure OpenBao memory usage:
+
+```prometheus
+sum(container_memory_working_set_bytes{container="openbao-server"})
+```
+
+The result is in bytes. Memory grows as groups and projects enable Secrets Manager, at approximately
+5 MB per namespace. After a restart, memory stabilizes as OpenBao loads namespace metadata
+from the database.
+
+To calculate the correct memory request, count the groups and projects with Secrets Manager
+enabled and multiply by 5 MB, then add 1 GB. Update your pod resources if the result exceeds
+your current memory request. If memory shows a sustained upward trend with no active
+provisioning, investigate for potential issues.
+
+### CPU throttling
+
+To detect CPU throttling that may affect latency:
+
+```prometheus
+sum(rate(container_cpu_cfs_throttled_periods_total{container="openbao-server"}[5m]))
+/
+sum(rate(container_cpu_cfs_periods_total{container="openbao-server"}[5m]))
+```
+
+A throttle ratio above 0.25 (25%) indicates the CPU limit is too low for the current workload.
+When OpenBao is throttled, goroutines waiting for CPU time cause increased secret fetch latency.
+
+### Health check endpoints
 
 OpenBao provides health check endpoints for monitoring:
 
-- `openbao.example.com/v1/sys/health`: Returns the health status of OpenBao
-- `openbao.example.com/v1/sys/seal-status`: Returns the seal status
+- `<your-openbao-url>/v1/sys/health`: Returns the health status of OpenBao
+- `<your-openbao-url>/v1/sys/seal-status`: Returns the seal status
 
 You can integrate these endpoints with your monitoring system.
 
-## Performance issues
+## Backup and restore
 
-If you experience slow secret operations:
+OpenBao stores data in a separate logical database on PostgreSQL. Back up this database alongside your
+regular GitLab backup to ensure secrets can be restored after a failure.
 
-- Check OpenBao resource usage (CPU, memory)
-- Verify PostgreSQL backend performance
-- Check network latency between OpenBao and its PostgreSQL backend
+For detailed backup and restore procedures specific to OpenBao, see the [OpenBao backup documentation](https://docs.gitlab.com/charts/charts/openbao/#back-up-openbao).
+
+## Recovery key management
+
+For information about managing the OpenBao recovery key, including storing, viewing, and using it
+to generate a root token, see [recovery key management](recovery_key.md).
+
+## High availability
+
+OpenBao uses a single active node architecture. One node handles all requests,
+and standby nodes provide automatic failover if the active node fails.
+
+### Failover
+
+Standby nodes load all namespace metadata at startup, so promotion to active
+requires no additional initialization. The number of namespaces does not affect failover time.
+
+For production deployments:
+
+- Run at least two OpenBao replicas for redundancy.
+- Use a highly available PostgreSQL backend.
+- Implement monitoring and alerting using the [monitoring queries](#monitor-your-openbao-deployment).
+
+### Upgrade downtime
+
+OpenBao does not support zero-downtime upgrades. During an upgrade, OpenBao
+initializes each namespace sequentially on startup. Every group or project with Secrets Manager enabled
+counts as one namespace.
+
+To upgrade, it takes approximately 11 seconds per 1,000 namespaces, plus a 5 second baseline.
+
+When OpenBao implements on-demand namespace loading, upgrade downtime will be significantly reduced.
+For more information, see
+[issue 595721](https://gitlab.com/gitlab-org/gitlab/-/work_items/595721).
 
 ## Geo deployment
 
@@ -238,3 +379,45 @@ When working with the Secrets Manager, you might encounter the following issues.
 | `failed to acquire lock` in secondary OpenBao logs | OpenBao standby on read-only database | Expected behavior. No action required. |
 | `cannot execute INSERT in a read-only transaction` in secondary OpenBao logs | OpenBao attempting leader election on read replica | Expected behavior. No action required. |
 | JWT authentication fails after Geo failover | `jwt_audience` does not match `boundAudiences` in OpenBao | Set `jwt_audience` to the primary OpenBao URL on both sites. |
+
+### Diagnose slow secret operations
+
+Use this section when CI/CD jobs are slow to fetch secrets or secret operations time out.
+
+#### Confirm latency is elevated
+
+Use the following query to measure average request latency in milliseconds.
+The query works at any traffic level, including low-traffic deployments:
+
+```prometheus
+rate(openbao_core_handle_request_sum[5m])
+/
+rate(openbao_core_handle_request_count[5m])
+```
+
+Under normal load, average latency across all request types is typically 3–7 ms.
+Investigate if average latency consistently exceeds 20 ms.
+
+When OpenBao is actively processing requests, use the following query for P99 latency:
+
+```prometheus
+openbao_core_handle_request{quantile="0.99"}
+```
+
+Normal P99 is below 10 ms. This query returns `NaN` when OpenBao is idle because
+the summary window has no recent observations. Use the rate-based query in that case.
+
+#### Identify potential issues
+
+| Potential issue             | What to check                   | Query                                                                       | Threshold           | Action                                                             |
+|-----------------------------|---------------------------------|-----------------------------------------------------------------------------|---------------------|--------------------------------------------------------------------|
+| CPU limit too low           | CFS throttle ratio              | [CPU throttling query](#cpu-throttling)                                     | > 25%               | Increase CPU limit                                                 |
+| Demand exceeds CPU capacity | CPU utilization                 | [CPU utilization query](#cpu-utilization)                                   | > 50% of request    | Scale to the next row in the [sizing table](#pod-resources)        |
+| Request surge               | In-flight requests              | `openbao_core_in_flight_requests`                                           | Sustained above 5   | Transient. Monitor for recurrence.                                 |
+| PostgreSQL bottleneck       | Average PostgreSQL read latency | `rate(openbao_postgres_get_sum[5m]) / rate(openbao_postgres_get_count[5m])` | > 5 ms              | Check PostgreSQL resources and connection pool                     |
+| Memory pressure             | Memory utilization              | [Memory utilization query](#memory-utilization)                             | Near memory request | Increase memory using the [namespace formula](#memory-utilization) |
+
+If PostgreSQL latency is elevated, check whether the connection pool is saturated.
+If all connections are busy, additional requests queue and cause latency.
+For connection pool configuration, see [Database resources](#database-resources).
+Verify connection count in your PostgreSQL monitoring or in the OpenBao logs.

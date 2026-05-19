@@ -401,6 +401,11 @@ namespace :gitlab do
     end
 
     namespace :reindex do
+      desc "Log the count of pending async index creations/deletions and reindexing actions"
+      task stats: :environment do
+        Gitlab::Database::Reindexing.stats
+      end
+
       each_database(databases) do |database_name|
         desc "Reindex #{database_name} database without downtime to eliminate bloat"
         task database_name => :environment do

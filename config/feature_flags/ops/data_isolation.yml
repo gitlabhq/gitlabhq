@@ -1,0 +1,10 @@
+---
+name: data_isolation
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/582272
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226037
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/592753
+milestone: '19.0'
+group: group::organizations
+type: ops
+default_enabled: false

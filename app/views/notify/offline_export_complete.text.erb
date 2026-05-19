@@ -1,0 +1,3 @@
+<%= s_('OfflineTransferExport|Export complete') %>
+
+<%= safe_format(s_('OfflineTransferExport|The offline export you started on %{start_date} from %{strong_open}%{source_hostname}%{strong_close} is complete. Find the export at %{strong_open}%{export_prefix}%{strong_close} in the configured object storage bucket.'), strong_open: '', strong_close: '', source_hostname: Gitlab::UrlSanitizer.sanitize(@offline_export.source_hostname.to_s), start_date: l(@offline_export.created_at.to_date, format: :long), export_prefix: @configuration.export_prefix) %>

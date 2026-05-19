@@ -1,0 +1,4 @@
+---
+event: Projects::ProjectPathChangedEvent
+description: Published when a project's URL path (slug) is renamed.
+feature_category: source_code_management

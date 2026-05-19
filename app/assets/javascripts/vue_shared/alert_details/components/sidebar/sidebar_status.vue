@@ -41,6 +41,7 @@ export default {
       default: '',
     },
   },
+  emits: ['alert-update', 'toggle-sidebar', 'alert-error'],
   data() {
     return {
       isDropdownShowing: false,

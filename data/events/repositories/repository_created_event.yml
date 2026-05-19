@@ -1,0 +1,4 @@
+---
+event: Repositories::RepositoryCreatedEvent
+description: Published when a repository is created for a project or other container.
+feature_category: source_code_management

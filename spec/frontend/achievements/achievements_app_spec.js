@@ -22,6 +22,7 @@ import deleteAchievementMutation from '~/achievements/components/graphql/delete_
 import awardAchievementMutation from '~/achievements/components/graphql/award_achievement.mutation.graphql';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import AwardButton from '~/achievements/components/award_button.vue';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 jest.mock('~/lib/logger');
 
@@ -39,6 +40,12 @@ describe('Achievements app', () => {
   const findPagingControls = () => wrapper.findComponent(GlKeysetPagination);
   const findActionsDropdowns = () => wrapper.findAllComponents(GlDisclosureDropdown);
   const findDeleteModal = () => wrapper.findComponent(GlModal);
+
+  const mockRouter = { push: jest.fn() };
+
+  beforeEach(() => {
+    mockRouter.push.mockClear();
+  });
 
   const mountComponent = ({
     canAdminAchievement = true,
@@ -76,9 +83,11 @@ describe('Achievements app', () => {
       apolloProvider: fakeApollo,
       mocks: {
         $toast: { show: jest.fn() },
+        $router: mockRouter,
       },
       stubs: {
         CrudComponent: crudStub,
+        GlDisclosureDropdown: true,
         'router-link': true,
         'router-view': true,
       },
@@ -261,13 +270,36 @@ describe('Achievements app', () => {
           expect(findActionsDropdowns()).toHaveLength(3);
         });
 
-        it('dropdown items include delete', async () => {
+        it('dropdown items include edit and delete', async () => {
           await mountComponent({ crudStub: { template: '<div><slot name="actions" /></div>' } });
 
           const items = findActionsDropdowns().at(0).props('items');
-          expect(items).toHaveLength(1);
-          expect(items[0].text).toBe('Delete achievement');
-          expect(items[0].action).toBeInstanceOf(Function);
+          expect(items).toEqual([
+            { text: 'Edit achievement', action: expect.any(Function) },
+            { text: 'Delete achievement', action: expect.any(Function), variant: 'danger' },
+          ]);
+        });
+
+        it('clicking edit navigates to the edit route with the correct id', async () => {
+          await mountComponent({ crudStub: { template: '<div><slot name="actions" /></div>' } });
+
+          const firstAchievement = getGroupAchievementsResponse.data.group.achievements.nodes[0];
+          const closeMock = jest.fn();
+
+          // Mock the dropdown ref's close method (Vue 2/3 compatible)
+          Object.defineProperty(wrapper.vm.$refs, `dropdown-${firstAchievement.id}`, {
+            value: [{ close: closeMock }],
+            writable: true,
+            configurable: true,
+          });
+
+          const items = findActionsDropdowns().at(0).props('items');
+          items[0].action();
+
+          expect(mockRouter.push).toHaveBeenCalledWith({
+            name: 'edit',
+            params: { id: getIdFromGraphQLId(firstAchievement.id) },
+          });
         });
       });
 
@@ -307,7 +339,7 @@ describe('Achievements app', () => {
           });
 
           const dropdownItems = findActionsDropdowns().at(0).props('items');
-          dropdownItems[0].action();
+          dropdownItems[1].action();
           await nextTick();
 
           findDeleteModal().vm.$emit('primary');
@@ -327,7 +359,7 @@ describe('Achievements app', () => {
           });
 
           const dropdownItems = findActionsDropdowns().at(0).props('items');
-          dropdownItems[0].action();
+          dropdownItems[1].action();
           await nextTick();
 
           findDeleteModal().vm.$emit('primary');
@@ -356,7 +388,7 @@ describe('Achievements app', () => {
         });
 
         const dropdownItems = findActionsDropdowns().at(0).props('items');
-        dropdownItems[0].action();
+        dropdownItems[1].action();
         await nextTick();
 
         findDeleteModal().vm.$emit('primary');

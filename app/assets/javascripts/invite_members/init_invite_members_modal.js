@@ -40,6 +40,8 @@ export default (function initInviteMembersModal() {
                 JSON.parse(el.dataset.activeTrialDataset || '{}'),
               ),
               reloadPageOnSubmit: parseBoolean(el.dataset.reloadPageOnSubmit),
+              isTopLevelGroup: parseBoolean(el.dataset.isTopLevelGroup),
+              canInviteToRootGroup: parseBoolean(el.dataset.canInviteToRootGroup),
             },
           }),
       });

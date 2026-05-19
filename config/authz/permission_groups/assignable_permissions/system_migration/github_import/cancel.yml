@@ -1,0 +1,10 @@
+---
+name: cancel_github_import
+description: Grants the ability to cancel GitHub project imports
+deprecated: true
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - cancel_github_import

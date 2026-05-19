@@ -12,10 +12,11 @@ import {
 import { s__, sprintf } from '~/locale';
 import { logError } from '~/lib/logger';
 import { getFirstPropertyValue } from '~/lib/utils/common_utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
-import { NEW_ROUTE_NAME } from '../constants';
+import { NEW_ROUTE_NAME, EDIT_ROUTE_NAME } from '../constants';
 import getGroupAchievements from './graphql/get_group_achievements.query.graphql';
 import getMoreUniqueUsers from './graphql/get_more_unique_users.query.graphql';
 import deleteAchievementMutation from './graphql/delete_achievement.mutation.graphql';
@@ -184,7 +185,17 @@ export default {
     achievementActions(achievement) {
       return [
         {
-          text: this.$options.i18n.deleteAchievement,
+          text: s__('Achievements|Edit achievement'),
+          action: () => {
+            this.$refs[`dropdown-${achievement.id}`]?.[0]?.close();
+            this.$router.push({
+              name: this.$options.EDIT_ROUTE_NAME,
+              params: { id: getIdFromGraphQLId(achievement.id) },
+            });
+          },
+        },
+        {
+          text: s__('Achievements|Delete achievement'),
           variant: 'danger',
           action: () => {
             this.achievementToDelete = achievement;
@@ -227,12 +238,13 @@ export default {
     newAchievement: s__('Achievements|New achievement'),
     notYetAwarded: s__('Achievements|Not yet awarded.'),
     users: s__('Achievements|%{userCount} awarded users'),
-    deleteAchievement: s__('Achievements|Delete achievement'),
+    moreActions: s__('Achievements|More actions'),
     deleteModalBody: s__(
       'Achievements|Are you sure you want to delete %{name}? This action cannot be undone.',
     ),
   },
   NEW_ROUTE_NAME,
+  EDIT_ROUTE_NAME,
   deleteModal: {
     actionPrimary: {
       text: s__('Achievements|Delete achievement'),
@@ -308,10 +320,11 @@ export default {
           />
           <gl-disclosure-dropdown
             v-if="canAdminAchievement"
+            :ref="`dropdown-${achievement.id}`"
             icon="ellipsis_v"
             category="tertiary"
             no-caret
-            :toggle-text="$options.i18n.deleteAchievement"
+            :toggle-text="$options.i18n.moreActions"
             text-sr-only
             :items="achievementActions(achievement)"
             data-testid="achievement-actions-dropdown"

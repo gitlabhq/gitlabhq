@@ -61,11 +61,11 @@ class FeatureFlagStrategiesValidator < ActiveModel::EachValidator
     percentage = strategy.dig('parameters', 'percentage')
     group_id = strategy.dig('parameters', 'groupId')
 
-    unless percentage.is_a?(String) && percentage.match(/\A[1-9]?[0-9]\z|\A100\z/)
+    unless percentage.is_a?(String) && percentage.match?(/\A[1-9]?[0-9]\z|\A100\z/)
       error(record, attribute, 'percentage must be a string between 0 and 100 inclusive')
     end
 
-    unless group_id.is_a?(String) && group_id.match(/\A[a-z]{1,32}\z/)
+    unless group_id.is_a?(String) && group_id.match?(/\A[a-z]{1,32}\z/)
       error(record, attribute, 'groupId parameter is invalid')
     end
   end

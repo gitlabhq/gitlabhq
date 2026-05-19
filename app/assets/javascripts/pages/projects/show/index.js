@@ -9,7 +9,7 @@ import initReadMore from '~/read_more';
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
 import EmptyProject from '~/pages/projects/show/empty_project';
 import initHeaderApp from '~/repository/init_header_app';
-import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
+import { initWebIdeLink } from '~/pages/projects/shared/web_ide_link/init_web_ide_link';
 import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import apolloProvider from '~/repository/graphql';

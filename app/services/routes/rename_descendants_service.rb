@@ -21,6 +21,8 @@ module Routes
       @parent_route = parent_route
       @routes_to_update = []
       @redirect_routes_to_insert = []
+      @route_claims_destroy_metadata = []
+      @route_claims_create_ids = []
     end
 
     def execute(changes)
@@ -58,6 +60,7 @@ module Routes
             )
           end
 
+          collect_route_claims_metadata(descendant_route, attributes_to_update)
           push_to_routes_data(descendant_route, attributes_to_update)
           push_to_redirect_routes_data(descendant_route) if attributes_to_update[:path]
         end
@@ -104,19 +107,70 @@ module Routes
           record_timestamps: true # this makes sure that `updated_at` is updated.
         )
       end
+
+      schedule_route_claims
     end
 
     def create_redirect_routes_for_descendants
       return if @redirect_routes_to_insert.blank?
 
+      inserted_ids = []
+
       @redirect_routes_to_insert.each_slice(BATCH_SIZE) do |data|
-        RedirectRoute.insert_all(
+        # We need to make sure no duplicates are inserted.
+        # We use the value of `lower(path)` to make this check,
+        # which is already a UNIQUE index on this table.
+        result = RedirectRoute.insert_all(
           data,
-          # We need to make sure no duplicates are inserted.
-          # We use the value of `lower(path)` to make this check,
-          # which is already a UNIQUE index on this table.
-          unique_by: :index_redirect_routes_on_path_unique_text_pattern_ops
+          unique_by: :index_redirect_routes_on_path_unique_text_pattern_ops,
+          returning: :id
         )
+        inserted_ids.concat(result.rows.flatten)
+      end
+
+      schedule_redirect_route_claims(inserted_ids)
+    end
+
+    # Early filter to top-level routes (path has no '/') to avoid collecting
+    # thousands of non-claimable descendant IDs into Sidekiq payloads.
+    def collect_route_claims_metadata(descendant_route, attributes_to_update)
+      return unless Route.cells_claims_enabled_for_attribute?(:path)
+      return unless attributes_to_update[:path]
+      return unless Route.cells_claims_attributes[:path][:if].call(descendant_route)
+
+      @route_claims_destroy_metadata << descendant_route.build_destroy_metadata_for_worker(:path)
+
+      @route_claims_create_ids << descendant_route.id
+    end
+
+    def schedule_route_claims
+      return if @route_claims_destroy_metadata.empty? && @route_claims_create_ids.empty?
+
+      destroy_metadata = @route_claims_destroy_metadata
+      create_ids = @route_claims_create_ids
+      batch_size = Cells::Claimable::BULK_CLAIMS_BATCH_SIZE
+
+      @parent_route.run_after_commit do
+        destroy_metadata.each_slice(batch_size) do |slice|
+          Cells::BulkClaimsWorker.perform_async(Route.name, 'path', { 'destroy_metadata' => slice })
+        end
+
+        create_ids.each_slice(batch_size) do |slice|
+          Cells::BulkClaimsWorker.perform_async(Route.name, 'path', { 'create_record_ids' => slice })
+        end
+      end
+    end
+
+    def schedule_redirect_route_claims(inserted_ids)
+      return if inserted_ids.empty?
+      return unless RedirectRoute.cells_claims_enabled_for_attribute?(:path)
+
+      batch_size = Cells::Claimable::BULK_CLAIMS_BATCH_SIZE
+
+      @parent_route.run_after_commit do
+        inserted_ids.each_slice(batch_size) do |slice|
+          Cells::BulkClaimsWorker.perform_async(RedirectRoute.name, 'path', { 'create_record_ids' => slice })
+        end
       end
     end
 

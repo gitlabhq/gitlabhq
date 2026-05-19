@@ -25,8 +25,7 @@ module DbCleaner
 
   def deletion_except_tables
     %w[
-      work_item_types
-      work_item_widget_definitions work_item_related_link_restrictions
+      work_item_related_link_restrictions
     ]
   end
 
@@ -102,9 +101,6 @@ module DbCleaner
     return false unless any_connection_class_with_more_than_allowed_columns?
 
     recreate_all_databases!
-
-    # Seed required data as recreating DBs will delete it
-    TestEnv.seed_db
 
     true
   end

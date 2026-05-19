@@ -226,52 +226,6 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
         process
       end
     end
-
-    context 'when mwcp_skip_ci_guard feature flag is disabled' do
-      before do
-        stub_feature_flags(mwcp_skip_ci_guard: false)
-      end
-
-      context 'when CI is enabled and pipeline has not succeeded' do
-        before do
-          project.update!(only_allow_merge_if_pipeline_succeeds: true)
-
-          create(:ci_pipeline, :skipped,
-            ref: merge_request.source_branch,
-            sha: merge_request.diff_head_sha,
-            project: project,
-            head_pipeline_of: merge_request)
-          merge_request.update_head_pipeline
-
-          project.update!(allow_merge_on_skipped_pipeline: true)
-        end
-
-        it 'blocks merge due to the early CI guard even when skipped pipelines are allowed' do
-          expect(merge_request).not_to receive(:merge_async)
-
-          process
-        end
-      end
-
-      context 'when CI is enabled and pipeline has succeeded' do
-        before do
-          project.update!(only_allow_merge_if_pipeline_succeeds: true)
-
-          create(:ci_pipeline, :success,
-            ref: merge_request.source_branch,
-            sha: merge_request.diff_head_sha,
-            project: project,
-            head_pipeline_of: merge_request)
-          merge_request.update_head_pipeline
-        end
-
-        it 'calls the merge worker' do
-          expect(merge_request).to receive(:merge_async)
-
-          process
-        end
-      end
-    end
   end
 
   describe '#cancel' do

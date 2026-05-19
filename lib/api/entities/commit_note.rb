@@ -17,7 +17,7 @@ module API
         note.diff_line.try(:type) if note.diff_note?
       end
 
-      expose :author, using: Entities::UserBasic
+      expose :author, using: ::API::Entities::UserBasic
       expose :created_at, documentation: { type: 'DateTime', example: '2016-01-19T09:44:55.600Z' }
     end
   end

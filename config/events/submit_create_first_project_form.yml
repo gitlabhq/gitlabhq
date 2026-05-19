@@ -1,0 +1,19 @@
+---
+description: Admin submits the Create your first project form
+internal_events: true
+status: active
+action: submit_create_first_project_form
+identifiers:
+  - user
+additional_properties:
+  label:
+    description: Outcome of the form submission ('success' or 'failure')
+product_group: acquisition
+product_categories:
+  - onboarding
+milestone: '19.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234658
+tiers:
+  - free
+  - premium
+  - ultimate

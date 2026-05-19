@@ -19,6 +19,8 @@ $super-sidebar-overlay-z-index: 599;
 $super-sidebar-nav-flayout-menu-z-index: 800;
 $super-sidebar-nav-item-menu-z-index: $super-sidebar-nav-flayout-menu-z-index + 1;
 $super-sidebar-nav-item-z-index: $super-sidebar-nav-item-menu-z-index + 1;
+$panel-header-inner-z-index: 99;
+$panel-header-inner-height: 2.5rem; //= 40px
 $top-bar-z-index: 210;
 $settings-sticky-header-height: 3rem;
 $settings-sticky-header-z-index: 98;

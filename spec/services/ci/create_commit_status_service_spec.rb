@@ -110,6 +110,48 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
         end
       end
     end
+
+    context 'when the existing pipeline has a config error' do
+      let_it_be(:pipeline) do
+        create(
+          :ci_pipeline,
+          :invalid_config_error,
+          project: project,
+          sha: commit.id,
+          ref: 'master',
+          created_at: 1.day.ago
+        )
+      end
+
+      let(:params) do
+        {
+          sha: sha,
+          state: 'success',
+          ref: 'master',
+          context: 'External',
+          target_url: 'https://example.com/external'
+        }
+      end
+
+      it 'creates the external commit status on a new pipeline and keeps the existing config-error pipeline failed',
+        :sidekiq_inline do
+        expect { response }
+          .to change { ::Ci::Pipeline.count }.by(1)
+          .and change { ::Ci::Stage.count }.by(1)
+          .and change { ::CommitStatus.count }.by(1)
+
+        expect(response).to be_success
+
+        new_pipeline = ::Ci::Pipeline.find(job.pipeline_id)
+
+        expect(new_pipeline.id).not_to eq(pipeline.id)
+        expect(new_pipeline.source).to eq('external')
+        expect(new_pipeline.status).to eq('success')
+
+        expect(pipeline.reload.status).to eq('failed')
+        expect(pipeline.failure_reason).to eq('config_error')
+      end
+    end
   end
 
   context 'when status transitions from pending' do
@@ -423,6 +465,29 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
           expect(response).to be_error
           expect(response.http_status).to eq(:not_found)
           expect(response.message).to eq("404 Pipeline for pipeline_id, sha and ref Not Found")
+        end
+      end
+
+      context 'when the specified pipeline has configuration errors' do
+        let!(:other_pipeline) do
+          create(
+            :ci_pipeline,
+            :invalid_config_error,
+            project: project,
+            sha: commit.id,
+            ref: 'master'
+          )
+        end
+
+        it 'returns a bad request error' do
+          expect { response }
+            .to not_change { ::Ci::Pipeline.count }.from(2)
+            .and not_change { ::Ci::Stage.count }.from(0)
+            .and not_change { ::CommitStatus.count }.from(0)
+
+          expect(response).to be_error
+          expect(response.http_status).to eq(:bad_request)
+          expect(response.message).to eq("Cannot add status to pipeline with configuration errors")
         end
       end
 

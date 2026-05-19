@@ -1,6 +1,11 @@
 import organizationGroupsGraphQlResponse from 'test_fixtures/graphql/organizations/groups.query.graphql.json';
 import organizationProjectsGraphQlResponse from 'test_fixtures/graphql/organizations/projects.query.graphql.json';
-import { formatGroups, formatProjects, timestampType } from '~/organizations/shared/utils';
+import {
+  formatGroups,
+  formatProjects,
+  timestampType,
+  isDefaultOrganization,
+} from '~/organizations/shared/utils';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
 import { SORT_CREATED_AT, SORT_UPDATED_AT, SORT_NAME } from '~/organizations/shared/constants';
@@ -8,6 +13,7 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import { mockDefaultOrganization } from './mock_data';
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
@@ -45,6 +51,18 @@ describe('formatProjects', () => {
         ...project,
         editPath: project.organizationEditPath,
       })),
+    );
+  });
+});
+
+describe('isDefaultOrganization', () => {
+  it('returns true for the default organization', () => {
+    expect(isDefaultOrganization(mockDefaultOrganization)).toBe(true);
+  });
+
+  it('returns false for a non-default organization', () => {
+    expect(isDefaultOrganization({ id: 'gid://gitlab/Organizations::Organization/999' })).toBe(
+      false,
     );
   });
 });

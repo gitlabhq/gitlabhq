@@ -1,8 +1,8 @@
 .rd-diff-file-header-sticky
   %header.rd-diff-file-header{ data: { testid: 'rd-diff-file-header' }, aria: { label: root_label } }
     .rd-diff-file-toggle<
-      = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-down', button_options: { class: 'rd-diff-file-toggle-button', data: { opened: '', click: 'toggleFile' }, aria: { label: _('Hide file contents'), expanded: 'true' } })
-      = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { class: 'rd-diff-file-toggle-button', data: { closed: '', click: 'toggleFile' }, aria: { label: _('Show file contents'), expanded: 'false' } })
+      = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-down', button_options: { class: 'rd-diff-file-toggle-button has-tooltip', title: _('Hide file contents'), data: { opened: '', click: 'toggleFile' }, aria: { label: _('Hide file contents'), expanded: 'true' } })
+      = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { class: 'rd-diff-file-toggle-button has-tooltip', title: _('Show file contents'), data: { closed: '', click: 'toggleFile' }, aria: { label: _('Show file contents'), expanded: 'false' } })
     .rd-diff-file-header-main><
       - if @diff_file.submodule?
         .rd-diff-file-header-submodule{ data: { testid: 'rd-diff-file-header-submodule' } }><
@@ -15,13 +15,13 @@
         - if @diff_file.renamed_file?
           - old_path, new_path = helpers.mark_inline_diffs(@diff_file.old_path, @diff_file.new_path)
           %h2.rd-diff-file-title{ id: heading_id, aria: { label: moved_title_label } }><
-            = link_to file_link, { class: 'rd-diff-file-link', target: '_blank' } do
+            = link_to file_link, { class: 'rd-diff-file-link has-tooltip', title: s_('RapidDiffs|Open file in new tab'), target: '_blank' } do
               = old_path
               %span.rd-diff-file-moved>< →
               = new_path
         - else
           %h2.rd-diff-file-title{ id: heading_id }><
-            = link_to file_link, { class: 'rd-diff-file-link', target: '_blank' } do
+            = link_to file_link, { class: 'rd-diff-file-link has-tooltip', title: s_('RapidDiffs|Open file in new tab'), target: '_blank' } do
               - chunks = file_title_chunks
               - chunks[:path_parts].each do |part|
                 = part

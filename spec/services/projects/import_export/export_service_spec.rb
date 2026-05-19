@@ -9,11 +9,11 @@ RSpec.describe Projects::ImportExport::ExportService, feature_category: :importe
     let_it_be_with_reload(:project) { create(:project, group: group) }
 
     let(:shared) { project.import_export_shared }
-    let!(:after_export_strategy) { Import::AfterExportStrategies::DownloadNotificationStrategy.new }
+    let(:after_export_strategy) { Import::AfterExportStrategies::DownloadNotificationStrategy.new }
 
     subject(:service) { described_class.new(project, user) }
 
-    before do
+    before_all do
       project.add_maintainer(user)
     end
 
@@ -224,7 +224,7 @@ RSpec.describe Projects::ImportExport::ExportService, feature_category: :importe
     end
 
     context 'when user does not have admin_project permission' do
-      let!(:another_user) { create(:user) }
+      let(:another_user) { create(:user) }
 
       subject(:service) { described_class.new(project, another_user) }
 

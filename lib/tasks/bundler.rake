@@ -10,11 +10,9 @@ namespace :bundler do
       Bundler.with_original_env do
         [
           ['bundle install', 'installing Gemfile failed'],
-          ['bundle exec bundler-checksum init', 'updating bundler-checksum failed'],
           ['cp Gemfile.lock Gemfile.next.lock', 'copying Gemfile.lock to Gemfile.next.lock failed'],
           ['BUNDLE_GEMFILE=Gemfile.next bundle lock', 'updating Gemfile.next failed'],
-          ['BUNDLE_GEMFILE=Gemfile.next bundle install', 'installing Gemfile.next failed'],
-          ['BUNDLE_GEMFILE=Gemfile.next bundle exec bundler-checksum init', 'updating bundler-checksum (next) failed']
+          ['BUNDLE_GEMFILE=Gemfile.next bundle install', 'installing Gemfile.next failed']
         ].each do |(command, error)|
           run_bundler(command, error)
         end
@@ -27,12 +25,8 @@ namespace :bundler do
         [
           ['bundle lock --print | diff Gemfile.lock -',
             'inconsistent Gemfile.lock detected, run `bundle exec rake bundler:gemfile:sync`'],
-          ['bundle exec bundler-checksum lint',
-            'inconsistent bundler-checksum detected, run `bundle exec rake bundler:gemfile:sync`'],
           ['BUNDLE_GEMFILE=Gemfile.next bundle lock --print --lockfile Gemfile.lock | diff Gemfile.next.lock -',
-            'inconsistent Gemfile.next.lock detected, run `bundle exec rake bundler:gemfile:sync`'],
-          ['BUNDLE_GEMFILE=Gemfile.next bundle exec bundler-checksum lint',
-            'inconsistent bundler-checksum (next) detected, run `bundle exec rake bundler:gemfile:sync`']
+            'inconsistent Gemfile.next.lock detected, run `bundle exec rake bundler:gemfile:sync`']
         ].each do |(command, error)|
           run_bundler(command, error)
         end

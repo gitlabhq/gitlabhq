@@ -21,7 +21,10 @@ description: Automatic detection and filtering of false positives in secret dete
 
 {{< /history >}}
 
-When a secret detection scan runs, GitLab Duo automatically analyzes each detected secret to determine the likelihood that it's a false positive. Detection is available for all secret types detected by [GitLab secret detection](../secret_detection/_index.md).
+Secret false positive detection is an opt-in feature. When you enable it, GitLab Duo analyzes each detected secret to determine the likelihood that it's a false positive. Detection is available for all secret types detected by [GitLab secret detection](../secret_detection/_index.md).
+
+> [!important]
+> When this feature is enabled, information about the vulnerability, including the code context surrounding the detected secret, is sent to large language models (LLMs) for analysis. The behavior described in the [secret detection and redaction](../../gitlab_duo/data_usage.md#secret-detection-and-redaction) documentation does not apply to this feature. Review your organization's data policies before enabling this feature.
 
 The GitLab Duo assessment includes information about each false positive finding:
 
@@ -29,7 +32,7 @@ The GitLab Duo assessment includes information about each false positive finding
 - Explanation: Reasons why the finding may or may not be a true positive, based on code context and secret characteristics.
 - Visual indicator: A badge in the vulnerability report that shows the false positive assessment.
 
-Secret false positive detection runs automatically after each security scan without manual intervention.
+Once enabled, false positive detection runs automatically after each security scan without manual intervention.
 
 Results are based on AI analysis and should be reviewed by security professionals. The feature requires GitLab Duo with an active subscription.
 
@@ -48,7 +51,7 @@ The analysis runs in the background and results appear in the vulnerability repo
 You can manually run false positive detection for existing vulnerabilities:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Vulnerability report**.
+1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to analyze.
 1. In the upper-right corner, select **Check for false positive** to trigger false positive detection.
 
@@ -65,7 +68,7 @@ To use false positive detection, you must have the following requirements:
 
 ### Enable false positive detection
 
-False positive detection is turned off by default. To use this feature, you must enable the foundational flow for the group and turn on the feature for the project.
+False positive detection is turned off by default and must be explicitly enabled. When enabled, information about the vulnerability, including surrounding code context, is sent to LLMs for analysis. To use this feature, you must enable the foundational flow for the group and turn on the feature for the project.
 
 #### Allow foundational flow for a group
 
@@ -107,7 +110,7 @@ When the GitLab Duo analysis identifies a vulnerability as a false positive, you
 ### Dismiss the vulnerability
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Vulnerability report**.
+1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to dismiss.
 1. Select **Change status**.
 1. From the **Status** dropdown list, select **Dismissed**.
@@ -122,7 +125,7 @@ The vulnerability is marked as dismissed and does not appear in future scans unl
 If you want to remove the false positive assessment and keep the vulnerability:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Vulnerability report**.
+1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Locate the vulnerability with the false positive flag.
 1. Hover over the false positive badge on the vulnerability.
 1. Select **Remove False Positive Flag**.

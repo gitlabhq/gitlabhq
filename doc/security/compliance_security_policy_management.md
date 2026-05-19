@@ -47,7 +47,7 @@ You can designate a compliance and security policy group using either the GitLab
 #### Using the GitLab UI
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Security and Compliance**.
+1. In the left sidebar, select **Settings** > **Security and Compliance**.
 1. In the **Designate CSP Group** section, select an existing top-level group from the dropdown list.
 1. Select **Save changes**.
 

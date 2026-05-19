@@ -16,7 +16,7 @@ module API
           response =
             ::Boards::CreateService.new(board_parent, current_user, { name: params[:name] }).execute
 
-          present response.payload, with: Entities::Board
+          present response.payload[:board], with: Entities::Board
         end
 
         def update_board

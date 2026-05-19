@@ -1,19 +1,28 @@
 import { GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 
 import ActiveCheckbox from '~/integrations/edit/components/active_checkbox.vue';
-import { createStore } from '~/integrations/edit/store';
+import { useIntegrationForm } from '~/integrations/edit/store';
+
+Vue.use(PiniaVuePlugin);
 
 describe('ActiveCheckbox', () => {
   let wrapper;
 
   const createComponent = ({ customStateProps = {}, isInheriting = false } = {}) => {
+    const pinia = createTestingPinia({ stubActions: false });
+    const store = useIntegrationForm();
+    Object.assign(store, {
+      customState: { ...customStateProps },
+      override: !isInheriting,
+      defaultState: isInheriting ? {} : null,
+    });
+
     wrapper = shallowMount(ActiveCheckbox, {
-      store: createStore({
-        customState: { ...customStateProps },
-        override: !isInheriting,
-        defaultState: isInheriting ? {} : undefined,
-      }),
+      pinia,
       stubs: {
         GlFormCheckbox,
       },

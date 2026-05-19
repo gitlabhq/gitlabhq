@@ -171,14 +171,14 @@ RSpec.describe Import::AfterExportStrategies::WebUploadStrategy, feature_categor
             )
 
             expect(logger).to receive(:error).ordered.with(
-              {
+              hash_including(
                 project_id: project.id,
                 project_name: project.name,
                 message: 'After export strategy failed',
                 'exception.class' => 'Gitlab::ImportExport::RemoteStreamUpload::StreamError',
                 'exception.message' => 'Invalid response code while uploading file. Code: 403',
                 'exception.backtrace' => anything
-              }
+              )
             )
 
             expect(logger).not_to receive(:info).with(
@@ -218,14 +218,14 @@ RSpec.describe Import::AfterExportStrategies::WebUploadStrategy, feature_categor
             )
 
             expect(logger).to receive(:error).ordered.with(
-              {
+              hash_including(
                 project_id: project.id,
                 project_name: project.name,
                 message: 'After export strategy failed',
                 'exception.class' => 'Gitlab::ImportExport::RemoteStreamUpload::StreamError',
                 'exception.message' => 'Exception error message',
                 'exception.backtrace' => anything
-              }
+              )
             )
           end
 

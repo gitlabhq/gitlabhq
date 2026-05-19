@@ -23,8 +23,7 @@ module Sidebars
             :container_registry,
             :google_artifact_registry,
             :harbor_registry,
-            :model_registry,
-            :ai_agents
+            :model_registry
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end
       end

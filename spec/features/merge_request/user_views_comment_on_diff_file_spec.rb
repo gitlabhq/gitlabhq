@@ -15,8 +15,6 @@ RSpec.describe 'User views comment on a diff file', :js, feature_category: :code
 
   before do
     sign_in(user)
-
-    visit(diffs_project_merge_request_path(project, merge_request))
   end
 
   context 'with invalid start_sha position' do

@@ -1,0 +1,13 @@
+---
+table_name: packages_rubygems_spec_files
+classes:
+- Packages::Rubygems::SpecFile
+feature_categories:
+- package_registry
+description: Stores generated RubyGems spec index files (specs.4.8.gz, latest_specs.4.8.gz, prerelease_specs.4.8.gz)
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229329/
+milestone: '19.0'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small

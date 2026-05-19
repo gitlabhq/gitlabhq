@@ -59,7 +59,9 @@ RSpec.describe Projects::ImportExport::WaitRelationExportsWorker, feature_catego
 
     context 'when the Sidekiq Job exporting the relation is still running' do
       it "does not change relation export's status and re-enqueue WaitRelationExportsWorker" do
-        allow(Gitlab::SidekiqStatus).to receive(:running?).with(started_relation_export.jid).and_return(true)
+        allow(Gitlab::SidekiqStatus)
+          .to receive(:running_or_enqueued?)
+          .with(started_relation_export.jid).and_return(true)
 
         expect { described_class.new.perform(*job_args) }
           .to change { described_class.jobs.size }.by(1)
@@ -70,7 +72,9 @@ RSpec.describe Projects::ImportExport::WaitRelationExportsWorker, feature_catego
 
     context 'when the Sidekiq Job exporting the relation is no longer running' do
       it "set the relation export's status to `failed`" do
-        allow(Gitlab::SidekiqStatus).to receive(:running?).with(started_relation_export.jid).and_return(false)
+        allow(Gitlab::SidekiqStatus)
+          .to receive(:running_or_enqueued?)
+          .with(started_relation_export.jid).and_return(false)
 
         expect(Gitlab::Export::Logger).to receive(:error).with(hash_including(
           message: 'Relation export job no longer running'

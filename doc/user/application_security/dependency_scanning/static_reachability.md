@@ -9,7 +9,6 @@ title: Static reachability analysis
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Limited Availability
 
 {{< /details >}}
 
@@ -21,6 +20,7 @@ title: Static reachability analysis
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17607) support for Java in GitLab 18.5 and dependency scanning analyzer v0.39.0.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/15780) from beta to Limited Availability (LA) in GitLab 18.5.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/19692) Java support from experiment to beta in GitLab 18.8.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/20456) in GitLab 19.0.
 
 {{< /history >}}
 
@@ -42,11 +42,6 @@ project path to determine enrichment. static reachability analysis relies on
 [metadata](https://gitlab.com/gitlab-org/security-products/static-reachability-metadata/-/tree/v1?ref_type=heads)
 that maps package names from SBOMs to their corresponding code import paths for Python and Java
 packages. This metadata is maintained with weekly updates.
-
-> [!warning]
-> Static reachability analysis is production-ready. However, it has limited availability
-> because it depends on [dependency scanning by SBOM](dependency_scanning_sbom/_index.md),
-> which has the same status.
 
 Share feedback in [issue 535498](https://gitlab.com/gitlab-org/gitlab/-/issues/535498).
 
@@ -84,7 +79,7 @@ Prerequisites:
 To turn on static reachability analysis in your project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. Select the `.gitlab-ci.yml` file.
 1. Select **Edit** > **Edit single file**.
 1. Add the following configuration:
@@ -193,7 +188,7 @@ you must do an initial setup and perform ongoing maintenance.
 Initial setup:
 
 - Complete the offline environment requirements for
-  [dependency scanning (SBOM)](dependency_scanning_sbom/_index.md#offline-support).
+  [dependency scanning (SBOM)](dependency_scanning_sbom/_index.md#offline-environment).
 
 Ongoing maintenance:
 

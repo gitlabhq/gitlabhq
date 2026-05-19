@@ -135,6 +135,7 @@ RSpec.describe 'User searches for issues', :js, feature_category: :global_search
       let_it_be(:project) { create(:project, :public) }
 
       before do
+        stub_current_organization(project.organization)
         stub_application_setting(global_search_block_anonymous_searches_enabled: false)
 
         visit(search_path)
@@ -155,6 +156,7 @@ RSpec.describe 'User searches for issues', :js, feature_category: :global_search
 
     context 'when global_search_block_anonymous_searches_enabled is enabled' do
       before do
+        stub_current_organization(project.organization)
         stub_application_setting(global_search_block_anonymous_searches_enabled: true)
       end
 

@@ -1,0 +1,10 @@
+---
+name: ai_catalog_filter_enabled_projects
+description: Filter already-enabled projects from the AI Catalog Enable modal project dropdown.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/596801
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233159
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/598066
+milestone: '19.0'
+group: group::workflow catalog
+type: gitlab_com_derisk
+default_enabled: false

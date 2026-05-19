@@ -28,7 +28,7 @@ Prerequisites:
 To create an escalation policy:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Monitor** > **Escalation Policies**.
+1. In the left sidebar, select **Monitor** > **Escalation Policies**.
 1. Select **Add an escalation policy**.
 1. Enter the policy's name and description, and
    escalation rules to follow when a primary responder misses an alert.
@@ -54,7 +54,7 @@ The time specified for an escalation rule must be between 0 and 1440 minutes.
 To update an escalation policy:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Monitor** > **Escalation Policies**.
+1. In the left sidebar, select **Monitor** > **Escalation Policies**.
 1. Select **Edit escalation policy** ({{< icon name="pencil" >}}).
 1. Edit the information.
 1. Select **Save changes**.
@@ -64,6 +64,6 @@ To update an escalation policy:
 To delete an escalation policy:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Monitor** > **Escalation Policies**.
+1. In the left sidebar, select **Monitor** > **Escalation Policies**.
 1. Select **Delete escalation policy** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete escalation policy**.

@@ -107,6 +107,9 @@ module Gitlab
         end
 
         def defer_job!
+          job['deferred'] = true
+          job['deferred_by'] = :concurrency_limit
+
           ::Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.deferred_log(job)
 
           concurrency_service.add_to_queue!(

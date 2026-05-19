@@ -40,7 +40,13 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
 
   def rotate
     token = finder.find(params.permit(:id)[:id])
-    result = PersonalAccessTokens::RotateService.new(current_user, token, nil, keep_token_lifetime: true).execute
+    result = PersonalAccessTokens::RotateService.new(
+      current_user,
+      token,
+      nil,
+      keep_token_lifetime: true,
+      creation_source: PersonalAccessToken::CREATION_SOURCE_UI
+    ).execute
 
     @impersonation_token = result.payload[:personal_access_token]
     if result.success?

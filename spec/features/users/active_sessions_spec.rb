@@ -37,6 +37,7 @@ RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions, feature_cat
     end
 
     gitlab_sign_in(user)
+    expect(page).to have_current_path root_path, ignore_query: true
 
     Gitlab::Redis::Sessions.with do |redis|
       expect(redis.smembers("session:lookup:user:gitlab:#{user.id}"))

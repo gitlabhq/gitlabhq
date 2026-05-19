@@ -34,7 +34,7 @@ located at `lib/tasks/gitlab/docs/compile_deprecations.rake`,
 For deprecation authors (usually Product Managers and Engineering Managers):
 
 - To add a deprecation, use the example.yml file in `/data/deprecations/templates` as a template.
-- For more information about authoring deprecations, check the the deprecation item guidance:
+- For more information about authoring deprecations, check the deprecation item guidance:
   <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
 
 For deprecation reviewers (Technical Writers only):
@@ -173,6 +173,20 @@ We recommend to migrate to the bundled Envoy Gateway and Gateway API.
 Alternatively, you can deploy and configure an
 [external Ingress controller and class](https://docs.gitlab.com/charts/charts/globals/#configure-ingress-settings).
 
+## GitLab 19.3
+
+### The `glab duo ask` command
+
+- Announced in GitLab 19.0
+- Removal in GitLab 19.3 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/597732).
+
+The `glab duo ask` command in the GitLab CLI is deprecated in GitLab 19.0
+and will be removed in GitLab 19.3. The command generates Git commands from
+natural language descriptions.
+
+Use [`glab duo cli`](https://docs.gitlab.com/cli/duo/cli/) instead for AI-powered assistance in the CLI.
+
 ## GitLab 19.1
 
 ### Elasticsearch 7.x no longer supported for advanced search
@@ -283,6 +297,12 @@ Customers on SUSE distributions that use the Linux package will not be able to u
 For customers on one of these distributions, we recommend migrating to a
 [Docker deployment of GitLab](https://docs.gitlab.com/install/docker/installation/) on your existing distribution.
 This avoids having to migrate to a different Linux distribution to continue to receive GitLab upgrades.
+
+**Update**: Due to [RPM package size constraints on SLES 12.5](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9716),
+[Mattermost](https://docs.gitlab.com/update/deprecations/#mattermost-bundled-with-linux-package) and
+[Spamcheck](https://docs.gitlab.com/update/deprecations/#spamcheck-support-in-the-linux-package-and-gitlab-helm-chart)
+were removed from SLES 12.5 packages in GitLab 18.11 ahead of their planned removal from all distributions
+in GitLab 19.0.
 
 ### Linux package support for Ubuntu 20.04
 
@@ -412,7 +432,8 @@ that use an externally managed Ingress or Gateway API controller.
 
 We will provide best-effort security maintenance for our forked NGINX Ingress chart and builds until
 the full removal. To ensure a smooth transition, we recommend planning your migration to the provided
-Gateway API solution or an externally managed Ingress controller.
+Gateway API solution or an externally managed Ingress controller. For step-by-step instructions, see the
+[Envoy Gateway migration guide](https://docs.gitlab.com/charts/installation/migration/envoy_gateway_migration/).
 
 ### Support for PostgreSQL 16
 
@@ -421,7 +442,7 @@ Gateway API solution or an externally managed Ingress controller.
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/589774).
 
 GitLab follows an
-[annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/).
+[annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/data-engineering/database-excellence/database-frameworks/postgresql-upgrade-cadence/).
 
 Support for PostgreSQL 16 is scheduled for removal in GitLab 19.0.
 In GitLab 19.0, PostgreSQL 17 becomes the minimum required PostgreSQL version.
@@ -813,7 +834,7 @@ To help identify projects that need access to your project by authenticating wit
 
 From GitLab 17.10 to 18.6, you can use [migration tooling](https://archives.docs.gitlab.com/18.6/ci/jobs/ci_job_token/#auto-populate-a-projects-allowlist) to automatically populate the CI/CD job token allowlist from the job token authentication log. We encourage you to use this migration tool to populate and use the allowlist before [general enforcement of allowlists in GitLab 18.0](https://docs.gitlab.com/update/deprecations/?removal_milestone=18.0#cicd-job-token-authorized-groups-and-projects-allowlist-enforcement). In GitLab 18.0, automatic population and enforcement of the allowlist will occur on GitLab.com as previously announced.
 
-This migration tool will be removed in GitLab 18.6.
+This migration tool [was removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/498305) in GitLab 18.7.
 
 ### CI/CD job token - **Limit access from your project** setting removal
 
@@ -834,7 +855,7 @@ The **Limit access _from_ this project** setting is disabled by default for all 
 In GitLab 16.0 and later, you cannot re-enable this setting after it is disabled in any project.
 Instead, use the **Authorized groups and projects** setting to control job token access to your projects.
 
-### DAST `dast_crawl_extract_element_timeout` and `dast_crawl_search_element_timeout` variables are deprecated
+### DAST `dast_crawl_extract_element_timeout` and `dast_crawl_search_element_timeout` variables
 
 - Announced in GitLab 17.9
 - Removal in GitLab 18.0
@@ -1080,7 +1101,7 @@ In GitLab 18.0, we are introducing a new data retention limit for GitLab.com Ult
 - Removal in GitLab 18.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/521663).
 
-GitLab follows an [annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/).
+GitLab follows an [annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/data-engineering/database-excellence/database-frameworks/postgresql-upgrade-cadence/).
 
 Support for PostgreSQL 14 and 15 is scheduled for removal in GitLab 18.0.
 In GitLab 18.0, PostgreSQL 16 becomes the minimum required PostgreSQL version.
@@ -2074,7 +2095,7 @@ In milestone 17.0, we will remove the `pipelines` attribute from the API respons
 - Removal in GitLab 17.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/9065).
 
-GitLab follows an [annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/).
+GitLab follows an [annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/data-engineering/database-excellence/database-frameworks/postgresql-upgrade-cadence/).
 
 Support for PostgreSQL 13 is scheduled for removal in GitLab 17.0.
 In GitLab 17.0, PostgreSQL 14 becomes the minimum required PostgreSQL version.

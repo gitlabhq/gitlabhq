@@ -28,4 +28,4 @@ to a single project.
 To view project-level Kubernetes clusters:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Kubernetes clusters**.
+1. In the left sidebar, select **Operate** > **Kubernetes clusters**.

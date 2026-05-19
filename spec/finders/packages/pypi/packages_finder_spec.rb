@@ -49,7 +49,7 @@ RSpec.describe Packages::Pypi::PackagesFinder, feature_category: :package_regist
         it { expect(subject).to be_empty }
 
         context 'user with access to only one project' do
-          before do
+          before_all do
             project2.add_developer(user)
           end
 
@@ -59,7 +59,7 @@ RSpec.describe Packages::Pypi::PackagesFinder, feature_category: :package_regist
           it_behaves_like 'when package_name param is a non-normalized name'
 
           context 'user with access to multiple projects' do
-            before do
+            before_all do
               project.add_developer(user)
             end
 
@@ -86,14 +86,14 @@ RSpec.describe Packages::Pypi::PackagesFinder, feature_category: :package_regist
         let(:scope) { group }
 
         context 'user with access to only one project' do
-          before do
+          before_all do
             project2.add_developer(user)
           end
 
           it { is_expected.to contain_exactly(package4) }
 
           context 'user with access to multiple projects' do
-            before do
+            before_all do
               project.add_developer(user)
             end
 

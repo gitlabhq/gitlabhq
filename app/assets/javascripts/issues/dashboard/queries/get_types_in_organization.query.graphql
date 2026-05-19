@@ -1,0 +1,14 @@
+# @feature_category: team_planning
+query getTypesInOrganization {
+  organization {
+    id
+    workItemTypes @gl_introduced(version: "19.0.0") {
+      nodes {
+        id
+        iconName
+        isFilterableListView
+        name
+      }
+    }
+  }
+}

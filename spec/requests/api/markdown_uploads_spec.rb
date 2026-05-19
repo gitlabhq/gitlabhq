@@ -53,6 +53,17 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let_it_be(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'allows the Workhorse pre-authorization' do
+        post api(path, oauth_access_token: oauth_token), headers: headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['MaximumSize']).to eq(project.max_attachment_size)
+      end
+    end
   end
 
   describe "POST /projects/:id/uploads" do
@@ -70,6 +81,16 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       expect(json_response['url']).to start_with("/uploads/")
       expect(json_response['url']).to end_with("/dk.png")
       expect(json_response['full_path']).to start_with("/-/project/#{project.id}/uploads")
+    end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let_it_be(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'allows file upload' do
+        post api(path, oauth_access_token: oauth_token), params: { file: file }
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
     end
 
     it "does not leave the temporary file in place after uploading, even when the tempfile reaper does not run" do
@@ -127,6 +148,16 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       get api(path, project_maintainer)
 
       expect_paginated_array_response(uploads.reverse.map(&:id))
+    end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let_it_be(:oauth_token) { create(:oauth_access_token, user: project_maintainer, scopes: [:ai_workflows]) }
+
+      it 'does not allow listing uploads (POST-only scope)' do
+        get api(path, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
 
     it_behaves_like 'an unauthorized request' do
@@ -280,6 +311,120 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       let(:user) { project_maintainer }
       let(:request) do
         delete api(path, personal_access_token: pat)
+      end
+    end
+  end
+
+  describe "POST /groups/:id/uploads/authorize" do
+    include WorkhorseHelpers
+
+    let(:headers) { workhorse_internal_api_request_header.merge({ 'HTTP_GITLAB_WORKHORSE' => 1 }) }
+    let(:path) { "/groups/#{group.id}/uploads/authorize" }
+
+    before do
+      stub_feature_flags(group_uploads_api: group)
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(group_uploads_api: false)
+      end
+
+      it 'returns 404' do
+        post api(path, user), headers: headers
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with authorized user' do
+      it "returns 200" do
+        post api(path, user), headers: headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['MaximumSize']).to eq(Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i)
+      end
+    end
+
+    context 'with unauthorized user' do
+      it "returns 404" do
+        post api(path, create(:user)), headers: headers
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with no Workhorse headers' do
+      it "returns 403" do
+        post api(path, user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe "POST /groups/:id/uploads" do
+    let(:file) { fixture_file_upload("spec/fixtures/dk.png", "image/png") }
+    let(:path) { "/groups/#{group.id}/uploads" }
+
+    before do
+      stub_feature_flags(group_uploads_api: group)
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(group_uploads_api: false)
+      end
+
+      it 'returns 404' do
+        post api(path, user), params: { file: file }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    it "uploads the file through the upload service and returns its info" do
+      expect(UploadService).to receive(:new)
+        .with(group, anything, NamespaceFileUploader, uploaded_by_user_id: user.id)
+        .and_call_original
+
+      post api(path, user), params: { file: file }
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['id']).to eq(Upload.last.id)
+      expect(json_response['alt']).to eq("dk")
+      expect(json_response['url']).to start_with("/uploads/")
+      expect(json_response['url']).to end_with("/dk.png")
+      expect(json_response['full_path']).to start_with("/-/group/#{group.id}/uploads")
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_markdown_upload do
+      let(:boundary_object) { group }
+      let(:request) do
+        post api(path, personal_access_token: pat), params: { file: file }
+      end
+    end
+
+    context 'with unauthorized user' do
+      it "returns 404" do
+        post api(path, create(:user)), params: { file: file }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the upload service fails' do
+      before do
+        allow_next_instance_of(UploadService) do |service|
+          allow(service).to receive(:execute).and_return(nil)
+        end
+      end
+
+      it 'returns bad request error' do
+        post api(path, user), params: { file: file }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('400 Bad request - Failed to upload file')
       end
     end
   end

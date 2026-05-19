@@ -36,6 +36,7 @@ import updateWorkItemNotificationsMutation from '../graphql/update_work_item_not
 import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import getWorkItemNotificationsByIdQuery from '../graphql/get_work_item_notifications_by_id.query.graphql';
+import { findNotificationsWidget } from '../utils';
 import WorkItemStateToggle from './work_item_state_toggle.vue';
 import CreateWorkItemModal from './create_work_item_modal.vue';
 import MoveWorkItemModal from './move_work_item_modal.vue';
@@ -270,16 +271,14 @@ export default {
       variables() {
         return {
           id: this.workItemId,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       skip() {
         return !this.workItemId;
       },
       update(data) {
-        return Boolean(
-          data?.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_NOTIFICATIONS)
-            ?.subscribed,
-        );
+        return Boolean(findNotificationsWidget(data?.workItem)?.subscribed);
       },
       error(error) {
         Sentry.captureException(error);
@@ -458,6 +457,12 @@ export default {
       }
     },
     toggleNotifications(subscribed) {
+      const notificationWidget = {
+        type: WIDGET_TYPE_NOTIFICATIONS,
+        subscribed,
+        __typename: 'WorkItemWidgetNotifications',
+      };
+
       this.$apollo
         .mutate({
           mutation: updateWorkItemNotificationsMutation,
@@ -466,6 +471,7 @@ export default {
               id: this.workItemId,
               subscribed,
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
           optimisticResponse: {
             workItemSubscribe: {
@@ -473,13 +479,14 @@ export default {
               workItem: {
                 __typename: 'WorkItem',
                 id: this.workItemId,
-                widgets: [
-                  {
-                    type: WIDGET_TYPE_NOTIFICATIONS,
-                    subscribed,
-                    __typename: 'WorkItemWidgetNotifications',
-                  },
-                ],
+                ...(this.glFeatures?.workItemFeaturesField
+                  ? {
+                      features: {
+                        __typename: 'WorkItemFeatures',
+                        notifications: notificationWidget,
+                      },
+                    }
+                  : { widgets: [notificationWidget] }),
               },
             },
           },

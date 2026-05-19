@@ -79,7 +79,7 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
       end
 
       expect { subject.run }
-        .to change(entity.failures, :count).by(1)
+        .to change { entity.failures.count }.by(1)
 
       failure = entity.failures.first
 

@@ -141,8 +141,12 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::TypeResolver do
     end
 
     context 'with API:: prefixed types' do
-      it 'maps unknown API:: types to object' do
+      it 'maps API:: types to object' do
         expect(described_class.resolve_type('API::Entities::Ci::PipelineBasic')).to eq('object')
+      end
+
+      it 'maps ::API:: types to object' do
+        expect(described_class.resolve_type('::API::Entities::Ci::PipelineBasic')).to eq('object')
       end
     end
 

@@ -10,7 +10,7 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml', feature_category: :wiki do
     assign(:project, project)
   end
 
-  context 'The sidebar comes from a custom page' do
+  context 'when the sidebar comes from a custom page' do
     before do
       assign(:sidebar_page, double('WikiPage', path: 'sidebar.md', slug: 'sidebar', content: 'Some sidebar content', wiki: wiki))
     end

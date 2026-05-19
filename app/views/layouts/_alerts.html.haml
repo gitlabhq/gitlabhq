@@ -1,12 +1,12 @@
 .alert-wrapper.alert-wrapper-top-space.gl-flex.gl-flex-col.gl-gap-3.container-fluid{ class: alert_class }
   = dispensable_render 'shared/outdated_browser'
-  = dispensable_render_if_exists "layouts/header/licensed_user_count_threshold"
-  = dispensable_render_if_exists "layouts/header/licensed_user_count_threshold_block_seat_overages"
+  = dispensable_render_if_exists "layouts/header/seat_alert"
   -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab/-/issues/13)
   = dispensable_render_if_exists "layouts/header/account_notification"
   = dispensable_render "shared/groups_projects/self_or_ancestor_marked_for_deletion_notice", context: context
   = dispensable_render "shared/projects/dormant_project_deletion_alert"
   = dispensable_render "shared/groups_projects/self_or_ancestor_archived_notice", context: context
+  = dispensable_render "shared/groups_projects/self_or_ancestor_transfer_notice", context: context
   = dispensable_render "layouts/header/read_only_banner"
   = dispensable_render "layouts/header/registration_enabled_callout"
   = dispensable_render "layouts/header/openssl_callout"

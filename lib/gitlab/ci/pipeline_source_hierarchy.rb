@@ -16,22 +16,39 @@ module Gitlab
         ancestors_cte = build_ancestors_cte
         descendants_cte = build_descendants_cte
 
-        ancestors_scope = unscoped_model
-          .from(ancestors_cte.alias_to(source_table))
-          .select(:pipeline_id, :partition_id)
+        read_only(
+          unscoped_model
+            .with
+            .recursive(ancestors_cte.to_arel, descendants_cte.to_arel)
+            .from_union([cte_scope(ancestors_cte), cte_scope(descendants_cte)])
+        )
+      end
 
-        descendants_scope = unscoped_model
-          .from(descendants_cte.alias_to(source_table))
-          .select(:pipeline_id, :partition_id)
+      def base_and_ancestors
+        cte_relation(build_ancestors_cte)
+      end
 
-        unscoped_model
-          .with
-          .recursive(ancestors_cte.to_arel, descendants_cte.to_arel)
-          .from_union([ancestors_scope, descendants_scope])
-          .tap { |r| r.extend(Gitlab::Database::ReadOnlyRelation) }
+      def base_and_descendants
+        cte_relation(build_descendants_cte)
       end
 
       private
+
+      def cte_scope(cte)
+        unscoped_model
+          .from(cte.alias_to(source_table))
+          .select(:pipeline_id, :partition_id)
+      end
+
+      def cte_relation(cte)
+        read_only(
+          unscoped_model
+            .with
+            .recursive(cte.to_arel)
+            .from(cte.alias_to(source_table))
+            .select(:pipeline_id, :partition_id)
+        )
+      end
 
       def unscoped_model
         ::Ci::Sources::Pipeline.unscoped
@@ -96,6 +113,11 @@ module Gitlab
         when :different then source_table[:source_project_id].not_eq(source_table[:project_id])
         else                 Arel.sql('TRUE')
         end
+      end
+
+      def read_only(relation)
+        relation.extend(Gitlab::Database::ReadOnlyRelation)
+        relation
       end
     end
     # rubocop:enable CodeReuse/ActiveRecord

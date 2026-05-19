@@ -23,7 +23,7 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
     let(:query) { 'foo' }
     let(:scope) { 'issues' }
 
-    before do
+    before_all do
       project.add_developer(user)
     end
 
@@ -188,7 +188,7 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
     it 'calls GroupFinder during execution' do
       expect(GroupsFinder).to receive(:new).with(user).and_call_original
 
-      subject
+      objects
     end
 
     context 'when private project member searches for user in private group' do
@@ -211,7 +211,7 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
 
   describe "#issuable_params" do
     it 'sets include_subgroups flag by default' do
-      expect(results.issuable_params[:include_subgroups]).to eq(true)
+      expect(results.issuable_params[:include_subgroups]).to be(true)
     end
   end
 
@@ -244,7 +244,7 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
       let!(:task_work_item) { create(:work_item, :task, project: project, title: 'test task') }
       let!(:issue_work_item) { create(:work_item, project: project, title: 'test issue wi') }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 

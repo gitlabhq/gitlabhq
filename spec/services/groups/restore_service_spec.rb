@@ -6,6 +6,7 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
   let(:user) { create(:user) }
   let(:group) do
     create(:group_with_deletion_schedule,
+      :deletion_scheduled,
       marked_for_deletion_on: 1.day.ago,
       deleting_user: user).tap do |g|
         g.update!(path: "group-1-deletion_scheduled-#{g.id}", name: "Group1 Name-deletion_scheduled-#{g.id}")
@@ -75,6 +76,7 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
         context "when the original group path does not contain the -deletion_scheduled- suffix" do
           let(:group) do
             create(:group_with_deletion_schedule,
+              :deletion_scheduled,
               marked_for_deletion_on: 1.day.ago,
               deleting_user: user)
           end

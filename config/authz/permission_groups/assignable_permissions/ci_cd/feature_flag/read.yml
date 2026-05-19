@@ -1,0 +1,9 @@
+---
+name: read_feature_flag
+description: Grants the ability to read feature flags
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_feature_flag

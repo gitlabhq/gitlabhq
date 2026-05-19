@@ -1,0 +1,12 @@
+---
+api_type: hash
+attr: diff_limits
+clusterwide: true
+column: diff_limits
+db_type: jsonb
+default: "'{}'::jsonb"
+description: Limits related to diffs, including maximum diff versions and commits per merge request.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

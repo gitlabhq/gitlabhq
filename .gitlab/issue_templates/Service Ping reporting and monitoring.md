@@ -2,7 +2,7 @@
 
 The [Analytics Instrumentation group](https://about.gitlab.com/handbook/engineering/development/analytics/analytics-instrumentation/) runs manual reporting of ServicePing for GitLab.com on a weekly basis. This issue:
 
-- Captures the work required to complete the reporting process,.
+- Captures the work required to complete the reporting process.
 - Captures the follow-up tasks that are focused on metrics performance verification.
 - Identifies any potential issues.
 
@@ -37,7 +37,7 @@ Broken metrics issues are marked with the ~"broken metric" label.
 1. Find your screen session: `screen -ls`.
 1. Attach to your screen session: `screen -x 14226.mwawrzyniak_service_ping_2021_01_22`.
 1. Check the last payload in the `raw_usage_data` table: `RawUsageData.last.payload`.
-1. Check the when the payload was sent: `RawUsageData.last.sent_at`.
+1. Check when the payload was sent: `RawUsageData.last.sent_at`.
 
 ## Stop the Service Ping process
 

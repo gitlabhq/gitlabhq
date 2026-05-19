@@ -175,114 +175,89 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
     });
   });
 
-  describe('suggestion handling', () => {
+  describe('AI suggestion handling', () => {
     beforeEach(async () => {
       createComponent();
       await waitForPromises();
     });
 
-    describe('permissionsToSelect watcher', () => {
-      it('applies permissions immediately when data is already loaded', async () => {
-        await wrapper.setProps({ permissionsToSelect: ['read_project'] });
-
-        expect(wrapper.emitted('input')[0]).toEqual([['read_project']]);
-      });
-
-      it('does nothing when permissionsToSelect is empty', async () => {
-        await wrapper.setProps({ permissionsToSelect: [] });
-
-        expect(wrapper.emitted('input')).toBeUndefined();
-      });
-
-      it('applies permissions when they are set before the permissions query resolves', async () => {
-        createComponent({
-          props: { permissionsToSelect: ['read_project'] },
-        });
-
-        // permissions query hasn't resolved yet — applyPermissions silently did nothing
-        expect(wrapper.emitted('input')).toBeUndefined();
-
-        // Now let the query resolve
-        await waitForPromises();
-
-        // The permissions watcher should re-apply permissionsToSelect
-        expect(wrapper.emitted('input')[0]).toEqual([['read_project']]);
-      });
-    });
-
-    describe('permissionsToClear watcher', () => {
-      it('removes the specified permissions', async () => {
-        await findResourcesList().vm.$emit('input', ['project']);
-        await findPermissionsList().vm.$emit('input', ['read_project', 'write_project']);
-        await wrapper.setProps({ value: ['read_project', 'write_project'] });
-
-        await wrapper.setProps({ permissionsToClear: ['read_project'] });
-
-        expect(wrapper.emitted('input').at(-1)).toEqual([['write_project']]);
-      });
-
-      it('does not remove the resource when all its permissions are cleared', async () => {
-        await findResourcesList().vm.$emit('input', ['project']);
-        await findPermissionsList().vm.$emit('input', ['read_project', 'write_project']);
-        await wrapper.setProps({ value: ['read_project', 'write_project'] });
-
-        await wrapper.setProps({ permissionsToClear: ['read_project', 'write_project'] });
-
-        expect(findPermissionsList().props('selectedResources')).toContain('project');
-      });
-
-      it('does nothing when permissionsToClear is empty', async () => {
-        await wrapper.setProps({ permissionsToClear: [] });
-
-        expect(wrapper.emitted('input')).toBeUndefined();
-      });
-    });
-
-    describe('applyPermissions()', () => {
-      it('adds permissions and their resources, emits input', async () => {
-        wrapper.vm.applyPermissions(['read_project', 'write_project']);
-
-        await Vue.nextTick();
+    describe('when AI suggests permissions', () => {
+      it('selects the suggested permissions and their resources', async () => {
+        await wrapper.setProps({ aiPermissions: { suggested: ['read_project'], removed: [] } });
 
         expect(wrapper.vm.selectedResources).toContain('project');
-        expect(wrapper.emitted('input')[0]).toEqual([['read_project', 'write_project']]);
+        expect(wrapper.emitted('input')[0]).toEqual([['read_project']]);
       });
 
-      it('deduplicates already-selected permissions', async () => {
-        await wrapper.setProps({ value: ['read_project'] });
-
-        wrapper.vm.applyPermissions(['read_project', 'write_project']);
-
-        await Vue.nextTick();
-
-        expect(wrapper.emitted('input').at(-1)).toEqual([['read_project', 'write_project']]);
-      });
-
-      it('does nothing when no permissions match the boundary', () => {
-        wrapper.vm.applyPermissions(['not_a_valid_permission']);
+      it('applies permissions when set before the permissions query resolves', async () => {
+        createComponent({
+          props: { aiPermissions: { suggested: ['read_project'], removed: [] } },
+        });
 
         expect(wrapper.emitted('input')).toBeUndefined();
+
+        await waitForPromises();
+
+        expect(wrapper.emitted('input')[0]).toEqual([['read_project']]);
+      });
+
+      it('merges with already selected permissions', async () => {
+        await wrapper.setProps({ value: ['write_project'] });
+        await wrapper.setProps({ aiPermissions: { suggested: ['read_project'], removed: [] } });
+
+        expect(wrapper.emitted('input')[0]).toEqual([['write_project', 'read_project']]);
+      });
+
+      it('merges suggested resources with already selected resources', async () => {
+        await findResourcesList().vm.$emit('input', ['repository']);
+        await wrapper.setProps({ aiPermissions: { suggested: ['read_project'], removed: [] } });
+
+        expect(wrapper.vm.selectedResources).toContain('repository');
+        expect(wrapper.vm.selectedResources).toContain('project');
       });
     });
 
-    describe('removePermissions()', () => {
+    describe('when AI removes permissions', () => {
       beforeEach(async () => {
         await findResourcesList().vm.$emit('input', ['project']);
         await findPermissionsList().vm.$emit('input', ['read_project', 'write_project']);
         await wrapper.setProps({ value: ['read_project', 'write_project'] });
       });
 
-      it('removes specified permissions and emits input', () => {
-        wrapper.vm.removePermissions(['read_project']);
+      it('removes the specified permissions', async () => {
+        await wrapper.setProps({ aiPermissions: { suggested: [], removed: ['read_project'] } });
 
-        expect(wrapper.emitted('input').at(-1)).toEqual([['write_project']]);
+        expect(wrapper.emitted('input')[1]).toEqual([['write_project']]);
       });
 
-      it('does not remove resources even when all their permissions are removed', () => {
-        wrapper.vm.removePermissions(['read_project', 'write_project']);
+      it('does not remove the resource when all its permissions are cleared', async () => {
+        await wrapper.setProps({
+          aiPermissions: { suggested: [], removed: ['read_project', 'write_project'] },
+        });
 
-        expect(wrapper.vm.selectedResources).toContain('project');
+        expect(findPermissionsList().props('selectedResources')).toContain('project');
       });
+    });
+  });
+
+  describe('pre-filling resources from permissions', () => {
+    it('selects resources when value prop is provided', async () => {
+      await waitForPromises();
+
+      await wrapper.setProps({ value: ['read_project', 'read_repository'] });
+
+      expect(wrapper.vm.selectedResources).toContain('project');
+      expect(wrapper.vm.selectedResources).toContain('repository');
+    });
+
+    it('merges with already selected resources', async () => {
+      await waitForPromises();
+
+      await findResourcesList().vm.$emit('input', ['repository']);
+      await wrapper.setProps({ value: ['read_project'] });
+
+      expect(wrapper.vm.selectedResources).toContain('repository');
+      expect(wrapper.vm.selectedResources).toContain('project');
     });
   });
 

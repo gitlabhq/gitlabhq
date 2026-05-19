@@ -2,6 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Create and manage triggers to control when flows run in your project.
 title: Triggers
 ---
 
@@ -24,7 +25,8 @@ title: Triggers
 > To change the location of your flow configuration file, you must enable a feature flag.
 > For more information, see the history.
 
-A trigger determines when a flow runs.
+A trigger determines when a flow or external agent runs.
+A trigger cannot be created for a custom agent or foundational agent.
 
 For example, you can specify flows to be triggered when you mention them
 in a discussion, or when you assign them as a reviewer.
@@ -35,8 +37,13 @@ in a discussion, or when you assign them as a reviewer.
 
 - **Assign** and **Assign reviewer** event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/567787) in GitLab 18.5.
 - Pipeline events trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212797) in GitLab 18.9 as an [experiment](../../../policy/development_stages_support.md) with a [flag](../../../administration/feature_flags/_index.md) named `ai_flow_trigger_pipeline_hooks`. Disabled by default.
+- **Merge request ready** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592454) in GitLab 19.0 with a [flag](../../../administration/feature_flags/_index.md) named `merge_request_ready_flow_trigger`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Prerequisites:
 
@@ -45,7 +52,7 @@ Prerequisites:
 To create a trigger:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Automate** > **Triggers**.
+1. In the left sidebar, select **AI** > **Triggers**.
 1. Select **New flow trigger**.
 1. In **Description**, enter a description for the trigger.
 1. From the **Event types** dropdown list, select one or more event types:
@@ -57,6 +64,7 @@ To create a trigger:
      as a reviewer to a merge request.
    - **Pipeline events**: When a pipeline changes state.
      The possible states are `created`, `started`, `succeeded`, and `failed`.
+   - **Merge request ready**: When a draft merge request is marked as ready for review.
 1. From the **Service account** dropdown list,
    select a user to be [the composite identity](../composite_identity.md).
 1. For **Configuration source**, select one of the following:
@@ -67,18 +75,18 @@ To create a trigger:
      To view this option, the `ai_catalog_create_third_party_flows` flag must be enabled.
 1. Select **Create flow trigger**.
 
-The trigger now appears in **Automate** > **Triggers**.
+The trigger now appears in **AI** > **Triggers**.
 
 ### Edit a trigger
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Automate** > **Triggers**.
+1. In the left sidebar, select **AI** > **Triggers**.
 1. For the trigger you want to change, select **Edit flow trigger** ({{< icon name="pencil" >}}).
 1. Make the changes and select **Save changes**.
 
 ### Delete a trigger
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Automate** > **Triggers**.
+1. In the left sidebar, select **AI** > **Triggers**.
 1. For the trigger you want to change, select **Delete flow trigger** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **OK**.

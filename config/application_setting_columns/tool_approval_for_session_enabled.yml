@@ -4,7 +4,7 @@ attr: tool_approval_for_session_enabled
 clusterwide: false
 column: tool_approval_for_session_enabled
 db_type: boolean
-default: 'true'
+default: 'false'
 description:
 encrypted: false
 gitlab_com_different_than_default: false

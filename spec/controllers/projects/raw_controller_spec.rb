@@ -372,5 +372,22 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
         end
       end
     end
+
+    context 'when gitaly is unavailable' do
+      let(:file_path) { 'master/README.md' }
+
+      before do
+        allow_next_instance_of(Gitlab::Git::Repository) do |repository|
+          allow(repository).to receive(:blob_at)
+            .and_raise(Gitlab::Git::CommandError, 'Gitaly unavailable')
+        end
+      end
+
+      it 'returns 503' do
+        get_show
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+      end
+    end
   end
 end

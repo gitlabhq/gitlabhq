@@ -1,9 +1,11 @@
 ---
 name: update_pipeline
 description: Grants the ability to update pipelines
+boundaries:
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - cancel_pipeline
   - retry_pipeline
   - update_pipeline_metadata
-boundaries:
-  - project

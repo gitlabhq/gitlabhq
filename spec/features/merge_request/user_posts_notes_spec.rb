@@ -26,7 +26,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
 
   describe 'the note form' do
     it 'is valid' do
-      is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
+      is_expected.to have_css('.js-main-target-form', visible: :visible, count: 1)
       expect(find('.js-main-target-form')).to have_selector('button', text: 'Comment')
       page.within('.js-main-target-form') do
         expect(page).not_to have_button('Cancel')
@@ -48,7 +48,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
             expect(page).to have_css('.gl-button')
             expect(page).not_to have_css('.disabled')
           end
-          expect(page).to have_css('.js-md-preview-button', visible: true)
+          expect(page).to have_css('.js-md-preview-button', visible: :visible)
         end
 
         expect(page.evaluate_script("localStorage['autosave/Note/MergeRequest/#{merge_request.id}']")).to eq(text)
@@ -73,7 +73,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
       end
       wait_for_requests
       page.within('.js-main-target-form') do
-        is_expected.to have_css('.js-note-text', visible: true)
+        is_expected.to have_css('.js-note-text', visible: :visible)
       end
     end
 

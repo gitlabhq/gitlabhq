@@ -1,0 +1,7 @@
+---
+name: _read_authored_snippet
+description: Grants the ability to read a project snippet that the user
+  authored, even when the snippet's visibility is more restricted than the
+  project's visibility. Used by the project snippet policy to elevate the
+  author's read access on their own snippets without granting the broader
+  _read_private_snippet capability.

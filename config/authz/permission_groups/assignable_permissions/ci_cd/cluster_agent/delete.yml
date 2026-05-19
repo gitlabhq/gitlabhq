@@ -3,5 +3,7 @@ name: delete_cluster_agent
 description: Grants the ability to delete cluster agents
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - delete_cluster_agent

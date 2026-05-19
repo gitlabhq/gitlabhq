@@ -1,0 +1,12 @@
+---
+api_type:
+attr: active_context_settings
+clusterwide: false
+column: active_context_settings
+db_type: jsonb
+default: "'{}'::jsonb"
+description: Active Context settings
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

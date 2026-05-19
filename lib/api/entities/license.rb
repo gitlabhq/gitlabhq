@@ -10,15 +10,15 @@ module API
         license.meta['description']
       end
 
-      expose :conditions, documentation: { type: 'String', is_array: true, example: 'include-copyright' } do |license|
+      expose :conditions, documentation: { type: 'String', is_array: true, example: ['include-copyright'] } do |license|
         license.meta['conditions']
       end
 
-      expose :permissions, documentation: { type: 'String', is_array: true, example: 'commercial-use' } do |license|
+      expose :permissions, documentation: { type: 'String', is_array: true, example: ['commercial-use'] } do |license|
         license.meta['permissions']
       end
 
-      expose :limitations, documentation: { type: 'String', is_array: true, example: 'liability' } do |license|
+      expose :limitations, documentation: { type: 'String', is_array: true, example: ['liability'] } do |license|
         license.meta['limitations']
       end
 

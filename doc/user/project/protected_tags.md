@@ -35,7 +35,7 @@ Prerequisites:
 - You must have the Maintainer or Owner role for the project.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Protected tags**.
 1. Select **Add new**.
 1. To protect a single tag, select **Tag**, then choose your tag from the dropdown list.
@@ -153,7 +153,7 @@ Prerequisites:
 To allow a deploy key to create a protected tag:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Protected tags**.
 1. From the **Tag** dropdown list, select the tag you want to protect.
 1. From the **Allowed to create** list, select the deploy key.
@@ -203,7 +203,7 @@ Prerequisites:
 To unprotect a tag:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Protected tags**.
 1. Next to the protected tag rule you want to remove, select **Unprotect**.
 

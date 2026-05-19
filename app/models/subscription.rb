@@ -11,4 +11,7 @@ class Subscription < ApplicationRecord
   validates :user, :subscribable, presence: true
 
   validates :project_id, uniqueness: { scope: [:subscribable_id, :subscribable_type, :user_id] }
+
+  scope :for_subscribables, ->(ids, type) { where(subscribable_id: ids, subscribable_type: type) }
+  scope :for_user, ->(user) { where(user: user) }
 end

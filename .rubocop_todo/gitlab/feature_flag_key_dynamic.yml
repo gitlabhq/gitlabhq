@@ -7,7 +7,6 @@ Gitlab/FeatureFlagKeyDynamic:
     - 'app/models/concerns/ci/partitionable/switch.rb'
     - 'app/models/concerns/limitable.rb'
     - 'app/models/group.rb'
-    - 'app/services/concerns/measurable.rb'
     - 'app/workers/concerns/worker_attributes.rb'
     - 'app/workers/loose_foreign_keys/cleanup_worker.rb'
     - 'ee/app/graphql/resolvers/ai/user_available_features_resolver.rb'

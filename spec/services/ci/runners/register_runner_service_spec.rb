@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, feature_category: :runner_core do
   let(:registration_token) { 'abcdefg123456' }
-  let(:token) {}
+  let(:token) { nil }
   let(:args) { {} }
   let(:runner) { execute.payload[:runner] }
 

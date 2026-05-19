@@ -287,15 +287,6 @@ tests = [
     expected: ['spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb']
   },
   {
-    explanation: 'Snowplow schema maps to event validation spec',
-    changed_file: 'config/events/schema.json',
-    expected: %w[
-      spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb
-      spec/support_specs/matchers/internal_events_matchers_spec.rb
-    ]
-  },
-
-  {
     explanation: 'Internal Events application logic maps to internal events tooling',
     changed_file: 'lib/gitlab/internal_events.rb',
     expected: %w[
@@ -579,7 +570,7 @@ tests = [
     changed_file: 'ee/app/policies/ee/group_policy.rb',
     expected: %w[
       spec/policies/group_policy_spec.rb
-      ee/spec/policies/group_policy_spec.rb
+      ee/spec/policies/ee/group_policy_spec.rb
       ee/spec/features/groups/groups_security_credentials_spec.rb
     ]
   },
@@ -651,6 +642,7 @@ tests = [
       ee/spec/features/registrations/saas/standard_flow_with_2fa_spec.rb
       ee/spec/features/registrations/saas/subscription_flow_company_paid_plan_spec.rb
       ee/spec/features/registrations/saas/subscription_flow_just_me_paid_plan_spec.rb
+      ee/spec/features/registrations/saas/subscription_sm_flow_spec.rb
       ee/spec/features/registrations/saas/trial_flow_spec.rb
       ee/spec/controllers/registrations/company_controller_spec.rb
       ee/spec/requests/ee/registrations_controller_spec.rb

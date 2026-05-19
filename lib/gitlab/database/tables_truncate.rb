@@ -81,7 +81,26 @@ module Gitlab
             end
           end
 
-          tables
+          # Skip tables that don't physically exist on this connection. Newer
+          # databases (e.g. sec) never had legacy CI/main tables, and stale
+          # detached_partitions rows may reference already-dropped tables.
+          tables.select { |t| existing_tables_set.include?(t) }
+        end
+      end
+
+      def existing_tables_set
+        @existing_tables_set ||= begin
+          sql = <<~SQL
+            SELECT table_schema, table_name
+            FROM information_schema.tables
+            WHERE table_type = 'BASE TABLE'
+          SQL
+          current_schema = connection.current_schema
+          connection.exec_query(sql).rows.each_with_object(Set.new) do |(schema, name), set|
+            # Unqualified names resolve via search_path; only include for current_schema.
+            set << name if schema == current_schema
+            set << "#{schema}.#{name}"
+          end
         end
       end
 
@@ -120,6 +139,24 @@ module Gitlab
           end
         end
 
+        # Find tables with FK constraints pointing to our truncation list that are absent
+        # from the schema docs. These are tables removed from the docs (e.g. pending a DROP
+        # migration) but still present in the database. PostgreSQL requires them to appear in
+        # the same TRUNCATE statement as the tables they reference.
+        extra_fk_tables = unregistered_fk_referencing_tables(tables_sorted.flatten)
+          .select { |t| existing_tables_set.include?(t) }
+        extra_fk_tables.each do |table|
+          disable_locks_on_table(table)
+
+          # Disable write locks on attached partitions too, otherwise TRUNCATE
+          # of a partitioned parent fires the partition's write-lock trigger.
+          Gitlab::Database::SharedModel.using_connection(connection) do
+            Gitlab::Database::PostgresPartition.for_parent_table(table).each do |partition|
+              disable_locks_on_table(remove_schema_name(partition.identifier))
+            end
+          end
+        end
+
         # We do the truncation in stages to avoid high IO
         # In each stage, we truncate the new tables along with the already truncated
         # tables before. That's because PostgreSQL doesn't allow to truncate any table (A)
@@ -129,10 +166,11 @@ module Gitlab
           new_tables_to_truncate = tables_groups.flatten
           logger&.info "= New tables to truncate: #{new_tables_to_truncate.join(', ')}"
           truncated_tables.push(*new_tables_to_truncate).tap(&:sort!)
+          all_tables = (truncated_tables + extra_fk_tables).sort
           sql_statements = [
             "SET LOCAL statement_timeout = 0",
             "SET LOCAL lock_timeout = 0",
-            "TRUNCATE TABLE #{truncated_tables.join(', ')} RESTRICT"
+            "TRUNCATE TABLE #{all_tables.join(', ')} RESTRICT"
           ]
 
           sql_statements.each { |sql_statement| logger&.info(sql_statement) }
@@ -143,6 +181,47 @@ module Gitlab
             sql_statements.each { |sql_statement| connection.execute(sql_statement) }
           end
         end
+      end
+
+      # Returns tables that have FK constraints pointing to any table in +tables+ but are
+      # absent from the schema docs. Walks FK chains transitively so that multi-hop
+      # dependencies are also captured.
+      def unregistered_fk_referencing_tables(tables)
+        schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
+        ignored_schemas = GITLAB_SCHEMAS_TO_IGNORE.union(schemas_for_connection)
+        owned_tables = Gitlab::Database::GitlabSchema.tables_to_schema.select do |_, schema_name|
+          ignored_schemas.include?(schema_name)
+        end.keys
+
+        extra_tables = []
+
+        Gitlab::Database::SharedModel.using_connection(connection) do
+          # After detachment, a partition's FK constraints are no longer marked as
+          # inherited, so .not_inherited does not filter them out. Exclude explicitly.
+          detached_partition_names = Postgresql::DetachedPartition.pluck(:table_name)
+
+          # `tables` may contain schema-qualified names (e.g. for detached partitions)
+          # but constrained_table_name and referenced_table_name are always unqualified.
+          tables_unqualified = tables.map { |t| remove_schema_name(t) }
+          current_scope = tables_unqualified.dup
+
+          loop do
+            excluded = tables_unqualified + extra_tables + owned_tables + detached_partition_names
+            newly_found = Gitlab::Database::PostgresForeignKey
+              .not_inherited
+              .by_referenced_table_name(current_scope)
+              .where.not(constrained_table_name: excluded)
+              .pluck(:constrained_table_name)
+              .uniq
+
+            break if newly_found.empty?
+
+            extra_tables.concat(newly_found)
+            current_scope = newly_found
+          end
+        end
+
+        extra_tables
       end
 
       def single_database_setup?

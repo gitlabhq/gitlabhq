@@ -12,7 +12,7 @@ module Cells
       # When Rails has a sparse range and TS has a dense range, list_records may accumulate
       # thousands of records for deletion. Without a per-chunk record cap, a single commit
       # can take too long and exceed the gRPC deadline.
-      MAX_RECORDS_PER_CHUNK = 1000
+      MAX_RECORDS_PER_CHUNK = 2000
       # Estimated per-record protobuf overhead (subject, source, bucket type, varint framing).
       # The bucket value size is measured separately; this covers the remaining fixed-size fields.
       GRPC_PER_RECORD_OVERHEAD_BYTES = 200

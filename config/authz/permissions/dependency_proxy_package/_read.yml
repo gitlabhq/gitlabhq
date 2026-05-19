@@ -1,0 +1,6 @@
+---
+name: _read_dependency_proxy_package
+description: Grants the ability to read a package via the project's
+  dependency proxy. Used by the dependency proxy setting policy to gate
+  read access to packages fetched through the proxy, independent of the
+  general package read access on the project.

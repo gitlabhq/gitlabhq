@@ -1,0 +1,5 @@
+---
+event: MergeRequests::DraftNotePublishedEvent
+description: Published when a draft note (pending review comment) is published on
+  a merge request.
+feature_category: code_review_workflow

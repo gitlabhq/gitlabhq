@@ -43,7 +43,7 @@ immediately push code to branches in your private fork to help fix the confident
 
 Prerequisites:
 
-- You have the Owner or Maintainer role for the public repository, as you need one
+- You have the Maintainer or Owner role for the public repository, as you need one
   of these roles to [create a subgroup](../../group/subgroups/_index.md).
 - You have [forked](../repository/forking_workflow.md) the public repository.
 - Your fork has a **Visibility level** of **Private**.
@@ -51,7 +51,7 @@ Prerequisites:
 To create a confidential merge request:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. Scroll below the issue description, and select **Create confidential merge request**.
 1. Select the item that meets your needs:
    - To create both a branch and a merge request, select

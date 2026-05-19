@@ -1,7 +1,0 @@
----
-name: delete_external_status_check_service
-description: Grants the ability to delete external status check services
-boundaries:
-  - project
-permissions:
-  - delete_external_status_check_service

@@ -117,7 +117,7 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
   end
 
   describe 'filtering by service desk (author_username)' do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:support_bot) { create(:support_bot) }
     let_it_be(:user) { create(:user) }
     let_it_be(:service_desk_issue) { create(:issue, project: project, author: support_bot) }
@@ -166,7 +166,7 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
   describe 'confidential issue disclosure via assignee_id and group handle assignee_username' do
     let_it_be(:victim) { create(:user) }
     let_it_be(:attacker) { create(:user) }
-    let_it_be(:project) { create(:project, :private) }
+    let_it_be(:project, freeze: false) { create(:project, :private) }
     # The attacker controls this group; the victim is a member so group handle expansion
     # would include the victim's issues if param mixing were allowed.
     let_it_be(:attacker_group) { create(:group, :private) }

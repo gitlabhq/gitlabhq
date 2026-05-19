@@ -1,0 +1,83 @@
+---
+name: siphon_members
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (traversal_path, id) ORDER BY (traversal_path, id) SETTINGS deduplicate_merge_projection_mode
+  = 'rebuild', index_granularity = 2048
+primary_key: traversal_path, id
+sorting_key: traversal_path, id
+settings:
+  deduplicate_merge_projection_mode: "'rebuild'"
+  index_granularity: '2048'
+columns:
+- name: id
+  type: Int64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: access_level
+  type: Int64
+- name: source_id
+  type: Int64
+- name: source_type
+  type: String
+- name: user_id
+  type: Nullable(Int64)
+- name: notification_level
+  type: Int64
+- name: type
+  type: String
+- name: created_at
+  type: DateTime64(6, 'UTC')
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+- name: created_by_id
+  type: Nullable(Int64)
+- name: invite_email
+  type: Nullable(String)
+- name: invite_token
+  type: Nullable(String)
+- name: invite_accepted_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: requested_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: expires_at
+  type: Nullable(Date32)
+- name: ldap
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: override
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: state
+  type: Int8
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: invite_email_success
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'true'
+- name: member_namespace_id
+  type: Nullable(Int64)
+- name: member_role_id
+  type: Nullable(Int64)
+- name: expiry_notified_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: request_accepted_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(member_namespace_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.namespace_traversal_paths_dict',
+    'traversal_path', member_namespace_id, '0/'), '0/')
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'

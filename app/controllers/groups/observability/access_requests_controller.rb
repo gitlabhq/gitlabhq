@@ -15,7 +15,10 @@ module Groups
           ).execute
 
           if result.success?
-            flash[:success] = s_('Observability|Welcome to GitLab Observability!')
+            flash[:success] = s_(
+              'Observability|Observability is enabled for your group. ' \
+                'Start by instrumenting your projects below.'
+            )
             redirect_to group_observability_setup_path(group)
             return
           else

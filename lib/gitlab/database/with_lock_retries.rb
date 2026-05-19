@@ -68,7 +68,7 @@ module Gitlab
         @timing_configuration = timing_configuration
         @env = env
         @current_iteration = 1
-        @log_params = { method: 'with_lock_retries', class: klass.to_s }
+        @log_params = { method: 'with_lock_retries', Labkit::Fields::CLASS_NAME => klass.to_s }
         @connection = connection
       end
 

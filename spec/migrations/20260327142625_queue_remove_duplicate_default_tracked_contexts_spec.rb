@@ -6,20 +6,14 @@ require_migration!
 RSpec.describe QueueRemoveDuplicateDefaultTrackedContexts, migration: :gitlab_main_org, feature_category: :vulnerability_management do
   let!(:batched_migration) { described_class::MIGRATION }
 
-  it 'schedules a new batched background migration' do
+  it 'does not schedule a new batched background migration' do
     reversible_migration do |migration|
       migration.before -> {
         expect(batched_migration).not_to have_scheduled_batched_migration
       }
 
       migration.after -> {
-        expect(batched_migration).to have_scheduled_batched_migration(
-          gitlab_schema: :gitlab_main_org,
-          table_name: :projects,
-          column_name: :id,
-          batch_size: described_class::BATCH_SIZE,
-          sub_batch_size: described_class::SUB_BATCH_SIZE
-        )
+        expect(batched_migration).not_to have_scheduled_batched_migration
       }
     end
   end

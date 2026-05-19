@@ -28,6 +28,20 @@ All workers should include `ApplicationWorker` instead of `Sidekiq::Worker`,
 which adds some convenience methods and automatically sets the queue based on
 the [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 
+## Cells compatibility
+
+GitLab.com is moving to a [Cells architecture](../cells/_index.md), where different organizations
+are served by distinct physical instances of GitLab.
+All Sidekiq jobs should be scoped to a single organization.
+For guidance on how to scope compute to a single organization, see
+[Using `Current.organization`](../organization/_index.md#using-currentorganization).
+
+In all cases, to avoid data loss during a migration,
+cross-organization jobs are only acceptable when both of the following conditions are met:
+
+- The job is a recurring cron job.
+- The job is idempotent.
+
 ## Sharding
 
 All calls to Sidekiq APIs must account for sharding. To achieve this,

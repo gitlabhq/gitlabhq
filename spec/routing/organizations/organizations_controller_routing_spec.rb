@@ -6,37 +6,37 @@ RSpec.describe Organizations::OrganizationsController, :routing, feature_categor
   let_it_be(:organization) { build(:organization) }
 
   specify 'to #show' do
-    expect(get("/-/organizations/#{organization.path}"))
+    expect(get("/o/#{organization.path}/-/overview"))
       .to route_to('organizations/organizations#show', organization_path: organization.path)
   end
 
   specify 'to #new' do
-    expect(get("/-/organizations/new"))
+    expect(get("/o/new"))
       .to route_to('organizations/organizations#new')
   end
 
   specify 'to #index' do
-    expect(get("/-/organizations"))
+    expect(get("/o"))
       .to route_to('organizations/organizations#index')
   end
 
   specify 'to #activity' do
-    expect(get("/-/organizations/#{organization.path}/activity"))
+    expect(get("/o/#{organization.path}/-/activity"))
       .to route_to('organizations/organizations#activity', organization_path: organization.path)
   end
 
   specify 'to #groups_and_projects' do
-    expect(get("/-/organizations/#{organization.path}/groups_and_projects"))
+    expect(get("/o/#{organization.path}/-/groups_and_projects"))
       .to route_to('organizations/organizations#groups_and_projects', organization_path: organization.path)
   end
 
   specify 'to #users' do
-    expect(get("/-/organizations/#{organization.path}/users"))
+    expect(get("/o/#{organization.path}/-/users"))
       .to route_to('organizations/organizations#users', organization_path: organization.path)
   end
 
   specify 'to #preview_markdown' do
-    expect(post("/-/organizations/preview_markdown"))
+    expect(post("/o/-/preview_markdown"))
       .to route_to('organizations/organizations#preview_markdown')
   end
 end

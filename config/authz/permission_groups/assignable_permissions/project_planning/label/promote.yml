@@ -1,7 +1,9 @@
 ---
 name: promote_label
 description: Grants the ability to promote labels
-permissions:
-  - promote_label
 boundaries:
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - promote_label

@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Observability, feature_category: :observability do
       it { is_expected.to eq('https://observe.staging.gitlab.com') }
     end
 
-    context 'when overriden via ENV' do
+    context 'when overridden via ENV' do
       let(:observe_url) { 'https://example.net' }
 
       before do
@@ -85,7 +85,7 @@ RSpec.describe Gitlab::Observability, feature_category: :observability do
       it { is_expected.to eq('https://observe.staging.gitlab.com') }
     end
 
-    context 'when overriden via ENV' do
+    context 'when overridden via ENV' do
       let(:observe_url) { 'https://example.net' }
 
       before do

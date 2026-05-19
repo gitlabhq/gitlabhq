@@ -43,7 +43,12 @@ RSpec.describe 'User password', :with_current_organization, feature_category: :s
         perform_enqueued_jobs do
           visit new_user_password_path
           fill_in 'user_email', with: email
+
           click_button 'Reset password'
+          expect(page).to have_content(
+            'If your email address exists in our database, ' \
+              'you will receive a password recovery link at your email address in a few minutes.'
+          )
         end
       end
 

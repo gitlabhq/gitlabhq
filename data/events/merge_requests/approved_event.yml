@@ -1,0 +1,6 @@
+---
+event: MergeRequests::ApprovedEvent
+description: Published when a user approves a merge request. Fires only when the approving
+  user is eligible (not the author, satisfies any approval rules), the MR is not already
+  merged, and the approval record is persisted.
+feature_category: code_review_workflow

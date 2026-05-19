@@ -14,7 +14,7 @@ exports[`Suggestion Diff component matches snapshot 1`] = `
     suggestionscount="0"
   />
   <table
-    class="!gl-mb-5 code js-syntax-highlight md-suggestion-diff"
+    class="!gl-mb-5 code code-syntax-highlight-theme md-suggestion-diff"
   >
     <tbody>
       <suggestion-diff-row-stub

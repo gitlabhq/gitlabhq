@@ -1,0 +1,10 @@
+---
+name: run_batched_background_migration
+description: Grants the ability to run batched background migrations
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - pause_batched_background_migration
+  - resume_batched_background_migration

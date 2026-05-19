@@ -6,7 +6,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
   subject { described_class.new(user, resource, params).execute }
 
   let_it_be(:organization) { create(:organization) }
-  let_it_be(:user) { create(:user, organization: organization) }
+  let_it_be(:user, freeze: false) { create(:user, organization: organization) }
   let_it_be(:project) { create(:project, :private, organization: organization) }
   let_it_be(:group) { create(:group, :private, organization: organization) }
   let_it_be(:params) { { expires_at: Date.today + 1.month } }
@@ -426,7 +426,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
           end
 
           context 'when the executor is an OWNER' do
-            let_it_be(:user) { project.first_owner }
+            let_it_be(:user, freeze: false) { project.first_owner }
 
             it 'adds the bot user with the specified access level in the resource' do
               response = subject

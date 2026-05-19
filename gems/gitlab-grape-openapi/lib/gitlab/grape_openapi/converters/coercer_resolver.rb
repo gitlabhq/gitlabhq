@@ -25,7 +25,7 @@ module Gitlab
           schema[:type] = mapping[:type] if mapping[:type]
           schema[:items] = { type: mapping[:items_type] } if mapping[:items_type]
           schema[:format] = mapping[:format] if mapping[:format]
-          schema[:additional_properties] = mapping[:additional_properties] if mapping[:additional_properties]
+          schema[:additionalProperties] = mapping[:additional_properties] if mapping[:additional_properties]
 
           schema
         end

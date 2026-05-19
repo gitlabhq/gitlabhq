@@ -1,7 +1,9 @@
 ---
 name: delete_release_link
 description: Grants the ability to delete release links
-permissions:
-  - delete_release_link
 boundaries:
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_release_link

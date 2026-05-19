@@ -39,7 +39,7 @@ module API
         user_param =
           if current_user.can_admin_all_resources?
             if params[:user_id].present?
-              user = user(params[:user_id])
+              user = find_pat_user_by_id(params[:user_id])
 
               not_found! if user.nil?
 
@@ -56,14 +56,18 @@ module API
         declared(params, include_missing: false).merge(user_param)
       end
 
-      def user(user_id)
+      def find_pat_user_by_id(user_id)
         UserFinder.new(user_id).find_by_id
       end
 
       def restrict_non_admins!
         return if params[:user_id].blank?
 
-        unauthorized! unless Ability.allowed?(current_user, :read_personal_access_token, user(params[:user_id]))
+        unauthorized! unless Ability.allowed?(
+          current_user,
+          :read_personal_access_token,
+          find_pat_user_by_id(params[:user_id])
+        )
       end
 
       def find_token(id)
@@ -78,7 +82,8 @@ module API
       end
 
       def rotate_token(token, params)
-        service = ::PersonalAccessTokens::RotateService.new(current_user, token, nil, params).execute
+        service = ::PersonalAccessTokens::RotateService.new(current_user, token, nil,
+          params.merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API)).execute
 
         if service.success?
           status :ok

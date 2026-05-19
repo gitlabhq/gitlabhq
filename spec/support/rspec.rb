@@ -91,7 +91,23 @@ RSpec.configure do |config|
 
   config.add_formatter GitlabQuality::TestTooling::TestQuarantine::QuarantineFormatter
 
-  Gitlab::Rspec::Configurations::TestMetrics.configure!('backend-rspec-tests') do |exporter_config|
+  # Per-test coverage capture. Off unless the caller sets `GLCI_PER_TEST_COVERAGE`
+  # in a CI environment. Standard MR and master rspec runs do not set it.
+  if ENV['CI'] && ENV['GLCI_PER_TEST_COVERAGE'] == 'true'
+    if ENV['CRYSTALBALL_COVERAGE_STRATEGY'] == 'true'
+      raise 'GLCI_PER_TEST_COVERAGE and CRYSTALBALL_COVERAGE_STRATEGY cannot be enabled together. ' \
+        'Both consume the global Coverage table with incompatible semantics ' \
+        '(the per-test formatter destructively clears it per example).'
+    end
+
+    config.before(:suite) do
+      Coverage.start(lines: true) unless Coverage.running?
+    end
+
+    config.add_formatter Support::PerTestCoverageFormatter
+  end
+
+  GitlabQuality::TestTooling::TestMetricsExporter::ConfigHelper.configure!('backend-rspec-tests') do |exporter_config|
     exporter_config.test_retried_proc = ->(_example) { ENV["RSPEC_RETRY_PROCESS"] == "true" }
   end
 end

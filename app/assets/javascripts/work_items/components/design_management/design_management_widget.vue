@@ -509,59 +509,61 @@ export default {
       </template>
 
       <template #actions>
-        <gl-button
-          v-if="isLatestVersion && canUpdateDesign"
-          category="tertiary"
-          size="small"
-          variant="link"
-          :disabled="!hasDesigns"
-          data-testid="select-all-designs-button"
-          :aria-label="selectAllButtonText"
-          @click="toggleDesignsSelection"
-        >
-          {{ selectAllButtonText }}
-        </gl-button>
-        <archive-design-button
-          v-if="isLatestVersion && canUpdateDesign"
-          data-testid="archive-button"
-          button-class="work-item-design-hidden-xs work-item-design-show-sm"
-          :has-selected-designs="hasSelectedDesigns"
-          :loading="isArchiving"
-          @archive-selected-designs="onArchiveDesign"
-        >
-          {{ $options.i18n.archiveDesignText }}
-        </archive-design-button>
-        <archive-design-button
-          v-if="isLatestVersion && canUpdateDesign"
-          v-gl-tooltip.bottom
-          data-testid="archive-button"
-          button-class="work-item-design-hidden-sm"
-          button-icon="archive"
-          :title="$options.i18n.archiveDesignText"
-          :aria-label="$options.i18n.archiveDesignText"
-          :has-selected-designs="hasSelectedDesigns"
-          :loading="isArchiving"
-          @archive-selected-designs="onArchiveDesign"
-        />
-        <gl-button
-          v-if="canAddDesign"
-          size="small"
-          data-testid="add-design"
-          :disabled="isSaving"
-          :loading="isSaving"
-          @click="openDesignUpload"
-          >{{ __('Add') }}</gl-button
-        >
-        <input
-          ref="fileUpload"
-          type="file"
-          name="design_file"
-          :accept="$options.VALID_DESIGN_FILE_MIMETYPE.mimetype"
-          class="gl-hidden"
-          multiple
-          @change="onDesignUploadChange"
-        />
-        <router-view :key="$route.fullPath" :all-designs="designs" :all-versions="allVersions" />
+        <div class="gl-mt-2 gl-flex gl-gap-3">
+          <gl-button
+            v-if="isLatestVersion && canUpdateDesign"
+            category="tertiary"
+            size="small"
+            variant="link"
+            :disabled="!hasDesigns"
+            data-testid="select-all-designs-button"
+            :aria-label="selectAllButtonText"
+            @click="toggleDesignsSelection"
+          >
+            {{ selectAllButtonText }}
+          </gl-button>
+          <archive-design-button
+            v-if="isLatestVersion && canUpdateDesign"
+            data-testid="archive-button"
+            button-class="work-item-design-hidden-xs work-item-design-show-sm"
+            :has-selected-designs="hasSelectedDesigns"
+            :loading="isArchiving"
+            @archive-selected-designs="onArchiveDesign"
+          >
+            {{ $options.i18n.archiveDesignText }}
+          </archive-design-button>
+          <archive-design-button
+            v-if="isLatestVersion && canUpdateDesign"
+            v-gl-tooltip.bottom
+            data-testid="archive-button"
+            button-class="work-item-design-hidden-sm"
+            button-icon="archive"
+            :title="$options.i18n.archiveDesignText"
+            :aria-label="$options.i18n.archiveDesignText"
+            :has-selected-designs="hasSelectedDesigns"
+            :loading="isArchiving"
+            @archive-selected-designs="onArchiveDesign"
+          />
+          <gl-button
+            v-if="canAddDesign"
+            size="small"
+            data-testid="add-design"
+            :disabled="isSaving"
+            :loading="isSaving"
+            @click="openDesignUpload"
+            >{{ __('Add') }}</gl-button
+          >
+          <input
+            ref="fileUpload"
+            type="file"
+            name="design_file"
+            :accept="$options.VALID_DESIGN_FILE_MIMETYPE.mimetype"
+            class="gl-hidden"
+            multiple
+            @change="onDesignUploadChange"
+          />
+          <router-view :key="$route.fullPath" :all-designs="designs" :all-versions="allVersions" />
+        </div>
       </template>
 
       <template #default>

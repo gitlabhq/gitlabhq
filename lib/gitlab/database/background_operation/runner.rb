@@ -49,7 +49,8 @@ module Gitlab
             worker.table_name,
             batch_min_value: batch_min_value,
             batch_size: worker.batch_size,
-            job_class: worker.job_class
+            job_class: worker.job_class,
+            job_arguments: worker.job_arguments
           )
 
           return if next_batch_bounds.nil?

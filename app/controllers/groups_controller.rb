@@ -384,12 +384,12 @@ class GroupsController < Groups::ApplicationController
 
   def enqueue_async_transfer(parent_group)
     service = ::Groups::TransferService.new(@group, current_user)
+    result = service.schedule_async_transfer(parent_group)
 
-    if service.schedule_async_transfer(parent_group)
-      flash[:notice] = s_("TransferGroup|Group transfer has been queued. You will be notified when it completes.")
+    if result.success?
       redirect_to group_path(@group)
     else
-      flash[:alert] = service.error
+      flash[:alert] = result.message
       redirect_to edit_group_path(@group)
     end
   end

@@ -1,8 +1,0 @@
-query getUserPreferences {
-  currentUser {
-    id
-    userPreferences {
-      useWorkItemsView
-    }
-  }
-}

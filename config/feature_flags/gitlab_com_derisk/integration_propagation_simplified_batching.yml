@@ -1,0 +1,10 @@
+---
+name: integration_propagation_simplified_batching
+description: Pre-materialize namespace and group IDs into a Ruby array before batching integration propagation, avoiding nested loop joins that cause statement timeouts on large group hierarchies.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/591182
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234568
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/599108
+milestone: '19.0'
+group: group::import
+type: gitlab_com_derisk
+default_enabled: false

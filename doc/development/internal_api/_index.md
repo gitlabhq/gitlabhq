@@ -978,6 +978,12 @@ Example response:
 
 {{< /details >}}
 
+{{< history >}}
+
+- Deprovisioning a user [changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/521324) from synchronous to asynchronous in GitLab 19.0.
+
+{{< /history >}}
+
 The group SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/groups/:group_path/Users` and `/groups/:group_path/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
 system use for SCIM provider integration, it is subject to change without notice.
 
@@ -992,6 +998,9 @@ This group SCIM API:
 - Creates, deletes and updates SCIM provisioned users for the group.
 
 The [instance SCIM API](#instance-scim-api) does the same for instances.
+
+> [!note]
+> User deprovisioning is processed asynchronously. After receiving a successful response from GitLab, it may take up to several minutes for the user to be fully removed from all groups and projects.
 
 This group SCIM API is different to the [SCIM API](../../api/scim.md). The SCIM API:
 

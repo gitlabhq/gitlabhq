@@ -23,14 +23,12 @@ export default {
 </script>
 
 <template>
-  <div class="btn-group" role="group">
-    <gl-button
-      v-gl-tooltip
-      :href="url"
-      :title="$options.i18n.buttonLabel"
-      :aria-label="$options.i18n.buttonLabel"
-      class="new-issue-for-discussion discussion-create-issue-btn gl-w-full @sm/panel:gl-w-auto"
-      icon="work-item-new"
-    />
-  </div>
+  <gl-button
+    v-gl-tooltip
+    :href="url"
+    :title="$options.i18n.buttonLabel"
+    :aria-label="$options.i18n.buttonLabel"
+    class="new-issue-for-discussion discussion-create-issue-btn gl-w-full @sm/panel:gl-w-auto"
+    icon="work-item-new"
+  />
 </template>

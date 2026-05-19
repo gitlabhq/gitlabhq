@@ -312,6 +312,30 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
       expect(subject.find_sessionless_user(:api)).to be_blank
     end
 
+    context 'with :editor_extension format' do
+      let_it_be(:pat_user) { create(:user) }
+      let_it_be(:personal_access_token) { create(:personal_access_token, user: pat_user) }
+
+      let_it_be(:oauth_user) { create(:user) }
+      let_it_be(:oauth_access_token) { create(:oauth_access_token, resource_owner: oauth_user) }
+
+      it 'returns user from a personal access token' do
+        env['HTTP_PRIVATE_TOKEN'] = personal_access_token.token
+
+        expect(subject.find_sessionless_user(:editor_extension)).to eq pat_user
+      end
+
+      it 'returns user from an OAuth token' do
+        env['HTTP_AUTHORIZATION'] = "Bearer #{oauth_access_token.plaintext_token}"
+
+        expect(subject.find_sessionless_user(:editor_extension)).to eq oauth_user
+      end
+
+      it 'returns nil if no access token provided' do
+        expect(subject.find_sessionless_user(:editor_extension)).to be_nil
+      end
+    end
+
     context 'dependency proxy' do
       let_it_be(:dependency_proxy_user) { create(:user) }
 
@@ -431,13 +455,13 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
     let_it_be(:job) { build(:ci_build, user: user, status: :running) }
 
     before do
-      env[Gitlab::Auth::AuthFinders::JOB_TOKEN_HEADER] = 'token'
+      env[Gitlab::Auth::AuthFinders::JOB_TOKEN_HEADER] = 'glcbt-token_value'
     end
 
     context 'with API requests' do
       before do
         env['SCRIPT_NAME'] = '/api/endpoint'
-        expect(::Ci::Build).to receive(:find_by_token).with('token').and_return(job)
+        expect(::Ci::Build).to receive(:find_by_token).with('glcbt-token_value').and_return(job)
       end
 
       it 'tries to find the user' do

@@ -1,0 +1,10 @@
+---
+name: auto_enable_restricted_access_on_self_managed
+description: Automatically enable restricted access (block overages) on self-managed instances when updating license dependencies
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/580284
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229921
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596876
+milestone: '19.0'
+type: wip
+group: group::seat management
+default_enabled: false

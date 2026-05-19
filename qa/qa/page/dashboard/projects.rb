@@ -9,7 +9,7 @@ module QA
           element 'user-access-role'
         end
 
-        view 'app/views/dashboard/_projects_head.html.haml' do
+        view 'app/assets/javascripts/projects/your_work/components/app.vue' do
           element 'new-project-button'
         end
 

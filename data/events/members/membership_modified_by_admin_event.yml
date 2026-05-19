@@ -1,0 +1,7 @@
+---
+event: Members::MembershipModifiedByAdminEvent
+description: Published when an admin creates or promotes a member to a billable role
+  while member-promotion-management is enabled, so pending approval workflows can
+  be processed.
+feature_category: seat_cost_management
+ee_only: true

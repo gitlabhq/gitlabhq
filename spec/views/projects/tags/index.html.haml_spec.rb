@@ -96,7 +96,8 @@ RSpec.describe 'projects/tags/index.html.haml', feature_category: :source_code_m
 
   context 'when Gitaly is unavailable' do
     it 'renders an error' do
-      assign(:tags_loading_error, GRPC::Unavailable.new)
+      assign(:gitaly_unavailable, true)
+      assign(:tags, nil)
 
       content = render
 

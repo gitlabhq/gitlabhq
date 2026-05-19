@@ -1,0 +1,20 @@
+# @feature_category: team_planning
+mutation workItemUpdateCurrentUserTodos($input: WorkItemUpdateInput!) {
+  workItemUpdate(input: $input) {
+    workItem {
+      id
+      widgets {
+        ... on WorkItemWidgetCurrentUserTodos {
+          type
+          currentUserTodos {
+            nodes {
+              id
+              state
+            }
+          }
+        }
+      }
+    }
+    errors
+  }
+}

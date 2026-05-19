@@ -9,6 +9,7 @@ module Mutations
           'To use this mutation, you must have at least the Maintainer role.'
 
         authorize :admin_project_member
+        authorize_granular_token permissions: :update_member, boundary_argument: :project_id, boundary_type: :project
 
         field :project_members,
           [Types::ProjectMemberType],

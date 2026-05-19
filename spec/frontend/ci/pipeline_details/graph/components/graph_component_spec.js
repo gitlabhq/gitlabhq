@@ -98,21 +98,21 @@ describe('graph component', () => {
 
     describe('when column requests a refresh', () => {
       beforeEach(() => {
-        findStageColumns().at(0).vm.$emit('refreshPipelineGraph');
+        findStageColumns().at(0).vm.$emit('refresh-pipeline-graph');
       });
 
-      it('refreshPipelineGraph is emitted', () => {
-        expect(wrapper.emitted().refreshPipelineGraph).toHaveLength(1);
+      it('refresh-pipeline-graph is emitted', () => {
+        expect(wrapper.emitted()['refresh-pipeline-graph']).toHaveLength(1);
       });
     });
 
     describe('when column request an update to the retry confirmation modal', () => {
       beforeEach(() => {
-        findStageColumns().at(0).vm.$emit('setSkipRetryModal');
+        findStageColumns().at(0).vm.$emit('set-skip-retry-modal');
       });
 
-      it('setSkipRetryModal is emitted', () => {
-        expect(wrapper.emitted().setSkipRetryModal).toHaveLength(1);
+      it('set-skip-retry-modal is emitted', () => {
+        expect(wrapper.emitted()['set-skip-retry-modal']).toHaveLength(1);
       });
     });
 
@@ -123,11 +123,11 @@ describe('graph component', () => {
           stubOverride: { 'job-item': false },
           data: { hoveredJobName: 'test_a' },
         });
-        findLinksLayer().vm.$emit('highlightedJobsChange', ['test_c', 'build_c']);
+        findLinksLayer().vm.$emit('highlighted-jobs-change', ['test_c', 'build_c']);
       });
 
       it('dims unrelated jobs', () => {
-        expect(findLinksLayer().emitted().highlightedJobsChange).toHaveLength(1);
+        expect(findLinksLayer().emitted()['highlighted-jobs-change']).toHaveLength(1);
         expect(findJobItem().classes('gl-opacity-3')).toBe(true);
       });
     });

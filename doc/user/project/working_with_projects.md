@@ -84,16 +84,19 @@ Use the **Projects** list to view:
 
 ### Explore all projects on an instance
 
+{{< history >}}
+
+- Trending projects tab [removed](https://gitlab.com/groups/gitlab-org/-/work_items/18493) in GitLab 19.0. Feature flags `retire_trending_projects` enabled by default.
+
+{{< /history >}}
+
 View all projects on your GitLab instance. Filter the
-list by active,
-inactive, and trending projects:
+list by active and inactive projects:
 
 - Active projects are projects with recent activity
   or ongoing development.
 - Inactive projects are projects that are archived or
   scheduled for deletion.
-- Trending projects are public projects that are considered popular
-  based on the amount of comments they received in the previous 30 days.
 
 If you are not authenticated,
 the list shows public projects only.
@@ -182,7 +185,7 @@ To view only the projects you are the owner of:
 To view the activity of a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Manage** > **Activity**.
+1. In the left sidebar, select **Manage** > **Activity**.
 1. Optional. To filter activity by contribution type, select a tab:
 
    - **All**: All contributions by project members.
@@ -267,7 +270,7 @@ Prerequisites:
 - You must have the Maintainer or Owner role for the project.
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. In the **Project name** text box, enter your project name. See the [limitations on project names](../reserved_names.md).
 1. Optional. In the **Project description** text box, enter your project description. The description is limited to 2,000 characters.
    Components published in the CI/CD catalog require a project description.
@@ -289,7 +292,7 @@ Prerequisites:
 To rename a repository:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Change path** text box, edit the path.
 1. Select **Change path**.
@@ -335,7 +338,7 @@ Prerequisites:
 To upload an avatar in your project settings:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. In the **Project avatar** section, select **Choose file**.
 1. Select your avatar file.
 1. Select **Save changes**.
@@ -501,6 +504,7 @@ This action is also available on other list pages.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `transfer_project_with_tags`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7. Feature flag removed.
+- Asynchronous transfers for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594575) in GitLab 18.11 [with a flag](../../administration/feature_flags/_index.md) named `groups_and_projects_async_transfer`. Disabled by default.
 
 {{< /history >}}
 
@@ -516,9 +520,9 @@ You can transfer a project from:
 
 Prerequisites:
 
-- The Maintainer or Owner role for the target group.
+- The Maintainer or Owner role for the destination group.
 - The Owner role of the project you want to transfer.
-- Enable project creation for the target group.
+- Enable project creation for the destination group.
 
 > [!note]
 > You cannot transfer a project if it's archived or pending deletion.
@@ -526,14 +530,17 @@ Prerequisites:
 To transfer a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the namespace to transfer the project to.
 1. Select **Transfer project**.
 1. Enter the project's name and select **Confirm**.
 
-You are directed to the new project page and the previous
-URL is redirected to the new project URL.
+After you confirm the transfer:
+
+- The project is transferred asynchronously.
+- A confirmation email is sent after the transfer completes or fails.
+- The old project URL is redirected to the new project URL. Refresh the page to see the new project URL. For large projects, you must wait until the transfer completes before you can view the project under the destination namespace.
 
 After you transfer a project, make sure you:
 
@@ -560,9 +567,9 @@ A project transfer includes:
   - Pending membership invitations
 - Automated adjustments:
   - New project labels are created if matching group labels do not exist
-  - Epic copies are created in the target group if necessary, with separate copies per project
+  - Epic copies are created in the destination group if necessary, with separate copies per project
     - When you transfer multiple projects
-      with issues assigned to the same epic, separate copies of that epic are created in the target
+      with issues assigned to the same epic, separate copies of that epic are created in the destination
       group for each project.
 
 > [!warning]
@@ -576,8 +583,8 @@ following restrictions in mind.
 For projects with inherited memberships:
 
 - Members with [inherited membership](members/_index.md#membership-types)
-  in the project lose access unless they are also members of the target group.
-- The project inherits new member permissions from the target group.
+  in the project lose access unless they are also members of the destination group.
+- The project inherits new member permissions from the destination group.
 
 For projects where the container registry is enabled:
 
@@ -594,6 +601,13 @@ For projects that use the package registry:
 For projects with a security policy:
 
 - The project must not have a security policy. If a security policy is assigned to the project, it is automatically unassigned during the transfer.
+
+For projects with name or path conflicts:
+
+- A project cannot be transferred if the destination namespace already contains a project
+  or subgroup with the same name or path. This includes projects
+  [pending deletion](#delete-a-project). To resolve the conflict, rename or remove the
+  conflicting item in the destination namespace before you transfer the project.
 
 When you transfer a project:
 

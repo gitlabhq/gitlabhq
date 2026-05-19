@@ -232,6 +232,28 @@ describe('~/lib/dompurify', () => {
     });
   });
 
+  describe('title attributes containing HTML comment sequences', () => {
+    const getEl = (html) =>
+      document.createRange().createContextualFragment(sanitize(html)).firstElementChild;
+
+    it('preserves title attributes containing --> on anchor elements', () => {
+      const el = getEl(
+        `<a href="/foo" title="Issues with '-->' in title" class="gfm gfm-issue">link</a>`,
+      );
+      expect(el.getAttribute('title')).toBe("Issues with '-->' in title");
+    });
+
+    it('preserves title on non-anchor elements containing --> with a .gfm* class', () => {
+      const el = getEl(`<span class="gfm gfm-issue" title="value --> here">text</span>`);
+      expect(el.getAttribute('title')).toBe('value --> here');
+    });
+
+    it('sanitizes title containing --> on non-gfm elements', () => {
+      const el = getEl(`<span title="value --> here">text</span>`);
+      expect(el.getAttribute('title')).toBe(null);
+    });
+  });
+
   describe('gl-emoji tags', () => {
     it('does not remove the title, data-name, or data-unicode-version attributes', () => {
       const html = `<gl-emoji title="thumbs up" data-name="thumbsup" data-unicode-version="6.0">👍</gl-emoji>`;

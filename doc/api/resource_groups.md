@@ -32,7 +32,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/1/resource_groups"
 ```
 
-Example of response
+Example response
 
 ```json
 [

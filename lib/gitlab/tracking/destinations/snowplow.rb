@@ -6,6 +6,8 @@ module Gitlab
   module Tracking
     module Destinations
       class Snowplow
+        include Gitlab::Tracking::Helpers::SnowplowEventMetricLogger
+
         SNOWPLOW_NAMESPACE = 'gl'
         DEDICATED_APP_ID = 'gitlab_dedicated'
         SELF_MANAGED_APP_ID = 'gitlab_sm'
@@ -121,6 +123,10 @@ module Gitlab
 
           return SnowplowTracker::Emitter if Feature.enabled?(:snowplow_sync_emitter, Feature.current_request)
 
+          if Feature.enabled?(:snowplow_job_emitter, Feature.current_request)
+            return ::Gitlab::Tracking::SnowplowJobEmitter
+          end
+
           if Feature.enabled?(:snowplow_emitter_http_timeout, Feature.current_request)
             return ::Gitlab::Tracking::SnowplowTimeoutEmitter
           end
@@ -150,37 +156,11 @@ module Gitlab
           options.merge(logger: Gitlab::AppLogger)
         end
 
-        def failure_callback(success_count, failures)
-          increment_successful_events_emissions(success_count)
-          increment_failed_events_emissions(failures.size)
-          log_failures(failures)
-        end
-
-        def increment_failed_events_emissions(value)
-          Gitlab::Metrics.counter(
-            :gitlab_snowplow_failed_events_total,
-            'Number of failed Snowplow events emissions'
-          ).increment({}, value.to_i)
-        end
-
-        def increment_successful_events_emissions(value)
-          Gitlab::Metrics.counter(
-            :gitlab_snowplow_successful_events_total,
-            'Number of successful Snowplow events emissions'
-          ).increment({}, value.to_i)
-        end
-
         def increment_total_events_counter
           Gitlab::Metrics.counter(
             :gitlab_snowplow_events_total,
             'Number of Snowplow events'
           ).increment
-        end
-
-        def log_failures(failures)
-          failures.each do |failure|
-            Gitlab::AppLogger.error("#{failure['se_ca']} #{failure['se_ac']} failed to be reported to collector at #{hostname}")
-          end
         end
       end
     end

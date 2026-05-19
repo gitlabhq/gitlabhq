@@ -1,5 +1,10 @@
-query SnippetBlobContent($ids: [SnippetID!], $rich: Boolean!, $paths: [String!]) {
-  snippets(ids: $ids) {
+query SnippetBlobContent(
+  $ids: [SnippetID!]
+  $rich: Boolean!
+  $paths: [String!]
+  $projectId: ProjectID
+) {
+  snippets(ids: $ids, projectId: $projectId) {
     __typename
     nodes {
       __typename

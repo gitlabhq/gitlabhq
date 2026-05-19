@@ -2,13 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin impersonates user', feature_category: :user_management do
+RSpec.describe 'Admin impersonates user', :enable_admin_mode, feature_category: :user_management do
   let_it_be(:user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
   let_it_be(:current_user) { create(:admin) }
 
   before do
     sign_in(current_user)
-    enable_admin_mode!(current_user, use_ui: true)
   end
 
   describe 'GET /admin/users/:id' do
@@ -192,11 +191,10 @@ RSpec.describe 'Admin impersonates user', feature_category: :user_management do
         end
 
         context 'a user with an expired password' do
-          before do
-            another_user.update!(password_expires_at: Time.zone.now - 5.minutes)
-          end
-
           it 'is redirected back to the impersonated users page in the admin after stopping' do
+            expect(page).to have_content "You are now impersonating #{another_user.username}"
+            another_user.update!(password_expires_at: Time.zone.now - 5.minutes)
+
             subject
 
             expect(page).to have_current_path("/admin/users/#{another_user.username}", ignore_query: true)

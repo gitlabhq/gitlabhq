@@ -114,65 +114,49 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
     describe '.with_container' do
       subject { described_class.with_container(container2) }
 
-      it do
-        expect(subject.to_a).to contain_exactly(component_file_other_container)
-      end
+      it { expect(subject.to_a).to contain_exactly(component_file_other_container) }
     end
 
     describe '.with_codename_or_suite' do
       subject { described_class.with_codename_or_suite(distribution2.codename) }
 
-      it do
-        expect(subject.to_a).to contain_exactly(component_file_other_container)
-      end
+      it { expect(subject.to_a).to contain_exactly(component_file_other_container) }
     end
 
     describe '.with_component_name' do
       subject { described_class.with_component_name(component1_2.name) }
 
-      it do
-        expect(subject.to_a).to contain_exactly(component_file_other_component)
-      end
+      it { expect(subject.to_a).to contain_exactly(component_file_other_component) }
     end
 
     describe '.with_file_type' do
       subject { described_class.with_file_type(:sources) }
 
-      it do
-        expect(subject.to_a).to contain_exactly(component_file_with_file_type_sources)
-      end
+      it { expect(subject.to_a).to contain_exactly(component_file_with_file_type_sources) }
     end
 
     describe '.with_architecture' do
       subject { described_class.with_architecture(architecture1_2) }
 
-      it do
-        expect(subject.to_a).to contain_exactly(component_file_other_architecture)
-      end
+      it { expect(subject.to_a).to contain_exactly(component_file_other_architecture) }
     end
 
     describe '.with_architecture_name' do
       subject { described_class.with_architecture_name(architecture1_2.name) }
 
-      it do
-        expect(subject.to_a).to contain_exactly(component_file_other_architecture)
-      end
+      it { expect(subject.to_a).to contain_exactly(component_file_other_architecture) }
     end
 
     describe '.with_compression_type' do
       subject { described_class.with_compression_type(:xz) }
 
-      it do
-        expect(subject.to_a).to contain_exactly(component_file_other_compression_type)
-      end
+      it { expect(subject.to_a).to contain_exactly(component_file_other_compression_type) }
     end
 
     describe '.with_file_sha256' do
       subject { described_class.with_file_sha256('other_sha256') }
 
-      it do
-        expect(subject.to_a).to contain_exactly(component_file_other_file_sha256)
-      end
+      it { expect(subject.to_a).to contain_exactly(component_file_other_file_sha256) }
     end
 
     describe '.updated_before' do
@@ -182,7 +166,7 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
 
       subject { described_class.updated_before(2.hours.ago) }
 
-      it do
+      it 'returns only files updated before the given time' do
         expect(subject.to_a).to contain_exactly(component_file1, component_file2)
       end
     end

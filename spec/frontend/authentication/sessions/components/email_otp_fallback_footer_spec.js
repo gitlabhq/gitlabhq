@@ -100,8 +100,11 @@ describe('EmailOtpFallbackFooter', () => {
       createComponent();
     });
 
-    it('emits success event when email OTP request succeeds', async () => {
-      axios.post = jest.fn().mockResolvedValue({ data: { success: true } });
+    it('emits success event with show_resend_after when email OTP request succeeds', async () => {
+      const showResendAfter = Date.now() + 60_000;
+      axios.post = jest
+        .fn()
+        .mockResolvedValue({ data: { success: true, show_resend_after: showResendAfter } });
       const button = findEmailOtpButton();
 
       await button.trigger('click');
@@ -111,6 +114,16 @@ describe('EmailOtpFallbackFooter', () => {
         user: { login: 'testuser' },
       });
       expect(wrapper.emitted('success')).toHaveLength(1);
+      expect(wrapper.emitted('success')[0][0]).toBe(showResendAfter);
+    });
+
+    it('emits success with null when show_resend_after is absent from response', async () => {
+      axios.post = jest.fn().mockResolvedValue({ data: { success: true } });
+
+      await findEmailOtpButton().trigger('click');
+      await waitForPromises();
+
+      expect(wrapper.emitted('success')[0][0]).toBeNull();
     });
 
     it('hides 2FA form on success', async () => {

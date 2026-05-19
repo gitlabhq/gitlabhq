@@ -7,7 +7,7 @@ module Authn
         super + [token_field_name]
       end
 
-      def find_token_authenticatable(token, unscoped = false)
+      def find_token_authenticatable(token, unscoped = false, uniqueness_check: false) # rubocop:disable Lint/UnusedMethodArgument -- match Base's signature
         return unless token
 
         relation(unscoped).find_by(token_field_name => encode(token)) # rubocop:disable CodeReuse/ActiveRecord: -- This is meant to be used in AR models.

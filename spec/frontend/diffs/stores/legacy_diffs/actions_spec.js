@@ -574,6 +574,37 @@ describe('legacyDiffs actions', () => {
         [],
       );
     });
+
+    it('resolves Rapid Diffs line hash during batch loading', async () => {
+      const diffFile = getDiffFileMock();
+      const shortHash = diffFile.file_hash.substring(0, 9);
+      const expectedLineCode = `${diffFile.file_hash}_1_1`;
+      window.location.hash = `#line_${shortHash}_A1`;
+      const endpointBatch = '/fetch/diffs_batch';
+
+      store.$patch({
+        endpointBatch,
+        diffViewType: 'inline',
+        diffFiles: [],
+        perPage: 5,
+        showWhitespace: false,
+      });
+
+      mock.onGet(new RegExp(endpointBatch)).reply(HTTP_STATUS_OK, {
+        diff_files: [diffFile],
+        pagination: { total_pages: null },
+      });
+
+      jest.spyOn(window.history, 'replaceState');
+
+      await store.fetchDiffFilesBatch();
+
+      expect(window.history.replaceState).toHaveBeenCalledWith(null, null, `#${expectedLineCode}`);
+      expect(store[types.SET_HIGHLIGHTED_ROW]).toHaveBeenCalledWith(expectedLineCode);
+      expect(store[types.SET_CURRENT_DIFF_FILE]).toHaveBeenCalledWith(diffFile.file_hash);
+
+      window.location.hash = '';
+    });
   });
 
   describe('fetchDiffFilesMeta', () => {
@@ -702,20 +733,11 @@ describe('legacyDiffs actions', () => {
   describe('prefetchFileNeighbors', () => {
     it('dispatches two requests to prefetch the next/previous files', () => {
       store.prefetchSingleFile.mockReturnValue({});
-      useFileBrowser().treeEntries = {
-        abc: {
-          type: 'blob',
-          fileHash: 'abc',
-        },
-        ghi: {
-          type: 'blob',
-          fileHash: 'ghi',
-        },
-        def: {
-          type: 'blob',
-          fileHash: 'def',
-        },
-      };
+      useFileBrowser().tree = [
+        { type: 'blob', fileHash: 'abc' },
+        { type: 'blob', fileHash: 'ghi' },
+        { type: 'blob', fileHash: 'def' },
+      ];
       return testAction(
         store.prefetchFileNeighbors,
         {},
@@ -786,6 +808,21 @@ describe('legacyDiffs actions', () => {
         { type: store[types.SET_CURRENT_DIFF_FILE], payload: 'ABC' },
       ]);
       expect(window.location.href).toBe(`${TEST_HOST}/diffs#abc_11`);
+    });
+
+    it('resolves Rapid Diffs line hash to full file hash', () => {
+      const fullHash = '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a';
+      const shortHash = fullHash.substring(0, 9);
+      const lineCode = `line_${shortHash}_A42`;
+      return testAction(
+        store.setHighlightedRow,
+        { lineCode },
+        { diffFiles: [{ file_hash: fullHash, highlighted_diff_lines: [] }] },
+        [
+          { type: store[types.SET_HIGHLIGHTED_ROW], payload: lineCode },
+          { type: store[types.SET_CURRENT_DIFF_FILE], payload: fullHash },
+        ],
+      );
     });
   });
 
@@ -2410,6 +2447,21 @@ describe('legacyDiffs actions', () => {
         oldLine: 10,
         newLine: 10,
       });
+    });
+
+    it('resolves Rapid Diffs line hash to legacy line code', async () => {
+      const linkedFile = getDiffFileMock();
+      const shortHash = linkedFile.file_hash.substring(0, 9);
+      const expectedLineCode = `${linkedFile.file_hash}_1_1`;
+      window.location.hash = `#line_${shortHash}_A1`;
+      const linkedFileHref = `${TEST_HOST}/linked-file`;
+      mock.onGet(new RegExp(linkedFileHref)).reply(HTTP_STATUS_OK, { diff_files: [linkedFile] });
+      jest.spyOn(window.history, 'replaceState');
+
+      await store.fetchLinkedFile(linkedFileHref);
+
+      expect(window.history.replaceState).toHaveBeenCalledWith(null, null, `#${expectedLineCode}`);
+      expect(store[types.SET_HIGHLIGHTED_ROW]).toHaveBeenCalledWith(expectedLineCode);
     });
   });
 

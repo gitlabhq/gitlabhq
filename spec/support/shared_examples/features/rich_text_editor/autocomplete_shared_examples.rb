@@ -35,8 +35,6 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
       switch_to_content_editor
 
       type_in_content_editor :enter
-
-      stub_feature_flags(disable_all_mention: false)
     end
 
     if params[:with_expanded_references]
@@ -131,8 +129,6 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
       type_in_content_editor '@a'
 
       expect(find(suggestions_dropdown)).to have_text('abc123')
-      expect(find(suggestions_dropdown)).to have_text('all')
-      expect(find(suggestions_dropdown)).to have_text('Group Members')
 
       type_in_content_editor 'bc'
 
@@ -221,25 +217,19 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
       expect(page).not_to have_selector('p', text: '@abfoobar')
     end
 
-    context 'when `disable_all_mention` is enabled' do
-      before do
-        stub_feature_flags(disable_all_mention: true)
-      end
+    it 'shows suggestions for members with descriptions',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
+      type_in_content_editor '@a'
 
-      it 'shows suggestions for members with descriptions',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
-        type_in_content_editor '@a'
+      expect(find(suggestions_dropdown)).to have_text('abc123')
+      expect(find(suggestions_dropdown)).not_to have_text('All Group Members')
 
-        expect(find(suggestions_dropdown)).to have_text('abc123')
-        expect(find(suggestions_dropdown)).not_to have_text('All Group Members')
+      send_keys :backspace, :backspace
+      send_keys '@abc'
+      send_keys :enter
 
-        send_keys :backspace, :backspace
-        send_keys '@abc'
-        send_keys :enter
-
-        expect(page).not_to have_css(suggestions_dropdown)
-        expect(page).to have_text('@abc123')
-      end
+      expect(page).not_to have_css(suggestions_dropdown)
+      expect(page).to have_text('@abc123')
     end
 
     it 'shows suggestions for merge requests' do

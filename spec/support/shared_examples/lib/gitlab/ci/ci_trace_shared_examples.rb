@@ -153,7 +153,7 @@ RSpec.shared_examples 'common trace features' do
   end
 
   describe '#write' do
-    subject { trace.send(:write, mode) {} }
+    subject { trace.send(:write, mode) { nil } }
 
     let(:mode) { 'wb' }
 

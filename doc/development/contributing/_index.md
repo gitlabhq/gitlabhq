@@ -112,7 +112,7 @@ For example, if you have written some frontend code, you should mention the fron
 If your code has multiple disciplines, you can mention multiple merge request coaches.
 
 For details about timelines and how you can request help or escalate a merge request,
-see the [Wider Community Merge Request guide](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/merge-request-triage/).
+see the [Wider Community Merge Request guide](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/merge-request-triage/).
 
 After your merge request is reviewed and merged, your changes will be deployed to GitLab.com and included in the next release!
 

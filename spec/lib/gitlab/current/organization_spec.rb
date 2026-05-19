@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
   let_it_be(:user_organization) { create(:organization) }
   let_it_be(:session_organization) { create(:organization) }
   let_it_be(:header_organization) { create(:organization) }
-  let_it_be(:default_organization) { create(:organization, :default) }
+  let_it_be(:default_organization) { create(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required for testing fallback behavior
 
   let_it_be(:group) { create(:group, organization: organization) }
   let_it_be(:user) { create(:user, organization: user_organization, organizations: [default_organization]) }
@@ -89,6 +89,46 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
     end
 
     context 'for query optimization' do
+      context 'when resolving from group params' do
+        let(:params) { params_with_namespace_id }
+        let(:rack_env) { nil }
+        let(:user_param) { nil }
+
+        it 'uses only 1 query' do
+          expect { current_organization.organization }.to match_query_count(1)
+        end
+      end
+
+      context 'when resolving from organization params' do
+        let(:params) { params_with_org_path }
+        let(:rack_env) { nil }
+        let(:user_param) { nil }
+
+        it 'uses only 1 query' do
+          expect { current_organization.organization }.to match_query_count(1)
+        end
+      end
+
+      context 'when resolving from headers' do
+        let(:params) { empty_params }
+        let(:rack_env) { rack_env_with_valid_org }
+        let(:user_param) { nil }
+
+        it 'uses only 1 query' do
+          expect { current_organization.organization }.to match_query_count(1)
+        end
+      end
+
+      context 'when resolving from user' do
+        let(:params) { empty_params }
+        let(:rack_env) { empty_rack_env }
+        let!(:user_param) { User.find(user.id) }
+
+        it 'uses only 1 query' do
+          expect { current_organization.organization }.to match_query_count(1)
+        end
+      end
+
       it 'only executes fallback query when namespace_id is empty' do
         expect { described_class.new(params: params_with_empty_namespace).organization }
           .to match_query_count(1) # Only the fallback query

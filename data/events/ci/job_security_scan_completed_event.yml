@@ -1,0 +1,6 @@
+---
+event: Ci::JobSecurityScanCompletedEvent
+description: Published when a CI build that runs a security scan reaches a completed
+  status, signalling that its security artifacts are ready to be ingested.
+feature_category: vulnerability_management
+ee_only: true

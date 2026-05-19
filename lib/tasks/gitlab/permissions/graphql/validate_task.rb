@@ -112,7 +112,7 @@ module Tasks
           end
 
           def valid_permissions
-            @valid_permissions ||= Authz::PermissionGroups::Assignable.all_permissions.to_set
+            @valid_permissions ||= Authz::PermissionGroups::Assignable.available_permissions.to_set
           end
 
           def validate_permission_exists(item, permission)
@@ -124,7 +124,7 @@ module Tasks
           def validate_boundary_type(item, permission, boundary_type)
             return unless boundary_type
 
-            assignables = Authz::PermissionGroups::Assignable.for_permission(permission)
+            assignables = Authz::PermissionGroups::Assignable.available_for_permission(permission)
             return if assignables.empty?
 
             assignable_boundaries = assignables.flat_map(&:boundaries).uniq.map(&:to_sym)

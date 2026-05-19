@@ -6,6 +6,7 @@ module Types
       graphql_name 'Kas'
 
       authorize :read_instance_metadata
+      authorize_granular_token permissions: :read_metadata, boundary: :instance, boundary_type: :instance
 
       field :enabled, GraphQL::Types::Boolean, null: false,
         description: 'Indicates whether GitLab Relay (KAS) is enabled.'

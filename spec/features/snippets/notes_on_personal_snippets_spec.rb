@@ -60,8 +60,6 @@ RSpec.describe 'Comments on personal snippets', :js, feature_category: :source_c
     end
 
     it 'shows the author name' do
-      visit snippet_path(snippet)
-
       within("#note_#{snippet_notes[0].id}") do
         expect(page).to have_content(user_name)
       end
@@ -70,7 +68,7 @@ RSpec.describe 'Comments on personal snippets', :js, feature_category: :source_c
 
   context 'when submitting a note' do
     it 'shows a valid form' do
-      is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
+      is_expected.to have_css('.js-main-target-form', visible: :visible, count: 1)
       expect(find('.js-main-target-form .js-comment-button button', match: :first))
         .to have_content('Comment')
 

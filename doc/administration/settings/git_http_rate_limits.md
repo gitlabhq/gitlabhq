@@ -9,7 +9,7 @@ title: Rate limits on Git HTTP
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -38,7 +38,7 @@ To apply rate limits to Git HTTP requests that do not contain authentication
 parameters, enable and configure these limits:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Git HTTP rate limits**.
 1. Select **Enable unauthenticated Git HTTP request rate limit**.
 1. Enter a value for **Max unauthenticated Git HTTP requests per period per user**.
@@ -61,7 +61,7 @@ To apply rate limits to Git HTTP requests that contain authentication
 parameters, enable and configure these limits:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Git HTTP rate limits**.
 1. Select **Enable authenticated Git HTTP request rate limit**.
 1. Enter a value for **Max authenticated Git HTTP requests per period per user**.
@@ -70,6 +70,14 @@ parameters, enable and configure these limits:
 
 If required, you can
 [allow specific users to bypass authenticated request rate limiting](user_and_ip_rate_limits.md#allow-specific-users-to-bypass-authenticated-request-rate-limiting).
+
+## On GitLab.com
+
+On GitLab.com, Git HTTP requests are subject to
+[Git HTTPS request rate limits](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom):
+
+- 10,000 requests each minute for an authenticated user.
+- 15,000 requests each minute from an unauthenticated IP address.
 
 ## Related topics
 

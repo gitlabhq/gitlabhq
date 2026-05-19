@@ -57,7 +57,7 @@ RSpec.describe JiraConnect::SyncMergeRequestWorker, feature_category: :integrati
     context 'when source branch cannot be found' do
       before do
         allow_next_found_instance_of(MergeRequest) do |mr|
-          allow(mr).to receive(:source_branch).and_return('non-existant-branch')
+          allow(mr).to receive(:source_branch).and_return('non-existent-branch')
         end
       end
 

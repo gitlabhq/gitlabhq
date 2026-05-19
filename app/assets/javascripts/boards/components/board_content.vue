@@ -5,7 +5,7 @@ import produce from 'immer';
 import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
-import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
+import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 import { s__ } from '~/locale';
 import { removeParams, updateHistory } from '~/lib/utils/url_utility';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
@@ -36,7 +36,7 @@ export default {
     BoardDrawerWrapper,
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
-    WorkItemDrawer,
+    WorkItemDetailPanel,
   },
   inject: [
     'boardType',
@@ -84,7 +84,7 @@ export default {
     return {
       highlightedLists: [],
       columnsThatCannotFindActiveItem: 0,
-      draggedType: null,
+      draggedItemId: null,
     };
   },
   computed: {
@@ -261,11 +261,11 @@ export default {
         });
       }
     },
-    handleDragStart({ itemType }) {
-      this.draggedType = itemType;
+    handleDragStart({ itemId }) {
+      this.draggedItemId = itemId;
     },
     handleDragStop() {
-      this.draggedType = null;
+      this.draggedItemId = null;
     },
   },
 };
@@ -278,7 +278,7 @@ export default {
     </gl-alert>
     <div
       v-if="!isSwimlanesOn"
-      class="boards-list gl-w-full gl-overflow-x-auto gl-whitespace-nowrap gl-py-5 gl-pl-0 gl-pr-5 @xl/panel:gl-pl-3 @xl/panel:gl-pr-6"
+      class="boards-list gl-m-0 gl-mb-3 gl-flex gl-min-h-0 gl-w-full gl-overflow-x-auto gl-overflow-y-hidden gl-whitespace-nowrap gl-rounded-b-lg gl-p-0"
     >
       <component
         :is="boardColumnWrapper"
@@ -302,7 +302,7 @@ export default {
           :list-query-variables="listQueryVariables"
           :lists="boardListsById"
           :can-admin-list="canAdminList"
-          :dragged-type="draggedType"
+          :dragged-item-id="draggedItemId"
           @dragStart="handleDragStart"
           @dragStop="handleDragStop"
           @highlight-list="highlightList"
@@ -374,7 +374,7 @@ export default {
           onStateUpdated,
         }"
       >
-        <work-item-drawer
+        <work-item-detail-panel
           :open="Boolean(activeIssuable && activeIssuable.iid)"
           :active-item="activeIssuable"
           :issuable-type="issuableType"

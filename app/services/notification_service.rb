@@ -800,8 +800,8 @@ class NotificationService
     end
   end
 
-  def new_achievement_email(user, achievement)
-    mailer.new_achievement_email(user, achievement)
+  def new_achievement_email(user, achievement, user_achievement)
+    mailer.new_achievement_email(user, achievement, user_achievement)
   end
 
   def project_scheduled_for_deletion(project)
@@ -977,7 +977,7 @@ class NotificationService
     recipients = ::NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: 'approve')
 
     recipients.each do |recipient|
-      mailer.approved_merge_request_email(recipient.user.id, merge_request.id, current_user.id).deliver_later
+      mailer.approved_merge_request_email(recipient.user.id, merge_request.id, current_user.id, recipient.reason).deliver_later
     end
   end
 
@@ -985,7 +985,7 @@ class NotificationService
     recipients = ::NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: 'unapprove')
 
     recipients.each do |recipient|
-      mailer.unapproved_merge_request_email(recipient.user.id, merge_request.id, current_user.id).deliver_later
+      mailer.unapproved_merge_request_email(recipient.user.id, merge_request.id, current_user.id, recipient.reason).deliver_later
     end
   end
 

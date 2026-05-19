@@ -302,7 +302,7 @@ RSpec.describe FileUploader do
     end
 
     describe '#cache!' do
-      it 'file is stored remotely in permament location with sanitized name' do
+      it 'file is stored remotely in permanent location with sanitized name' do
         expect(uploader).to be_exists
         expect(uploader).not_to be_cached
         expect(uploader).not_to be_file_storage

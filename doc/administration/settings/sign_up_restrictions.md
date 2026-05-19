@@ -34,7 +34,7 @@ prevented by default when your instance is provisioned.
 To prevent new account creation:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **New user account restrictions**.
 1. Clear the **Allow new user accounts** checkbox, then select **Save changes**.
 
@@ -54,7 +54,7 @@ administrator before they can start using their account. It is only applicable i
 To require administrator approval for new user accounts:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **New user account restrictions**.
 1. Select the **Require admin approval for new user accounts** checkbox, then select **Save changes**.
 
@@ -82,7 +82,7 @@ their email address before they are allowed to sign in.
 To enforce confirmation of the email address used for new accounts:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **New user account restrictions**.
 1. Under **Email confirmation settings**, select **Hard**.
 
@@ -172,6 +172,18 @@ Additionally, restricted access might block the standard non-overage flows:
 - Service bots that are updated or added to a billable role are incorrectly blocked.
 - Inviting or updating existing billable users through email is blocked unexpectedly.
 
+### Dormant user reactivation
+
+When restricted access is active and no licensed seats are available,
+[dormant users](../moderate_users.md#automatically-deactivate-dormant-users) who
+attempt to sign back in are set to
+[pending approval](../moderate_users.md#users-pending-approval) instead of
+being reactivated. Their existing group and project memberships are preserved.
+An administrator can approve the users when seats become available.
+
+Users with only the [Minimal Access](../../user/permissions.md#users-with-minimal-access)
+role are reactivated directly, because they do not consume a billable seat.
+
 ## User cap
 
 {{< details >}}
@@ -209,7 +221,7 @@ Prerequisites:
 To set a user cap:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **New user account restrictions**.
 1. In the **User cap** field, enter a number or leave blank for unlimited.
 1. Select **Save changes**.
@@ -228,7 +240,7 @@ Prerequisites:
 To remove the user cap:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **New user account restrictions**.
 1. Remove the number from **User cap**.
 1. Select **Save changes**.
@@ -252,7 +264,7 @@ Modified complexity requirements are enforced only in these situations:
 To modify password complexity requirements:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **New user account restrictions**.
 1. Modify the complexity requirements:
 
@@ -289,7 +301,7 @@ reduce the risk of malicious users creating spam accounts with disposable email 
 To create an email domain allowlist or denylist:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **New user account restrictions**.
 1. For the allowlist, you must enter the list manually. For the denylist, you can enter the list
    manually or upload a `.txt` file that contains list entries.
@@ -344,7 +356,7 @@ Prerequisites:
 To turn on approvals for role promotions:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **New user account restrictions**.
 1. In the **Seat control** section, select **Approve role promotions**.
 

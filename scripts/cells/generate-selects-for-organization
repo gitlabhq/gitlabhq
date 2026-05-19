@@ -150,7 +150,7 @@ module Cells
       raise "Failed to get table dependencies" unless status.success?
 
       dependencies = dependencies_str.split("\n").map { |line| line.split("\t") }
-      dependencies.group_by { |d| d[1] }.transform_values { |v| v.map { |d| d[2] } } # rubocop:disable Rails/Pluck -- not using Rails
+      dependencies.group_by { |d| d[1] }.transform_values { |v| v.map { |d| d[2] } }
     end
 
     def order_tables_by_dependencies(tables, dependencies)

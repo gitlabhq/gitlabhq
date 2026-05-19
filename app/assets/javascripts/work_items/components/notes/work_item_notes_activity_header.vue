@@ -12,6 +12,7 @@ import {
 } from '~/work_items/constants';
 
 export default {
+  name: 'WorkItemNotesActivityHeader',
   components: {
     DuoChatQuickAction: () => import('ee_component/ai/shared/widgets/duo_chat_quick_action.vue'),
     WorkItemActivitySortFilter,

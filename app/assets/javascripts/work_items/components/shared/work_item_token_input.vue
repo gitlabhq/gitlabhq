@@ -6,7 +6,6 @@ import { isNumeric } from '~/lib/utils/number_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isValidURL } from '~/lib/utils/url_utility';
 import { highlighter } from 'ee_else_ce/gfm_auto_complete';
 import workItemAncestorsQuery from '../../graphql/work_item_ancestors.query.graphql';
@@ -14,16 +13,16 @@ import workItemAncestorsQuery from '../../graphql/work_item_ancestors.query.grap
 import groupWorkItemsQuery from '../../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '../../graphql/work_items_by_references.query.graphql';
-import { I18N_WORK_ITEM_SEARCH_ERROR, NAME_TO_ENUM_MAP } from '../../constants';
+import { I18N_WORK_ITEM_SEARCH_ERROR } from '../../constants';
 import { formatAncestors, isReference } from '../../utils';
 
 export default {
+  name: 'WorkItemTokenInput',
   components: {
     GlTokenSelector,
     GlAlert,
   },
   directives: { SafeHtml },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     value: {
       type: Array,
@@ -59,6 +58,7 @@ export default {
       default: false,
     },
   },
+  emits: ['input', 'searching'],
   apollo: {
     namespaceWorkItems: {
       query() {
@@ -158,13 +158,7 @@ export default {
       const variables = {
         fullPath: this.fullPath,
         searchTerm: this.searchTerm,
-        ...(this.glFeatures.workItemConfigurableTypes
-          ? {
-              workItemTypeIds: this.childrenType.id ? [this.childrenType.id] : [],
-            }
-          : {
-              types: this.childrenType.name ? [NAME_TO_ENUM_MAP[this.childrenType.name]] : [],
-            }),
+        workItemTypeIds: this.childrenType.id ? [this.childrenType.id] : [],
         in: this.searchTerm ? 'TITLE' : undefined,
         iid: isNumeric(this.searchTerm) ? this.searchTerm : null,
         searchByIid: isNumeric(this.searchTerm),

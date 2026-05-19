@@ -249,6 +249,12 @@ describe('Blob controls component', () => {
 
       expect(trackEventSpy).toHaveBeenCalledWith('click_blame_control_on_blob_page', {}, undefined);
     });
+
+    it('does not render when the `inline_blame` feature flag is enabled', async () => {
+      await createComponent({ provide: { glFeatures: { inlineBlame: true } } });
+
+      expect(findBlameButton().exists()).toBe(false);
+    });
   });
 
   describe('WebIdeLink component', () => {

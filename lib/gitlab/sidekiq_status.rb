@@ -69,10 +69,11 @@ module Gitlab
       self.num_running(job_ids) == 0
     end
 
-    # Returns true if the given job is running or enqueued.
+    # Returns true if the given job is running, enqueued, or in the interval
+    # between retries or deferrals.
     #
     # job_id - The Sidekiq job ID to check.
-    def self.running?(job_id)
+    def self.running_or_enqueued?(job_id)
       num_running([job_id]) > 0
     end
 

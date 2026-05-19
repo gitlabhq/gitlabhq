@@ -5,4 +5,4 @@ feature_category: security_policy_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220876
 milestone: '18.10'
 queued_migration_version: 20260216140430
-finalized_by:
+finalized_by: '20260417235350'

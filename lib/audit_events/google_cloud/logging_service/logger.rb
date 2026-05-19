@@ -13,11 +13,7 @@ module AuditEvents
 
         def log(client_email, private_key, payload)
           access_token = @auth.generate_access_token(client_email, private_key)
-
-          return unless access_token
-
           headers = build_headers(access_token)
-
           post(WRITE_URL, body: payload, headers: headers)
         end
 
@@ -28,14 +24,7 @@ module AuditEvents
         end
 
         def post(url, body:, headers:)
-          Gitlab::HTTP.post(
-            url,
-            body: body,
-            headers: headers
-          )
-        rescue URI::InvalidURIError => e
-          Gitlab::ErrorTracking.log_exception(e)
-        rescue *Gitlab::HTTP::HTTP_ERRORS
+          Gitlab::HTTP.post(url, body: body, headers: headers)
         end
       end
     end

@@ -12,12 +12,13 @@ module ActiveContext
       end
 
       def preprocess(refs, **options)
-        result = { successful: [], failed: [] }
+        result = { successful: [], failed: [], retryable: [] }
 
         refs_by_class = refs.group_by(&:class)
 
         refs_by_class.each do |klass, class_refs|
           all_failed_refs = []
+          all_retryable_refs = []
           current_successful_refs = class_refs
 
           klass.preprocessors.each do |preprocessor|
@@ -26,11 +27,13 @@ module ActiveContext
             processed = preprocessor[:block].call(current_successful_refs, **options)
 
             all_failed_refs.concat(processed[:failed])
+            all_retryable_refs.concat(processed[:retryable]) if processed.key?(:retryable)
             current_successful_refs = processed[:successful]
           end
 
           result[:successful].concat(current_successful_refs)
           result[:failed].concat(all_failed_refs)
+          result[:retryable].concat(all_retryable_refs)
         end
 
         result
@@ -60,17 +63,21 @@ module ActiveContext
         { successful: successful_refs, failed: failed_refs }
       end
 
-      def with_batch_handling(refs, error_types: [StandardError])
-        return { successful: [], failed: [] } unless refs.any?
+      def with_batch_handling(refs, error_types: [StandardError], infinite_retry_error_types: [])
+        return { successful: [], failed: [], retryable: [] } unless refs.any?
 
         begin
           yield(refs)
 
-          { successful: refs, failed: [] }
+          { successful: refs, failed: [], retryable: [] }
+        rescue *infinite_retry_error_types => e
+          ::ActiveContext::Logger.retryable_exception(e, class: self.class.name, refs: refs.map(&:serialize))
+
+          { successful: [], failed: [], retryable: refs }
         rescue *error_types => e
           ::ActiveContext::Logger.retryable_exception(e, class: self.class.name, refs: refs.map(&:serialize))
 
-          { successful: [], failed: refs }
+          { successful: [], failed: refs, retryable: [] }
         end
       end
     end

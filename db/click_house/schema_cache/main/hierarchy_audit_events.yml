@@ -1,0 +1,62 @@
+---
+name: hierarchy_audit_events
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(version, deleted) PRIMARY KEY (traversal_path, id)
+  ORDER BY (traversal_path, id) SETTINGS index_granularity = 8192
+primary_key: traversal_path, id
+sorting_key: traversal_path, id
+settings:
+  index_granularity: '8192'
+columns:
+- name: traversal_path
+  type: String
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: id
+  type: Int64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: group_id
+  type: Int64
+- name: author_id
+  type: Int64
+- name: target_id
+  type: Int64
+- name: event_name
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: details
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: ip_address
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: author_name
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: entity_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: target_details
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: target_type
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: created_at
+  type: DateTime64(6, 'UTC')
+- name: version
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'

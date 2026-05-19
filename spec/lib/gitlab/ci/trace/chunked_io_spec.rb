@@ -117,7 +117,7 @@ RSpec.describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
           expect(instance).to receive(:current_chunk).once.and_call_original
         end
 
-        chunked_io.each_line { |line| }
+        chunked_io.each_line { |line| line }
       end
     end
 

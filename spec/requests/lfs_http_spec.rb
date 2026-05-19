@@ -468,7 +468,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
               it_behaves_like 'an authorized request', renew_authorization: false
             end
 
-            # TODO: We should fix this test case that causes flakyness by alternating the result of the above test cases.
+            # TODO: We should fix this test case that causes flakiness by alternating the result of the above test cases.
             context 'when Deploy Token is valid' do
               let(:deploy_token) { create(:deploy_token, projects: [project]) }
 
@@ -696,7 +696,15 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                 context 'tries to push to other project' do
                   let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
 
-                  it_behaves_like 'LFS http 404 response'
+                  context 'when the project is public' do
+                    it_behaves_like 'LFS http 403 response'
+                  end
+
+                  context 'when the project is private' do
+                    let_it_be(:project) { create(:project, :private) }
+
+                    it_behaves_like 'LFS http 404 response'
+                  end
                 end
               end
 
@@ -1288,7 +1296,15 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
               context 'tries to push to other project' do
                 let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
 
-                it_behaves_like 'LFS http 404 response'
+                context 'when the project is public' do
+                  it_behaves_like 'LFS http 403 response'
+                end
+
+                context 'when the project is private' do
+                  let_it_be(:project) { create(:project, :private) }
+
+                  it_behaves_like 'LFS http 404 response'
+                end
               end
             end
 

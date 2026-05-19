@@ -1,0 +1,7 @@
+---
+event: Ai::ActiveContext::Code::ProcessInvalidEnabledNamespaceEvent
+description: Published to remove Ai::ActiveContext::Code::EnabledNamespace records
+  that are no longer eligible (e.g. expired SaaS subscriptions or instances without
+  AI features). Re-emitted by the subscriber worker to continue batched processing.
+feature_category: global_search
+ee_only: true

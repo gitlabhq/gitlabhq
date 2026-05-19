@@ -7,7 +7,7 @@ FactoryBot.define do
     author { project.creator }
     updated_by { author }
     relative_position { RelativePositioning::START_POSITION }
-    association :work_item_type
+    association :work_item_type, factory: :work_item_system_defined_type
 
     trait :confidential do
       confidential { true }
@@ -43,45 +43,47 @@ FactoryBot.define do
       association :author, factory: :user
     end
 
-    trait :issue do
-      association :work_item_type, :issue
-    end
-
-    trait :task do
-      association :work_item_type, :task
-    end
-
-    trait :incident do
-      association :work_item_type, :incident
-    end
-
-    trait :requirement do
-      association :work_item_type, :requirement
-    end
-
-    trait :test_case do
-      association :work_item_type, :test_case
-    end
-
     trait :last_edited_by_user do
       association :last_edited_by, factory: :user
     end
 
-    trait :objective do
-      association :work_item_type, :objective
+    trait :issue do
+      association :work_item_type, :issue, factory: :work_item_system_defined_type
     end
 
-    trait :key_result do
-      association :work_item_type, :key_result
+    trait :task do
+      association :work_item_type, :task, factory: :work_item_system_defined_type
     end
 
-    trait :epic do
-      association :work_item_type, :epic
+    trait :incident do
+      association :work_item_type, :incident, factory: :work_item_system_defined_type
     end
 
     trait :ticket do
-      association :work_item_type, :ticket
+      association :work_item_type, :ticket, factory: :work_item_system_defined_type
     end
+
+    # rubocop:disable Gitlab/AvoidDirectWorkItemTypeUsage -- Necessary to mock EE types
+    trait :requirement do
+      work_item_type { WorkItems::TypesFramework::SystemDefined::Type.new(id: 4) }
+    end
+
+    trait :test_case do
+      work_item_type { WorkItems::TypesFramework::SystemDefined::Type.new(id: 3) }
+    end
+
+    trait :objective do
+      work_item_type { WorkItems::TypesFramework::SystemDefined::Type.new(id: 6) }
+    end
+
+    trait :key_result do
+      work_item_type { WorkItems::TypesFramework::SystemDefined::Type.new(id: 7) }
+    end
+
+    trait :epic do
+      work_item_type { WorkItems::TypesFramework::SystemDefined::Type.new(id: 8) }
+    end
+    # rubocop:enable Gitlab/AvoidDirectWorkItemTypeUsage
 
     before(:create, :build) do |work_item, evaluator|
       if evaluator.namespace.present?
@@ -92,7 +94,7 @@ FactoryBot.define do
 
     # Service Desk Ticket
     factory :ticket do
-      association :work_item_type, :ticket
+      association :work_item_type, :ticket, factory: :work_item_system_defined_type
     end
   end
 end

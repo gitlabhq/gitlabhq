@@ -72,10 +72,10 @@ describe('ValueStreamFilters', () => {
           );
         });
 
-        it('will emit `selectProject` when a project is selected', () => {
+        it('will emit `select-project` when a project is selected', () => {
           findProjectsDropdown().vm.$emit('selected');
 
-          expect(wrapper.emitted('selectProject')).toHaveLength(1);
+          expect(wrapper.emitted('select-project')).toHaveLength(1);
         });
       });
 
@@ -106,32 +106,32 @@ describe('ValueStreamFilters', () => {
                 await nextTick();
               });
 
-              it('should emit `setDateRange` with date range', () => {
+              it('should emit `set-date-range` with date range', () => {
                 const { value, ...dateRange } = mockDateRange;
 
-                expect(wrapper.emitted('setDateRange')).toEqual([[dateRange]]);
+                expect(wrapper.emitted('set-date-range')).toEqual([[dateRange]]);
               });
 
-              it('should emit `setPredefinedDateRange` with correct value', () => {
-                expect(wrapper.emitted('setPredefinedDateRange')).toEqual([[lastMonthValue]]);
+              it('should emit `set-predefined-date-range` with correct value', () => {
+                expect(wrapper.emitted('set-predefined-date-range')).toEqual([[lastMonthValue]]);
               });
             });
 
             describe('custom date range option', () => {
               beforeEach(async () => {
-                findDateRangesDropdown().vm.$emit('customDateRangeSelected');
+                findDateRangesDropdown().vm.$emit('custom-date-range-selected');
 
                 await nextTick();
               });
 
-              it('should emit `setPredefinedDateRange` with custom date range value', () => {
-                expect(wrapper.emitted('setPredefinedDateRange')).toEqual([
+              it('should emit `set-predefined-date-range` with custom date range value', () => {
+                expect(wrapper.emitted('set-predefined-date-range')).toEqual([
                   [DATE_RANGE_CUSTOM_VALUE],
                 ]);
               });
 
-              it('should not emit `setDateRange`', () => {
-                expect(wrapper.emitted('setDateRange')).toBeUndefined();
+              it('should not emit `set-date-range`', () => {
+                expect(wrapper.emitted('set-date-range')).toBeUndefined();
               });
             });
           });
@@ -202,10 +202,10 @@ describe('ValueStreamFilters', () => {
             });
           });
 
-          it('should emit `setDateRange` when the date range changes', () => {
+          it('should emit `set-date-range` when the date range changes', () => {
             findDateRangePicker().vm.$emit('change');
 
-            expect(wrapper.emitted('setDateRange')).toHaveLength(1);
+            expect(wrapper.emitted('set-date-range')).toHaveLength(1);
           });
         });
       });

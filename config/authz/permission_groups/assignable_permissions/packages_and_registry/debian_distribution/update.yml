@@ -1,8 +1,10 @@
 ---
 name: update_debian_distribution
 description: Grants the ability to update Debian distributions
-permissions:
-  - update_debian_distribution
 boundaries:
   - project
   - group
+available_for:
+  - granular_access_token
+permissions:
+  - update_debian_distribution

@@ -46,7 +46,7 @@ Prerequisites:
 To enable or disable GitLab Secrets Manager for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn on the **Secrets manager** toggle and wait for the secrets manager to be provisioned.
 
@@ -65,7 +65,7 @@ Prerequisites:
 To enable or disable GitLab Secrets Manager for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Turn on the **Secrets manager** toggle and wait for the secrets manager to be provisioned.
 
@@ -174,7 +174,7 @@ Prerequisites:
 To update the secrets permissions for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Secrets manager**, in the **Secrets manager user permissions** section, you can manage the user permissions:
    - Select **Add** to add permissions rules for specific users, groups, or roles.
@@ -191,7 +191,7 @@ Prerequisites:
 To update the secrets permissions for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Secrets manager**, in the **Secrets manager user permissions** section, you can manage the user permissions:
    - Select **Add** to add permissions rules for specific users, groups, or roles.

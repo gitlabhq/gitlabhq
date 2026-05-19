@@ -9,3 +9,15 @@
   public: 'ja-jp/\1'                           # ja-jp/administration/
 - source: /doc-locale/ja-jp/(.+?)\.md/         # doc-locale/ja-jp/administration/page.md
   public: 'ja-jp/\1/'                          # ja-jp/administration/page/
+
+# Korean documentation
+- source: /doc-locale/ko-kr/(.+?/)_index\.md/  # doc-locale/ko-kr/administration/_index.md
+  public: 'ko-kr/\1'                           # ko-kr/administration/
+- source: /doc-locale/ko-kr/(.+?)\.md/         # doc-locale/ko-kr/administration/page.md
+  public: 'ko-kr/\1/'                          # ko-kr/administration/page/
+
+# French documentation
+- source: /doc-locale/fr-fr/(.+?/)_index\.md/  # doc-locale/fr-fr/administration/_index.md
+  public: 'fr-fr/\1'                           # fr-fr/administration/
+- source: /doc-locale/fr-fr/(.+?)\.md/         # doc-locale/fr-fr/administration/page.md
+  public: 'fr-fr/\1/'                          # fr-fr/administration/page/

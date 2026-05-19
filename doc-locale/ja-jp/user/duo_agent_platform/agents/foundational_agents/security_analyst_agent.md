@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Workflow Catalog
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: セキュリティ分析エージェント
 ---
 
@@ -9,8 +9,6 @@ title: セキュリティ分析エージェント
 
 - プラン: Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-
-この機能は[GitLabクレジット](../../../../subscriptions/gitlab_credits.md)を使用します。
 
 {{< /details >}}
 
@@ -35,26 +33,83 @@ title: セキュリティ分析エージェント
 
 セキュリティ分析エージェントは、脆弱性の状態、重大度レベル、セキュリティスキャナーの出力など、GitLab固有のセキュリティ実装を理解しています。EPSSスコア、CVEデータ、到達可能性分析を解釈し、コンテキストに応じたセキュリティガイダンスを提供できます。
 
-## セキュリティ分析エージェントにアクセスする {#access-the-security-analyst-agent}
+<i class="fa-youtube-play" aria-hidden="true"></i>概要については、[GitLabセキュリティ分析エージェントをAIによるトリアージに利用する方法](https://www.youtube.com/watch?v=XqVmrsa9BnM)を参照してください。
+<!-- Video published on 2026-02-25 -->
+
+## セキュリティ分析エージェントを使用する {#use-the-security-analyst-agent}
+
+GitLab UI、VS Code、およびJetBrains IDEでセキュリティ分析エージェントを使用できます。
+
+### GitLab UIの場合 {#in-the-gitlab-ui}
 
 前提条件: 
 
-- セキュリティスキャンが有効になっているGitLabプロジェクトで作業している必要があります。
-- 基本エージェントを[オン](_index.md#turn-foundational-agents-on-or-off)にする必要があります。
+- GitLabプロジェクトでセキュリティスキャンが有効になっているものを使用します。
+- [基本エージェントをオンにします](_index.md#turn-foundational-agents-on-or-off)。
+
+GitLab UIでセキュリティ分析エージェントを使用するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-
-1. GitLab Duoのサイドバーで、**新しいGitLab Duo Chat**（{{< icon name="pencil-square" >}}）または**現在のGitLab Duo Chat**（{{< icon name="duo-chat" >}}）を選択します。
+1. GitLab Duoサイドバーで、**新しいチャットを追加**（{{< icon name="pencil-square" >}}）を選択します。
+1. ドロップダウンリストから**セキュリティ分析**を選択します。
 
    画面右側のGitLab Duoサイドバーに、Chatの会話が表示されます。
+1. セキュリティに関する質問またはリクエストを入力します。リクエストから最良の結果を得るには、次の点に留意してください:
 
+   - セキュリティ要件とリスク許容度に関するコンテキストを提供する。
+   - 重視している脆弱性の種類やスキャン結果を指定する。
+   - 分析をリクエストする場合は、関連するプロジェクトやコンポーネントの詳細を含める。
+   - セキュリティ分析エージェントの推奨事項が、お客様のセキュリティポリシーと一致しない場合は、説明を求めてください。
+   - 特定の検出結果について議論する場合は、脆弱性IDやURLを具体的に指定する。
+
+### VS Codeの場合 {#in-vs-code}
+
+前提条件: 
+
+- GitLabプロジェクトでセキュリティスキャンが有効になっているものを使用します。
+- [基本エージェントをオンにします](_index.md#turn-foundational-agents-on-or-off)。
+- [GitLab for VS Code](../../../../editor_extensions/visual_studio_code/setup.md)バージョン6.57.3以降をインストールして設定します。
+- [デフォルトのGitLab Duoネームスペース](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定します。
+
+VS Codeでセキュリティ分析エージェントを使用するには:
+
+1. VS Codeの左サイドバーで、**GitLab Duo Agent Platform**（{{< icon name="duo-agentic-chat" >}}）を選択します。
+1. **Chat**タブを選択します。
 1. **新しいチャット**（{{< icon name="duo-chat-new" >}}）ドロップダウンリストから、**セキュリティ分析**を選択します。
 1. セキュリティに関する質問またはリクエストを入力します。リクエストから最良の結果を得るには、次の点に留意してください:
 
    - セキュリティ要件とリスク許容度に関するコンテキストを提供する。
    - 重視している脆弱性の種類やスキャン結果を指定する。
    - 分析をリクエストする場合は、関連するプロジェクトやコンポーネントの詳細を含める。
-   - セキュリティ分析エージェントの推奨事項が自社のセキュリティポリシーと一致しない場合は、補足説明を求める。
+   - セキュリティ分析エージェントの推奨事項が、お客様のセキュリティポリシーと一致しない場合は、説明を求めてください。
+   - 特定の検出結果について議論する場合は、脆弱性IDやURLを具体的に指定する。
+
+### JetBrains IDEの場合 {#in-jetbrains-ides}
+
+前提条件: 
+
+- GitLabプロジェクトでセキュリティスキャンが有効になっているものを使用します。
+- [基本エージェントをオンにします](_index.md#turn-foundational-agents-on-or-off)。
+- [JetBrains IDE用のGitLab Duoプラグイン](../../../../editor_extensions/jetbrains_ide/setup.md)バージョン3.11.1以降をインストールして設定します。
+- [デフォルトのGitLab Duoネームスペース](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定します。
+
+まず、GitLab Duo Agent Platformを有効にします:
+
+1. JetBrains IDEで、**Settings** > **Tools** > **GitLab Duo**に移動します。
+1. **GitLab Duo Agent Platform**で、**Enable GitLab Duo Agent Platform**チェックボックスを選択します。
+1. プロンプトが表示されたら、IDEを再起動します。
+
+次に、セキュリティ分析エージェントを使用するには:
+
+1. JetBrains IDEの右側のツールウィンドウバーで、**GitLab Duo Agent Platform**（{{< icon name="duo-agentic-chat" >}}）を選択します。
+1. **Chat**タブを選択します。
+1. **新しいチャット**（{{< icon name="duo-chat-new" >}}）ドロップダウンリストから、**セキュリティ分析**を選択します。
+1. セキュリティに関する質問またはリクエストを入力します。リクエストから最良の結果を得るには、次の点に留意してください:
+
+   - セキュリティ要件とリスク許容度に関するコンテキストを提供する。
+   - 重視している脆弱性の種類やスキャン結果を指定する。
+   - 分析をリクエストする場合は、関連するプロジェクトやコンポーネントの詳細を含める。
+   - セキュリティ分析エージェントの推奨事項が、お客様のセキュリティポリシーと一致しない場合は、説明を求めてください。
    - 特定の検出結果について議論する場合は、脆弱性IDやURLを具体的に指定する。
 
 ## プロンプトの例 {#example-prompts}

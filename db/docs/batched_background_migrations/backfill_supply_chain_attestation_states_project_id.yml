@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillSupplyChainAttestationStatesProjectId
-description: Backfills sharding key `supply_chain_attestation_states.project_id` from `slsa_attestations`.
+description: Backfills sharding key `supply_chain_attestation_states.project_id` from
+  `slsa_attestations`.
 feature_category: geo_replication
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227982
 milestone: '18.11'
 queued_migration_version: 20260318150441
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20260423234915'

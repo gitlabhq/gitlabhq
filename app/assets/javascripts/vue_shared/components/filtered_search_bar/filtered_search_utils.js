@@ -33,7 +33,7 @@ export const uniqueTokens = (tokens) => {
  * @param  {String} type the name of the filter
  * @param  {Object}
  * @param  {Object.value} filter value to be returned as token data
- * @param  {Object.operator} filter operator to be retuned as token operator
+ * @param  {Object.operator} filter operator to be returned as token operator
  * @return {Object}
  * @return {Object.type} token type
  * @return {Object.value} token value
@@ -154,7 +154,6 @@ export function filterToQueryObject(filters = {}, options = {}) {
         }
 
         if (shouldExcludeEmpty && (value?.[0] === '' || value === '' || value === null)) {
-          // eslint-disable-next-line no-continue
           continue;
         }
 

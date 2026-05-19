@@ -47,3 +47,5 @@ module Jira
   end
 end
 # rubocop:enable Gitlab/BoundedContexts
+
+Jira::Requests::Issues::CloudListService.prepend_mod

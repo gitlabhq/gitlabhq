@@ -33,64 +33,104 @@ import {
   savedViewFiltersWithMultipleSearchTokens,
   savedViewFilterTokensWithMultipleSearchTokens,
 } from 'jest/work_items/list/mock_data';
+import { createAlert } from '~/alert';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/work_items/list/constants';
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import {
+  convertOldTypeTokenEnumToGid,
   convertToApiParams,
   convertToSearchQuery,
   convertToUrlParams,
   deriveSortKey,
-  getDefaultWorkItemTypes,
   getFilterTokens,
   getInitialPageParams,
   getSortOptions,
-  getTypeTokenOptions,
   groupMultiSelectFilterTokens,
   getSavedViewFilterTokens,
   saveSavedView,
   handleEnforceSubscriptionLimit,
   updateCacheAfterViewReorder,
   reorderSavedView,
+  convertNumberToGid,
+  convertLegacyTypeFormat,
 } from 'ee_else_ce/work_items/list/utils';
-import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_TASK,
-  WORK_ITEM_TYPE_ENUM_TICKET,
-} from '~/work_items/constants';
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_TYPE,
+} from '~/vue_shared/components/filtered_search_bar/constants';
+import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 
-describe('getDefaultWorkItemTypes', () => {
-  it('returns default work item types', () => {
-    const types = getDefaultWorkItemTypes({
-      hasEpicsFeature: false,
-      hasOkrsFeature: false,
-      hasQualityManagementFeature: false,
+jest.mock('~/alert');
+
+describe('convertOldTypeTokenEnumToGid', () => {
+  const workItemTypesConfiguration = [
+    { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
+    { id: 'gid://gitlab/WorkItems::Type/2', name: 'Incident' },
+    { id: 'gid://gitlab/WorkItems::Type/3', name: 'Test Case' },
+    { id: 'gid://gitlab/WorkItems::Type/4', name: 'Requirement' },
+    { id: 'gid://gitlab/WorkItems::Type/5', name: 'Task' },
+    { id: 'gid://gitlab/WorkItems::Type/6', name: 'Objective' },
+    { id: 'gid://gitlab/WorkItems::Type/7', name: 'Key Result' },
+    { id: 'gid://gitlab/WorkItems::Type/8', name: 'Epic' },
+    { id: 'gid://gitlab/WorkItems::Type/9', name: 'Ticket' },
+  ];
+
+  it('converts lowercase epic to 6, and shows alert telling user to update their bookmarks', () => {
+    const tokens = [
+      { type: TOKEN_TYPE_AUTHOR, value: { operator: '=', data: 'root' } },
+      { type: TOKEN_TYPE_TYPE, value: { operator: '=', data: 'epic' } },
+    ];
+    expect(convertOldTypeTokenEnumToGid(tokens, workItemTypesConfiguration)).toEqual([
+      { type: TOKEN_TYPE_AUTHOR, value: { operator: '=', data: 'root' } },
+      { type: TOKEN_TYPE_TYPE, value: { operator: '=', data: '8' } },
+    ]);
+    expect(createAlert).toHaveBeenCalledWith({
+      message:
+        'The Type filter URL has been changed. Please update any bookmarks or links that reference the old URL.',
+      variant: 'info',
     });
+  });
 
-    expect(types).toEqual([
-      WORK_ITEM_TYPE_ENUM_ISSUE,
-      WORK_ITEM_TYPE_ENUM_INCIDENT,
-      WORK_ITEM_TYPE_ENUM_TASK,
-      WORK_ITEM_TYPE_ENUM_TICKET,
+  it('converts screaming snake case KEY_RESULT to 7', () => {
+    const tokens = [
+      { type: TOKEN_TYPE_AUTHOR, value: { operator: '=', data: 'root' } },
+      { type: TOKEN_TYPE_TYPE, value: { operator: '=', data: 'KEY_RESULT' } },
+    ];
+    expect(convertOldTypeTokenEnumToGid(tokens, workItemTypesConfiguration)).toEqual([
+      { type: TOKEN_TYPE_AUTHOR, value: { operator: '=', data: 'root' } },
+      { type: TOKEN_TYPE_TYPE, value: { operator: '=', data: '7' } },
     ]);
   });
-});
 
-describe('getTypeTokenOptions', () => {
-  it('returns options for the Type token', () => {
-    const options = getTypeTokenOptions({
-      hasEpicsFeature: false,
-      hasOkrsFeature: false,
-      hasQualityManagementFeature: false,
-    });
-
-    expect(options).toEqual([
-      { icon: 'work-item-issue', title: 'Issue', value: 'issue' },
-      { icon: 'work-item-incident', title: 'Incident', value: 'incident' },
-      { icon: 'work-item-task', title: 'Task', value: 'task' },
+  it('converts multiSelect values', () => {
+    const tokens = [
+      { type: TOKEN_TYPE_AUTHOR, value: { operator: '=', data: 'root' } },
+      { type: TOKEN_TYPE_TYPE, value: { operator: '!=', data: ['ISSUE', 'INCIDENT'] } },
+    ];
+    expect(convertOldTypeTokenEnumToGid(tokens, workItemTypesConfiguration)).toEqual([
+      { type: TOKEN_TYPE_AUTHOR, value: { operator: '=', data: 'root' } },
+      { type: TOKEN_TYPE_TYPE, value: { operator: '!=', data: ['1', '2'] } },
     ]);
+  });
+
+  it('removes type token when enum value does not exist', () => {
+    const tokens = [
+      { type: TOKEN_TYPE_AUTHOR, value: { operator: '=', data: 'root' } },
+      { type: TOKEN_TYPE_TYPE, value: { operator: '=', data: 'NON_EXISTENT_TYPE' } },
+    ];
+    expect(convertOldTypeTokenEnumToGid(tokens, workItemTypesConfiguration)).toEqual([
+      { type: TOKEN_TYPE_AUTHOR, value: { operator: '=', data: 'root' } },
+    ]);
+  });
+
+  it('makes no changes when type token is already number, and does not show alert', () => {
+    const tokens = [
+      { type: TOKEN_TYPE_AUTHOR, value: { operator: '=', data: 'root' } },
+      { type: TOKEN_TYPE_TYPE, value: { operator: '=', data: '8' } },
+    ];
+    expect(convertOldTypeTokenEnumToGid(tokens, workItemTypesConfiguration)).toEqual(tokens);
+    expect(createAlert).not.toHaveBeenCalled();
   });
 });
 
@@ -299,6 +339,44 @@ describe('getSavedViewFilterTokens', () => {
     expect(getSavedViewFilterTokens(savedViewFiltersWithMultipleSearchTokens)).toEqual(
       savedViewFilterTokensWithMultipleSearchTokens,
     );
+  });
+});
+
+describe('convertNumberToGid', () => {
+  it('converts a number to a gid', () => {
+    expect(convertNumberToGid('1')).toBe('gid://gitlab/WorkItems::Type/1');
+  });
+});
+
+describe('convertLegacyTypeFormat', () => {
+  const getWorkItemTypeConfiguration = jest
+    .fn()
+    .mockReturnValue({ id: 'gid://gitlab/WorkItems::Type/1' });
+  const createTokens = (data) => [{ type: 'type', value: { data } }];
+
+  it.each`
+    data                                | expected
+    ${'issue'}                          | ${'1'}
+    ${'KEY_RESULT'}                     | ${'1'}
+    ${['task']}                         | ${['1']}
+    ${['issue', 'task']}                | ${['1', '1']}
+    ${'gid://gitlab/WorkItems::Type/5'} | ${'5'}
+  `('converts enums and gids to a number', ({ data, expected }) => {
+    const tokens = createTokens(data);
+    const expectedTokens = createTokens(expected);
+    expect(convertLegacyTypeFormat(tokens, getWorkItemTypeConfiguration)).toEqual(expectedTokens);
+  });
+
+  it('converts when there are multiple type tokens', () => {
+    const tokens = [
+      { type: 'type', value: { data: 'gid://gitlab/WorkItems::Type/1001' } },
+      { type: 'type', value: { data: 'gid://gitlab/WorkItems::Type/1002' } },
+    ];
+    const expectedTokens = [
+      { type: 'type', value: { data: '1001' } },
+      { type: 'type', value: { data: '1002' } },
+    ];
+    expect(convertLegacyTypeFormat(tokens, getWorkItemTypeConfiguration)).toEqual(expectedTokens);
   });
 });
 

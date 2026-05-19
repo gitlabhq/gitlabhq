@@ -1,6 +1,6 @@
 ---
-stage: None - Facilitated functionality, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
-group: Unassigned - Facilitated functionality, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
+stage: Growth
+group: Engagement
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 description: Customize your GitLab instance appearance, including logos, favicons, sign-in pages, Progressive Web App settings, system messages, and color themes.
@@ -25,7 +25,7 @@ You must have administrator access.
 To open the **Appearance** settings:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Appearance**.
+1. In the left sidebar, select **Settings** > **Appearance**.
 
 ## Customize your homepage button
 
@@ -35,12 +35,12 @@ The homepage button is located in the upper-left corner of the left sidebar.
 Replace the default GitLab logo {{< icon name="tanuki" >}} with any image.
 
 - The file should be less than 1 MB.
-- The image should be 24 pixels high. Images more than 24 px high will be resized.
+- The image should be 24 pixels high. Images more than 24 pixels high are automatically resized.
 
 To customize your homepage icon image:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Appearance**.
+1. In the left sidebar, select **Settings** > **Appearance**.
 1. Under **Navigation bar**, select **Choose file**.
 1. At the bottom of the page, select **Update appearance settings**.
 
@@ -53,7 +53,7 @@ Customize the appearance of the favicon. A favicon is the icon for a website tha
 To change the favicon:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Appearance**.
+1. In the left sidebar, select **Settings** > **Appearance**.
 1. Under **Favicon**, select **Choose file**.
 1. At the bottom of the page, select **Update appearance settings**.
 
@@ -73,7 +73,7 @@ The maximum length of a site name is 255 characters.
 To change the site name:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Appearance**.
+1. In the left sidebar, select **Settings** > **Appearance**.
 1. Under **Site name**, enter the new site name.
 1. At the bottom of the page, select **Update appearance settings**.
 
@@ -93,7 +93,7 @@ Add a small header message, a small footer message, or both, to the interface of
 To add a system header, footer message, or both:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Appearance**.
+1. In the left sidebar, select **Settings** > **Appearance**.
 1. Go to the **System header and footer** section.
 1. Complete the fields.
 1. Optional. Select the **Enable header and footer in emails** checkbox. Add your system messages to all emails sent by your GitLab instance.
@@ -105,12 +105,14 @@ By default, the system header and footer text is white text on an orange backgro
 
 ## Customize your sign-in and register pages
 
+<!-- vale gitlab_base.OxfordComma = NO -->
 Customize the title, description, and logo on the sign-in and register page. By default, the register page logo is located on the left of the page, between the title and the description.
+<!-- vale gitlab_base.OxfordComma = YES -->
 
 To customize your sign-in and register page titles or descriptions:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Appearance**.
+1. In the left sidebar, select **Settings** > **Appearance**.
 1. Go to the **Sign in/Sign up pages** section.
 1. Complete the fields. You can format the page **Title** and **Description** with Markdown.
 1. At the bottom of the page, select **Update appearance settings**.
@@ -118,10 +120,10 @@ To customize your sign-in and register page titles or descriptions:
 To customize the logo on your sign-in and register pages:
 
 - The file should be less than 1 MB.
-- The image should be 128 pixels high. Images more than 128 px high will be resized.
+- The image should be 128 pixels high. Images more than 128 pixels high are automatically resized.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Appearance**.
+1. In the left sidebar, select **Settings** > **Appearance**.
 1. Go to the **Sign in/Sign up pages** section.
 1. Under **Logo**, select **Choose file**.
 1. At the bottom of the page, select **Update appearance settings**.
@@ -161,7 +163,7 @@ Customize the icon, display name, short name, and description for your Progressi
 To add a Progressive Web App name and short name:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Appearance**.
+1. In the left sidebar, select **Settings** > **Appearance**.
 1. Go to the **Progressive Web App (PWA)** section.
 1. Complete the fields.
    - **Name** is the display name of your PWA.
@@ -171,7 +173,7 @@ To add a Progressive Web App name and short name:
 To add a Progressive Web App description:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Appearance**.
+1. In the left sidebar, select **Settings** > **Appearance**.
 1. Go to the **Progressive Web App (PWA)** section.
 1. Complete the fields. You can format the **Description** with Markdown.
 1. At the bottom of the page, select **Update appearance settings**.
@@ -179,7 +181,7 @@ To add a Progressive Web App description:
 To customize your Progressive Web App icon:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Appearance**.
+1. In the left sidebar, select **Settings** > **Appearance**.
 1. Go to the **Progressive Web App (PWA)** section.
 1. Under **Icon**, select **Choose file**.
 1. At the bottom of the page, select **Update appearance settings**.
@@ -206,7 +208,7 @@ Add a guideline message to the **New project page**. You can format your message
 To add a guideline message to the **New project page**:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Appearance**.
+1. In the left sidebar, select **Settings** > **Appearance**.
 1. Go to the **New project pages** section.
 1. Complete the fields. You can format your guidelines with Markdown.
 
@@ -215,7 +217,7 @@ To add a guideline message to the **New project page**:
 Add guidelines for profile images.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Appearance**.
+1. In the left sidebar, select **Settings** > **Appearance**.
 1. Go to the **Profile image guideline** section.
 1. Complete the fields. You can format your text with Markdown.
 

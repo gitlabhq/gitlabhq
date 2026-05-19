@@ -3,6 +3,9 @@
 namespace :admin do
   namespace :registrations do
     resources :groups, only: [:new, :create]
+    resource :profile, only: [:new, :update] do
+      get :skip, on: :member
+    end
   end
 
   resources :users, constraints: { id: %r{[a-zA-Z./0-9_\-]+} } do
@@ -205,6 +208,8 @@ namespace :admin do
     get :slack_app_manifest_download, format: :json
     get :slack_app_manifest_share
 
+    resources :service_accounts, path: 'service_accounts(/*vueroute)', only: [:index], module: 'application_settings'
+
     resource :appearances, only: [:show, :create, :update], path: 'appearance', module: 'application_settings' do
       member do
         get :preview_sign_in
@@ -248,7 +253,7 @@ namespace :admin do
 
   get '/dashboard/stats', to: 'dashboard#stats'
 
-  get 'organization', to: 'organizations/dashboard#index', as: :organization_dashboard
+  get 'organization', to: 'organizations/dashboard#index', as: :org_dashboard
 
   root to: 'dashboard#index'
 

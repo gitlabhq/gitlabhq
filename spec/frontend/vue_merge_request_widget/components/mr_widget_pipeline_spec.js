@@ -1,3 +1,4 @@
+import { createMockSubscription } from 'mock-apollo-client';
 import Vue, { nextTick } from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
@@ -27,7 +28,13 @@ import {
 } from '~/vue_merge_request_widget/constants';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import mergeRequestEventTypeQuery from '~/vue_merge_request_widget/queries/merge_request_event_type.query.graphql';
-import mockData from '../mock_data';
+import mrPipelineCreationRequestUpdatedSubscription from '~/vue_merge_request_widget/subscriptions/mr_pipeline_creation_request_updated.subscription.graphql';
+
+import mockData, {
+  mockPipelineInProgressSubscription,
+  mockPipelineSucceededSubscription,
+  mockPipelineFailedSubscription,
+} from '../mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/api');
@@ -37,6 +44,8 @@ Vue.use(VueApollo);
 describe('MRWidgetPipeline', () => {
   let wrapper;
   let mergeRequestEventTypeQueryMock;
+  let mockSubscription;
+  let subscriptionHandler;
 
   const defaultProps = {
     pipeline: mockData.pipeline,
@@ -50,6 +59,7 @@ describe('MRWidgetPipeline', () => {
     targetProjectId: 1,
     iid: 1,
     targetProjectFullPath: 'gitlab-org/gitlab',
+    mrId: 133,
   };
 
   const ciErrorMessage =
@@ -74,6 +84,7 @@ describe('MRWidgetPipeline', () => {
   const findRetargetedMessage = () => wrapper.findByTestId('retargeted-message');
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
   const findHelpPopover = () => wrapper.findComponent(HelpPopover);
+  const findPipelineCreationMessage = () => wrapper.findByTestId('pipeline-creation-message');
 
   const mockArtifactsRequest = () => new MockAdapter(axios).onGet().reply(HTTP_STATUS_OK, []);
 
@@ -81,6 +92,16 @@ describe('MRWidgetPipeline', () => {
     const apolloProvider = createMockApollo([
       [mergeRequestEventTypeQuery, mergeRequestEventTypeQueryMock],
     ]);
+
+    subscriptionHandler = jest.fn(() => {
+      mockSubscription = createMockSubscription();
+      return mockSubscription;
+    });
+
+    apolloProvider.defaultClient.setRequestHandler(
+      mrPipelineCreationRequestUpdatedSubscription,
+      subscriptionHandler,
+    );
 
     wrapper = extendedWrapper(
       mountFn(MRWidgetPipelineComponent, {
@@ -519,6 +540,83 @@ describe('MRWidgetPipeline', () => {
       it('does not render the run pipeline button', () => {
         expect(findRunPipelineButton().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('subscription', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
+    it('does subscribe to pipeline creation events', () => {
+      expect(subscriptionHandler).toHaveBeenCalled();
+    });
+
+    it('shows in progess pipeline creation message', async () => {
+      mockSubscription.next(mockPipelineInProgressSubscription);
+
+      await waitForPromises();
+
+      expect(findPipelineCreationMessage().exists()).toBe(true);
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
+
+    it('transitions from creating message to pipeline when pipeline ID changes', async () => {
+      mockSubscription.next(mockPipelineInProgressSubscription);
+
+      await waitForPromises();
+
+      expect(findPipelineCreationMessage().exists()).toBe(true);
+      expect(findPipelineMiniGraph().exists()).toBe(false);
+
+      const newPipeline = {
+        ...mockData.pipeline,
+        id: 133,
+      };
+
+      await wrapper.setProps({ pipeline: newPipeline });
+
+      expect(findPipelineCreationMessage().exists()).toBe(false);
+      expect(findLoadingIcon().exists()).toBe(false);
+
+      expect(findPipelineMiniGraph().exists()).toBe(true);
+    });
+
+    it.each`
+      status         | response
+      ${'SUCCEEDED'} | ${mockPipelineSucceededSubscription}
+      ${'FAILED'}    | ${mockPipelineFailedSubscription}
+    `(
+      'holds creating message when $status event arrives but pipeline ID has not changed',
+      async ({ response }) => {
+        mockSubscription.next(mockPipelineInProgressSubscription);
+        await waitForPromises();
+
+        expect(findPipelineCreationMessage().exists()).toBe(true);
+
+        mockSubscription.next(response);
+
+        await waitForPromises();
+
+        // Message holds because pipeline prop hasn't changed yet
+        expect(findPipelineCreationMessage().exists()).toBe(true);
+      },
+    );
+
+    it('hides creation message if an error occurs', async () => {
+      mockSubscription.next(mockPipelineInProgressSubscription);
+
+      await waitForPromises();
+
+      expect(findPipelineCreationMessage().exists()).toBe(true);
+      expect(findLoadingIcon().exists()).toBe(true);
+
+      mockSubscription.error(new Error('subscription error'));
+
+      await waitForPromises();
+
+      expect(findPipelineCreationMessage().exists()).toBe(false);
+      expect(findLoadingIcon().exists()).toBe(false);
     });
   });
 });

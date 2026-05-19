@@ -1,0 +1,4 @@
+---
+event: WorkItems::WorkItemUpdatedEvent
+description: Published after a work item's attributes are updated.
+feature_category: team_planning

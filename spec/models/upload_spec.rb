@@ -377,4 +377,8 @@ RSpec.describe Upload do
       upload
     end
   end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :upload }
+  end
 end

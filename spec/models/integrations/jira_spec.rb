@@ -58,7 +58,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       it { is_expected.to validate_presence_of(:jira_auth_type) }
       it { is_expected.to validate_length_of(:jira_issue_regex).is_at_most(255) }
       it { is_expected.to validate_length_of(:jira_issue_prefix).is_at_most(255) }
-      it { is_expected.to validate_inclusion_of(:jira_auth_type).in_array([0, 1]) }
+      it { is_expected.to validate_inclusion_of(:jira_auth_type).in_array([0, 1, 2]) }
 
       it_behaves_like 'issue tracker integration URL attribute', :url
       it_behaves_like 'issue tracker integration URL attribute', :api_url
@@ -69,6 +69,14 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         end
 
         it { is_expected.not_to validate_presence_of(:username) }
+      end
+
+      context 'with jira_cloud_service_account_authorization' do
+        before do
+          jira_integration.jira_auth_type = 2
+        end
+
+        it { is_expected.to validate_presence_of(:api_url) }
       end
 
       context 'when URL is for Jira Cloud' do
@@ -86,6 +94,26 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
           jira_integration.jira_auth_type = 1
 
           expect(jira_integration).not_to be_valid
+        end
+      end
+
+      context 'when using Jira Cloud service account authentication' do
+        before do
+          jira_integration.jira_auth_type = 2
+        end
+
+        it 'does not require username when api_url is present' do
+          jira_integration.username = nil
+          jira_integration.api_url = 'https://api.atlassian.com/ex/jira/8be4df61-93ca-11d2-aa0d-00e098032b8c'
+
+          expect(jira_integration).to be_valid
+        end
+
+        it 'requires api_url to be present' do
+          jira_integration.api_url = nil
+
+          expect(jira_integration).not_to be_valid
+          expect(jira_integration.errors[:api_url]).to include("can't be blank")
         end
       end
     end
@@ -211,6 +239,29 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
       it 'leaves out trailing slashes in context' do
         expect(integration.options[:context_path]).to eq('/api_path')
+      end
+    end
+
+    context 'using Jira Platform API URL with service account auth' do
+      let(:platform_api_url) { 'https://api.atlassian.com/ex/jira/8be4df61-93ca-11d2-aa0d-00e098032b8c' }
+
+      before do
+        options.merge!(
+          api_url: platform_api_url,
+          jira_auth_type: 2,
+          password: 'service-token'
+        )
+      end
+
+      it 'uses the Platform API host and cloud ID context path' do
+        expect(integration.options[:site]).to eq('https://api.atlassian.com')
+        expect(integration.options[:context_path]).to eq('/ex/jira/8be4df61-93ca-11d2-aa0d-00e098032b8c')
+      end
+
+      it 'disables cookies and uses a bearer Authorization header' do
+        expect(integration.options[:use_cookies]).to be(false)
+        expect(integration.options[:additional_cookies]).to eq([])
+        expect(integration.options[:default_headers]).to eq('Authorization' => 'Bearer service-token')
       end
     end
   end
@@ -686,6 +737,26 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         expect_next_instance_of(JIRA::Client) do |instance|
           expect(instance.request_client.options).to include(
             default_headers: { "Authorization" => "Bearer #{password}" }
+          )
+        end
+
+        jira_integration.client.get('/foo')
+      end
+    end
+
+    context 'with Jira Cloud service account auth' do
+      before do
+        jira_integration.jira_auth_type = 2
+        jira_integration.api_url = 'https://api.atlassian.com/ex/jira/8be4df61-93ca-11d2-aa0d-00e098032b8c'
+        stub_request(:get, 'https://api.atlassian.com/foo')
+      end
+
+      it 'uses correct authorization options for a service account' do
+        expect_next_instance_of(JIRA::Client) do |instance|
+          expect(instance.request_client.options).to include(
+            default_headers: { 'Authorization' => "Bearer #{password}" },
+            use_cookies: false,
+            additional_cookies: []
           )
         end
 

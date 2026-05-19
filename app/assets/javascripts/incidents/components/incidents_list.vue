@@ -27,8 +27,6 @@ import PaginatedTableWithSearchAndTabs from '~/vue_shared/components/paginated_t
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { WORK_ITEM_TYPE_ENUM_INCIDENT } from '~/work_items/constants';
 import {
   I18N,
   INCIDENT_STATUS_TABS,
@@ -140,7 +138,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: [
     'projectPath',
     'newIssuePath',
@@ -165,13 +162,7 @@ export default {
           assigneeUsername: this.assigneeUsername,
           projectPath: this.projectPath,
           status: this.statusFilter,
-          ...(this.glFeatures.workItemConfigurableTypes
-            ? {
-                workItemTypeIds: this.incidentTypeId,
-              }
-            : {
-                issueTypes: [WORK_ITEM_TYPE_ENUM_INCIDENT],
-              }),
+          workItemTypeIds: this.incidentTypeId,
           sort: this.sort,
           firstPageSize: this.pagination.firstPageSize,
           lastPageSize: this.pagination.lastPageSize,
@@ -187,10 +178,7 @@ export default {
       },
       skip() {
         // Wait until we get the incident ID from workItemTypesConfigurationQuery before calling query
-        if (this.glFeatures.workItemConfigurableTypes) {
-          return !this.incidentTypeId;
-        }
-        return false;
+        return !this.incidentTypeId;
       },
       error() {
         this.errored = true;
@@ -204,13 +192,7 @@ export default {
           authorUsername: this.authorUsername,
           assigneeUsername: this.assigneeUsername,
           projectPath: this.projectPath,
-          ...(this.glFeatures.workItemConfigurableTypes
-            ? {
-                workItemTypeIds: this.incidentTypeId,
-              }
-            : {
-                issueTypes: [WORK_ITEM_TYPE_ENUM_INCIDENT],
-              }),
+          workItemTypeIds: this.incidentTypeId,
         };
       },
       update(data) {
@@ -218,10 +200,7 @@ export default {
       },
       skip() {
         // Wait until we get the incident ID from workItemTypesConfigurationQuery before calling query
-        if (this.glFeatures.workItemConfigurableTypes) {
-          return !this.incidentTypeId;
-        }
-        return false;
+        return !this.incidentTypeId;
       },
     },
     workItemTypesConfiguration: {
@@ -233,9 +212,6 @@ export default {
       },
       update(data) {
         return data?.namespace?.workItemTypes?.nodes || [];
-      },
-      skip() {
-        return !this.glFeatures.workItemConfigurableTypes;
       },
     },
   },

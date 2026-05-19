@@ -8,6 +8,7 @@ import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import EnvironmentBreadcrumbs from './environment_details/environment_breadcrumbs.vue';
 import EnvironmentsDetailHeader from './components/environments_detail_header.vue';
 import { apolloProvider as createApolloProvider } from './graphql/client';
+import { ROUTE_NAME_LOGS, ROUTE_NAME_ENVIRONMENT_DETAILS } from './constants';
 
 Vue.use(VueApollo);
 Vue.use(GlToast);
@@ -74,7 +75,7 @@ export const initPage = async () => {
     routes: [
       {
         path: '/k8s/namespace/:namespace/pods/:podName/logs',
-        name: 'logs',
+        name: ROUTE_NAME_LOGS,
         meta: {
           environmentName: dataSet.name,
         },
@@ -89,7 +90,7 @@ export const initPage = async () => {
       },
       {
         path: '/',
-        name: 'environment_details',
+        name: ROUTE_NAME_ENVIRONMENT_DETAILS,
         meta: {
           environmentName: dataSet.name,
         },

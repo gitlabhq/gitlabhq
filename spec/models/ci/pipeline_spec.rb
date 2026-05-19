@@ -591,6 +591,30 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.parse_transition_args' do
+    include RSpec::Parameterized::TableSyntax
+
+    let(:transition) { instance_double(StateMachines::Transition, args: args) }
+
+    where(:args, :expected_positional_args, :expected_keyword_args) do
+      []                                      | []             | {}
+      [:pos1]                                 | [:pos1]        | {}
+      [:pos1, :pos2]                          | [:pos1, :pos2] | {}
+      [{ key1: true }]                        | []             | { key1: true }
+      [:pos1, { key1: true }]                 | [:pos1]        | { key1: true }
+      [:pos1, :pos2, { key1: true, key2: 1 }] | [:pos1, :pos2] | { key1: true, key2: 1 }
+    end
+
+    with_them do
+      it 'separates positional args and keyword args' do
+        positional_args, keyword_args = described_class.parse_transition_args(transition)
+
+        expect(positional_args).to eq(expected_positional_args)
+        expect(keyword_args).to eq(expected_keyword_args)
+      end
+    end
+  end
+
   describe '.with_unlockable_status' do
     let_it_be(:project) { create(:project) }
 
@@ -766,6 +790,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it 'returns the pipeline' do
         is_expected.to contain_exactly(old_pipeline)
+      end
+    end
+  end
+
+  context 'with finished filters' do
+    let_it_be(:old_pipeline) { create(:ci_pipeline, finished_at: 1.week.ago) }
+    let_it_be(:new_pipeline) { create(:ci_pipeline, finished_at: 1.hour.ago) }
+
+    describe '.finished_after' do
+      subject { described_class.finished_after(1.day.ago) }
+
+      it 'returns the pipeline finished after the given time' do
+        is_expected.to contain_exactly(new_pipeline)
       end
     end
   end
@@ -2674,6 +2711,32 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
+    describe 'TrackFirstPipelineSucceededWorker' do
+      before do
+        allow(PipelineMetricsWorker).to receive(:perform_async)
+      end
+
+      context 'when no first pipeline success has been recorded for the project' do
+        it 'enqueues TrackFirstPipelineSucceededWorker' do
+          expect(Ci::TrackFirstPipelineSucceededWorker).to receive(:perform_async).with(pipeline.id)
+
+          pipeline.succeed
+        end
+      end
+
+      context 'when a first pipeline success has already been recorded for the project' do
+        before do
+          create(:ci_project_metric, :with_first_pipeline_succeeded, project: project)
+        end
+
+        it 'does not enqueue TrackFirstPipelineSucceededWorker' do
+          expect(Ci::TrackFirstPipelineSucceededWorker).not_to receive(:perform_async)
+
+          pipeline.succeed
+        end
+      end
+    end
+
     describe 'merge on success' do
       let(:pipeline) { create(:ci_empty_pipeline, status: from_status) }
 
@@ -2691,25 +2754,25 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     describe 'pipeline caching' do
-      it 'enqueues Ci::ExpirePipelineCacheWorker' do
-        expect(Ci::ExpirePipelineCacheWorker)
-          .to receive(:perform_async)
-          .with(pipeline.id, { 'partition_id' => pipeline.partition_id })
+      let(:transition_args) {}
 
-        pipeline.cancel
-      end
+      subject(:cancel_pipeline) { pipeline.cancel(**transition_args) }
 
-      context 'when ci_expire_pipeline_cache_workers feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_expire_pipeline_cache_workers: false)
+      it 'executes Ci::ExpirePipelineCacheService' do
+        expect_next_instance_of(Ci::ExpirePipelineCacheService) do |service|
+          expect(service).to receive(:execute).with(pipeline)
         end
 
-        it 'executes Ci::ExpirePipelineCacheService' do
-          expect_next_instance_of(Ci::ExpirePipelineCacheService) do |service|
-            expect(service).to receive(:execute).with(pipeline)
-          end
+        cancel_pipeline
+      end
 
-          pipeline.cancel
+      context 'when skip_cache_expiration is provided' do
+        let(:transition_args) { { skip_cache_expiration: true } }
+
+        it 'does not execute Ci::ExpirePipelineCacheService' do
+          expect(Ci::ExpirePipelineCacheService).not_to receive(:new)
+
+          cancel_pipeline
         end
       end
     end
@@ -5437,6 +5500,52 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     it 'includes partition_id filter' do
       expect(builds.where_values_hash).to match(a_hash_including('partition_id' => pipeline.partition_id))
     end
+
+    context 'when pipelines span multiple partitions' do
+      let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+      let_it_be(:cross_partition_pipeline) { create(:ci_pipeline, partition_id: 101, child_of: child_pipeline) }
+
+      it 'returns builds from all partitions' do
+        child_build = create(:ci_build, pipeline: child_pipeline)
+        cross_partition_build = create(:ci_build, pipeline: cross_partition_pipeline)
+
+        expect(builds).to include(build, child_build, cross_partition_build)
+      end
+    end
+  end
+
+  describe '#bridges_in_self_and_project_descendants' do
+    subject(:bridges) { pipeline.bridges_in_self_and_project_descendants }
+
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+
+    context 'when pipeline is standalone' do
+      it 'returns an empty relation' do
+        expect(bridges).to be_empty
+      end
+    end
+
+    context 'when pipeline has child pipelines with trigger bridges' do
+      let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+
+      it 'returns bridge jobs from the hierarchy' do
+        bridge = child_pipeline.source_pipeline.source_job
+
+        expect(bridges).to contain_exactly(bridge)
+      end
+    end
+
+    context 'when pipelines span multiple partitions' do
+      let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+      let_it_be(:cross_partition_pipeline) { create(:ci_pipeline, partition_id: 101, child_of: child_pipeline) }
+
+      it 'returns bridges from all partitions' do
+        child_bridge = child_pipeline.source_pipeline.source_job
+        cross_partition_bridge = cross_partition_pipeline.source_pipeline.source_job
+
+        expect(bridges).to include(child_bridge, cross_partition_bridge)
+      end
+    end
   end
 
   describe '#build_with_artifacts_in_self_and_project_descendants' do
@@ -5507,6 +5616,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'when job is bridge' do
       it_behaves_like 'fetches jobs in self and project descendant pipelines', :ci_bridge
+    end
+
+    context 'when pipelines span multiple partitions' do
+      let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+      let_it_be(:cross_partition_pipeline) { create(:ci_pipeline, partition_id: 101, child_of: child_pipeline) }
+
+      it 'returns jobs from all partitions' do
+        job = create(:ci_build, pipeline: pipeline)
+        child_job = create(:ci_build, pipeline: child_pipeline)
+        cross_partition_job = create(:ci_build, pipeline: cross_partition_pipeline)
+
+        expect(jobs).to include(job, child_job, cross_partition_job)
+      end
     end
   end
 
@@ -5612,6 +5734,25 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       expect(pipeline.latest_report_builds_in_self_and_project_descendants).to contain_exactly(grandchild_build)
     end
+
+    context 'when pipelines span multiple partitions' do
+      let_it_be(:grandchild_pipeline) { create(:ci_pipeline, partition_id: 101, child_of: child_pipeline) }
+
+      it 'returns builds from all partitions' do
+        parent_build = create(:ci_build, :test_reports, pipeline: pipeline)
+        child_build = create(:ci_build, :coverage_reports, pipeline: child_pipeline)
+        grandchild_build = create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline)
+
+        expect(pipeline.latest_report_builds_in_self_and_project_descendants).to contain_exactly(parent_build, child_build, grandchild_build)
+      end
+
+      it 'filters builds by scope across partitions' do
+        create(:ci_build, :test_reports, pipeline: pipeline)
+        grandchild_build = create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline)
+
+        expect(pipeline.latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:codequality))).to contain_exactly(grandchild_build)
+      end
+    end
   end
 
   describe '#downloadable_artifacts_in_self_and_project_descendants' do
@@ -5655,6 +5796,17 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'returns expired artifact' do
           expect(subject).to contain_exactly(parent_artifact, child_artifact, grandchild_artifact)
         end
+      end
+    end
+
+    context 'when pipelines span multiple partitions' do
+      let_it_be(:cross_partition_pipeline) { create(:ci_pipeline, :unlocked, partition_id: 101, child_of: child_pipeline) }
+      let_it_be(:cross_partition_build) { create(:ci_build, :codequality_reports, pipeline: cross_partition_pipeline) }
+
+      let(:cross_partition_artifact) { cross_partition_build.job_artifacts.first }
+
+      it 'returns downloadable artifacts from all partitions' do
+        expect(subject).to contain_exactly(parent_artifact, child_artifact, grandchild_artifact, cross_partition_artifact)
       end
     end
   end
@@ -6771,7 +6923,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when pipeline is parent' do
-      let(:child) { create(:ci_pipeline, child_of: pipeline) }
+      let!(:child) { create(:ci_pipeline, child_of: pipeline) }
 
       it 'returns self and child' do
         expect(self_and_downstreams).to contain_exactly(pipeline, child)
@@ -6779,11 +6931,21 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when pipeline is a grandparent pipeline' do
-      let(:child)      { create(:ci_pipeline, child_of: pipeline) }
-      let(:grandchild) { create(:ci_pipeline, child_of: child) }
+      let!(:child) { create(:ci_pipeline, child_of: pipeline) }
+      let!(:grandchild) { create(:ci_pipeline, child_of: child) }
 
       it 'returns self, child, and grandchild' do
         expect(self_and_downstreams).to contain_exactly(pipeline, child, grandchild)
+      end
+    end
+
+    context 'when pipeline is a child with its own children' do
+      let(:parent) { create(:ci_pipeline) }
+      let!(:pipeline) { create(:ci_pipeline, child_of: parent) }
+      let!(:child) { create(:ci_pipeline, child_of: pipeline) }
+
+      it 'returns self and its children, but not the parent' do
+        expect(self_and_downstreams).to contain_exactly(pipeline, child)
       end
     end
 
@@ -6906,10 +7068,31 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#self_and_project_ancestors' do
     subject(:self_and_project_ancestors) { pipeline.self_and_project_ancestors }
 
+    let(:pipeline) { create(:ci_pipeline, :created) }
+
+    context 'when pipeline has no relatives' do
+      it 'returns only self' do
+        expect(self_and_project_ancestors).to contain_exactly(pipeline)
+      end
+
+      it 'returns an ActiveRecord::Relation' do
+        expect(self_and_project_ancestors).to be_an(ActiveRecord::Relation)
+      end
+    end
+
+    context 'when pipeline is a root with children' do
+      before do
+        create_source_pipeline(pipeline, create(:ci_pipeline, project: pipeline.project))
+      end
+
+      it 'returns only self' do
+        expect(self_and_project_ancestors).to contain_exactly(pipeline)
+      end
+    end
+
     context 'when pipeline is child' do
-      let(:pipeline) { create(:ci_pipeline, :created) }
-      let(:parent) { create(:ci_pipeline) }
-      let(:sibling) { create(:ci_pipeline) }
+      let(:parent) { create(:ci_pipeline, project: pipeline.project) }
+      let(:sibling) { create(:ci_pipeline, project: pipeline.project) }
 
       before do
         create_source_pipeline(parent, pipeline)
@@ -6918,6 +7101,24 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it 'returns parent and self' do
         expect(self_and_project_ancestors).to contain_exactly(parent, pipeline)
+      end
+
+      it 'does not include siblings' do
+        expect(self_and_project_ancestors).not_to include(sibling)
+      end
+    end
+
+    context 'when pipeline is a grandchild' do
+      let(:ancestor) { create(:ci_pipeline, project: pipeline.project) }
+      let(:parent) { create(:ci_pipeline, project: pipeline.project) }
+
+      before do
+        create_source_pipeline(ancestor, parent)
+        create_source_pipeline(parent, pipeline)
+      end
+
+      it 'returns self, parent, and ancestor' do
+        expect(self_and_project_ancestors).to contain_exactly(ancestor, parent, pipeline)
       end
     end
 
@@ -6932,6 +7133,137 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it 'returns only self' do
         expect(self_and_project_ancestors).to contain_exactly(pipeline)
+      end
+    end
+  end
+
+  describe '#self_and_project_descendants' do
+    subject(:self_and_project_descendants) { pipeline.self_and_project_descendants }
+
+    let(:pipeline) { create(:ci_pipeline, :created) }
+
+    context 'when pipeline has no relatives' do
+      it 'returns only self' do
+        expect(self_and_project_descendants).to contain_exactly(pipeline)
+      end
+
+      it 'returns an ActiveRecord::Relation' do
+        expect(self_and_project_descendants).to be_an(ActiveRecord::Relation)
+      end
+    end
+
+    context 'when pipeline is child with no children of its own' do
+      let(:parent) { create(:ci_pipeline, project: pipeline.project) }
+
+      before do
+        create_source_pipeline(parent, pipeline)
+      end
+
+      it 'returns only self, not the parent' do
+        expect(self_and_project_descendants).to contain_exactly(pipeline)
+      end
+    end
+
+    context 'when pipeline has a child' do
+      let(:child) { create(:ci_pipeline, project: pipeline.project) }
+
+      before do
+        create_source_pipeline(pipeline, child)
+      end
+
+      it 'returns self and child' do
+        expect(self_and_project_descendants).to contain_exactly(pipeline, child)
+      end
+    end
+
+    context 'when pipeline has grandchildren' do
+      let(:child) { create(:ci_pipeline, project: pipeline.project) }
+      let(:grandchild) { create(:ci_pipeline, project: pipeline.project) }
+
+      before do
+        create_source_pipeline(pipeline, child)
+        create_source_pipeline(child, grandchild)
+      end
+
+      it 'returns self, child, and grandchild' do
+        expect(self_and_project_descendants).to contain_exactly(pipeline, child, grandchild)
+      end
+    end
+
+    context 'when pipeline has a cross-project downstream' do
+      let(:downstream) { create(:ci_pipeline, project: create(:project)) }
+
+      before do
+        create_source_pipeline(pipeline, downstream)
+      end
+
+      it 'does not traverse cross-project edges' do
+        expect(self_and_project_descendants).to contain_exactly(pipeline)
+      end
+    end
+  end
+
+  describe '#all_child_pipelines' do
+    subject(:all_child_pipelines) { pipeline.all_child_pipelines }
+
+    let(:pipeline) { create(:ci_pipeline) }
+
+    context 'when pipeline has no children' do
+      it 'returns an empty relation' do
+        expect(all_child_pipelines).to be_empty
+      end
+    end
+
+    context 'when pipeline has a child' do
+      let!(:child) { create(:ci_pipeline, child_of: pipeline) }
+
+      it 'returns the child' do
+        expect(all_child_pipelines).to contain_exactly(child)
+      end
+
+      it 'does not include self' do
+        expect(all_child_pipelines).not_to include(pipeline)
+      end
+    end
+
+    context 'when pipeline has multiple children' do
+      let!(:child1) { create(:ci_pipeline, child_of: pipeline) }
+      let!(:child2) { create(:ci_pipeline, child_of: pipeline) }
+
+      it 'returns all children' do
+        expect(all_child_pipelines).to contain_exactly(child1, child2)
+      end
+    end
+
+    context 'when pipeline has grandchildren' do
+      let!(:child) { create(:ci_pipeline, child_of: pipeline) }
+      let!(:grandchild) { create(:ci_pipeline, child_of: child) }
+
+      it 'returns child and grandchild' do
+        expect(all_child_pipelines).to contain_exactly(child, grandchild)
+      end
+    end
+
+    context 'when pipeline is a child itself' do
+      let(:parent) { create(:ci_pipeline) }
+      let!(:pipeline) { create(:ci_pipeline, child_of: parent) }
+      let!(:sibling) { create(:ci_pipeline, child_of: parent) }
+
+      it 'does not include the parent or siblings' do
+        expect(all_child_pipelines).to be_empty
+      end
+    end
+
+    context 'when pipeline has a cross-project downstream' do
+      let_it_be(:other_project) { create(:project) }
+      let!(:downstream) { create(:ci_pipeline, project: other_project) }
+
+      before do
+        create_source_pipeline(pipeline, downstream)
+      end
+
+      it 'does not include cross-project downstream pipelines' do
+        expect(all_child_pipelines).to be_empty
       end
     end
   end
@@ -7460,14 +7792,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     it 'sets partition_id to the current partition value' do
-      expect { pipeline.valid? }.to change(pipeline, :partition_id).to(123)
+      expect { pipeline.valid? }.to change { pipeline.partition_id }.to(123)
     end
 
     context 'when it is already set' do
       let(:pipeline) { build(:ci_pipeline, partition_id: 125) }
 
       it 'does not change the partition_id value' do
-        expect { pipeline.valid? }.not_to change(pipeline, :partition_id)
+        expect { pipeline.valid? }.not_to change { pipeline.partition_id }
       end
     end
 
@@ -7479,7 +7811,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it { is_expected.to validate_presence_of(:partition_id) }
 
       it 'does not change the partition_id value' do
-        expect { pipeline.valid? }.not_to change(pipeline, :partition_id)
+        expect { pipeline.valid? }.not_to change { pipeline.partition_id }
       end
     end
   end

@@ -8,7 +8,7 @@ class DeployKeyPolicy < BasePolicy
   condition(:orphaned_deploy_key) { @subject.orphaned? }
   condition(:is_maintainer_of_deploy_key_project) do
     # Note: 'almost_orphaned' deploy key has only one project record and we can check it as 'first'
-    @subject.almost_orphaned? && can?(:maintainer_access, @subject.deploy_keys_projects.first)
+    @subject.almost_orphaned? && can?(:admin_project, @subject.deploy_keys_projects.first)
   end
 
   rule { anonymous }.prevent_all

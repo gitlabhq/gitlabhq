@@ -5,6 +5,8 @@ action: perform_search
 identifiers:
 - user
 product_group: global_search
+product_categories:
+- global_search
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151599
 tiers:

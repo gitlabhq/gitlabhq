@@ -46,9 +46,10 @@ RSpec.describe TodosFinder, feature_category: :notifications do
         end
 
         context 'with multiple users sent to the finder' do
+          let_it_be(:todo3) { create(:todo) }
+          let_it_be(:user2) { todo3.user }
+
           it 'returns correct todos for the users passed' do
-            todo3 = create(:todo)
-            user2 = todo3.user
             create(:todo)
 
             expect(execute(users: [user, user2])).to match_array([todo1, todo2, todo3])
@@ -92,8 +93,8 @@ RSpec.describe TodosFinder, feature_category: :notifications do
         end
 
         context 'when filtering for actions' do
-          let!(:todo1) { create(:todo, user: user, project: project, target: issue, action: Todo::ASSIGNED) }
-          let!(:todo2) do
+          let_it_be(:todo1) { create(:todo, user: user, project: project, target: issue, action: Todo::ASSIGNED) }
+          let_it_be(:todo2) do
             create(:todo, user: user, group: group, target: merge_request, action: Todo::DIRECTLY_ADDRESSED)
           end
 
@@ -122,8 +123,8 @@ RSpec.describe TodosFinder, feature_category: :notifications do
           let_it_be(:author1) { create(:user) }
           let_it_be(:author2) { create(:user) }
 
-          let!(:todo1) { create(:todo, user: user, author: author1) }
-          let!(:todo2) { create(:todo, user: user, author: author2) }
+          let_it_be(:todo1) { create(:todo, user: user, author: author1) }
+          let_it_be(:todo2) { create(:todo, user: user, author: author2) }
 
           it 'returns correct todos when filtering by an author' do
             expect(execute(author_id: author1.id)).to match_array([todo1])
@@ -140,7 +141,7 @@ RSpec.describe TodosFinder, feature_category: :notifications do
           context 'with subgroups' do
             let_it_be(:subgroup) { create(:group, parent: group) }
 
-            let!(:todo3) { create(:todo, user: user, group: subgroup, target: issue) }
+            let_it_be(:todo3) { create(:todo, user: user, group: subgroup, target: issue) }
 
             it 'returns todos from subgroups when filtered by a group' do
               expect(execute(group_id: group.id)).to match_array([todo1, todo2, todo3])
@@ -208,13 +209,13 @@ RSpec.describe TodosFinder, feature_category: :notifications do
         end
 
         context 'with by project' do
-          let_it_be(:project1) { create(:project) }
-          let_it_be(:project2) { create(:project) }
-          let_it_be(:project3) { create(:project) }
+          let_it_be(:project1) { create(:project, namespace: group) }
+          let_it_be(:project2) { create(:project, namespace: group) }
+          let_it_be(:project3) { create(:project, namespace: group) }
 
-          let!(:todo1) { create(:todo, user: user, project: project1, state: :pending) }
-          let!(:todo2) { create(:todo, user: user, project: project2, state: :pending) }
-          let!(:todo3) { create(:todo, user: user, project: project3, state: :pending) }
+          let_it_be(:todo1) { create(:todo, user: user, project: project1, state: :pending) }
+          let_it_be(:todo2) { create(:todo, user: user, project: project2, state: :pending) }
+          let_it_be(:todo3) { create(:todo, user: user, project: project3, state: :pending) }
 
           it 'returns the expected todos for one project' do
             expect(execute(project_id: project2.id)).to match_array([todo2])
@@ -254,9 +255,9 @@ RSpec.describe TodosFinder, feature_category: :notifications do
 
     describe '#sort' do
       context 'with by date' do
-        let!(:todo1) { create(:todo, user: user, project: project) }
-        let!(:todo2) { create(:todo, user: user, project: project, created_at: 3.hours.ago) }
-        let!(:todo3) { create(:todo, user: user, project: project, snoozed_until: 1.hour.ago) }
+        let_it_be(:todo1) { create(:todo, user: user, project: project) }
+        let_it_be(:todo2) { create(:todo, user: user, project: project, created_at: 3.hours.ago) }
+        let_it_be(:todo3) { create(:todo, user: user, project: project, snoozed_until: 1.hour.ago) }
 
         context 'when sorting by ascending date' do
           subject { execute(sort: :created_asc) }
@@ -339,7 +340,8 @@ RSpec.describe TodosFinder, feature_category: :notifications do
 
       expected_result =
         if Gitlab.ee?
-          %w[Epic Vulnerability User ComplianceManagement::Projects::ComplianceViolation] + shared_types
+          %w[Epic Vulnerability User ComplianceManagement::Projects::ComplianceViolation
+            Ai::DuoWorkflows::Workflow] + shared_types
         else
           shared_types
         end

@@ -31,7 +31,9 @@ module QA
       let!(:source_mr_approvers) { [source_admin_user.email] }
       let(:source_mr_comments) do
         source_mr.comments.map do |note|
-          { **note.except(:id, :noteable_id, :project_id), author: note[:author].except(:web_url) }
+          note.except(:id, :noteable_id, :project_id, :imported, :imported_from, :author).merge(
+            body: normalize_body(note[:body])
+          )
         end
       end
 
@@ -45,13 +47,21 @@ module QA
 
       let(:imported_mr_comments) do
         imported_mr.comments.map do |note|
-          { **note.except(:id, :noteable_id, :project_id), author: note[:author].except(:web_url) }
+          note.except(:id, :noteable_id, :project_id, :imported, :imported_from, :author).merge(
+            body: normalize_body(note[:body])
+          )
         end
       end
 
       let(:imported_mr_reviewers) { imported_mr.reviewers.pluck(:username) }
       let(:imported_mr_approvers) do
         imported_mr.approval_configuration[:approved_by].map { |usr| usr.dig(:user, :username) }
+      end
+
+      # The importer wraps @username mentions in backticks when user mapping is enabled.
+      # Normalize both sides so we compare semantic content without formatting differences.
+      def normalize_body(text)
+        text&.gsub(%r{`(@[\w\-#./]+)`}, '\1')
       end
 
       before do
@@ -63,11 +73,7 @@ module QA
       context 'with merge request' do
         it(
           'successfully imports merge request',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348478',
-          quarantine: {
-            type: :bug,
-            issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24007"
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348478'
         ) do
           expect_project_import_finished_successfully
           expect(imported_mrs.count).to eq(1)
@@ -76,8 +82,11 @@ module QA
             expect(imported_mr).to eq(source_mr.reload!)
 
             expect(imported_mr_comments).to match_array(source_mr_comments)
-            expect(imported_mr_reviewers).to eq([mr_reviewer.username])
-            expect(imported_mr_approvers).to eq([source_admin_user.username])
+            # Imported users are placeholder users with usernames derived from the source username
+            expect(imported_mr_reviewers.length).to eq(1)
+            expect(imported_mr_reviewers.first).to start_with(source_mr_reviewer.username.tr('-', ''))
+            expect(imported_mr_approvers.length).to eq(1)
+            expect(imported_mr_approvers.first).to start_with(source_admin_user.username)
           end
         end
       end

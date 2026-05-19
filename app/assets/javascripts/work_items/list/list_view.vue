@@ -9,18 +9,23 @@ import {
   GlModalDirective,
   GlAlert,
 } from '@gitlab/ui';
+import produce from 'immer';
 import { isEmpty } from 'lodash-es';
 import IssueCardStatistics from 'ee_else_ce/work_items/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_time_info.vue';
 import { convertToSearchQuery, getInitialPageParams } from 'ee_else_ce/work_items/list/utils';
+import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
+import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
+import getWorkItemsRestQuery from '~/work_items/list/graphql/get_work_items_rest.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { STATUS_ALL, STATUS_OPEN } from '~/issues/constants';
+import { TYPENAME_NAMESPACE } from '~/graphql_shared/constants';
+import { STATUS_OPEN } from '~/issues/constants';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
-import { RELATIVE_POSITION_ASC } from '~/work_items/list/constants';
+import { RELATIVE_POSITION_ASC, CREATED_DESC } from '~/work_items/list/constants';
 import { scrollUp } from '~/lib/utils/scroll_utils';
-import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
 import ResourceListsLoadingStateList from '~/vue_shared/components/resource_lists/loading_state_list.vue';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
@@ -31,16 +36,16 @@ import {
 } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
-import WorkItemDrawer from '../components/work_item_drawer.vue';
+import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
+import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import {
-  DETAIL_VIEW_QUERY_PARAM_NAME,
   STATE_CLOSED,
   WORK_ITEM_TYPE_NAME_TICKET,
   WORK_ITEM_TYPE_NAME_EPIC,
   METADATA_KEYS,
-  VIEW_CONTEXT,
+  DETAIL_VIEW_QUERY_PARAM_NAME,
 } from '../constants';
-import { findHierarchyWidget } from '../utils';
+import { combineWorkItemLists, findHierarchyWidget, getSortedWorkItems } from '../utils';
 
 import HealthStatus from './components/health_status.vue';
 
@@ -48,7 +53,6 @@ const VueDraggable = () => import('~/lib/utils/vue3compat/draggable_compat.vue')
 
 export default {
   name: 'ListView',
-  VIEW_CONTEXT,
   importModalId: 'work-item-import-modal',
   components: {
     GlLoadingIcon,
@@ -63,7 +67,6 @@ export default {
     IssueCardTimeInfo,
     WorkItemBulkEditSidebar: () =>
       import('~/work_items/list/components/work_item_bulk_edit_sidebar.vue'),
-    WorkItemDrawer,
     HealthStatus,
     GlIcon,
     GlSkeletonLoader,
@@ -76,28 +79,33 @@ export default {
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['isGroup', 'workItemType'],
+  apollo: {
+    workItemsFull() {
+      return this.createWorkItemQuery(getWorkItemsQuery);
+    },
+    workItemsSlim() {
+      const query =
+        this.glFeatures.workItemRestApiFrontendUsers && this.glFeatures.workItemRestApi
+          ? getWorkItemsRestQuery
+          : getWorkItemsSlimQuery;
+      return this.createWorkItemQuery(query);
+    },
+  },
   props: {
     rootPageFullPath: {
       type: String,
       required: true,
     },
-    workItems: {
-      type: Array,
+    queryVariables: {
+      type: Object,
       required: true,
+    },
+    skipQuery: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     hasWorkItems: {
-      type: Boolean,
-      required: true,
-    },
-    isInitialLoadComplete: {
-      type: Boolean,
-      required: true,
-    },
-    isLoading: {
-      type: Boolean,
-      required: true,
-    },
-    detailLoading: {
       type: Boolean,
       required: true,
     },
@@ -105,10 +113,6 @@ export default {
       type: String,
       required: false,
       default: undefined,
-    },
-    pageInfo: {
-      type: Object,
-      required: true,
     },
     initialLoadWasFiltered: {
       type: Boolean,
@@ -155,36 +159,64 @@ export default {
       type: String,
       required: true,
     },
+    activeItem: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    workItemsCount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   emits: [
     'refetch-data',
-    'evict-cache',
     'toggle-bulk-edit-sidebar',
     'set-checked-issuable-ids',
     'set-page-params',
     'set-page-size',
-    'reorder',
+    'select-item',
+    'set-active-item',
+    'work-items-changed',
+    'namespace-data-loaded',
+    'set-error',
   ],
   data() {
     return {
       bulkEditInProgress: false,
-      activeItem: null,
+      workItemsFull: [],
+      workItemsSlim: [],
+      namespaceId: null,
+      pageInfo: {},
+      isInitialLoadComplete: false,
     };
   },
   computed: {
     issuablesWrapper() {
       return this.isManualOrdering ? VueDraggable : 'ul';
     },
+    workItems() {
+      const useRestApi =
+        this.glFeatures.workItemRestApiFrontendUsers && this.glFeatures.workItemRestApi;
+      const combined = combineWorkItemLists(
+        this.workItemsSlim,
+        this.workItemsFull,
+        !useRestApi && Boolean(this.glFeatures.workItemFeaturesField),
+      );
+      const sortKey = this.queryVariables.sort || CREATED_DESC;
+      return getSortedWorkItems(combined, sortKey);
+    },
+    isLoading() {
+      return this.$apollo.queries.workItemsSlim.loading;
+    },
+    detailLoading() {
+      return this.$apollo.queries.workItemsFull.loading;
+    },
     skeletonItemCount() {
-      const { totalItems, defaultPageSize, currentPage } = this;
-      const totalPages = Math.ceil(totalItems / defaultPageSize);
-
-      if (totalPages) {
-        return currentPage < totalPages
-          ? defaultPageSize
-          : totalItems % defaultPageSize || defaultPageSize;
-      }
-      return DEFAULT_SKELETON_COUNT;
+      const { workItemsCount, pageSize } = this;
+      const totalPages = Math.ceil(workItemsCount / pageSize);
+      return totalPages ? pageSize : DEFAULT_SKELETON_COUNT;
     },
     checkedIssuables() {
       return this.workItems.filter((issuable) => this.checkedIssuableIds.includes(issuable.id));
@@ -198,10 +230,7 @@ export default {
         !this.isEpicsList
       );
     },
-    isItemSelected() {
-      return !isEmpty(this.activeItem);
-    },
-    workItemDrawerEnabled() {
+    workItemDetailPanelEnabled() {
       return this.displaySettings?.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
     },
     isServiceDeskList() {
@@ -225,13 +254,6 @@ export default {
     showPageSizeSelector() {
       return this.workItems.length > 0;
     },
-    activeWorkItemType() {
-      const activeWorkItemTypeName =
-        typeof this.activeItem?.workItemType === 'object'
-          ? this.activeItem?.workItemType?.name
-          : this.activeItem?.workItemType;
-      return this.workItemType || activeWorkItemTypeName;
-    },
     hiddenMetadataKeys() {
       return this.displaySettings?.namespacePreferences?.hiddenMetadataKeys || [];
     },
@@ -248,35 +270,173 @@ export default {
   watch: {
     workItems: {
       handler(value) {
-        if (value.length > 0) {
-          this.checkDrawerParams();
+        if (!this.shouldLoad) {
+          this.checkDetailPanelParams();
         }
+        this.$emit('work-items-changed', {
+          count: value.length,
+          ids: value.map((i) => i.id),
+        });
       },
       immediate: true,
     },
     $route(newValue) {
-      if (newValue.query[DETAIL_VIEW_QUERY_PARAM_NAME] && !this.detailLoading) {
-        this.checkDrawerParams();
+      if (newValue.query[DETAIL_VIEW_QUERY_PARAM_NAME]) {
+        this.checkDetailPanelParams();
       } else {
-        this.activeItem = null;
+        this.$emit('set-active-item', null);
       }
     },
   },
-  created() {
-    window.addEventListener('popstate', this.checkDrawerParams);
-  },
-  beforeDestroy() {
-    window.removeEventListener('popstate', this.checkDrawerParams);
-  },
   methods: {
-    handleReorder({ oldIndex, newIndex }) {
-      this.$emit('reorder', { oldIndex, newIndex });
+    createWorkItemQuery(query) {
+      return {
+        query,
+        context: {
+          featureCategory: 'portfolio_management',
+        },
+        variables() {
+          return this.queryVariables;
+        },
+        update(data) {
+          return data?.namespace?.workItems.nodes ?? [];
+        },
+        skip() {
+          return isEmpty(this.queryVariables) || this.skipQuery;
+        },
+        result({ data }) {
+          this.handleListDataResults(data);
+        },
+        error(error) {
+          this.$emit(
+            'set-error',
+            s__('WorkItem|Something went wrong when fetching work items. Please try again.'),
+          );
+          Sentry.captureException(error);
+        },
+      };
+    },
+    handleListDataResults(data) {
+      this.pageInfo = data?.namespace?.workItems.pageInfo ?? {};
+      this.namespaceId = data?.namespace?.id;
+
+      if (data?.namespace) {
+        this.$emit('namespace-data-loaded', { namespaceName: data.namespace.name, data });
+      }
+      this.isInitialLoadComplete = true;
+    },
+    handleEvictCache() {
+      const { cache } = this.$apollo.provider.defaultClient;
+      cache.evict({
+        id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: this.namespaceId }),
+        fieldName: 'workItems',
+      });
+      cache.gc();
+    },
+    checkDetailPanelParams() {
+      const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
+
+      if (!queryParam) {
+        this.$emit('set-active-item', null);
+        return;
+      }
+
+      const params = JSON.parse(atob(queryParam));
+      if (params.id) {
+        const issue = this.workItems.find((i) => getIdFromGraphQLId(i.id) === params.id);
+        if (issue) {
+          this.$emit('set-active-item', {
+            ...issue,
+            fullPath: params.full_path,
+          });
+        } else {
+          updateHistory({
+            url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]),
+          });
+        }
+      }
+    },
+    handleReorder({ newIndex, oldIndex }) {
+      if (newIndex === oldIndex) return Promise.resolve();
+
+      const workItemToMove = this.workItems[oldIndex];
+      const remainingItems = this.workItems.filter((_, index) => index !== oldIndex);
+
+      let moveBeforeId = null;
+      let moveAfterId = null;
+
+      if (newIndex === 0) {
+        moveBeforeId = null;
+        moveAfterId = remainingItems[0]?.id || null;
+      } else if (newIndex >= remainingItems.length) {
+        moveAfterId = null;
+        moveBeforeId = remainingItems[remainingItems.length - 1]?.id || null;
+      } else {
+        moveAfterId = remainingItems[newIndex - 1]?.id || null;
+        moveBeforeId = remainingItems[newIndex]?.id || null;
+      }
+
+      const input = { id: workItemToMove.id };
+      if (moveBeforeId) input.moveBeforeId = moveBeforeId;
+      if (moveAfterId) input.moveAfterId = moveAfterId;
+
+      return this.$apollo
+        .mutate({
+          mutation: workItemsReorderMutation,
+          variables: { input },
+          update: (cache) => {
+            this.updateWorkItemsCache(cache, oldIndex, newIndex);
+          },
+        })
+        .then(({ data }) => {
+          if (data?.workItemsReorder?.errors?.length > 0) {
+            throw new Error(data.workItemsReorder.errors.join(', '));
+          }
+          return data;
+        })
+        .catch((error) => {
+          this.$emit('set-error', s__('WorkItem|An error occurred while reordering work items.'));
+          Sentry.captureException(error);
+          throw error;
+        });
+    },
+    updateWorkItemsCache(cache, oldIndex, newIndex) {
+      cache.updateQuery(
+        {
+          query: getWorkItemsQuery,
+          variables: this.queryVariables,
+        },
+        (existingData) => {
+          if (!existingData?.namespace?.workItems?.nodes) {
+            return existingData;
+          }
+
+          const workItems = [...existingData.namespace.workItems.nodes];
+
+          if (oldIndex >= 0 && oldIndex < workItems.length) {
+            const [movedItem] = workItems.splice(oldIndex, 1);
+            if (movedItem) {
+              workItems.splice(newIndex, 0, movedItem);
+            }
+          }
+
+          return produce(existingData, (draftData) => {
+            draftData.namespace.workItems.nodes = workItems;
+          });
+        },
+      );
     },
     isIssuableChecked(issuable) {
       return this.checkedIssuableIds.includes(issuable.id);
     },
     isIssuableActive(issuable) {
       return Boolean(getIdFromGraphQLId(issuable.id) === getIdFromGraphQLId(this.activeItem?.id));
+    },
+    handleSelectIssuable(item) {
+      this.$emit('select-item', item);
+      if (!item) {
+        updateHistory({ url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]) });
+      }
     },
     updateCheckedIssuableIds(issuable, toCheck) {
       const isIdChecked = this.checkedIssuableIds.includes(issuable.id);
@@ -286,20 +446,6 @@ export default {
       if (!toCheck && isIdChecked) {
         const indexToDelete = this.checkedIssuableIds.findIndex((id) => id === issuable.id);
         this.$emit('set-checked-issuable-ids', this.checkedIssuableIds.toSpliced(indexToDelete, 1));
-      }
-    },
-
-    handleToggle(item) {
-      if (item && this.activeItem?.iid === item.iid) {
-        this.activeItem = null;
-        const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
-        if (queryParam) {
-          updateHistory({
-            url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]),
-          });
-        }
-      } else {
-        this.activeItem = item;
       }
     },
     getStatus(issue) {
@@ -333,49 +479,11 @@ export default {
       });
       scrollUp();
     },
-    deleteItem() {
-      this.activeItem = null;
-      this.refetchItems({ refetchCounts: true });
-    },
-    handleStatusChange(workItem) {
-      if (this.state === STATUS_ALL) {
-        return;
-      }
-
-      // Work item state can be either 'OPEN' or 'CLOSED', this.state can be 'opened' or 'closed'
-      if (!this.state.includes(workItem.state.toLowerCase())) {
-        this.refetchItems({ refetchCounts: true });
-      }
-    },
     async refetchItems({ refetchCounts = false } = {}) {
       if (refetchCounts) {
         this.$emit('refetch-data', 'counts');
       }
-      this.$emit('evict-cache');
-    },
-    checkDrawerParams() {
-      const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
-
-      if (!queryParam) {
-        this.activeItem = null;
-        return;
-      }
-
-      const params = JSON.parse(atob(queryParam));
-      if (params.id) {
-        const issue = this.workItems.find((i) => getIdFromGraphQLId(i.id) === params.id);
-        if (issue) {
-          this.activeItem = {
-            ...issue,
-            // we need fullPath here to prevent cache invalidation
-            fullPath: params.full_path,
-          };
-        } else {
-          updateHistory({
-            url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]),
-          });
-        }
-      }
+      this.handleEvictCache();
     },
     isDirectChildOfWorkItem(workItem) {
       if (!workItem) {
@@ -400,18 +508,6 @@ export default {
     :class="{ 'work-item-list-container': !isServiceDeskList }"
     class="issuable-list-container"
   >
-    <work-item-drawer
-      v-if="workItemDrawerEnabled"
-      :active-item="activeItem"
-      :open="isItemSelected"
-      :issuable-type="activeWorkItemType"
-      :view-context="$options.VIEW_CONTEXT.drawerList"
-      click-outside-exclude-selector=".issuable-list"
-      @close="activeItem = null"
-      @add-child="refetchItems"
-      @work-item-deleted="deleteItem"
-      @work-item-updated="handleStatusChange"
-    />
     <issuable-bulk-edit-sidebar :expanded="showBulkEditSidebar">
       <template #bulk-edit-actions>
         <gl-button
@@ -473,12 +569,12 @@ export default {
           :show-checkbox="showBulkEditSidebar"
           :checked="isIssuableChecked(workItem)"
           show-work-item-type-icon
-          :prevent-redirect="workItemDrawerEnabled"
+          :prevent-redirect="workItemDetailPanelEnabled"
           :is-active="isIssuableActive(workItem)"
           :detail-loading="detailLoading"
           :hidden-metadata-keys="hiddenMetadataKeys"
           @checked-input="updateCheckedIssuableIds(workItem, $event)"
-          @select-issuable="handleToggle"
+          @select-issuable="handleSelectIssuable"
         >
           <template #timeframe>
             <issue-card-time-info

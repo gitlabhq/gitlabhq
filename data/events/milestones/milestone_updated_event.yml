@@ -1,0 +1,6 @@
+---
+event: Milestones::MilestoneUpdatedEvent
+description: Published when a milestone's attributes (title, dates, etc.) are updated.
+  Skipped for no-op saves; the updated_attributes payload lists which attributes actually
+  changed.
+feature_category: team_planning

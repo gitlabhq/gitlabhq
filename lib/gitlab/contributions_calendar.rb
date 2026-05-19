@@ -14,7 +14,7 @@ module Gitlab
       @contributor = contributor
       @contributor_time_instance = local_timezone_instance(contributor.timezone).now
       @current_user = current_user
-      @groups = [] # Overriden in EE
+      @groups = [] # Overridden in EE
       @projects = ContributedProjectsFinder.new(
         user: @contributor,
         current_user: current_user,

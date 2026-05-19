@@ -1,32 +1,27 @@
-import { GlInfiniteScroll } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
-import Vue from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import OtherUpdates from '~/whats_new/components/other_updates.vue';
 import Feature from '~/whats_new/components/feature.vue';
 import SkeletonLoader from '~/whats_new/components/skeleton_loader.vue';
+import { useWhatsNew } from '~/whats_new/store';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
-const MOCK_DRAWER_BODY_HEIGHT = 42;
-
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/common_utils');
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('OtherUpdates', () => {
   let wrapper;
-
-  const actions = {
-    setReadArticles: jest.fn(),
-  };
-
-  const store = new Vuex.Store({ actions });
+  let pinia;
+  let store;
 
   const defaultProps = {
     features: [],
@@ -34,13 +29,12 @@ describe('OtherUpdates', () => {
     readArticles: [],
     totalArticlesToRead: 0,
     markAsReadPath: 'path/to/mark_as_read',
-    drawerBodyHeight: MOCK_DRAWER_BODY_HEIGHT,
-    pageInfo: {},
+    pageInfo: { nextPage: null },
   };
 
   const createWrapper = (props = {}) => {
     wrapper = mount(OtherUpdates, {
-      store,
+      pinia,
       propsData: {
         ...defaultProps,
         ...props,
@@ -48,7 +42,16 @@ describe('OtherUpdates', () => {
     });
   };
 
-  const findInfiniteScroll = () => wrapper.findComponent(GlInfiniteScroll);
+  beforeEach(() => {
+    pinia = createTestingPinia();
+    store = useWhatsNew();
+  });
+
+  const findLoadMoreButton = () => wrapper.find('[data-testid="load-more-button"]');
+  const findLoadMoreGlButton = () => {
+    const buttons = wrapper.findAllComponents(GlButton);
+    return buttons.wrappers.find((w) => w.attributes('data-testid') === 'load-more-button');
+  };
   const findSkeletonLoader = () => wrapper.findComponent(SkeletonLoader);
   const findFeatures = () => wrapper.findAllComponents(Feature);
 
@@ -63,14 +66,10 @@ describe('OtherUpdates', () => {
       createWrapper({ features: mockFeatures });
     });
 
-    it('renders infinite scroll component', () => {
-      const infiniteScroll = findInfiniteScroll();
+    it('does not render load more button when no next page', () => {
+      const loadMoreButton = findLoadMoreButton();
 
-      expect(infiniteScroll.exists()).toBe(true);
-      expect(infiniteScroll.props()).toMatchObject({
-        fetchedItems: mockFeatures.length,
-        maxListHeight: MOCK_DRAWER_BODY_HEIGHT,
-      });
+      expect(loadMoreButton.exists()).toBe(false);
     });
 
     it('renders feature components for each feature', () => {
@@ -115,7 +114,7 @@ describe('OtherUpdates', () => {
 
         await axios.waitForAll();
 
-        expect(actions.setReadArticles).toHaveBeenCalledWith(expect.any(Object), [1]);
+        expect(store.setReadArticles).toHaveBeenCalledWith([1]);
       });
 
       it('calls Sentry when api call fails', async () => {
@@ -128,7 +127,7 @@ describe('OtherUpdates', () => {
 
         await axios.waitForAll();
 
-        expect(actions.setReadArticles).not.toHaveBeenCalled();
+        expect(store.setReadArticles).not.toHaveBeenCalled();
         expect(Sentry.captureException).toHaveBeenCalled();
       });
 
@@ -145,48 +144,78 @@ describe('OtherUpdates', () => {
       expect(findSkeletonLoader().exists()).toBe(false);
     });
 
-    it('emits bottom-reached event when infinite scroll reaches bottom', () => {
-      findInfiniteScroll().vm.$emit('bottomReached');
-
-      expect(wrapper.emitted('bottom-reached')).toHaveLength(1);
-    });
-
-    it('renders infinite scroll with correct props', () => {
-      const scroll = findInfiniteScroll();
-      const skeletonLoader = findSkeletonLoader();
-
-      expect(skeletonLoader.exists()).toBe(false);
-
-      expect(scroll.props()).toMatchObject({
-        fetchedItems: mockFeatures.length,
-        maxListHeight: MOCK_DRAWER_BODY_HEIGHT,
-      });
-    });
-
-    describe('bottom-reached with pagination', () => {
-      const emitBottomReached = () => findInfiniteScroll().vm.$emit('bottomReached');
-
-      it('emits bottom-reached when nextPage exists', () => {
+    describe('load more button', () => {
+      it('renders load more button when nextPage exists', () => {
         createWrapper({
           features: mockFeatures,
-          pageInfo: { nextPage: 840 },
+          pageInfo: { nextPage: 2 },
         });
 
-        emitBottomReached();
+        const loadMoreButton = findLoadMoreGlButton();
 
-        expect(wrapper.emitted('bottom-reached')).toHaveLength(1);
-        expect(wrapper.emitted('bottom-reached')[0]).toEqual([]);
+        expect(loadMoreButton.exists()).toBe(true);
+        expect(loadMoreButton.props('size')).toBe('small');
+        expect(loadMoreButton.props('category')).toBe('tertiary');
+        expect(loadMoreButton.props('variant')).toBe('confirm');
+        expect(loadMoreButton.text()).toBe('Load more');
       });
 
-      it('emits bottom-reached when nextPage does not exist', () => {
+      it('does not render load more button when no next page', () => {
         createWrapper({
           features: mockFeatures,
           pageInfo: { nextPage: null },
         });
 
-        emitBottomReached();
+        expect(findLoadMoreButton().exists()).toBe(false);
+      });
 
-        expect(wrapper.emitted('bottom-reached')).toHaveLength(1);
+      it('shows loading state when fetching', () => {
+        createWrapper({
+          features: mockFeatures,
+          fetching: true,
+          pageInfo: { nextPage: 2 },
+        });
+
+        const loadMoreButton = findLoadMoreGlButton();
+
+        expect(loadMoreButton.exists()).toBe(true);
+        expect(loadMoreButton.props('loading')).toBe(true);
+      });
+
+      it('emits load-more event when clicked', () => {
+        createWrapper({
+          features: mockFeatures,
+          pageInfo: { nextPage: 2 },
+        });
+
+        findLoadMoreButton().trigger('click');
+
+        expect(wrapper.emitted('load-more')).toHaveLength(1);
+      });
+
+      it('moves focus to first new item after loading completes', async () => {
+        wrapper = mount(OtherUpdates, {
+          pinia,
+          propsData: {
+            ...defaultProps,
+            features: mockFeatures,
+            pageInfo: { nextPage: 2 },
+          },
+          attachTo: document.body,
+        });
+
+        findLoadMoreButton().trigger('click');
+
+        const newFeatures = [
+          ...mockFeatures,
+          { name: 'Feature 4', documentation_link: 'www.url4.com', release: 3.14 },
+        ];
+
+        await wrapper.setProps({ features: newFeatures, fetching: true });
+        await wrapper.setProps({ fetching: false });
+        await nextTick();
+
+        expect(document.activeElement.dataset.testid).toBe('whats-new-article-toggle');
       });
     });
   });
@@ -203,15 +232,15 @@ describe('OtherUpdates', () => {
         expect(skeletonLoaders.exists()).toBe(true);
       });
 
-      it('does not render infinite scroll', () => {
-        expect(findInfiniteScroll().exists()).toBe(false);
+      it('does not render load more button', () => {
+        expect(findLoadMoreButton().exists()).toBe(false);
       });
 
       it('renders skeleton loader when fetching', () => {
-        const scroll = findInfiniteScroll();
+        const loadMoreButton = findLoadMoreButton();
         const skeletonLoader = findSkeletonLoader();
 
-        expect(scroll.exists()).toBe(false);
+        expect(loadMoreButton.exists()).toBe(false);
         expect(skeletonLoader.exists()).toBe(true);
       });
     });
@@ -221,11 +250,10 @@ describe('OtherUpdates', () => {
         createWrapper({ features: [], fetching: false });
       });
 
-      it('renders infinite scroll with empty features', () => {
-        const infiniteScroll = findInfiniteScroll();
+      it('does not render load more button with empty features', () => {
+        const loadMoreButton = findLoadMoreButton();
 
-        expect(infiniteScroll.exists()).toBe(true);
-        expect(infiniteScroll.props('fetchedItems')).toBe(0);
+        expect(loadMoreButton.exists()).toBe(false);
       });
 
       it('does not render skeleton loaders', () => {
@@ -234,14 +262,6 @@ describe('OtherUpdates', () => {
 
       it('does not render any feature components', () => {
         expect(findFeatures()).toHaveLength(0);
-      });
-
-      it('renders infinite scroll loader when NOT fetching', () => {
-        const scroll = findInfiniteScroll();
-        const skeletonLoader = findSkeletonLoader();
-
-        expect(scroll.exists()).toBe(true);
-        expect(skeletonLoader.exists()).toBe(false);
       });
     });
   });
@@ -257,9 +277,9 @@ describe('OtherUpdates', () => {
       expect(OtherUpdates.props.fetching.type).toBe(Boolean);
     });
 
-    it('requires drawerBodyHeight prop', () => {
-      expect(OtherUpdates.props.drawerBodyHeight.required).toBe(true);
-      expect(OtherUpdates.props.drawerBodyHeight.type).toBe(Number);
+    it('requires pageInfo prop', () => {
+      expect(OtherUpdates.props.pageInfo.required).toBe(true);
+      expect(OtherUpdates.props.pageInfo.type).toBe(Object);
     });
 
     it('requires totalArticlesToRead prop', () => {

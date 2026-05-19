@@ -1,7 +1,7 @@
 ---
-stage: None - Facilitated functionality, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
-group: Unassigned - Facilitated functionality, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+stage: Facilitated functionality
+group: Facilitated functionality
+info: For more information, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
 description: Analyze user retention and activity trends over time.
 gitlab_dedicated: yes
 title: User Cohorts
@@ -46,5 +46,5 @@ Prerequisites:
 To view user cohorts:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Users**.
+1. In the left sidebar, select **Overview** > **Users**.
 1. Select the **Cohorts** tab.

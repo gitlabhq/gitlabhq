@@ -68,7 +68,8 @@ export default {
         {
           key: 'created',
           label: __('Created'),
-          class: 'gl-text-right',
+          thAlignRight: true,
+          tdClass: 'gl-text-right',
         },
         {
           key: 'actions',

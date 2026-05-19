@@ -35,6 +35,10 @@ module Mcp
           - Use Cancel to stop a pipeline, abort a build, or kill a running job
           - Use Delete to remove a pipeline record
         DESC
+        annotations: {
+          readOnlyHint: false,
+          destructiveHint: true
+        },
         input_schema: {
           type: 'object',
           properties: {
@@ -90,14 +94,6 @@ module Mcp
       override :tool_name
       def self.tool_name
         'manage_pipeline'
-      end
-
-      override :annotations
-      def annotations
-        {
-          readOnlyHint: false,
-          destructiveHint: true
-        }
       end
 
       protected

@@ -100,6 +100,7 @@ module MergeRequests
       set_reviewers_approved(merge_request, new_reviewers) if new_reviewers.any?
       set_first_reviewer_assigned_at_metrics(merge_request) if new_reviewers.any?
       trigger_user_merge_request_updated(merge_request)
+      publish_assigned_reviewers_event(merge_request, new_reviewers) if new_reviewers.any?
     end
 
     def cleanup_environments(merge_request)
@@ -183,7 +184,7 @@ module MergeRequests
     end
 
     def request_duo_code_review(merge_request)
-      # Overriden in EE
+      # Overridden in EE
     end
 
     def filter_params(merge_request)
@@ -297,6 +298,19 @@ module MergeRequests
       [merge_request.author, *merge_request.assignees, *merge_request.reviewers].uniq.each do |user|
         GraphqlTriggers.user_merge_request_updated(user, merge_request)
       end
+    end
+
+    def publish_assigned_reviewers_event(merge_request, new_reviewers)
+      # We are publishing an event just to validate the new CloudEvent functionality. This event is not consumed yet
+      # See here: https://gitlab.com/gitlab-org/gitlab/-/work_items/599509
+      return unless ::Feature.enabled?(:trigger_merge_requests_assigned_reviewers_cloud_event, merge_request.project)
+
+      assigned_reviewers_event = AssignedReviewersEvent.build(
+        current_user: current_user,
+        merge_request: merge_request,
+        new_reviewers: new_reviewers
+      )
+      Gitlab::EventStore.publish(assigned_reviewers_event)
     end
 
     def set_first_reviewer_assigned_at_metrics(merge_request)

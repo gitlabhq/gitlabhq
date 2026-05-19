@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Reports::Security::FindingSignature do
+RSpec.describe Gitlab::Ci::Reports::Security::FindingSignature, feature_category: :vulnerability_management do
   subject { described_class.new(params.with_indifferent_access) }
 
   let(:params) do
@@ -24,6 +24,24 @@ RSpec.describe Gitlab::Ci::Reports::Security::FindingSignature do
           expect(subject.valid?).to eq(true)
         end
       end
+    end
+  end
+
+  describe '#signature_hex' do
+    let(:signature) { described_class.new(**params, qualified_signature: qualified_signature) }
+
+    subject { signature.signature_hex }
+
+    context 'when it is a qualified signature' do
+      let(:qualified_signature) { true }
+
+      it { is_expected.to eq('694b90bd9523ef4ec1dfb3adc9ce942d809b32fc') }
+    end
+
+    context 'when it is not a qualified signature' do
+      let(:qualified_signature) { false }
+
+      it { is_expected.to eq('793b17717327dc39b653cec1b3320595d9050a06') }
     end
   end
 

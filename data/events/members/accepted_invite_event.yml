@@ -1,0 +1,4 @@
+---
+event: Members::AcceptedInviteEvent
+description: Published when a user accepts a membership invitation to a group or project.
+feature_category: user_management

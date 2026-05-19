@@ -72,14 +72,46 @@ module Gitlab
         version.to_f >= MINIMUM_POSTGRES_VERSION
       end
 
+      # In cases where the application has just booted, load balancing replicas might
+      # be assumed online, but not yet checked. In that case, schema_cache.columns_hash()
+      # might throw an error if the selected replica is offline.
+      #
+      # For any method called directly on `connection`, this is fine - LoadBalancer#read
+      # catches the error and reroutes to a new replica. However, schema_cache.columns_hash
+      # delays querying the connection until the `.columns_hash` call and
+      # therefore the error "escapes" the rescue block in `LoadBalancer#read`.
+      #
+      # Only wrap in LoadBalancer#read if the load balancer has been set up.
       def cached_column_exists?(column_name)
-        connection
-          .schema_cache.columns_hash(model.table_name)
-          .has_key?(column_name.to_s)
+        if model.respond_to?(:load_balancer)
+          model.load_balancer.read do |real_conn|
+            real_conn
+              .schema_cache.columns_hash(model.table_name)
+              .has_key?(column_name.to_s)
+          end
+        else
+          connection.schema_cache.columns_hash(model.table_name).has_key?(column_name.to_s)
+        end
       end
 
+      # In cases where the application has just booted, load balancing replicas might
+      # be assumed online, but not yet checked. In that case, schema_cache.data_source_exists()
+      # might throw an error if the selected replica is offline.
+      #
+      # For any method called directly on `connection`, this is fine - LoadBalancer#read
+      # catches the error and reroutes to a new replica. However, schema_cache.data_source_exists
+      # delays querying the connection until the `.data_source_exists` call and
+      # therefore the error "escapes" the rescue block in `LoadBalancer#read`.
+      #
+      # Only wrap in LoadBalancer#read if the load balancer has been set up.
       def cached_table_exists?
-        exists? && connection.schema_cache.data_source_exists?(model.table_name)
+        return false unless exists?
+
+        if model.respond_to?(:load_balancer)
+          model.load_balancer.read { |conn| conn.schema_cache.data_source_exists?(model.table_name) }
+        else
+          connection.schema_cache.data_source_exists?(model.table_name)
+        end
       end
 
       def exists?

@@ -161,10 +161,11 @@ export default {
                 <gl-link v-if="item.link" :href="item.link.href">{{ item.link.text }}</gl-link>
                 <p
                   v-if="item.supportingText"
-                  v-safe-html="item.supportingText"
                   class="gl-mb-0 gl-text-secondary"
                   data-testid="item-supporting-text"
-                ></p>
+                >
+                  {{ item.supportingText }}
+                </p>
               </div>
               <gl-badge
                 v-if="item.badge"

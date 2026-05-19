@@ -24,7 +24,7 @@ module Gitlab
                 error(result.errors.first, failure_reason: :config_error)
               end
 
-              @pipeline.config_metadata = result.config_metadata
+              @pipeline.config_metadata = result.config_metadata if @command.readonly?
 
             rescue StandardError => ex
               Gitlab::ErrorTracking.track_exception(ex,

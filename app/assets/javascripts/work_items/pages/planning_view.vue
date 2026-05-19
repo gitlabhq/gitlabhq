@@ -9,7 +9,8 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { InternalEvents } from '~/tracking';
 import { createAlert, VARIANT_INFO } from '~/alert';
-import { TYPENAME_NAMESPACE, TYPENAME_USER } from '~/graphql_shared/constants';
+import { TYPENAME_USER, TYPENAME_NAMESPACE } from '~/graphql_shared/constants';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import {
   STATUS_ALL,
   STATUS_OPEN,
@@ -72,18 +73,13 @@ import {
   TOKEN_TITLE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
-import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
-import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/list/graphql/get_work_item_state_counts.query.graphql';
-import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
-import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_view.query.graphql';
 import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
-import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
 
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
@@ -92,8 +88,10 @@ import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser
 import ListView from 'ee_else_ce/work_items/list/list_view.vue';
 
 import {
+  convertLegacyTypeFormat,
+  convertOldTypeTokenEnumToGid,
+  convertNumberToGid,
   getSortOptions,
-  getDefaultWorkItemTypes,
   getInitialPageParams,
   subscribeToSavedView,
   convertToApiParams,
@@ -105,8 +103,6 @@ import {
   getSavedViewFilterTokens,
   convertToSearchQuery,
 } from 'ee_else_ce/work_items/list/utils';
-
-import { getParameterByName } from '~/lib/utils/url_utility';
 
 import {
   CREATED_DESC,
@@ -122,10 +118,11 @@ import {
   PARAM_STATE,
 } from '~/work_items/list/constants';
 import {
-  getSortedWorkItems,
-  combineWorkItemLists,
-  getAllItemsDraftFiltersStorageKey,
-} from '~/work_items/utils';
+  planningViewAllItemsFilters,
+  planningViewSavedViewFilterTokens,
+  setPlanningViewAllItemsFilters,
+  setPlanningViewSavedViewFilterTokens,
+} from '~/work_items/pages/planning_view_state';
 
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
 
@@ -142,6 +139,8 @@ import EmptyStateWithoutAnyTickets from '../list/components/empty_state_without_
 import InfoBanner from '../list/components/info_banner.vue';
 import NewSavedViewModal from '../list/components/work_items_new_saved_view_modal.vue';
 import WorkItemsOnboardingModal from '../components/work_items_onboarding_modal/work_items_onboarding_modal.vue';
+import WorkItemDetailPanel from '../components/work_item_detail_panel.vue';
+import WorkItemDisplaySettingsDrawer from '../list/components/work_item_display_settings_drawer.vue';
 
 import {
   WORK_ITEM_TYPE_NAME_TICKET,
@@ -151,6 +150,8 @@ import {
   ROUTES,
   WORK_ITEM_CREATE_SOURCES,
   CREATION_CONTEXT_LIST_ROUTE,
+  DETAIL_VIEW_QUERY_PARAM_NAME,
+  VIEW_CONTEXT,
 } from '../constants';
 
 const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
@@ -178,6 +179,7 @@ export default {
   issuableListTabs,
   WORK_ITEM_CREATE_SOURCES,
   CREATION_CONTEXT_LIST_ROUTE,
+  VIEW_CONTEXT,
   searchProjectsQuery,
   name: 'PlanningView',
   components: {
@@ -192,6 +194,7 @@ export default {
     CreateWorkItemModal,
     FilteredSearchBar,
     UserPreferences,
+    WorkItemDisplaySettingsDrawer,
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
     EmptyStateWithAnyTickets,
@@ -202,6 +205,7 @@ export default {
     ListView,
     WorkItemsOnboardingModal,
     UserCalloutDismisser,
+    WorkItemDetailPanel,
   },
   mixins: [glFeatureFlagMixin(), InternalEvents.mixin()],
   inject: [
@@ -229,13 +233,13 @@ export default {
     'isGroup',
     'isGroupIssuesList',
     'isServiceDeskSupported',
-    'canAdminIssue',
-    'canBulkAdminEpic',
     'workItemType',
     'hasGroupBulkEditFeature',
     'hasEpicsFeature',
     'hasQualityManagementFeature',
     'hasProjects',
+    'getWorkItemTypeConfiguration',
+    'workItemTypesConfiguration',
   ],
   props: {
     rootPageFullPath: {
@@ -257,24 +261,18 @@ export default {
   data() {
     const loggedIn = isLoggedIn();
     return {
+      namespaceId: null,
+      activeItem: null,
       sortKey: CREATED_DESC,
       error: undefined,
       initialSortKey: CREATED_DESC,
       initialViewSortKey: null,
       filterTokens: [],
-      workItemTypes: [],
-      workItemsFull: [],
-      workItemsSlim: [],
-      workItemStateCounts: {},
       workItemsCount: 0,
       hasWorkItems: false,
       pageParams: {},
       state: STATUS_OPEN,
       pageSize: DEFAULT_PAGE_SIZE,
-      isInitialLoadComplete: false,
-      initialLoadWasFiltered: false,
-      namespaceId: null,
-      pageInfo: {},
       savedView: null,
       lastTrackedSavedViewId: null,
       showSavedViewNotFoundModal: false,
@@ -293,18 +291,13 @@ export default {
       namespaceName: null,
       isLoggedIn: loggedIn,
       isSortKeyInitialized: !loggedIn,
+      currentWorkItemsCount: 0,
+      currentWorkItemIds: [],
+      isDisplayDrawerOpen: false,
     };
   },
 
   apollo: {
-    workItemsFull() {
-      return this.createWorkItemQuery(getWorkItemsQuery);
-    },
-
-    workItemsSlim() {
-      return this.createWorkItemQuery(getWorkItemsSlimQuery);
-    },
-
     workItemsCount: {
       query() {
         return getWorkItemsCountOnlyQuery;
@@ -323,63 +316,22 @@ export default {
       },
     },
 
-    // TODO: remove entirely once consolidated list is GA
-    workItemStateCounts: {
-      query: getWorkItemStateCountsQuery,
-      variables() {
-        return this.queryVariables;
-      },
-      update(data) {
-        return data?.[this.namespace]?.workItemStateCounts ?? {};
-      },
-      skip() {
-        return (
-          !this.isServiceDeskList ||
-          isEmpty(this.queryVariables) ||
-          this.metadataLoading ||
-          this.shouldSkipDueToSavedViewState
-        );
-      },
-      error(error) {
-        Sentry.captureException(error);
-      },
-    },
-
     hasWorkItems: {
       query: hasWorkItemsQuery,
       variables() {
-        const singleWorkItemType = this.workItemType ? NAME_TO_ENUM_MAP[this.workItemType] : null;
         return {
           fullPath: this.rootPageFullPath,
-          types: singleWorkItemType || this.defaultWorkItemTypes,
+          ...this.apiTypesArgument,
         };
       },
       update(data) {
         return data?.namespace?.workItems.nodes.length > 0 || false;
       },
+      result({ data }) {
+        this.namespaceId = data.namespace?.id;
+      },
       error(error) {
         this.error = s__('WorkItem|An error occurred while getting work item counts.');
-        Sentry.captureException(error);
-      },
-      result() {
-        if (!this.isInitialLoadComplete) {
-          this.isInitialLoadComplete = true;
-          this.initialLoadWasFiltered = this.filterTokens.length > 0;
-        }
-      },
-    },
-
-    workItemTypes: {
-      query: namespaceWorkItemTypesQuery,
-      variables() {
-        return {
-          fullPath: this.rootPageFullPath,
-        };
-      },
-      update(data) {
-        return data?.namespace?.workItemTypes?.nodes;
-      },
-      error(error) {
         Sentry.captureException(error);
       },
     },
@@ -440,10 +392,14 @@ export default {
               namespacePreferences: savedView.displaySettings,
             };
 
+            const sessionFilters =
+              planningViewSavedViewFilterTokens.value[this.$route.params.view_id];
+            this.filterTokens = sessionFilters ?? tokens;
+            this.updateState(this.filterTokens);
+
             if (draft) {
               this.restoreViewDraft();
             } else {
-              this.filterTokens = tokens;
               this.sortKey = savedView?.sort;
               this.localDisplaySettings = {
                 commonPreferences: { ...this.displaySettings.commonPreferences },
@@ -510,7 +466,17 @@ export default {
           this.showIssueRepositioningMessage();
           sortKey = this.state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
         }
-        if (!this.isSavedView) this.sortKey = sortKey;
+        if (!this.isSavedView) {
+          if (!planningViewAllItemsFilters.value) {
+            this.sortKey = sortKey;
+            // Sync default sort to URL on fresh load so the URL always reflects current state.
+            // Guard against overwriting existing params (e.g. sv_limit_id on redirect from saved view).
+            if (!Object.keys(this.$route.query).length) {
+              this.updateRouterQueryParams();
+            }
+            this.saveSessionFilters(this.filterTokens);
+          }
+        }
         this.isSortKeyInitialized = true;
       },
       skip() {
@@ -525,33 +491,24 @@ export default {
   },
 
   computed: {
-    workItems() {
-      const combined = combineWorkItemLists(
-        this.workItemsSlim,
-        this.workItemsFull,
-        Boolean(this.glFeatures.workItemFeaturesField),
-      );
-      const sortKey = this.queryVariables.sort || CREATED_DESC;
-      return getSortedWorkItems(combined, sortKey);
+    isDisplaySettingsDrawerEnabled() {
+      return Boolean(this.glFeatures.workItemListDisplaySettingsDrawer);
+    },
+    workItemDetailPanelEnabled() {
+      return this.displaySettings?.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
+    },
+    isItemSelected() {
+      return !isEmpty(this.activeItem);
+    },
+    activeWorkItemType() {
+      const activeWorkItemTypeName =
+        typeof this.activeItem?.workItemType === 'object'
+          ? this.activeItem?.workItemType?.name
+          : this.activeItem?.workItemType;
+      return this.workItemType || activeWorkItemTypeName;
     },
     hasSearch() {
       return Boolean(this.searchQuery);
-    },
-    allItemsDraftFilters() {
-      const {
-        sv_not_found,
-        sv_limit_id,
-        show,
-        first_page_size,
-        last_page_size,
-        page_after,
-        page_before,
-        ...query
-      } = this.$route.query;
-      return { query };
-    },
-    allItemsDraftFiltersStorageKey() {
-      return getAllItemsDraftFiltersStorageKey(this.rootPageFullPath);
     },
     namespace() {
       return this.isGroup ? NAMESPACE_GROUP : NAMESPACE_PROJECT;
@@ -568,14 +525,6 @@ export default {
       }
       return this.savedViewNotFound || !this.isSubscribedToSavedView;
     },
-    tabCounts() {
-      const { all, closed, opened } = this.workItemStateCounts;
-      return {
-        [STATUS_OPEN]: opened,
-        [STATUS_CLOSED]: closed,
-        [STATUS_ALL]: all,
-      };
-    },
     tabs() {
       if (this.withTabs) {
         return this.$options.issuableListTabs;
@@ -583,9 +532,6 @@ export default {
       return [];
     },
     currentTabCount() {
-      if (this.withTabs) {
-        return this.tabCounts[this.state] ?? 0;
-      }
       return this.workItemsCount;
     },
     preferencesChanged() {
@@ -645,7 +591,10 @@ export default {
       return this.sortKey !== compareSort;
     },
     viewConfigChanged() {
-      return this.filtersChanged || this.sortChanged || this.preferencesChanged;
+      if (this.isSavedView) {
+        return this.filtersChanged || this.sortChanged || this.preferencesChanged;
+      }
+      return this.filtersChanged;
     },
     isSubscriptionLimitReached() {
       return (
@@ -660,7 +609,10 @@ export default {
       return this.savedView?.userPermissions?.updateSavedView && this.viewConfigChanged;
     },
     isBulkEditDisabled() {
-      return this.showBulkEditSidebar || this.workItems.length === 0;
+      return this.showBulkEditSidebar || this.currentWorkItemsCount === 0;
+    },
+    initialLoadWasFiltered() {
+      return this.filterTokens.length > 0;
     },
     workItemTotalStateCount() {
       if (this.workItemsCount === null) {
@@ -685,28 +637,26 @@ export default {
       });
     },
     defaultWorkItemTypes() {
-      return getDefaultWorkItemTypes({
-        hasEpicsFeature: this.hasEpicsFeature,
-        hasOkrsFeature: this.hasOkrsFeature,
-        hasQualityManagementFeature: this.hasQualityManagementFeature,
-        isGroupIssuesList: this.isGroupIssuesList,
-      });
+      return this.workItemTypesConfiguration
+        .filter((type) => type.isFilterableListView)
+        .map((type) =>
+          this.glFeatures.workItemConfigurableTypes ? type.id : NAME_TO_ENUM_MAP[type.name],
+        );
     },
     queryVariables() {
       const hasGroupFilter = Boolean(this.urlFilterParams.group_path);
-      const singleWorkItemType = this.workItemType ? NAME_TO_ENUM_MAP[this.workItemType] : null;
       const isIidSearch = ISSUE_REFERENCE.test(this.searchQuery);
       return {
         fullPath: this.rootPageFullPath,
         sort: this.sortKey,
         state: this.state,
         ...this.apiFilterParams,
+        ...this.apiTypesArgument,
         ...this.pageParams,
         iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
         search: isIidSearch ? undefined : this.searchQuery,
         excludeProjects: hasGroupFilter || this.isEpicsList,
         includeDescendants: !hasGroupFilter,
-        types: this.apiFilterParams.types || singleWorkItemType || this.defaultWorkItemTypes,
         isGroup: this.isGroup,
         excludeGroupWorkItems: this.isGroupIssuesList,
         useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
@@ -743,6 +693,7 @@ export default {
 
       const tokens = [
         {
+          order: 4,
           type: TOKEN_TYPE_ASSIGNEE,
           title: TOKEN_TITLE_ASSIGNEE,
           icon: 'user',
@@ -756,6 +707,7 @@ export default {
           multiSelect: true,
         },
         {
+          order: 5,
           type: TOKEN_TYPE_AUTHOR,
           title: TOKEN_TITLE_AUTHOR,
           icon: 'pencil',
@@ -771,6 +723,7 @@ export default {
           multiSelect: true,
         },
         {
+          order: 3,
           type: TOKEN_TYPE_LABEL,
           title: TOKEN_TITLE_LABEL,
           icon: 'labels',
@@ -782,6 +735,7 @@ export default {
           multiSelect: true,
         },
         {
+          order: 7,
           type: TOKEN_TYPE_MILESTONE,
           title: TOKEN_TITLE_MILESTONE,
           icon: 'milestone',
@@ -792,6 +746,7 @@ export default {
           isProject: !this.isGroup,
         },
         {
+          order: 16,
           type: TOKEN_TYPE_SEARCH_WITHIN,
           title: TOKEN_TITLE_SEARCH_WITHIN,
           icon: 'search',
@@ -807,6 +762,7 @@ export default {
 
       if (this.isGroup && !this.isGroupIssuesList) {
         tokens.push({
+          order: 17,
           type: TOKEN_TYPE_GROUP,
           icon: 'group',
           title: TOKEN_TITLE_GROUP,
@@ -819,6 +775,7 @@ export default {
 
       if (!this.isGroup) {
         tokens.push({
+          order: 11,
           type: TOKEN_TYPE_RELEASE,
           title: TOKEN_TITLE_RELEASE,
           icon: 'rocket-launch',
@@ -830,19 +787,21 @@ export default {
 
       if (!this.workItemType) {
         tokens.push({
+          order: 2,
           type: TOKEN_TYPE_TYPE,
           title: TOKEN_TITLE_TYPE,
           icon: 'work-item-issue',
           unique: true,
           token: WorkItemTypeToken,
-          operators: OPERATORS_IS_NOT_OR,
           multiSelect: true,
+          operators: OPERATORS_IS_NOT_OR,
           fullPath: this.rootPageFullPath,
         });
       }
 
       if (this.isLoggedIn) {
         tokens.push({
+          order: 12,
           type: TOKEN_TYPE_CONFIDENTIAL,
           title: TOKEN_TITLE_CONFIDENTIAL,
           icon: 'eye-slash',
@@ -855,17 +814,21 @@ export default {
           ],
         });
 
-        tokens.push({
-          type: TOKEN_TYPE_MY_REACTION,
-          title: TOKEN_TITLE_MY_REACTION,
-          icon: 'thumb-up',
-          token: EmojiToken,
-          unique: true,
-          fetchEmojis: this.fetchEmojis,
-          recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-my_reaction`,
-        });
+        if (this.autocompleteAwardEmojisPath) {
+          tokens.push({
+            order: 14,
+            type: TOKEN_TYPE_MY_REACTION,
+            title: TOKEN_TITLE_MY_REACTION,
+            icon: 'thumb-up',
+            token: EmojiToken,
+            unique: true,
+            fetchEmojis: this.fetchEmojis,
+            recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-my_reaction`,
+          });
+        }
 
         tokens.push({
+          order: 15,
           type: TOKEN_TYPE_SUBSCRIBED,
           title: TOKEN_TITLE_SUBSCRIBED,
           icon: 'notifications',
@@ -888,6 +851,7 @@ export default {
       }
 
       tokens.push({
+        order: 1,
         type: TOKEN_TYPE_STATE,
         title: TOKEN_TITLE_STATE,
         icon: 'issue-open-m',
@@ -903,6 +867,7 @@ export default {
 
       if (this.hasIssueDateFilterFeature) {
         tokens.push({
+          order: 18,
           type: TOKEN_TYPE_CLOSED,
           title: TOKEN_TITLE_CLOSED,
           icon: 'history',
@@ -912,6 +877,7 @@ export default {
         });
 
         tokens.push({
+          order: 19,
           type: TOKEN_TYPE_CREATED,
           title: TOKEN_TITLE_CREATED,
           icon: 'history',
@@ -921,6 +887,7 @@ export default {
         });
 
         tokens.push({
+          order: 20,
           type: TOKEN_TYPE_DUE_DATE,
           title: TOKEN_TITLE_DUE_DATE,
           icon: 'calendar',
@@ -930,6 +897,7 @@ export default {
         });
 
         tokens.push({
+          order: 21,
           type: TOKEN_TYPE_UPDATED,
           title: TOKEN_TITLE_UPDATED,
           icon: 'history',
@@ -941,6 +909,7 @@ export default {
 
       if (this.canReadCrmOrganization) {
         tokens.push({
+          order: 22,
           type: TOKEN_TYPE_ORGANIZATION,
           title: TOKEN_TITLE_ORGANIZATION,
           icon: 'organization',
@@ -955,6 +924,7 @@ export default {
 
       if (this.canReadCrmContact) {
         tokens.push({
+          order: 23,
           type: TOKEN_TYPE_CONTACT,
           title: TOKEN_TITLE_CONTACT,
           icon: 'user',
@@ -968,6 +938,7 @@ export default {
       }
 
       tokens.push({
+        order: 9,
         type: TOKEN_TYPE_PARENT,
         title: TOKEN_TITLE_PARENT,
         icon: 'work-item-parent',
@@ -984,7 +955,7 @@ export default {
         tokens.push(...this.eeSearchTokens);
       }
 
-      tokens.sort((a, b) => a.title.localeCompare(b.title));
+      tokens.sort((a, b) => a.order - b.order);
 
       return tokens;
     },
@@ -992,42 +963,65 @@ export default {
       // We should not be using ENUM and change the mount of work item type lists
       // with id instead since that is immutable
       const workItemTypeName = this.workItemType || WORK_ITEM_TYPE_NAME_ISSUE;
-      return (
-        this.workItemTypes.find((wi) => wi.name === workItemTypeName)?.id ||
-        this.workItemTypes[0]?.id ||
-        ''
-      );
+      return this.getWorkItemTypeConfiguration(workItemTypeName)?.id || '';
     },
     displaySettingsSoT() {
-      return this.isSavedView ? this.localDisplaySettings : this.displaySettings;
+      return this.isSavedView
+        ? {
+            ...this.localDisplaySettings,
+            commonPreferences: this.displaySettings.commonPreferences,
+          }
+        : this.displaySettings;
     },
     savedViewId() {
       return convertToGraphQLId('WorkItems::SavedViews::SavedView', this.$route.params.view_id);
     },
     allIssuablesChecked() {
-      return this.checkedIssuableIds.length === this.workItems.length;
+      return (
+        this.currentWorkItemsCount > 0 &&
+        this.checkedIssuableIds.length === this.currentWorkItemsCount
+      );
     },
     isInfoBannerVisible() {
       return this.isServiceDeskList && this.isServiceDeskSupported && this.hasWorkItems;
     },
     csvExportQueryVariables() {
-      const singleWorkItemType = this.workItemType ? NAME_TO_ENUM_MAP[this.workItemType] : null;
       return {
         ...this.apiFilterParams,
+        ...this.apiTypesArgument,
         projectPath: this.rootPageFullPath,
         state: this.state,
         search: this.searchQuery,
-        types: this.apiFilterParams.types || singleWorkItemType || this.defaultWorkItemTypes,
       };
     },
     searchQuery() {
       return convertToSearchQuery(this.filterTokens);
     },
     apiFilterParams() {
-      return convertToApiParams(this.filterTokens, {
+      const params = convertToApiParams(this.filterTokens, {
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
         hasStatusFeature: this.hasStatusFeature,
       });
+      if (this.glFeatures.workItemConfigurableTypes) {
+        if (params.types) {
+          params.workItemTypeIds = convertNumberToGid(params.types);
+          delete params.types;
+        }
+        if (params.not?.types) {
+          params.not.workItemTypeIds = convertNumberToGid(params.not.types);
+          delete params.not.types;
+        }
+      }
+      return params;
+    },
+    apiTypesArgument() {
+      const singleWorkItemType = this.glFeatures.workItemConfigurableTypes
+        ? this.getWorkItemTypeConfiguration(this.workItemType)?.id
+        : NAME_TO_ENUM_MAP[this.workItemType];
+      const field = this.glFeatures.workItemConfigurableTypes ? 'workItemTypeIds' : 'types';
+      return {
+        [field]: this.apiFilterParams[field] || singleWorkItemType || this.defaultWorkItemTypes,
+      };
     },
     showWorkItemByEmail() {
       return Boolean(this.canCreateWorkItem && !this.isGroup && this.newWorkItemEmailAddress);
@@ -1050,7 +1044,7 @@ export default {
       return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : WORK_ITEM_TYPE_NAME_ISSUE;
     },
     canExport() {
-      return !this.isGroup && this.isLoggedIn && this.workItems.length > 0;
+      return !this.isGroup && this.isLoggedIn && this.currentWorkItemsCount > 0;
     },
     newIssueDropdownQueryVariables() {
       return {
@@ -1068,18 +1062,11 @@ export default {
     showGroupNewWorkItem() {
       return this.isGroupIssuesList && this.hasProjects;
     },
-    detailLoading() {
-      return this.$apollo.queries.workItemsFull.loading;
-    },
-    isLoading() {
-      return this.$apollo.queries.workItemsSlim.loading;
-    },
     isServiceDeskList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_TICKET;
     },
     viewDraftData() {
       return {
-        filterTokens: this.filterTokens,
         sortKey: this.sortKey,
         displaySettings: this.localDisplaySettings,
       };
@@ -1091,8 +1078,15 @@ export default {
 
   watch: {
     $route(newValue, oldValue) {
+      if (!newValue.query[DETAIL_VIEW_QUERY_PARAM_NAME]) {
+        this.activeItem = null;
+      }
       if (newValue.fullPath !== oldValue.fullPath && !this.isSavedView) {
         this.updateData(getParameterByName(PARAM_SORT));
+
+        if (Object.keys(newValue.query).length === 0) {
+          this.addStateToken();
+        }
       }
       if (this.isSavedView) {
         this.restoreViewDraft();
@@ -1100,13 +1094,14 @@ export default {
     },
     eeSearchTokens() {
       if (this.isSavedView && Boolean(this.savedView)) {
-        const draft = localStorage.getItem(this.savedViewDraftStorageKey);
         const tokens = this.getFilterTokensFromSavedView(this.savedView.filters);
         this.initialViewTokens = tokens;
+        const sessionFilters = planningViewSavedViewFilterTokens.value[this.$route.params.view_id];
+        this.filterTokens = sessionFilters ?? tokens;
+        this.updateState(this.filterTokens);
+        const draft = localStorage.getItem(this.savedViewDraftStorageKey);
         if (draft) {
           this.restoreViewDraft();
-        } else {
-          this.filterTokens = tokens;
         }
       }
     },
@@ -1128,6 +1123,22 @@ export default {
         }
       },
     },
+    workItemTypesConfiguration(workItemTypesConfiguration) {
+      // When workItemTypesConfiguration becomes available and isSortKeyInitialized is still false,
+      // set it to true to prevent the loading indicator from showing indefinitely
+      if (workItemTypesConfiguration?.length > 0 && !this.isSortKeyInitialized && this.isLoggedIn) {
+        this.isSortKeyInitialized = true;
+      }
+
+      // TODO remove when we no longer need to convert old type[]=ISSUE params to new type[]=1 params
+      if (
+        this.glFeatures.workItemConfigurableTypes &&
+        this.filterTokens.some((token) => token.type === TOKEN_TYPE_TYPE)
+      ) {
+        const tokens = convertOldTypeTokenEnumToGid(this.filterTokens, workItemTypesConfiguration);
+        this.handleFilter(tokens);
+      }
+    },
   },
 
   mounted() {
@@ -1145,39 +1156,11 @@ export default {
     if (this.isSavedView) {
       this.pageParams = getInitialPageParams(this.pageSize);
     } else {
-      const draft = localStorage.getItem(this.allItemsDraftFiltersStorageKey);
       const hasUrlQuery = Object.keys(this.$route.query).length > 0;
-      const hasSavedViewParam =
-        'sv_not_found' in this.$route.query || 'sv_limit_id' in this.$route.query;
-
-      const {
-        sv_not_found,
-        sv_limit_id,
-        show,
-        first_page_size,
-        last_page_size,
-        page_after,
-        page_before,
-        ...query
-      } = this.$route.query;
-
-      if (hasUrlQuery && !hasSavedViewParam) {
-        localStorage.setItem(this.allItemsDraftFiltersStorageKey, JSON.stringify({ query }));
-      } else if (draft && !hasSavedViewParam) {
-        const parsedData = JSON.parse(draft);
-
-        if (parsedData.query) {
-          this.$router.replace({ query: parsedData.query }).catch((error) => {
-            if (error.name !== 'NavigationDuplicated') {
-              throw error;
-            }
-          });
-        }
-      }
 
       this.updateData(getParameterByName(PARAM_SORT));
 
-      if (!draft && !hasUrlQuery) {
+      if (!hasUrlQuery) {
         this.addStateToken();
       }
     }
@@ -1187,91 +1170,47 @@ export default {
   },
 
   methods: {
-    toggleStickyHeader(isVisible) {
-      this.isStickyHeaderVisible = isVisible;
-    },
-    handleReorder({ newIndex, oldIndex }) {
-      if (newIndex === oldIndex) return Promise.resolve();
-
-      const workItemToMove = this.workItems[oldIndex];
-
-      const remainingItems = this.workItems.filter((_, index) => index !== oldIndex);
-
-      let moveBeforeId = null;
-      let moveAfterId = null;
-
-      if (newIndex === 0) {
-        // Moving to beginning
-        moveBeforeId = null;
-        moveAfterId = remainingItems[0]?.id || null;
-      } else if (newIndex >= remainingItems.length) {
-        // Moving to end
-        moveAfterId = null;
-        moveBeforeId = remainingItems[remainingItems.length - 1]?.id || null;
+    saveSessionFilters(tokens) {
+      if (this.isSavedView) {
+        setPlanningViewSavedViewFilterTokens({
+          ...planningViewSavedViewFilterTokens.value,
+          [this.$route.params.view_id]: [...tokens],
+        });
       } else {
-        // Moving between items
-        moveAfterId = remainingItems[newIndex - 1]?.id || null;
-        moveBeforeId = remainingItems[newIndex]?.id || null;
+        setPlanningViewAllItemsFilters({
+          filterTokens: [...tokens],
+          sortKey: this.sortKey,
+          state: this.state,
+        });
+      }
+    },
+    handleSetActiveItem(item) {
+      this.activeItem = item;
+    },
+    handleWorkItemsChanged({ count, ids }) {
+      this.currentWorkItemsCount = count;
+      this.currentWorkItemIds = ids;
+    },
+    handleNamespaceDataLoaded({ namespaceName, data }) {
+      this.namespaceName = namespaceName;
+      document.title = this.calculateDocumentTitle(data);
+    },
+    deleteItem() {
+      this.activeItem = null;
+      this.refetchItems({ refetchCounts: true });
+    },
+    handleStatusChange(workItem) {
+      if (this.state === STATUS_ALL) {
+        return;
       }
 
-      const input = { id: workItemToMove.id };
-      if (moveBeforeId) input.moveBeforeId = moveBeforeId;
-      if (moveAfterId) input.moveAfterId = moveAfterId;
-
-      return this.$apollo
-        .mutate({
-          mutation: workItemsReorderMutation,
-          variables: { input },
-          update: (cache) => {
-            this.updateWorkItemsCache(cache, oldIndex, newIndex);
-          },
-        })
-        .then(({ data }) => {
-          if (data?.workItemsReorder?.errors?.length > 0) {
-            throw new Error(data.workItemsReorder.errors.join(', '));
-          }
-          return data;
-        })
-        .catch((error) => {
-          this.error = s__('WorkItem|An error occurred while reordering work items.');
-          Sentry.captureException(error);
-          throw error;
-        });
+      // Work item state can be either 'OPEN' or 'CLOSED', this.state can be 'opened' or 'closed'
+      if (!this.state.includes(workItem.state.toLowerCase())) {
+        this.refetchItems({ refetchCounts: true });
+      }
     },
-    updateWorkItemsCache(cache, oldIndex, newIndex) {
-      cache.updateQuery(
-        {
-          query: getWorkItemsQuery,
-          variables: this.queryVariables,
-        },
-        (existingData) => {
-          if (!existingData?.namespace?.workItems?.nodes) {
-            return existingData;
-          }
-
-          const workItems = [...existingData.namespace.workItems.nodes];
-
-          if (oldIndex >= 0 && oldIndex < workItems.length) {
-            const [movedItem] = workItems.splice(oldIndex, 1);
-            if (movedItem) {
-              workItems.splice(newIndex, 0, movedItem);
-            }
-          }
-
-          const newData = {
-            ...existingData,
-            namespace: {
-              ...existingData.namespace,
-              workItems: {
-                ...existingData.namespace.workItems,
-                nodes: workItems,
-              },
-            },
-          };
-
-          return newData;
-        },
-      );
+    toggleStickyHeader(isVisible) {
+      this.isStickyHeaderVisible = isVisible;
     },
     getFilterTokensFromSavedView(savedViewFilters) {
       const tokens = getSavedViewFilterTokens(savedViewFilters, {
@@ -1280,9 +1219,12 @@ export default {
         convertTypeTokens: true,
       });
       const availableTokenTypes = this.searchTokens.map((token) => token.type);
-      return tokens.filter(
+      const filteredTokens = tokens.filter(
         (token) => availableTokenTypes.includes(token.type) || token.type === FILTERED_SEARCH_TERM,
       );
+      return this.glFeatures.workItemConfigurableTypes
+        ? convertLegacyTypeFormat(filteredTokens, this.getWorkItemTypeConfiguration)
+        : filteredTokens;
     },
     restoreViewDraft() {
       const draft = localStorage.getItem(this.savedViewDraftStorageKey);
@@ -1290,7 +1232,6 @@ export default {
 
       const parsedData = JSON.parse(draft);
 
-      this.filterTokens = parsedData.filterTokens;
       this.sortKey = parsedData.sortKey;
       this.localDisplaySettings = parsedData.displaySettings;
     },
@@ -1305,26 +1246,20 @@ export default {
       this.updateRouterQueryParams();
     },
     navigateToAllItems() {
-      const draft = localStorage.getItem(this.allItemsDraftFiltersStorageKey);
-
-      if (draft) {
-        const { query } = JSON.parse(draft);
-
-        this.$router
-          .push({
-            name: ROUTES.index,
-            query,
-          })
-          .catch((error) => {
-            if (error.name !== 'NavigationDuplicated') {
-              throw error;
-            }
-          });
-
-        return;
+      let query;
+      if (planningViewAllItemsFilters.value) {
+        const { filterTokens, sortKey, state } = planningViewAllItemsFilters.value;
+        const urlFilterParams = convertToUrlParams(filterTokens, {
+          hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+        });
+        query = {
+          sort: urlSortParams[sortKey],
+          state,
+          ...urlFilterParams,
+          first_page_size: DEFAULT_PAGE_SIZE,
+        };
       }
-
-      this.$router.push({ name: ROUTES.index }).catch((error) => {
+      this.$router.push({ name: ROUTES.index, query }).catch((error) => {
         if (error.name !== 'NavigationDuplicated') {
           throw error;
         }
@@ -1542,28 +1477,11 @@ export default {
 
       localStorage.setItem(this.savedViewDraftStorageKey, JSON.stringify(this.viewDraftData));
     },
-    persistAllItemsDraft() {
-      const hasSavedViewParam =
-        'sv_not_found' in this.$route.query || 'sv_limit_id' in this.$route.query;
-
-      if (!hasSavedViewParam) {
-        localStorage.setItem(
-          this.allItemsDraftFiltersStorageKey,
-          JSON.stringify(this.allItemsDraftFilters),
-        );
-      }
-    },
     handleAllIssuablesCheckedInput(value) {
-      this.workItems.forEach((issuable) => this.updateCheckedIssuableIds(issuable, value));
-    },
-    updateCheckedIssuableIds(issuable, toCheck) {
-      const isIdChecked = this.checkedIssuableIds.includes(issuable.id);
-      if (toCheck && !isIdChecked) {
-        this.checkedIssuableIds = [...this.checkedIssuableIds, issuable.id];
-      }
-      if (!toCheck && isIdChecked) {
-        const indexToDelete = this.checkedIssuableIds.findIndex((id) => id === issuable.id);
-        this.checkedIssuableIds = this.checkedIssuableIds.toSpliced(indexToDelete, 1);
+      if (value) {
+        this.checkedIssuableIds = [...this.currentWorkItemIds];
+      } else {
+        this.checkedIssuableIds = [];
       }
     },
     async handleLocalDisplayPreferencesUpdate(newSettings) {
@@ -1593,12 +1511,15 @@ export default {
       this.pageParams = getInitialPageParams(this.pageSize);
 
       this.updateRouterQueryParams();
+      this.saveSessionFilters(tokens);
 
       if (this.isSavedView) {
         this.persistSavedViewDraft();
-      } else {
-        this.persistAllItemsDraft();
       }
+    },
+    handleSetPageParams(pageParams) {
+      this.pageParams = pageParams;
+      this.updateRouterQueryParams();
     },
     handleSort(sortKey) {
       if (this.sortKey === sortKey) {
@@ -1618,6 +1539,7 @@ export default {
       }
 
       this.updateRouterQueryParams();
+      this.saveSessionFilters(this.filterTokens);
       this.persistSavedViewDraft();
     },
     async saveSortPreference(sortKey) {
@@ -1662,37 +1584,6 @@ export default {
         Sentry.captureException(error);
       }
     },
-    createWorkItemQuery(query) {
-      return {
-        query,
-        context: {
-          featureCategory: 'portfolio_management',
-        },
-        variables() {
-          return this.queryVariables;
-        },
-        update(data) {
-          return data?.namespace?.workItems.nodes ?? [];
-        },
-        skip() {
-          return (
-            isEmpty(this.queryVariables) ||
-            this.metadataLoading ||
-            this.shouldSkipDueToSavedViewState
-          );
-        },
-        result({ data }) {
-          this.namespaceId = data?.namespace?.id;
-          this.handleListDataResults(data);
-        },
-        error(error) {
-          this.error = s__(
-            'WorkItem|Something went wrong when fetching work items. Please try again.',
-          );
-          Sentry.captureException(error);
-        },
-      };
-    },
     updateState(tokens) {
       this.state =
         tokens.find((token) => token.type === TOKEN_TYPE_STATE)?.value.data || STATUS_ALL;
@@ -1700,18 +1591,12 @@ export default {
     handleWorkItemCreated() {
       this.refetchItems({ refetchCounts: true });
     },
-    async refetchItems({ refetchCounts = false } = {}) {
+    async refetchItems({ refetchCounts = false }) {
       if (refetchCounts) {
-        this.$apollo.queries.workItemStateCounts.refetch();
+        this.$apollo.queries.workItemsCount.refetch();
+        this.$apollo.queries.hasWorkItems.refetch();
       }
-
-      // evict the namespace's workItems cache to force a full refetch
-      const { cache } = this.$apollo.provider.defaultClient;
-      cache.evict({
-        id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: this.namespaceId }),
-        fieldName: 'workItems',
-      });
-      cache.gc();
+      this.handleEvictCache();
     },
     extractProjects(data) {
       return data?.group?.projects?.nodes;
@@ -1736,17 +1621,6 @@ export default {
         }
       });
     },
-    handleListDataResults(listData) {
-      this.pageInfo = listData?.namespace?.workItems.pageInfo ?? {};
-
-      if (listData?.namespace) {
-        this.namespaceName = listData.namespace.name;
-        document.title = this.calculateDocumentTitle(listData);
-      }
-      if (!this.withTabs) {
-        this.isInitialLoadComplete = true;
-      }
-    },
     calculateDocumentTitle(data) {
       const middleCrumb = data.namespace.name;
       if (this.isServiceDeskList) {
@@ -1761,23 +1635,17 @@ export default {
       }
       return `${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
     },
-    handleSavedViewSkipState(newValue) {
-      this.shouldSkipDueToSavedViewState = newValue;
-    },
     handleRefetch(scope) {
       if (scope === 'counts') {
-        this.$apollo.queries.workItemStateCounts.refetch();
+        this.$apollo.queries.workItemsCount.refetch();
       }
       if (scope === 'all') {
-        this.$apollo.queries.workItemStateCounts.refetch();
-        this.$apollo.queries.workItemsFull.refetch();
-        this.$apollo.queries.workItemsSlim.refetch();
         this.$apollo.queries.hasWorkItems.refetch();
         this.$apollo.queries.workItemsCount.refetch();
+        this.handleEvictCache();
       }
     },
     handleEvictCache() {
-      // evict the namespace's workItems cache to force a full refetch
       const { cache } = this.$apollo.provider.defaultClient;
       cache.evict({
         id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: this.namespaceId }),
@@ -1808,6 +1676,18 @@ export default {
       data-testid="view-limit-warning-modal"
     />
     <info-banner v-if="isInfoBannerVisible" />
+    <work-item-detail-panel
+      v-if="workItemDetailPanelEnabled"
+      :active-item="activeItem"
+      :open="isItemSelected"
+      :issuable-type="activeWorkItemType"
+      :view-context="$options.VIEW_CONTEXT.drawerList"
+      click-outside-exclude-selector=".issuable-list"
+      @close="activeItem = null"
+      @add-child="refetchItems"
+      @work-item-deleted="deleteItem"
+      @work-item-updated="handleStatusChange"
+    />
     <div>
       <template v-if="!isServiceDeskList">
         <div v-if="error" class="gl-mt-5">
@@ -1816,13 +1696,7 @@ export default {
           </gl-alert>
         </div>
 
-        <issuable-tabs
-          v-if="withTabs"
-          :tabs="tabs"
-          :tab-counts="tabCounts"
-          :current-tab="state"
-          @click="handleClickTab"
-        >
+        <issuable-tabs v-if="withTabs" :tabs="tabs" :current-tab="state" @click="handleClickTab">
           <template #nav-actions>
             <div class="gl-flex gl-justify-end gl-gap-3">
               <gl-button
@@ -1924,11 +1798,18 @@ export default {
       >
         <!-- eslint-enable vue/v-on-event-hyphenation -->
         <template #user-preference>
+          <gl-button
+            v-if="isDisplaySettingsDrawerEnabled"
+            icon="preferences"
+            data-testid="display-settings-button"
+            @click="isDisplayDrawerOpen = true"
+          >
+            {{ __('Display') }}
+          </gl-button>
           <user-preferences
             :namespace-preferences="displaySettingsSoT.namespacePreferences"
             :common-preferences="displaySettings.commonPreferences"
             :full-path="rootPageFullPath"
-            :is-epics-list="isEpicsList"
             :is-group="isGroup"
             :is-service-desk-list="isServiceDeskList"
             :work-item-type-id="workItemTypeId"
@@ -1969,11 +1850,18 @@ export default {
             >
               <!-- eslint-enable vue/v-on-event-hyphenation -->
               <template #user-preference>
+                <gl-button
+                  v-if="isDisplaySettingsDrawerEnabled"
+                  icon="preferences"
+                  data-testid="display-settings-button"
+                  @click="isDisplayDrawerOpen = true"
+                >
+                  {{ __('Display') }}
+                </gl-button>
                 <user-preferences
                   :namespace-preferences="displaySettingsSoT.namespacePreferences"
                   :common-preferences="displaySettings.commonPreferences"
                   :full-path="rootPageFullPath"
-                  :is-epics-list="isEpicsList"
                   :is-group="isGroup"
                   :is-service-desk-list="isServiceDeskList"
                   :work-item-type-id="workItemTypeId"
@@ -2070,15 +1958,10 @@ export default {
     <list-view
       :root-page-full-path="rootPageFullPath"
       :with-tabs="withTabs"
-      :work-items="workItems"
-      :page-info="pageInfo"
-      :work-item-state-counts="workItemStateCounts"
+      :query-variables="queryVariables"
+      :skip-query="shouldSkipDueToSavedViewState || metadataLoading"
       :work-items-count="workItemsCount"
       :has-work-items="hasWorkItems"
-      :work-item-types="workItemTypes"
-      :is-initial-load-complete="isInitialLoadComplete"
-      :is-loading="isLoading"
-      :detail-loading="detailLoading"
       :error="error"
       :initial-load-was-filtered="initialLoadWasFiltered"
       :show-bulk-edit-sidebar="showBulkEditSidebar"
@@ -2090,18 +1973,19 @@ export default {
       :sort-key="sortKey"
       :is-sort-key-initialized="isSortKeyInitialized"
       :state="state"
+      :active-item="activeItem"
       @toggle-bulk-edit-sidebar="($evt) => (showBulkEditSidebar = $evt)"
-      @skip-due-to-saved-view="handleSavedViewSkipState"
-      @reset-initial-load-state="isInitialLoadComplete = false"
       @refetch-data="handleRefetch"
-      @evict-cache="handleEvictCache"
       @dismiss-alert="error = undefined"
       @set-error="($evt) => (error = $evt)"
       @update-tokens="($evt) => (filterTokens = $evt)"
       @set-checked-issuable-ids="($evt) => (checkedIssuableIds = $evt)"
-      @reorder="handleReorder"
-      @set-page-params="($evt) => (pageParams = $evt)"
+      @set-page-params="handleSetPageParams"
       @set-page-size="($evt) => (pageSize = $evt)"
+      @select-item="handleSetActiveItem"
+      @set-active-item="handleSetActiveItem"
+      @work-items-changed="handleWorkItemsChanged"
+      @namespace-data-loaded="handleNamespaceDataLoaded"
     >
       <template #list-empty-state>
         <template v-if="isServiceDeskList">
@@ -2168,5 +2052,10 @@ export default {
         </empty-state-without-any-issues>
       </template>
     </list-view>
+    <work-item-display-settings-drawer
+      v-if="isDisplaySettingsDrawerEnabled"
+      :open="isDisplayDrawerOpen"
+      @close="isDisplayDrawerOpen = false"
+    />
   </div>
 </template>

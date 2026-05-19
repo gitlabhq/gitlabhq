@@ -16,6 +16,37 @@ project. These files are referenced from `AGENTS.md` (and its identical copy
   to be tracked despite the gitignore pattern — only new untracked files you
   create in `.ai/` are automatically ignored.
 
+## Structure
+
+```
+.ai/
+  ci-cd.md                 # CI/CD pipeline guidelines
+  git.md                   # Git workflow guidelines
+  merge-requests.md        # Merge request workflow guidelines
+  principles/              # SSOT-derived development principles
+    manifest.yml           # Manifest: doc paths, file filters, baselines
+    distilled/             # Auto-generated principle files (23 domains)
+    baselines/             # Hand-curated rules not yet in docs.gitlab.com
+```
+
+## How instructions are loaded
+
+- **Root `AGENTS.md` / `CLAUDE.md`**: The Context Loading section routes
+  task types to the hand-authored topical modules (`.ai/git.md`,
+  `.ai/merge-requests.md`, `.ai/ci-cd.md`) and points domain-specific work
+  at the `gitlab-coding-principles` skill.
+- **Directory-scoped `AGENTS.md`**: Files in target directories
+  (e.g., `doc/AGENTS.md`, `workhorse/AGENTS.md`) provide directory-specific
+  guidance. Works with any AI tool that respects directory-scoped
+  `AGENTS.md` files.
+- **Claude Code**: Uses the project-scope skill at
+  `.claude/skills/gitlab-coding-principles/SKILL.md`, auto-discovered from `.claude/skills/`.
+- **OpenCode**: Uses the equivalent skill at `.agents/skills/gitlab-coding-principles/SKILL.md`.
+  Both skill files have identical content, auto-generated from
+  `principles/manifest.yml` by the sync script.
+- **Reviewer agents**: Each agent (`.opencode/agents/`, `.claude/agents/`)
+  reads its corresponding principle from `principles/distilled/` at review time.
+
 ## Adding Personal Instruction Files
 
 Create any `.md` file in `.ai/` — it will be gitignored automatically:
@@ -49,4 +80,8 @@ elsewhere.
 The `AGENTS.local.md` is gitignored and will not be committed.
 It may also be symlinked from a local source-controlled repo.
 
-See also: https://gitlab.com/gitlab-org/gitlab/-/work_items/594821
+## See also
+
+- [`principles/README.md`](principles/README.md) — How the SSOT sync works
+- [`AGENTS.md`](../AGENTS.md) — Project-level entry point for all AI tools
+- <https://gitlab.com/gitlab-org/gitlab/-/work_items/594821>

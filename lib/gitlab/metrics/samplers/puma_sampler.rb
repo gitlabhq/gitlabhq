@@ -28,13 +28,16 @@ module Gitlab
           json_stats = puma_stats
           return unless json_stats
 
-          stats = ::Gitlab::Json.parse(json_stats)
+          stats = ::Gitlab::Json.safe_parse(json_stats)
 
           if cluster?(stats)
             sample_cluster(stats)
           else
             sample_single_worker(stats)
           end
+        rescue ::JSON::ParserError => e
+          Gitlab::AppLogger.warn("PumaSampler: failed to parse Puma stats: #{e.message}")
+          nil
         end
 
         private

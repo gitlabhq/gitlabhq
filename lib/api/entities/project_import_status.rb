@@ -11,7 +11,7 @@ module API
         project.import_state&.correlation_id
       end
 
-      expose :failed_relations, using: Entities::ProjectImportFailedRelation, documentation: {
+      expose :failed_relations, using: ::API::Entities::ProjectImportFailedRelation, documentation: {
         is_array: true
       } do |project, _options|
         project.import_state&.relation_hard_failures(limit: 100) || []
@@ -28,7 +28,7 @@ module API
         end
       end
 
-      expose :stats, documentation: { type: 'object' } do |project, _options|
+      expose :stats, documentation: { type: 'Hash' } do |project, _options|
         if project.github_import?
           ::Gitlab::GithubImport::ObjectCounter.summary(project)
         end

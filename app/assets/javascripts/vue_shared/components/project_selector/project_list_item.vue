@@ -45,7 +45,7 @@ export default {
     @click="onClick"
   >
     <div class="project-namespace-name-container gl-flex gl-flex-wrap gl-items-center">
-      <gl-icon v-if="selected" data-testid="selected-icon" name="mobile-issue-close" />
+      <gl-icon v-if="selected" data-testid="selected-icon" name="check" />
       <project-avatar
         :project-id="project.id"
         :project-avatar-url="projectAvatarUrl"

@@ -1,0 +1,22 @@
+/* stylelint-disable gitlab/no-gl-class */
+$detail-layout-sidebar-width: px-to-rem(290px);
+$detail-layout-gap: 2rem;
+
+.gl-detail-layout-alerts {
+  @apply gl-mb-5;
+  @apply gl-flex;
+  @apply gl-flex-col;
+  @apply gl-gap-3;
+}
+
+.gl-detail-layout-loading-icon {
+  @apply gl-m-5;
+}
+
+.gl-detail-layout-container-has-sidebar {
+  @include gl-container-width-up(lg) {
+    display: grid;
+    grid-template-columns: minmax(67%, 1fr) $detail-layout-sidebar-width;
+    column-gap: $detail-layout-gap;
+  }
+}

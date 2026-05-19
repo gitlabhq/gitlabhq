@@ -10,7 +10,7 @@ const SELECTORS = {
   PIPELINE_TABS: '#js-pipeline-tabs',
 };
 
-export default async function initPipelineDetailsBundle() {
+export async function initPipelineDetails() {
   const headerSelector = SELECTORS.PIPELINE_HEADER;
 
   const headerEl = document.querySelector(headerSelector);

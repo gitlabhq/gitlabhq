@@ -46,7 +46,7 @@ For more information, see [maximum number of project push mirrors](../../../../a
 To set up push mirroring for an existing project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. Enter a repository URL.
 1. In the **Mirror direction** dropdown list, select **Push**.

@@ -8,6 +8,7 @@ import { stubComponent } from 'helpers/stub_component';
 
 describe('MenuSection component', () => {
   let wrapper;
+  // eslint-disable-next-line no-restricted-properties
   const provideState = Vue.observable({ isIconOnly: false });
 
   const findButton = () => wrapper.find('button');

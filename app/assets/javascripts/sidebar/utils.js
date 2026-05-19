@@ -4,7 +4,7 @@ import { STATUS_LABELS } from './constants';
 export const getStatusLabel = (status) => STATUS_LABELS[status] ?? s__('IncidentManagement|None');
 
 export const todoLabel = (hasTodo) => {
-  return hasTodo ? __('Mark as done') : __('Add a to-do item');
+  return hasTodo ? __('Mark to-do items done') : __('Add a to-do item');
 };
 
 /**

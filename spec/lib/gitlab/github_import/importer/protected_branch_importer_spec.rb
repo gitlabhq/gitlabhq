@@ -80,15 +80,15 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
       end
 
       it 'creates protected branch and access levels for given github rule' do
-        expect { importer.execute }.to change(ProtectedBranch, :count).by(1)
-          .and change(ProtectedBranch::PushAccessLevel, :count).by(push_access_levels_number)
-          .and change(ProtectedBranch::MergeAccessLevel, :count).by(1)
+        expect { importer.execute }.to change { ProtectedBranch.count }.by(1)
+          .and change { ProtectedBranch::PushAccessLevel.count }.by(push_access_levels_number)
+          .and change { ProtectedBranch::MergeAccessLevel.count }.by(1)
       end
     end
 
     shared_examples 'does not change project attributes' do
       it 'does not change only_allow_merge_if_all_discussions_are_resolved' do
-        expect { importer.execute }.not_to change(project, :only_allow_merge_if_all_discussions_are_resolved)
+        expect { importer.execute }.not_to change { project.only_allow_merge_if_all_discussions_are_resolved }
       end
 
       it 'does not change push_rule for the project' do
@@ -168,7 +168,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
         let(:required_conversation_resolution) { true }
 
         it 'changes project settings' do
-          expect { importer.execute }.to change(project, :only_allow_merge_if_all_discussions_are_resolved).to(true)
+          expect { importer.execute }.to change { project.only_allow_merge_if_all_discussions_are_resolved }.to(true)
         end
       end
 
@@ -199,7 +199,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
 
           context 'when project push_rules did not previously exist' do
             it 'creates project push_rule with the enabled reject_unsigned_commits attribute' do
-              expect { importer.execute }.to change(project, :push_rule).from(nil)
+              expect { importer.execute }.to change { project.push_rule }.from(nil)
               expect(project.push_rule.reject_unsigned_commits).to be_truthy
             end
           end
@@ -321,9 +321,9 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
             end
 
             it 'creates protected branch mapped to the personal namespace owner' do
-              expect { importer.execute }.to change(ProtectedBranch, :count).by(1)
-                .and change(ProtectedBranch::PushAccessLevel, :count).by(1)
-                .and change(ProtectedBranch::MergeAccessLevel, :count).by(1)
+              expect { importer.execute }.to change { ProtectedBranch.count }.by(1)
+                .and change { ProtectedBranch::PushAccessLevel.count }.by(1)
+                .and change { ProtectedBranch::MergeAccessLevel.count }.by(1)
 
               imported_push_access_level = project.protected_branches.first.push_access_levels.first
               expect(imported_push_access_level.user_id).to eq(user_namespace.owner_id)
@@ -423,7 +423,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
           it_behaves_like 'create branch protection by the strictest ruleset'
 
           it 'does not push any placeholder references' do
-            expect { importer.execute }.not_to change(Import::SourceUser, :count)
+            expect { importer.execute }.not_to change { Import::SourceUser.count }
             expect(user_references).to be_empty
           end
         end

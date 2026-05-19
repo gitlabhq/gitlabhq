@@ -3,5 +3,7 @@ name: read_snapshot
 description: Grants the ability to read snapshots
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - read_snapshot

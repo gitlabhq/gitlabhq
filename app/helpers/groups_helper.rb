@@ -202,7 +202,8 @@ module GroupsHelper
     {
       endpoint: endpoint,
       initial_sort: group_project_list_sort_by,
-      base_path: dashboard_groups_path
+      base_path: dashboard_groups_path,
+      can_create_group: current_user.can_create_group?
     }.to_json
   end
 

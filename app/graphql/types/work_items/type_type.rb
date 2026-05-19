@@ -92,7 +92,7 @@ module Types
       field :can_user_create_items, GraphQL::Types::Boolean, # rubocop:disable GraphQL/ExtractType -- no need for extraction
         null: true,
         description: 'Indicates whether the work item type is creatable by the API.',
-        method: :creatable?,
+        method: :can_user_create_items?,
         experiment: { milestone: '18.8' }
 
       field :visible_in_settings, GraphQL::Types::Boolean,
@@ -122,25 +122,17 @@ module Types
       field :is_filterable_list_view, GraphQL::Types::Boolean,
         null: false,
         description: 'Indicates whether the work item type is filterable in list view.',
-        resolver_method: :filterable_list_view,
+        method: :filterable_list_view?,
         experiment: { milestone: '18.10' }
 
       field :is_filterable_board_view, GraphQL::Types::Boolean,
         null: false,
         description: 'Indicates whether the work item type is filterable in board view.',
-        resolver_method: :filterable_board_view,
+        method: :filterable_board_view?,
         experiment: { milestone: '18.10' }
 
       def widgets
         object.widget_definitions(context[:resource_parent])
-      end
-
-      def filterable_list_view
-        object.filterable_list_view?(context[:resource_parent])
-      end
-
-      def filterable_board_view
-        object.filterable_board_view?(context[:resource_parent])
       end
 
       def widget_definitions
@@ -153,7 +145,7 @@ module Types
 
       def unavailable_widgets_on_conversion(target:)
         source_type = object
-        target_type = GitlabSchema.find_by_gid(target).sync
+        target_type = ::WorkItems::TypesFramework::Provider.new(context[:resource_parent]).find_by_gid(target)
 
         return [] unless source_type && target_type
 

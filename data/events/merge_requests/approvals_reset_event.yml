@@ -1,0 +1,6 @@
+---
+event: MergeRequests::ApprovalsResetEvent
+description: Published when existing approvals on a merge request are reset, typically
+  because new commits were pushed or other state changes invalidated prior approvals.
+feature_category: code_review_workflow
+ee_only: true

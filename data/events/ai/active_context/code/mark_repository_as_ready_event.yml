@@ -1,0 +1,7 @@
+---
+event: Ai::ActiveContext::Code::MarkRepositoryAsReadyEvent
+description: Published to mark Ai::ActiveContext::Code::Repository records whose embedding
+  indexing has completed as ready, by checking the search index for the presence of
+  expected embedding fields.
+feature_category: global_search
+ee_only: true

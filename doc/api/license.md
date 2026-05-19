@@ -115,7 +115,7 @@ This is calculated differently depending on whether the license has expired or n
 Returns:
 
 - `200 OK` with response containing the licenses in JSON format. This is an empty JSON array if there are no licenses.
-- `403 Forbidden` if the current user in not permitted to read the licenses.
+- `403 Forbidden` if the current user is not permitted to read the licenses.
 
 ## Retrieve a license
 
@@ -141,7 +141,7 @@ Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/license/:id"
+  --url "https://gitlab.example.com/api/v4/license/:id"
 ```
 
 Example response:
@@ -185,8 +185,8 @@ POST /license
 
 ```shell
 curl --request POST \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/license?license=eyJkYXRhIjoiMHM5Q...S01Udz09XG4ifQ=="
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/license?license=eyJkYXRhIjoiMHM5Q...S01Udz09XG4ifQ=="
 ```
 
 Example response:
@@ -235,14 +235,14 @@ DELETE /license/:id
 
 ```shell
 curl --request DELETE \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/license/:id"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/license/:id"
 ```
 
 Returns:
 
 - `204 No Content` if the license is successfully deleted.
-- `403 Forbidden` if the current user in not permitted to delete the license.
+- `403 Forbidden` if the current user is not permitted to delete the license.
 - `404 Not Found` if the license to delete could not be found.
 
 ## Trigger recalculation of billable users
@@ -259,8 +259,8 @@ PUT /license/:id/refresh_billable_users
 
 ```shell
 curl --request PUT \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/license/:id/refresh_billable_users"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/license/:id/refresh_billable_users"
 ```
 
 Example response:
@@ -274,7 +274,7 @@ Example response:
 Returns:
 
 - `202 Accepted` if the request to refresh billable users is successfully initiated.
-- `403 Forbidden` if the current user in not permitted to refresh billable users for the license.
+- `403 Forbidden` if the current user is not permitted to refresh billable users for the license.
 - `404 Not Found` if the license could not be found.
 
 | Attribute                    | Type          | Description                               |
@@ -290,9 +290,8 @@ GET /license/usage_export.csv
 ```
 
 ```shell
-curl --request GET \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/license/usage_export.csv"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/license/usage_export.csv"
 ```
 
 Example response:
@@ -316,4 +315,4 @@ Date,Billable User Count
 Returns:
 
 - `200 OK`: Response contains the license usage in CSV format.
-- `403 Forbidden` if the current user in not permitted to view license usage.
+- `403 Forbidden` if the current user is not permitted to view license usage.

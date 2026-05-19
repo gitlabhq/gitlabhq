@@ -3,14 +3,6 @@
 $bottom-padding: $gl-spacing-scale-6;
 $file-tree-browser-z-index: 500;
 
-.content-wrapper:has(.navigation-root) {
-  padding-bottom: $bottom-padding;
-}
-
-.navigation-root {
-  min-height: calc(100dvh - var(--application-header-height) - #{$bottom-padding});
-}
-
 .file-tree-browser-overlay {
   @apply gl-bg-overlay;
   z-index: $file-tree-browser-z-index - 1;
@@ -174,39 +166,38 @@ html:not(.page-with-panels) .file-tree-browser  {
     tbody tr.tree-item {
       &:hover:not(.tree-truncated-warning) {
         td, th {
-          @apply gl-bg-blue-50;
-          @apply dark:gl-bg-neutral-800;
-          border-top: 1px solid var(--gl-action-selected-border-color-default);
-          border-bottom: 1px solid var(--gl-action-selected-border-color-default);
+          background-color: var(--gl-highlight-target-background-color);
+          border-top: 1px solid var(--gl-highlight-target-border-color);
+          border-bottom: 1px solid var(--gl-highlight-target-border-color);
 
           &:first-child {
-            box-shadow: inset 1px 0 0 0 var(--gl-action-selected-border-color-default);
+            box-shadow: inset 1px 0 0 0 var(--gl-highlight-target-border-color);
           }
 
           &:last-child {
-            box-shadow: inset -1px 0 0 0 var(--gl-action-selected-border-color-default);
+            box-shadow: inset -1px 0 0 0 var(--gl-highlight-target-border-color);
           }
 
           &:first-child:last-child {
-            box-shadow: inset 1px 0 0 0 var(--gl-action-selected-border-color-default),
-              inset -1px 0 0 0 var(--gl-action-selected-border-color-default);
+            box-shadow: inset 1px 0 0 0 var(--gl-highlight-target-border-color),
+              inset -1px 0 0 0 var(--gl-highlight-target-border-color);
           }
         }
 
         &:last-child {
           td, th {
             @apply gl-border-b-0;
-            box-shadow: inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
+            box-shadow: inset 0 -1px 0 0 var(--gl-highlight-target-border-color);
 
             &:first-child {
-              box-shadow: inset 1px 0 0 0 var(--gl-action-selected-border-color-default),
-                inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
+              box-shadow: inset 1px 0 0 0 var(--gl-highlight-target-border-color),
+                inset 0 -1px 0 0 var(--gl-highlight-target-border-color);
               border-bottom-left-radius: $gl-border-radius-lg-inner;
             }
 
             &:last-child {
-              box-shadow: inset -1px 0 0 0 var(--gl-action-selected-border-color-default),
-                inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
+              box-shadow: inset -1px 0 0 0 var(--gl-highlight-target-border-color),
+                inset 0 -1px 0 0 var(--gl-highlight-target-border-color);
               border-bottom-right-radius: $gl-border-radius-lg-inner;
             }
           }

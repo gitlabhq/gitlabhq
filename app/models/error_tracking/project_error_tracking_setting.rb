@@ -91,7 +91,7 @@ module ErrorTracking
     end
 
     def organization_slug
-      organization_slug_from_api_url
+      organization_slug_from_api_url # rubocop:disable Gitlab/AvoidOrganizationUrlRoutes -- Sentry API slug, not a GitLab org route helper
     end
 
     def self.build_api_url_from(api_host:, project_slug:, organization_slug:)
@@ -246,7 +246,7 @@ module ErrorTracking
     end
 
     def organization_name_from_slug
-      @organization_name_from_slug ||= organization_slug_from_api_url&.titleize
+      @organization_name_from_slug ||= organization_slug_from_api_url&.titleize # rubocop:disable Gitlab/AvoidOrganizationUrlRoutes -- Sentry API slug, not a GitLab org route helper
     end
 
     def project_slug_from_api_url

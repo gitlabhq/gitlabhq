@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::ReleaseAssetLinks::Delete, feature_category: :release_orchestration do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :private, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
   let_it_be_with_reload(:release) { create(:release, project: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }

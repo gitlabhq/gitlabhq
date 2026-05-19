@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { STATUS_CLOSED } from '~/issues/constants';
-import { humanTimeframe, isInPast, newDate } from '~/lib/utils/datetime_utility';
+import { getDueDateStatus, humanTimeframe, newDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import { STATE_CLOSED, METADATA_KEYS } from '~/work_items/constants';
 import {
@@ -63,17 +63,12 @@ export default {
     isClosed() {
       return this.issue.state === STATUS_CLOSED || this.issue.state === STATE_CLOSED;
     },
-    isOverdue() {
-      if (!this.dueDate) {
-        return false;
-      }
-      return isInPast(newDate(this.dueDate)) && !this.isClosed;
+    dueDateStatus() {
+      return getDueDateStatus(this.dueDate, !this.isClosed);
     },
     datesTooltipTitle() {
-      return this.isOverdue ? `${__('Dates')} (${__('overdue')})` : __('Dates');
-    },
-    dateIcon() {
-      return this.isOverdue ? 'calendar-overdue' : 'calendar';
+      const { statusLabel } = this.dueDateStatus;
+      return statusLabel ? `${__('Dates')} (${statusLabel})` : __('Dates');
     },
     startDate() {
       return findStartAndDueDateWidget(this.issue)?.startDate;
@@ -119,8 +114,8 @@ export default {
     >
       <template #icon>
         <gl-icon
-          :variant="isOverdue ? 'danger' : 'current'"
-          :name="dateIcon"
+          :variant="dueDateStatus.iconVariant"
+          :name="dueDateStatus.iconName"
           :size="12"
           class="gl-shrink-0"
         />

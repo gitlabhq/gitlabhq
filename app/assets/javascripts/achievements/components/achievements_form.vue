@@ -15,12 +15,14 @@ import { MountingPortal } from 'portal-vue';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { __, s__, sprintf } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_GROUP } from '~/graphql_shared/constants';
+import { TYPENAME_ACHIEVEMENT, TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { logError } from '~/lib/logger';
 import { getFirstPropertyValue } from '~/lib/utils/common_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { INDEX_ROUTE_NAME } from '../constants';
 import createAchievementMutation from './graphql/create_achievement.mutation.graphql';
+import updateAchievementMutation from './graphql/update_achievement.mutation.graphql';
+import getAchievementQuery from './graphql/get_achievement.query.graphql';
 
 const maxLength = { name: 255, description: 1024 };
 
@@ -36,18 +38,8 @@ export default {
     GlTruncate,
     MountingPortal,
   },
-  inject: ['groupFullPath', 'groupId'],
+  inject: ['groupFullPath', 'groupId', 'gitlabLogoPath'],
   props: {
-    initialFormValues: {
-      type: Object,
-      required: false,
-      default() {
-        return {
-          name: '',
-          description: '',
-        };
-      },
-    },
     isEditMode: {
       type: Boolean,
       required: false,
@@ -60,28 +52,73 @@ export default {
   },
   data() {
     return {
+      avatarUrl: null,
+      avatarObjectUrl: null,
       errorMessages: [],
       filename: null,
-      formValues: this.initialFormValues,
+      fileError: false,
+      formValues: {
+        name: '',
+        description: '',
+      },
       submitting: false,
     };
   },
+  apollo: {
+    formValues: {
+      query: getAchievementQuery,
+      variables() {
+        return {
+          groupFullPath: this.groupFullPath,
+          id: this.achievementGraphQLId,
+        };
+      },
+      update(data) {
+        const node = data?.group?.achievements?.nodes?.[0];
+        if (node) {
+          this.avatarUrl = node.avatarUrl || null;
+          return {
+            name: node.name || '',
+            description: node.description || '',
+          };
+        }
+        return { name: '', description: '' };
+      },
+      skip() {
+        return !this.isEditMode;
+      },
+    },
+  },
   computed: {
+    achievementGraphQLId() {
+      if (!this.isEditMode) return null;
+      return convertToGraphQLId(TYPENAME_ACHIEVEMENT, this.$route.params.id);
+    },
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
     },
     mutation() {
-      return createAchievementMutation;
+      return this.isEditMode ? updateAchievementMutation : createAchievementMutation;
     },
     previewImage() {
-      return this.filename ? URL.createObjectURL(this.formValues.avatar) : null;
+      if (this.filename) {
+        return this.avatarObjectUrl;
+      }
+      return this.avatarUrl || this.gitlabLogoPath;
+    },
+    drawerTitle() {
+      return this.isEditMode
+        ? s__('Achievements|Edit achievement')
+        : s__('Achievements|New achievement');
     },
   },
   methods: {
     close(success) {
       if (success) {
-        // This is needed so toast persists when route is changed
-        this.$root.$toast.show(s__('Achievements|Achievement has been added.'));
+        const message = this.isEditMode
+          ? s__('Achievements|Achievement has been updated.')
+          : s__('Achievements|Achievement has been added.');
+        this.$toast.show(message);
       }
 
       this.$router.replace({ name: this.$options.INDEX_ROUTE_NAME });
@@ -95,9 +132,13 @@ export default {
       return data[keys[0]];
     },
     resetFile() {
-      URL.revokeObjectURL(this.formValues.avatar);
+      if (this.avatarObjectUrl) {
+        URL.revokeObjectURL(this.avatarObjectUrl);
+        this.avatarObjectUrl = null;
+      }
       this.$refs.fileUpload.value = null;
       this.filename = null;
+      this.fileError = false;
       this.formValues.avatar = null;
     },
     save() {
@@ -105,15 +146,24 @@ export default {
 
       this.submitting = true;
 
-      return this.$apollo
-        .mutate({
-          mutation,
-          variables: {
+      const variables = this.isEditMode
+        ? {
+            input: {
+              achievementId: this.achievementGraphQLId,
+              ...this.formValues,
+            },
+          }
+        : {
             input: {
               namespaceId: convertToGraphQLId(TYPENAME_GROUP, this.groupId),
               ...this.formValues,
             },
-          },
+          };
+
+      return this.$apollo
+        .mutate({
+          mutation,
+          variables,
           context: {
             hasUpload: true,
           },
@@ -141,6 +191,19 @@ export default {
 
       const [file] = e.target.files;
 
+      if (file.size > 200 * 1024) {
+        this.errorMessages = [s__('Achievements|File is too large. Maximum file size is 200 KiB.')];
+        this.$refs.fileUpload.value = null;
+        this.fileError = true;
+        return;
+      }
+
+      if (this.avatarObjectUrl) {
+        URL.revokeObjectURL(this.avatarObjectUrl);
+      }
+      this.errorMessages = [];
+      this.fileError = false;
+      this.avatarObjectUrl = URL.createObjectURL(file);
       this.formValues.avatar = file;
       this.filename = file.name;
     },
@@ -218,7 +281,7 @@ export default {
     >
       <template #title>
         <div class="gl-text-size-h2 gl-font-bold">
-          {{ s__('Achievements|New achievement') }}
+          {{ drawerTitle }}
         </div>
       </template>
       <gl-alert v-if="errorMessages.length" variant="danger" @dismiss="errorMessages = []">
@@ -237,7 +300,12 @@ export default {
         >
           <template #input(avatar)>
             <div class="gl-flex">
-              <gl-avatar :src="previewImage" shape="rect" class="gl-mr-5 gl-border-none" />
+              <gl-avatar
+                :src="previewImage"
+                :alt="formValues.name"
+                shape="rect"
+                class="gl-mr-5 gl-border-none"
+              />
               <div class="gl-overflow-hidden">
                 <div class="gl-flex">
                   <gl-button data-testid="select-file-button" @click="$refs.fileUpload.click()">
@@ -279,6 +347,7 @@ export default {
           variant="confirm"
           class="js-no-auto-disable"
           :loading="submitting"
+          :disabled="fileError"
           >{{ __('Save changes') }}</gl-button
         >
       </gl-form>

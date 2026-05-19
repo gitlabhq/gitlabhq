@@ -77,10 +77,10 @@ export const requestDeletePackage = ({ dispatch, state }, { _links, isGroupPage,
         variant: VARIANT_SUCCESS,
       });
     })
-    .catch(() => {
+    .catch((error) => {
       dispatch('setLoading', false);
       createAlert({
-        message: DELETE_PACKAGE_ERROR_MESSAGE,
+        message: error?.response?.data?.message || DELETE_PACKAGE_ERROR_MESSAGE,
       });
     });
 };

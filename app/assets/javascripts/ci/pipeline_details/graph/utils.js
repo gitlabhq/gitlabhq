@@ -12,7 +12,7 @@ import { sanitize } from '~/lib/dompurify';
 import { __, s__, sprintf } from '~/locale';
 import { beginPerfMeasure, finishPerfMeasureAndSend } from './perf_utils';
 
-export { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
+export { setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 
 const addMulti = (mainPipelineProjectPath, linkedPipeline) => {
   return {

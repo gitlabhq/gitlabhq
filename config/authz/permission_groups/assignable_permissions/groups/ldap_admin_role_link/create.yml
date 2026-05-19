@@ -3,5 +3,7 @@ name: create_ldap_admin_role_link
 description: Grants the ability to create LDAP admin role links
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - create_ldap_admin_role_link

@@ -39,6 +39,30 @@ module API
               using: ::API::Entities::WorkItems::Features::StartAndDueDate,
               documentation: { type: 'Entities::WorkItems::Features::StartAndDueDate' },
               expose_nil: true
+
+            expose_feature :designs,
+              widget_name: :designs,
+              using: ::API::Entities::WorkItems::Features::Designs,
+              documentation: { type: 'Entities::WorkItems::Features::Designs' },
+              expose_nil: true
+
+            expose_feature :time_tracking,
+              widget_name: :time_tracking,
+              using: ::API::Entities::WorkItems::Features::TimeTracking,
+              documentation: { type: 'Entities::WorkItems::Features::TimeTracking' },
+              expose_nil: true
+
+            expose_feature :error_tracking,
+              widget_name: :error_tracking,
+              using: ::API::Entities::WorkItems::Features::ErrorTracking,
+              documentation: { type: 'Entities::WorkItems::Features::ErrorTracking' },
+              expose_nil: true
+
+            expose_feature :hierarchy,
+              widget_name: :hierarchy,
+              using: ::API::Entities::WorkItems::Features::Hierarchy,
+              documentation: { type: 'Entities::WorkItems::Features::Hierarchy' },
+              expose_nil: true
           end
         end
       end

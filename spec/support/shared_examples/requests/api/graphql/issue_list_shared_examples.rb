@@ -480,8 +480,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
       post_query
     end
 
-    context 'when requesting `user_notes_count` and `user_discussions_count`',
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17052' do
+    context 'when requesting `user_notes_count` and `user_discussions_count`' do
       let(:requested_fields) { 'userNotesCount userDiscussionsCount' }
 
       before do
@@ -498,13 +497,14 @@ RSpec.shared_examples 'graphql issue list request spec' do
       before do
         create_list(:merge_requests_closing_issues, 2, issue: issue_a)
         create_list(:merge_requests_closing_issues, 3, issue: issue_b)
+        # Warm up sign-in side effects so they don't pollute control vs. test runs
+        post_graphql(query, current_user: current_user)
       end
 
       include_examples 'N+1 query check'
     end
 
-    context 'when requesting `timelogs`',
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17054' do
+    context 'when requesting `timelogs`' do
       let(:requested_fields) { 'timelogs { nodes { timeSpent } }' }
 
       before do
@@ -517,12 +517,12 @@ RSpec.shared_examples 'graphql issue list request spec' do
 
     context 'when requesting `closed_as_duplicate_of`' do
       let(:requested_fields) { 'closedAsDuplicateOf { id }' }
-      let(:issue_a_dup) { create(:issue, project: issue_a.project) }
-      let(:issue_b_dup) { create(:issue, project: issue_b.project) }
+      let_it_be(:issue_a_dup) { create(:issue, project: issue_a.project) }
+      let_it_be(:issue_b_dup) { create(:issue, project: issue_b.project) }
 
       before do
-        issue_a.update!(duplicated_to_id: issue_a_dup)
-        issue_b.update!(duplicated_to_id: issue_a_dup)
+        issue_a.update!(duplicated_to_id: issue_a_dup.id)
+        issue_b.update!(duplicated_to_id: issue_b_dup.id)
       end
 
       include_examples 'N+1 query check'
@@ -553,7 +553,9 @@ RSpec.shared_examples 'graphql issue list request spec' do
         same_project_issue2.update!(labels: [project_labels, group_labels].flatten)
       end
 
-      include_examples 'N+1 query check', skip_cached: false
+      # threshold: 1 accounts for an additional project namespace lookup
+      # (find_namespaces_by_id) when loading the second issue
+      include_examples 'N+1 query check', skip_cached: false, threshold: 1
     end
   end
 
@@ -715,6 +717,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
     context 'when the feature flag is disabled' do
       before do
         stub_feature_flags(hide_incident_management_features: false)
+        create(:alert_management_alert, project: same_project_issue1.project, issue: same_project_issue1)
+        create(:alert_management_alert, project: same_project_issue2.project, issue: same_project_issue2)
       end
 
       it 'avoids N+1 queries' do
@@ -806,6 +810,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
         label = create(:label, project: issue.project)
         issue.update!(labels: [label])
       end
+      # Warm up sign-in side effects so they don't pollute control vs. test runs
+      post_graphql(query, current_user: current_user)
     end
 
     def response_label_ids(response_data)
@@ -855,6 +861,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
         assignee = create(:user)
         issue.update!(assignees: [assignee])
       end
+      # Warm up sign-in side effects so they don't pollute control vs. test runs
+      post_graphql(query, current_user: current_user)
     end
 
     def response_assignee_ids(response_data)

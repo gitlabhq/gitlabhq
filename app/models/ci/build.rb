@@ -254,6 +254,9 @@ module Ci
       joins(:pipeline).where(pipeline: { project_id: project_id, iid: iid })
     end
 
+    scope :iac_sast_jobs, -> { where("name ~ ?", "^kics-iac-sast(-\\d+)?$") }
+    scope :with_sast_artifacts, -> { joins(:job_artifacts_sast) }
+
     add_authentication_token_field :token,
       encrypted: :required,
       format_with_prefix: :prefix_and_partition_for_token,
@@ -456,7 +459,7 @@ module Ci
       end
 
       before_transition running: [:failed] do |build|
-        if build.failure_reason&.to_sym == :job_execution_timeout
+        if build.server_timeout_running?
           # If job was stuck or timed-out, only bill the set timeout.
           build.finished_at = build.started_at + build.timeout.seconds
         end
@@ -466,7 +469,7 @@ module Ci
         reason_enum = ::Gitlab::Ci::Build::Status::Reason
                            .fabricate(build, transition.args.first)
 
-        if reason_enum.failure_reason == :job_execution_server_timeout
+        if reason_enum.failure_reason == :server_timeout_canceling
           # If job was stuck or timed-out, only bill the set timeout.
           build.failure_reason = reason_enum.failure_reason
           build.finished_at = build.started_at + build.timeout.seconds
@@ -1255,7 +1258,7 @@ module Ci
     def drop_with_exit_code!(failure_reason, exit_code)
       failure_reason ||= :unknown_failure
       result = drop!(::Gitlab::Ci::Build::Status::Reason.new(self, failure_reason, exit_code))
-      ::Ci::TrackFailedBuildWorker.perform_async(id, exit_code, failure_reason)
+      ::Ci::TrackFailedBuildWorker.perform_async(id, exit_code, failure_reason.to_s)
       result
     end
 

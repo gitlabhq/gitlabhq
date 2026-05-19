@@ -74,6 +74,10 @@ module ActiveRecord
           all.find { |item| item.matches?(conditions) }
         end
 
+        def find_by!(**conditions)
+          find_by(**conditions) || raise(RecordNotFound, "Couldn't find #{name} with #{conditions}")
+        end
+
         def where(**conditions)
           validate_attributes_exist!(conditions.keys)
           all.select { |item| item.matches?(conditions) }

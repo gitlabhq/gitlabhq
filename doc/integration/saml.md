@@ -26,7 +26,7 @@ Okta, to authenticate users.
 For more information on:
 
 - OmniAuth provider settings, see the [OmniAuth documentation](omniauth.md).
-- Commonly-used terms, see the [glossary](#glossary).
+- Commonly-used terms, see the [glossary](../auth/auth_glossary.md).
 
 ## Configure SAML support in GitLab
 
@@ -3423,7 +3423,7 @@ client side of the SAML authentication.
 
 ## Password generation for users created through SAML
 
-GitLab [generates and sets passwords for users created through SAML](../security/passwords_for_integrated_authentication_methods.md).
+GitLab [generates and sets passwords for users created through SAML](../user/profile/user_passwords.md).
 
 Users authenticated with SSO or SAML must not use a password for Git operations
 over HTTPS. These users can instead:
@@ -3602,18 +3602,6 @@ For example configurations, see the [notes on specific providers](#set-up-identi
 To configure Geo with SAML, see [Configuring instance-wide SAML](../administration/geo/replication/single_sign_on.md#configuring-instance-wide-saml).
 
 For more information, see [Geo with Single Sign On (SSO)](../administration/geo/replication/single_sign_on.md).
-
-## Glossary
-
-| Term                           | Description |
-|--------------------------------|-------------|
-| Identity provider (IdP)        | The service that manages your user identities, such as Okta or OneLogin. |
-| Service provider (SP)          | Consumes assertions from a SAML IdP, such as Okta, to authenticate users. You can configure GitLab as a SAML 2.0 SP. |
-| Assertion                      | A piece of information about a user's identity, such as their name or role. Also known as a claim or an attribute. |
-| Single Sign-On (SSO)           | Name of the authentication scheme. |
-| Assertion consumer service URL | The callback on GitLab where users are redirected after successfully authenticating with the IdP. |
-| Issuer                         | How GitLab identifies itself to the IdP. Also known as a "Relying party trust identifier". |
-| Certificate fingerprint        | Confirms that communications over SAML are secure by checking that the server is signing communications with the correct certificate. Also known as a certificate thumbprint. |
 
 ## Troubleshooting
 

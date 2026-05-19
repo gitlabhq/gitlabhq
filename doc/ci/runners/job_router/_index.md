@@ -26,7 +26,7 @@ description: Route CI/CD jobs through the job router for advanced job orchestrat
 
 {{< /history >}}
 
-The job router is a component of the GitLab Agent Server (KAS) that provides advanced
+The job router is a component of GitLab Relay (KAS) that provides advanced
 job orchestration capabilities for GitLab CI/CD. Instead of runners that poll GitLab
 directly for jobs, runners connect to the job router, which manages job distribution
 and provides features like admission control.

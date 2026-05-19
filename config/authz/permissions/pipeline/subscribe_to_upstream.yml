@@ -1,0 +1,9 @@
+---
+name: subscribe_to_upstream_pipeline
+description: |-
+  Grants the ability to designate this project as the upstream trigger
+  source when a member of another project creates a pipeline subscription.
+  Pipeline subscriptions allow a project to automatically trigger a
+  pipeline when a tag pipeline completes in another project. This
+  permission is checked on the upstream project; the downstream project
+  separately requires create_pipeline_subscription.

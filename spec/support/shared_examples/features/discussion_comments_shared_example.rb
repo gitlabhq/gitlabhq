@@ -274,12 +274,12 @@ RSpec.shared_examples 'thread comments for merge request' do
           find('button[data-testid="resolve-discussion-button"]').click
           wait_for_requests
 
-          expect(page).to have_selector(".note-row-#{note_id}", visible: true)
+          expect(page).to have_selector(".note-row-#{note_id}", visible: :visible)
 
           refresh
           click_button "1 reply"
 
-          expect(page).to have_selector(".note-row-#{reply_id}", visible: true)
+          expect(page).to have_selector(".note-row-#{reply_id}", visible: :visible)
         end
       end
 

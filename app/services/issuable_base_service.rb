@@ -375,7 +375,7 @@ class IssuableBaseService < ::BaseContainerService
     issuable
   end
 
-  # Overriden in child class
+  # Overridden in child class
   def trigger_update_subscriptions(issuable, old_associations); end
 
   def transaction_update(issuable, opts = {})

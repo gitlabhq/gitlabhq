@@ -183,10 +183,36 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
 
         it { is_expected.not_to be_empty }
 
-        it 'has a work_item_type' do
-          issue = subject.first
+        it 'exports work_item_type for system-defined types' do
+          issue = subject.find { |i| i['title'] == 'task issue' }
 
-          expect(issue['work_item_type']).to eq('base_type' => 'task')
+          expect(issue['work_item_type']).to eq('name' => 'Task')
+        end
+
+        context 'when work_item_configurable_types feature flag is disabled' do
+          let(:disabled_export_path) { "#{Dir.tmpdir}/project_tree_saver_spec_ff_disabled" }
+          let(:disabled_shared) { Gitlab::ImportExport::Shared.new(project) }
+          let(:disabled_full_path) { File.join(disabled_shared.export_path, 'tree') }
+
+          before do
+            stub_feature_flags(work_item_configurable_types: false)
+            allow(disabled_shared).to receive(:export_path).and_return(disabled_export_path)
+
+            described_class.new(
+              project: project, current_user: user, shared: disabled_shared
+            ).save # rubocop:disable Rails/SaveBang
+          end
+
+          after do
+            FileUtils.rm_rf(disabled_export_path)
+          end
+
+          it 'exports work_item_type using the legacy base_type format' do
+            issues = get_json(disabled_full_path, exportable_path, :issues)
+            issue = issues.find { |i| i['title'] == 'task issue' }
+
+            expect(issue['work_item_type']).to eq('base_type' => 'task')
+          end
         end
 
         it 'has issue comments' do
@@ -522,7 +548,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
       merge_commit_template: 'merge commit message template',
       squash_commit_template: 'squash commit message template')
 
-    issue = create(:issue, :task, assignees: [user], project: project)
+    issue = create(:issue, :task, assignees: [user], project: project, title: 'task issue')
     snippet = create(:project_snippet, project: project)
     project_label = create(:label, project: project)
     group_label = create(:group_label, group: group)

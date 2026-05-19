@@ -103,13 +103,14 @@ export const mockGranularProjectScope = {
     fullPath: 'my-group/my-project',
     __typename: 'Project',
   },
-  permissions: [{ resource: 'project', action: 'read' }],
+  permissions: [{ resource: 'project', action: 'read', name: 'read_project' }],
   __typename: 'AccessTokenGranularScope',
 };
 
 export const mockGranularUserScope = {
   access: 'USER',
   namespace: null,
+  project: null,
   permissions: mockUserPermissions,
   __typename: 'AccessTokenGranularScope',
 };
@@ -282,7 +283,7 @@ export const mockAccessTokenPermissionsQueryResponse = {
     ],
   },
 };
-export const mockSourceTokenQueryResponse = {
+export const mockGroupScopedTokenQueryResponse = {
   data: {
     user: {
       id: 'gid://gitlab/User/42',
@@ -295,7 +296,118 @@ export const mockSourceTokenQueryResponse = {
             __typename: 'PersonalAccessToken',
             name: mockTokens[0].name,
             description: mockTokens[0].description,
+            granular: true,
             scopes: [{ ...mockGranularGroupScope, project: null }],
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const mockProjectScopedTokenQueryResponse = {
+  data: {
+    user: {
+      id: 'gid://gitlab/User/42',
+      __typename: 'UserCore',
+      personalAccessTokens: {
+        __typename: 'PersonalAccessTokenConnection',
+        nodes: [
+          {
+            id: 'gid://gitlab/PersonalAccessToken/2',
+            __typename: 'PersonalAccessToken',
+            name: 'Project Token',
+            description: 'A project-scoped token',
+            granular: true,
+            scopes: [mockGranularProjectScope],
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const mockUserScopedTokenQueryResponse = {
+  data: {
+    user: {
+      id: 'gid://gitlab/User/42',
+      __typename: 'UserCore',
+      personalAccessTokens: {
+        __typename: 'PersonalAccessTokenConnection',
+        nodes: [
+          {
+            id: 'gid://gitlab/PersonalAccessToken/3',
+            __typename: 'PersonalAccessToken',
+            name: 'User Only Token',
+            description: 'A user-scoped token',
+            granular: true,
+            scopes: [mockGranularUserScope],
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const mockSourceTokenQueryResponse = {
+  data: {
+    user: {
+      id: 'gid://gitlab/User/42',
+      __typename: 'UserCore',
+      personalAccessTokens: {
+        __typename: 'PersonalAccessTokenConnection',
+        nodes: [
+          {
+            id: 'gid://gitlab/PersonalAccessToken/4',
+            __typename: 'PersonalAccessToken',
+            name: 'Namespace And User Scope Token',
+            description: 'A token with both namespace and user scopes',
+            granular: true,
+            scopes: [mockGranularProjectScope, mockGranularUserScope],
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const mockNullDescriptionTokenQueryResponse = {
+  data: {
+    user: {
+      id: 'gid://gitlab/User/42',
+      __typename: 'UserCore',
+      personalAccessTokens: {
+        __typename: 'PersonalAccessTokenConnection',
+        nodes: [
+          {
+            id: 'gid://gitlab/PersonalAccessToken/5',
+            __typename: 'PersonalAccessToken',
+            name: 'No Description Token',
+            description: null,
+            granular: true,
+            scopes: [mockGranularUserScope],
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const mockLegacySourceTokenQueryResponse = {
+  data: {
+    user: {
+      id: 'gid://gitlab/User/42',
+      __typename: 'UserCore',
+      personalAccessTokens: {
+        __typename: 'PersonalAccessTokenConnection',
+        nodes: [
+          {
+            id: 'gid://gitlab/PersonalAccessToken/2',
+            __typename: 'PersonalAccessToken',
+            name: mockTokens[1].name,
+            description: mockTokens[1].description,
+            granular: false,
+            scopes: mockLegacyScopes,
           },
         ],
       },

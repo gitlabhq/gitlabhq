@@ -1,0 +1,8 @@
+---
+name: ci_ansi2json_v2
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234882
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/599447
+milestone: '19.0'
+group: group::pipeline execution
+type: development
+default_enabled: false

@@ -9,7 +9,7 @@ export default {
     'app/assets/javascripts/code_navigation/index.js',
     'app/assets/javascripts/merge_request_dashboard/index.js',
     'app/assets/javascripts/pages/projects/forks/new/index.js',
-    'app/assets/javascripts/pages/projects/graphs/charts/index.js',
+    'app/assets/javascripts/pages/projects/graphs/charts/init_graphs_charts.js',
     'app/assets/javascripts/pages/shared/mount_badge_settings.js',
     'app/assets/javascripts/rapid_diffs/app/file_browser/index.js',
     'app/assets/javascripts/render_vue_component_for_legacy_js.js',

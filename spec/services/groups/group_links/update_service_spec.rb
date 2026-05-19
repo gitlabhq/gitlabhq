@@ -40,7 +40,7 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute', feature_category: 
     expect { subject }.to change { group_member_user.can?(:create_release, project) }.from(true).to(false)
   end
 
-  it 'schedules worker with with medium priority' do
+  it 'schedules worker with medium priority' do
     expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker).to receive(:perform_async)
       .with(
         group.id,

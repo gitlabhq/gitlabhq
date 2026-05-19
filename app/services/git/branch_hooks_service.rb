@@ -7,6 +7,7 @@ module Git
 
     JIRA_SYNC_BATCH_SIZE = 20
     JIRA_SYNC_BATCH_DELAY = 10.seconds
+    DUO_WORKFLOW_TRAILER = 'Duo-Workflow-Definition'
 
     def execute
       execute_branch_hooks
@@ -111,7 +112,12 @@ module Git
       return unless default_branch?
 
       commits_changing_ci_config.each do |commit|
-        track_internal_event('commit_change_to_ciconfigfile', user: commit.author, project: commit.project)
+        track_internal_event(
+          'commit_change_to_ciconfigfile',
+          user: commit.author,
+          project: commit.project,
+          additional_properties: { author_source: ci_config_author_source(commit) }
+        )
       end
     end
 
@@ -120,9 +126,20 @@ module Git
         author = commit.author
         next unless author
 
-        track_internal_event('create_ci_config_file', user: author, project: commit.project,
-          namespace: commit.project.namespace)
+        track_internal_event(
+          'create_ci_config_file',
+          user: author,
+          project: commit.project,
+          namespace: commit.project.namespace,
+          additional_properties: { author_source: ci_config_author_source(commit) }
+        )
       end
+    end
+
+    def ci_config_author_source(commit)
+      # Re-fetching the commit via FindCommitsRequest to access trailers.
+      full_commit = project.repository.commits(commit.id, limit: 1, trailers: true).first
+      full_commit&.trailers&.dig(DUO_WORKFLOW_TRAILER).presence || 'human'
     end
 
     def track_process_commit_limit_overflow

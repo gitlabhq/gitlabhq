@@ -47,7 +47,7 @@ To see your merge request homepage on GitLab.com, either:
 It's organized into three tabs, to help you focus on what needs your attention right now, while
 still giving you access to other recent work:
 
-![The three homepage tabs are shown at the top of the screen.](img/homepage_tabs_v18_1.png)
+![The navigation tabs on the merge request homepage.](img/homepage_tabs_v18_1.png)
 
 - **Active**: These merge requests need attention from you, or a member of your team.
 - **Merged**: These merge requests merged in the last 14 days, and you were an assignee or a reviewer.
@@ -56,7 +56,7 @@ still giving you access to other recent work:
 GitLab shows the total number of **Active** merge requests in the upper-right corner on all pages.
 For example, this user has:
 
-![The upper-right corner showing the number of active merge requests.](img/homepage_totals_v18_7.png)
+![The navigation bar displaying the active merge requests count.](img/homepage_totals_v18_7.png)
 
 - 8 open issues ({{< icon name="work-item-issue" >}})
 - 3 active merge requests ({{< icon name="merge-request-open" >}})
@@ -64,7 +64,7 @@ For example, this user has:
 
 Each table row groups related information about a merge request together into columns:
 
-![The 'Returned to you' section of the Active tab, showing a table with information about three merge requests.](img/homepage_rows_v17_9.png)
+![The table row layout grouping a merge request's status, title, assignee, reviewer, and checks.](img/homepage_rows_v17_9.png)
 
 - **Status** - The current status of the merge request.
 - **Title** - Important metadata about the issue, including:

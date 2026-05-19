@@ -1,7 +1,6 @@
 <script>
 import { GlSprintf, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { __ } from '~/locale';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -9,6 +8,7 @@ import DiffFileEditor from './components/diff_file_editor.vue';
 import InlineConflictLines from './components/inline_conflict_lines.vue';
 import ParallelConflictLines from './components/parallel_conflict_lines.vue';
 import { INTERACTIVE_RESOLVE_MODE } from './constants';
+import { useMergeConflicts } from './store';
 
 /**
  * A lot of the classes below should
@@ -40,13 +40,16 @@ export default {
     ),
   },
   computed: {
-    ...mapGetters([
+    ...mapState(useMergeConflicts, [
       'getConflictsCountText',
       'isReadyToCommit',
       'getCommitButtonText',
       'fileTextTypePresent',
+      'isLoading',
+      'hasError',
+      'isParallel',
+      'conflictsData',
     ]),
-    ...mapState(['isLoading', 'hasError', 'isParallel', 'conflictsData']),
     commitMessage: {
       get() {
         return this.conflictsData.commitMessage;
@@ -57,7 +60,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
+    ...mapActions(useMergeConflicts, [
       'setViewType',
       'submitResolvedConflicts',
       'setFileResolveMode',

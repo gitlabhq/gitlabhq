@@ -59,6 +59,11 @@ module MergeRequests
       if changed_fields.include?('target_branch') ||
           changed_fields.include?('source_branch')
         merge_request.mark_as_unchecked unless merge_request.unchecked?
+
+        # Delete HEAD diff and re-enqueue mergeability check so we get to generate
+        # a fresh HEAD diff when either branches have been changed.
+        merge_request.merge_head_diff&.destroy!
+        merge_request.check_mergeability(async: true)
       end
     end
 
@@ -243,12 +248,12 @@ module MergeRequests
       old_title_draft = MergeRequest.draft?(old_title)
       new_title_draft = MergeRequest.draft?(new_title)
 
-      if old_title_draft || new_title_draft
+      if old_title_draft != new_title_draft
         # notify the draft status changed. Added/removed message is handled in the
         # email template itself, see `change_in_merge_request_draft_status_email` template.
         notify_draft_status_changed(merge_request)
         trigger_merge_request_status_updated(merge_request)
-        publish_draft_change_event(merge_request)
+        publish_draft_change_event(merge_request, new_draft_status: new_title_draft)
       end
 
       if !old_title_draft && new_title_draft
@@ -260,10 +265,14 @@ module MergeRequests
       end
     end
 
-    def publish_draft_change_event(merge_request)
+    def publish_draft_change_event(merge_request, new_draft_status:)
       Gitlab::EventStore.publish(
         MergeRequests::DraftStateChangeEvent.new(
-          data: { current_user_id: current_user.id, merge_request_id: merge_request.id }
+          data: {
+            current_user_id: current_user.id,
+            merge_request_id: merge_request.id,
+            new_draft_status: new_draft_status
+          }
         )
       )
     end

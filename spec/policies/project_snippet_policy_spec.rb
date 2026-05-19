@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 # Snippet visibility scenarios are included in more details in spec/finders/snippets_finder_spec.rb
-RSpec.describe ProjectSnippetPolicy do
+RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management do
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:regular_user) { create(:user) }
   let_it_be(:external_user) { create(:user, :external) }

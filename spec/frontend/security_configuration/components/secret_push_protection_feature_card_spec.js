@@ -24,6 +24,7 @@ const feature = secretPushProtectionMock;
 const defaultProvide = {
   secretPushProtectionAvailable: true,
   secretPushProtectionEnabled: false,
+  secretPushProtectionEnforced: false,
   userIsProjectAdmin: true,
   projectFullPath: 'flightjs/flight',
   secretDetectionConfigurationPath: 'flightjs/Flight/-/security/configuration/secret_detection',
@@ -95,7 +96,6 @@ describe('SecretPushProtectionFeatureCard component', () => {
       expect(button.exists()).toBe(true);
       expect(button.props('icon')).toBe('settings');
       expect(button.attributes('href')).toBe(secretDetectionConfigurationPath);
-      expect(button.attributes('aria-label')).toBe('Configure Secret Detection');
     });
   });
 
@@ -142,7 +142,7 @@ describe('SecretPushProtectionFeatureCard component', () => {
       });
 
       it('renders correct text', () => {
-        expect(wrapper.text()).toContain('Not enabled');
+        expect(wrapper.text()).toContain('Restricted by administrator');
       });
 
       it('should show disabled toggle', () => {
@@ -157,7 +157,7 @@ describe('SecretPushProtectionFeatureCard component', () => {
       it('shows correct tooltip', () => {
         expect(findPopover().exists()).toBe(true);
         expect(findPopover().text()).toBe(
-          'This feature has been disabled at the instance level. Please reach out to your instance administrator to request activation.',
+          'This feature has been restricted for all projects in the instance. Contact an administrator to request activation.',
         );
       });
     });
@@ -185,6 +185,71 @@ describe('SecretPushProtectionFeatureCard component', () => {
       it('should not render lock icon', () => {
         expect(findLockIcon().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('when secret push protection is enforced', () => {
+    beforeEach(() => {
+      createComponent({
+        provide: {
+          secretPushProtectionAvailable: true,
+          secretPushProtectionEnforced: true,
+          secretPushProtectionEnabled: false,
+        },
+      });
+    });
+
+    it('renders enabled enforced status', () => {
+      expect(wrapper.text()).toContain('Enforced by administrator');
+    });
+
+    it('shows checked disabled toggle', () => {
+      expect(findToggle().props('value')).toBe(true);
+      expect(findToggle().props('disabled')).toBe(true);
+    });
+
+    it('does not call mutation on toggle change', async () => {
+      findToggle().vm.$emit('change', false);
+      await waitForPromises();
+
+      expect(requestHandlers.setMutationHandler).not.toHaveBeenCalled();
+    });
+
+    it('renders lock icon', () => {
+      expect(findLockIcon().exists()).toBe(true);
+      expect(findLockIcon().props('name')).toBe('lock');
+    });
+
+    it('shows enforced tooltip description', () => {
+      expect(findPopover().exists()).toBe(true);
+      expect(findPopover().text()).toBe(
+        'This feature has been enforced for all projects in the instance by an administrator.',
+      );
+    });
+  });
+
+  describe('statusText', () => {
+    it('shows "Enabled" when enabled but not enforced', () => {
+      createComponent({
+        provide: {
+          secretPushProtectionEnforced: false,
+          secretPushProtectionEnabled: true,
+        },
+      });
+
+      expect(wrapper.text()).toContain('Enabled');
+      expect(wrapper.text()).not.toContain('admin enforced');
+    });
+
+    it('shows "Not enabled" when available but not enabled', () => {
+      createComponent({
+        provide: {
+          secretPushProtectionEnforced: false,
+          secretPushProtectionEnabled: false,
+        },
+      });
+
+      expect(wrapper.text()).toContain('Not enabled');
     });
   });
 
@@ -240,6 +305,53 @@ describe('SecretPushProtectionFeatureCard component', () => {
       it('does not render lock icon', () => {
         expect(findLockIcon().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('watchers', () => {
+    it('syncs toggleValue when secretPushProtectionEnabled changes', () => {
+      createComponent({
+        provide: {
+          secretPushProtectionEnforced: false,
+          secretPushProtectionEnabled: false,
+        },
+      });
+
+      expect(wrapper.vm.projectToggleValue).toBe(false);
+
+      wrapper.vm.$options.watch.secretPushProtectionEnabled.call(wrapper.vm, true);
+
+      expect(wrapper.vm.projectToggleValue).toBe(true);
+    });
+
+    it('ignores secretPushProtectionEnabled changes when enforced', () => {
+      createComponent({
+        provide: {
+          secretPushProtectionEnforced: true,
+          secretPushProtectionEnabled: true,
+        },
+      });
+
+      expect(wrapper.vm.projectToggleValue).toBe(true);
+
+      wrapper.vm.$options.watch.secretPushProtectionEnabled.call(wrapper.vm, false);
+
+      expect(wrapper.vm.projectToggleValue).toBe(true);
+    });
+
+    it('sets toggleValue to true when enforcement is activated', () => {
+      createComponent({
+        provide: {
+          secretPushProtectionEnforced: false,
+          secretPushProtectionEnabled: false,
+        },
+      });
+
+      expect(wrapper.vm.projectToggleValue).toBe(false);
+
+      wrapper.vm.$options.watch.secretPushProtectionEnforced.call(wrapper.vm, true);
+
+      expect(wrapper.vm.projectToggleValue).toBe(true);
     });
   });
 });

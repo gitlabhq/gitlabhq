@@ -1,0 +1,8 @@
+---
+view_name: merge_request_diff_commits_views_4
+feature_categories:
+  - code_review_workflow
+description: SQL view to parallelize BackfillMergeRequestDiffCommitsToPartitioned (GitLab.com only)
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224072
+milestone: '19.0'
+gitlab_schema: gitlab_main_org

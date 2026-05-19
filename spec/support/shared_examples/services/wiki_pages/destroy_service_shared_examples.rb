@@ -57,10 +57,40 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
     end
   end
 
-  # This test fails, because deleting a page seems to orphan WikiPage;:Meta and WikiPage::Slug records,
+  # This test fails, because deleting a page seems to orphan WikiPage::Meta and WikiPage::Slug records,
   # but it's included for completeness for now.
   pending 'deletes a WikiPage::Meta record' do
     expect { service.execute(page) }.to change { WikiPage::Meta.count }.by(-1)
+  end
+
+  it 'sets deleted_at and updated_at on the WikiPage::Meta record' do
+    service.execute(page)
+
+    meta = WikiPage::Meta.find_by(title: page.title)
+    expect(meta.deleted_at).to be_present
+    expect(meta.updated_at).to be_within(1.second).of(meta.deleted_at)
+  end
+
+  context 'when mark_meta_as_deleted raises an error' do
+    before do
+      allow(service).to receive(:mark_meta_as_deleted).and_call_original
+      allow(page).to receive(:find_or_create_meta).and_return(page.find_or_create_meta)
+
+      meta = page.find_or_create_meta
+      allow(meta).to receive(:update!).and_raise(StandardError, 'meta error')
+      allow(page).to receive(:find_or_create_meta).and_return(meta)
+    end
+
+    it 'logs the exception and still returns success' do
+      expect(Gitlab::ErrorTracking).to receive(:track_exception)
+        .with(instance_of(StandardError),
+          wiki_page_title: page.title,
+          wiki_page_slug: page.slug
+        )
+
+      response = service.execute(page)
+      expect(response).to be_success
+    end
   end
 
   it 'creates a new wiki page deletion event' do

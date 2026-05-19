@@ -84,7 +84,25 @@ RSpec.describe 'Groups > Members > Manage members', :js, feature_category: :grou
         page.within role_dropdown_selector do
           wait_for_requests
           toggle_listbox
-          expect_listbox_items(Gitlab::Access.all_keys)
+          expect_listbox_role_names(Gitlab::Access.all_keys)
+        end
+      end
+    end
+
+    it 'shows descriptions for each role in the dropdown' do
+      group.add_owner(user1)
+
+      visit group_group_members_path(group)
+
+      click_on 'Invite members'
+
+      page.within invite_modal_selector do
+        page.within role_dropdown_selector do
+          wait_for_requests
+          toggle_listbox
+          expect_listbox_role_description('Guest', 'No code access. View and comment on issues and epics.')
+          expect_listbox_role_description('Developer', 'Push code to non-protected branches.')
+          expect_listbox_role_description('Owner', 'Full control of project settings.')
         end
       end
     end

@@ -3,6 +3,7 @@ name: update_repository
 description: Grants the ability to update repositories
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - update_repository_file
-

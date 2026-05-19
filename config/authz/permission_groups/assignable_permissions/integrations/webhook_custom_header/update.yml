@@ -1,0 +1,12 @@
+---
+name: update_webhook_custom_header
+description: Grants the ability to update webhook custom headers
+deprecated: true
+boundaries:
+  - group
+  - project
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_webhook_custom_header

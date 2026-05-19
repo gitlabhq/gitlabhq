@@ -47,7 +47,7 @@ Prerequisites:
 To create an issue:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**.
+1. In the left sidebar, select **Plan** > **Work items**.
 1. In the upper-right corner, select **New item**.
 1. From the **Type** dropdown list, select **Issue** if it is not already selected.
 1. Enter a title and description. If you have reference content that lists each field, link to it here.

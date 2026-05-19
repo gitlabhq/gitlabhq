@@ -79,15 +79,22 @@ module API
       end
 
       expose :size, documentation: { type: 'Integer' }
-      expose :references, using: References
-      expose :objects, using: Objects
-      expose :commit_graph, using: CommitGraph
-      expose :bitmap, using: Bitmap
-      expose :multi_pack_index, using: MultiPackIndex
-      expose :multi_pack_index_bitmap, using: Bitmap
-      expose :alternates, documentation: { type: 'object', example: nil }
+      expose :references, using: ::API::Entities::RepositoryHealth::References,
+        documentation: { type: '::API::Entities::RepositoryHealth::References' }
+      expose :objects, using: ::API::Entities::RepositoryHealth::Objects,
+        documentation: { type: '::API::Entities::RepositoryHealth::Objects' }
+      expose :commit_graph, using: ::API::Entities::RepositoryHealth::CommitGraph,
+        documentation: { type: '::API::Entities::RepositoryHealth::CommitGraph' }
+      expose :bitmap, using: ::API::Entities::RepositoryHealth::Bitmap,
+        documentation: { type: '::API::Entities::RepositoryHealth::Bitmap' }
+      expose :multi_pack_index, using: ::API::Entities::RepositoryHealth::MultiPackIndex,
+        documentation: { type: '::API::Entities::RepositoryHealth::MultiPackIndex' }
+      expose :multi_pack_index_bitmap, using: ::API::Entities::RepositoryHealth::Bitmap,
+        documentation: { type: '::API::Entities::RepositoryHealth::Bitmap' }
+      expose :alternates, documentation: { type: 'Hash', example: nil }
       expose :is_object_pool, documentation: { type: 'Boolean' }
-      expose :last_full_repack, using: LastFullRepack
+      expose :last_full_repack, using: ::API::Entities::RepositoryHealth::LastFullRepack,
+        documentation: { type: '::API::Entities::RepositoryHealth::LastFullRepack' }
       expose :updated_at, documentation: { type: 'DateTime', example: '2025-02-24T09:05:50.355Z' }
     end
   end

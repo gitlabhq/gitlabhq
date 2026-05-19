@@ -9,6 +9,8 @@ classification: duo
 identifiers:
   - user
 product_group: duo_chat
+product_categories:
+- duo_chat
 milestone: '16.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132803
 tiers:

@@ -198,7 +198,8 @@ Existing queries already work without the added indexes, and
 would not critical to operating the application.
 
 If indexing takes a long time to finish
-(a post-deployment migration should take less than [10 minutes](../migration_style_guide.md#how-long-a-migration-should-take))
+(concurrent operations in a post-deployment migration should take less than
+[20 minutes](query_performance.md#timing-guidelines-for-queries)),
 consider [indexing asynchronously](#create-indexes-asynchronously).
 
 ### Add an index to support new or updated queries
@@ -240,7 +241,7 @@ For GitLab.com, we execute post-deployment migrations throughout a single releas
 After the application code changes are fully deployed,
 The release manager can choose to execute post-deployment migrations at their discretion at a much later time.
 The post-deployment migration executes one time per day pending GitLab.com availability.
-For this reason, you need a [confirmation](https://gitlab.com/gitlab-org/release/docs/-/tree/master/general/post_deploy_migration#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom)
+For this reason, you need a [confirmation](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/database-migrations/post-deploy-migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom)
 the post-deployment migrations included in the first MR were executed before merging the second MR.
 
 #### New or updated queries might be slow on a large GitLab instance
@@ -295,6 +296,33 @@ Consult the Database team, reviewers, or maintainers to plan the work.
 ### All unique indexes needs to be scoped
 
 For more information, see [Unique constraints in Cells](../cells/_index.md#unique-constraints).
+
+### Unique indexes on nullable columns
+
+By default, PostgreSQL treats `NULL` values as distinct in unique indexes.
+This means a unique index on `(project_id, name)` allows multiple rows where
+`name IS NULL` for the same `project_id`.
+
+PostgreSQL 15 introduced the [`NULLS NOT DISTINCT`](https://www.postgresql.org/about/featurematrix/detail/unique-nulls-not-distinct/)
+clause for unique indexes. When enabled, PostgreSQL treats `NULL` values as equal,
+so the index permits at most one `NULL` per unique combination.
+
+Use `nulls_not_distinct: true` when you need to enforce full uniqueness
+including `NULL` values:
+
+```ruby
+add_concurrent_index(
+  :vulnerability_finding_links,
+  %i[vulnerability_occurrence_id name url],
+  unique: true,
+  nulls_not_distinct: true,
+  name: "finding_link_occurrence_id_name_url_idx"
+)
+```
+
+This replaces the previous pattern of combining two indexes: one regular unique
+index for non-null rows and a partial unique index with a `WHERE column IS NULL`
+condition. A single `NULLS NOT DISTINCT` index is simpler and uses less disk space.
 
 ## Dropping unused indexes
 
@@ -695,7 +723,7 @@ index creation can proceed at a lower level of risk.
 
 1. Create a merge request containing a post-deployment migration, which prepares
    the index for asynchronous creation.
-1. [Create a follow-up issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Synchronous%20Database%20Index)
+1. [Create a follow-up issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Synchronous%20Database%20Index)
    to add a migration that creates the index synchronously.
 1. In the merge request that prepares the asynchronous index, add a comment mentioning the follow-up issue.
 
@@ -852,7 +880,7 @@ index destruction can proceed at a lower level of risk.
 
 1. Create a merge request containing a post-deployment migration, which prepares
    the index for asynchronous destruction.
-1. [Create a follow-up issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Synchronous%20Database%20Index)
+1. [Create a follow-up issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Synchronous%20Database%20Index)
    to add a migration that destroys the index synchronously.
 1. In the merge request that prepares the asynchronous index removal, add a comment mentioning the follow-up issue.
 

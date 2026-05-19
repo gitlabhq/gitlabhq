@@ -1,0 +1,11 @@
+---
+name: create_webhook
+description: Grants the ability to create webhooks
+boundaries:
+  - group
+  - project
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_webhook

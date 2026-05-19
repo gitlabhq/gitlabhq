@@ -158,7 +158,7 @@ RSpec.describe Repositories::LfsStorageController, feature_category: :source_cod
         end
 
         context 'when the LFS object metadata exists but file is missing' do
-          let_it_be(:broken_lfs_object) { create(:lfs_object) }
+          let_it_be(:broken_lfs_object, freeze: false) { create(:lfs_object) }
           let(:params) { { repository_path: repository_path, oid: broken_lfs_object.oid } }
 
           before do

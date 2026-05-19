@@ -1044,6 +1044,32 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       it_behaves_like 'a ListCommits request'
     end
 
+    context 'with path filter' do
+      before do
+        ::Gitlab::GitalyClient.clear_stubs!
+      end
+
+      it 'includes path in the request' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits) do |request, _options|
+            expect(request.paths).to eq([Gitlab::EncodingHelper.encode_binary('files/ruby/popen.rb')])
+          end.and_return([])
+        end
+
+        client.list_commits('master', { path: 'files/ruby/popen.rb' })
+      end
+
+      it 'does not include path when it is an empty string' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits) do |request, _options|
+            expect(request.paths).to be_empty
+          end.and_return([])
+        end
+
+        client.list_commits('master', { path: '' })
+      end
+    end
+
     describe 'pagination' do
       it 'returns next_cursor and accepts it in the following request', :aggregate_failures do
         response_1 = client.list_commits('master', { pagination_params: { limit: 1 } })
@@ -1645,6 +1671,43 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
           expect(signatures[signed_by_user.first][:committer_email]).to eq(''.b)
         end
+      end
+    end
+  end
+
+  describe '#languages' do
+    let(:response) do
+      Gitaly::CommitLanguagesResponse.new(
+        languages: [
+          Gitaly::CommitLanguagesResponse::Language.new(
+            name: 'Ruby', share: 50.0, color: '#701516', language_id: language_id
+          )
+        ]
+      )
+    end
+
+    subject(:languages) { client.languages }
+
+    before do
+      expect_any_instance_of(Gitaly::CommitService::Stub)
+        .to receive(:commit_languages)
+        .with(kind_of(Gitaly::CommitLanguagesRequest), kind_of(Hash))
+        .and_return(response)
+    end
+
+    context 'when language_id is zero' do
+      let(:language_id) { 0 }
+
+      it 'returns zero for language_id' do
+        is_expected.to eq([{ value: 50.0, label: 'Ruby', color: '#701516', highlight: '#701516', language_id: 0 }])
+      end
+    end
+
+    context 'when language_id is present' do
+      let(:language_id) { 326 }
+
+      it 'returns the language_id' do
+        is_expected.to eq([{ value: 50.0, label: 'Ruby', color: '#701516', highlight: '#701516', language_id: 326 }])
       end
     end
   end

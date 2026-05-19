@@ -74,6 +74,9 @@ module Ci
       @command_logger = Gitlab::Ci::Pipeline::CommandLogger.new
       @pipeline = Ci::Pipeline.new
 
+      return ServiceResponse.error(message: "Missing project parameter", payload: @pipeline) if project.nil?
+      return ServiceResponse.error(message: "Missing user parameter", payload: @pipeline) if current_user.nil?
+
       validate_options!(options)
 
       @command = Gitlab::Ci::Pipeline::Chain::Command.new(
@@ -121,12 +124,18 @@ module Ci
       end
 
       if error_message = pipeline.full_error_messages.presence || pipeline.failure_reason.presence
-        ::Ci::PipelineCreation::Requests.failed(params[:pipeline_creation_request], error_message)
-        GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request) if merge_request
+        unless params[:defer_request_completion]
+          ::Ci::PipelineCreation::Requests.failed(params[:pipeline_creation_request], error_message)
+          GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request) if merge_request
+        end
+
         ServiceResponse.error(message: error_message, payload: pipeline)
       else
-        ::Ci::PipelineCreation::Requests.succeeded(params[:pipeline_creation_request], pipeline.id)
-        GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request) if merge_request
+        unless params[:defer_request_completion]
+          ::Ci::PipelineCreation::Requests.succeeded(params[:pipeline_creation_request], pipeline.id)
+          GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request) if merge_request
+        end
+
         ServiceResponse.success(payload: pipeline)
       end
 
@@ -163,12 +172,12 @@ module Ci
     def validate_options!(_)
       raise ArgumentError, "Param `partition_id` is not allowed" if params[:partition_id]
     end
-
-    def extra_options(content: nil, dry_run: false, linting: false, duo_workflow_definition: nil, trigger_api_request: false)
-      { content: content, dry_run: dry_run, linting: linting, duo_workflow_definition: duo_workflow_definition, trigger_api_request: trigger_api_request }
-    end
     # :nocov:
     # rubocop:enable Gitlab/NoCodeCoverageComment
+
+    def extra_options(content: nil, dry_run: false, linting: false, duo_workflow_definition: nil, trigger_api_request: false, suspend_options: nil)
+      { content: content, dry_run: dry_run, linting: linting, duo_workflow_definition: duo_workflow_definition, trigger_api_request: trigger_api_request, suspend_options: suspend_options }
+    end
 
     def build_logger
       Gitlab::Ci::Pipeline::Logger.new(project: project) do |l|

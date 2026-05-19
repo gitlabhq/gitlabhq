@@ -28,7 +28,9 @@ module Organizations
       last_changed_by_user_id: :integer,
       last_error: :string,
       deletion_error: :string,
-      deletion_scheduled_by_user_id: :integer
+      deletion_scheduled_by_user_id: :integer,
+      confirmed_at: :datetime,
+      confirmed_by_user_id: :integer
 
     def uploads_sharding_key
       { organization_id: organization_id }

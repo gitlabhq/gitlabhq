@@ -1,0 +1,13 @@
+---
+table_name: work_item_agent_plans
+classes:
+- WorkItems::AgentPlan
+feature_categories:
+- team_planning
+description: Stores the agent plan content associated with a work item.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/232335
+milestone: '19.0'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small

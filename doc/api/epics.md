@@ -3,6 +3,7 @@ stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Epics API (deprecated)
+description: Review the official GitLab API documentation for Epics. Discover how to programmatically list, create, update, and delete epics within your groups effectively.
 ---
 
 {{< details >}}

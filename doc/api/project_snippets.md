@@ -349,7 +349,7 @@ Example response:
 
 ## Delete a snippet
 
-Deletes a specified project snippet. This returns a `204 No Content` status code if the operation was successfully or `404` if the resource was not found.
+Deletes a specified project snippet. This returns a `204 No Content` status code if the operation was successful or `404` if the resource was not found.
 
 ```plaintext
 DELETE /projects/:id/snippets/:snippet_id

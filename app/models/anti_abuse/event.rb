@@ -11,6 +11,7 @@ module AntiAbuse
 
     belongs_to :user, inverse_of: :abuse_events
     belongs_to :abuse_report, class_name: '::AbuseReport', inverse_of: :abuse_events
+    belongs_to :organization, class_name: 'Organizations::Organization'
 
     enum :category, Enums::Abuse::Category.categories
     enum :source, Enums::Abuse::Source.sources

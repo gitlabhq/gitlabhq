@@ -1,5 +1,6 @@
-import { s__, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import {
+  GREETING_MESSAGES,
   MORNING_GREETINGS,
   AFTERNOON_GREETINGS,
   EVENING_GREETINGS,
@@ -10,7 +11,7 @@ import {
   THURSDAY_GREETINGS,
   FRIDAY_GREETINGS,
   SATURDAY_GREETINGS,
-  DAY_NAMES,
+  HAPPY_DAY_GREETINGS,
 } from '~/homepage/constants';
 
 const DAY_GREETINGS = [
@@ -34,7 +35,7 @@ export function buildTimeAwareGreetings(now = new Date()) {
   const greetings = [];
 
   // Happy <day of week>!
-  greetings.push(sprintf(s__('Homepage|Happy %{dayName}!'), { dayName: DAY_NAMES[day] }, false));
+  greetings.push(HAPPY_DAY_GREETINGS[day]);
 
   // Time-of-day greetings
   if (hour >= 5 && hour < 12) {
@@ -49,4 +50,14 @@ export function buildTimeAwareGreetings(now = new Date()) {
   greetings.push(...DAY_GREETINGS[day]);
 
   return greetings;
+}
+
+/**
+ * Returns a single random greeting from the combined general and time-aware pools.
+ * @param {Date} now - The current date/time (defaults to new Date())
+ * @returns {string} A greeting string
+ */
+export function getRandomGreeting(now = new Date()) {
+  const all = [...GREETING_MESSAGES, ...buildTimeAwareGreetings(now)];
+  return all.length > 0 ? all[Math.floor(Math.random() * all.length)] : __('Welcome!');
 }

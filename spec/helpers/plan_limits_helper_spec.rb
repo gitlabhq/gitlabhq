@@ -16,7 +16,8 @@ RSpec.describe PlanLimitsHelper, feature_category: :continuous_integration do
         :ci_needs_size_limit,
         :ci_registered_group_runners,
         :ci_registered_project_runners,
-        :pipeline_hierarchy_size
+        :pipeline_hierarchy_size,
+        :max_pipelines_per_merge_train
       ].each do |limit_name|
         expect(helper.plan_limit_setting_description(limit_name)).to be_present
       end

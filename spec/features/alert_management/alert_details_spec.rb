@@ -50,7 +50,7 @@ RSpec.describe 'Alert details', :js, feature_category: :incident_management do
       find_by_testid('alert-todo-button').click
       wait_for_requests
 
-      expect(todo_button).to have_content('Mark as done')
+      expect(todo_button).to have_content('Mark to-do items done')
     end
 
     it 'updates the alert status from the right sidebar' do

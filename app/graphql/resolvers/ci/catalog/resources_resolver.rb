@@ -33,8 +33,13 @@ module Resolvers
           required: false,
           description: 'Minimum access level required for the user on the catalog resource project.'
 
+        argument :group_ids, [::Types::GlobalIDType[::Group]],
+          required: false,
+          description: 'Filter catalog resources to those whose project namespace matches one of the given groups.'
+
         def resolve_with_lookahead(
-          scope:, search: nil, sort: nil, verification_level: nil, topics: nil, min_access_level: nil
+          scope:, search: nil, sort: nil, verification_level: nil, topics: nil, min_access_level: nil,
+          group_ids: nil
         )
           apply_lookahead(
             ::Ci::Catalog::Listing
@@ -45,7 +50,8 @@ module Resolvers
                 scope: scope,
                 verification_level: verification_level,
                 topics: topics,
-                min_access_level: min_access_level
+                min_access_level: min_access_level,
+                group_ids: group_ids&.map(&:model_id)
               )
           )
         end

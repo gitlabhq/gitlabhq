@@ -53,7 +53,7 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
     end
 
     context 'when a proper candidate_id without a package is given for promotion' do
-      let_it_be(:candidate) do
+      let_it_be(:candidate, freeze: false) do
         create(:ml_candidates, experiment: model.default_experiment, project: model.project)
       end
 
@@ -79,7 +79,7 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
     end
 
     context 'when a proper candidate_id with a package is given for promotion' do
-      let_it_be(:candidate) do
+      let_it_be(:candidate, freeze: false) do
         create(:ml_candidates, experiment: model.default_experiment, project: model.project, package: package)
       end
 
@@ -114,7 +114,7 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
     end
 
     context 'when a candidate_id in a standalone experiment with a package is given for promotion' do
-      let_it_be(:candidate) do
+      let_it_be(:candidate, freeze: false) do
         create(:ml_candidates, experiment: experiment, project: model.project, package: package)
       end
 

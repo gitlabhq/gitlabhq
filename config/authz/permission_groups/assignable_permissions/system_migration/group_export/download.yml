@@ -1,0 +1,10 @@
+---
+name: download_group_export
+description: Grants the ability to download a group export.
+deprecated: true
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - download_group_export

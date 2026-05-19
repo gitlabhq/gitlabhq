@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
       run_untagged: false,
       access_level: 'ref_protected',
       tag_list: %w[tag1 tag2],
-      allowed_plan_ids: []
+      allowed_plan_name_uids: []
     }
   end
 
@@ -85,7 +85,7 @@ RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
 
       with_them do
         let(:record) { build.build_matcher }
-        let(:allowed_plan_ids) { [] } # Used only in the EE codebase
+        let(:allowed_plan_name_uids) { [] } # Used only in the EE codebase
 
         let(:build_attributes) do
           {
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
             access_level: ref_protected ? 'ref_protected' : 'not_protected',
             run_untagged: run_untagged,
             tag_list: runner_tags,
-            allowed_plan_ids: allowed_plan_ids
+            allowed_plan_name_uids: allowed_plan_name_uids
           }
         end
 
@@ -115,7 +115,7 @@ RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
           access_level: 'not_protected',
           run_untagged: false,
           tag_list: '{ruby,docker}',
-          allowed_plan_ids: []
+          allowed_plan_name_uids: []
         }
       end
 

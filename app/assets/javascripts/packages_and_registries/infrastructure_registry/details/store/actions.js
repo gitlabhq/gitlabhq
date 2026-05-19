@@ -32,8 +32,11 @@ export const deletePackage = ({
     packageEntity: { project_id, id },
   },
 }) => {
-  return Api.deleteProjectPackage(project_id, id).catch(() => {
-    createAlert({ message: DELETE_PACKAGE_ERROR_MESSAGE, variant: VARIANT_WARNING });
+  return Api.deleteProjectPackage(project_id, id).catch((error) => {
+    createAlert({
+      message: error?.response?.data?.message || DELETE_PACKAGE_ERROR_MESSAGE,
+      variant: VARIANT_WARNING,
+    });
   });
 };
 
@@ -53,7 +56,10 @@ export const deletePackageFile = (
       commit(types.UPDATE_PACKAGE_FILES, filtered);
       createAlert({ message: DELETE_PACKAGE_FILE_SUCCESS_MESSAGE, variant: VARIANT_SUCCESS });
     })
-    .catch(() => {
-      createAlert({ message: DELETE_PACKAGE_FILE_ERROR_MESSAGE, variant: VARIANT_WARNING });
+    .catch((error) => {
+      createAlert({
+        message: error?.response?.data?.message || DELETE_PACKAGE_FILE_ERROR_MESSAGE,
+        variant: VARIANT_WARNING,
+      });
     });
 };

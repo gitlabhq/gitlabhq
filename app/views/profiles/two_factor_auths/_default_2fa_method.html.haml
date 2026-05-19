@@ -1,4 +1,4 @@
-- if Feature.enabled?(:passkeys, current_user) && current_user.two_factor_enabled?
+- if current_user.two_factor_enabled?
   %p
     %span.gl-font-bold
       = s_('ProfilesAuthentication|Default 2FA method:')

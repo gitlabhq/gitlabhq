@@ -233,7 +233,12 @@ export default {
       <div class="build-page" data-testid="job-content">
         <!-- Header Section -->
         <header>
-          <job-header :job-id="job.id" :user="job.user" @clicked-sidebar-button="toggleSidebar" />
+          <job-header
+            v-if="job.id"
+            :job-id="job.id"
+            :user="job.user"
+            @clicked-sidebar-button="toggleSidebar"
+          />
           <gl-alert
             v-if="shouldRenderHeaderCallout"
             variant="danger"

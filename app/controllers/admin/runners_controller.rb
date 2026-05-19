@@ -14,6 +14,10 @@ class Admin::RunnersController < Admin::ApplicationController
     push_frontend_feature_flag(:runner_create_wizard_admin, current_user)
   end
 
+  before_action do
+    push_frontend_feature_flag(:vue3_migrate_admin_runners, current_user)
+  end
+
   feature_category :runner_core
   urgency :low
 

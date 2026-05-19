@@ -1,0 +1,6 @@
+---
+event: ProjectAuthorizations::AuthorizationsChangedEvent
+description: Defined to signal project authorization access-level changes. Not currently
+  published anywhere in the codebase; a subscriber exists in EE security_subscriptions.rb
+  but no publish call has been added yet.
+feature_category: permissions

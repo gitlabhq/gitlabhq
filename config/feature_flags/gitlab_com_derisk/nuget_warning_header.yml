@@ -1,0 +1,9 @@
+---
+name: nuget_warning_header
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/595489
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231682
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596940
+milestone: '19.0'
+type: gitlab_com_derisk
+group: group::package registry
+default_enabled: false

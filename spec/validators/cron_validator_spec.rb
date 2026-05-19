@@ -29,7 +29,7 @@ RSpec.describe CronValidator do
     expect(subject.valid?).to be_falsy
   end
 
-  context 'cron field is not allowlisted' do
+  context 'when cron field is not allowlisted' do
     subject do
       Class.new do
         include ActiveModel::Model

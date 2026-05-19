@@ -6,11 +6,11 @@ module Groups
 
     PERMITTED_FILE_EXTENSIONS = %w[csv].freeze
 
-    before_action :authorize_owner_access!
-
     feature_category :importers
 
     def show
+      return render_403 unless Ability.allowed?(current_user, :read_placeholder_reassignment, group)
+
       csv_response = Import::SourceUsers::GenerateCsvService.new(group, current_user: current_user).execute
 
       if csv_response.success?
@@ -25,6 +25,8 @@ module Groups
     end
 
     def create
+      return render_403 unless Ability.allowed?(current_user, :create_placeholder_reassignment, group)
+
       unless file_type_is_valid?(file_params[:file])
         render_unprocessable_entity(s_('UserMapping|You must upload a CSV file with a .csv file extension.'))
         return

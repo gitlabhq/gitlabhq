@@ -14,6 +14,11 @@ export default {
       type: Array,
       required: true,
     },
+    truncate: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     selectedVersionName() {
@@ -29,7 +34,8 @@ export default {
     data-testid="version-dropdown-content"
     size="small"
     category="tertiary"
-    toggle-class="gl-font-bold !gl-px-[0.25rem]"
+    :class="{ 'compare-dropdown-truncate gl-max-w-[max-content]': truncate }"
+    toggle-class="gl-font-bold !gl-px-[0.25rem] !gl-w-auto"
   >
     <template v-for="version in versions">
       <gl-dropdown-divider v-if="version.addDivider" :key="version.id" />
@@ -66,3 +72,13 @@ export default {
     </template>
   </gl-dropdown>
 </template>
+
+<style>
+.compare-dropdown-truncate .gl-dropdown-button-text {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+</style>

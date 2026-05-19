@@ -5,6 +5,7 @@ module Types
     graphql_name 'Repository'
 
     authorize :read_code
+    authorize_granular_token permissions: :read_code, boundary: :project, boundary_type: :project
 
     field :blobs, Types::Repository::BlobType.connection_type, null: true, resolver: Resolvers::BlobsResolver, calls_gitaly: true,
       description: 'Blobs contained within the repository'

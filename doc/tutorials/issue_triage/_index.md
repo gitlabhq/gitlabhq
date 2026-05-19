@@ -72,8 +72,8 @@ For this tutorial, suppose you've decided on the following:
 For inspiration, see how we define these at GitLab:
 
 - [Types and subtypes](https://handbook.gitlab.com/handbook/engineering/metrics/#work-type-classification)
-- [Priority](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#priority)
-- [Severity](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#severity)
+- [Priority](https://handbook.gitlab.com/handbook/product-development/how-we-work/issue-triage/#priority)
+- [Severity](https://handbook.gitlab.com/handbook/product-development/how-we-work/issue-triage/#severity)
 
 ## Document your criteria
 
@@ -116,7 +116,7 @@ previous one is removed.
 To create each label:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Manage** > **Labels**.
+1. In the left sidebar, select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `type::bug`.
 1. Optional. Select a color by selecting from the available colors, or enter a hex color value for
@@ -240,5 +240,5 @@ Next, you can:
 
   ![Diagonal heatmap for issues with "priority" and "severity" labels](img/triage_report_v16_3.png)
 
-To learn more about issue triage at GitLab, see [issue triage](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/)
-and [triage operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).
+To learn more about issue triage at GitLab, see [issue triage](https://handbook.gitlab.com/handbook/product-development/how-we-work/issue-triage/)
+and [triage operations](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/triage-operations/).

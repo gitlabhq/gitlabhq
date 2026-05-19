@@ -76,7 +76,7 @@ If you receive this error after creating a new project using
 Check if the repository owner is specified in the URL of your mirrored repository:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. If no repository owner is specified, delete and add the URL again in this format,
    replacing `OWNER`, `ACCOUNTNAME`, `PATH_TO_REPO`, and `REPONAME` with your values:
@@ -180,6 +180,25 @@ This error is returned when the target host public SSH key changes.
 Public SSH keys rarely change. If host key verification fails,
 but you suspect the key is still valid, you must delete the repository mirror
 and create it again. For more information, see [create a repository mirror](_index.md#create-a-repository-mirror).
+
+## Repository mirroring disabled because mirror user was deleted
+
+You might receive an email notification similar to:
+
+```plaintext
+Repository mirroring on <project_path> was disabled because the mirror user <username> was deleted.
+
+To re-enable mirroring, update your repository mirroring settings.
+```
+
+This issue occurs because each mirror is tied to the user who configured it. When that user's account
+is deleted, GitLab automatically disables the mirror. The same behavior applies when a group access token
+or project access token used to create the mirror is revoked, because the associated bot user is also deleted.
+
+You cannot reassign a mirror to a different user. To resolve this issue, set up the mirror again with a
+different user.
+
+For more information, see [issue 488449](https://gitlab.com/gitlab-org/gitlab/-/work_items/488449).
 
 ## Transfer mirror users and tokens to a single service account
 

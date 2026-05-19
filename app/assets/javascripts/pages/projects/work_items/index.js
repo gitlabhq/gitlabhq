@@ -1,4 +1,5 @@
 import { initWorkItemsRoot } from '~/work_items';
+import { initJiraIssuesImportStatusRoot } from '~/work_items/list';
 
 (async () => {
   if (gon.features?.vue3MigrateWorkItems) {
@@ -13,3 +14,4 @@ import { initWorkItemsRoot } from '~/work_items';
 
   initWorkItemsRoot({ withTabs: false });
 })();
+initJiraIssuesImportStatusRoot();

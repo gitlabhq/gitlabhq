@@ -20,7 +20,7 @@ module API
         expose :subject_digest,
           documentation: { type: 'String', example: '5db1fee4b5703808c48078a76768b155b421b210c0761cd6a5d223f4d99f1eaa' }
 
-        expose :download_url do |attestation|
+        expose :download_url, documentation: { type: 'String' } do |attestation|
           expose_url(api_v4_projects_attestations_download_path(id: attestation.project_id, attestation_iid:
                                                                 attestation.iid))
         end

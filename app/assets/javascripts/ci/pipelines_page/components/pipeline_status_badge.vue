@@ -5,6 +5,7 @@ import Tracking from '~/tracking';
 import PipelinesTimeago from './pipelines_timeago.vue';
 
 export default {
+  name: 'PipelineStatusBadge',
   components: {
     CiIcon,
     PipelinesTimeago,

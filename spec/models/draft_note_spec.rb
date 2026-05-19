@@ -16,8 +16,38 @@ RSpec.describe DraftNote, feature_category: :code_review_workflow do
   end
 
   describe 'validations' do
-    it_behaves_like 'a valid diff positionable note' do
-      subject { build(:draft_note, merge_request: merge_request, commit_id: commit_id, position: position) }
+    describe '#for_commit?' do
+      let(:draft_note) { build(:draft_note, merge_request: merge_request) }
+
+      it 'returns false even when commit_id is present' do
+        draft_note.commit_id = 'abc123'
+        expect(draft_note.for_commit?).to be false
+      end
+
+      it 'returns false when commit_id is nil' do
+        draft_note.commit_id = nil
+        expect(draft_note.for_commit?).to be false
+      end
+    end
+
+    describe '#valid_commit_id' do
+      let(:draft_note) { build(:draft_note, merge_request: merge_request) }
+
+      it 'is valid when commit_id is nil' do
+        draft_note.commit_id = nil
+        expect(draft_note).to be_valid
+      end
+
+      it 'is valid when commit_id references a real commit' do
+        draft_note.commit_id = project.repository.commit.id
+        expect(draft_note).to be_valid
+      end
+
+      it 'is invalid when commit_id does not reference a real commit' do
+        draft_note.commit_id = 'bad0c1a0'
+        expect(draft_note).not_to be_valid
+        expect(draft_note.errors[:commit_id]).to include('is not a valid commit')
+      end
     end
 
     context 'for note' do

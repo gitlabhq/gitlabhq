@@ -9,7 +9,8 @@ export default {
   props: {
     heading: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     isLoading: {
       type: Boolean,
@@ -31,7 +32,8 @@ export default {
     :class="stacked ? 'gl-display-flex gl-flex-direction-column gl-gap-5' : 'row'"
   >
     <div :class="stacked ? 'gl-pl-0 gl-pr-0' : 'gl-col-lg-4 gl-pl-0 gl-pr-9'">
-      <h2 class="gl-mt-0 gl-text-size-h2">{{ heading }}</h2>
+      <h2 v-if="heading" class="gl-mt-0 gl-text-size-h2">{{ heading }}</h2>
+      <slot v-else name="heading"></slot>
       <slot name="description"></slot>
     </div>
 

@@ -3,5 +3,7 @@ name: verify_pages_domain
 description: Grants the ability to verify pages domains
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - verify_pages_domain

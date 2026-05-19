@@ -6,7 +6,7 @@ RSpec.describe Organizations::SettingsController, :routing, feature_category: :o
   let_it_be(:organization) { build(:organization) }
 
   specify 'to settings#general' do
-    expect(get("/-/organizations/#{organization.path}/settings/general"))
+    expect(get("/o/#{organization.path}/-/settings/general"))
       .to route_to('organizations/settings#general', organization_path: organization.path)
   end
 end

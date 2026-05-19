@@ -23,7 +23,7 @@ RSpec.describe 'Create a new cluster agent token', feature_category: :deployment
 
   context 'without user permissions' do
     it_behaves_like 'a mutation that returns top-level errors',
-      errors: ["The resource that you are attempting to access does not exist "\
+      errors: ["The resource that you are attempting to access does not exist " \
                "or you don't have permission to perform this action"]
 
     it 'does not create a token' do

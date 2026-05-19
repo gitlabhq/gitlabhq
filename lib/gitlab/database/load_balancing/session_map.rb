@@ -64,7 +64,7 @@ module Gitlab
             #
             # 2. In the case of derailed test in memory-on-boot job, the runtime is unknown.
             # 3. `scripts/regenerate-schema` which runs in RAILS_ENV=test
-            Gitlab::ErrorTracking.track_exception(
+            Gitlab::Database::LoadBalancing::Callbacks.track_exception(
               InvalidLoadBalancerNameError.new("Using #{db} load balancer")
             )
 

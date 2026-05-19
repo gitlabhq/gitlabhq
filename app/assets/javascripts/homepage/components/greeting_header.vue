@@ -9,15 +9,9 @@ import { gradientStyle } from '~/lib/utils/color_utils';
 import getUserStatusQuery from '~/homepage/graphql/queries/user_status.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { initEmojiMap, getEmojiInfo } from '~/emoji';
-import { GREETING_MESSAGES } from '~/homepage/constants';
-import { buildTimeAwareGreetings } from '~/homepage/utils/build_time_aware_greetings';
+import { getRandomGreeting } from '~/homepage/utils/build_time_aware_greetings';
 
 const DEFAULT_EMOJI_COLOR = 'var(--gl-color-neutral-200)';
-
-const getRandomGreetingMessage = () => {
-  const all = [...GREETING_MESSAGES, ...buildTimeAwareGreetings()];
-  return all.length > 0 ? all[Math.floor(Math.random() * all.length)] : __('Welcome!');
-};
 
 export default {
   components: {
@@ -32,7 +26,7 @@ export default {
       userStatus: null,
       emojiColor: DEFAULT_EMOJI_COLOR,
       showStatusModal: false,
-      greetingMessage: getRandomGreetingMessage(),
+      greetingMessage: getRandomGreeting(),
     };
   },
   computed: {
@@ -149,7 +143,7 @@ export default {
     <div v-else class="gl-display-inline-block gl-relative">
       <div class="gl-relative gl-rounded-full gl-p-1" :style="gradientStyle">
         <div class="gl-relative gl-rounded-full gl-bg-white gl-p-1">
-          <gl-avatar :src="avatar" :size="64" :alt="avatarAltText" />
+          <gl-avatar :src="avatar" :size="48" :alt="avatarAltText" />
         </div>
         <button
           v-gl-tooltip="tooltipMessage"
@@ -169,16 +163,15 @@ export default {
       </div>
     </div>
     <header class="gl-flex gl-min-w-0 gl-flex-col">
-      <p
-        v-if="relevantName"
-        class="gl-heading-5 gl-mb-2 gl-truncate gl-text-subtle"
-        data-testid="greeting-name"
-      >
+      <h2 class="gl-heading-3 gl-mb-0 gl-truncate" data-testid="greeting-name">
         {{ relevantName }}
-      </p>
-      <h1 class="gl-heading-display gl-m-0 gl-min-w-0 gl-truncate" data-testid="greeting-message">
+      </h2>
+      <p
+        class="gl-m-0 gl-min-w-0 gl-truncate gl-text-lg gl-text-subtle"
+        data-testid="greeting-message"
+      >
         {{ greetingMessage }}
-      </h1>
+      </p>
     </header>
     <set-status-modal-wrapper
       v-if="showStatusModal"

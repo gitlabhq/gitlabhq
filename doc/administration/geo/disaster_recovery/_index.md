@@ -25,8 +25,8 @@ Some [known issues](../_index.md#known-issues) exist.
 
 ## Secondary sites with selective synchronization enabled
 
-Promoting a **secondary** site with selective synchronization enabled results in **permanent data loss**  
-for all data that was not replicated to that secondary site. For more information, see 
+Promoting a **secondary** site with selective synchronization enabled results in **permanent data loss**
+for all data that was not replicated to that secondary site. For more information, see
 [Promoting a secondary site with selective synchronization enabled](../replication/selective_synchronization.md#promoting-a-secondary-site-with-selective-synchronization-enabled).
 
 ## The `gitlab-cluster.json` file
@@ -172,7 +172,7 @@ Note the following when promoting a secondary:
 - If the secondary site [has been paused](../replication/pause_resume_replication.md), the promotion
   performs a point-in-time recovery to the last known state.
   Data that was created on the primary while the secondary was paused is lost.
-- If the secondary site [has been paused](../replication/pause_resume_replication.md) and you encouter an `ActiveRecord::StatementInvalid: PG::ReadOnlySqlTransaction: ERROR:  cannot execute DELETE in a read-only transaction` error message during this process, see this knowledge base article: [Geo promotion fails with read-only transaction error or timeout after unexpected primary shutdown](https://support.gitlab.com/hc/en-us/articles/21019042667804-Geo-promotion-fails-with-read-only-transaction-error-or-timeout-after-unexpected-primary-shutdown).
+- If the secondary site [has been paused](../replication/pause_resume_replication.md) and you encounter an `ActiveRecord::StatementInvalid: PG::ReadOnlySqlTransaction: ERROR:  cannot execute DELETE in a read-only transaction` error message during this process, see this knowledge base article: [Geo promotion fails with read-only transaction error or timeout after unexpected primary shutdown](https://support.gitlab.com/hc/en-us/articles/21019042667804-Geo-promotion-fails-with-read-only-transaction-error-or-timeout-after-unexpected-primary-shutdown).
 - A new **secondary** should not be added at this time. If you want to add a new
   **secondary**, do this after you have completed the entire process of promoting
   the **secondary** to the **primary**.
@@ -212,7 +212,7 @@ When you run `gitlab-ctl geo promote`, a [`gitlab-cluster.json`](#the-gitlab-clu
 file is created on the node. The file overrides Geo role settings in `gitlab.rb`
 when you reconfigure.
 
-### Step 3. (Optional) Removing the former secondary's tracking database
+### Step 3. Removing the former secondary's tracking database
 
 If you have any `geo_secondary[]` configuration options enabled in your `/etc/gitlab/gitlab.rb`
 file, comment them out or remove them, and then [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
@@ -405,7 +405,7 @@ changing Git remotes and API URLs.
 1. Execute the command below to update the newly promoted **primary** site URL:
 
    ```shell
-   gitlab-rake geo:update_primary_node_url
+   gitlab-rake gitlab:geo:update_primary_node_url
    ```
 
    This command uses the changed `external_url` configuration defined
@@ -570,7 +570,7 @@ must disable the **primary** site:
 1. Promote the secondary:
 
    ```shell
-   kubectl --namespace gitlab exec -ti gitlab-geo-toolbox-XXX -- gitlab-rake geo:set_secondary_as_primary
+   kubectl --namespace gitlab exec -ti gitlab-geo-toolbox-XXX -- gitlab-rake gitlab:geo:set_secondary_as_primary
    ```
 
    Environment variables can be provided to modify the behavior of the task. The
@@ -607,7 +607,7 @@ must disable the **primary** site:
 
    To promote the **secondary** cluster to a **primary** cluster, update `role: secondary` to `role: primary`.
 
-   If the cluster remains as a primary site, you can remove the entire `psql` section; it refers to the tracking database and is ignored while the cluster is acting as a primary site.
+   If the cluster remains as a primary site, you must remove the entire `psql` section under `geo`; it refers to the tracking database. If left in place, the application identifies the node as a secondary at boot time, which causes route registration issues that break authentication when a new secondary is added with a unified URL.
 
    Update the cluster with the new configuration:
 
@@ -636,9 +636,12 @@ kubectl --namespace gitlab rollout restart deployment -l app=openbao
 
 Skip this step if you've updated DNS records for the primary domain to point to the secondary site.
 
-Using recovery keys, connect to OpenBao API to reconfigure [JWT authentication](https://openbao.org/docs/auth/jwt/#configuration) for the secondary domain.
-
+To reconfigure JWT authentication, you need a root token. Use the recovery key to generate one.
 For more information, see
+[Generate a root token from the recovery key](../../secrets_manager/recovery_key.md#generate-a-root-token-from-the-recovery-key).
+
+After you have a root token, reconfigure the JWT auth mount to point to the secondary domain.
+For configuration details, see
 [Geo configuration](https://docs.gitlab.com/charts/charts/openbao/#geo-configuration).
 
 #### Restore the unseal secret if needed

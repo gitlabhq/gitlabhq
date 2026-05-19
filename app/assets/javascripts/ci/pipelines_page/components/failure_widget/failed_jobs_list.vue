@@ -5,7 +5,7 @@ import { reportToSentry } from '~/ci/utils';
 import { __, s__, sprintf } from '~/locale';
 import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import { graphqlEtagPipelinePath } from '~/ci/pipeline_details/utils';
-import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
+import { setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import getPipelineFailedJobs from '~/ci/pipelines_page/graphql/queries/get_pipeline_failed_jobs.query.graphql';
 import { sortJobsByStatus } from './utils';
 import FailedJobDetails from './failed_job_details.vue';
@@ -92,7 +92,13 @@ export default {
     },
   },
   mounted() {
-    toggleQueryPollingByVisibility(this.$apollo.queries.failedJobs, POLL_INTERVAL);
+    this.pollingVisibilityCleanup = setupQueryPollingByVisibility(
+      this.$apollo.queries.failedJobs,
+      POLL_INTERVAL,
+    );
+  },
+  beforeDestroy() {
+    this.pollingVisibilityCleanup?.();
   },
   methods: {
     async retryJob(jobName) {

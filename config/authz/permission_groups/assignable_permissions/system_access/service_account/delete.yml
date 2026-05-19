@@ -3,5 +3,7 @@ name: delete_service_account
 description: Grants the ability to delete service accounts
 boundaries:
   - group
+available_for:
+  - granular_access_token
 permissions:
   - delete_service_account

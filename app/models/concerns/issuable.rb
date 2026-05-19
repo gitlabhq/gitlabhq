@@ -259,11 +259,7 @@ module Issuable
 
   class_methods do
     def participant_includes
-      if Feature.enabled?(:optimize_issuable_participants, Feature.current_request)
-        [:author, :award_emoji, { notes_with_possible_mentions: [:author, :award_emoji] }]
-      else
-        [:author, :award_emoji, { notes: [:author, :award_emoji] }]
-      end
+      [:author, :award_emoji, { notes_with_possible_mentions: [:author, :award_emoji] }]
     end
 
     # Searches for records with a matching title.
@@ -647,17 +643,11 @@ module Issuable
   end
 
   def system_note_authors
-    return [] unless Feature.enabled?(:optimize_issuable_participants, Feature.current_request)
-
     User.id_in(notes.system.select(:author_id).distinct)
   end
 
   def notes_for_participants
-    if Feature.enabled?(:optimize_issuable_participants, Feature.current_request)
-      notes_with_associations(notes_with_possible_mentions).limit(Noteable::MAX_NOTES_LIMIT * 2)
-    else
-      notes_with_associations.limit(Noteable::MAX_NOTES_LIMIT * 2)
-    end
+    notes_with_associations(notes_with_possible_mentions).limit(Noteable::MAX_NOTES_LIMIT * 2)
   end
 
   def notes_with_associations(relation = notes)

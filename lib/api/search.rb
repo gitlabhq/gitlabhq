@@ -23,6 +23,7 @@ module API
 
     before do
       authenticate!
+      set_current_organization
 
       check_rate_limit!(
         :search_rate_limit,
@@ -58,7 +59,10 @@ module API
           # Skip legacy scope conversion for API requests to maintain backward compatibility
           SearchService.new(
             current_user,
-            search_params.merge(additional_params).merge(skip_legacy_scope_conversion: true)
+            search_params.merge(additional_params).merge(
+              organization_id: Current.organization.id,
+              skip_legacy_scope_conversion: true
+            )
           )
         end
       end
@@ -118,7 +122,7 @@ module API
 
         search_service = search_service(additional_params)
         Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
-          error: @search_duration_s.nil? || (status < 200 || status >= 400),
+          error: @search_duration_s.nil? || status >= 500,
           search_type: search_type(additional_params),
           search_level: search_service.level,
           search_scope: @search_duration_s.nil? ? user_requested_search_scope : search_service.scope
@@ -134,7 +138,7 @@ module API
         # This prevents returning all work items when unavailable types (e.g., epic on CE) are requested
         return false unless params[:type].present? && params[:scope] == 'work_items'
 
-        processed_params = Gitlab::Search::Params.new(params)
+        processed_params = ::Search::Params.new(params)
         processed_params[:work_item_type_ids].blank?
       end
 
@@ -221,8 +225,8 @@ module API
     # rubocop: enable Cop/InjectEnterpriseEditionModule
 
     resource :search do
-      desc 'Search on GitLab' do
-        detail 'This feature was introduced in GitLab 10.5.'
+      desc 'Search an instance' do
+        detail 'Searches for a term across the entire GitLab instance. The response depends on the requested scope.'
         tags ['search']
       end
 
@@ -275,7 +279,8 @@ module API
       end
       route_setting :authorization, permissions: :use_global_search, boundary_type: :group
       route_setting :mcp, tool_name: :gitlab_search_in_group,
-        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
+        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService],
+        resource_name: "group"
       get ':id/(-/)search' do
         additional_params = { group_id: user_group.id }
         search_type = search_type(additional_params)
@@ -312,7 +317,8 @@ module API
       end
       route_setting :authorization, permissions: :use_global_search, boundary_type: :project
       route_setting :mcp, tool_name: :gitlab_search_in_project,
-        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
+        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService],
+        resource_name: "project"
       get ':id/(-/)search' do
         additional_params = { project_id: user_project.id, repository_ref: params[:ref] }
         search_type = search_type(additional_params)

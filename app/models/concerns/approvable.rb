@@ -71,6 +71,10 @@ module Approvable
   def approvals_for_user_ids(user_ids)
     approvals.where(user_id: user_ids)
   end
+
+  # Overridden in EE::VisibleApprovable to invalidate the mergeability approval cache.
+  # No-op in CE since the mergeability approval cache only exists in EE.
+  def delete_approval_mergeability_cache; end
 end
 
 Approvable.prepend_mod

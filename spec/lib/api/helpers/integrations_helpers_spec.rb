@@ -6,7 +6,7 @@ RSpec.describe API::Helpers::IntegrationsHelpers, feature_category: :integration
   let(:base_classes) { Integration::BASE_CLASSES.map(&:constantize) }
   let(:development_classes) { [Integrations::MockCi, Integrations::MockMonitoring] }
   let(:instance_level_classes) { Integration.instance_specific_integration_types.map(&:constantize) }
-  let(:deprecated) { [Integrations::Prometheus] }
+  let(:deprecated) { [Integrations::Prometheus, Integrations::SlackSlashCommands] }
 
   describe '.integrations' do
     it 'has correct integrations' do

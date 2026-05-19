@@ -9,7 +9,7 @@ import { pinia } from '~/pinia/instance';
 
 jest.mock('~/rapid_diffs/app/discussions/diff_file_discussions.vue', () => {
   return {
-    inject: ['filePaths', 'linkedFileData'],
+    inject: ['filePaths', 'linkedFileData', 'newCommentTemplatePaths'],
     methods: {
       empty() {
         this.$emit('empty');
@@ -27,6 +27,7 @@ jest.mock('~/rapid_diffs/app/discussions/diff_file_discussions.vue', () => {
           id: 'file-discussions-component',
           'data-file-paths': JSON.stringify(this.filePaths),
           'data-linked-file-data': JSON.stringify(this.linkedFileData),
+          'data-new-comment-template-paths': JSON.stringify(this.newCommentTemplatePaths),
         },
       });
     },
@@ -37,6 +38,9 @@ describe('fileDiscussionsAdapter', () => {
   const oldPath = 'old';
   const newPath = 'new';
   const linkedFileData = { old_path: oldPath, new_path: newPath };
+  const newCommentTemplatePaths = [
+    { text: 'Your comment templates', href: '/-/profile/comment_templates' },
+  ];
   const appData = {
     userPermissions: { can_create_note: true },
     discussionsEndpoint: 'discussionsEndpoint',
@@ -47,6 +51,7 @@ describe('fileDiscussionsAdapter', () => {
     noteableType: 'MergeRequest',
     reportAbusePath: 'reportAbusePath',
     linkedFileData,
+    newCommentTemplatePaths,
   };
 
   const getDiffFile = () => document.querySelector('diff-file');
@@ -156,6 +161,9 @@ describe('fileDiscussionsAdapter', () => {
     });
     expect(JSON.parse(getFileDiscussionsComponent().dataset.linkedFileData)).toStrictEqual(
       linkedFileData,
+    );
+    expect(JSON.parse(getFileDiscussionsComponent().dataset.newCommentTemplatePaths)).toStrictEqual(
+      newCommentTemplatePaths,
     );
   });
 

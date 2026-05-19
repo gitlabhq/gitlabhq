@@ -30,7 +30,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
-  inject: ['isGroupIssuesList'],
   i18n: {
     displayOptions: s__('WorkItems|Display options'),
     yourPreferences: s__('WorkItems|Your preferences'),
@@ -51,11 +50,6 @@ export default {
     fullPath: {
       type: String,
       required: true,
-    },
-    isEpicsList: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     isGroup: {
       type: Boolean,
@@ -101,9 +95,9 @@ export default {
     applicableMetadataPreferences() {
       return WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter((item) => {
         if (item.key === METADATA_KEYS.STATUS) {
-          return !this.isEpicsList && !this.isServiceDeskList;
+          return !this.isServiceDeskList;
         }
-        return !this.isGroup || item.isPresentInGroup || this.isGroupIssuesList;
+        return !this.isGroup || item.isPresentInGroup;
       });
     },
   },

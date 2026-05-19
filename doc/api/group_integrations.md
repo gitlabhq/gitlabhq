@@ -1765,65 +1765,6 @@ Get the Slack notifications settings for a group.
 GET /groups/:id/integrations/slack
 ```
 
-## Slack slash commands
-
-### Set up Slack slash commands
-
-Set up Slack slash commands for a group.
-
-```plaintext
-PUT /groups/:id/integrations/slack-slash-commands
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `token` | string | yes | The Slack token. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
-
-### Disable Slack slash commands
-
-Disable Slack slash commands for a group. Integration settings are reset.
-
-```plaintext
-DELETE /groups/:id/integrations/slack-slash-commands
-```
-
-### Get Slack slash commands settings
-
-Get the Slack slash commands settings for a group.
-
-```plaintext
-GET /groups/:id/integrations/slack-slash-commands
-```
-
-Example response:
-
-```json
-{
-  "id": 4,
-  "title": "Slack slash commands",
-  "slug": "slack-slash-commands",
-  "created_at": "2017-06-27T05:51:39-07:00",
-  "updated_at": "2017-06-27T05:51:39-07:00",
-  "active": true,
-  "push_events": true,
-  "issues_events": true,
-  "confidential_issues_events": true,
-  "merge_requests_events": true,
-  "tag_push_events": true,
-  "note_events": true,
-  "job_events": true,
-  "pipeline_events": true,
-  "comment_on_event_enabled": false,
-  "inherited": false,
-  "properties": {
-    "token": "<your_access_token>"
-  }
-}
-```
-
 ## Squash TM
 
 ### Set up Squash TM

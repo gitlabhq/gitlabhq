@@ -357,7 +357,7 @@ You can sign in to the **secondary** site with the same credentials you used wit
 the **primary** site. After you sign in:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 1. Verify that it's correctly identified as a **secondary** Geo site, and that
    Geo is enabled.
 

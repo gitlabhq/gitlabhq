@@ -120,6 +120,11 @@ describe('vue_shared/components/web_ide_link', () => {
             </div>`,
         }),
         GlDisclosureDropdownItem,
+        MountingPortal: {
+          render(h) {
+            return h('div', this.$slots.default);
+          },
+        },
       },
       apolloProvider: fakeApollo,
     });

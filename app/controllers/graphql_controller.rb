@@ -96,6 +96,7 @@ class GraphqlController < ApplicationController
   # defer it to :authorize_access_api!, we need to override the bypass session
   # callback execution order here
   around_action :sessionless_bypass_admin_mode!, if: :sessionless_user?
+  around_action :track_user_experience_sli_by_operation_name
 
   # The default feature category is overridden to read from request
   feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
@@ -295,6 +296,11 @@ class GraphqlController < ApplicationController
   def track_gitlab_cli_usage
     Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter
       .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
+  end
+
+  def track_user_experience_sli_by_operation_name
+    ::Gitlab::Graphql::UxSliByOperationName
+      .new(permitted_params[:operationName]).track { yield }
   end
 
   def execute_multiplex

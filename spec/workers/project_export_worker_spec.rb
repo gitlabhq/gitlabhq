@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ProjectExportWorker, feature_category: :importers do
   it_behaves_like 'export worker'
 
-  context 'exporters duration measuring' do
+  context 'when measuring exporters duration' do
     let_it_be_with_reload(:project) { create(:project) }
     let_it_be(:user) { create(:user, owner_of: project) }
 

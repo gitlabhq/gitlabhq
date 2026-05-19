@@ -15,6 +15,11 @@ module RecoverableByAnyEmail
 
       recoverable = email.user
 
+      if recoverable.blocked?
+        recoverable.errors.add(:password, :unavailable)
+        return recoverable
+      end
+
       unless recoverable.allow_password_authentication?
         recoverable.errors.add(:password, :unavailable, message: _('Password authentication is unavailable.'))
         return recoverable

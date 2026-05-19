@@ -132,7 +132,7 @@ Prerequisites:
 To invite a group to a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select the group you want to invite.
 1. From the **Select maximum role** list, select the [role](../../permissions.md) the invited group's members can have in the project. Invited members receive the lower of:
@@ -209,7 +209,7 @@ which can be confusing and difficult to control.
 To prevent a project from being shared with other groups:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Projects in `<group_name>` cannot be shared with other groups**.
 1. Select **Save changes**.
@@ -298,7 +298,7 @@ Prerequisites:
 To invite a group to your group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select the group you want to invite.
 1. From the **Select maximum role** list, select the [role](../../permissions.md) the invited group's members can have in the group. Invited members receive the lower of:
@@ -316,7 +316,7 @@ To invite a group to your group:
 To remove an invited group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select the **Groups** tab.
 1. To the right of the group you want to remove, select **Remove group** ({{< icon name="remove" >}}).
 
@@ -359,7 +359,7 @@ If you prevent inviting groups outside the hierarchy for the **Animals** group:
 To prevent inviting groups outside of the group's hierarchy:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Select **Members cannot invite groups outside of `<group_name>` and its subgroups**.
 1. Select **Save changes**.

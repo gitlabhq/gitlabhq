@@ -1,7 +1,7 @@
 ---
-stage: None - Facilitated functionality, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
-group: Unassigned - Facilitated functionality, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+stage: Facilitated functionality
+group: Facilitated functionality
+info: For more information, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
 description: Send email notifications to all users or specific groups and projects.
 gitlab_dedicated: yes
 title: Email from GitLab
@@ -33,7 +33,7 @@ You can send email notifications once every 10 minutes.
 To send an email:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Users**.
+1. In the left sidebar, select **Overview** > **Users**.
 1. In the upper-right corner, next to the **New user** button, select **Send email to users** ({{< icon name="mail" >}}).
 1. Complete the fields. The email body supports only plain text and does not support HTML, Markdown, or other rich text formats.
 1. From the **Select group or project** dropdown list, select the recipient.

@@ -68,7 +68,7 @@ Prerequisites:
 To view storage usage for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Usage quotas**.
+1. In the left sidebar, select **Settings** > **Usage quotas**.
 1. Select the **Storage** tab.
 
 You can also use the [Groups API](../../../api/groups.md#list-all-groups) to get total container registry storage for all projects in a group.
@@ -242,7 +242,7 @@ You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the
 To create a cleanup policy in the UI:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Packages and registries**.
+1. In the left sidebar, select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Container registry cleanup policies**, select **Set cleanup rules**.
 1. Complete the fields:
@@ -340,7 +340,7 @@ ApplicationSetting.last.update(container_registry_expiration_policies_worker_cap
 To change these settings in the **Admin** area:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Container Registry**.
 
 ### Use the cleanup policy API

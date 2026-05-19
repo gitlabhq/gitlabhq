@@ -20,5 +20,7 @@ features give you control over your development processes.
 - [GraphQL API](graphql/_index.md)
 - [OAuth 2.0 identity provider API](oauth2.md)
 - [Editor and IDE extensions](../editor_extensions/_index.md)
+- [GitLab CLI (glab)](https://docs.gitlab.com/cli/ "Command-line interface tool that brings GitLab and the GitLab Duo Agent Platform to your terminal.")
+- [GitLab Duo CLI (duo)](../user/gitlab_duo_cli/_index.md)
 
 {{< /cards >}}

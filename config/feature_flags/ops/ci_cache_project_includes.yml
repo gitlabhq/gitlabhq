@@ -1,0 +1,9 @@
+---
+name: ci_cache_project_includes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228106
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/588313
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/594939
+milestone: '19.0'
+type: ops
+group: group::pipeline authoring
+default_enabled: false

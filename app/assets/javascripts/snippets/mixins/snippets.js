@@ -10,6 +10,7 @@ export const getSnippetMixin = {
       variables() {
         return {
           ids: [this.snippetGid],
+          ...(this.projectId ? { projectId: this.projectId } : {}),
         };
       },
       update(data) {
@@ -35,6 +36,11 @@ export const getSnippetMixin = {
     snippetGid: {
       type: String,
       required: true,
+    },
+    projectId: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {

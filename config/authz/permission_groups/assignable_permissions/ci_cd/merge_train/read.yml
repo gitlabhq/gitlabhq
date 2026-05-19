@@ -3,6 +3,8 @@ name: read_merge_train
 description: Grants the ability to read merge trains
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - read_merge_train
   - read_merge_train_merge_request

@@ -151,7 +151,9 @@ RSpec.describe Terraform::RemoteStateHandler, feature_category: :infrastructure_
     end
 
     describe '#unlock!' do
-      let_it_be(:state) { create(:terraform_state, :locked, project: project, name: 'new-state', lock_xid: 'abc-abc') }
+      let_it_be(:state, freeze: false) do
+        create(:terraform_state, :locked, project: project, name: 'new-state', lock_xid: 'abc-abc')
+      end
 
       let(:lock_id) { state.lock_xid }
 

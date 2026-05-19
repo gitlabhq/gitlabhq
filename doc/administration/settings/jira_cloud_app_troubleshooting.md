@@ -14,7 +14,7 @@ title: Troubleshooting GitLab for Jira Cloud app administration
 
 When administering the GitLab for Jira Cloud app, you might encounter the following issues.
 
-For user documentation, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md#troubleshooting).
+For user troubleshooting, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md#troubleshooting).
 
 ## Sign-in message displayed when already signed in
 
@@ -69,6 +69,10 @@ To test connectivity, run the following command:
 # A `404 Not Found` is expected because you're not passing a token
 curl --head "https://connect-install-keys.atlassian.com"
 ```
+
+## Review installation changes to the GitLab for Jira Cloud app
+
+There are several methods to review any installation changes to the GitLab for Jira Cloud app. For more information, see the official [Jira documentation](https://support.atlassian.com/jira/kb/how-to-check-who-installed-enabled-disabled-uninstalled-plugin-in-jira/).
 
 ## Data sync fails with `Invalid JWT`
 

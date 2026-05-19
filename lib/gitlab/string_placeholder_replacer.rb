@@ -29,7 +29,7 @@ module Gitlab
     # If the text you are searching is a URI attribute, such as the 'href' of an <a> tag, or
     # the 'src' of an <img> tag, set 'in_uri' to true.  This will also match the percent-encoded
     # variations of the placeholder format.  The replacement function needs to determine whether
-    # the replacements need to be percent encoded, however, as this is sometimes desireable
+    # the replacements need to be percent encoded, however, as this is sometimes desirable
     # (e.g. "%{project_title}" which contains free text), and sometimes not (e.g. "%{project_path}"
     # *if* we want the path components to expand into path components in the final URL).
     #

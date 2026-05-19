@@ -64,24 +64,19 @@ When you mention someone, in a work item or merge request, they become a [partic
 
 {{< history >}}
 
-- [Flag](../../administration/feature_flags/_index.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Disabled by default. [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/18442).
+- [Flag](../../administration/feature_flags/_index.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Enabled on GitLab.com. Disabled on GitLab Self-Managed and GitLab Dedicated.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/415280) in GitLab 18.8.5.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/415280) feature flag `disable_all_mention` in GitLab 19.0.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Avoid mentioning `@all` in comments and descriptions. `@all` mentions more than
 just the participants of the project, issue, or merge request, but all members
 of that project's parent group. All these users receive an email notification
 and a to-do item, and might interpret it as spam.
 
-When you enable this feature flag, typing `@all` in comments and descriptions
-results in plain text instead of mentioning all users.
-When you disable this feature, existing `@all` mentions in the Markdown texts are unchanged,
-and remain as links. Only future `@all` mentions appear as plain text.
+Typing `@all` in comments and descriptions results in plain text instead of mentioning all users.
+Existing `@all` mentions in Markdown text from before this change are unchanged and remain as links.
 
 You can disable notifications and mentions in [group settings](../group/manage.md#disable-email-notifications).
 

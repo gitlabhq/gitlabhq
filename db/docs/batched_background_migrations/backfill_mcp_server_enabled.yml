@@ -1,0 +1,7 @@
+---
+migration_job_name: BackfillMcpServerEnabled
+description: Seeds mcp_server_enabled on namespace_settings based on current effective MCP availability
+feature_category: mcp_server
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229674
+milestone: '19.0'
+queued_migration_version: 20260326045900

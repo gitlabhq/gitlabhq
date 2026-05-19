@@ -1,8 +1,10 @@
 ---
 name: read_terraform_state
 description: Grants the ability to read Terraform state
+boundaries:
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - read_terraform_state
   - read_terraform_state_version
-boundaries:
-  - project

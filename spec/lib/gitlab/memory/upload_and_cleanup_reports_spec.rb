@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Memory::UploadAndCleanupReports, :aggregate_failures do
   let(:uploader) { instance_double(Gitlab::Memory::ReportsUploader) }
   let(:logger) { instance_double(Gitlab::Memory::DiagnosticReportsLogger) }
 
-  describe '#initalize' do
+  describe '#initialize' do
     let(:reports_path) { '/path/to/reports' }
 
     context 'when sleep_time_seconds is passed through the environment' do

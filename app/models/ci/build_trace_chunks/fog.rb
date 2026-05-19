@@ -93,10 +93,18 @@ module Ci
       end
 
       def create_attributes(model, new_data)
-        {
+        attrs = {
           key: key(model),
           body: new_data
         }.merge(object_store_config.fog_attributes)
+        # Some S3-compatible providers (e.g. Hitachi Vantara HCP, SeaweedFS) reject
+        # PutObject requests where content-type is nil. fog-aws always includes
+        # content-type in the canonical signed headers, so an empty value causes
+        # failures on stricter providers. Default to application/octet-stream for
+        # S3 uploads. Unlike GCS, S3 allows the response content type to be
+        # overridden per request via the response-content-type parameter.
+        attrs[:content_type] ||= 'application/octet-stream' if object_store_config.aws?
+        attrs
       end
 
       def key_raw(build_id, chunk_index)

@@ -9,6 +9,11 @@ module Types
     connection_type_class Types::CountableConnectionType
 
     authorize :read_label
+    authorize_granular_token permissions: :read_label,
+      boundaries: [
+        { boundary: :project, boundary_type: :project },
+        { boundary: :group, boundary_type: :group }
+      ]
 
     def self.authorization_scopes
       super + [:ai_workflows]

@@ -1,33 +1,56 @@
+- @hide_flash = true
 - page_title s_('Onboarding|Create your first project')
+- add_page_specific_style 'page_bundles/registrations'
+- content_for :body_class, '!gl-bg-default'
 
-.gl-flex.gl-flex-col.gl-items-center.gl-w-full.gl-px-5.gl-pb-5
-  .gl-flex.gl-flex-col.gl-items-center.gl-w-full
-    %h2.gl-text-center= s_('Onboarding|Create your first project')
+.row.gl-grow
+  .gl-flex.gl-flex-col.gl-items-center.gl-w-full.gl-px-5.gl-pb-5
+    .new-project.gl-flex.gl-flex-col.gl-items-center.gl-w-full{ class: "@sm/panel:gl-w-auto" }
+      %h2.gl-text-center= s_('Onboarding|Create your first project')
 
-    %p.gl-text-center= s_('Onboarding|Projects help you organize your work. They contain your file repository, issues, merge requests, and so much more.')
+      %p.gl-text-center= s_('Onboarding|Projects help you organize your work. They contain your file repository, issues, merge requests, and so much more.')
 
-    = gitlab_ui_form_with url: admin_registrations_groups_path, method: :post, html: { class: 'gl-w-full gl-p-4' } do |f|
-      = form_errors(@group, type: 'Group')
-      = form_errors(@project, type: 'Project')
+      .gl-border.gl-rounded-lg.gl-mt-5.gl-p-6.gl-w-full
+        = gitlab_ui_form_for :project_group, url: admin_registrations_groups_path, html: { class: 'gl-show-field-errors gl-w-full' } do |f|
+          = form_errors(@group, type: 'Group')
+          = form_errors(@project, type: 'Project')
+          = render 'layouts/flash'
 
-      = fields_for :group, @group do |gf|
-        %fieldset
-          %legend.gl-sr-only= s_('Onboarding|Group')
-          .gl-mb-3
-            = gf.label :name, s_('Onboarding|Group name'), class: 'gl-mb-2 gl-block'
-            = gf.text_field :name, class: 'gl-form-input form-control', required: true, data: { testid: 'group-name' }
-          = gf.hidden_field :path
+          = fields_for :group, @group do |gf|
+            %fieldset
+              %legend.gl-sr-only= s_('Onboarding|Group')
+              .gl-mb-3
+                = gf.label :name, s_('Onboarding|Group name'), class: 'gl-mb-2 gl-block'
+                = gf.text_field :name, id: 'js-onboarding-group-name', class: 'gl-form-input form-control', required: true, data: { testid: 'group-name' }
+              = gf.hidden_field :path, id: 'js-onboarding-group-path'
 
-      = fields_for :project, @project do |pf|
-        %fieldset
-          %legend.gl-sr-only= s_('Onboarding|Project')
-          .gl-mb-3
-            = pf.label :name, s_('Onboarding|Project name'), class: 'gl-mb-2 gl-block'
-            = pf.text_field :name, class: 'gl-form-input form-control', required: true, data: { testid: 'project-name' }
-          = pf.hidden_field :path
+          = fields_for :project, @project do |pf|
+            %fieldset
+              %legend.gl-sr-only= s_('Onboarding|Project')
+              .gl-mb-3
+                = pf.label :name, s_('Onboarding|Project name'), class: 'gl-mb-2 gl-block'
+                = pf.text_field :name, id: 'js-onboarding-project-name', class: 'gl-form-input form-control', required: true, data: { testid: 'project-name' }
+              = pf.hidden_field :path, id: 'js-onboarding-project-path'
+              .gl-mb-3
+                = pf.label :project_template_name, class: 'gl-mb-2 gl-block' do
+                  = s_('Onboarding|Select a template')
+                  %span.gl-text-subtle= s_('Onboarding|(optional)')
+                %p.gl-mt-0.gl-mb-2.gl-text-sm.gl-text-subtle= s_('Onboarding|Get started with one of our popular project templates')
+                = select_tag 'project[project_template_name]',
+                  options_for_select([[s_('Onboarding|Blank project (default)'), '']] + @project_templates.map { |t| [t.title, t.name] }, @template_name),
+                  id: 'project_project_template_name', class: 'form-select gl-w-full', data: { testid: 'project-template-select' }
 
-      .gl-flex.gl-justify-end.gl-gap-3
-        = render Pajamas::ButtonComponent.new(href: root_path, variant: :default, button_options: { data: { testid: 'skip-button' } }) do
-          = s_('Onboarding|Skip')
-        = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { data: { testid: 'submit-button' } }) do
-          = s_('Onboarding|Continue')
+          .gl-my-4.gl-text-center{ data: { onboarding_root_url: root_url } }
+            %p.form-text.gl-mb-1= s_('Onboarding|Your project will be created at:')
+            %p.form-text.monospace.gl-break-words.gl-mb-1
+              %span.js-onboarding-root-url
+              %span{ data: { testid: 'url-group-path' } }
+              = '/'
+              %span{ data: { testid: 'url-project-path' } }
+            %p.form-text.gl-text-subtle= s_('Onboarding|You can always change your URL later')
+
+          .gl-flex.gl-justify-end.gl-gap-3
+            = render Pajamas::ButtonComponent.new(href: new_admin_registrations_profile_path, variant: :default, button_options: { data: { testid: 'skip-button', event_tracking: 'click_skip_create_first_project' } }) do
+              = s_('Onboarding|Skip')
+            = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { data: { testid: 'submit-button' } }) do
+              = s_('Onboarding|Continue')

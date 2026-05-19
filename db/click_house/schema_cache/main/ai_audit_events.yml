@@ -1,0 +1,67 @@
+---
+name: ai_audit_events
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree PARTITION BY toYYYYMM(created_at) ORDER BY (traversal_path,
+  workflow_id, created_at, id) SETTINGS deduplicate_merge_projection_mode = 'rebuild',
+  index_granularity = 8192
+partition_key: toYYYYMM(created_at)
+primary_key: traversal_path, workflow_id, created_at, id
+sorting_key: traversal_path, workflow_id, created_at, id
+settings:
+  deduplicate_merge_projection_mode: "'rebuild'"
+  index_granularity: '8192'
+columns:
+- name: id
+  type: UUID
+  compression_codec: CODEC(ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: event_name
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+  is_in_partition_key: true
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: author_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+  compression_codec: CODEC(ZSTD(1))
+- name: project_id
+  type: Nullable(UInt64)
+  compression_codec: CODEC(ZSTD(1))
+- name: group_id
+  type: Nullable(UInt64)
+  compression_codec: CODEC(ZSTD(1))
+- name: ip_address
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+  compression_codec: CODEC(ZSTD(1))
+- name: workflow_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: details
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'{}'"
+  compression_codec: CODEC(ZSTD(3))
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
+    'traversal_path', project_id, '0/'), coalesce(group_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.namespace_traversal_paths_dict',
+    'traversal_path', group_id, '0/'), '0/')
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true

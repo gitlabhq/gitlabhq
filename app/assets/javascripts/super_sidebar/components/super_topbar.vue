@@ -53,6 +53,7 @@ export default {
     skipToMainContent: __('Skip to main content'),
     adminArea: s__('Navigation|Admin'),
     searchBtnText: __('Search or go to…'),
+    analyticsDashboardsBtnText: s__('AnalyticsDashboards|View analytics dashboards'),
     menuLabel: __('Open navigation menu'),
   },
   inject: ['isSaas'],
@@ -78,6 +79,7 @@ export default {
     shouldShowOrganizationSwitcher() {
       return (
         this.glFeatures.uiForOrganizations &&
+        this.glFeatures.organizationSwitching &&
         this.isLoggedIn &&
         window.gon.current_organization &&
         this.sidebarData.has_multiple_organizations
@@ -106,7 +108,7 @@ export default {
 
 <template>
   <header
-    class="super-topbar js-super-topbar gl-grid gl-grid-cols-[1fr_1fr] gl-items-center gl-outline-none sm:gl-grid-cols-[1fr_auto_1fr] forced-colors:gl-outline-0"
+    class="super-topbar js-super-topbar gl-grid gl-grid-cols-[1fr_1fr] gl-items-center gl-gap-x-5 gl-outline-none sm:gl-grid-cols-[1fr_auto_1fr] forced-colors:gl-outline-0"
     tabindex="0"
     autofocus
   >
@@ -151,7 +153,7 @@ export default {
       <div
         v-if="glFeatures.pageBreadcrumbsInTopBar"
         id="js-vue-page-breadcrumbs-wrapper"
-        class="gl-grow"
+        class="gl-ml-3 gl-grow"
         data-testid="breadcrumb-links"
       >
         <gl-breadcrumb
@@ -178,7 +180,7 @@ export default {
       @dragover.prevent
     >
       <gl-icon name="search" class="gl-shrink-0" />
-      <span class="topbar-search-button-placeholder gl-min-w-[20vw] gl-truncate gl-text-left">{{
+      <span class="topbar-search-button-placeholder !gl-min-w-[20vw] gl-truncate gl-text-left">{{
         $options.i18n.searchBtnText
       }}</span>
       <kbd class="gl-mr-1 gl-hidden gl-shrink-0 gl-rounded-base gl-shadow-none md:gl-block">/</kbd>
@@ -197,6 +199,17 @@ export default {
         @dragover.prevent
       />
       <template v-if="isLoggedIn">
+        <gl-button
+          v-if="glFeatures.exploreAnalyticsDashboards"
+          v-gl-tooltip.bottom="$options.i18n.analyticsDashboardsBtnText"
+          :href="sidebarData.explore_analytics_dashboards_path"
+          :aria-label="$options.i18n.analyticsDashboardsBtnText"
+          category="tertiary"
+          icon="chart"
+          size="small"
+          class="gl-self-center"
+          data-testid="topbar-analytics-dashboards-button"
+        />
         <create-menu
           v-if="isLoggedIn && sidebarData.create_new_menu_groups.length > 0"
           :groups="sidebarData.create_new_menu_groups"

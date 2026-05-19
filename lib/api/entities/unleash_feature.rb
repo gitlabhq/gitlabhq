@@ -3,10 +3,10 @@
 module API
   module Entities
     class UnleashFeature < Grape::Entity
-      expose :name
-      expose :description, unless: ->(feature) { feature.description.nil? }
-      expose :active, as: :enabled
-      expose :strategies do |flag|
+      expose :name, documentation: { type: 'String' }
+      expose :description, documentation: { type: 'String' }, unless: ->(feature) { feature.description.nil? }
+      expose :active, as: :enabled, documentation: { type: 'Boolean' }
+      expose :strategies, documentation: { type: 'Array' } do |flag|
         flag.strategies.map do |strategy|
           if legacy_strategy?(strategy)
             UnleashLegacyStrategy.represent(strategy)

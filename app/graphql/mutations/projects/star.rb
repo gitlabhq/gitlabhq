@@ -6,6 +6,7 @@ module Mutations
       graphql_name 'StarProject'
 
       authorize :read_project
+      authorize_granular_token permissions: :star_project, boundary_argument: :project_id, boundary_type: :project
 
       argument :project_id,
         ::Types::GlobalIDType[::Project],

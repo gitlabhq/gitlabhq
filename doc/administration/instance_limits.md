@@ -815,6 +815,37 @@ Plan.default.actual_limits.update!(pipeline_hierarchy_size: 500)
 
 This limit is enabled on GitLab.com and cannot be changed.
 
+### Merge train parallel pipeline limit
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374188) in GitLab 19.0.
+
+{{< /history >}}
+
+By default, each [merge train](../ci/pipelines/merge_trains.md) can run
+a maximum of 20 pipelines in parallel. When this limit is reached,
+additional merge requests are queued until a pipeline slot is available.
+
+To modify this limit on your instance,
+go to **Admin** area > **Settings** > **CI/CD** > **CI/CD Limits**,
+or use the [plan limits API](../api/plan_limits.md).
+
+You can also run the following command in the GitLab Rails console:
+
+```ruby
+Plan.default.actual_limits.update!(max_pipelines_per_merge_train: 10)
+```
+
+To set a lower limit for a specific project, go to
+**Settings** > **Merge requests** > **Merge options**, use the
+[projects API](../api/projects.md), or the
+[GraphQL API](../api/graphql/reference/_index.md#projectcicdsetting).
+The project limit cannot exceed the instance limit.
+
+The minimum value is `1`. A value of `1` processes
+merge requests sequentially with no parallelism.
+
 ### Number of CI/CD subscriptions to a project
 
 The total number of subscriptions can be limited per project. This limit is
@@ -1377,17 +1408,15 @@ read the GitLab development documentation about working with diffs.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10 [with a flag](feature_flags/_index.md) named `merge_requests_diffs_limit`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/537447) in GitLab 19.0. Feature flag `merge_requests_diffs_limit` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 GitLab limits each merge request to 1000 [diff versions](../user/project/merge_requests/versions.md).
 Merge requests that reach this limit cannot be updated further. Instead,
 close the affected merge request and create a new merge request.
+
+To configure this limit, see [diff limits administration](diff_limits.md).
 
 ### Merge request reports size limit
 

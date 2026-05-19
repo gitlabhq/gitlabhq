@@ -7,15 +7,15 @@ module API
         class Result < Grape::Entity
           expose :valid?, as: :valid, documentation: { type: 'Boolean' }
           expose :errors, documentation: { is_array: true, type: 'String',
-                                           example: 'variables config should be a hash of key value pairs' }
+                                           example: ['variables config should be a hash of key value pairs'] }
           expose :warnings, documentation: { is_array: true, type: 'String',
-                                             example: 'jobs:job may allow multiple pipelines ...' }
+                                             example: ['jobs:job may allow multiple pipelines ...'] }
           expose :merged_yaml, documentation: { type: 'String', example: '---\n:another_test:\n  :stage: test\n
           :script: echo 2\n:test:\n  :stage: test\n  :script: echo 1\n' }
           expose :includes, using: Entities::Ci::Lint::Result::Include,
-            documentation: { is_array: true, type: 'object', example: '{ "blob": "https://gitlab.com/root/example-project/-/blob/...' }
+            documentation: { is_array: true, type: 'object', example: [{ 'blob' => 'https://gitlab.com/root/example-project/-/blob/...' }] }
           expose :jobs, if: ->(result, options) { options[:include_jobs] },
-            documentation: { is_array: true, type: 'object', example: '{ "name": "test: .... }' }
+            documentation: { is_array: true, type: 'object', example: [{ "name" => "test", "script" => ["ls"] }] }
         end
       end
     end

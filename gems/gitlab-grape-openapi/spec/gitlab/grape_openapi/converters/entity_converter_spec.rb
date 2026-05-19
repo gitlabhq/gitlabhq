@@ -173,6 +173,26 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::EntityConverter do
       include_examples 'entity reference', 'TestEntities::UserEntity', "#/components/schemas/TestEntitiesUserEntity"
       include_examples 'entity reference', TestEntities::UserEntity, "#/components/schemas/TestEntitiesUserEntity"
 
+      context 'when nested entity is a real Class' do
+        before do
+          # The describe-level before stubs Class#name to a fixed value; restore
+          # PersonEntity's real name so it registers under a distinct key.
+          allow(TestEntities::User::PersonEntity).to receive(:name).and_call_original
+        end
+
+        let(:entity_class) do
+          Class.new(Grape::Entity) do
+            expose :child, using: TestEntities::User::PersonEntity
+          end
+        end
+
+        it 'recursively registers the nested entity in the schema registry' do
+          converter.convert
+
+          expect(schema_registry.schemas.keys).to include('TestEntitiesUserPersonEntity')
+        end
+      end
+
       context 'with namespaced entity' do
         let(:entity_class) do
           Class.new(Grape::Entity) do
@@ -288,6 +308,27 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::EntityConverter do
         )
 
         expect(schema_registry.schemas.keys).to include('TestEntitiesUserEntity')
+      end
+
+      it 'registers entities from array of Grape::Entity classes' do
+        described_class.register([TestEntities::UserEntity], schema_registry)
+
+        expect(schema_registry.schemas.keys).to include('TestEntitiesUserEntity')
+      end
+
+      it 'registers entities from a mixed array of Class and Hash items' do
+        # The describe-level before stubs Class#name; restore PersonEntity's
+        # real name so the two items register under distinct keys.
+        allow(TestEntities::User::PersonEntity).to receive(:name).and_call_original
+
+        described_class.register(
+          [TestEntities::UserEntity, { code: 200, model: TestEntities::User::PersonEntity }],
+          schema_registry
+        )
+
+        expect(schema_registry.schemas.keys).to include(
+          'TestEntitiesUserEntity', 'TestEntitiesUserPersonEntity'
+        )
       end
 
       it 'skips array items without :model' do

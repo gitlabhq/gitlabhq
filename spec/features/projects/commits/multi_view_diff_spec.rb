@@ -54,7 +54,7 @@ RSpec.describe 'Multiple view Diffs', :js, feature_category: :source_code_manage
       expect(diff).not_to have_selector '[data-diff-toggle-entity="rawViewer"]'
       expect(diff).to have_selector '[data-diff-toggle-entity="renderedViewer"]'
 
-      expect(classes_for_element(diff, 'rawViewer', visible: false)).to include('hidden')
+      expect(classes_for_element(diff, 'rawViewer', visible: :hidden)).to include('hidden')
       expect(classes_for_element(diff, 'renderedViewer')).not_to include('hidden')
 
       expect(classes_for_element(diff, 'renderedButton')).to include('selected')
@@ -90,7 +90,7 @@ RSpec.describe 'Multiple view Diffs', :js, feature_category: :source_code_manage
 
       it 'lines numbers without mapping are empty', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16784' do
         expect(page).not_to have_selector('td.nomappinginraw + td.diff-line-num')
-        expect(page).to have_selector('td.nomappinginraw + td.diff-line-num', visible: false)
+        expect(page).to have_selector('td.nomappinginraw + td.diff-line-num', visible: :hidden)
       end
 
       it 'transforms the diff' do
@@ -114,7 +114,7 @@ RSpec.describe 'Multiple view Diffs', :js, feature_category: :source_code_manage
     end
   end
 
-  def classes_for_element(node, data_diff_entity, visible: true)
+  def classes_for_element(node, data_diff_entity, visible: :visible)
     node.find("[data-diff-toggle-entity=\"#{data_diff_entity}\"]", visible: visible)[:class]
   end
 

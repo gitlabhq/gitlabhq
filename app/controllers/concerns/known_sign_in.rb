@@ -45,6 +45,8 @@ module KnownSignIn
   end
 
   def notify_user
+    log_audit_event_for_unseen_ip
+
     request_info = Gitlab::Auth::VisitorLocation.new(request)
     current_user.notification_service.unknown_sign_in(
       current_user,
@@ -52,5 +54,19 @@ module KnownSignIn
       current_user.current_sign_in_at,
       request_info
     )
+  end
+
+  def log_audit_event_for_unseen_ip
+    audit_context = {
+      name: 'user_signed_in_from_unseen_ip',
+      author: current_user,
+      scope: current_user,
+      target: current_user,
+      message: "Signed in from a previously unseen IP address (#{request.remote_ip})",
+      authentication_event: false,
+      organization: current_user.organization # rubocop:disable Gitlab/AvoidUserOrganization -- the concern runs during Devise sign-in callbacks and the request middleware may not have set Current.organization
+    }
+
+    ::Gitlab::Audit::Auditor.audit(audit_context)
   end
 end

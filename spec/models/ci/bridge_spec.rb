@@ -57,7 +57,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#retryable?' do
-    let(:bridge) { create(:ci_bridge, :success) }
+    let_it_be(:bridge) { create(:ci_bridge, :success) }
 
     it 'returns true' do
       expect(bridge.retryable?).to eq(true)
@@ -65,7 +65,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   context 'when there is a pipeline loop detected' do
-    let(:bridge) { create(:ci_bridge, :failed, failure_reason: :pipeline_loop_detected) }
+    let_it_be(:bridge) { create(:ci_bridge, :failed, failure_reason: :pipeline_loop_detected) }
 
     it 'returns false' do
       expect(bridge.failure_reason).to eq('pipeline_loop_detected')
@@ -74,7 +74,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   context 'when the pipeline depth has reached the max descendents' do
-    let(:bridge) { create(:ci_bridge, :failed, failure_reason: :reached_max_descendant_pipelines_depth) }
+    let_it_be(:bridge) { create(:ci_bridge, :failed, failure_reason: :reached_max_descendant_pipelines_depth) }
 
     it 'returns false' do
       expect(bridge.failure_reason).to eq('reached_max_descendant_pipelines_depth')
@@ -163,7 +163,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#detailed_status' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
     let(:status) { bridge.detailed_status(user) }
 
     it 'returns detailed status object' do
@@ -178,50 +178,52 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         CI_COMMIT_SHORT_SHA CI_COMMIT_BEFORE_SHA CI_COMMIT_REF_NAME
         CI_COMMIT_REF_SLUG CI_PROJECT_ID CI_PROJECT_NAME CI_PROJECT_PATH
         CI_PROJECT_PATH_SLUG CI_PROJECT_NAMESPACE CI_PROJECT_ROOT_NAMESPACE
-        CI_PIPELINE_IID CI_CONFIG_PATH CI_CONFIG_REF_URI CI_PIPELINE_SOURCE
-        CI_COMMIT_MESSAGE CI_COMMIT_TITLE CI_COMMIT_DESCRIPTION
-        CI_COMMIT_REF_PROTECTED CI_COMMIT_TIMESTAMP CI_COMMIT_AUTHOR
-        CI_COMMIT_USER_LOGIN
+        CI_PROJECT_ROOT_NAMESPACE_SLUG CI_PIPELINE_IID CI_CONFIG_PATH
+        CI_CONFIG_REF_URI CI_PIPELINE_SOURCE CI_COMMIT_MESSAGE CI_COMMIT_TITLE
+        CI_COMMIT_DESCRIPTION CI_COMMIT_REF_PROTECTED CI_COMMIT_TIMESTAMP
+        CI_COMMIT_AUTHOR CI_COMMIT_USER_LOGIN
       ]
 
       expect(bridge.scoped_variables.map { |v| v[:key] }).to include(*variables)
     end
 
     context 'when bridge has dependency which has dotenv variable in the same project' do
-      let(:test) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
-      let(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1, options: { dependencies: [test.name] }) }
-      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: test, accessibility: accessibility) }
+      let_it_be(:test) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+      let_it_be(:bridge) do
+        create(:ci_bridge, pipeline: pipeline, stage_idx: 1, options: { dependencies: [test.name] })
+      end
 
-      let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: test) }
+      let_it_be(:job_variable) { create(:ci_job_variable, :dotenv_source, job: test) }
 
       context 'includes inherited variable that is public' do
-        let(:accessibility) { 'public' }
+        let_it_be(:job_artifact) { create(:ci_job_artifact, :dotenv, job: test, accessibility: 'public') }
 
         it { expect(bridge.scoped_variables.to_hash).to include(job_variable.key => job_variable.value) }
       end
 
       context 'includes inherited variable that is private' do
-        let(:accessibility) { 'private' }
+        let_it_be(:job_artifact) { create(:ci_job_artifact, :dotenv, job: test, accessibility: 'private') }
 
         it { expect(bridge.scoped_variables.to_hash).to include(job_variable.key => job_variable.value) }
       end
     end
 
     context 'when bridge has dependency which has dotenv variable in a different project' do
-      let(:test) { create(:ci_build, pipeline: pipeline, project: public_project, stage_idx: 0) }
-      let(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1, options: { dependencies: [test.name] }) }
-      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: test, accessibility: accessibility) }
+      let_it_be(:test) { create(:ci_build, pipeline: pipeline, project: public_project, stage_idx: 0) }
+      let_it_be(:bridge) do
+        create(:ci_bridge, pipeline: pipeline, stage_idx: 1, options: { dependencies: [test.name] })
+      end
 
-      let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: test) }
+      let_it_be(:job_variable) { create(:ci_job_variable, :dotenv_source, job: test) }
 
       context 'includes inherited variable that is public' do
-        let(:accessibility) { 'public' }
+        let_it_be(:job_artifact) { create(:ci_job_artifact, :dotenv, job: test, accessibility: 'public') }
 
         it { expect(bridge.scoped_variables.to_hash).to include(job_variable.key => job_variable.value) }
       end
 
       context 'does not include inherited variable that is private' do
-        let(:accessibility) { 'private' }
+        let_it_be(:job_artifact) { create(:ci_job_artifact, :dotenv, job: test, accessibility: 'private') }
 
         it { expect(bridge.scoped_variables.to_hash).not_to include(job_variable.key => job_variable.value) }
       end
@@ -1150,10 +1152,10 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       end
 
       let(:yaml) do
-        <<~EOY
+        <<~YAML
           ---
           include: path/to/child.yml
-        EOY
+        YAML
       end
 
       it { is_expected.to eq yaml }
@@ -1203,13 +1205,13 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#play' do
-    let(:downstream_project) { create(:project) }
-    let(:user) { create(:user) }
-    let(:bridge) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project) }
+    let_it_be(:downstream_project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:bridge) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project) }
 
     subject { bridge.play(user) }
 
-    before do
+    before_all do
       project.add_maintainer(user)
       downstream_project.add_maintainer(user)
     end
@@ -1259,52 +1261,53 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     subject { bridge.dependency_variables }
 
     context 'when downloading from previous stages from the same project' do
-      let!(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
-      let!(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
-      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: accessibility) }
+      let_it_be(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
+      let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
 
-      let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
-      let!(:job_variable_2) { create(:ci_job_variable, job: prepare1) }
+      let_it_be(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
+      let_it_be(:job_variable_2) { create(:ci_job_variable, job: prepare1) }
 
       context 'inherits dependent variables that are public' do
-        let(:accessibility) { 'public' }
+        let_it_be(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: 'public') }
 
         it { expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value) }
       end
 
       context 'inherits dependent variables that are private' do
-        let(:accessibility) { 'private' }
+        let_it_be(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: 'private') }
 
         it { expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value) }
       end
     end
 
     context 'when downloading from previous stages in a different project' do
-      let!(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, project: public_project, stage_idx: 0) }
-      let!(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
-      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: accessibility) }
+      let_it_be(:prepare1) do
+        create(:ci_build, name: 'prepare1', pipeline: pipeline, project: public_project, stage_idx: 0)
+      end
 
-      let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
-      let!(:job_variable_2) { create(:ci_job_variable, job: prepare1) }
+      let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
+
+      let_it_be(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
+      let_it_be(:job_variable_2) { create(:ci_job_variable, job: prepare1) }
 
       context 'inherits dependent variables that are public' do
-        let(:accessibility) { 'public' }
+        let_it_be(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: 'public') }
 
         it { expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value) }
       end
 
       context 'does not inherit dependent variables that are private' do
-        let(:accessibility) { 'private' }
+        let_it_be(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: 'private') }
 
         it { expect(subject.to_hash).not_to eq(job_variable_1.key => job_variable_1.value) }
       end
     end
 
     context 'when using needs within the same project' do
-      let!(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
-      let!(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
-      let!(:prepare3) { create(:ci_build, name: 'prepare3', pipeline: pipeline, stage_idx: 0) }
-      let!(:bridge) do
+      let_it_be(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
+      let_it_be(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
+      let_it_be(:prepare3) { create(:ci_build, name: 'prepare3', pipeline: pipeline, stage_idx: 0) }
+      let_it_be(:bridge) do
         create(
           :ci_bridge,
           pipeline: pipeline,
@@ -1314,30 +1317,31 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         )
       end
 
-      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: accessibility) }
-
-      let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
-      let!(:job_variable_2) { create(:ci_job_variable, :dotenv_source, job: prepare2) }
-      let!(:job_variable_3) { create(:ci_job_variable, :dotenv_source, job: prepare3) }
+      let_it_be(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
+      let_it_be(:job_variable_2) { create(:ci_job_variable, :dotenv_source, job: prepare2) }
+      let_it_be(:job_variable_3) { create(:ci_job_variable, :dotenv_source, job: prepare3) }
 
       context 'inherits only needs with artifacts variables that are public' do
-        let(:accessibility) { 'public' }
+        let_it_be(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: 'public') }
 
         it { expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value) }
       end
 
       context 'inherits needs with artifacts variables that are public' do
-        let(:accessibility) { 'private' }
+        let_it_be(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: 'private') }
 
         it { expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value) }
       end
     end
 
     context 'when using needs from different project' do
-      let!(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, project: public_project, stage_idx: 0) }
-      let!(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
-      let!(:prepare3) { create(:ci_build, name: 'prepare3', pipeline: pipeline, stage_idx: 0) }
-      let!(:bridge) do
+      let_it_be(:prepare1) do
+        create(:ci_build, name: 'prepare1', pipeline: pipeline, project: public_project, stage_idx: 0)
+      end
+
+      let_it_be(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
+      let_it_be(:prepare3) { create(:ci_build, name: 'prepare3', pipeline: pipeline, stage_idx: 0) }
+      let_it_be(:bridge) do
         create(
           :ci_bridge,
           pipeline: pipeline,
@@ -1347,20 +1351,18 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         )
       end
 
-      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: accessibility) }
-
-      let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
-      let!(:job_variable_2) { create(:ci_job_variable, :dotenv_source, job: prepare2) }
-      let!(:job_variable_3) { create(:ci_job_variable, :dotenv_source, job: prepare3) }
+      let_it_be(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
+      let_it_be(:job_variable_2) { create(:ci_job_variable, :dotenv_source, job: prepare2) }
+      let_it_be(:job_variable_3) { create(:ci_job_variable, :dotenv_source, job: prepare3) }
 
       context 'inherits only needs with artifacts variables that are public' do
-        let(:accessibility) { 'public' }
+        let_it_be(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: 'public') }
 
         it { expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value) }
       end
 
       context 'does not inherit needs with artifacts variables that are public' do
-        let(:accessibility) { 'private' }
+        let_it_be(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: 'private') }
 
         it { expect(subject.to_hash).not_to eq(job_variable_1.key => job_variable_1.value) }
       end

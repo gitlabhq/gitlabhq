@@ -15,7 +15,7 @@ describe('NewUserOrganizationField', () => {
     initialOrganization: {
       id: 1,
       name: 'Default',
-      web_url: '/-/organizations/default',
+      web_url: '/o/default/-/overview',
       avatarUrl: 'avatar.jpg',
     },
   };

@@ -21,6 +21,10 @@ describe('SourceViewer utils', () => {
       const { offsetTop } = document.querySelector('#LC3');
       expect(calculateBlameOffset(3)).toBe(`${offsetTop}px`);
     });
+
+    it('returns null when the line content element is not in the DOM', () => {
+      expect(calculateBlameOffset(999)).toBeNull();
+    });
   });
 
   describe('shouldRender', () => {

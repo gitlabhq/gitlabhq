@@ -14,16 +14,16 @@ module Organizations
 
     def organization_show_app_data(organization)
       {
-        organization: organization.slice(:id, :name, :description_html, :visibility)
-          .merge({ avatar_url: organization.avatar_url(size: 128) }),
-        groups_and_projects_organization_path: groups_and_projects_organization_path(organization),
-        users_organization_path: users_organization_path(organization),
-        association_counts: association_counts(organization)
-      }.merge(shared_groups_and_projects_app_data(organization)).to_json
+        organization: organization.slice(:name, :path),
+        can_read_artifact_registry: can?(current_user, :read_artifact_registry, organization),
+        can_admin_organization: can?(current_user, :admin_organization, organization) # rubocop:disable Gitlab/Authz/PermissionCheck -- organizations does not yet have fine-grained permissions
+      }.to_json
     end
 
     def organization_new_app_data
-      shared_new_settings_general_app_data.to_json
+      {
+        organizations_path: organizations_path
+      }.merge(shared_new_settings_general_app_data).to_json
     end
 
     def organization_settings_general_app_data(organization)
@@ -83,6 +83,16 @@ module Organizations
       }.to_json
     end
 
+    def push_organization_breadcrumbs(organization)
+      return unless organization
+
+      push_to_schema_breadcrumb(
+        simple_sanitize(organization.name),
+        organization_path(organization),
+        organization.try(:avatar_url)
+      )
+    end
+
     private
 
     def shared_groups_and_projects_app_data(organization)
@@ -101,8 +111,7 @@ module Organizations
     def shared_new_settings_general_app_data
       {
         preview_markdown_path: preview_markdown_organizations_path,
-        organizations_path: organizations_scope_path,
-        root_url: root_url
+        organizations_url: organizations_url(trailing_slash: true)
       }
     end
 

@@ -285,7 +285,7 @@ RSpec.describe Todo, feature_category: :notifications do
     it 'changes state to done' do
       todo = create(:todo, state: :pending)
 
-      expect { todo.done }.to change(todo, :state).from('pending').to('done')
+      expect { todo.done }.to change { todo.state }.from('pending').to('done')
     end
 
     it 'does not raise error when is already done' do

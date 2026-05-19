@@ -98,7 +98,7 @@ Example response:
 ]
 ```
 
-### Create a instance member role
+### Create an instance member role
 
 Create an instance-wide member role.
 
@@ -226,7 +226,7 @@ Supported attributes:
 
 | Attribute | Type | Required | Description |
 |:----------|:--------|:---------|:-------------------------------------|
-| `id`      | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group of the group |
+| `id`      | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 
 Example request:
 
@@ -270,7 +270,7 @@ Example response:
   {
     "id": 3,
     "name": "Guest + security",
-    "description": "Custom guest that read and admin security entities",
+    "description": "Custom guest that can read and administer security entities",
     "group_id": 84,
     "base_access_level": 10,
     "admin_cicd_variables": false,

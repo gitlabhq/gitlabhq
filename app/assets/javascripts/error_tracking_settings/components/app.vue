@@ -10,12 +10,12 @@ import {
   GlLink,
   GlSprintf,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { I18N_ERROR_TRACKING_SETTINGS } from '../constants';
+import { useErrorTrackingSettings } from '../store';
 import ErrorTrackingForm from './error_tracking_form.vue';
 import ProjectDropdown from './project_dropdown.vue';
 
@@ -80,14 +80,18 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
+    ...mapState(useErrorTrackingSettings, [
       'dropdownLabel',
       'hasProjects',
       'invalidProjectLabel',
       'isProjectInvalid',
       'projectSelectionLabel',
+      'enabled',
+      'integrated',
+      'projects',
+      'selectedProject',
+      'settingsLoading',
     ]),
-    ...mapState(['enabled', 'integrated', 'projects', 'selectedProject', 'settingsLoading']),
     showGitlabDsnSetting() {
       return this.integrated && this.enabled && this.gitlabDsn;
     },
@@ -126,7 +130,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions([
+    ...mapActions(useErrorTrackingSettings, [
       'setInitialState',
       'updateEnabled',
       'updateIntegrated',

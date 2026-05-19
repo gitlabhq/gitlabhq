@@ -16,9 +16,14 @@ RSpec.describe ActiveContext::Databases::Postgresql::Adapter do
 
   it 'delegates search to client' do
     query = ActiveContext::Query.filter(foo: :bar)
-    expect(adapter.client).to receive(:search).with(query)
+    collection = double('Collection')
+    user = double('User')
 
-    adapter.search(query)
+    expect(adapter.client).to receive(:search).with(
+      user: user, collection: collection, query: query
+    )
+
+    adapter.search(user: user, collection: collection, query: query)
   end
 
   describe '#prefix' do

@@ -115,7 +115,7 @@ Example response:
 
 Creates a new vulnerability.
 
-If an authenticated user does not have a permission to
+If an authenticated user does not have permission to
 [create a new vulnerability](../user/permissions.md#project-permissions),
 this request results in a `403` status code.
 

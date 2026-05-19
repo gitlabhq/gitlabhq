@@ -1,8 +1,10 @@
 ---
 name: delete_label
 description: Grants the ability to delete labels
-permissions:
-  - delete_label
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_label

@@ -1,0 +1,10 @@
+---
+name: read_bulk_import_entity_failure
+description: Grants the ability to read GitLab Migration entity failure details
+deprecated: true
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_bulk_import_entity_failure

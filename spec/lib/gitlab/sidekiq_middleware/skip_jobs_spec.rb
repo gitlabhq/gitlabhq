@@ -92,6 +92,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
 
         it 'delays the job' do
           expect(TestWorker).to receive(:deferred).with(1, :feature_flag).and_return(setter)
+          expect(setter).to receive(:set).with(jid: job['jid']).and_return(setter)
           expect(setter).to receive(:perform_in).with(described_class::DELAY, *job['args'])
 
           subject.call(TestWorker.new, job, queue) { nil }
@@ -209,6 +210,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
 
         it 'defers the job by set time' do
           expect(TestWorker).to receive(:deferred).with(1, :database_health_check).and_return(setter)
+          expect(setter).to receive(:set).with(jid: anything).and_return(setter)
           expect(setter).to receive(:perform_in).with(health_signal_attrs[:delay], *job['args'])
 
           TestWorker.perform_async(*job['args'])
@@ -216,6 +218,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
 
         it 'increments counter' do
           expect(TestWorker).to receive(:deferred).with(1, :database_health_check).and_return(setter)
+          expect(setter).to receive(:set).with(jid: anything).and_return(setter)
           expect(setter).to receive(:perform_in).with(health_signal_attrs[:delay], *job['args'])
           expect(metric).to receive(:increment).with({
             worker: "TestWorker",

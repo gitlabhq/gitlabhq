@@ -52,6 +52,21 @@ RSpec.shared_examples 'known sign in' do
 
         expect(cookies.encrypted[KnownSignIn::KNOWN_SIGN_IN_COOKIE]).to eq(user.id)
       end
+
+      it 'fires an audit event' do
+        allow(::Gitlab::Audit::Auditor).to receive(:audit).and_call_original
+        expect(::Gitlab::Audit::Auditor).to receive(:audit).with(
+          hash_including(
+            name: 'user_signed_in_from_unseen_ip',
+            author: user,
+            scope: user,
+            target: user,
+            authentication_event: false
+          )
+        ).at_least(:once).and_call_original
+
+        post_action
+      end
     end
 
     it 'notifies the user when the cookie is expired' do
@@ -80,6 +95,14 @@ RSpec.shared_examples 'known sign in' do
 
         expect(cookies.encrypted[KnownSignIn::KNOWN_SIGN_IN_COOKIE]).to be_nil
       end
+
+      it 'does not fire an audit event' do
+        expect(::Gitlab::Audit::Auditor).not_to receive(:audit).with(
+          hash_including(name: 'user_signed_in_from_unseen_ip')
+        )
+
+        post_action
+      end
     end
 
     it 'notifies the user when the cookie is for another user' do
@@ -100,10 +123,30 @@ RSpec.shared_examples 'known sign in' do
       post_action
     end
 
+    it 'does not fire an audit event when remote IP matches an active session' do
+      ActiveSession.set(user, request)
+
+      expect(::Gitlab::Audit::Auditor).not_to receive(:audit).with(
+        hash_including(name: 'user_signed_in_from_unseen_ip')
+      )
+
+      post_action
+    end
+
     it 'does not notify the user when the cookie is present and not expired' do
       stub_cookie
 
       expect(NotificationService).not_to receive(:new)
+
+      post_action
+    end
+
+    it 'does not fire an audit event when the cookie is present and not expired' do
+      stub_cookie
+
+      expect(::Gitlab::Audit::Auditor).not_to receive(:audit).with(
+        hash_including(name: 'user_signed_in_from_unseen_ip')
+      )
 
       post_action
     end

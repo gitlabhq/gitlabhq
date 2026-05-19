@@ -252,6 +252,7 @@ module API
         mount ::API::Conan::V2::ProjectPackages
         mount ::API::ContainerRegistryEvent
         mount ::API::ContainerRepositories
+        mount ::API::Databases
         mount ::API::DebianGroupPackages
         mount ::API::DebianProjectPackages
         mount ::API::DependencyProxy
@@ -372,6 +373,7 @@ module API
         mount ::API::WebCommits
         mount ::API::WorkItems::Delete
         mount ::API::WorkItems::Create
+        mount ::API::WorkItems::Update
         mount ::API::WorkItems::List
         mount ::API::WorkItems::Show
         mount ::API::Wikis
@@ -389,6 +391,7 @@ module API
       mount ::API::GroupBoards
       mount ::API::GroupLabels
       mount ::API::GroupMilestones
+      mount ::API::GroupServiceAccounts
       mount ::API::Labels
       mount ::API::Mcp::Base # MCP uses JSON-RPC for base protocol, omit from OpenAPI V2 documentation for REST API
       mount ::API::Notes
@@ -396,10 +399,12 @@ module API
       mount ::API::ProjectEvents
       mount ::API::ProjectMilestones
       mount ::API::ProjectRepositoryStorageMoves
+      mount ::API::ProjectServiceAccounts
       mount ::API::ProtectedTags
       mount ::API::ResourceAccessTokens
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceStateEvents
+      mount ::API::ServiceAccounts
       mount ::API::Settings
       mount ::API::SidekiqMetrics
       mount ::API::SnippetRepositoryStorageMoves
@@ -434,6 +439,35 @@ module API
       error!('404 Not Found', 404)
     end
   end
+
+  class TrackAPIRequestFromPersonalAccessToken < ::Grape::Middleware::Base
+    delegate :endpoint_id, to: :context
+
+    def after
+      token_info = ::Current.token_info
+      return unless token_info.is_a?(Hash) && token_info[:token_type] == 'PersonalAccessToken'
+
+      # NOTE: use instance_variable_get to avoid triggering lazy current_user evaluation
+      user = context.instance_variable_get(:@current_user)
+
+      return unless user
+      return unless Feature.enabled?(:track_api_request_from_personal_access_token, user)
+
+      ::Gitlab::InternalEvents.track_event(
+        'use_pat',
+        user: user,
+        additional_properties: {
+          label: endpoint_id,
+          pat_type: token_info[:pat_type],
+          response_code: context.status
+        }
+      )
+
+      # Explicit nil is needed or the api call return value will be overwritten
+      nil
+    end
+  end
 end
 
+API::API.use API::TrackAPIRequestFromPersonalAccessToken
 API::API.prepend_mod

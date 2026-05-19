@@ -1,0 +1,117 @@
+---
+name: siphon_ci_runners
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (id, runner_type) ORDER BY (id, runner_type) SETTINGS index_granularity = 2048
+primary_key: id, runner_type
+sorting_key: id, runner_type
+settings:
+  index_granularity: '2048'
+columns:
+- name: id
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: creator_id
+  type: Nullable(Int64)
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: contacted_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: token_expires_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: public_projects_minutes_cost_factor
+  type: Float64
+  default_kind: DEFAULT
+  default_expression: '1.'
+- name: private_projects_minutes_cost_factor
+  type: Float64
+  default_kind: DEFAULT
+  default_expression: '1.'
+- name: access_level
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: maximum_timeout
+  type: Nullable(Int64)
+- name: runner_type
+  type: Int16
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: registration_type
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: creation_state
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: active
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'true'
+  compression_codec: CODEC(ZSTD(1))
+- name: run_untagged
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'true'
+  compression_codec: CODEC(ZSTD(1))
+- name: locked
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: name
+  type: Nullable(String)
+- name: token_encrypted
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: description
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+  compression_codec: CODEC(ZSTD(3))
+- name: maintainer_note
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+  compression_codec: CODEC(ZSTD(3))
+- name: allowed_plans
+  type: Array(String)
+  default_kind: DEFAULT
+  default_expression: "[]"
+- name: allowed_plan_ids
+  type: Array(Int64)
+  default_kind: DEFAULT
+  default_expression: "[]"
+- name: organization_id
+  type: Nullable(Int64)
+- name: allowed_plan_name_uids
+  type: Array(Int16)
+  default_kind: DEFAULT
+  default_expression: "[]"
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: token_rotation_deadline
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: toDateTime64('9999-12-31 23:59:59.999999', 6, 'UTC')

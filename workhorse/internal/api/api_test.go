@@ -228,6 +228,8 @@ func TestSendGitAuditEvent(t *testing.T) {
 			Wants: 3,
 			Haves: 23,
 		},
+		WrittenBytes:  1048576,
+		ReceivedBytes: 2048,
 	}
 	err := api.SendGitAuditEvent(context.Background(), auditRequest)
 	require.NoError(t, err)

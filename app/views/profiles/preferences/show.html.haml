@@ -124,6 +124,8 @@
 
 
       = render_if_exists 'profiles/preferences/default_duo_group', f: f # EE-specific
+      = render_if_exists 'profiles/preferences/orbit_settings', f: f # EE-specific
+      = render_if_exists 'profiles/preferences/knowledge_graph_governing_group', f: f # EE-specific
 
       .form-group
         = f.gitlab_ui_checkbox_component :project_shortcut_buttons, s_('Preferences|Show shortcut buttons above files on project overview')

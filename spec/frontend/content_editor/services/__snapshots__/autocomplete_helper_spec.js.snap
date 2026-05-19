@@ -152,6 +152,7 @@ exports[`AutocompleteHelper for reference type "command", searches for "re" corr
   "relate",
   "remove_epic",
   "reassign",
+  "unlabel",
   "create_merge_request",
 ]
 `;
@@ -282,6 +283,20 @@ exports[`AutocompleteHelper for work items filters statuses using apollo cache f
 exports[`AutocompleteHelper for work items filters statuses using apollo cache for command "/status "pro" 1`] = `
 [
   "In progress",
+]
+`;
+
+exports[`AutocompleteHelper for work items filters types using apollo cache for command "/type "" 1`] = `
+[
+  "Task",
+  "Incident",
+  "Issue",
+]
+`;
+
+exports[`AutocompleteHelper for work items filters types using apollo cache for command "/type "ta" 1`] = `
+[
+  "Task",
 ]
 `;
 

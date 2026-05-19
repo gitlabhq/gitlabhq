@@ -421,7 +421,7 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
             expect(Gitlab::BitbucketImport::ProjectCreator)
               .to receive(:new).and_return(double(execute: project))
 
-            expect { post :create, format: :json }.to change(Namespace, :count).by(1)
+            expect { post :create, format: :json }.to change { Namespace.count }.by(1)
           end
 
           it "takes the new namespace" do
@@ -442,7 +442,7 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
             expect(Gitlab::BitbucketImport::ProjectCreator)
               .to receive(:new).and_return(double(execute: project))
 
-            expect { post :create, format: :json }.not_to change(Namespace, :count)
+            expect { post :create, format: :json }.not_to change { Namespace.count }
 
             expect_snowplow_event(
               category: 'Import::BitbucketController',

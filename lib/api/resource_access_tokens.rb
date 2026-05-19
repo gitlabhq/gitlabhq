@@ -108,14 +108,16 @@ module API
             type: Date,
             desc: "The expiration date of the token. If 'Require personal access token expiry' is enabled, you must provide a valid value, if not, the token will never expire.",
             documentation: {
-              example: '2026-02-14T17:26:19.810Z'
+              example: '2026-02-14'
             }
+          # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
           optional :access_level,
             type: Integer,
             values: ALLOWED_RESOURCE_ACCESS_LEVELS.values,
             default: Gitlab::Access::MAINTAINER,
             desc: "The access level of the token in the #{source_type}",
             documentation: { example: 40 }
+          # rubocop:enable API/AccessLevelStringType
         end
         route_setting :authorization, permissions: :create_resource_access_token, boundary_type: source_type.to_sym
         post ':id/access_tokens' do
@@ -125,6 +127,7 @@ module API
             current_user,
             resource,
             declared(params, include_missing: false)
+            .merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API)
           ).execute
 
           if token_response.success?

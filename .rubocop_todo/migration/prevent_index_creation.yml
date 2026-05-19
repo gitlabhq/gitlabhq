@@ -1,7 +1,0 @@
----
-Migration/PreventIndexCreation:
-  Exclude:
-    - 'db/migrate/20251014142227_add_fk_on_sbom_occurrence_refs_for_sbom_occurrences.rb'
-    - 'db/migrate/20251014143930_add_fk_to_sbom_occurrence_refs_for_security_project_tracked_contexts.rb'
-    - 'db/migrate/20251014144050_add_index_on_sbom_occurrence_refs_for_projects.rb'
-    - 'db/migrate/20251014170619_add_index_on_sbom_occurrence_refs_for_pipelines.rb'

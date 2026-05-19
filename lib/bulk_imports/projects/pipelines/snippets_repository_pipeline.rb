@@ -44,10 +44,6 @@ module BulkImports
             context.portable, data['title'], data['createdAt'])
         end
 
-        def allow_local_requests?
-          Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
-        end
-
         def oauth2(url)
           url.sub("://", "://oauth2:#{context.configuration.access_token}@")
         end
@@ -55,11 +51,7 @@ module BulkImports
         def validate_url(url)
           Gitlab::HTTP_V2::UrlBlocker.validate!(
             url,
-            allow_local_network: allow_local_requests?,
-            allow_localhost: allow_local_requests?,
-            deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
-            schemes: %w[http https],
-            outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
+            **Import::Framework::UrlBlockerParams.new.to_h
           )
         end
 

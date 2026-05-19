@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'search/show', feature_category: :global_search do
+RSpec.describe 'search/show', :with_current_organization, feature_category: :global_search do
   let(:search_term) { nil }
   let(:user) { build(:user) }
   let(:search_service_presenter) do

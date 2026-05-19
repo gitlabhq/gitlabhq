@@ -11,19 +11,8 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     build_stubbed(:organization_detail, organization: organization, description_html: '<em>description</em>')
   end
 
-  let(:stubbed_results) do
-    {
-      'groups' => 10,
-      'projects' => 50,
-      'users' => 1050
-    }
-  end
-
   before do
     allow(helper).to receive(:current_user).and_return(user)
-    allow_next_instance_of(Organizations::OrganizationAssociationCounter) do |finder|
-      allow(finder).to receive(:execute).and_return(stubbed_results)
-    end
   end
 
   shared_examples 'includes that the user can create a group' do |method|
@@ -141,54 +130,24 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
   end
 
   describe '#organization_show_app_data' do
-    context 'when the user can create a group' do
-      before do
-        allow(helper).to receive(:can?).with(user, :create_group, organization).and_return(true)
-      end
-
-      include_examples 'includes that the user can create a group', 'organization_show_app_data'
+    before do
+      allow(helper).to receive(:can?).with(user, :read_artifact_registry, organization).and_return(true)
+      allow(helper).to receive(:can?).with(user, :admin_organization, organization).and_return(true)
     end
 
-    context 'when the user can create a project' do
-      before do
-        allow(user).to receive(:can_create_project?).and_return(true)
-      end
-
-      include_examples 'includes that the user can create a project', 'organization_show_app_data'
-    end
-
-    context 'when the organization has groups' do
-      before do
-        allow(helper).to receive(:has_groups?).and_return(true)
-      end
-
-      include_examples 'includes that the organization has groups', 'organization_show_app_data'
-    end
-
-    it "includes all other non-conditional data" do
-      expect(organization).to receive(:avatar_url).with(size: 128).and_return('avatar.jpg')
-
+    it 'returns expected json' do
       expect(
         Gitlab::Json.parse(
           helper.organization_show_app_data(organization)
         )
       ).to include(
         {
-          'organization_gid' => "gid://gitlab/Organizations::Organization/#{organization.id}",
           'organization' => {
-            'id' => organization.id,
             'name' => organization.name,
-            'description_html' => organization.description_html,
-            'avatar_url' => 'avatar.jpg',
-            'visibility' => organization.visibility
+            'path' => organization.path
           },
-          'groups_and_projects_organization_path' => "/-/organizations/#{organization.path}/groups_and_projects",
-          'users_organization_path' => "/-/organizations/#{organization.path}/users",
-          'new_group_path' => "/-/organizations/#{organization.path}/groups/new",
-          'new_project_path' => '/projects/new',
-          'association_counts' => stubbed_results,
-          'organization_groups_projects_sort' => 'name_asc',
-          'organization_groups_projects_display' => 'groups'
+          'can_read_artifact_registry' => true,
+          'can_admin_organization' => true
         }
       )
     end
@@ -227,7 +186,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
       ).to include(
         {
           'organization_gid' => "gid://gitlab/Organizations::Organization/#{organization.id}",
-          'new_group_path' => "/-/organizations/#{organization.path}/groups/new",
+          'new_group_path' => "/o/#{organization.path}/-/groups/new",
           'new_project_path' => '/projects/new',
           'organization_groups_projects_sort' => 'name_asc',
           'organization_groups_projects_display' => 'groups',
@@ -249,8 +208,8 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
       expect(Gitlab::Json.parse(helper.organization_new_app_data)).to eq(
         {
           'organizations_path' => '/o',
-          'root_url' => 'http://test.host/',
-          'preview_markdown_path' => '/-/organizations/preview_markdown'
+          'organizations_url' => 'http://test.host/o/',
+          'preview_markdown_path' => '/o/-/preview_markdown'
         }
       )
     end
@@ -269,9 +228,8 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
             'avatar' => 'avatar.jpg',
             'visibility_level' => organization.visibility_level
           },
-          'organizations_path' => '/o',
-          'root_url' => 'http://test.host/',
-          'preview_markdown_path' => '/-/organizations/preview_markdown'
+          'organizations_url' => 'http://test.host/o/',
+          'preview_markdown_path' => '/o/-/preview_markdown'
         }
       )
     end
@@ -300,8 +258,8 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
         {
           'base_path' => 'http://test.host/',
           'groups_and_projects_organization_path' =>
-            "/-/organizations/#{organization.path}/groups_and_projects?display=groups",
-          'groups_organization_path' => "/-/organizations/#{organization.path}/groups",
+            "/o/#{organization.path}/-/groups_and_projects?display=groups",
+          'groups_organization_path' => "/o/#{organization.path}/-/groups",
           'available_visibility_levels' => [
             Gitlab::VisibilityLevel::PRIVATE,
             Gitlab::VisibilityLevel::INTERNAL,
@@ -343,8 +301,8 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
           },
           'base_path' => 'http://test.host/',
           'groups_and_projects_organization_path' =>
-            "/-/organizations/#{organization.path}/groups_and_projects?display=groups",
-          'groups_organization_path' => "/-/organizations/#{organization.path}/groups",
+            "/o/#{organization.path}/-/groups_and_projects?display=groups",
+          'groups_organization_path' => "/o/#{organization.path}/-/groups",
           'available_visibility_levels' => [
             Gitlab::VisibilityLevel::PRIVATE,
             Gitlab::VisibilityLevel::INTERNAL,
@@ -382,8 +340,8 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.organization_projects_edit_app_data(organization, project))).to eq(
         {
-          'projects_organization_path' => "/-/organizations/#{organization.path}/groups_and_projects?display=projects",
-          'preview_markdown_path' => '/-/organizations/preview_markdown',
+          'projects_organization_path' => "/o/#{organization.path}/-/groups_and_projects?display=projects",
+          'preview_markdown_path' => '/o/-/preview_markdown',
           'project' => {
             'id' => project.id,
             'name' => project.name,
@@ -399,7 +357,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     it 'returns expected data object' do
       expect(Gitlab::Json.parse(helper.organization_activity_app_data(organization))).to match(
         {
-          'organization_activity_path' => "/-/organizations/#{organization.path}/activity.json",
+          'organization_activity_path' => "/o/#{organization.path}/-/activity.json",
           'organization_activity_event_types' => array_including(
             {
               'title' => 'Comment',
@@ -456,6 +414,28 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
         expect(helper.send(:available_visibility_levels_for_group, organization)).to contain_exactly(
           Gitlab::VisibilityLevel::PRIVATE
         )
+      end
+    end
+  end
+
+  describe '#push_organization_breadcrumbs' do
+    context 'when organization is nil' do
+      it 'does not call push_to_schema_breadcrumb' do
+        expect(helper).not_to receive(:push_to_schema_breadcrumb)
+
+        helper.push_organization_breadcrumbs(nil)
+      end
+    end
+
+    context 'when organization is not nil' do
+      it 'calls push_to_schema_breadcrumb' do
+        expect(helper).to receive(:push_to_schema_breadcrumb).with(
+          organization.name,
+          organization_path(organization),
+          organization.avatar_url
+        )
+
+        helper.push_organization_breadcrumbs(organization)
       end
     end
   end

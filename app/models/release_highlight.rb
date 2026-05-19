@@ -63,8 +63,22 @@ class ReleaseHighlight
 
   def self.relative_file_paths
     Rails.cache.fetch(self.cache_key('file_paths'), expires_in: CACHE_DURATION) do
-      Dir.glob(whats_new_path).reverse.map { |path| path.delete_prefix(Rails.root.to_s) }
+      Dir.glob(whats_new_path)
+        .select { |path| release_date_reached?(path) }
+        .reverse
+        .map { |path| path.delete_prefix(Rails.root.to_s) }
     end
+  end
+
+  def self.release_date_reached?(path)
+    filename = File.basename(path, '.yml')
+    match = filename.match(/\A(\d{4})(\d{2})(\d{2})/)
+    return true unless match
+
+    release_date = Date.new(match[1].to_i, match[2].to_i, match[3].to_i)
+    Date.current >= release_date
+  rescue Date::Error
+    true
   end
 
   def self.cache_key(key)

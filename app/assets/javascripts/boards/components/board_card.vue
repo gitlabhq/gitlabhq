@@ -1,14 +1,9 @@
 <script>
 import Tracking from '~/tracking';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { SUPPORT_BOT_USERNAME } from '~/issues/show/utils/issuable_data';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { sprintf, __ } from '~/locale';
-import {
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_TICKET,
-} from '~/work_items/constants';
+import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import BoardCardInner from './board_card_inner.vue';
@@ -19,7 +14,7 @@ export default {
     BoardCardInner,
   },
   mixins: [Tracking.mixin()],
-  inject: ['disabled', 'isIssueBoard', 'isEpicBoard'],
+  inject: ['disabled', 'fullPath', 'isIssueBoard', 'isEpicBoard'],
   props: {
     list: {
       type: Object,
@@ -57,14 +52,30 @@ export default {
       default: 0,
     },
   },
+  data() {
+    return {
+      activeBoardItem: undefined,
+      workItemTypesConfiguration: [],
+    };
+  },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     activeBoardItem: {
       query: activeBoardItemQuery,
       variables() {
         return {
           isIssue: this.isIssueBoard,
         };
+      },
+    },
+    workItemTypesConfiguration: {
+      query: workItemTypesConfigurationQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update(data) {
+        return data?.namespace?.workItemTypes?.nodes || [];
       },
     },
   },
@@ -126,14 +137,12 @@ export default {
 
       e.preventDefault();
 
-      // we redirect to legacy page instead of opening the drawer
-      // should be removed when we introduce incident/ticket WI type
-      if (
-        this.item.type === WORK_ITEM_TYPE_ENUM_INCIDENT ||
-        this.item.type === WORK_ITEM_TYPE_ENUM_TICKET ||
-        (this.item.type === WORK_ITEM_TYPE_ENUM_ISSUE &&
-          this.item.author?.username === SUPPORT_BOT_USERNAME)
-      ) {
+      const type = this.workItemTypesConfiguration.find(
+        ({ id }) => id === this.item.workItemType?.id,
+      );
+
+      // Legacy types need to be shown in the legacy view until they're migrated to work items
+      if (type?.useIssueView) {
         visitUrl(this.item.webUrl);
         return;
       }

@@ -59,7 +59,7 @@ RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline, feature_categ
 
     describe '#run' do
       it 'imports milestones into destination' do
-        expect { subject.run }.to change(Milestone, :count).by(1)
+        expect { subject.run }.to change { Milestone.count }.by(1)
 
         imported_milestone = tested_entity.milestones.first
 

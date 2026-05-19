@@ -270,25 +270,14 @@ reproduction.
 
 ### Metrics & Tracking
 
-- [Flaky Tests Failure Overview](https://dashboards.devex.gitlab.net/d/ddjwrqc/flaky-tests-overview?orgId=1&from=now-14d&to=now&timezone=browser&var-project=gitlab-org%2Fgitlab&var-run_type=$__all&var-pipeline_type=merge_request_pipeline) (internal)
-- [Test File Failure Overview](https://dashboards.devex.gitlab.net/d/63bbf393-7426-403b-a4ec-1ej4280efb6b/test-file-failure-overview?orgId=1&from=now-14d&to=now&timezone=browser&var-project=gitlab-org%2Fgitlab&var-run_type=$__all&var-pipeline_type=merge_request_pipeline&var-file_path=qa%2Fspecs%2Ffeatures%2Fbrowser_ui%2F3_create%2Fmerge_request%2Fcherry_pick%2Fcherry_pick_commit_spec.rb&var-test_location=$__all&var-exception_class=$__all) (internal)
+- [Flaky Tests Failure Overview](https://dashboards.gitlab.net/d/dx-flaky-test-file-overview/dx3a-flaky-test-file-failure-overview?orgId=1&from=now-30d&to=now&timezone=browser&var-project=gitlab-org%2Fgitlab&var-run_type=$__all&var-pipeline_type=$__all&var-file_path=ee%2Fspec%2Fcomponents%2Fduo_chat_panel%2Fchat_component_spec.rb&var-test_location=$__all&var-exception_class=$__all) (internal)
+- [Test File Failure Overview](https://dashboards.gitlab.net/d/dx-test-file-failure-overview/dx3a-test-file-failure-overview?orgId=1&from=now-30d&to=now&timezone=browser&var-project=gitlab-org%2Fgitlab&var-run_type=$__all&var-pipeline_type=$__all&var-group=All) (internal)
 
 ## Slow tests
 
 ### Top slow tests
 
-We collect information about tests duration in ClickHouse database. The data is visualized using following [Grafana dashboard](https://dashboards.devex.gitlab.net/d/acv8mwl/test-file-runtime-overview).
-
-In this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/375983), we defined thresholds for tests duration that can act as a guide.
-
-For tests that are above the thresholds, we automatically report slowness occurrences in [Test issues](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=rspec%3Aslow%20test&first_page_size=100) so that groups can improve them.
-
-For tests that are slow for a legitimate reason and to skip issue creation, add `allowed_to_be_slow: true`.
-
-|    Date    | Feature tests | Controllers and Requests tests | Unit  |     Other     | Method |
-|:----------:|:-------------:|:------------------------------:|:-----:|:-------------:|:------:|
-| 2023-02-15 | 67.42 seconds |         44.66 seconds          |   -   | 76.86 seconds | Top slow test eliminating the maximum |
-| 2023-06-15 | 50.13 seconds |         19.20 seconds          | 27.12 | 45.40 seconds | Avg for top 100 slow tests |
+We collect information about tests duration in ClickHouse database. The data is visualized using following [Grafana dashboard](https://dashboards.gitlab.net/d/dx-test-file-runtime-overview/dx3a-test-file-runtime-overview?orgId=1&from=now-30d&to=now&timezone=browser&var-project=gitlab-org%2Fgitlab&var-run_type=$__all&var-pipeline_type=$__all&var-group=All).
 
 ### Common patterns that cause slow tests
 

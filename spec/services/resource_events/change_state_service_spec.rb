@@ -89,6 +89,21 @@ RSpec.describe ResourceEvents::ChangeStateService, feature_category: :team_plann
         end
       end
     end
+
+    context 'with composite identity service account', :request_store do
+      let_it_be(:service_account) { create(:user, :service_account, composite_identity_enforced: true, developer_of: project) }
+      let_it_be(:human) { create(:user, developer_of: project) }
+
+      before do
+        ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, human, context: :authentication)
+      end
+
+      it 'attributes ResourceStateEvent.user to the service account' do
+        described_class.new(user: human, resource: issue).execute(status: 'closed')
+
+        expect(issue.resource_state_events.last.user).to eq(service_account)
+      end
+    end
   end
 
   def expect_event_source(event, source)

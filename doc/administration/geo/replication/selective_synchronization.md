@@ -41,7 +41,7 @@ Selective synchronization:
 By default, selective synchronization is disabled. To enable it:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo > Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 1. Next to the secondary site you want to edit, select the pencil icon.
 1. From the **Selective synchronization** dropdown list, select **Projects in certain groups** or **Projects in certain storage shards**.
 1. Depending on your selection, configure **Groups to synchronize** or **Shards to synchronize**.

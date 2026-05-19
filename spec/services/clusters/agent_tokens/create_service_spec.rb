@@ -15,7 +15,7 @@ RSpec.describe Clusters::AgentTokens::CreateService, feature_category: :deployme
     subject { service.execute }
 
     it 'does not create a new token due to user permissions' do
-      expect { subject }.not_to change(::Clusters::AgentToken, :count)
+      expect { subject }.not_to change { ::Clusters::AgentToken.count }
     end
 
     it 'returns permission errors', :aggregate_failures do
@@ -66,7 +66,7 @@ RSpec.describe Clusters::AgentTokens::CreateService, feature_category: :deployme
         let(:params) { { agent_id: 'bad_id' } }
 
         it 'does not create a new token' do
-          expect { subject }.not_to change(::Clusters::AgentToken, :count)
+          expect { subject }.not_to change { ::Clusters::AgentToken.count }
         end
 
         it 'does not create an activity event' do

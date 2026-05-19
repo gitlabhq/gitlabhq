@@ -8,6 +8,7 @@ module UserSettings
 
     before_action :check_personal_access_tokens_enabled
     before_action :ensure_granular_tokens_feature_flag, only: [:legacy_new, :granular_new]
+    before_action :check_granular_token_enforced, only: [:legacy_new]
     before_action :set_access_token_params, only: [:index, :legacy_new]
     before_action :set_hide_search_settings, only: [:index, :legacy_new, :granular_new]
     before_action only: [:granular_new] do
@@ -53,7 +54,7 @@ module UserSettings
         current_user: current_user,
         target_user: current_user,
         organization_id: Current.organization.id,
-        params: personal_access_token_params,
+        params: personal_access_token_params.merge(creation_source: PersonalAccessToken::CREATION_SOURCE_UI),
         concatenate_errors: false
       ).execute
 
@@ -152,13 +153,28 @@ module UserSettings
     end
 
     def ensure_granular_tokens_feature_flag
-      render_404 unless Feature.enabled?(:granular_personal_access_tokens, current_user)
+      render_404 unless granular_tokens_feature_enabled?
+    end
+
+    def check_granular_token_enforced
+      render_404 if granular_tokens_enforced?
+    end
+
+    def granular_tokens_enforced?
+      return false unless granular_tokens_feature_enabled?
+
+      Gitlab::CurrentSettings.granular_tokens_enforced?
     end
 
     def redirect_for_legacy_new?
-      Feature.enabled?(:granular_personal_access_tokens, current_user) &&
+      granular_tokens_feature_enabled? &&
+        !granular_tokens_enforced? &&
         params[:name].present? &&
         parse_scopes_from_params.any?
+    end
+
+    def granular_tokens_feature_enabled?
+      Feature.enabled?(:granular_personal_access_tokens, current_user)
     end
   end
 end

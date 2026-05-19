@@ -62,7 +62,7 @@ GET /groups/:id/export_relations/status
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|------------ |
 | `id`       | Integer or string | Yes      | ID of the group. |
-| `relation` | String            | No       | Name of the project top-level relation to view. |
+| `relation` | String            | No       | Name of the group top-level relation to view. |
 
 ```shell
 curl --request GET \

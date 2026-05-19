@@ -25,7 +25,7 @@ product categories. When this occurs, you can automatically update
 and generate a new version of the file, which needs to be committed to
 the repository.
 
-The [Scalability team](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/scalability/)
+The [Observability](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/production-engineering/observability/) team
 currently maintains the `feature_categories.yml` file. They will automatically be
 notified on Slack when the file becomes outdated.
 
@@ -43,8 +43,14 @@ suites in CI and they don't belong to any product groups.
 
 ### Test platform feature category
 
-For gems that are primarily maintained by the [Test Platform sub department](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/), we use `feature_category: :test_platform`.
+Gems that relate to end-to-end test infrastructure are maintained by the [Development Experience](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/) section. We use the `feature_category: :test_platform` label.
 For example, `capybara` is defined in both `Gemfile` and `qa/Gemfile` to run tests involving UI. They don't belong to a specific product group.
+
+### Rails platform feature category
+
+Rails core framework gems are primarily maintained by
+Backend Maintainers.
+For example, `rails`, and `zeitwerk` should be defined as `:rails_platform`.
 
 ### Shared feature category
 

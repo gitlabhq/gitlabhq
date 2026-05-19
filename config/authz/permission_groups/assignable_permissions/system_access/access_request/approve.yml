@@ -1,8 +1,10 @@
 ---
 name: approve_access_request
 description: Grants the ability to approve access requests
-permissions:
-  - approve_access_request
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - approve_access_request

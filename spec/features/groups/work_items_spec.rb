@@ -26,6 +26,7 @@ RSpec.describe 'Group work items page', feature_category: :team_planning do
       let(:access_level) { ProjectFeature::ENABLED }
 
       before do
+        visit path
         click_button 'Actions'
       end
 
@@ -52,6 +53,10 @@ RSpec.describe 'Group work items page', feature_category: :team_planning do
       let(:access_level) { ProjectFeature::ENABLED }
       let(:user) { user_in_group }
       let(:user2) { user_outside_group }
+
+      before do
+        visit path
+      end
 
       it 'filters by only group users' do
         select_tokens 'Assignee', '='

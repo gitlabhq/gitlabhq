@@ -61,7 +61,6 @@ describe('WorkItemUserPreferences', () => {
   const createComponent = ({
     mountFn = shallowMount,
     props = {},
-    provide = {},
     mutationHandler = successHandler,
     namespaceHandler = namespacePreferencesHandler,
     isLoggedInValue = true,
@@ -78,16 +77,11 @@ describe('WorkItemUserPreferences', () => {
       propsData: {
         displaySettings: mockDisplaySettings,
         fullPath: 'gitlab-org/gitlab',
-        isEpicsList: false,
         isGroup: false,
         workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
         sortKey: 'UPDATED_DESC',
         preventAutoSubmit: false,
         ...props,
-      },
-      provide: {
-        isGroupIssuesList: false,
-        ...provide,
       },
     });
   };
@@ -219,17 +213,6 @@ describe('WorkItemUserPreferences', () => {
         const metadataToggles = allToggles;
 
         expect(metadataToggles).toHaveLength(expectedGroupFields.length + 1);
-      });
-
-      it('does not render `Status` settings for epics listing', () => {
-        createComponent({
-          mountFn: mount,
-          props: { isEpicsList: true, isGroup: true },
-        });
-
-        const firstMetadataItem = findDropdownItems().at(0);
-
-        expect(firstMetadataItem.text()).not.toBe('Status');
       });
 
       it('does not render `Status` settings for service desk list', () => {

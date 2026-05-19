@@ -762,6 +762,7 @@ This log is located:
 
 - In the `/var/log/gitlab/gitlab-rails/repocheck.log` file on Linux package installations.
 - In the `/home/git/gitlab/log/repocheck.log` file on self-compiled installations.
+- On the Sidekiq pods under the `subcomponent="repocheck"` key on Helm chart installations.
 
 It logs information whenever a [repository check is run](../repository_checks.md)
 on a project.

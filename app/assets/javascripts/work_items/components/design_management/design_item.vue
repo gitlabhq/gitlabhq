@@ -172,9 +172,9 @@ export default {
     class="gl-block gl-text-default hover:gl-text-default focus:gl-focus"
   >
     <gl-card
-      class="js-design-list-item design-list-item gl-mb-0 gl-border-section hover:gl-border-strong"
+      class="js-design-list-item design-list-item gl-mb-0 gl-rounded-lg gl-border-section hover:gl-border-strong"
       header-class=" gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-aspect-video"
-      body-class="gl-py-3 gl-px-4 gl-flex gl-bg-section gl-rounded-b-base"
+      body-class="gl-py-3 gl-px-4 gl-flex gl-bg-section gl-rounded-base"
       @click="onTileClick"
     >
       <template #header>

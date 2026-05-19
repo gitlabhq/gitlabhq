@@ -73,6 +73,7 @@ attributes:
 | `pre_approved_agent_privileges_names` | string array | Names corresponding to `pre_approved_agent_privileges`. |
 | `project_id` | integer | ID of the associated project. `null` if not set. |
 | `status` | string | Current flow status. One of `created`, `running`, `paused`, `finished`, `failed`, `stopped`, `input_required`, `plan_approval_required`, or `tool_call_approval_required`. |
+| `summary` | string | Short text summary of the workflow. |
 | `workflow_definition` | string | Flow type identifier. |
 | `workload` | object | Information about the workload. |
 | `workload.id` | string | ID of the workload. |

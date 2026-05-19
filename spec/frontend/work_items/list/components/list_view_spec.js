@@ -10,25 +10,21 @@ import HealthStatus from '~/work_items/list/components/health_status.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
+import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
+import getWorkItemsRestQuery from '~/work_items/list/graphql/get_work_items_rest.query.graphql';
+import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
-import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import ListView from '~/work_items/list/list_view.vue';
-import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
-import {
-  DETAIL_VIEW_QUERY_PARAM_NAME,
-  STATE_CLOSED,
-  WORK_ITEM_TYPE_NAME_EPIC,
-  WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_NAME_TICKET,
-} from '~/work_items/constants';
-import { CREATED_DESC } from '~/work_items/list/constants';
+import { WORK_ITEM_TYPE_NAME_TICKET } from '~/work_items/constants';
+import { CREATED_DESC, UPDATED_DESC } from '~/work_items/list/constants';
 import { STATUS_OPEN } from '~/issues/constants';
 import { routes } from '~/work_items/router/routes';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -36,6 +32,8 @@ import {
   workItemsQueryResponseCombined,
   workItemsWithSubChildQueryResponse,
   namespaceWorkItemTypesQueryResponse,
+  workItemsQueryResponseNoLabels,
+  workItemsQueryResponseNoAssignees,
 } from '../../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
@@ -55,6 +53,14 @@ const showToast = jest.fn();
 
 const RELEASES_ENDPOINT = '/test/project/-/releases.json';
 
+const exampleQueryParams = {
+  fullPath: 'full/path',
+  includeDescendants: true,
+  sort: CREATED_DESC,
+  state: STATUS_OPEN,
+  firstPageSize: 20,
+};
+
 /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
 let wrapper;
 let router;
@@ -65,6 +71,21 @@ Vue.use(VueRouter);
 useLocalStorageSpy();
 
 const namespaceQueryHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
+const workItemsFullQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoLabels);
+const workItemsSlimQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoAssignees);
+const reorderMutationHandler = jest.fn().mockResolvedValue({
+  data: {
+    workItemsReorder: {
+      workItem: { id: 'gid://gitlab/WorkItem/1', iid: '1', title: 'Test', __typename: 'WorkItem' },
+      errors: [],
+    },
+  },
+});
+
+beforeEach(() => {
+  workItemsFullQueryHandler.mockResolvedValue(workItemsQueryResponseCombined);
+  workItemsSlimQueryHandler.mockResolvedValue(workItemsQueryResponseCombined);
+});
 
 const findBulkEditSidebarWrapper = () => wrapper.findComponent(IssuableBulkEditSidebar);
 const findWorkItemListWrapper = () => wrapper.findByTestId('work-item-list-wrapper');
@@ -74,7 +95,6 @@ const findIssuableItems = () => wrapper.findAllComponents(IssuableItem);
 const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
 const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
 const findHealthStatus = () => wrapper.findComponent(HealthStatus);
-const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
 const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
 const findBulkEditStartButton = () => wrapper.findByTestId('bulk-edit-start-button');
 const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
@@ -82,6 +102,12 @@ const findChildItem1 = () => findIssuableItems().at(0);
 const findChildItem2 = () => findIssuableItems().at(1);
 const findSubChildIndicator = (item) => item.find('[data-testid="sub-child-work-item-indicator"]');
 const findGlAlert = () => wrapper.findComponent(GlAlert);
+
+const defaultQueryVariables = {
+  fullPath: 'full/path',
+  sort: CREATED_DESC,
+  state: STATUS_OPEN,
+};
 
 const mountComponent = ({
   provide = {},
@@ -115,6 +141,9 @@ const mountComponent = ({
 
   const apolloProvider = createMockApollo([
     [namespaceWorkItemTypesQuery, namespaceQueryHandler],
+    [getWorkItemsQuery, workItemsFullQueryHandler],
+    [getWorkItemsSlimQuery, workItemsSlimQueryHandler],
+    [workItemsReorderMutation, reorderMutationHandler],
     ...additionalHandlers,
   ]);
 
@@ -172,21 +201,11 @@ const mountComponent = ({
     },
     propsData: {
       rootPageFullPath: 'full/path',
-      workItems: workItemsQueryResponseCombined.data.namespace.workItems.nodes,
+      queryVariables: defaultQueryVariables,
       hasWorkItems: true,
-      workItemTypes: namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes,
-      isInitialLoadComplete: true,
       initialLoadWasFiltered: false,
-      detailLoading: false,
-      isLoading: false,
       withTabs,
       showBulkEditSidebar: false,
-      pageInfo: {
-        hasNextPage: true,
-        hasPreviousPage: false,
-        startCursor: 'startCursor',
-        endCursor: 'endCursor',
-      },
       sortKey: CREATED_DESC,
       isSortKeyInitialized: true,
       state: STATUS_OPEN,
@@ -204,31 +223,10 @@ const mountComponent = ({
   });
 };
 
-const mountComponentWithShowParam = async (issue, mountOptions = {}) => {
-  const showParams = {
-    id: getIdFromGraphQLId(issue.id),
-    iid: issue.iid,
-    full_path: issue.namespace.fullPath,
-  };
-  const show = btoa(JSON.stringify(showParams));
-  setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
-  getParameterByName.mockReturnValue(show);
+it('renders loading icon while query is in flight', () => {
+  mountComponent();
 
-  const { provide = {}, ...restOptions } = mountOptions;
-  mountComponent({
-    provide: {
-      workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-      ...provide,
-    },
-    ...restOptions,
-  });
-  await waitForPromises();
-  await nextTick();
-};
-
-it('renders loading icon when isInitialLoadComplete prop is false', () => {
-  mountComponent({ props: { isInitialLoadComplete: false } });
-
+  // Before promises resolve, Apollo queries are loading
   expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
 });
 
@@ -256,15 +254,11 @@ describe('when work items are fetched', () => {
     );
   });
 
-  it('calls `getParameterByName` to get the `show` param', () => {
-    expect(getParameterByName).toHaveBeenCalledWith(DETAIL_VIEW_QUERY_PARAM_NAME);
-  });
-
   it('does not show tree icon if not searched parent', async () => {
-    mountComponent({
-      props: { workItems: workItemsWithSubChildQueryResponse.data.namespace.workItems.nodes },
-    });
+    workItemsSlimQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponse);
+    workItemsFullQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponse);
 
+    mountComponent();
     await waitForPromises();
 
     expect(findSubChildIndicator(findChildItem1()).exists()).toBe(false);
@@ -274,9 +268,11 @@ describe('when work items are fetched', () => {
   it('shows tree icon based on a sub child of the searched parent', async () => {
     setWindowLocation('?parent_id=1');
 
+    workItemsSlimQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponse);
+    workItemsFullQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponse);
+
     mountComponent({
       props: {
-        workItems: workItemsWithSubChildQueryResponse.data.namespace.workItems.nodes,
         apiFilterParams: {
           hierarchyFilters: {
             parentIds: ['gid://gitlab/WorkItem/1'],
@@ -307,11 +303,40 @@ describe('pagination controls', () => {
     ${'when neither hasNextPage nor hasPreviousPage are true'} | ${{ hasNextPage: false, hasPreviousPage: false }} | ${false}
   `('$description', ({ pageInfo, exists }) => {
     it(`${exists ? 'renders' : 'does not render'} pagination controls`, async () => {
-      mountComponent({
-        props: {
-          pageInfo,
+      workItemsSlimQueryHandler.mockResolvedValue({
+        data: {
+          namespace: {
+            ...workItemsQueryResponseCombined.data.namespace,
+            workItems: {
+              ...workItemsQueryResponseCombined.data.namespace.workItems,
+              pageInfo: {
+                ...pageInfo,
+                startCursor: 'start',
+                endCursor: 'end',
+                __typename: 'PageInfo',
+              },
+            },
+          },
         },
       });
+      workItemsFullQueryHandler.mockResolvedValue({
+        data: {
+          namespace: {
+            ...workItemsQueryResponseCombined.data.namespace,
+            workItems: {
+              ...workItemsQueryResponseCombined.data.namespace.workItems,
+              pageInfo: {
+                ...pageInfo,
+                startCursor: 'start',
+                endCursor: 'end',
+                __typename: 'PageInfo',
+              },
+            },
+          },
+        },
+      });
+
+      mountComponent();
       await waitForPromises();
 
       expect(findPaginationControls().exists()).toBe(exists);
@@ -396,173 +421,6 @@ describe('display settings', () => {
   });
 });
 
-describe('work item drawer', () => {
-  describe('when rendering issues list', () => {
-    it.each`
-      message              | shouldOpenItemsInSidePanel | drawerExists
-      ${'is rendered'}     | ${true}                    | ${true}
-      ${'is not rendered'} | ${false}                   | ${false}
-    `(
-      '$message when shouldOpenItemsInSidePanel is $shouldOpenItemsInSidePanel',
-      async ({ shouldOpenItemsInSidePanel, drawerExists }) => {
-        mountComponent({
-          props: {
-            displaySettings: {
-              commonPreferences: {
-                shouldOpenItemsInSidePanel,
-              },
-            },
-          },
-        });
-
-        await waitForPromises();
-
-        expect(findDrawer().exists()).toBe(drawerExists);
-      },
-    );
-
-    describe('selecting issues', () => {
-      const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
-      const payload = {
-        iid: issue.iid,
-        webUrl: issue.webUrl,
-        fullPath: issue.namespace.fullPath,
-      };
-
-      beforeEach(async () => {
-        mountComponent();
-        await waitForPromises();
-
-        findChildItem1().vm.$emit('select-issuable', payload);
-
-        await nextTick();
-      });
-
-      it('opens drawer when work item is selected', () => {
-        expect(findDrawer().props('open')).toBe(true);
-        expect(findDrawer().props('activeItem')).toEqual(payload);
-      });
-
-      it('closes drawer when work item is clicked again', async () => {
-        findChildItem1().vm.$emit('select-issuable', payload);
-        await nextTick();
-
-        expect(findDrawer().props('open')).toBe(false);
-        expect(findDrawer().props('activeItem')).toBeNull();
-      });
-
-      const checkThatDrawerPropsAreEmpty = () => {
-        expect(findDrawer().props('activeItem')).toBeNull();
-        expect(findDrawer().props('open')).toBe(false);
-      };
-
-      it('resets the selected item when the drawer is closed', async () => {
-        findDrawer().vm.$emit('close');
-
-        await nextTick();
-
-        checkThatDrawerPropsAreEmpty();
-      });
-
-      it('emits the refetch event to refetch counts and resets when work item is deleted', async () => {
-        expect(wrapper.emitted('refetch-data')).toBeUndefined();
-
-        findDrawer().vm.$emit('work-item-deleted');
-
-        await nextTick();
-
-        checkThatDrawerPropsAreEmpty();
-
-        expect(wrapper.emitted('refetch-data')).toHaveLength(1);
-      });
-
-      it('emits the refetch event to refetch counts when the selected work item is closed', async () => {
-        expect(wrapper.emitted('refetch-data')).toBeUndefined();
-
-        // component displays open work items by default
-        findDrawer().vm.$emit('work-item-updated', {
-          state: STATE_CLOSED,
-        });
-
-        await nextTick();
-
-        expect(wrapper.emitted('refetch-data')).toHaveLength(1);
-      });
-    });
-  });
-
-  describe('when rendering epics list', () => {
-    beforeEach(async () => {
-      mountComponent({
-        provide: {
-          workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-        },
-      });
-      await waitForPromises();
-    });
-
-    it('uses work item drawer', () => {
-      expect(findDrawer().exists()).toBe(true);
-    });
-  });
-
-  describe('When the `show` parameter matches an item in the list', () => {
-    it('displays the item in the drawer', async () => {
-      const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
-      await mountComponentWithShowParam(issue);
-
-      expect(findDrawer().props('open')).toBe(true);
-      expect(findDrawer().props('activeItem')).toMatchObject(issue);
-    });
-  });
-
-  describe('When the `show` parameter does not match an item in the list', () => {
-    beforeEach(async () => {
-      const showParams = { id: 9999, iid: '9999', full_path: 'does/not/match' };
-      const show = btoa(JSON.stringify(showParams));
-      setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
-      getParameterByName.mockReturnValue(show);
-      mountComponent({
-        provide: {
-          workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-        },
-      });
-      await waitForPromises();
-    });
-    it('calls `updateHistory', () => {
-      expect(updateHistory).toHaveBeenCalled();
-    });
-    it('calls `removeParams` to remove the `show` param', () => {
-      expect(removeParams).toHaveBeenCalledWith([DETAIL_VIEW_QUERY_PARAM_NAME]);
-    });
-  });
-
-  describe('when window `popstate` event is triggered', () => {
-    it('updates the drawer with the new item if there is a `show` param', async () => {
-      const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
-      const nextIssue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[1];
-      await mountComponentWithShowParam(issue);
-
-      expect(findDrawer().props('open')).toBe(true);
-      expect(findDrawer().props('activeItem')).toMatchObject(issue);
-
-      const showParams = {
-        id: getIdFromGraphQLId(nextIssue.id),
-        iid: nextIssue.iid,
-        full_path: nextIssue.namespace.fullPath,
-      };
-      const show = btoa(JSON.stringify(showParams));
-      setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
-
-      window.dispatchEvent(new Event('popstate'));
-      await waitForPromises();
-
-      expect(findDrawer().props('open')).toBe(true);
-      expect(findDrawer().props('activeItem')).toMatchObject(issue);
-    });
-  });
-});
-
 describe('when bulk editing', () => {
   it('closes the bulk edit sidebar when the "success" event is emitted', async () => {
     mountComponent({ props: { showBulkEditSidebar: true } });
@@ -606,35 +464,17 @@ describe('when "update" event is emitted by VueSortable', () => {
     description                        | oldIndex | newIndex
     ${'first item to second position'} | ${0}     | ${1}
     ${'second item to first position'} | ${1}     | ${0}
-  `('when moving $description', async ({ oldIndex, newIndex }) => {
+  `('when moving $description, calls the reorder mutation', async ({ oldIndex, newIndex }) => {
     mountComponent();
     await waitForPromises();
 
     await findWorkItemListWrapper().trigger('update', { oldIndex, newIndex });
-    await nextTick();
+    await waitForPromises();
 
-    expect(wrapper.emitted('reorder')).toEqual([[{ oldIndex, newIndex }]]);
+    expect(reorderMutationHandler).toHaveBeenCalled();
+    // Reorder is handled internally — no 'reorder' event is emitted
+    expect(wrapper.emitted('reorder')).toBeUndefined();
   });
-});
-
-it('closes the drawer if there is no `show` param', async () => {
-  const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
-  await mountComponentWithShowParam(issue, {
-    queryHandler: jest.fn().mockResolvedValue(workItemsQueryResponseCombined),
-  });
-  await waitForPromises();
-  expect(findDrawer().props('open')).toBe(true);
-  expect(findDrawer().props('activeItem')).toMatchObject({
-    id: issue.id,
-    iid: issue.iid,
-  });
-
-  setWindowLocation('?');
-  getParameterByName.mockReturnValue(null);
-  window.dispatchEvent(new Event('popstate'));
-
-  await waitForPromises();
-  expect(findDrawer().props('open')).toBe(false);
 });
 
 describe('when service desk list', () => {
@@ -647,6 +487,90 @@ describe('when service desk list', () => {
 
       expect(findBulkEditStartButton().exists()).toBe(false);
       expect(findCreateWorkItemModal().exists()).toBe(false);
+    });
+  });
+});
+
+describe('slim and full queries', () => {
+  beforeEach(() => {
+    mountComponent({ props: { queryVariables: exampleQueryParams } });
+
+    return waitForPromises();
+  });
+
+  it('calls the slim query as well as the full query', () => {
+    expect(workItemsSlimQueryHandler).toHaveBeenCalled();
+    expect(workItemsFullQueryHandler).toHaveBeenCalled();
+  });
+});
+
+describe('when workItemRestApiFrontendUsers and workItemRestApi are enabled', () => {
+  let restQueryHandler;
+
+  beforeEach(async () => {
+    restQueryHandler = jest.fn().mockResolvedValue({
+      data: {
+        namespace: {
+          id: 'gid://gitlab/Group/3',
+          __typename: 'Namespace',
+          fullPath: 'full/path',
+          name: 'Test',
+          workItems: {
+            __typename: 'WorkItemConnection',
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: null,
+              endCursor: null,
+              __typename: 'PageInfo',
+            },
+            nodes: [
+              {
+                __typename: 'WorkItem',
+                id: 'gid://gitlab/WorkItem/1',
+                iid: '1',
+                title: 'REST work item',
+                state: 'OPEN',
+              },
+            ],
+          },
+        },
+      },
+    });
+
+    mountComponent({
+      additionalHandlers: [[getWorkItemsRestQuery, restQueryHandler]],
+      provide: { glFeatures: { workItemRestApiFrontendUsers: true, workItemRestApi: true } },
+      props: { queryVariables: exampleQueryParams },
+    });
+
+    await waitForPromises();
+  });
+
+  it('calls getWorkItemsRestQuery instead of getWorkItemsSlimQuery', () => {
+    expect(restQueryHandler).toHaveBeenCalled();
+    expect(workItemsSlimQueryHandler).not.toHaveBeenCalled();
+  });
+
+  describe('filtering and sorting', () => {
+    it('applies filters', async () => {
+      wrapper.setProps({
+        queryVariables: { authorUsername: 'homer' },
+      });
+      await nextTick();
+      expect(restQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ authorUsername: 'homer' }),
+      );
+    });
+
+    it('applies sort', async () => {
+      wrapper.setProps({
+        queryVariables: { sort: UPDATED_DESC },
+      });
+      await waitForPromises();
+      expect(restQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ sort: UPDATED_DESC }),
+      );
     });
   });
 });

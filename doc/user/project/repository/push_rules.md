@@ -78,7 +78,7 @@ Prerequisites:
 To create global push rules:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Push rules**.
+1. In the left sidebar, select **Push rules**.
 1. Expand **Push rules**.
 1. Set the rule you want.
 1. Select **Save push rules**.
@@ -97,7 +97,7 @@ Group push rules allow group maintainers to set push rules for newly created pro
 To configure push rules for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand the **Pre-defined push rules** section.
 1. Select the settings you want.
 1. Select **Save push rules**.
@@ -119,7 +119,7 @@ When you set push rules for a project, those rules replace any previously config
 To set push rules for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Set the rule you want.
 1. Select **Save push rules**.
@@ -385,7 +385,7 @@ Commits with invalid or corrupt signatures are rejected.
 To enable the **Reject unsigned commits** push rule:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Select **Reject unsigned commits**.
 1. Select **Save push rules**.

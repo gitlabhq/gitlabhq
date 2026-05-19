@@ -2,7 +2,6 @@
 
 query getIncidents(
   $projectPath: ID!
-  $issueTypes: [IssueType!]
   $sort: IssueSort
   $status: IssuableState
   $firstPageSize: Int
@@ -18,7 +17,6 @@ query getIncidents(
     id
     issues(
       search: $searchTerm
-      types: $issueTypes
       sort: $sort
       state: $status
       authorUsername: $authorUsername

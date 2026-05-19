@@ -33,7 +33,7 @@ Base + permission: Projects -> Settings > CI/CD > Runners
 
 #### Documentation
 
-<!-- Permissions for Custom Roles is auto-generated. A title and description should be included for the proposal. Also if the feature has documentation, there is a "Prerequisities" section under a feature that highlight required permissions. The permission for custom role should be documented and appended next to the required default role.
+<!-- Permissions for Custom Roles is auto-generated. A title and description should be included for the proposal. Also if the feature has documentation, there is a "Prerequisites" section under a feature that highlight required permissions. The permission for custom role should be documented and appended next to the required default role.
 
 Example:
 - Permission Title: "Manage Variables"

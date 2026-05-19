@@ -1,0 +1,6 @@
+---
+name: read_manual_variables
+description: Grants the ability to view variables that were manually set when
+  triggering or retrying a CI job. Manual variables are user-provided
+  key-value pairs passed at job execution time and may contain sensitive
+  values such as deployment credentials or tokens.

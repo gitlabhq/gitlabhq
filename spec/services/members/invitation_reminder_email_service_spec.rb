@@ -7,7 +7,7 @@ RSpec.describe Members::InvitationReminderEmailService, feature_category: :group
     subject { described_class.new(invitation).execute }
 
     let_it_be(:frozen_time) { Date.today.beginning_of_day }
-    let_it_be(:invitation) { build(:group_member, :invited, created_at: frozen_time) }
+    let_it_be(:invitation, freeze: false) { build(:group_member, :invited, created_at: frozen_time) }
 
     before do
       invitation.expires_at = frozen_time + expires_at_days.days if expires_at_days

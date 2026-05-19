@@ -89,7 +89,10 @@ describe('CreateLegacyPersonalAccessTokenForm', () => {
     await nextTick();
 
     expect(findCreatedToken().exists()).toBe(true);
-    expect(findCreatedToken().props('value')).toBe(tokenValue);
+    expect(findCreatedToken().props()).toMatchObject({
+      token: tokenValue,
+      href: accessTokenTableUrl,
+    });
 
     expect(findAccessTokenForm().exists()).toBe(false);
   });

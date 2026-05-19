@@ -224,6 +224,7 @@ module Gitlab
                 target_column: fk.referenced_columns,
                 on_delete: fk.on_delete_action == "no_action" ? nil : fk.on_delete_action.to_sym,
                 on_update: fk.on_update_action == "no_action" ? nil : fk.on_update_action.to_sym,
+                reverse_lock_order: true,
                 validate: true,
                 allow_partitioned: true
               )

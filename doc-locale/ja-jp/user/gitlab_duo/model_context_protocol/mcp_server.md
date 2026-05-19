@@ -61,6 +61,7 @@ GitLab MCPサーバーは2種類のトランスポートタイプをサポート
 {{< history >}}
 
 - GitLab 18.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/577575)されました。
+- ツールへのプレフィックス追加はGitLab 18.11で[追加されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230406)。
 
 {{< /history >}}
 
@@ -76,6 +77,24 @@ GitLab MCPサーバーをHTTPトランスポートを使用して設定するに
     "GitLab": {
       "type": "http",
       "url": "https://<gitlab.example.com>/api/v4/mcp"
+    }
+  }
+}
+```
+
+ツール名にプレフィックスを追加するには、`X-Gitlab-Mcp-Server-Tool-Name-Prefix` HTTPヘッダーを設定します。プレフィックスを設定することで、他のMCPサーバーや複数のGitLabインスタンスとのツール名の競合を回避できます。
+
+この制限を超えると、プレフィックスは最初の32文字に切り詰められます。
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "type": "http",
+      "url": "https://<gitlab.example.com>/api/v4/mcp",
+      "headers": {
+        "X-Gitlab-Mcp-Server-Tool-Name-Prefix": "gitlab_"
+      }
     }
   }
 }
@@ -261,7 +280,7 @@ GitHub Copilotは、追加の依存関係なしに直接接続するためにHTT
 1. サーバーIDに`GitLab`と入力します。
 1. 設定をグローバルに、または`vscode/mcp.json`ワークスペースに保存します。
 
-   OAuth認可ページが表示されるはずです。表示されない場合は、コマンドパレットを開き、**MCP:List Servers**で検索し、ステータスを確認するか、サーバーを再起動します。
+   OAuth認可ページが表示されるはずです。表示されない場合は、コマンドパレットを開き、**MCP: List Servers**で検索し、ステータスを確認するか、サーバーを再起動します。
 
 1. ブラウザで、認可リクエストを確認して承認します。
 
@@ -303,6 +322,37 @@ VS CodeでContinue内のGitLab MCPサーバーを設定するには:
 1. 設定を保存します。
 
    OAuth認可ページが表示されるはずです。
+
+1. ブラウザで、認可リクエストを確認して承認します。
+
+これで、新しいチャットを開始し、[利用可能なツール](mcp_server_tools.md)に応じて質問できるようになります。
+
+> [!warning]
+> これらのツールを使用する場合、プロンプトインジェクションに対する防御はユーザーの責任です。最大限の注意を払うか、信頼できるGitLabオブジェクトでのみMCPツールを使用してください。
+
+## Kiro IDEとCLIをGitLab MCPサーバーに接続する {#connect-kiro-ide-and-cli-to-the-gitlab-mcp-server}
+
+Kiro IDEとCLIは、追加の依存関係なしに直接接続するためにHTTPトランスポートを使用します。Kiro IDEまたはCLIでGitLab MCPサーバーを設定するには:
+
+1. `~/.kiro/settings/mcp.json`を編集し、GitLab MCPサーバーを追加します。
+   - `<gitlab.example.com>`を以下に置き換えます:
+     - GitLab Self-Managedでは、GitLabインスタンスのURL。
+     - GitLab.comでは、`gitlab.com`。
+
+   ```json
+   {
+     "mcpServers": {
+       "GitLab": {
+         "type": "http",
+         "url": "https://<gitlab.example.com>/api/v4/mcp"
+       }
+     }
+   }
+   ```
+
+1. 設定を保存します。
+
+   OAuth認可ページが表示されるはずです。そうでない場合は、Kiro CLIを開き、`/mcp`コマンドを実行します。
 
 1. ブラウザで、認可リクエストを確認して承認します。
 

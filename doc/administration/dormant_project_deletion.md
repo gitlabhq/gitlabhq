@@ -43,7 +43,7 @@ Prerequisites:
 To configure deletion of dormant projects:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. In the **Dormant project deletion** section, select **Delete dormant projects**.
 1. Configure the settings.

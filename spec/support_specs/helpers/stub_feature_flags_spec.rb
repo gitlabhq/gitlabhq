@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe StubFeatureFlags do
   let_it_be(:dummy_feature_flag) { :dummy_feature_flag }
 
-  let_it_be(:dummy_definition) do
+  let_it_be(:dummy_definition, freeze: false) do
     Feature::Definition.new(
       nil,
       name: dummy_feature_flag,

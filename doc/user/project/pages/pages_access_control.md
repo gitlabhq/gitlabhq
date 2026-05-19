@@ -30,7 +30,7 @@ on your GitLab instance. When enabled, only authenticated
 For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v=tSPAr5mQYc8).
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. To enable the access control, toggle **Pages**. If you don't see the toggle button,
    that means it isn't enabled. Ask your administrator to [enable it](../../../administration/pages/_index.md#access-control).
@@ -85,7 +85,7 @@ Prerequisites
 To do this:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Pages public access**, select the **Remove public access** checkbox.
 1. Select **Save changes**.

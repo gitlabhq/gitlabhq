@@ -1,0 +1,10 @@
+---
+name: user_signed_in_from_unseen_ip
+description: User signed in from a previously unseen IP address
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/588994
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231250
+milestone: '19.0'
+feature_category: system_access
+saved_to_database: true
+streamed: true
+scope: [User]

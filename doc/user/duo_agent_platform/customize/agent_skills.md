@@ -14,9 +14,11 @@ title: Agent Skills
 
 {{< history >}}
 
-- Support for workspace-level Agent Skills [added](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2951) in GitLab 18.10.
+- Support for project-level Agent Skills [added](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2951) in GitLab 18.10.
   - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.71.4) in GitLab for VS Code 6.71.4.
   - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.73.0) in GitLab Duo CLI 8.73.0.
+- Support for user-level Agent Skills [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/3140) in GitLab 19.0.
+  - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.83.0) in GitLab Duo CLI 8.83.0 as an [experiment](../../../policy/development_stages_support.md#experiment).
 
 {{< /history >}}
 
@@ -33,7 +35,9 @@ other AI tool that supports the specification.
 Specify Agent Skills for GitLab Duo to use with:
 
 - GitLab Duo Chat in your local environment.
-- Foundational and custom flows.
+- Foundational and custom flows, excluding Code Review Flow.
+
+User-level skills are only available for use with the GitLab Duo CLI.
 
 ## How GitLab Duo uses Agent Skills
 
@@ -42,6 +46,18 @@ context. When the agent encounters a task that matches a skill's description, it
 the skill and uses it to complete the task.
 
 You can also manually direct GitLab Duo to use a skill by name, file path, or slash command.
+
+GitLab Duo supports the following types of skills:
+
+| Level                                                              | GitLab UI | Editor extensions | GitLab Duo CLI |
+|--------------------------------------------------------------------|-------------------------------|-------------------|----------------|
+| User-level: Apply to all of your projects      | {{< no >}}                    | {{< no >}}        | {{< yes >}}    |
+| Project-level: Apply only to a specific project | {{< yes >}} <sup>1</sup>                   | {{< yes >}}       | {{< yes >}}    |
+
+**Footnotes**:
+
+1. In the GitLab UI, only foundational and custom flows, excluding Code Review, support project-level
+   skills. GitLab Duo Chat in the GitLab UI does not support skills.
 
 ## Use Agent Skills with GitLab Duo
 
@@ -53,10 +69,13 @@ You can also manually direct GitLab Duo to use a skill by name, file path, or sl
 
 - Meet the [Agent Platform prerequisites](../_index.md#prerequisites).
 - For GitLab Duo Chat in your local environment, install and configure one of the following:
-  - [GitLab for VS Code](../../../editor_extensions/visual_studio_code/setup.md) 6.71.4 or later.
-  - [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli) 8.73.0 or later.
-- For custom flows, update the flow's configuration file to access the `workspace_agent_skills`
-  context passed from the executor:
+  - For project-level skills:
+    - [GitLab for VS Code](../../../editor_extensions/visual_studio_code/setup.md) 6.71.4 or later.
+    - [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli) 8.73.0 or later.
+  - For user-level skills:
+    - [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli) 8.83.0 or later.
+- For project-level skills with custom flows, update the flow's configuration file to access the
+  `workspace_agent_skills` context passed from the executor:
 
   ```yaml
   components:
@@ -72,14 +91,27 @@ You can also manually direct GitLab Duo to use a skill by name, file path, or sl
   By setting `optional: true`, the flow gracefully handles cases where no agent skills exist.
   The agent works with or without additional context.
 
-### Create workspace-level skills
+### Create skills
 
-Workspace-level skills apply to a specific project or workspace. You define them in a `SKILL.md`
+You can create skills at the project level or user level.
+
+If you use a multi-root workspace in your IDE, you can create project-level skills for each project
+in the workspace.
+
+If a user-level skill and a project-level skill share the same name, the project-level skill
+takes precedence. This allows you to override a user-level skill with a project-specific version.
+
+In a multi-root workspace, if multiple projects define skills with the same name, GitLab Duo loads
+the first one it encounters.
+
+#### Create project-level skills
+
+Project-level skills apply to a specific project. You define them in a `SKILL.md`
 file in a `skills/<skill-name>/` directory of your project.
 
-To create a workspace-level skill:
+To create a project-level skill:
 
-1. In the root of your project workspace, create a `skills` directory.
+1. In the root of your project, create a `skills` directory.
 1. In the new directory, create another directory for the specific skill. Use the skill name as the
    directory name.
 1. Create a `SKILL.md` file and include instructions using the following format.
@@ -163,6 +195,79 @@ To create a workspace-level skill:
 1. Start a new conversation or flow. You should do this every time you change or add a `SKILL.md`
    file to avoid context confusion for the agent.
 
+#### Create user-level skills
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+User-level skills apply across all of your projects. You define them in a `SKILL.md` file in a
+`skills/<skill-name>/` directory within your home directory.
+
+User-level skills are only available for use with the GitLab Duo CLI.
+
+##### Create a directory for user-level skills
+
+You can create a skills directory in one of the following locations:
+
+- To keep your skills with your other GitLab Duo customization files:
+  - For Linux or macOS, create a directory at `~/.gitlab/duo/skills/`.
+  - For Windows, create a directory at `%APPDATA%\GitLab\duo\skills\`.
+  - If you have set `GLAB_CONFIG_DIR` or `XDG_CONFIG_HOME`, use `$GLAB_CONFIG_DIR/skills/` or `$XDG_CONFIG_HOME/gitlab/duo/skills/`. If both are set, `GLAB_CONFIG_DIR` takes priority.
+- To share skills with other AI tools that support the Agent Skills specification:
+  - For Linux or macOS, create a directory at `~/.agents/skills/`.
+  - For Windows, create a directory at `%USERPROFILE%\.agents\skills\`.
+
+##### Create a user-level skill file
+
+To create a user-level skill:
+
+1. Enable global skills when starting the GitLab Duo CLI:
+
+   {{< tabs >}}
+
+   {{< tab title="glab" >}}
+
+   ```shell
+   glab duo cli --enable-global-skills
+   ```
+
+   {{< /tab >}}
+
+   {{< tab title="duo" >}}
+
+   ```shell
+   duo --enable-global-skills
+   ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
+
+   Alternatively, set the environment variable:
+
+   ```shell
+   export GITLAB_ENABLE_GLOBAL_SKILLS=true
+   ```
+
+1. In your `skills` directory, create another directory for the specific skill.
+   Use the skill name as the directory name. For example, `~/.gitlab/duo/skills/<skill_name>/`.
+1. Create a `SKILL.md` file and include instructions using the following format.
+   The `name` and `description` YAML front matter fields are required.
+
+   ```markdown
+   ---
+   name: <skill_name>
+   description: <skill_description>
+   ---
+
+   <your_instructions_and_context_for_the_skill>
+   ```
+
+1. Start a new conversation. The skill is available in any project.
+
 #### Expose skills as slash commands
 
 To enable a skill as a custom slash command, add `slash-command: enabled` to the metadata in the
@@ -180,7 +285,7 @@ metadata:
 After you add the metadata, you can use `/<skill_name>` in new sessions to instruct GitLab Duo to use the
 skill. For example, `/fix-bugs`.
 
-### Use a skill manually
+### Use skills manually
 
 To direct GitLab Duo to use a specific skill, use one of the following methods:
 

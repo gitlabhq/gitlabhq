@@ -7,7 +7,7 @@ RSpec.describe Auth::DpopAuthenticationService, :aggregate_failures, feature_cat
 
   let_it_be(:user, freeze: true) { create(:user) }
   let_it_be(:personal_access_token, freeze: true) { create(:personal_access_token, user: user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
 
   let(:dpop_proof) { generate_dpop_proof_for(user) }
 

@@ -17,6 +17,13 @@ module PersonalAccessTokens
     def execute
       return error_response(s_('AccessTokens|Token already revoked')) if token.revoked?
 
+      if granular_tokens_enforced?
+        return error_response(
+          s_('AccessTokens|Rotation of legacy personal access tokens is disabled. ' \
+            'Use a fine-grained token instead.')
+        )
+      end
+
       response = ServiceResponse.success
 
       PersonalAccessToken.transaction do
@@ -40,6 +47,12 @@ module PersonalAccessTokens
     private
 
     attr_reader :current_user, :token, :resource, :params, :target_user
+
+    def granular_tokens_enforced?
+      return false unless Feature.enabled?(:granular_personal_access_tokens, token.user)
+
+      Gitlab::CurrentSettings.granular_tokens_enforced? && !token.granular?
+    end
 
     def create_access_token
       unless valid_access_level?
@@ -136,7 +149,11 @@ module PersonalAccessTokens
         "rotate_pat",
         user: target_user,
         namespace: target_user.namespace,
-        project: nil
+        project: nil,
+        additional_properties: {
+          type: token.granular? ? 'granular' : 'legacy',
+          creation_source: params[:creation_source] || PersonalAccessToken::CREATION_SOURCE_UNKNOWN
+        }
       )
     end
   end

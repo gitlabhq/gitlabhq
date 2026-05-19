@@ -11,7 +11,6 @@ module Projects
       participants =
         noteable_owner +
         participants_in_noteable +
-        all_members +
         project_members
 
       participants += groups(organization: organization) unless relation_at_search_limit?(project_members)
@@ -25,17 +24,15 @@ module Projects
     end
     strong_memoize_attr :project_members
 
-    def all_members
-      return [] if Feature.enabled?(:disable_all_mention)
-
-      [{ username: "all", name: "All Project and Group Members", count: project_members_relation.count }]
-    end
-
     def project_members_relation
       project.authorized_users.with_organization_user_details
     end
 
     private
+
+    def participation_object
+      project
+    end
 
     def organization
       project.organization
@@ -46,8 +43,6 @@ module Projects
     # of the User model for rendering username, display_name, and other details
     # details should be pre-loaded to avoid N+1 queries
     def organization_user_details_for_participants(participants)
-      return participants unless Feature.enabled?(:organization_users_internal, organization)
-
       participants.map do |participant|
         next participant unless participant.is_a?(User)
 

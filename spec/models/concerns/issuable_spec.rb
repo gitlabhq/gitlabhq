@@ -212,16 +212,6 @@ RSpec.describe Issuable, feature_category: :team_planning do
         :assignees, :author, :award_emoji, { notes_with_possible_mentions: [:author, :award_emoji] }
       )
     end
-
-    context 'when optimize_issuable_participants is disabled' do
-      before do
-        stub_feature_flags(optimize_issuable_participants: false)
-      end
-
-      it 'returns participant associations' do
-        expect(issuable_class.participant_includes).to contain_exactly(:assignees, :author, :award_emoji, { notes: [:author, :award_emoji] })
-      end
-    end
   end
 
   describe ".search" do

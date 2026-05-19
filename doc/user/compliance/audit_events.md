@@ -69,7 +69,7 @@ After upgrading to a paid tier, you can also see successful sign-in events on au
 To view a group's audit events:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Audit events**.
+1. In the left sidebar, select **Secure** > **Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
 Group audit events can also be accessed using the [group audit events API](../../api/audit_events.md#group-audit-events). Group audit event queries `created_after` and `created_before` parameters are limited to a maximum 30 day difference between the dates.
@@ -84,7 +84,7 @@ Group audit events can also be accessed using the [group audit events API](../..
 {{< /details >}}
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Audit events**.
+1. In the left sidebar, select **Secure** > **Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
 Project audit events can also be accessed using the [project audit events API](../../api/audit_events.md#project-audit-events). Project audit event queries `created_after` and `created_before` parameters are limited to a maximum 30 day difference between the dates.
@@ -121,7 +121,7 @@ comprehensive text searches and analysis.
 If you don't see the event you want in any of the epics, you can either:
 
 - Use the audit event proposal issue template to
-  [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Audit%20Event%20Proposal) to request it.
+  [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Audit%20Event%20Proposal) to request it.
 - Contribute to GitLab and add the event.
 
 ## Administer topics

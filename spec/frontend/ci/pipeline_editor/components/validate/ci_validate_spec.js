@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { GlAlert, GlEmptyState, GlLoadingIcon, GlPopover } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlLoadingIcon, GlPopover, GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 
 import mockCiLintMutationResponse from 'test_fixtures/graphql/ci/pipeline_editor/graphql/mutations/ci_lint.mutation.graphql.json';
@@ -73,7 +73,7 @@ describe('Pipeline Editor Validate Tab', () => {
   const findCancelBtn = () => wrapper.findByTestId('cancel-simulation');
   const findContentChangeStatus = () => wrapper.findByTestId('content-status');
   const findCta = () => wrapper.findByTestId('simulate-pipeline-button');
-  const findLintButton = () => wrapper.findByTestId('lint-button');
+  const findLintLink = () => wrapper.findByTestId('lint-link');
   const findDisabledCtaTooltip = () => wrapper.findByTestId('cta-tooltip');
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -102,7 +102,7 @@ describe('Pipeline Editor Validate Tab', () => {
   describe('after initial CI content is loaded', () => {
     beforeEach(async () => {
       mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
-      await createComponent({ stubs: { GlPopover, ValidatePipelinePopover } });
+      await createComponent({ stubs: { GlPopover, ValidatePipelinePopover, GlSprintf } });
     });
 
     it('renders branch selector with the correct props', () => {
@@ -126,9 +126,8 @@ describe('Pipeline Editor Validate Tab', () => {
       expect(findPopover().props('triggers')).toBe('hover focus');
     });
 
-    it('renders lint button with correct path', () => {
-      expect(findLintButton().exists()).toBe(true);
-      expect(findLintButton().attributes('href')).toBe(mockCiLintPath);
+    it('renders lint link in the content note', () => {
+      expect(findLintLink().attributes('href')).toBe(mockCiLintPath);
     });
   });
 

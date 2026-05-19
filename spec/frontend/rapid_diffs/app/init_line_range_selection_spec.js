@@ -9,10 +9,13 @@ import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 
 const useMockDiscussionsStore = defineStore('mockDiscussions', () => {
   function addNewLineDiscussionForm() {}
-  function findAllLineDiscussionsForFile() {
+  function findLinePositionsForFile() {
     return [];
   }
-  return { addNewLineDiscussionForm, findAllLineDiscussionsForFile };
+  function findLineDiscussionsForPosition() {
+    return [];
+  }
+  return { addNewLineDiscussionForm, findLinePositionsForFile, findLineDiscussionsForPosition };
 });
 
 describe('initLineRangeSelection', () => {

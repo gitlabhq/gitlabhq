@@ -12,6 +12,12 @@ Devise.setup do |config|
     user_scoped_strategies.unshift :combined_two_factor_authenticatable
   end
 
+  # devise-two-factor v6 changed otp_backup_code_length to be a byte count
+  # rather than a character count. Set it to 8 bytes so that backup codes
+  # remain 16 hex characters long (SecureRandom.hex(8) == 16 chars), matching
+  # the codes already stored for existing users and the QA expectations.
+  config.otp_backup_code_length = 8
+
   # This is the default. This makes it explicit that Devise loads routes
   # before eager loading. Disabling this seems to cause an error loading
   # grape-entity `expose` for some reason.

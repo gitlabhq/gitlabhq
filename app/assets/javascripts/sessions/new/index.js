@@ -37,7 +37,7 @@ export const initEmailVerification = () => {
     return null;
   }
 
-  const { username, obfuscatedEmail, verifyPath, resendPath, skipPath } =
+  const { username, obfuscatedEmail, verifyPath, resendPath, skipPath, showResendAfter } =
     emailVerificationElement.dataset;
 
   return new Vue({
@@ -51,6 +51,7 @@ export const initEmailVerification = () => {
           verifyPath,
           resendPath,
           skipPath,
+          initialShowResendAfter: showResendAfter ? Number(showResendAfter) : null,
         },
       });
     },

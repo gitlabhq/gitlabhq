@@ -12,7 +12,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
   let(:ref_name) { 'refs/heads/master' }
 
   before do
-    project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
+    project&.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
     stub_ci_pipeline_to_return_yaml_file
   end
 
@@ -31,7 +31,8 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       target_sha: nil,
       partition_id: nil,
       save_on_errors: true,
-      pipeline_creation_request: nil)
+      pipeline_creation_request: nil,
+      defer_request_completion: nil)
       params = { ref: ref,
                  before: before,
                  after: after,
@@ -40,7 +41,8 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
                  source_sha: source_sha,
                  target_sha: target_sha,
                  partition_id: partition_id,
-                 pipeline_creation_request: pipeline_creation_request }
+                 pipeline_creation_request: pipeline_creation_request,
+                 defer_request_completion: defer_request_completion }
 
       described_class.new(project, user, params).execute(source,
         save_on_errors: save_on_errors,
@@ -556,12 +558,12 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       context 'when config has ports' do
         context 'in the main image' do
           let(:ci_yaml) do
-            <<-EOS
+            <<-YAML
               image:
                 name: image:1.0
                 ports:
                   - 80
-            EOS
+            YAML
           end
 
           it_behaves_like 'a failed pipeline'
@@ -569,7 +571,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
         context 'in the job image' do
           let(:ci_yaml) do
-            <<-EOS
+            <<-YAML
               image: image:1.0
 
               test:
@@ -578,7 +580,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
                   name: image:1.0
                   ports:
                     - 80
-            EOS
+            YAML
           end
 
           it_behaves_like 'a failed pipeline'
@@ -586,7 +588,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
         context 'in the service' do
           let(:ci_yaml) do
-            <<-EOS
+            <<-YAML
               image: image:1.0
 
               test:
@@ -596,7 +598,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
                   - name: test
                     ports:
                       - 80
-            EOS
+            YAML
           end
 
           it_behaves_like 'a failed pipeline'
@@ -1023,7 +1025,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
 
       context 'when trigger belongs to no one' do
-        let(:user) {}
+        let(:user) { nil }
         let(:trigger) { create(:ci_trigger, project: project) }
 
         it 'does not create a pipeline', :aggregate_failures do
@@ -1870,6 +1872,69 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           )
         end
       end
+
+      context 'when defer_request_completion is true' do
+        context 'when the pipeline creation succeeds' do
+          it 'does not update the pipeline creation request status' do
+            creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
+
+            execute_service(
+              merge_request: merge_request,
+              pipeline_creation_request: creation_request,
+              defer_request_completion: true,
+              source: :merge_request_event
+            )
+
+            request_data = ::Ci::PipelineCreation::Requests.hget(creation_request)
+            expect(request_data['status']).to eq(::Ci::PipelineCreation::Requests::IN_PROGRESS)
+          end
+
+          it 'does not trigger GraphQL subscription' do
+            creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
+
+            expect(GraphqlTriggers).not_to receive(:ci_pipeline_creation_requests_updated)
+
+            execute_service(
+              merge_request: merge_request,
+              pipeline_creation_request: creation_request,
+              defer_request_completion: true,
+              source: :merge_request_event
+            )
+          end
+        end
+
+        context 'when the pipeline creation fails' do
+          let_it_be_with_reload(:user) { create(:user) }
+
+          it 'does not update the pipeline creation request status' do
+            creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
+
+            execute_service(
+              merge_request: merge_request,
+              pipeline_creation_request: creation_request,
+              defer_request_completion: true,
+              source: :merge_request_event
+            )
+
+            request_data = ::Ci::PipelineCreation::Requests.hget(creation_request)
+            expect(request_data['status']).to eq(::Ci::PipelineCreation::Requests::IN_PROGRESS)
+            expect(request_data['error']).to be_nil
+          end
+
+          it 'does not trigger GraphQL subscription' do
+            creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
+
+            expect(GraphqlTriggers).not_to receive(:ci_pipeline_creation_requests_updated)
+
+            execute_service(
+              merge_request: merge_request,
+              pipeline_creation_request: creation_request,
+              defer_request_completion: true,
+              source: :merge_request_event
+            )
+          end
+        end
+      end
     end
 
     describe 'stop writing to ci_builds_metadata' do
@@ -1918,6 +1983,34 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         expect { execute_service }.to not_change { Ci::BuildExecutionConfig.count }
       end
     end
+
+    describe 'service instantiated without base relations' do
+      let(:service) { described_class.new(project, user) }
+
+      context 'without project' do
+        let(:project) { nil }
+
+        it 'does not create a pipeline' do
+          response = service.execute(:push)
+
+          expect(response).to be_error
+          expect(response).to have_attributes(message: "Missing project parameter", payload: kind_of(Ci::Pipeline))
+          expect(response.payload).not_to be_persisted
+        end
+      end
+
+      context 'without user' do
+        let(:user) { nil }
+
+        it 'does not create a pipeline' do
+          response = service.execute(:push)
+
+          expect(response).to be_error
+          expect(response).to have_attributes(message: "Missing user parameter", payload: kind_of(Ci::Pipeline))
+          expect(response.payload).not_to be_persisted
+        end
+      end
+    end
   end
 
   describe '#extra_options' do
@@ -1954,14 +2047,23 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       expect(result[:trigger_api_request]).to be true
     end
 
+    it 'returns suspend_options when provided' do
+      suspend_options = { 'key' => 'value' }
+      result = service.send(:extra_options, suspend_options: suspend_options)
+
+      expect(result[:suspend_options]).to eq(suspend_options)
+    end
+
     it 'returns all provided options' do
       definition = { 'key' => 'value' }
+      suspend_options = { 'suspend' => true }
       result = service.send(:extra_options,
         content: 'test content',
         dry_run: true,
         linting: true,
         duo_workflow_definition: definition,
-        trigger_api_request: true
+        trigger_api_request: true,
+        suspend_options: suspend_options
       )
 
       expect(result).to include(
@@ -1969,7 +2071,8 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         dry_run: true,
         linting: true,
         duo_workflow_definition: definition,
-        trigger_api_request: true
+        trigger_api_request: true,
+        suspend_options: suspend_options
       )
     end
   end

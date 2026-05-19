@@ -30,6 +30,7 @@ export default {
       required: true,
     },
   },
+  emits: ['alert-error'],
   data() {
     return {
       isUpdating: false,

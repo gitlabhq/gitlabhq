@@ -50,118 +50,14 @@ describe('Diffs tree list component', () => {
   });
 
   const setupFilesInState = () => {
-    const treeEntries = {
-      app: {
-        key: 'app',
-        path: 'app',
-        name: 'app',
-        type: 'tree',
-        tree: [],
-        opened: true,
-      },
-      javascript: {
-        key: 'appjavascript',
-        path: 'app/javascript',
-        name: 'javascript',
-        type: 'tree',
-        tree: [
-          {
-            addedLines: 0,
-            changed: true,
-            deleted: false,
-            fileHash: 'appjavascriptfile',
-            key: 'file.js',
-            name: 'file.js',
-            path: 'app/javascript/file.rb',
-            removedLines: 0,
-            tempFile: true,
-            type: 'blob',
-            parentPath: 'app/javascript',
-            tree: [],
-            file_path: 'app/javascript/file.js',
-            file_hash: 'appjavascriptfile',
-          },
-        ],
-        opened: true,
-      },
-      'index.js': {
-        addedLines: 0,
-        changed: true,
-        deleted: false,
-        fileHash: 'test',
-        key: 'index.js',
-        name: 'index.js',
-        path: 'app/index.js',
-        removedLines: 0,
-        tempFile: true,
-        type: 'blob',
-        parentPath: 'app',
-        tree: [],
-        file_path: 'app/index.js',
-        file_hash: 'app-index',
-        codeReviewId: 12345,
-      },
-      'unordered.rb': {
-        addedLines: 0,
-        changed: true,
-        deleted: false,
-        fileHash: 'unordered',
-        key: 'unordered.rb',
-        name: 'unordered.rb',
-        path: 'unordered.rb',
-        removedLines: 0,
-        tempFile: true,
-        type: 'blob',
-        parentPath: '/',
-        tree: [],
-        file_path: 'unordered.rb',
-        file_hash: 'unordered',
-      },
-      'test.rb': {
-        addedLines: 0,
-        changed: true,
-        deleted: false,
-        fileHash: 'apptest',
-        key: 'test.rb',
-        name: 'test.rb',
-        path: 'app/test.rb',
-        removedLines: 0,
-        tempFile: true,
-        type: 'blob',
-        parentPath: 'app',
-        tree: [],
-        file_path: 'app/test.rb',
-        file_hash: 'app-test',
-      },
-      LICENSE: {
-        addedLines: 0,
-        changed: true,
-        deleted: false,
-        fileHash: 'LICENSE',
-        key: 'LICENSE',
-        name: 'LICENSE',
-        path: 'LICENSE',
-        removedLines: 0,
-        tempFile: true,
-        type: 'blob',
-        parentPath: '/',
-        tree: [],
-        file_path: 'LICENSE',
-        file_hash: 'LICENSE',
-      },
-    };
-
-    useFileBrowser().treeEntries = treeEntries;
-    useFileBrowser().tree = [
-      {
-        ...treeEntries.app,
-        tree: [treeEntries.javascript, treeEntries['index.js'], treeEntries['test.rb']],
-      },
-      treeEntries['unordered.rb'],
-      treeEntries.LICENSE,
-    ];
-
-    return treeEntries;
+    useFileBrowser().setTreeData([
+      { new_path: 'app/javascript/file.rb', file_hash: 'appjavascriptfile' },
+      { new_path: 'app/index.js', file_hash: 'app-index', code_review_id: 12345 },
+      { new_path: 'app/test.rb', file_hash: 'app-test' },
+      { new_path: 'unordered.rb', file_hash: 'unordered' },
+      { new_path: 'LICENSE', file_hash: 'LICENSE' },
+    ]);
+    return useFileBrowser().treeEntries;
   };
 
   it('renders empty text', () => {
@@ -203,7 +99,7 @@ describe('Diffs tree list component', () => {
         ${'*.js'}       | ${2}
         ${'index.js'}   | ${2}
         ${'app/*.js'}   | ${2}
-        ${'*.js, *.rb'} | ${5}
+        ${'*.js, *.rb'} | ${7}
       `('returns $itemSize item for $extension', async ({ extension, itemSize }) => {
         const input = findDiffTreeSearch();
 
@@ -226,8 +122,8 @@ describe('Diffs tree list component', () => {
         'app/javascript/file.rb',
         'app/index.js',
         'app/test.rb',
-        'unordered.rb',
         'LICENSE',
+        'unordered.rb',
       ]);
     });
 
@@ -263,7 +159,16 @@ describe('Diffs tree list component', () => {
           getScroller()
             .props('items')
             .map((item) => item.path),
-        ).toStrictEqual(['app', 'app/index.js', 'app/test.rb', '/', 'unordered.rb', 'LICENSE']);
+        ).toStrictEqual([
+          'app/javascript/',
+          'app/javascript/file.rb',
+          'app/',
+          'app/index.js',
+          'app/test.rb',
+          '/',
+          'LICENSE',
+          'unordered.rb',
+        ]);
       });
 
       it('renders ungrouped list items', async () => {
@@ -274,14 +179,14 @@ describe('Diffs tree list component', () => {
             .props('items')
             .map((item) => item.path),
         ).toStrictEqual([
-          'app',
+          'app/javascript/',
+          'app/javascript/file.rb',
+          'app/',
           'app/index.js',
-          '/',
-          'unordered.rb',
-          'app',
           'app/test.rb',
           '/',
           'LICENSE',
+          'unordered.rb',
         ]);
       });
     });
@@ -354,6 +259,14 @@ describe('Diffs tree list component', () => {
       await nextTick();
       jest.runAllTimers();
       expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not throw when scroller ref is unavailable', async () => {
+      useFileBrowser().setTreeData([]);
+      createComponent({ currentDiffFileId: '05.txt' });
+      await nextTick();
+      jest.spyOn(wrapper.element, 'querySelector').mockReturnValue(document.createElement('div'));
+      expect(() => jest.runAllTimers()).not.toThrow();
     });
   });
 

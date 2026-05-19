@@ -57,6 +57,7 @@ describe('WorkItemActions component', () => {
     workItemType = 'Task',
     workItemReference = mockWorkItemReference,
     notificationsQueryHandler = notificationOnQueryHandler,
+    provide = {},
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemNotificationsWidget, {
       isLoggedIn: isLoggedIn(),
@@ -72,6 +73,7 @@ describe('WorkItemActions component', () => {
         workItemType,
         workItemReference,
       },
+      provide,
       mocks: {
         $toast,
       },
@@ -126,6 +128,7 @@ describe('WorkItemActions component', () => {
             id: 'gid://gitlab/WorkItem/1',
             subscribed,
           },
+          useWorkItemFeatures: false,
         });
         expect(toast).toHaveBeenCalledWith(toastMessage);
       },
@@ -166,6 +169,44 @@ describe('WorkItemActions component', () => {
       await waitForPromises();
 
       expect(wrapper.emitted('error')).toEqual([['Failed to subscribe']]);
+    });
+  });
+
+  describe('when workItemFeaturesField feature flag is enabled', () => {
+    it('passes useWorkItemFeatures as true to the query', () => {
+      const handler = jest.fn().mockResolvedValue(workItemNotificationsResponse(true));
+      createComponent({
+        notificationsQueryHandler: handler,
+        provide: { glFeatures: { workItemFeaturesField: true } },
+      });
+
+      expect(handler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/WorkItem/1',
+        useWorkItemFeatures: true,
+      });
+    });
+
+    it('passes useWorkItemFeatures as true to the mutation', async () => {
+      const mutationHandler = jest
+        .fn()
+        .mockResolvedValue(updateWorkItemNotificationsMutationResponse(true));
+      createComponent({
+        notificationsQueryHandler: notificationOffQueryHandler,
+        notificationsMutationHandler: mutationHandler,
+        provide: { glFeatures: { workItemFeaturesField: true } },
+      });
+      await waitForPromises();
+
+      findNotificationsButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(mutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          subscribed: true,
+        },
+        useWorkItemFeatures: true,
+      });
     });
   });
 });

@@ -18,11 +18,28 @@ RSpec.describe InternalRedirect do
   describe '#safe_redirect_path' do
     where(:input) do
       [
+        # Non-path inputs
         'Hello world',
         '/',
-        '//example.com/hello/world',
         'https://example.com/hello/world',
-        "not-starting-with-a-slash\n/starting/with/slash"
+        "not-starting-with-a-slash\n/starting/with/slash",
+        # Open redirect attack vectors (protocol-relative, backslash, dot prefix)
+        '//example.com/hello/world',
+        '//evil.com',
+        '//evil.com/path',
+        '/\\evil.com',
+        '/.evil.com',
+        "//evil.com\n/?legit=true",
+        # Encoded open redirect variants
+        '/%2Fevil.com',
+        '/%2f%2fevil.com',
+        '/%2f%2Fevil.com',
+        '/%2F%2f%2fevil.com',
+        # CRLF and control character injection
+        "/hello\r\nX-Injected: header",
+        "//evil.com\r\nLocation:https://evil.com",
+        "//evil.com\rpath",
+        "//evil.com\t/with-tab"
       ]
     end
 
@@ -50,33 +67,20 @@ RSpec.describe InternalRedirect do
           .to eq("#{input}?hello=world#L123")
       end
     end
-
-    context 'with open redirect attack vectors' do
-      where(:input) do
-        [
-          '//evil.com',
-          '//evil.com/path',
-          '/\\evil.com',
-          '/.evil.com',
-          '/%2f%2fevil.com',
-          "//evil.com\n/?legit=true"
-        ]
-      end
-
-      with_them 'being blocked' do
-        it 'returns nil' do
-          expect(controller.safe_redirect_path(input)).to be_nil
-        end
-      end
-    end
   end
 
   describe '#safe_redirect_path_for_url' do
     where(:input) do
       [
+        # Non-URL or wrong host
         'Hello world',
         'http://example.com/hello/world',
-        'http://test.host:3000/hello/world'
+        # Same host but different scheme or port
+        'https://test.host/hello/world',
+        'http://test.host:3000/hello/world',
+        # Malformed or ambiguous URLs
+        'http:///test.host/evil',
+        'http://test.host@evil.com/x'
       ]
     end
 
@@ -104,22 +108,37 @@ RSpec.describe InternalRedirect do
           .to eq("#{path}?hello=world#L123")
       end
     end
+
+    it 'accepts URL with empty userinfo when host matches' do
+      # http://@test.host/hello has empty userinfo but host is test.host,
+      # which passes host_allowed? - this is harmless
+      expect(controller.safe_redirect_path_for_url('http://@test.host/hello')).to eq('/hello')
+    end
   end
 
   describe '#sanitize_redirect' do
     let(:valid_path) { '/hello/world?hello=world' }
     let(:valid_url) { "http://test.host#{valid_path}" }
 
-    it 'returns `nil` for invalid paths' do
-      invalid_path = '//not/valid'
-
-      expect(controller.sanitize_redirect(invalid_path)).to eq nil
+    where(:input) do
+      [
+        # Invalid paths
+        '//not/valid',
+        # Invalid URLs (wrong port)
+        'http://test.host:3000/invalid',
+        # CRLF injection
+        "/hello\r\nworld",
+        "http://test.host/hello\r\nworld",
+        # Protocol-relative or wrong host
+        '//evil.com',
+        'http://evil.com/hello/world'
+      ]
     end
 
-    it 'returns `nil` for invalid urls' do
-      input = 'http://test.host:3000/invalid'
-
-      expect(controller.sanitize_redirect(input)).to eq nil
+    with_them 'being invalid' do
+      it 'returns nil' do
+        expect(controller.sanitize_redirect(input)).to be_nil
+      end
     end
 
     it 'returns input for valid paths' do

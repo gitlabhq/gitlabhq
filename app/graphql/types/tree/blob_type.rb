@@ -9,6 +9,9 @@ module Types
 
       implements Types::Tree::EntryType
       present_using BlobPresenter
+      authorize_granular_token permissions: :read_repository_blob,
+        boundary: ->(obj) { obj.repository&.project },
+        boundary_type: :project
 
       field :lfs_oid, GraphQL::Types::String, null: true,
         calls_gitaly: true,

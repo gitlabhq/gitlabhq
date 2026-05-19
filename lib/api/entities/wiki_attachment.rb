@@ -8,7 +8,7 @@ module API
       expose :file_name, documentation: { type: 'String', example: 'dk.png' }
       expose :file_path, documentation: { type: 'String', example: 'uploads/6a061c4cf9f1c28cb22c384b4b8d4e3c/dk.png' }
       expose :branch, documentation: { type: 'String', example: 'main' }
-      expose :link do
+      expose :link, documentation: { type: 'Hash' } do
         expose :file_path, as: :url, documentation: {
           type: 'String', example: 'uploads/6a061c4cf9f1c28cb22c384b4b8d4e3c/dk.png'
         }

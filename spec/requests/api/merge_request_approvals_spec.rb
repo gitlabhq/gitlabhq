@@ -229,6 +229,14 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
         expect(merge_request.approvals).to be_empty
       end
 
+      it 'invalidates the approval mergeability cache after clearing approvals' do
+        expect_next_found_instance_of(MergeRequest) do |mr|
+          expect(mr).to receive(:delete_approval_mergeability_cache)
+        end
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
+      end
+
       it_behaves_like 'authorizing granular token permissions', :reset_approvals_merge_request do
         let(:boundary_object) { project }
         let(:user) { bot }

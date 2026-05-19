@@ -1,0 +1,6 @@
+---
+event: Security::PolicyDeletedEvent
+description: Published when a security policy is removed during synchronization of
+  a security policy project's configuration.
+feature_category: security_policy_management
+ee_only: true

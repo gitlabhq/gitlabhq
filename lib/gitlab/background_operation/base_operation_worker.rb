@@ -50,6 +50,20 @@ module Gitlab
             args
           end
         end
+
+        def scope_to(scope)
+          define_method(:filter_batch) do |relation|
+            instance_exec(relation, &scope)
+          end
+        end
+
+        def reset_cursor!
+          define_singleton_method(:reset_cursor?) { true }
+        end
+
+        def reset_cursor?
+          false
+        end
       end
 
       def initialize(
@@ -65,6 +79,10 @@ module Gitlab
         @job_arguments = job_arguments
         @connection = connection
         @sub_batch_exception = sub_batch_exception
+      end
+
+      def filter_batch(relation)
+        relation
       end
 
       def perform
@@ -106,7 +124,7 @@ module Gitlab
         cursor_gteq_start = cursor_expression.gteq(arel_for_cursor(min_cursor, model_class.arel_table))
         cursor_lteq_end = cursor_expression.lteq(arel_for_cursor(max_cursor, model_class.arel_table))
         where_condition = Arel::Nodes::And.new([cursor_gteq_start, cursor_lteq_end])
-        model_class.where(where_condition)
+        filter_batch(model_class.where(where_condition))
       end
 
       def arel_for_cursor(cursor, arel_table)

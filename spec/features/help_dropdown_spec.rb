@@ -65,6 +65,23 @@ RSpec.describe "Help Dropdown", :js, feature_category: :shared do
     end
 
     include_examples 'no version check badge'
+
+    it 'displays default support link' do
+      within_testid('super-sidebar') do
+        click_on 'Help'
+        expect(page).to have_link(text: 'Support', href: 'https://support.gitlab.com')
+      end
+    end
+
+    it 'displays custom support link' do
+      stub_application_setting(help_page_support_url: 'http://example.com/help')
+      visit root_path
+
+      within_testid('super-sidebar') do
+        click_on 'Help'
+        expect(page).to have_link(text: 'Support', href: 'http://example.com/help')
+      end
+    end
   end
 
   context 'when logged in as admin' do

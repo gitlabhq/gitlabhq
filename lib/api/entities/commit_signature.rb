@@ -5,7 +5,7 @@ module API
     class CommitSignature < Grape::Entity
       expose :signature_type, documentation: { type: 'String', example: 'PGP' }
 
-      expose :signature, merge: true do |commit, options|
+      expose :signature, merge: true, documentation: { type: 'Hash' } do |commit, options|
         case commit.signature
         when ::CommitSignatures::GpgSignature
           ::API::Entities::GpgCommitSignature.represent commit_signature(commit), options

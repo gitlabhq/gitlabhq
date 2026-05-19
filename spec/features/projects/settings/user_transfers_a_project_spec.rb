@@ -84,4 +84,19 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
       expect(project.reload.namespace).to eq(subgroup)
     end
   end
+
+  context 'when groups_and_projects_async_transfer is enabled' do
+    before do
+      stub_feature_flags(groups_and_projects_async_transfer: true)
+
+      transfer_project(project, group)
+    end
+
+    it 'shows async transfer banner' do
+      expect(page).to have_content(s_(
+        'TransferProject|This project is scheduled for transfer. ' \
+          'Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails.'
+      ))
+    end
+  end
 end

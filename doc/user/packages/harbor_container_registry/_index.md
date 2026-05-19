@@ -26,7 +26,7 @@ You can integrate the [Harbor container registry](../../project/integrations/har
 You can view the Harbor registry for a project or group.
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Deploy** > **Harbor Registry**.
+1. In the left sidebar, select **Deploy** > **Harbor Registry**.
 
 You can search, sort, and filter images on this page. You can share a filtered view by copying the URL from your browser.
 
@@ -71,7 +71,7 @@ To build and push to the Harbor registry:
 To view these commands:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Deploy** > **Harbor Registry**.
+1. In the left sidebar, select **Deploy** > **Harbor Registry**.
 1. Select **CLI Commands**.
 
 ## Disable the Harbor registry for a project
@@ -79,7 +79,7 @@ To view these commands:
 To remove the Harbor registry for a project:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **Harbor** under **Active integrations**.
 1. Under **Enable integration**, clear the **Active** checkbox.
 1. Select **Save changes**.

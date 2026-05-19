@@ -357,7 +357,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
       model.with_lock_retries(env: env, logger: in_memory_logger) {}
 
       buffer.rewind
-      expect(buffer.read).to include("\"class\":\"#{model.class}\"")
+      expect(buffer.read).to include("\"class_name\":\"#{model.class}\"")
     end
 
     where(raise_on_exhaustion: [true, false])

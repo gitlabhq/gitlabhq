@@ -9,7 +9,7 @@ import {
   convertFromGraphQLIds,
   convertNodeIdsFromGraphQLIds,
   getNodesOrDefault,
-  toggleQueryPollingByVisibility,
+  setupQueryPollingByVisibility,
   etagQueryHeaders,
   calculateGraphQLPaginationQueryParams,
 } from '~/graphql_shared/utils';
@@ -146,7 +146,7 @@ describe('getNodesOrDefault', () => {
   });
 });
 
-describe('toggleQueryPollingByVisibility', () => {
+describe('setupQueryPollingByVisibility', () => {
   let query;
   let changeFn;
   let interval;
@@ -168,19 +168,19 @@ describe('toggleQueryPollingByVisibility', () => {
   it('starts polling not hidden', () => {
     hidden.mockReturnValue(false);
 
-    toggleQueryPollingByVisibility(query, interval);
+    setupQueryPollingByVisibility(query, interval);
     changeFn();
     expect(query.startPolling).toHaveBeenCalledWith(interval);
   });
 
   it('stops polling when hidden', () => {
-    toggleQueryPollingByVisibility(query, interval);
+    setupQueryPollingByVisibility(query, interval);
     changeFn();
     expect(query.stopPolling).toHaveBeenCalled();
   });
 
   it('returns a cleanup function that unbinds the visibility listener', () => {
-    const cleanup = toggleQueryPollingByVisibility(query, interval);
+    const cleanup = setupQueryPollingByVisibility(query, interval);
     cleanup();
     expect(Visibility.unbind).toHaveBeenCalledWith(VISIBILITY_LISTENER_ID);
   });

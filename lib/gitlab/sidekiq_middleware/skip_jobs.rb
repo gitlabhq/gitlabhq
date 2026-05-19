@@ -128,7 +128,7 @@ module Gitlab
         job['deferred_count'] ||= 0
         job['deferred_count'] += 1
 
-        worker.class.deferred(job['deferred_count'], @deferred_by).perform_in(@delay, *job['args'])
+        worker.class.deferred(job['deferred_count'], @deferred_by).set(jid: job['jid']).perform_in(@delay, *job['args'])
         @metrics.fetch(COUNTER).increment({
           worker: worker.class.name,
           action: "deferred",

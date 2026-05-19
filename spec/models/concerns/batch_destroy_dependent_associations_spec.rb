@@ -2,18 +2,17 @@
 
 require 'spec_helper'
 
+class TestProject < ActiveRecord::Base
+  self.table_name = 'projects'
+
+  has_many :builds
+  has_many :notification_settings, as: :source, dependent: :delete_all
+  has_many :pages_domains
+  has_many :todos, dependent: :destroy
+
+  include BatchDestroyDependentAssociations
+end
 RSpec.describe BatchDestroyDependentAssociations do
-  class TestProject < ActiveRecord::Base
-    self.table_name = 'projects'
-
-    has_many :builds
-    has_many :notification_settings, as: :source, dependent: :delete_all
-    has_many :pages_domains
-    has_many :todos, dependent: :destroy
-
-    include BatchDestroyDependentAssociations
-  end
-
   describe '#dependent_associations_to_destroy' do
     let_it_be(:project) { TestProject.new }
 

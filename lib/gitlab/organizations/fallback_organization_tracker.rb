@@ -33,6 +33,8 @@ module Gitlab
             label: Gitlab::ApplicationContext.current_context_attribute(:caller_id)
           }
         )
+
+        disable
       end
 
       class << self

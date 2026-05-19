@@ -17,8 +17,6 @@ RSpec.describe 'User creates snippet', :with_current_organization, :js, feature_
 
   before do
     sign_in(user)
-
-    visit new_snippet_path
   end
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :new_snippet_path, :snippets
@@ -28,6 +26,8 @@ RSpec.describe 'User creates snippet', :with_current_organization, :js, feature_
   end
 
   it 'authenticated user creates a snippet' do
+    visit new_snippet_path
+
     fill_form
 
     click_button('Create snippet')
@@ -42,6 +42,8 @@ RSpec.describe 'User creates snippet', :with_current_organization, :js, feature_
   end
 
   it 'uploads a file when dragging into textarea' do
+    visit new_snippet_path
+
     fill_form
     dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
@@ -61,6 +63,8 @@ RSpec.describe 'User creates snippet', :with_current_organization, :js, feature_
     let(:error) { 'Error creating the snippet' }
 
     before do
+      visit new_snippet_path
+
       allow_next_instance_of(Snippets::CreateService) do |instance|
         allow(instance).to receive(:create_commit).and_raise(StandardError, error)
       end
@@ -105,6 +109,7 @@ RSpec.describe 'User creates snippet', :with_current_organization, :js, feature_
     let(:md_description) { references }
 
     subject do
+      visit new_snippet_path
       fill_form
       click_button('Create snippet')
 
@@ -113,6 +118,8 @@ RSpec.describe 'User creates snippet', :with_current_organization, :js, feature_
   end
 
   it 'shows validation errors' do
+    visit new_snippet_path
+
     title_validation_message = _("This field is required.")
     files_validation_message = _("Snippets can't contain empty files. Ensure all files have content, or delete them.")
 
@@ -131,6 +138,8 @@ RSpec.describe 'User creates snippet', :with_current_organization, :js, feature_
   end
 
   it 'previews a snippet with file' do
+    visit new_snippet_path
+
     # Click placeholder first to expand full description field
     snippet_fill_in_description('My Snippet')
     dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')

@@ -34,6 +34,6 @@ Prerequisites:
 To configure **What's new**:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Preferences**.
+1. In the left sidebar, select **Settings** > **Preferences**.
 1. Expand **What's new**, and choose the required option.
 1. Select **Save changes**.

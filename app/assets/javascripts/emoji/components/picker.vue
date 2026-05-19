@@ -69,6 +69,7 @@ export default {
       default: null,
     },
   },
+  emits: ['click', 'shown', 'hidden'],
   data() {
     return {
       isVisible: false,

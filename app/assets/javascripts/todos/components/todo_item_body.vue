@@ -20,6 +20,7 @@ import {
   TODO_ACTION_TYPE_SSH_KEY_EXPIRED,
   TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON,
   DUO_ACCESS_GRANTED_ACTIONS,
+  TODO_ACTION_TYPE_DUO_WORKFLOW_INPUT_REQUIRED,
 } from '../constants';
 import TodoItemTitle from './todo_item_title.vue';
 import TodoItemTitleHiddenBySaml from './todo_item_title_hidden_by_saml.vue';
@@ -59,6 +60,7 @@ export default {
         this.todo.action !== TODO_ACTION_TYPE_UNMERGEABLE &&
         this.todo.action !== TODO_ACTION_TYPE_SSH_KEY_EXPIRED &&
         this.todo.action !== TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON &&
+        this.todo.action !== TODO_ACTION_TYPE_DUO_WORKFLOW_INPUT_REQUIRED &&
         !DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action)
       );
     },
@@ -165,6 +167,13 @@ export default {
 
       if (DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action)) {
         name = this.todo.body;
+      }
+
+      if (this.todo.action === TODO_ACTION_TYPE_DUO_WORKFLOW_INPUT_REQUIRED) {
+        name = sprintf(s__('Todos|%{who}: Approval needed to proceed with next step in %{where}'), {
+          where: this.todo.project.nameWithNamespace,
+          who: this.todo.targetEntity.workflowDefinition,
+        });
       }
 
       if (!name) {

@@ -33,7 +33,7 @@ module Gitlab
           @next_cursor = nil
         end
 
-        def execute
+        def execute(gitaly_pagination: false) # rubocop:disable Lint/UnusedMethodArgument -- required by GitalyKeysetPager interface
           refs = fetch_refs
           branches = build_branches(refs)
           @next_cursor = refs_finder.next_cursor
@@ -59,7 +59,7 @@ module Gitlab
           ref_finder_params = {
             ref_type: :branches,
             sort_by: normalized_sort,
-            per_page: per_page,
+            per_page: effective_per_page,
             page_token: page_token,
             ignore_case: true
           }
@@ -101,7 +101,7 @@ module Gitlab
           return [] if refs.empty?
 
           if include_commits
-            commits = Commit.batch_by_oid(repository, refs.map(&:target).uniq).index_by(&:id)
+            commits = Commit.batch_by_oid(repository, target_page_refs(refs).map(&:target).uniq).index_by(&:id)
             refs.map { |ref| Branch.from_ref(repository, ref, commit: commits[ref.target]) }
           else
             refs.map { |ref| Branch.from_ref(repository, ref) }
@@ -144,6 +144,37 @@ module Gitlab
 
         def page_token
           params[:page_token]
+        end
+
+        # Page-number offset pagination support.
+        # These methods are a workaround to support ?page=N offset pagination
+        # via GitalyKeysetPager. When page > 1 and page_token is absent,
+        # we fetch per_page * page refs from Gitaly so that Kaminari can
+        # slice to the correct page, and only hydrate commits for the
+        # target page's refs to avoid unnecessary Gitaly calls.
+
+        def page
+          params[:page]
+        end
+
+        def effective_per_page
+          return per_page if page_token.present? || page.blank? || page.to_i <= 1
+
+          per_page * page.to_i
+        end
+
+        def offset_page?
+          page_token.blank? && page.present? && page.to_i > 1
+        end
+
+        def offset
+          (page.to_i - 1) * per_page
+        end
+
+        def target_page_refs(refs)
+          return refs unless offset_page?
+
+          refs[offset, per_page] || []
         end
       end
     end

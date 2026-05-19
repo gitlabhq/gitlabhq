@@ -64,7 +64,7 @@ export default {
       default: false,
     },
   },
-  emits: ['appear', 'disappear'],
+  emits: ['appear', 'disappear', 'highlighted'],
   data() {
     return {
       number: undefined,
@@ -88,6 +88,8 @@ export default {
   watch: {
     shouldHighlight: {
       handler(newVal) {
+        // One-shot blame-recompute signal, intentionally outside the blobs guard below.
+        if (newVal) this.$nextTick(() => this.$emit('highlighted'));
         if (!this.blobs?.length) return;
 
         if (newVal) {

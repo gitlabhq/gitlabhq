@@ -117,7 +117,7 @@ RSpec.describe ResourceAccessTokens::RevokeService, feature_category: :system_ac
     context 'when resource is a project' do
       let_it_be(:resource) { create(:project, :private) }
 
-      before do
+      before_all do
         resource.add_maintainer(user)
         resource.add_developer(user_non_priviledged)
         resource.add_maintainer(resource_bot)
@@ -131,7 +131,7 @@ RSpec.describe ResourceAccessTokens::RevokeService, feature_category: :system_ac
     context 'when resource is a group' do
       let_it_be(:resource) { create(:group, :private) }
 
-      before do
+      before_all do
         resource.add_owner(user)
         resource.add_maintainer(user_non_priviledged)
         resource.add_maintainer(resource_bot)

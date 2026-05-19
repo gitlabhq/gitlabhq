@@ -69,7 +69,7 @@ What is not covered:
 On the **secondary** site:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites** to see its status.
+1. In the left sidebar, select **Geo** > **Sites** to see its status.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
    objects aren't replicated (shown in gray), consider giving the site more

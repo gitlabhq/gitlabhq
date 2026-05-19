@@ -7,6 +7,8 @@ module Mutations
         graphql_name 'BulkDestroyJobArtifacts'
 
         authorize :delete_job_artifact
+        authorize_granular_token permissions: :delete_job_artifact, boundary_argument: :project_id,
+          boundary_type: :project
 
         ArtifactId = ::Types::GlobalIDType[::Ci::JobArtifact]
         ProjectId = ::Types::GlobalIDType[::Project]

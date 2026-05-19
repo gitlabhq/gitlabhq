@@ -7,6 +7,7 @@ module Mutations
         graphql_name 'PipelineDestroy'
 
         authorize :destroy_pipeline
+        authorize_granular_token permissions: :delete_pipeline, boundary_argument: :id, boundary_type: :project
 
         def resolve(id:)
           pipeline = authorized_find!(id: id)

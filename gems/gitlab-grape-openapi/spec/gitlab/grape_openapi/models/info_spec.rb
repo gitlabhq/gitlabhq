@@ -9,13 +9,19 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Info do
       expect(info.description).to be_nil
       expect(info.terms_of_service).to be_nil
       expect(info.version).to be_nil
+      expect(info.license).to be_nil
     end
 
     it 'initializes with all options' do
       options = {
         title: 'My API',
         description: 'A detailed description',
-        terms_of_service: 'https://example.com/terms'
+        terms_of_service: 'https://example.com/terms',
+        license: {
+          name: 'Name',
+          url: 'https://example.com/license',
+          'x-gitlab-description': 'Description for license'
+        }
       }
 
       info = described_class.new(**options)
@@ -23,6 +29,9 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Info do
       expect(info.title).to eq('My API')
       expect(info.description).to eq('A detailed description')
       expect(info.terms_of_service).to eq('https://example.com/terms')
+      expect(info.license).to eq({ name: 'Name',
+      url: 'https://example.com/license',
+      'x-gitlab-description': 'Description for license' })
     end
 
     it 'initializes with partial options' do
@@ -31,6 +40,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Info do
       expect(info.title).to eq('Test API')
       expect(info.description).to eq('Test description')
       expect(info.terms_of_service).to be_nil
+      expect(info.license).to be_nil
     end
 
     it 'ignores unknown options' do
@@ -63,6 +73,13 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Info do
       info.version = '1.0.0'
       expect(info.version).to eq('1.0.0')
     end
+
+    it 'allows setting and getting license' do
+      info.license = { name: 'Name', url: 'https://example.com/license', 'x-gitlab-description': 'Description for license' }
+      expect(info.license).to eq({ name: 'Name',
+      url: 'https://example.com/license',
+      'x-gitlab-description': 'Description for license' })
+    end
   end
 
   describe '#to_h' do
@@ -78,7 +95,12 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Info do
       info = described_class.new(
         title: 'My API',
         description: 'API Description',
-        terms_of_service: 'https://example.com/terms'
+        terms_of_service: 'https://example.com/terms',
+        license: {
+          name: 'Name',
+          url: 'https://example.com/license',
+          'x-gitlab-description': 'Description for license'
+        }
       )
       info.version = '2.0.0'
 
@@ -88,7 +110,12 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Info do
         title: 'My API',
         description: 'API Description',
         termsOfService: 'https://example.com/terms',
-        version: '2.0.0'
+        version: '2.0.0',
+        license: {
+          name: 'Name',
+          url: 'https://example.com/license',
+          'x-gitlab-description': 'Description for license'
+        }
       })
     end
 
@@ -104,6 +131,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Info do
       expect(result).not_to have_key(:summary)
       expect(result).not_to have_key(:termsOfService)
       expect(result).not_to have_key(:version)
+      expect(result).not_to have_key(:license)
     end
 
     it 'converts terms_of_service to camelCase key' do

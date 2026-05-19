@@ -1,12 +1,12 @@
 <script>
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 
 import {
   placeholderForType,
   integrationTriggerEventTitles,
 } from 'any_else_ce/integrations/constants';
+import { useIntegrationForm } from '../store';
 
 export default {
   name: 'TriggerField',
@@ -32,7 +32,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isInheriting']),
+    ...mapState(useIntegrationForm, ['isInheriting']),
     name() {
       return `service[${this.event.name}]`;
     },

@@ -28,8 +28,8 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
       it { expect(subject.expandset).to eq([]) }
       it { expect(subject.execution_deadline).to eq(0) }
       it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
-      it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
-      it { expect(subject.variables_hash).to include('a' => 'b') }
+      it { expect(subject.variables_hash).to be_instance_of(Gitlab::Ci::Variables::Collection::LazyHash) }
+      it { expect(subject.variables_hash['a']).to have_attributes(key: 'a', value: 'b') }
       it { expect(subject.pipeline_config).to eq(pipeline_config) }
       it { expect(subject.component_data).to eq({}) }
     end
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
       it { expect(subject.expandset).to eq([]) }
       it { expect(subject.execution_deadline).to eq(0) }
       it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
-      it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
+      it { expect(subject.variables_hash).to be_instance_of(Gitlab::Ci::Variables::Collection::LazyHash) }
       it { expect(subject.pipeline_config).to be_nil }
       it { expect(subject.component_data).to eq({}) }
     end
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
     end
 
     context 'with nil as a value' do
-      let(:timeout_seconds) {}
+      let(:timeout_seconds) { nil }
 
       it 'updates execution_deadline' do
         expect { subject.set_deadline(timeout_seconds) }
@@ -210,7 +210,31 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
   end
 
   describe '#sentry_payload' do
-    it { expect(subject.sentry_payload).to match(a_hash_including(:project, :user)) }
+    it { expect(subject.sentry_payload).to match(a_hash_including(:project, :user, :include_type_counts)) }
+
+    describe 'include_type_counts' do
+      subject(:include_type_counts) { context.sentry_payload[:include_type_counts] }
+
+      let(:context) { described_class.new(project: project, sha: '12345') }
+
+      context 'when expandset is empty' do
+        it { is_expected.to eq({}) }
+      end
+
+      context 'when expandset contains files of various types' do
+        let(:local_file) { instance_double(Gitlab::Ci::Config::External::File::Local, include_type: :local) }
+        let(:project_file) { instance_double(Gitlab::Ci::Config::External::File::Project, include_type: :file) }
+        let(:component_file) { instance_double(Gitlab::Ci::Config::External::File::Component, include_type: :component) }
+
+        before do
+          context.expandset.push(local_file, project_file, project_file, component_file)
+        end
+
+        it 'returns a count per include type' do
+          expect(include_type_counts).to eq({ local: 1, file: 2, component: 1 })
+        end
+      end
+    end
   end
 
   describe '#internal_include?' do

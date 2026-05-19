@@ -28,7 +28,9 @@ export const initYourWorkGroups = () => {
     dataset: { appData },
   } = el;
 
-  const { initialSort, endpoint, basePath } = convertObjectPropsToCamelCase(JSON.parse(appData));
+  const { initialSort, endpoint, basePath, canCreateGroup } = convertObjectPropsToCamelCase(
+    JSON.parse(appData),
+  );
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(resolvers(endpoint)),
@@ -40,7 +42,12 @@ export const initYourWorkGroups = () => {
     apolloProvider,
     name: 'YourWorkGroupsRoot',
     render(createElement) {
-      return createElement(YourWorkGroupsApp, { props: { initialSort } });
+      return createElement(YourWorkGroupsApp, {
+        props: {
+          initialSort,
+          canCreateGroup,
+        },
+      });
     },
   });
 };

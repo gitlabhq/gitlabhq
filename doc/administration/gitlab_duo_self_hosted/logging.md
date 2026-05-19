@@ -28,21 +28,38 @@ title: Logs for self-hosted models
 Monitor your self-hosted model performance and debug issues more effectively with detailed
 logging.
 
-## Turn on logging for GitLab Duo usage data
+## Turn on data collection for GitLab Duo
 
 Prerequisites:
 
 - You must be an administrator.
 
-Turn on AI logs to collect data about AI-related activities and requests.
-This data is stored in your GitLab installation and is not shared with GitLab.
+Data collection for GitLab Duo differs based on your configuration of the AI Gateway.
 
-To turn on AI logs:
+### On GitLab Self-Managed with a self-hosted AI Gateway
+
+When you enable data collection, verbose AI logs (prompts and responses) are stored
+locally in the `llm.log` on your GitLab instance and AI Gateway. Data is not shared with GitLab.
+
+To turn on data collection:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Enable AI logs**, select **Capture detailed information about AI-related activities and requests**.
+1. Under **Data collection**, select **Collect usage data**.
+1. Select **Save changes**.
+
+### GitLab Self-Managed with a GitLab-managed AI Gateway
+
+Enabling **Collect usage data** shares usage data with GitLab. Expanded logging in the
+GitLab-managed AI Gateway is not enabled in this scenario, to protect sensitive data.
+
+To turn on data collection:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Data collection**, select **Collect usage data**.
 1. Select **Save changes**.
 
 ## Logs in your GitLab installation
@@ -102,11 +119,18 @@ Logging in the `application.json`, `production_json.log`, and `production.log` f
 
 ### Logging control
 
-To control a subset of logs, turn LLM logs on and off through the GitLab Duo settings page. Turning LLM logs off disables logging for specific operations.
+To control a subset of logs, turn data collection on and off through the GitLab Duo settings page.
+Turning data collection off disables logging for specific operations.
 
 ### `llm.log` file
 
-When AI Logs are enabled, code generation and Chat events that occur through your GitLab Self-Managed instance are captured in the [`llm.log` file](../logs/_index.md#llmlog). The log file does not capture anything when it is not enabled. Code completion logs are captured directly in the AI Gateway. These logs are not transmitted to GitLab, and are only visible on your GitLab Self-Managed infrastructure.
+In a self-hosted AI Gateway configuration, when data collection is turned on, code generation and GitLab Duo Chat
+events that occur through your GitLab Self-Managed instance are captured in the
+[`llm.log` file](../logs/_index.md#llmlog). The log file does not capture anything when it is not
+turned on.
+
+Code completion logs are captured in the AI Gateway. These logs are not
+transmitted to GitLab. They are visible only on your GitLab Self-Managed infrastructure.
 
 - [Rotate, manage, export, and visualize the logs in `llm.log`](../logs/_index.md).
 - [View the log file location (for example, so you can delete logs)](../logs/_index.md#llm-input-and-output-logging).
@@ -304,7 +328,7 @@ By default, the log does not contain LLM prompt input and response output to sup
 In this configuration, both GitLab and the AI Gateway are hosted by the customer.
 
 - **Logging Behavior**: Full logging is enabled, and all prompts, inputs, and outputs are logged to `llm.log` on the instance.
-- When AI logs are enabled, extra debugging information is logged, including:
+- When **Collect usage data** is enabled, extra debugging information is logged, including:
   - Preprocessed prompts.
   - Final prompts.
   - Additional context.
@@ -313,42 +337,31 @@ In this configuration, both GitLab and the AI Gateway are hosted by the customer
   - Logging of sensitive information can be enabled or disabled at the customer's discretion.
 
   > [!note]
-  > When an AI feature uses a GitLab AI third-party vendor model, no detailed logs are generated in the GitLab-hosted AI Gateway, even when AI logs are enabled. This prevents unintended leaks of sensitive information.
+  > When an AI feature uses a GitLab-managed model, even if data collection is
+  > turned on, detailed logs are not generated in the GitLab-managed AI Gateway. This prevents
+  > unintended leaks of sensitive information.
 
 ### GitLab Self-Managed and GitLab-managed AI Gateway (cloud-connected)
 
 In this scenario, the customer hosts GitLab but relies on the GitLab-managed AI Gateway for AI processing.
 
 - Logging behavior: For information about how GitLab handles AI prompt and response data when using the cloud-connected AI Gateway, see [GitLab Duo data usage](../../user/gitlab_duo/data_usage.md#data-retention).
-- Expanded logging: Even if AI logs are enabled, no detailed logs are generated in the GitLab-managed AI Gateway to avoid unintended leaks of sensitive information.
+- Expanded logging: Even if **Collect usage data** is enabled, no detailed logs are generated in the GitLab-managed AI Gateway to avoid unintended leaks of sensitive information.
   - Logging remains minimal in this setup, and the expanded logging features are disabled by default.
 - Privacy: This configuration is designed to ensure that sensitive data is not logged in a cloud environment.
 
-## AI logs
-
-The AI logs control whether additional debugging information, including prompts and inputs, is logged. This configuration is essential for monitoring and debugging AI-related activities.
-
-### Behavior by Deployment Setup
-
-- **GitLab Self-Managed and self-hosted AI Gateway**:
-  - The setting enables detailed logging to `llm.log` on both the self-hosted instance and the AI Gateway, capturing inputs and outputs for AI models.
-  - Logging remains disabled for the cloud-connected AI Gateway to protect sensitive data, even when a feature uses a GitLab third-party vendor model.
-- **GitLab Self-Managed and GitLab-managed AI Gateway**:
-  - The setting enables detailed logging to `llm.log` on your GitLab Self-Managed instance.
-  - The setting does **not** activate expanded logging for the GitLab-managed AI Gateway. Logging remains disabled for the cloud-connected AI Gateway to protect sensitive data.
-
-### Logging in cloud-connected AI Gateways
+## Logging in cloud-connected AI Gateways
 
 For information about how GitLab handles AI prompt and response data when using a cloud-connected AI Gateway, see [GitLab Duo data usage](../../user/gitlab_duo/data_usage.md#data-retention).
 
-### Cross-referencing logs between the AI Gateway and GitLab
+## Cross-referencing logs between the AI Gateway and GitLab
 
 The property `correlation_id` is assigned to every request and is carried across different components that respond to a
 request. For more information, see the [documentation on finding logs with a correlation ID](../logs/tracing_correlation_id.md).
 
 The Correlation ID can be found in your AI Gateway and GitLab logs. However, it is not present in your model provider logs.
 
-#### Related topics
+### Related topics
 
 - [Parsing GitLab logs with jq](../logs/log_parsing.md)
 - [Searching your logs for the correlation ID](../logs/tracing_correlation_id.md#searching-your-logs-for-the-correlation-id)

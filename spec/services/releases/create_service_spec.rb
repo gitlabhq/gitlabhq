@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Releases::CreateService, feature_category: :continuous_integration do
   let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:tag_name) { project.repository.tag_names.first }
   let(:tag_message) { nil }
   let(:tag_sha) { project.repository.find_tag(tag_name).dereferenced_target.sha }

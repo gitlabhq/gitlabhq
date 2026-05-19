@@ -7,12 +7,14 @@ import {
   renderArchiveSuccessToast,
   renderDeleteSuccessToast,
   renderRestoreSuccessToast,
+  renderTransferSuccessToast,
   renderUnarchiveSuccessToast,
 } from '~/vue_shared/components/projects_list/utils';
 import { archiveProject, deleteProject, restoreProject, unarchiveProject } from '~/rest_api';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
+import TransferModal from '~/projects/components/transfer_modal.vue';
 import ProjectListItemLeaveModal from '~/vue_shared/components/projects_list/projects_list_item_leave_modal.vue';
 import {
   ACTION_ARCHIVE,
@@ -23,6 +25,7 @@ import {
   ACTION_LEAVE,
   ACTION_REQUEST_ACCESS,
   ACTION_RESTORE,
+  ACTION_TRANSFER,
   ACTION_UNARCHIVE,
   ACTION_WITHDRAW_ACCESS_REQUEST,
 } from '~/vue_shared/components/list_actions/constants';
@@ -47,6 +50,7 @@ jest.mock('~/vue_shared/components/projects_list/utils', () => ({
   renderArchiveSuccessToast: jest.fn(),
   renderUnarchiveSuccessToast: jest.fn(),
   renderDeleteSuccessToast: jest.fn(),
+  renderTransferSuccessToast: jest.fn(),
   deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
 }));
 jest.mock('~/alert');
@@ -64,7 +68,7 @@ describe('ProjectListItemActions', () => {
   const editPath = '/foo/bar/edit';
   const projectWithActions = {
     ...project,
-    availableActions: [ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE],
+    availableActions: [ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE, ACTION_TRANSFER],
     editPath,
   };
 
@@ -85,6 +89,7 @@ describe('ProjectListItemActions', () => {
   const findListActions = () => wrapper.findComponent(ListActions);
   const findListActionsLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
+  const findTransferModal = () => wrapper.findComponent(TransferModal);
   const findLeaveModal = () => wrapper.findComponent(ProjectListItemLeaveModal);
   const fireAction = async (action) => {
     findListActions().props('actions')[action].action();
@@ -123,8 +128,17 @@ describe('ProjectListItemActions', () => {
           [ACTION_LEAVE]: {
             action: expect.any(Function),
           },
+          [ACTION_TRANSFER]: {
+            action: expect.any(Function),
+          },
         },
-        availableActions: [ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE],
+        availableActions: [
+          ACTION_EDIT,
+          ACTION_RESTORE,
+          ACTION_LEAVE,
+          ACTION_DELETE,
+          ACTION_TRANSFER,
+        ],
       });
     });
   });
@@ -544,6 +558,49 @@ describe('ProjectListItemActions', () => {
           rel: 'nofollow',
         },
       });
+    });
+  });
+
+  describe('when transfer action is available', () => {
+    describe('when transfer action is fired', () => {
+      beforeEach(async () => {
+        createComponent();
+        await fireAction(ACTION_TRANSFER);
+      });
+
+      it('shows transfer modal', () => {
+        expect(findTransferModal().props('visible')).toBe(true);
+      });
+
+      describe('when transfer modal emits success event', () => {
+        it('emits action event and shows success toast', () => {
+          findTransferModal().vm.$emit('success');
+
+          expect(wrapper.emitted('action')).toEqual([[ACTION_TRANSFER]]);
+          expect(renderTransferSuccessToast).toHaveBeenCalledWith(projectWithActions);
+        });
+      });
+    });
+  });
+
+  describe('when transfer action is not available', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          project: {
+            ...projectWithActions,
+            availableActions: [ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE],
+          },
+        },
+      });
+    });
+
+    it('does not display transfer action', () => {
+      expect(findListActions().props('availableActions')).not.toContain(ACTION_TRANSFER);
+    });
+
+    it('does not display transfer modal', () => {
+      expect(findTransferModal().exists()).toBe(false);
     });
   });
 });

@@ -150,7 +150,7 @@ Prerequisites:
 - Administrator access.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Exact code search**.
 1. Select the **Pause indexing** checkbox.
 1. Select **Save changes**.
@@ -176,7 +176,7 @@ Prerequisites:
 - Administrator access.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Exact code search**.
 1. Clear the **Enable searching** checkbox.
 1. Select **Save changes**.
@@ -184,7 +184,7 @@ Prerequisites:
 After you stabilize the node, re-enable searching:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Exact code search**.
 1. Select the **Enable searching** checkbox.
 1. Select **Save changes**.
@@ -203,7 +203,7 @@ Prerequisites:
 To reduce peak indexer memory, lower the number of parallel processes per indexing task:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Exact code search**.
 1. Set **Number of parallel processes per indexing task** to `1`.
 1. Select **Save changes**.
@@ -217,7 +217,7 @@ Prerequisites:
 To reduce how many indexing tasks run at the same time, lower the **Indexing CPU to tasks multiplier** value:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Exact code search**.
 1. Lower the **Indexing CPU to tasks multiplier** value (for example, to `0.5`).
 1. Select **Save changes**.
@@ -236,7 +236,7 @@ Prerequisites:
 To reduce shard accumulation, increase the force reindexing probability:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Exact code search**.
 1. Increase the **Probability of random force reindexing (percentage)** value.
    The default is `0.25` (0.25%). For example, set it to `1` to force reindex

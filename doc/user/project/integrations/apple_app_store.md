@@ -22,9 +22,9 @@ title: Apple App Store Connect
 This feature is part of [Mobile DevOps](../../../ci/mobile_devops/_index.md) developed by GitLab.
 The feature is still in development, but you can:
 
-- [Request a feature](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=feature_request).
-- [Report a bug](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=report_bug).
-- [Share feedback](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=general_feedback).
+- [Request a feature](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?description_template=feature_request).
+- [Report a bug](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?description_template=report_bug).
+- [Share feedback](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?description_template=general_feedback).
 
 Use the Apple App Store Connect integration to configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com).
 With this integration, you can build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS.
@@ -41,7 +41,7 @@ Prerequisites:
 To enable the Apple App Store Connect integration in GitLab:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **Apple App Store Connect**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide the Apple App Store Connect configuration information:

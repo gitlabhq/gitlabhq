@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { observable } from '~/lib/utils/observable';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import Translate from '~/vue_shared/translate';
@@ -39,7 +40,7 @@ export default (id) => {
     projectName,
   } = el.dataset;
 
-  const breadCrumbState = Vue.observable({
+  const breadCrumbState = observable('harbor_registry_breadcrumb', {
     name: '',
     href: '',
     updateName(value) {

@@ -31,8 +31,7 @@ describe('ChangeUrl', () => {
       name: 'GitLab',
       path: 'foo-bar',
     },
-    organizationsPath: '/-/organizations',
-    rootUrl: 'http://127.0.0.1:3000/',
+    organizationsUrl: 'http://127.0.0.1:3000/o/',
   };
 
   const successfulResponseHandler = jest.fn().mockResolvedValue(organizationUpdateResponse);
@@ -120,7 +119,7 @@ describe('ChangeUrl', () => {
           },
         });
         expect(visitUrlWithAlerts).toHaveBeenCalledWith(
-          `${organizationUpdateResponse.data.organizationUpdate.organization.webUrl}/settings/general`,
+          `${organizationUpdateResponse.data.organizationUpdate.organization.webUrl}/-/settings/general`,
           [
             {
               id: 'organization-url-successfully-changed',

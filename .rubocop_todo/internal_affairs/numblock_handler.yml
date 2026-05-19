@@ -1,9 +1,0 @@
----
-InternalAffairs/NumblockHandler:
-  Exclude:
-    - 'rubocop/cop/gitlab/policy_rule_boolean.rb'
-    - 'rubocop/cop/gitlab/strong_memoize_attr.rb'
-    - 'rubocop/cop/migration/background_migration_missing_active_concern.rb'
-    - 'rubocop/cop/migration/with_lock_retries_disallowed_method.rb'
-    - 'rubocop/cop/qa/ambiguous_page_object_name.rb'
-    - 'rubocop/cop/rspec/feature_category.rb'

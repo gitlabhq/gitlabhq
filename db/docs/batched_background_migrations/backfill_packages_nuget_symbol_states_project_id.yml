@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillPackagesNugetSymbolStatesProjectId
-description: Backfills sharding key `packages_nuget_symbol_states.project_id` from `packages_nuget_symbols`.
+description: Backfills sharding key `packages_nuget_symbol_states.project_id` from
+  `packages_nuget_symbols`.
 feature_category: geo_replication
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226688
 milestone: '18.11'
 queued_migration_version: 20260316120001
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20260428232406'

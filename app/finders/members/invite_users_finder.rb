@@ -25,7 +25,17 @@ module Members
     end
 
     def scope_for_resource(users)
-      users
+      ::Members::ServiceAccounts::EligibilityChecker.new(**checker_args).filter_users(users)
+    end
+
+    private
+
+    def checker_args
+      case resource
+      when Project then { target_project: resource }
+      when Group then { target_group: resource }
+      else {}
+      end
     end
   end
 end

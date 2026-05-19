@@ -671,7 +671,7 @@ func TestGetChangedPathsProxiedToGitalySuccessfully(t *testing.T) {
 
 	gitalyAddress := unixPrefix + socketPath
 	msg := serializedMessage("FindChangedPathsRequest", &gitalypb.FindChangedPathsRequest{
-		Repository: buildPbRepo(repoRelativePath),
+		Repository: buildPbRepo(),
 	})
 	jsonParams := buildGitalyRPCParams(gitalyAddress, msg)
 
@@ -694,7 +694,7 @@ func TestGetChangedPathsProxiedToGitalyInterruptedStream(t *testing.T) {
 
 	gitalyAddress := unixPrefix + socketPath
 	msg := serializedMessage("FindChangedPathsRequest", &gitalypb.FindChangedPathsRequest{
-		Repository: buildPbRepo(repoRelativePath),
+		Repository: buildPbRepo(),
 	})
 	jsonParams := buildGitalyRPCParams(gitalyAddress, msg)
 
@@ -719,7 +719,7 @@ func TestGetListBlobsProxiedToGitalySuccessfully(t *testing.T) {
 
 	gitalyAddress := unixPrefix + socketPath
 	msg := serializedMessage("ListBlobsRequest", &gitalypb.ListBlobsRequest{
-		Repository: buildPbRepo(repoRelativePath),
+		Repository: buildPbRepo(),
 		Revisions:  []string{oid},
 		BytesLimit: 1048576,
 		WithPaths:  true,
@@ -744,7 +744,7 @@ func TestGetListBlobsProxiedToGitalyInterruptedStream(t *testing.T) {
 
 	gitalyAddress := unixPrefix + socketPath
 	msg := serializedMessage("ListBlobsRequest", &gitalypb.ListBlobsRequest{
-		Repository: buildPbRepo(repoRelativePath),
+		Repository: buildPbRepo(),
 		Revisions:  []string{oid},
 		BytesLimit: 1048576,
 		WithPaths:  true,
@@ -820,7 +820,7 @@ func TestGetSnapshotProxiedToGitalySuccessfully(t *testing.T) {
 	expectedBody := testhelper.GitalyGetSnapshotResponseMock
 	archiveLength := len(expectedBody)
 
-	params := buildGetSnapshotParams(gitalyAddress, buildPbRepo("foo/bar.git"))
+	params := buildGetSnapshotParams(gitalyAddress, buildPbRepo())
 	resp, body, err := doSendDataRequest(t, "/api/v4/projects/:id/snapshot", "git-snapshot", params)
 	resp.Body.Close()
 	require.NoError(t, err)
@@ -841,7 +841,7 @@ func TestGetSnapshotProxiedToGitalyInterruptedStream(t *testing.T) {
 
 	gitalyAddress := unixPrefix + socketPath
 
-	params := buildGetSnapshotParams(gitalyAddress, buildPbRepo("foo/bar.git"))
+	params := buildGetSnapshotParams(gitalyAddress, buildPbRepo())
 	resp, _, err := doSendDataRequest(t, "/api/v4/projects/:id/snapshot", "git-snapshot", params)
 	require.NoError(t, err)
 
@@ -891,10 +891,10 @@ func buildGitalyRPCParams(gitalyAddress string, rpcArgs ...rpcArg) string {
 	return string(b)
 }
 
-func buildPbRepo(relativePath string) *gitalypb.Repository {
+func buildPbRepo() *gitalypb.Repository {
 	return &gitalypb.Repository{
 		StorageName:  repoStorage,
-		RelativePath: relativePath,
+		RelativePath: repoRelativePath,
 	}
 }
 

@@ -1,0 +1,9 @@
+---
+name: read_counts
+description: Grants the ability to read counts
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_user_counts

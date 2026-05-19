@@ -13,4 +13,3 @@ table_size: large
 gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
-organization_transfer_support: todo

@@ -7,7 +7,7 @@ title: Foundational agents
 
 {{< details >}}
 
-- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
+- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -90,7 +90,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **GitLab Duo**.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Foundational agents**, for **Default availability**, select one of the following:
    - **On**

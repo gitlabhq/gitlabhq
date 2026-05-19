@@ -115,40 +115,35 @@ module Gitlab
             evidence = create_evidence(data['evidence'])
             signatures = create_signatures(tracking_data(data))
 
-            if @signatures_enabled && !signatures.empty?
-              # NOT the signature_sha - the compare key is hashed
-              # to create the project_fingerprint
-              highest_priority_signature = signatures.max_by(&:priority)
-              uuid = calculate_uuid_v5(identifiers.first, highest_priority_signature.signature_hex)
-            else
-              uuid = calculate_uuid_v5(identifiers.first, location&.fingerprint)
-            end
-
-            report.add_finding(
-              ::Gitlab::Ci::Reports::Security::Finding.new(
-                uuid: uuid,
-                report_type: report.type,
-                name: finding_name(data, identifiers, location),
-                location: location,
-                evidence: evidence,
-                severity: ::Enums::Vulnerability.parse_severity_level(data['severity']),
-                confidence: ::Enums::Vulnerability.parse_confidence_level(data['confidence']),
-                scanner: create_scanner(top_level_scanner_data || data['scanner']),
-                scan: report&.scan,
-                identifiers: identifiers,
-                flags: flags,
-                links: links,
-                remediations: remediations,
-                original_data: data,
-                metadata_version: report_version,
-                details: data['details'] || {},
-                signatures: signatures,
-                project_id: @project.id,
-                found_by_pipeline: report.pipeline,
-                vulnerability_finding_signatures_enabled: @signatures_enabled,
-                cvss: data['cvss_vectors'] || []
-              )
+            finding = ::Gitlab::Ci::Reports::Security::Finding.new(
+              report_type: report.type,
+              name: finding_name(data, identifiers, location),
+              location: location,
+              evidence: evidence,
+              severity: ::Enums::Vulnerability.parse_severity_level(data['severity']),
+              confidence: ::Enums::Vulnerability.parse_confidence_level(data['confidence']),
+              scanner: create_scanner(top_level_scanner_data || data['scanner']),
+              scan: report&.scan,
+              identifiers: identifiers,
+              flags: flags,
+              links: links,
+              remediations: remediations,
+              original_data: data,
+              metadata_version: report_version,
+              details: data['details'] || {},
+              signatures: signatures,
+              project_id: @project.id,
+              found_by_pipeline: report.pipeline,
+              vulnerability_finding_signatures_enabled: @signatures_enabled,
+              cvss: data['cvss_vectors'] || [],
+              tracked_context: report.tracked_context
             )
+
+            if finding.uuid.present?
+              report.add_finding(finding)
+            else
+              Gitlab::AppLogger.warn(message: "One or more UUID name components are nil")
+            end
           end
 
           def create_signatures(tracking)
@@ -283,32 +278,11 @@ module Gitlab
 
             identifier = identifiers.find(&:cve?) || identifiers.find(&:cwe?) || identifiers.first
 
-            if location&.fingerprint_path
+            if location&.fingerprint_path.present?
               "#{identifier.name} in #{location.fingerprint_path}"
             else
               identifier.name.to_s
             end
-          end
-
-          def calculate_uuid_v5(primary_identifier, location_fingerprint)
-            uuid_v5_name_components = {
-              report_type: report.type,
-              primary_identifier_fingerprint: primary_identifier&.fingerprint,
-              location_fingerprint: location_fingerprint,
-              project_id: @project.id
-            }
-
-            if uuid_v5_name_components.values.any?(&:nil?)
-              Gitlab::AppLogger.warn(message: "One or more UUID name components are nil", components: uuid_v5_name_components)
-              return
-            end
-
-            ::Security::VulnerabilityUUID.generate(
-              report_type: uuid_v5_name_components[:report_type],
-              primary_identifier_fingerprint: uuid_v5_name_components[:primary_identifier_fingerprint],
-              location_fingerprint: uuid_v5_name_components[:location_fingerprint],
-              project_id: uuid_v5_name_components[:project_id]
-            )
           end
         end
       end

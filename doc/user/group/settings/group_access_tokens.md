@@ -62,7 +62,7 @@ From this page, you can perform the following actions:
 To view your group access tokens:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Access tokens**.
+1. In the left sidebar, select **Settings** > **Access tokens**.
 
 Active and usable access tokens are stored in the **Active group access tokens** section.
 Expired, rotated, or revoked tokens are stored in the **Inactive group access tokens** section.
@@ -86,7 +86,7 @@ Expired, rotated, or revoked tokens are stored in the **Inactive group access to
 To create a group access token:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Access tokens**.
+1. In the left sidebar, select **Settings** > **Access tokens**.
 1. Select **Add new token**.
 1. In **Token name**, enter a name. The token name is visible to any user with permissions to view the group.
 1. Optional. In **Token description**, enter a description for the token.
@@ -177,7 +177,7 @@ Scopes define the actions available when you authenticate with a group access to
 | `write_virtual_registry` | Grants read and write access (pull, push, and delete) to container images through the [dependency proxy](../../packages/dependency_proxy/_index.md). Available only when the dependency proxy is enabled. |
 | `create_runner`          | Grants permission to create runners in the group. |
 | `manage_runner`          | Grants permission to manage runners in the group. |
-| `ai_features`            | Grants permission to perform API actions for GitLab Duo, the Code Suggestions API, and the GitLab Duo Chat API. Designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see the individual extension documentation. Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7. |
+| `ai_features`            | Grants permission to perform API actions for GitLab Duo, the Code Suggestions API, and the GitLab Duo Chat API. Designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see the individual extension documentation. Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7. On GitLab Self-Managed and GitLab Dedicated, this scope is only available when GitLab Duo is enabled. |
 | `k8s_proxy`              | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the group. |
 | `self_rotate`            | Grants permission to rotate this token using the [personal access token API](../../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
 
@@ -204,7 +204,7 @@ On GitLab Self-Managed and GitLab Dedicated, you can modify the
 To rotate a group access token:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Access tokens**.
+1. In the left sidebar, select **Settings** > **Access tokens**.
 1. For the relevant token, select **Rotate** ({{< icon name="retry" >}}).
 1. In the confirmation dialog, select **Rotate**.
 
@@ -229,7 +229,7 @@ GitLab deletes revoked group and project access tokens after 30 days. For more i
 To revoke a group access token:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Access tokens**.
+1. In the left sidebar, select **Settings** > **Access tokens**.
 1. For the relevant token, select **Revoke** ({{< icon name="remove" >}}).
 1. In the confirmation dialog, select **Revoke**.
 

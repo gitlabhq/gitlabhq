@@ -12,7 +12,8 @@ module Enums
       multiple_signatures: 6,
       revoked_key: 7,
       verified_system: 8,
-      unverified_author_email: 9
+      unverified_author_email: 9,
+      expired_key: 10
       # EE adds more values in ee/app/models/concerns/ee/enums/commit_signature.rb
     }.freeze
 

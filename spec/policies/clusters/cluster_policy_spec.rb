@@ -2,15 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::ClusterPolicy, :models do
-  let(:cluster) { create(:cluster, :project) }
-  let(:project) { cluster.project }
-  let(:user) { create(:user) }
+RSpec.describe Clusters::ClusterPolicy, :models, feature_category: :deployment_management do
+  let_it_be(:cluster) { create(:cluster, :project, user: nil) }
+  let_it_be(:project) { cluster.project }
   let(:policy) { described_class.new(user, cluster) }
 
   describe 'rules' do
     context 'when developer' do
-      before do
+      let_it_be(:user) { create(:user) }
+
+      before_all do
         project.add_developer(user)
       end
 
@@ -19,7 +20,9 @@ RSpec.describe Clusters::ClusterPolicy, :models do
     end
 
     context 'when maintainer' do
-      before do
+      let_it_be(:user) { create(:user) }
+
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -28,12 +31,14 @@ RSpec.describe Clusters::ClusterPolicy, :models do
     end
 
     context 'group cluster' do
-      let(:cluster) { create(:cluster, :group) }
-      let(:group) { cluster.group }
-      let(:project) { create(:project, namespace: group) }
+      let_it_be(:cluster) { create(:cluster, :group, user: nil) }
+      let_it_be(:group) { cluster.group }
+      let_it_be(:project) { create(:project, namespace: group) }
 
       context 'when group developer' do
-        before do
+        let_it_be(:user) { create(:user) }
+
+        before_all do
           group.add_developer(user)
         end
 
@@ -42,7 +47,9 @@ RSpec.describe Clusters::ClusterPolicy, :models do
       end
 
       context 'when group maintainer' do
-        before do
+        let_it_be(:user) { create(:user) }
+
+        before_all do
           group.add_maintainer(user)
         end
 
@@ -51,7 +58,9 @@ RSpec.describe Clusters::ClusterPolicy, :models do
       end
 
       context 'when project maintainer' do
-        before do
+        let_it_be(:user) { create(:user) }
+
+        before_all do
           project.add_maintainer(user)
         end
 
@@ -60,7 +69,9 @@ RSpec.describe Clusters::ClusterPolicy, :models do
       end
 
       context 'when project developer' do
-        before do
+        let_it_be(:user) { create(:user) }
+
+        before_all do
           project.add_developer(user)
         end
 
@@ -70,7 +81,8 @@ RSpec.describe Clusters::ClusterPolicy, :models do
     end
 
     context 'instance cluster' do
-      let(:cluster) { create(:cluster, :instance) }
+      let_it_be(:cluster) { create(:cluster, :instance, user: nil) }
+      let_it_be(:user) { create(:user) }
 
       context 'when user' do
         it { expect(policy).to be_disallowed :update_cluster }
@@ -78,7 +90,7 @@ RSpec.describe Clusters::ClusterPolicy, :models do
       end
 
       context 'when admin' do
-        let(:user) { create(:admin) }
+        let_it_be(:user) { create(:admin) }
 
         context 'when admin mode is enabled', :enable_admin_mode do
           it { expect(policy).to be_allowed :update_cluster }

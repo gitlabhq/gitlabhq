@@ -1,0 +1,6 @@
+---
+event: MergeRequests::DiscussionsResolvedEvent
+description: Published when resolving a discussion brings an auto-merge-enabled MR
+  to a fully resolved state (mergeable_discussions_state? becomes true). Does not
+  fire on every resolution — only when the resolution unblocks auto-merge.
+feature_category: code_review_workflow

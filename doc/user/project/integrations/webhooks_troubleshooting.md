@@ -141,3 +141,14 @@ To confirm if rate limiting is the issue:
 1. Check your GitLab logs for the message `Webhook rate limit exceeded`.
 1. Reduce the number of events that trigger webhooks or
    contact GitLab Support to discuss your rate limit requirements.
+
+## Custom webhook template with unquoted placeholders cannot be saved
+
+In GitLab 18.8 through 18.10, [custom webhook templates](webhooks.md#custom-webhook-template)
+with unquoted payload fields cannot be saved. This issue was resolved in GitLab 18.11.
+As a workaround, wrap fields in quotes, or upgrade to GitLab 18.11 or later. For example,
+`{"value": {{id}}}` would become `{"value": "{{id}}"}`.
+
+Quoted fields produce string values instead of numeric values. If this is
+incompatible with your webhook and you need to make changes to it, upgrading
+is recommended.

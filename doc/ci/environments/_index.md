@@ -122,7 +122,7 @@ Prerequisites:
 To create a static environment in the UI:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Select **Create an environment**.
 1. Complete the fields.
 1. Select **Save**.
@@ -363,7 +363,7 @@ GitLab validates the pipeline configuration at pipeline creation.
 To search environments by name:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. In the search bar, enter your search term.
    - The length of your **search term should be 3 or more characters**.
    - Matching applies from the beginning of the environment name.
@@ -410,7 +410,7 @@ When using the `on_stop` action to stop an environment, the job runs if it's not
 To stop an environment in the GitLab UI:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Next to the environment you want to stop, select **Stop**.
 1. On the confirmation dialog, select **Stop environment**.
 
@@ -500,7 +500,7 @@ stop_review:
 ```
 
 > [!note]
-> When using this functionality together with merge trains, the `stop` job triggers only if [duplicate pipelines are avoided](../jobs/job_rules.md#avoid-duplicate-pipelines).
+> When using this functionality together with merge trains, the `stop` job runs only if [duplicate pipelines are avoided](../jobs/job_rules.md#avoid-duplicate-pipelines).
 
 ### Stop an environment after a certain time period
 
@@ -513,13 +513,13 @@ You can set an environment to stop automatically after a certain time period.
 
 In your `.gitlab-ci.yml` file, specify the [`environment:auto_stop_in`](../yaml/_index.md#environmentauto_stop_in)
 keyword. Specify the time period in natural language, such as `1 hour and 30 minutes` or `1 day`.
-After the time period passes, GitLab automatically triggers a job to stop the environment.
+After the time period passes, GitLab automatically starts a job to stop the environment.
 
 In the following example:
 
-- Each commit on a merge request triggers a `review_app` job that deploys the latest change to the
+- Each commit on a merge request runs a `review_app` job that deploys the latest change to the
   environment and resets its expiry period.
-- If the environment is inactive for more than a week, GitLab automatically triggers the
+- If the environment is inactive for more than a week, GitLab automatically runs the
   `stop_review_app` job to stop the environment.
 
 ```yaml
@@ -554,7 +554,7 @@ you can view its expiration date and time.
 To view an environment's expiration date and time:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Select the name of the environment.
 
 The expiration date and time is displayed in the upper-left corner, next to the environment's name.
@@ -567,7 +567,7 @@ you can override its expiration.
 To override an environment's expiration in the UI:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Select the environment name.
 1. in the upper-right corner, select the thumbtack ({{< icon name="thumbtack" >}}).
 
@@ -597,7 +597,7 @@ Prerequisites:
 To clean up stale environments:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Select **Clean up environments**.
 1. Select the date to use for determining which environments to consider stale.
 1. Select **Clean up**.
@@ -739,7 +739,7 @@ Prerequisites:
 To delete an environment:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
 1. On the confirmation dialog, select **Delete environment**.
@@ -845,7 +845,7 @@ Limitations of GitLab Auto Rollback:
 GitLab Auto Rollback is turned off by default. To turn it on:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Automatic deployment rollbacks**.
 1. Select the checkbox for **Enable automatic rollbacks**.
 1. Select **Save changes**.
@@ -863,7 +863,7 @@ and private projects.
 ### Create and update environments
 
 - You must have the Developer, Maintainer, or Owner role to create a new environment, or update an existing unprotected environment.
-- If an existing environment is protected and you don't have access to it, you cannot update the environment.
+- For [Protected environments](protected_environments.md), you must be in the **Allowed to deploy** list.
 
 ### Stop and delete environments
 

@@ -76,6 +76,7 @@ describe('WorkItemLabels component', () => {
     workItemId = mockWorkItemId,
     workItemIid = '1',
     workItemType = mockWorkItemType,
+    provide = {},
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLabels, {
       apolloProvider: createMockApollo([
@@ -89,6 +90,7 @@ describe('WorkItemLabels component', () => {
         issuesListPath: `${fullPath}/issues`,
         epicsListPath: 'groups/some-group/-/epics',
         labelsManagePath: `${fullPath}/labels`,
+        ...provide,
       },
       propsData: {
         workItemId,
@@ -267,6 +269,32 @@ describe('WorkItemLabels component', () => {
         },
       },
       useWorkItemFeatures: false,
+    });
+  });
+
+  it('passes useWorkItemFeatures as true to mutation when workItemFeaturesField feature flag is enabled', async () => {
+    createComponent({
+      workItemQueryHandler: workItemQuerySuccess,
+      updateWorkItemMutationHandler: successUpdateWorkItemMutationHandler,
+      provide: { glFeatures: { workItemFeaturesField: true } },
+    });
+
+    await waitForPromises();
+
+    showDropdown();
+    updateLabels([label1Id]);
+
+    await waitForPromises();
+
+    expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith({
+      input: {
+        id: mockWorkItemId,
+        labelsWidget: {
+          addLabelIds: [label1Id],
+          removeLabelIds: [],
+        },
+      },
+      useWorkItemFeatures: true,
     });
   });
 

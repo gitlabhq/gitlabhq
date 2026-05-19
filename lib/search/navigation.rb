@@ -79,7 +79,7 @@ module Search
         milestones: :read_milestone,
         snippets: :read_snippet,
         issues: :read_issue, # API backward compatibility
-        work_items: :read_issue,
+        work_items: :read_work_item,
         blobs: :read_code,
         commits: :read_code,
         merge_requests: :read_merge_request,

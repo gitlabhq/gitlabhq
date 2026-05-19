@@ -1,12 +1,12 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { mapActions } from 'pinia';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import { INTERACTIVE_RESOLVE_MODE } from '../constants';
+import { useMergeConflicts } from '../store';
 
 export default {
   components: {
@@ -49,7 +49,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setFileResolveMode', 'setPromptConfirmationState', 'updateFile']),
+    ...mapActions(useMergeConflicts, [
+      'setFileResolveMode',
+      'setPromptConfirmationState',
+      'updateFile',
+    ]),
     loadEditor() {
       const EditorPromise = import(/* webpackChunkName: 'SourceEditor' */ '~/editor/source_editor');
       const DataPromise = axios.get(this.file.content_path);

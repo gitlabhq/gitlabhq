@@ -118,7 +118,8 @@ module Gitlab
             flow_hash['authorizationUrl'] = config[:authorizationUrl] if config[:authorizationUrl]
             flow_hash['tokenUrl'] = config[:tokenUrl] if config[:tokenUrl]
             flow_hash['refreshUrl'] = config[:refreshUrl] if config[:refreshUrl]
-            flow_hash['scopes'] = config[:scopes] || {}
+            scopes = config[:scopes]
+            flow_hash['scopes'] = scopes.respond_to?(:call) ? scopes.call : (scopes || {})
             result[flow_type.to_s] = flow_hash
           end
           result

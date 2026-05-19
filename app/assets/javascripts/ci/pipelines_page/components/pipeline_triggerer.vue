@@ -2,6 +2,7 @@
 import { GlAvatarLink, GlAvatar, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
+  name: 'PipelineTriggerer',
   components: {
     GlAvatarLink,
     GlAvatar,

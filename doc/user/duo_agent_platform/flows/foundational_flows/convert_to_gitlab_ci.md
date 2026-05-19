@@ -7,7 +7,7 @@ title: Convert to GitLab CI/CD Flow
 
 {{< details >}}
 
-- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
+- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -49,7 +49,7 @@ To convert your Jenkinsfile to GitLab CI/CD:
 1. In the top bar, select **Search or go to** and find your project.
 1. Open your Jenkinsfile.
 1. Above the file, select **Convert to GitLab CI/CD**.
-1. Monitor progress by selecting **Automate** > **Sessions**.
+1. Monitor progress by selecting **AI** > **Sessions**.
 1. When the pipeline has successfully executed, in the left sidebar, select **Code** > **Merge requests**.
    A merge request with the title `Duo Workflow: Convert to GitLab CI` is displayed.
 1. Review the merge request and make changes as needed.

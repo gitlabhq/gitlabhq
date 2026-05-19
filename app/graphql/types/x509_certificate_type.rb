@@ -15,7 +15,7 @@ module Types
       description: 'Timestamp of when the certificate was saved.'
 
     field :email, GraphQL::Types::String, null: false,
-      description: 'Email associated with the cerificate.'
+      description: 'Email associated with the certificate.'
 
     field :id, GraphQL::Types::ID, null: false, description: 'ID of the certificate.'
 

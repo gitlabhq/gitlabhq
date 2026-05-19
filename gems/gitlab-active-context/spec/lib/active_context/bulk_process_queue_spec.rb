@@ -6,7 +6,7 @@ RSpec.describe ActiveContext::BulkProcessQueue do
   let(:redis) { instance_double(Redis) }
   let(:bulk_processor) { instance_double('ActiveContext::BulkProcessor') }
   let(:logger) { instance_double('Logger', info: nil, error: nil) }
-  let(:preprocess_result) { { successful: references, failed: [] } }
+  let(:preprocess_result) { { successful: references, failed: [], retryable: [] } }
 
   subject(:bulk_process_queue) { described_class.new(queue, shard) }
 
@@ -55,7 +55,7 @@ RSpec.describe ActiveContext::BulkProcessQueue do
 
     context 'when there are failures' do
       let(:failures) { ['failed_spec'] }
-      let(:preprocess_result) { { successful: references, failed: ['preprocess_failed_ref'] } }
+      let(:preprocess_result) { { successful: references, failed: ['preprocess_failed_ref'], retryable: [] } }
 
       before do
         allow(bulk_processor).to receive(:flush).and_return(failures)
@@ -83,6 +83,44 @@ RSpec.describe ActiveContext::BulkProcessQueue do
         end
 
         it 'returns the correct count of processed specs and failures' do
+          expect(bulk_process_queue.process(redis)).to eq([2, 2])
+        end
+      end
+    end
+
+    context 'when there are retryable errors' do
+      let(:retryable_refs) { %w[retryable_ref_1 retryable_ref_2] }
+      let(:preprocess_result) { { successful: references, failed: [], retryable: retryable_refs } }
+
+      it 'adds retryable refs back to the same queue' do
+        expect(ActiveContext).to receive(:track!).with(retryable_refs, queue: queue)
+
+        bulk_process_queue.process(redis)
+      end
+
+      it 'returns the correct count excluding retryable refs' do
+        expect(bulk_process_queue.process(redis)).to eq([2, 0])
+      end
+
+      context 'when there are both failures and retryable errors' do
+        let(:failures) { ['failed_spec'] }
+        let(:preprocess_result) do
+          { successful: references, failed: ['preprocess_failed_ref'], retryable: retryable_refs }
+        end
+
+        before do
+          allow(bulk_processor).to receive(:flush).and_return(failures)
+        end
+
+        it 'routes failures to retry queue and retryable refs to origin queue' do
+          combined_failures = ['preprocess_failed_ref'] + failures
+          expect(ActiveContext).to receive(:track!).with(combined_failures, queue: ActiveContext::RetryQueue)
+          expect(ActiveContext).to receive(:track!).with(retryable_refs, queue: queue)
+
+          bulk_process_queue.process(redis)
+        end
+
+        it 'returns the correct total count excluding retryable refs' do
           expect(bulk_process_queue.process(redis)).to eq([2, 2])
         end
       end

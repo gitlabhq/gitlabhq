@@ -24,7 +24,7 @@ across multiple projects.
 To view Kubernetes clusters for your instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Kubernetes**.
+1. In the left sidebar, select **Kubernetes**.
 
 ## Cluster precedence
 

@@ -24,9 +24,9 @@ RSpec.describe Gitlab::Config::Entry::Simplifiable do
     let(:unknown) { double('unknown strategy') }
 
     before do
-      entry::Something = first
-      entry::DifferentOne = second
-      entry::UnknownStrategy = unknown
+      entry.const_set(:Something, first)
+      entry.const_set(:DifferentOne, second)
+      entry.const_set(:UnknownStrategy, unknown)
     end
 
     context 'when first strategy should be used' do

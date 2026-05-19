@@ -1,0 +1,86 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GitLab <gitlab@gitlab.com>
+Date: Thu, 03 Apr 2026 00:00:00 +0000
+Subject: [PATCH 4/4] Increase heartbeat resilience for Ruby 3.3 thread
+ scheduling
+
+Ruby 3.3's M:N thread scheduler refactoring (bugs.ruby-lang.org issue
+20816) causes increased context switching under GVL contention. With
+high Sidekiq concurrency (>= 20 threads), the heartbeat thread can be
+starved long enough for its Redis key to expire (60s TTL), silently
+deregistering the process and halting all job processing.
+
+This patch applies two complementary mitigations:
+
+1. Increase Redis key TTL from 60s to 120s via HEARTBEAT_TTL constant
+   (overrideable via SIDEKIQ_HEARTBEAT_TTL env var for operator control)
+2. Elevate heartbeat thread priority to 3, with a rescue for platforms
+   that do not support thread priorities
+
+Combined effect: 2x missed beat capacity before deregistration
+(6 beats -> 12 beats).
+
+See: https://gitlab.com/gitlab-org/gitlab/-/issues/594030
+---
+ lib/sidekiq/launcher.rb | 14 ++++++++++++--
+ test/launcher_test.rb   |  4 ++--
+ 2 files changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/lib/sidekiq/launcher.rb b/lib/sidekiq/launcher.rb
+--- a/lib/sidekiq/launcher.rb
++++ b/lib/sidekiq/launcher.rb
+@@ -83,10 +83,14 @@ def heartbeat
+ 
+     private unless $TESTING
+ 
+-    BEAT_PAUSE = 10
++    BEAT_PAUSE = 10
++    HEARTBEAT_TTL = (ENV["SIDEKIQ_HEARTBEAT_TTL"] || 120).to_i
+ 
+     def start_heartbeat
+       Thread.current.priority = 3
++    rescue ThreadError, NotImplementedError
++      # Thread priorities are not supported on all platforms; ignore.
++    ensure
+       loop do
+         beat
+         sleep BEAT_PAUSE
+@@ -155,7 +159,7 @@ def heart
+             transaction.unlink(work_key)
+             if curstate.size > 0
+               transaction.hset(work_key, curstate)
+-              transaction.expire(work_key, 60)
++              transaction.expire(work_key, HEARTBEAT_TTL)
+             end
+           end
+         end
+@@ -175,7 +179,7 @@ def heart
+               "rtt_us", rtt,
+               "quiet", @done.to_s,
+               "rss", kb)
+-            transaction.expire(key, 60)
++            transaction.expire(key, HEARTBEAT_TTL)
+             transaction.rpop("#{key}-signals")
+           }
+         }
+diff --git a/test/launcher_test.rb b/test/launcher_test.rb
+--- a/test/launcher_test.rb
++++ b/test/launcher_test.rb
+@@ -50,7 +50,7 @@
+       assert_in_delta 1000, rtt.to_i, 1000
+ 
+       expires = @config.redis { |c| c.pttl(@id) }
+-      assert_in_delta 60000, expires, 500
++      assert_in_delta 120000, expires, 500
+     end
+ 
+     it "fires start heartbeat event only once" do
+@@ -77,7 +77,7 @@
+       assert_equal ["1"], info
+ 
+       expires = @config.redis { |c| c.pttl(@id) }
+-      assert_in_delta 60000, expires, 50
++      assert_in_delta 120000, expires, 50
+     end
+ 
+     it "allows arbitrary proctitle extensions" do

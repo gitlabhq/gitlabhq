@@ -34,6 +34,7 @@ class DraftNote < ApplicationRecord
 
   validates :position, :original_position, :change_position,
     'notes/position_serialized_size': { max_bytesize: 100.kilobytes }
+  validate :valid_commit_id
 
   enum :note_type, {
     Note: 0,
@@ -79,7 +80,7 @@ class DraftNote < ApplicationRecord
   end
 
   def for_commit?
-    commit_id.present?
+    false
   end
 
   def importing?
@@ -153,6 +154,13 @@ class DraftNote < ApplicationRecord
   end
 
   private
+
+  def valid_commit_id
+    return unless commit_id.present?
+    return if project&.commit(commit_id)
+
+    errors.add(:commit_id, 'is not a valid commit')
+  end
 
   def set_project
     self.project_id ||= merge_request&.target_project_id

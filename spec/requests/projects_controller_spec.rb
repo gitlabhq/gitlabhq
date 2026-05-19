@@ -209,7 +209,6 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
 
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(edit_project_path(project))
-        expect(flash[:notice]).to eq("Project transfer has been queued. You will be notified when it completes.")
       end
 
       it 'transitions the project namespace to transfer_scheduled and stores metadata' do

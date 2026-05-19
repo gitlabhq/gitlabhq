@@ -15,6 +15,7 @@ require 'sprockets/railtie'
 
 require 'gitlab/utils/all'
 
+require_relative 'freeze_gems'
 Bundler.require(*Rails.groups)
 
 module Gitlab
@@ -383,6 +384,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/projects_edit.css"
     config.assets.precompile << "page_bundles/promotions.css"
     config.assets.precompile << "page_bundles/rapid_diffs.css"
+    config.assets.precompile << "page_bundles/registration_two_panel.css"
     config.assets.precompile << "page_bundles/registrations.css"
     config.assets.precompile << "page_bundles/releases.css"
     config.assets.precompile << "page_bundles/remote_development.css"
@@ -406,7 +408,6 @@ module Gitlab
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "page_bundles/zuora.css"
     config.assets.precompile << "lazy_bundles/cropper.css"
-    config.assets.precompile << "lazy_bundles/gridstack.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "disable_animations.css"
     config.assets.precompile << "test_environment.css"

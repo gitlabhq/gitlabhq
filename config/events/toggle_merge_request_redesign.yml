@@ -5,6 +5,8 @@ action: toggle_merge_request_redesign
 identifiers:
 - user
 product_group: code_review
+product_categories:
+- code_review_workflow
 milestone: '17.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475243
 tiers:

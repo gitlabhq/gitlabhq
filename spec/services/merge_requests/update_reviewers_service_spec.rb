@@ -63,6 +63,10 @@ RSpec.describe MergeRequests::UpdateReviewersService, feature_category: :code_re
         let(:opts) { { reviewer_ids: [] } }
 
         it_behaves_like 'removing all reviewers'
+
+        it 'does not publish a cloud event' do
+          expect { set_reviewers }.not_to publish_event(MergeRequests::AssignedReviewersEvent)
+        end
       end
 
       it 'updates the MR' do
@@ -130,6 +134,16 @@ RSpec.describe MergeRequests::UpdateReviewersService, feature_category: :code_re
           .to receive(:track_reviewers_changed_action).once.with(user: user)
 
         set_reviewers
+      end
+
+      it 'publishes a cloud event' do
+        expect { set_reviewers }.to publish_event(MergeRequests::AssignedReviewersEvent)
+      end
+
+      it 'does not publish a cloud event if the feature flag is disabled' do
+        stub_feature_flags(trigger_merge_requests_assigned_reviewers_cloud_event: false)
+
+        expect { set_reviewers }.not_to publish_event(MergeRequests::AssignedReviewersEvent)
       end
 
       it_behaves_like 'triggers GraphQL subscription mergeRequestReviewersUpdated' do

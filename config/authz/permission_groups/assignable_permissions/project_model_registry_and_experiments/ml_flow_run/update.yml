@@ -3,5 +3,7 @@ name: update_ml_flow_run
 description: Grants the ability to update MLflow runs
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - update_ml_flow_run

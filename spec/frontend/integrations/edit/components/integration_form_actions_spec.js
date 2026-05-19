@@ -1,24 +1,29 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ConfirmationModal from '~/integrations/edit/components/confirmation_modal.vue';
 import ResetConfirmationModal from '~/integrations/edit/components/reset_confirmation_modal.vue';
 import IntegrationFormActions from '~/integrations/edit/components/integration_form_actions.vue';
 
 import { integrationLevels } from '~/integrations/constants';
-import { createStore } from '~/integrations/edit/store';
+import { useIntegrationForm } from '~/integrations/edit/store';
 import { mockIntegrationProps } from '../mock_data';
+
+Vue.use(PiniaVuePlugin);
 
 describe('IntegrationFormActions', () => {
   let wrapper;
 
   const createComponent = ({ customStateProps = {} } = {}) => {
-    const store = createStore({
+    const pinia = createTestingPinia({ stubActions: false });
+    const store = useIntegrationForm();
+    Object.assign(store, {
       customState: { ...mockIntegrationProps, ...customStateProps },
     });
-    jest.spyOn(store, 'dispatch');
 
     wrapper = shallowMountExtended(IntegrationFormActions, {
-      store,
+      pinia,
     });
   };
 

@@ -1,10 +1,7 @@
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { pinia } from '~/pinia/instance';
 import UserList from '~/user_lists/components/user_list.vue';
-import createStore from '~/user_lists/store/show';
-
-Vue.use(Vuex);
+import { useUserListShow } from '~/user_lists/store/show';
 
 export default function featureFlagsUserListInit() {
   const el = document.getElementById('js-edit-user-list');
@@ -13,10 +10,13 @@ export default function featureFlagsUserListInit() {
     return null;
   }
 
+  const store = useUserListShow();
+  store.setInitialData(el.dataset);
+
   return new Vue({
     el,
     name: 'UserListRoot',
-    store: createStore(el.dataset),
+    pinia,
     render(h) {
       const { emptyStatePath } = el.dataset;
       return h(UserList, { props: { emptyStatePath } });

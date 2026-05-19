@@ -58,3 +58,5 @@ export const STORAGE_KEY = {
 };
 
 export const CONTEXT_NAMESPACE_GROUPS = 'groups';
+
+export const MAX_OPEN_WORK_ITEMS_COUNT = 10000;

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['SnippetBlobViewer'], feature_category: :source_code_management do
   let_it_be(:snippet) { create(:personal_snippet, :repository) }
-  let_it_be(:blob) { snippet.repository.blob_at('HEAD', 'files/images/6049019_460s.jpg') }
+  let_it_be(:blob, freeze: false) { snippet.repository.blob_at('HEAD', 'files/images/6049019_460s.jpg') }
 
   it 'has the correct fields' do
     expected_fields = [:type, :load_async, :too_large, :collapsed,

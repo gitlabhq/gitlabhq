@@ -7,6 +7,7 @@ import {
 } from '~/vue_shared/components/groups_list/formatter';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 
 const {
   data: {
@@ -25,7 +26,7 @@ const itCorrectlyFormatsWithActions = (formattedGroup, mockGroup) => {
     accessLevel: {
       integerValue: 50,
     },
-    availableActions: ['copy-id', 'edit', 'restore', 'leave', 'delete-immediately'],
+    availableActions: ['copy-id', 'edit', 'transfer', 'restore', 'leave', 'delete-immediately'],
     children: [],
     childrenLoading: false,
     hasChildren: false,
@@ -48,8 +49,9 @@ const itCorrectlyFormatsWithoutActions = (formattedGroup, mockGroup) => {
 };
 
 describe('formatGraphQLGroup', () => {
+  useConfigurePathHelpers('/gitlab');
+
   it('correctly formats the group with edit, delete, and leave permissions', () => {
-    window.gon = { relative_url_root: '/gitlab' };
     const [mockGroup] = organizationGroups;
     const formattedGroup = formatGraphQLGroup(mockGroup, (group) => ({
       customProperty: group.fullName,
@@ -67,8 +69,9 @@ describe('formatGraphQLGroup', () => {
 });
 
 describe('formatGraphQLGroups', () => {
+  useConfigurePathHelpers('/gitlab');
+
   it('correctly formats the groups with edit, delete, and leave permissions', () => {
-    window.gon = { relative_url_root: '/gitlab' };
     const [firstMockGroup] = organizationGroups;
     const formattedGroups = formatGraphQLGroups(organizationGroups, (group) => ({
       customProperty: group.fullName,
@@ -98,6 +101,7 @@ describe('formatGroupForGraphQLResolver', () => {
       __typename: TYPENAME_GROUP,
       id: expect.stringContaining('gid://gitlab/Group/'),
       name: mockGroup.name,
+      path: mockGroup.path,
       fullName: mockGroup.full_name,
       fullPath: mockGroup.full_path,
       editPath: mockGroup.edit_path,
@@ -118,6 +122,7 @@ describe('formatGroupForGraphQLResolver', () => {
         canLeave: mockGroup.can_leave,
         removeGroup: mockGroup.can_remove,
         viewEditPage: mockGroup.can_edit,
+        changeGroup: mockGroup.can_transfer,
       },
       webUrl: mockGroup.web_url,
       groupMembersCount: mockGroup.group_members_count,

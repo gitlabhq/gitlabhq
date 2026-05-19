@@ -5,8 +5,8 @@ module API
     module Ml
       module Mlflow
         class SearchRuns < Grape::Entity # rubocop:disable Search/NamespacedClass
-          expose :candidates, with: Run, as: :runs
-          expose :next_page_token
+          expose :candidates, using: ::API::Entities::Ml::Mlflow::Run, as: :runs, documentation: { is_array: true }
+          expose :next_page_token, documentation: { type: 'String' }
         end
       end
     end

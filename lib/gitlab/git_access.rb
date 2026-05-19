@@ -255,7 +255,10 @@ module Gitlab
         token: personal_access_token
       ).execute
 
-      raise ForbiddenError, result.message if result.error?
+      return unless result.error?
+      raise NotFoundError, error_message(:project_not_found) if result.reason == :resource_not_found
+
+      raise ForbiddenError, result.message
     end
 
     def permission_for_command
@@ -595,7 +598,7 @@ module Gitlab
       container.repository_size_checker
     end
 
-    # overriden in EE
+    # overridden in EE
     def check_additional_conditions!; end
 
     def repository_access_level

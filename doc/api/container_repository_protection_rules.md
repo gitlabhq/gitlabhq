@@ -70,7 +70,7 @@ Example response:
     "repository_path_pattern": "flightjs/flight1",
     "minimum_access_level_for_push": "maintainer",
     "minimum_access_level_for_delete": "maintainer"
-  },
+  }
 ]
 ```
 

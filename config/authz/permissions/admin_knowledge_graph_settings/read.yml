@@ -1,0 +1,3 @@
+---
+name: read_admin_knowledge_graph_settings
+description: Grants ability to view and manage instance-wide Knowledge Graph (Orbit) settings

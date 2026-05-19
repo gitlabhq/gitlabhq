@@ -3,6 +3,11 @@
 module API
   module WorkItems
     class Show < ::API::Base
+      include ::API::Concerns::AiWorkflowsAccess
+      include APIGuard
+
+      allow_ai_workflows_access
+
       before { authenticate! }
 
       feature_category :portfolio_management

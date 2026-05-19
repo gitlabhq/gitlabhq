@@ -93,6 +93,45 @@ RSpec.describe Ci::PipelinePolicy, :models, :request_store, :use_clean_rails_red
     end
   end
 
+  context 'when branch allows collaboration and user is a non-member' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+    before do
+      allow(project).to receive(:branch_allows_collaboration?).and_return(true)
+    end
+
+    context 'on a public project' do
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      end
+
+      it { expect_allowed(:update_pipeline, :cancel_pipeline) }
+    end
+
+    context 'on an internal project' do
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+      end
+
+      it { expect_allowed(:update_pipeline, :cancel_pipeline) }
+
+      context 'when the user is external' do
+        let_it_be(:user) { create(:user, external: true) }
+
+        it { expect_disallowed(:update_pipeline, :cancel_pipeline) }
+      end
+    end
+
+    context 'on a private project' do
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it { expect_disallowed(:update_pipeline, :cancel_pipeline) }
+    end
+  end
+
   context 'when user does not have access to internal CI' do
     before do
       project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)

@@ -1,0 +1,6 @@
+---
+event: MergeRequests::MergeRequestPreparedEvent
+description: Represents a merge request ref being prepared after a push. Carries the
+  project, user, old/new revisions, and the ref name. Not currently published anywhere
+  in the codebase.
+feature_category: code_review_workflow

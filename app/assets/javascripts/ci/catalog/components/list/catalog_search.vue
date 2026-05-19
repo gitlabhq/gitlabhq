@@ -1,6 +1,12 @@
 <script>
-import { GlSearchBoxByClick, GlSorting } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlFilteredSearch, GlSorting } from '@gitlab/ui';
+import { s__, __ } from '~/locale';
+import {
+  OPERATORS_IS,
+  OPERATORS_OR,
+  OPERATOR_OR,
+  OPERATOR_IS,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   SORT_ASC,
   SORT_DESC,
@@ -9,11 +15,13 @@ import {
   SORT_OPTION_STAR_COUNT,
   SORT_OPTION_POPULARITY,
 } from '../../constants';
+import TopicToken from '../tokens/topic_token.vue';
+import VerificationLevelToken from '../tokens/verification_level_token.vue';
 
 export default {
   name: 'CatalogSearch',
   components: {
-    GlSearchBoxByClick,
+    GlFilteredSearch,
     GlSorting,
   },
   props: {
@@ -22,13 +30,43 @@ export default {
       required: false,
       type: String,
     },
+    initialVerificationLevel: {
+      default: null,
+      required: false,
+      type: String,
+    },
+    initialTopics: {
+      default: () => [],
+      required: false,
+      type: Array,
+    },
   },
-  emits: ['update-search-term', 'update-sorting'],
+  emits: ['update-sorting', 'update-filters'],
   data() {
+    const filteredSearchValue = [];
+
+    if (this.initialVerificationLevel) {
+      filteredSearchValue.push({
+        type: 'verificationLevel',
+        value: { data: this.initialVerificationLevel, operator: OPERATOR_IS },
+      });
+    }
+
+    if (this.initialTopics.length) {
+      filteredSearchValue.push({
+        type: 'topic',
+        value: { data: this.initialTopics, operator: OPERATOR_OR },
+      });
+    }
+
+    if (this.initialSearchTerm) {
+      filteredSearchValue.push(this.initialSearchTerm);
+    }
+
     return {
       currentSortOption: SORT_OPTION_POPULARITY,
       isAscending: false,
-      searchTerm: this.initialSearchTerm,
+      filteredSearchValue,
     };
   },
   computed: {
@@ -51,19 +89,45 @@ export default {
     },
   },
   methods: {
-    onClear() {
-      this.$emit('update-search-term', '');
+    onSubmit(filters) {
+      const searchTerm =
+        filters
+          .filter((f) => typeof f === 'string')
+          .join(' ')
+          .trim() || null;
+
+      const verificationLevel =
+        filters.find((f) => f.type === 'verificationLevel')?.value?.data || null;
+
+      const topicFilter = filters.find((f) => f.type === 'topic');
+      const topics = topicFilter ? [topicFilter.value?.data].flat().filter(Boolean) : [];
+
+      this.$emit('update-filters', { searchTerm, verificationLevel, topics });
     },
     onSortDirectionChange() {
       this.isAscending = !this.isAscending;
-    },
-    onSubmitSearch() {
-      this.$emit('update-search-term', this.searchTerm);
     },
     setSelectedSortOption(sortingItem) {
       this.currentSortOption = sortingItem;
     },
   },
+  tokens: [
+    {
+      type: 'verificationLevel',
+      title: s__('CiCatalog|Verification level'),
+      unique: true,
+      token: VerificationLevelToken,
+      operators: OPERATORS_IS,
+    },
+    {
+      type: 'topic',
+      title: s__('CiCatalog|Topic'),
+      unique: true,
+      multiSelect: true,
+      token: TopicToken,
+      operators: OPERATORS_OR,
+    },
+  ],
   sortOptions: [
     { value: SORT_OPTION_POPULARITY, text: __('Popularity') },
     { value: SORT_OPTION_RELEASED, text: __('Released date') },
@@ -74,11 +138,15 @@ export default {
 </script>
 <template>
   <div class="gl-border-b gl-flex gl-gap-3 gl-bg-subtle gl-p-5">
-    <gl-search-box-by-click
-      v-model="searchTerm"
+    <gl-filtered-search
+      :placeholder="__('Search or filter catalog…')"
+      :available-tokens="$options.tokens"
+      :value="filteredSearchValue"
+      :search-text-option-label="__('Search for this text')"
+      terms-as-tokens
+      show-friendly-text
       data-testid="catalog-search-bar"
-      @submit="onSubmitSearch"
-      @clear="onClear"
+      @submit="onSubmit"
     />
     <gl-sorting
       :is-ascending="isAscending"

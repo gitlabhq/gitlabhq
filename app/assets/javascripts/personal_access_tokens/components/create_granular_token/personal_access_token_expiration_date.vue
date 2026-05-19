@@ -36,6 +36,14 @@ export default {
     };
   },
   computed: {
+    expirationDate: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit('input', val);
+      },
+    },
     formattedMaxDate() {
       return localeDateFormat.asDate.format(this.maxExpirationDate);
     },
@@ -82,13 +90,12 @@ export default {
     </template>
 
     <gl-datepicker
-      :value="value"
+      v-model="expirationDate"
       :show-clear-button="!maxExpirationDate"
       :max-date="maxExpirationDate"
       :min-date="minExpirationDate"
       :state="!error"
-      @input="$emit('input', $event)"
-      @clear="$emit('input', $event)"
+      @clear="expirationDate = null"
     />
   </gl-form-group>
 </template>

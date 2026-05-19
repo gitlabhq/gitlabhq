@@ -12,7 +12,7 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/589774
   body: |
     GitLab follows an
-    [annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/).
+    [annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/data-engineering/database-excellence/database-frameworks/postgresql-upgrade-cadence/).
 
     Support for PostgreSQL 16 is scheduled for removal in GitLab 19.0.
     In GitLab 19.0, PostgreSQL 17 becomes the minimum required PostgreSQL version.

@@ -34,7 +34,7 @@ RSpec.describe ::Import::GitlabProjects::RemoteFileValidator, :aggregate_failure
     expect(validated_object.errors.full_messages).to be_empty
   end
 
-  context 'content_length validation' do
+  context 'with content_length validation' do
     it 'is invalid with file too small' do
       validated_object.content_length = nil
 
@@ -66,7 +66,7 @@ RSpec.describe ::Import::GitlabProjects::RemoteFileValidator, :aggregate_failure
     end
   end
 
-  context 'content_type validation' do
+  context 'with content_type validation' do
     it 'only allows ALLOWED_CONTENT_TYPES as content_type' do
       described_class::ALLOWED_CONTENT_TYPES.each do |content_type|
         validated_object.content_type = content_type

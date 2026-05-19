@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ProtectedBranchesFinder do
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, namespace: group) }
+  let_it_be(:project, freeze: false) { create(:project, namespace: group) }
 
   let!(:project_protected_branch) { create(:protected_branch, project: project) }
   let!(:another_project_protected_branch) { create(:protected_branch, project: project) }

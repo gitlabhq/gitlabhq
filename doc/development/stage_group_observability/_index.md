@@ -31,7 +31,7 @@ For more specific information on dashboards, see:
 The error budget is calculated from the same [Service Level Indicators](https://en.wikipedia.org/wiki/Service_level_indicator) (SLIs)
 that we use to monitor GitLab.com. The 28-day availability number for a
 stage group is comparable to the
-[monthly availability](https://handbook.gitlab.com/handbook/engineering/infrastructure/performance-indicators/#gitlabcom-availability)
+monthly availability
 we calculate for GitLab.com, except it's scoped to the features of a group.
 
 For more information about how we use error budgets, see the
@@ -40,7 +40,7 @@ For more information about how we use error budgets, see the
 By default, the first row of panels on both dashboards shows the
 [error budget for the stage group](https://handbook.gitlab.com/handbook/engineering/error-budgets/#budget-spend-by-stage-group).
 This row shows how features owned by the group contribute to our
-[overall availability](https://handbook.gitlab.com/handbook/engineering/infrastructure/performance-indicators/#gitlabcom-availability).
+overall availability.
 
 The official budget is aggregated over the 28 days. You can see it on the
 [stage group dashboard](dashboards/stage_group_dashboard.md).
@@ -85,7 +85,7 @@ component can have two indicators:
 
 The calculation of the ratio happens as follows:
 
-![error budget calculation](img/error_budget_calculation_v17_2.png)
+![The sum of operations meeting Apdex and total operations minus operations with errors, divided by the sum of total Apdex measurements and total operations.](img/error_budget_calculation_v17_2.png)
 
 <!--
 To update this calculation, paste the following math block in a GitLab comment, update it,
@@ -108,7 +108,7 @@ The row below the error budget row is collapsed by default. Expanding
 it shows which component and violation type had the most offending
 operations in the past 28 days.
 
-![Error attribution](img/stage_group_dashboards_error_attribution_v14_1.png)
+![The budget spend attribution section displaying budget failures, info, and failure log links.](img/stage_group_dashboards_error_attribution_v14_1.png)
 
 The first panel on the left shows a table with the number of errors per
 component. Digging into the first row in that table has
@@ -138,7 +138,7 @@ component means.
 
 For example, see the `server` component of the `web-pages` service:
 
-![web-pages-server-component SLI](img/stage_group_dashboards_service_sli_detail_v14_1.png)
+![The web-pages server component displaying the server's SLI apdex, error ratio, RPS, and details.](img/stage_group_dashboards_service_sli_detail_v14_1.png)
 
 To add more SLIs tailored to specific features, you can use an [Application SLI](../application_slis/_index.md).
 
@@ -146,7 +146,7 @@ To add more SLIs tailored to specific features, you can use an [Application SLI]
 
 For a detailed analysis you can use [a specialized Kibana dashboard](https://log.gprd.gitlab.net/goto/771b5c10-c0ec-11ed-85ed-e7557b0a598c), like this:
 
-![Kibana dashboard](img/error_budgets_kibana_dashboard_v15_10.png)
+![The Kibana dashboard displaying multiple tools for data visualization and analysis.](img/error_budgets_kibana_dashboard_v15_10.png)
 
 Description:
 

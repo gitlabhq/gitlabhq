@@ -6,3 +6,4 @@ feature_category: onboarding
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227274
 milestone: '18.11'
 queued_migration_version: 20260313154532
+finalized_by: '20260421235504'

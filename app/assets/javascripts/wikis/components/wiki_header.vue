@@ -112,12 +112,14 @@ export default {
     },
   },
   mounted() {
-    if (this.editButtonUrl) {
+    if (this.showEditButton) {
       document.addEventListener('keyup', this.onKeyUp);
     }
   },
   destroyed() {
-    document.removeEventListener('keyup', this.onKeyUp);
+    if (this.showEditButton) {
+      document.removeEventListener('keyup', this.onKeyUp);
+    }
   },
   methods: {
     hideStickyHeader() {
@@ -210,10 +212,14 @@ export default {
       <div
         class="js-wiki-page-header wiki-page-header has-sidebar-toggle detail-page-header gl-flex gl-flex-wrap gl-border-b-0 gl-px-3 !gl-pt-0"
       >
-        <page-heading class="gl-w-full">
+        <page-heading class="gl-wrap-break-word gl-w-full">
           <template #heading>
-            <wiki-sidebar-toggle action="open" class="gl-mr-2 @lg/panel:gl-hidden" />
-            <span>{{ pageHeadingComputed }}</span>
+            <span class="gl-flex gl-items-center">
+              <div class="toggle-with-hide-transition -gl-mr-2 gl-mb-1">
+                <wiki-sidebar-toggle action="open" />
+              </div>
+              <span>{{ pageHeadingComputed }}</span>
+            </span>
           </template>
 
           <template v-if="!isEditingPath" #actions>

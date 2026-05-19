@@ -1,0 +1,19 @@
+---
+description: Admin selects a project template on the Create your first project page
+internal_events: true
+status: active
+action: select_project_template
+identifiers:
+  - user
+additional_properties:
+  label:
+    description: The name of the selected project template
+product_group: acquisition
+product_categories:
+  - onboarding
+milestone: '19.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234658
+tiers:
+  - free
+  - premium
+  - ultimate

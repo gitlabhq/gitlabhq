@@ -160,6 +160,18 @@ RSpec.describe Banzai::Filter::TableOfContentsTagFilter, feature_category: :mark
       end
     end
 
+    context 'header text contains non-ASCII characters' do
+      it 'does not double-encode TOC link hrefs' do
+        doc = pipeline_filter("[toc]\n\n## はじめに\n\nContent\n\n## セットアップ方法\n\nContent")
+        toc_links = doc.css('ul.section-nav a')
+        heading_anchors = doc.css('a.anchor')
+
+        toc_links.each do |toc_link|
+          expect(heading_anchors.map { |a| a[:href] }).to include(toc_link[:href])
+        end
+      end
+    end
+
     context 'header text contains escaped content' do
       let(:content) { '&lt;img src="x" onerror="alert(42)"&gt;' }
       let(:results) { result(header(1, content)) }

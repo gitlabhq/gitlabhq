@@ -15,10 +15,10 @@ const useDiscussionsStore = defineStore('discussionsStore', {
     discussions: [],
   }),
   actions: {
-    findAllLineDiscussionsForFile() {
-      return this.discussions;
+    findLinePositionsForFile() {
+      return this.discussions.map((d) => d.position);
     },
-    findDiscussionsForPosition() {
+    findLineDiscussionsForPosition() {
       return this.discussions;
     },
     addNewLineDiscussionForm() {},
@@ -45,6 +45,7 @@ jest.mock('~/rapid_diffs/app/discussions/diff_line_discussions.vue', () => {
       'suggestionsHelpPath',
       'defaultSuggestionCommitMessage',
       'linkedFileData',
+      'newCommentTemplatePaths',
     ],
     methods: {
       empty() {
@@ -82,6 +83,7 @@ jest.mock('~/rapid_diffs/app/discussions/diff_line_discussions.vue', () => {
         renderAsDataAttr('suggestions-help-path', this.suggestionsHelpPath),
         renderAsDataAttr('default-suggestion-commit-message', this.defaultSuggestionCommitMessage),
         renderAsDataAttr('linked-file-data', this.linkedFileData),
+        renderAsDataAttr('new-comment-template-paths', this.newCommentTemplatePaths),
       ];
       return h('div', { attrs: { id: 'discussions-component' } }, [...props, ...injected]);
     },
@@ -108,6 +110,9 @@ describe('discussions adapters', () => {
     reportAbuse: 'reportAbusePath',
   };
   const linkedFileData = { old_path: oldPath, new_path: newPath };
+  const newCommentTemplatePaths = [
+    { text: 'Your comment templates', href: '/-/profile/comment_templates' },
+  ];
   const appData = {
     userPermissions,
     previewMarkdownEndpoint: 'previewMarkdownEndpoint',
@@ -119,6 +124,7 @@ describe('discussions adapters', () => {
     suggestionsHelpPath: '/help/suggestions',
     defaultSuggestionCommitMessage: 'Apply suggestion',
     linkedFileData,
+    newCommentTemplatePaths,
   };
 
   const getDiffFile = () => document.querySelector('diff-file');
@@ -228,6 +234,12 @@ describe('discussions adapters', () => {
             .defaultSuggestionCommitMessage,
         ),
       ).toBe('Apply suggestion');
+      expect(
+        JSON.parse(
+          document.querySelector('[data-new-comment-template-paths]').dataset
+            .newCommentTemplatePaths,
+        ),
+      ).toStrictEqual(newCommentTemplatePaths);
     });
 
     it('mounts discussion row for hidden discussions', async () => {

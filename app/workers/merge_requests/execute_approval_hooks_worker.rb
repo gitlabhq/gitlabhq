@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  class ExecuteApprovalHooksWorker
+  # Worker is not idempotent: each run sends email notifications and
+  # fires webhooks, both of which are non-idempotent external side effects.
+  class ExecuteApprovalHooksWorker # rubocop:disable Scalability/IdempotentWorker -- Currently not idempotent
     include Gitlab::EventStore::Subscriber
 
     data_consistency :always
     feature_category :code_review_workflow
     urgency :low
-    idempotent!
 
     # MergeRequests::ExecuteApprovalHooksService execute webhooks which are treated as external dependencies
     worker_has_external_dependencies!

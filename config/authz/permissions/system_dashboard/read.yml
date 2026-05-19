@@ -1,0 +1,3 @@
+---
+name: read_system_dashboard
+description: Allows authenticated users to view GitLab-provided system dashboards

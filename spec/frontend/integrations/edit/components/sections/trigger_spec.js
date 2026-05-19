@@ -1,20 +1,27 @@
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 
 import IntegrationSectionTrigger from '~/integrations/edit/components/sections/trigger.vue';
 import TriggerField from '~/integrations/edit/components/trigger_field.vue';
-import { createStore } from '~/integrations/edit/store';
+import { useIntegrationForm } from '~/integrations/edit/store';
 
 import { mockIntegrationProps } from '../../mock_data';
+
+Vue.use(PiniaVuePlugin);
 
 describe('IntegrationSectionTrigger', () => {
   let wrapper;
 
   const createComponent = () => {
-    const store = createStore({
+    const pinia = createTestingPinia({ stubActions: false });
+    const store = useIntegrationForm();
+    Object.assign(store, {
       customState: { ...mockIntegrationProps },
     });
     wrapper = shallowMount(IntegrationSectionTrigger, {
-      store,
+      pinia,
     });
   };
 

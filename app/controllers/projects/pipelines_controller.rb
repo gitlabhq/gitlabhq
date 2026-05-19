@@ -27,6 +27,10 @@ class Projects::PipelinesController < Projects::ApplicationController
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
 
+  before_action only: [:index, :show] do
+    push_frontend_feature_flag(:vue3_migrate_pipelines, current_user)
+  end
+
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
   track_event :charts,

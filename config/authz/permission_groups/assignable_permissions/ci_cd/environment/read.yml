@@ -3,5 +3,7 @@ name: read_environment
 description: Grants the ability to view environments in a project
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - read_environment

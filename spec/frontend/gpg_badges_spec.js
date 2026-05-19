@@ -120,4 +120,63 @@ describe('GpgBadges', () => {
 
     expect(parentContainer.innerHTML.trim()).toEqual(dummyBadgeHtml);
   });
+
+  it('strip malicious HTML', async () => {
+    const maliciousHtml = '<script>alert("xss")</script>';
+    const maliciousResponse = {
+      signatures: [
+        {
+          commit_sha: dummyCommitSha,
+          html: maliciousHtml,
+        },
+      ],
+    };
+    mock.onGet(dummyUrl).replyOnce(HTTP_STATUS_OK, maliciousResponse);
+
+    await GpgBadges.fetch();
+    const parentContainer = document.querySelector('.parent-container');
+
+    expect(parentContainer.innerHTML).not.toContain('<script>');
+    expect(parentContainer.innerHTML).not.toContain('alert("xss")');
+  });
+
+  it('fetches commit signatures when the container is not a form element', async () => {
+    setHTMLFixture(`
+      <div class="js-signature-container" data-signatures-path="${dummyUrl}"></div>
+      <div class="parent-container">
+        <div class="js-loading-signature-badge" data-commit-sha="${dummyCommitSha}"></div>
+      </div>
+    `);
+    mock.onGet(dummyUrl).replyOnce(HTTP_STATUS_OK, dummyResponse);
+
+    await GpgBadges.fetch();
+
+    expect(mock.history.get).toHaveLength(1);
+    expect(mock.history.get[0]).toMatchObject({
+      params: {},
+      url: dummyUrl,
+    });
+  });
+
+  it('only matching badge is replaced', async () => {
+    setHTMLFixture(`
+      <form
+        class="commits-search-form js-signature-container" data-signatures-path="${dummyUrl}" action="${dummyUrl}"
+        method="get">
+        <input name="utf8" type="hidden" value="✓">
+        <input type="search" name="search" value="" id="commits-search"class="form-control search-text-input input-short">
+      </form>
+      <div class="parent-container">
+        <div class="js-loading-signature-badge" data-commit-sha="${dummyCommitSha}"></div>
+        <div class="js-loading-signature-badge" data-commit-sha="otherSha"></div>
+      </div>
+    `);
+
+    mock.onGet(dummyUrl).replyOnce(HTTP_STATUS_OK, dummyResponse);
+
+    await GpgBadges.fetch();
+
+    expect(document.querySelector(`[data-commit-sha="${dummyCommitSha}"]`)).toBe(null);
+    expect(document.querySelector('[data-commit-sha="otherSha"]')).not.toBe(null);
+  });
 });

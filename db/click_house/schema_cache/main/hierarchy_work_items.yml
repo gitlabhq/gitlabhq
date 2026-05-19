@@ -1,0 +1,111 @@
+---
+name: hierarchy_work_items
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(version, deleted) PRIMARY KEY (traversal_path, work_item_type_id,
+  id) ORDER BY (traversal_path, work_item_type_id, id) SETTINGS index_granularity
+  = 8192
+primary_key: traversal_path, work_item_type_id, id
+sorting_key: traversal_path, work_item_type_id, id
+settings:
+  index_granularity: '8192'
+columns:
+- name: traversal_path
+  type: String
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: id
+  type: Int64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: title
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: author_id
+  type: Nullable(Int64)
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: milestone_id
+  type: Nullable(Int64)
+- name: iid
+  type: Nullable(Int64)
+- name: updated_by_id
+  type: Nullable(Int64)
+- name: weight
+  type: Nullable(Int64)
+- name: confidential
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: due_date
+  type: Nullable(Date32)
+- name: moved_to_id
+  type: Nullable(Int64)
+- name: time_estimate
+  type: Nullable(Int64)
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: relative_position
+  type: Nullable(Int64)
+- name: last_edited_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: last_edited_by_id
+  type: Nullable(Int64)
+- name: closed_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: closed_by_id
+  type: Nullable(Int64)
+- name: state_id
+  type: Int8
+  default_kind: DEFAULT
+  default_expression: '1'
+- name: duplicated_to_id
+  type: Nullable(Int64)
+- name: promoted_to_epic_id
+  type: Nullable(Int64)
+- name: health_status
+  type: Nullable(Int8)
+- name: sprint_id
+  type: Nullable(Int64)
+- name: blocking_issues_count
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: upvotes_count
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: work_item_type_id
+  type: Int64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: namespace_id
+  type: Int64
+- name: start_date
+  type: Nullable(Date32)
+- name: custom_status_id
+  type: Int64
+- name: system_defined_status_id
+  type: Int64
+- name: version
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: label_ids
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: assignee_ids
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"

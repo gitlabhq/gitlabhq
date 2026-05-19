@@ -61,7 +61,7 @@ For information about project and group milestones API, see:
 To view the milestone list:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Milestones**.
+1. In the left sidebar, select **Plan** > **Milestones**.
 
 In a project, GitLab displays milestones that belong to the project.
 In a group, GitLab displays milestones that belong to the group and all projects and subgroups in the group.
@@ -153,7 +153,7 @@ Prerequisites:
 To create a milestone:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Milestones**.
+1. In the left sidebar, select **Plan** > **Milestones**.
 1. Select **New milestone**.
 1. Enter the title.
 1. Optional. Enter description, start date, and due date.
@@ -184,7 +184,7 @@ Prerequisites:
 To edit a milestone:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Milestones**.
+1. In the left sidebar, select **Plan** > **Milestones**.
 1. Select a milestone's title.
 1. In the upper-right corner, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) and then select **Edit**.
 1. Edit the title, start date, due date, or description.
@@ -210,7 +210,7 @@ Prerequisites:
 To close a milestone:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Milestones**.
+1. In the left sidebar, select **Plan** > **Milestones**.
 1. Either:
    - Next to the milestone you want to close, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Close**.
    - Select the milestone title, and then select **Close**.
@@ -231,7 +231,7 @@ Prerequisites:
 To delete a milestone:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Milestones**.
+1. In the left sidebar, select **Plan** > **Milestones**.
 1. Either:
    - Next to the milestone you want to delete, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
    - Select the milestone title, and then select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
@@ -265,7 +265,7 @@ Prerequisites:
 To promote a project milestone:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Milestones**.
+1. In the left sidebar, select **Plan** > **Milestones**.
 1. Either:
    - Next to the milestone you want to promote, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Promote**.
    - Select the milestone title, and then select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Promote**.

@@ -22,8 +22,8 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
     context "when there are unblocked owners" do
       context "with one unblocked owner" do
         specify do
-          expect { assigner.execute }.to change(group_member, :last_owner)
-                                           .from(nil).to(true)
+          expect { assigner.execute }.to change { group_member.last_owner }
+            .from(nil).to(true)
         end
       end
 
@@ -31,17 +31,17 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
         let_it_be(:unblocked_owner_member) { create(:group_member, :owner, source: group) }
 
         specify do
-          expect { assigner.execute }.to change(group_member, :last_owner)
-                                           .from(nil).to(false)
+          expect { assigner.execute }.to change { group_member.last_owner }
+            .from(nil).to(false)
         end
 
         it "has many members passed" do
           assigner = described_class.new(group, [unblocked_owner_member, group_member])
 
-          expect { assigner.execute }.to change(group_member, :last_owner)
-                                           .from(nil).to(false)
-                                                  .and change(unblocked_owner_member, :last_owner)
-                                                         .from(nil).to(false)
+          expect { assigner.execute }.to change { group_member.last_owner }
+            .from(nil).to(false)
+            .and change { unblocked_owner_member.last_owner }
+            .from(nil).to(false)
         end
       end
 
@@ -56,7 +56,7 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
             end
 
             specify do
-              expect { assigner.execute }.to change(group_member, :last_owner)
+              expect { assigner.execute }.to change { group_member.last_owner }
                 .from(nil).to(true)
             end
           end
@@ -69,7 +69,7 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
           subject(:assigner) { described_class.new(subgroup, [group_member_2]) }
 
           specify do
-            expect { assigner.execute }.to change(group_member_2, :last_owner)
+            expect { assigner.execute }.to change { group_member_2.last_owner }
               .from(nil).to(false)
           end
         end
@@ -83,8 +83,8 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
 
       context "with one blocked owner" do
         specify do
-          expect { assigner.execute }.to change(group_member, :last_owner)
-                                           .from(nil).to(true)
+          expect { assigner.execute }.to change { group_member.last_owner }
+            .from(nil).to(true)
         end
       end
 
@@ -92,8 +92,8 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
         specify do
           create_list(:group_member, 2, :owner, source: group)
 
-          expect { assigner.execute }.to change(group_member, :last_owner)
-                                           .from(nil).to(false)
+          expect { assigner.execute }.to change { group_member.last_owner }
+            .from(nil).to(false)
         end
       end
 
@@ -101,8 +101,8 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
         specify do
           create(:group_member, :owner, :blocked, source: group)
 
-          expect { assigner.execute }.to change(group_member, :last_owner)
-                                           .from(nil).to(false)
+          expect { assigner.execute }.to change { group_member.last_owner }
+            .from(nil).to(false)
         end
       end
 
@@ -117,7 +117,7 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
             end
 
             specify do
-              expect { assigner.execute }.to change(group_member, :last_owner)
+              expect { assigner.execute }.to change { group_member.last_owner }
                 .from(nil).to(true)
             end
           end
@@ -131,7 +131,7 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
           subject(:assigner) { described_class.new(subgroup, [group_member]) }
 
           specify do
-            expect { assigner.execute }.to change(group_member, :last_owner)
+            expect { assigner.execute }.to change { group_member.last_owner }
               .from(nil).to(true)
           end
 
@@ -141,7 +141,7 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
             end
 
             specify do
-              expect { assigner.execute }.to change(group_member, :last_owner)
+              expect { assigner.execute }.to change { group_member.last_owner }
                 .from(nil).to(false)
             end
           end
@@ -156,8 +156,8 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
         end
 
         it 'marks the human member as the last owner' do
-          expect { assigner.execute }.to change(group_member, :last_owner)
-                                           .from(nil).to(true)
+          expect { assigner.execute }.to change { group_member.last_owner }
+            .from(nil).to(true)
         end
       end
     end
@@ -169,8 +169,8 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
         end
 
         it 'marks the human member as the last owner' do
-          expect { assigner.execute }.to change(group_member, :last_owner)
-                                           .from(nil).to(true)
+          expect { assigner.execute }.to change { group_member.last_owner }
+            .from(nil).to(true)
         end
       end
     end

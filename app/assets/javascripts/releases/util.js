@@ -63,6 +63,7 @@ const convertCommit = (graphQLRelease) => {
     commit: {
       shortId: truncateSha(graphQLRelease.commit.sha),
       title: graphQLRelease.commit.title,
+      sha: graphQLRelease.commit.sha,
     },
     commitPath: graphQLRelease.commit.webUrl,
   };

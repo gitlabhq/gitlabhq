@@ -37,6 +37,13 @@ RSpec.shared_examples 'members bulk update mutation' do
       source.add_owner(current_user)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_member do
+      let(:user) { current_user }
+      let(:boundary_object) { source }
+      let(:mutation) { graphql_mutation(mutation_name, input_params, 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     shared_examples 'updates the user access role' do
       specify do
         post_graphql_mutation(mutation, current_user: current_user)

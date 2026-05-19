@@ -216,6 +216,12 @@
               "string",
               "null"
             ]
+          },
+          "duo_session_url": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [

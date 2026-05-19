@@ -49,6 +49,12 @@ RSpec.describe 'DeleteGroupCustomAttribute', feature_category: :groups_and_proje
   context 'when user is an admin', :enable_admin_mode do
     let(:current_user) { admin }
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_custom_attribute do
+      let(:user) { admin }
+      let(:boundary_object) { group }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when custom attribute exists' do
       let!(:custom_attribute) do
         create(:group_custom_attribute, group: group, key: 'department', value: 'engineering')

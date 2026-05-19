@@ -59,7 +59,7 @@ Example below:
 1. Before testing a Task, assign yourself to it to avoid multiple people testing the same scenario.
 1. **\[Optional\]** assign a tested Task to a PM for review.
     - Use the `Task` comments section to discuss any unexpected behaviour and create follow-up Issue(s).
-1. **\[Optional\]** A PM should sign-off the test scenario if everything looks good. The, close the Task, and mark it as complete in this issue.
+1. **\[Optional\]** A PM should sign-off the test scenario if everything looks good. Then, close the Task, and mark it as complete in this issue.
 1. Add [Bug(s)](#identified-bugs) and/or [Question(s)](#open-questions) to the corresponding sections below.
 
 # Test Cases

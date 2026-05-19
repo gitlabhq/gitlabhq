@@ -6,6 +6,7 @@ import SidebarStatus from './sidebar/sidebar_status.vue';
 import SidebarTodo from './sidebar/sidebar_todo.vue';
 
 export default {
+  name: 'AlertSidebar',
   components: {
     SidebarAssignees,
     SidebarHeader,
@@ -26,6 +27,7 @@ export default {
       required: true,
     },
   },
+  emits: ['toggle-sidebar', 'alert-error'],
   apollo: {
     sidebarStatus: {
       query: sidebarStatusQuery,

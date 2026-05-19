@@ -81,7 +81,8 @@ module VerifiesWithEmail
         send_notification_to_primary_email(primary_email, secondary_email)
       end
 
-      render json: { status: :success }
+      resend_after = treat_as_locked?(user) ? nil : show_email_otp_resend_after(user)
+      render json: { status: :success, show_resend_after: resend_after }
     end
   end
 

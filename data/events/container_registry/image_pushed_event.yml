@@ -1,0 +1,6 @@
+---
+event: ContainerRegistry::ImagePushedEvent
+description: Published when the container registry notifies GitLab of a successful
+  image push, so subscribers (e.g. container scanning) can react to the new image.
+feature_category: container_registry
+ee_only: true

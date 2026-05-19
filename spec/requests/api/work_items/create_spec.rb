@@ -161,6 +161,22 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
       end
     end
 
+    context 'with crm_contacts feature' do
+      it 'creates a work item with CRM contacts' do
+        contact = create(:contact, group: project.group)
+
+        post api(api_request_path, user), params: {
+          title: 'CRM task',
+          work_item_type_name: 'task',
+          features: { crm_contacts: { contact_ids: [contact.id] } }
+        }
+
+        expect(response).to have_gitlab_http_status(:created)
+        new_work_item = WorkItem.find(json_response['id'])
+        expect(new_work_item.customer_relations_contacts).to include(contact)
+      end
+    end
+
     context 'when feature flag is disabled' do
       before do
         stub_feature_flags(work_item_rest_api: false)
@@ -351,6 +367,7 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
         }
 
         expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to include("Parent work item #{non_existing_record_id}")
       end
     end
 

@@ -60,7 +60,7 @@ RSpec.describe FinderWithGroupHierarchy, feature_category: :groups_and_projects 
   end
 
   context 'when including items from group ancestors' do
-    before do
+    before_all do
       private_subgroup.add_developer(user)
     end
 
@@ -86,7 +86,7 @@ RSpec.describe FinderWithGroupHierarchy, feature_category: :groups_and_projects 
   end
 
   context 'when including items from group descendants' do
-    before do
+    before_all do
       private_subgroup.add_developer(user)
     end
 

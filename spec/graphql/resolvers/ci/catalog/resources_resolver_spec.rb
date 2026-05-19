@@ -30,6 +30,7 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
   let(:verification_level) { nil }
   let(:topics) { [] }
   let(:min_access_level) { nil }
+  let(:group_ids) { nil }
 
   let(:args) do
     {
@@ -39,7 +40,8 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
       scope: scope,
       verification_level: verification_level,
       topics: topics,
-      min_access_level: min_access_level
+      min_access_level: min_access_level,
+      group_ids: group_ids
     }.compact
   end
 
@@ -283,6 +285,72 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
           it 'returns all visible resources' do
             ordered_names = result.items.reorder('catalog_resources.name DESC').pluck(:name)
             expect(ordered_names).to contain_exactly('public', 'internal', 'z private test')
+          end
+        end
+      end
+
+      context 'with group_ids argument' do
+        let_it_be(:other_namespace) { create(:group) }
+        let_it_be(:other_namespace_project) do
+          create(:project, :public, name: 'other group resource', namespace: other_namespace, reporters: user)
+        end
+
+        let_it_be(:other_namespace_resource) do
+          create(:ci_catalog_resource, :published, project: other_namespace_project)
+        end
+
+        context 'when filtering by a single group' do
+          let(:group_ids) { [namespace.to_global_id] }
+
+          it 'returns only resources whose project namespace matches' do
+            expect(result.items.pluck(:name)).to contain_exactly('public', 'z private test')
+          end
+        end
+
+        context 'when filtering by multiple groups' do
+          let(:group_ids) { [namespace.to_global_id, other_namespace.to_global_id] }
+
+          it 'returns the union of resources across the given namespaces' do
+            expect(result.items.pluck(:name))
+              .to contain_exactly('public', 'z private test', 'other group resource')
+          end
+        end
+
+        context 'when group_ids does not match any namespace' do
+          let_it_be(:empty_namespace) { create(:group) }
+          let(:group_ids) { [empty_namespace.to_global_id] }
+
+          it 'returns no resources' do
+            expect(result.items).to be_empty
+          end
+        end
+
+        context 'when group_ids is empty' do
+          let(:group_ids) { [] }
+
+          it 'returns all visible resources' do
+            expect(result.items.pluck(:name)).to contain_exactly('public', 'internal', 'z private test',
+              'other group resource')
+          end
+        end
+
+        context 'when combined with other filters' do
+          context 'with search' do
+            let(:group_ids) { [namespace.to_global_id] }
+            let(:search) { 'public' }
+
+            it 'returns resources matching both filters' do
+              expect(result.items.pluck(:name)).to contain_exactly('public')
+            end
+          end
+
+          context 'with scope' do
+            let(:group_ids) { [namespace.to_global_id] }
+            let(:scope) { 'NAMESPACES' }
+
+            it 'returns resources matching both filters' do
+              expect(result.items.pluck(:name)).to contain_exactly('public', 'z private test')
+            end
           end
         end
       end

@@ -35,7 +35,7 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
   end
 
   context 'with namespace_traversal_ids_filtering' do
-    let_it_be(:group_project_work_item) { create(:work_item, project: project1, author: user) }
+    let_it_be(:group_project_work_item, freeze: false) { create(:work_item, project: project1, author: user) }
 
     it_behaves_like 'issues or work items finder with namespace_traversal_ids filtering',
       :work_item,
@@ -48,8 +48,8 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
   context 'with start and end date filtering' do
     include_context '{Issues|WorkItems}Finder#execute context', :work_item
 
-    let_it_be(:work_item1) { create(:work_item, :issue, project: project1) }
-    let_it_be(:work_item2) { create(:work_item, :issue, project: project1) }
+    let_it_be(:work_item1, freeze: false) { create(:work_item, :issue, project: project1) }
+    let_it_be(:work_item2, freeze: false) { create(:work_item, :issue, project: project1) }
 
     let(:scope) { 'all' }
     let(:params) { { start_date: '2020-08-12', end_date: '2020-08-14', project_id: project1.id } }
@@ -63,11 +63,11 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     end
 
     context 'when work item start and due dates are both present' do
-      let_it_be(:date_source1) do
+      let_it_be(:date_source1, freeze: false) do
         create(:work_items_dates_source, work_item: work_item1, start_date: '2020-08-13', due_date: '2020-08-15')
       end
 
-      let_it_be(:date_source2) do
+      let_it_be(:date_source2, freeze: false) do
         create(:work_items_dates_source, work_item: work_item2, start_date: '2020-08-16', due_date: '2020-08-20')
       end
 
@@ -77,11 +77,11 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     end
 
     context 'when only start date or due date is present' do
-      let_it_be(:date_source_only_start) do
+      let_it_be(:date_source_only_start, freeze: false) do
         create(:work_items_dates_source, work_item: work_item1, start_date: '2020-08-12', due_date: nil)
       end
 
-      let_it_be(:date_source_only_due) do
+      let_it_be(:date_source_only_due, freeze: false) do
         create(:work_items_dates_source, work_item: work_item2, start_date: nil, due_date: '2020-08-14')
       end
 
@@ -97,8 +97,8 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     let(:scope) { 'all' }
 
     context 'when user has access to child item' do
-      let_it_be(:child_item1) { create(:work_item, :task, project: project1) }
-      let_it_be(:parent_item1) { create(:work_item, :issue, project: project1) }
+      let_it_be(:child_item1, freeze: false) { create(:work_item, :task, project: project1) }
+      let_it_be(:parent_item1, freeze: false) { create(:work_item, :issue, project: project1) }
 
       let(:params) { { work_item_parent_ids: [parent_item1.id] } }
 
@@ -112,9 +112,9 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     end
 
     context 'when filtering by parent item from different project' do
-      let_it_be(:another_project) { create(:project) }
-      let_it_be(:child_item2) { create(:work_item, :task, project: project1) }
-      let_it_be(:parent_item2) { create(:work_item, :issue, project: another_project) }
+      let_it_be(:another_project, freeze: false) { create(:project) }
+      let_it_be(:child_item2, freeze: false) { create(:work_item, :task, project: project1) }
+      let_it_be(:parent_item2, freeze: false) { create(:work_item, :issue, project: another_project) }
 
       let(:params) { { work_item_parent_ids: [parent_item2.id] } }
 
@@ -128,11 +128,11 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     end
 
     context 'when filtering by multiple parent items' do
-      let_it_be(:child_item3) { create(:work_item, :task, project: project1) }
-      let_it_be(:child_item4) { create(:work_item, :task, project: project1) }
+      let_it_be(:child_item3, freeze: false) { create(:work_item, :task, project: project1) }
+      let_it_be(:child_item4, freeze: false) { create(:work_item, :task, project: project1) }
 
-      let_it_be(:parent_item3) { create(:work_item, :issue, project: project1) }
-      let_it_be(:parent_item4) { create(:work_item, :issue, project: project1) }
+      let_it_be(:parent_item3, freeze: false) { create(:work_item, :issue, project: project1) }
+      let_it_be(:parent_item4, freeze: false) { create(:work_item, :issue, project: project1) }
 
       let(:params) { { work_item_parent_ids: [parent_item3.id, parent_item4.id] } }
 
@@ -147,8 +147,11 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     end
 
     context 'when user does not have access to child items' do
-      let_it_be(:confidential_work_item) { create(:work_item, :task, confidential: true, project: project1) }
-      let_it_be(:parent_item5) { create(:work_item, :issue, confidential: true, project: project1) }
+      let_it_be(:confidential_work_item, freeze: false) do
+        create(:work_item, :task, confidential: true, project: project1)
+      end
+
+      let_it_be(:parent_item5, freeze: false) { create(:work_item, :issue, confidential: true, project: project1) }
 
       let(:search_user) { user2 }
       let(:params) { { work_item_parent_ids: [parent_item5.id] } }
@@ -163,9 +166,9 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     end
 
     context 'when user does not have access to child and parent items' do
-      let_it_be(:private_project) { create(:project, :private) }
-      let_it_be(:private_work_item) { create(:work_item, :task, project: private_project) }
-      let_it_be(:private_parent_item) { create(:work_item, :issue, project: private_project) }
+      let_it_be(:private_project, freeze: false) { create(:project, :private) }
+      let_it_be(:private_work_item, freeze: false) { create(:work_item, :task, project: private_project) }
+      let_it_be(:private_parent_item, freeze: false) { create(:work_item, :issue, project: private_project) }
 
       let(:search_user) { user2 }
       let(:params) { { work_item_parent_ids: [private_parent_item.id] } }
@@ -183,11 +186,11 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
   context 'when filtering by NOT parent_ids' do
     include_context '{Issues|WorkItems}Finder#execute context', :work_item
 
-    let_it_be(:work_item_without_parent) { create(:work_item, :issue, project: project1) }
-    let_it_be(:work_item_with_parent) { create(:work_item, :task, project: project1) }
+    let_it_be(:work_item_without_parent, freeze: false) { create(:work_item, :issue, project: project1) }
+    let_it_be(:work_item_with_parent, freeze: false) { create(:work_item, :task, project: project1) }
 
-    let_it_be(:unrelated_work_item) { create(:work_item, :issue, project: project1) }
-    let_it_be(:unrelated_work_item_with_parent) { create(:work_item, :task, project: project1) }
+    let_it_be(:unrelated_work_item, freeze: false) { create(:work_item, :issue, project: project1) }
+    let_it_be(:unrelated_work_item_with_parent, freeze: false) { create(:work_item, :task, project: project1) }
 
     let(:scope) { 'all' }
     let(:params) { { not: { work_item_parent_ids: [work_item_without_parent.id] } } }
@@ -206,8 +209,8 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
   context 'when using parent_wildcard_id filter' do
     include_context '{Issues|WorkItems}Finder#execute context', :work_item
 
-    let_it_be(:work_item_without_parent) { create(:work_item, :issue, project: project1) }
-    let_it_be(:work_item_with_parent) { create(:work_item, :task, project: project1) }
+    let_it_be(:work_item_without_parent, freeze: false) { create(:work_item, :issue, project: project1) }
+    let_it_be(:work_item_with_parent, freeze: false) { create(:work_item, :task, project: project1) }
     let(:scope) { 'all' }
 
     before do

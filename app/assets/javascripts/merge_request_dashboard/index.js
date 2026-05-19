@@ -8,7 +8,6 @@ import createDefaultClient from '~/lib/graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import currentUserPreferencesQuery from './queries/current_user_preferences.query.graphql';
 import App from './components/app.vue';
-import ConfigDropdown from './components/config_dropdown.vue';
 
 export function initMergeRequestDashboard(el) {
   Vue.use(VueApollo);
@@ -101,16 +100,6 @@ export function initMergeRequestDashboard(el) {
         },
         __typename: 'CurrentUser',
       },
-    },
-  });
-
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: document.getElementById('js-merge-request-dashboard-config'),
-    name: 'MergeRequestDashboardConfigDropdownRoot',
-    apolloProvider,
-    render(h) {
-      return h(ConfigDropdown);
     },
   });
 

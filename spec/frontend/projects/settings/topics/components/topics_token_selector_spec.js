@@ -72,6 +72,20 @@ describe('TopicsTokenSelector', () => {
     input.remove();
   });
 
+  describe('accessibility', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders a label in the form group', () => {
+      expect(wrapper.find('label').attributes('for')).toBe('project_topics_input');
+    });
+
+    it('passes text-input-attrs with correct id to the token selector', () => {
+      expect(findTokenSelector().props('textInputAttrs')).toEqual({ id: 'project_topics_input' });
+    });
+  });
+
   describe('when component is mounted', () => {
     it('parses selected into tokens', async () => {
       const selected = [

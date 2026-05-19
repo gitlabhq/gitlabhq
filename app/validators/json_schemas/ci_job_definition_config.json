@@ -14,7 +14,7 @@
       "$ref": "./build_metadata_config_options.json"
     },
     "run_steps": {
-      "$ref": "./run_steps.json"
+      "$ref": "./ci_run_steps.json"
     },
     "secrets": {
       "$ref": "./build_metadata_secrets.json"

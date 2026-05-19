@@ -10,18 +10,23 @@ import {
   GlButton,
 } from '@gitlab/ui';
 import MrWidgetPipelineDuoAction from 'ee_component/vue_merge_request_widget/components/mr_duo_fix_pipeline.vue';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { reportToSentry } from '~/ci/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { s__, n__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import PipelineArtifacts from '~/ci/pipelines_page/components/pipelines_artifacts.vue';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
+import { PIPELINE_CREATION_STATUSES } from '~/ci/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import mergeRequestEventTypeQuery from '../queries/merge_request_event_type.query.graphql';
+import mrPipelineCreationRequestUpdated from '../subscriptions/mr_pipeline_creation_request_updated.subscription.graphql';
 import runPipelineMixin from '../mixins/run_pipeline';
 import {
   PIPELINE_EVENT_TYPE_MERGE_REQUEST,
@@ -47,6 +52,42 @@ export default {
       update: (d) => d.project?.mergeRequest?.pipelines?.nodes?.[0]?.mergeRequestEventType,
       error(err) {
         reportToSentry(this.$options.name, err);
+      },
+    },
+    $subscribe: {
+      // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
+      pipelineCreation: {
+        query: mrPipelineCreationRequestUpdated,
+        variables() {
+          return {
+            mergeRequestId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mrId),
+          };
+        },
+        skip() {
+          return !this.mrId;
+        },
+        result({ data }) {
+          const { ciPipelineCreationRequestsUpdated } = data;
+
+          if (!ciPipelineCreationRequestsUpdated) return;
+
+          const requests = ciPipelineCreationRequestsUpdated.pipelineCreationRequests;
+
+          // a new pipeline is being created
+          const hasInProgress = requests.some(
+            (r) => r.status === PIPELINE_CREATION_STATUSES.inProgress,
+          );
+
+          if (hasInProgress) {
+            // store snapshot of last pipeline ID
+            this.pipelineIdOnCreation = this.pipelineId;
+            this.hasInProgressPipeline = true;
+          }
+        },
+        error(err) {
+          this.hasInProgressPipeline = false;
+          Sentry.captureException(err);
+        },
       },
     },
   },
@@ -124,11 +165,17 @@ export default {
       required: false,
       default: false,
     },
+    mrId: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
       isCreatingPipeline: false,
       mergeRequestEventType: null,
+      pipelineIdOnCreation: null,
+      hasInProgressPipeline: false,
     };
   },
   computed: {
@@ -208,6 +255,23 @@ export default {
     showDuoWorkflowAction() {
       return this.hasPipeline && this.status.group === 'failed' && !this.retargeted;
     },
+    pipelineId() {
+      return this.pipeline?.id;
+    },
+    showPipelineCreatingMessage() {
+      if (!this.hasInProgressPipeline) return false;
+
+      // display creating message until new pipeline ID comes in
+      return this.pipelineId === this.pipelineIdOnCreation;
+    },
+  },
+  watch: {
+    pipelineId(newId) {
+      if (this.hasInProgressPipeline && newId !== this.pipelineIdOnCreation) {
+        this.hasInProgressPipeline = false;
+        this.pipelineIdOnCreation = null;
+      }
+    },
   },
   errorText: s__(
     'Pipeline|Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation%{linkEnd}.',
@@ -247,6 +311,14 @@ export default {
       >
         {{ __('Run pipeline') }}
       </gl-button>
+    </template>
+    <template v-else-if="showPipelineCreatingMessage">
+      <div class="gl-flex gl-items-center">
+        <gl-loading-icon size="sm" />
+        <p class="gl-mb-0 gl-ml-3" data-testid="pipeline-creation-message">
+          {{ s__('Pipeline|Creating pipeline...') }}
+        </p>
+      </div>
     </template>
     <template v-else-if="!hasPipeline">
       <gl-loading-icon size="sm" />

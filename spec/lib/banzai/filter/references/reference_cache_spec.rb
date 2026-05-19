@@ -121,7 +121,7 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :ma
         cache_single.load_reference_cache(filter_single.nodes)
       end
 
-      expect(control.count).to eq 4
+      expect(control.count).to eq 3
       # Since this is an issue filter that is not batching issue queries
       # across projects, we have to account for that.
       # 1 for for routes to find routes.source_id of projects matching paths
@@ -131,8 +131,8 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :ma
       # 1 for loading the routes associated with the namespace
       # 1x2 for issues
       # 1x2 for groups
-      # 1x2 for work_item_types
-      # Total = 11
+      # work_item_type is now an in-memory model (SystemDefined::Type), no DB query needed
+      # Total = 9
       expect do
         cache.load_reference_cache(filter.nodes)
       end.not_to exceed_query_limit(control).with_threshold(8)

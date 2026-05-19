@@ -1,12 +1,3 @@
 - if params[:personal]
   = content_for :flash_message do
     = render 'shared/project_limit'
-
-= render ::Layouts::PageHeadingComponent.new(_('Projects')) do |c|
-  - c.with_actions do
-    = render Pajamas::ButtonComponent.new(href: explore_projects_path, variant: :confirm, category: :tertiary, button_options: { data: { event_tracking: 'click_explore_projects_on_your_work_projects' } }) do
-      = _("Explore projects")
-
-    - if current_user.can_create_project?
-      = render Pajamas::ButtonComponent.new(href: new_project_path, variant: :confirm, button_options: { data: { testid: 'new-project-button', event_tracking: 'click_new_project_on_your_work_projects' } }) do
-        = _("New project")

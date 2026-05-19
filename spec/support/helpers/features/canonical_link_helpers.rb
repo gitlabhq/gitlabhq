@@ -12,11 +12,11 @@
 module Features
   module CanonicalLinkHelpers
     def have_canonical_link(url)
-      have_xpath("//link[@rel=\"canonical\" and @href=\"#{url}\"]", visible: false)
+      have_xpath("//link[@rel=\"canonical\" and @href=\"#{url}\"]", visible: :hidden)
     end
 
     def have_any_canonical_links
-      have_xpath('//link[@rel="canonical"]', visible: false)
+      have_xpath('//link[@rel="canonical"]', visible: :hidden)
     end
   end
 end

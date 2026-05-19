@@ -47,9 +47,17 @@ class ProtectedBranch < ApplicationRecord
         project.namespace.default_branch_protection_settings
       )
       return true if branch_protection.can_initial_push?(member_access)
+
+      # Allow the initial push to security policy management projects regardless of branch protection settings
+      return true if can_update_security_orchestration_policy_project?(user, project)
     end
 
     super
+  end
+
+  # overridden in EE
+  def self.can_update_security_orchestration_policy_project?(user, project)
+    false
   end
 
   # Check if branch name is marked as protected in the system

@@ -12,10 +12,11 @@ RSpec.describe 'Projects settings', feature_category: :groups_and_projects do
 
   before do
     sign_in(user)
-    visit edit_project_path(project)
   end
 
   it 'can toggle sections by clicking the title or button', :js do
+    visit edit_project_path(project)
+
     expect_toggle_state(:expanded)
 
     button.click

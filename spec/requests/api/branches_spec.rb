@@ -52,6 +52,10 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
         expect(project.repository.merged_branch_names(unmerged_branches)).to be_empty
       end
 
+      before do
+        stub_feature_flags(use_new_branches_finder_api: false)
+      end
+
       context 'with branch_list_keyset_pagination feature off' do
         let(:base_params) { {} }
 
@@ -442,6 +446,93 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
         let(:request) { get api(route, guest) }
+      end
+    end
+
+    it 'returns the repository branches' do
+      get api(route, user), params: { per_page: 100 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to match_response_schema('public_api/v4/branches')
+      branch_names = json_response.map { |x| x['name'] }
+      expect(branch_names).to match_array(project.repository.branch_names)
+    end
+
+    it 'uses Gitlab::Git::Finders::BranchesFinder' do
+      expect(Gitlab::Git::Finders::BranchesFinder).to receive(:new).and_call_original
+
+      get api(route, user), params: { per_page: 2 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    context 'when requesting page 2 with the new branches finder' do
+      it 'returns correct branches for the second page' do
+        get api(route, user), params: { per_page: 5, page: 1 }
+        first_page_names = json_response.map { |b| b['name'] }
+
+        get api(route, user), params: { per_page: 5, page: 2 }
+        second_page_names = json_response.map { |b| b['name'] }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(second_page_names).not_to be_empty
+        expect(second_page_names).not_to include(*first_page_names)
+        expect(response.headers['X-Page']).to eq('2')
+      end
+    end
+
+    context 'when search parameter is passed with new branches finder' do
+      it 'returns correct branches' do
+        get api(route, user), params: { per_page: 100, search: branch_name }
+
+        searched_branch_names = json_response.map { |branch| branch['name'] }
+        project_branch_names = project.repository.branch_names.grep(/#{branch_name}/)
+
+        expect(searched_branch_names).to match_array(project_branch_names)
+      end
+
+      it 'returns an empty array when branch does not exist' do
+        get api(route, user), params: { per_page: 100, search: 'no_such_branch_name_entropy_of_jabadabadu' }
+
+        expect(json_response).to eq []
+      end
+    end
+
+    context 'when sort parameter is passed with new branches finder' do
+      it 'sorts branches' do
+        get api(route, user), params: { sort: 'name_asc', per_page: 10 }
+
+        sorted_branch_names = json_response.map { |branch| branch['name'] }
+        project_branch_names = project.repository.branch_names.sort.take(10)
+
+        expect(sorted_branch_names).to eq(project_branch_names)
+      end
+    end
+
+    context 'when regex parameter is provided' do
+      it 'falls back to BranchesFinder' do
+        expect(BranchesFinder).to receive(:new).and_call_original
+
+        get api(route, user), params: { per_page: 100, regex: branch_name }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        searched_branch_names = json_response.map { |branch| branch['name'] }
+        project_branch_names = project.repository.branch_names.grep(/#{branch_name}/)
+        expect(searched_branch_names).to match_array(project_branch_names)
+      end
+    end
+
+    context 'when use_new_branches_finder_api feature flag is disabled' do
+      before do
+        stub_feature_flags(use_new_branches_finder_api: false)
+      end
+
+      it 'uses BranchesFinder' do
+        expect(BranchesFinder).to receive(:new).and_call_original
+
+        get api(route, user), params: { per_page: 2 }
+
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end

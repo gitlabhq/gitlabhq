@@ -71,6 +71,7 @@ permissions:
   - create_vulnerability_feedback
   - create_wiki
   - delete_timelog
+  - manage_trigger
   - push_code
   - push_code_to_protected_branches
   - push_to_delete_protected_branch

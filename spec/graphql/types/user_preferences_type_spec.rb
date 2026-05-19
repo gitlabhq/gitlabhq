@@ -19,6 +19,7 @@ RSpec.describe Types::UserPreferencesType, feature_category: :user_profile do
       work_items_display_settings
       merge_request_dashboard_show_drafts
       wiki_use_auto_commit_message
+      orbit_settings
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least

@@ -42,7 +42,7 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
       let(:token_string) { create_iam_jwt(user: user, issuer: iam_issuer, private_key: private_key, kid: kid) }
 
       before do
-        stub_iam_service_config(enabled: false, url: iam_service_url)
+        stub_iam_service_config(enabled: false, url: iam_service_url, jwt_issuer: iam_issuer)
       end
 
       include_examples 'returns error', reason: :disabled, message: 'IAM JWT authentication is disabled'
@@ -193,24 +193,6 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
         end
 
         include_examples 'returns error', reason: :service_unavailable, message: /Failed to connect to IAM service/
-
-        it 'does not log the failure' do
-          expect(Gitlab::AuthLogger).not_to receive(:error)
-          result
-        end
-      end
-
-      context 'when IAM service URL is not configured' do
-        let(:token_string) do
-          create_iam_jwt(user: user, issuer: iam_issuer, private_key: private_key, kid: kid)
-        end
-
-        before do
-          allow(Authn::IamAuthService).to receive(:url)
-            .and_raise(Authn::IamAuthService::ConfigurationError, 'IAM service is not configured')
-        end
-
-        include_examples 'returns error', reason: :service_unavailable, message: /IAM service is not configured/
 
         it 'does not log the failure' do
           expect(Gitlab::AuthLogger).not_to receive(:error)

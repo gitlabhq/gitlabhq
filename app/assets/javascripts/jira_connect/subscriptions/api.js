@@ -40,6 +40,7 @@ export const fetchGroups = async (
       top_level_only,
     },
     headers: {
+      // eslint-disable-next-line @gitlab/require-i18n-strings -- False positive
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   });
@@ -71,6 +72,7 @@ export const addJiraConnectSubscription = (namespacePath, { jwt, accessToken }) 
     },
     {
       headers: {
+        // eslint-disable-next-line @gitlab/require-i18n-strings -- False positive
         Authorization: `Bearer ${accessToken}`,
       },
     },

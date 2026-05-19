@@ -520,6 +520,86 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     it 'returns a hash' do
       expect(diff_file.code_review_id).to match(/\A[0-9a-f]{40}\z/)
     end
+
+    context 'when diff has to_id from Gitaly' do
+      before do
+        allow(diff).to receive(:to_id).and_return('efd587ccb47caf5f31fc954edb21f0a713d9ecc3')
+      end
+
+      it 'does not load the blob' do
+        expect(diff_file).not_to receive(:blob)
+        diff_file.code_review_id
+      end
+
+      it 'includes the to_id in the hash' do
+        expected = Digest::SHA1.hexdigest("#{diff_file.file_identifier}-efd587ccb47caf5f31fc954edb21f0a713d9ecc3")
+        expect(diff_file.code_review_id).to eq(expected)
+      end
+    end
+
+    context 'when diff has both to_id and from_id' do
+      before do
+        allow(diff).to receive(:to_id).and_return('efd587ccb47caf5f31fc954edb21f0a713d9ecc3')
+        allow(diff).to receive(:from_id).and_return('0792c58905eff3432b721f8c4a64363d8e28d9ae')
+      end
+
+      it 'uses to_id over from_id' do
+        expected = Digest::SHA1.hexdigest("#{diff_file.file_identifier}-efd587ccb47caf5f31fc954edb21f0a713d9ecc3")
+        expect(diff_file.code_review_id).to eq(expected)
+      end
+    end
+
+    context 'when diff has from_id but not to_id (deleted file)' do
+      before do
+        allow(diff).to receive(:to_id).and_return(nil)
+        allow(diff).to receive(:from_id).and_return('0792c58905eff3432b721f8c4a64363d8e28d9ae')
+      end
+
+      it 'does not load the blob' do
+        expect(diff_file).not_to receive(:blob)
+        diff_file.code_review_id
+      end
+
+      it 'uses from_id in the hash' do
+        expected = Digest::SHA1.hexdigest("#{diff_file.file_identifier}-0792c58905eff3432b721f8c4a64363d8e28d9ae")
+        expect(diff_file.code_review_id).to eq(expected)
+      end
+    end
+
+    context 'when diff has neither from_id nor to_id (persisted diff)' do
+      before do
+        allow(diff).to receive(:to_id).and_return(nil)
+        allow(diff).to receive(:from_id).and_return(nil)
+      end
+
+      it 'falls back to blob.id' do
+        expected = Digest::SHA1.hexdigest("#{diff_file.file_identifier}-#{diff_file.blob&.id}")
+        expect(diff_file.code_review_id).to eq(expected)
+      end
+    end
+
+    context 'when diff_blob_metadata_only_for_code_review_id is disabled' do
+      before do
+        stub_feature_flags(diff_blob_metadata_only_for_code_review_id: false)
+      end
+
+      it 'uses blob&.id directly' do
+        expected = Digest::SHA1.hexdigest("#{diff_file.file_identifier}-#{diff_file.blob&.id}")
+        expect(diff_file.code_review_id).to eq(expected)
+      end
+
+      context 'with a deleted file' do
+        let(:branch_name) { 'master' }
+        let(:diff_file) do
+          create_file('deleted_test_file.md', 'content')
+          delete_file('deleted_test_file.md')
+        end
+
+        it 'returns a valid hash' do
+          expect(diff_file.code_review_id).to match(/\A[0-9a-f]{40}\z/)
+        end
+      end
+    end
   end
 
   context 'diff file stats' do
@@ -528,7 +608,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     end
 
     let(:raw_diff) do
-      <<~EOS
+      <<~DIFF
         --- a/files/ruby/popen.rb
         +++ b/files/ruby/popen.rb
         @@ -6,12 +6,18 @@ module Popen
@@ -539,7 +619,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
         +      raise RuntimeError, "System commands must be given as an array of strings"
         +      # foobar
              end
-      EOS
+      DIFF
     end
 
     describe '#added_lines' do
@@ -977,7 +1057,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
   describe '#diff_hunk' do
     context 'when first line is a match' do
       let(:raw_diff) do
-        <<~EOS
+        <<~DIFF
           --- a/files/ruby/popen.rb
           +++ b/files/ruby/popen.rb
           @@ -6,12 +6,18 @@ module Popen
@@ -987,21 +1067,21 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
           -      raise "System commands must be given as an array of strings"
           +      raise RuntimeError, "System commands must be given as an array of strings"
                end
-        EOS
+        DIFF
       end
 
       it 'returns raw diff up to given line index' do
         allow(diff_file).to receive(:raw_diff) { raw_diff }
         diff_line = instance_double(Gitlab::Diff::Line, index: 5)
 
-        diff_hunk = <<~EOS
+        diff_hunk = <<~DIFF
           @@ -6,12 +6,18 @@ module Popen
 
              def popen(cmd, path=nil)
                unless cmd.is_a?(Array)
           -      raise "System commands must be given as an array of strings"
           +      raise RuntimeError, "System commands must be given as an array of strings"
-        EOS
+        DIFF
 
         expect(diff_file.diff_hunk(diff_line)).to eq(diff_hunk.strip)
       end
@@ -1009,7 +1089,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when first line is not a match' do
       let(:raw_diff) do
-        <<~EOS
+        <<~DIFF
           @@ -1,4 +1,4 @@
           -Copyright (c) 2011-2017 GitLab B.V.
           +Copyright (c) 2011-2019 GitLab B.V.
@@ -1019,14 +1099,14 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
           @@ -9,17 +9,21 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
           copies of the Software, and to permit persons to whom the Software is
           furnished to do so, subject to the following conditions:
-        EOS
+        DIFF
       end
 
       it 'returns raw diff up to given line index' do
         allow(diff_file).to receive(:raw_diff) { raw_diff }
         diff_line = instance_double(Gitlab::Diff::Line, index: 5)
 
-        diff_hunk = <<~EOS
+        diff_hunk = <<~DIFF
           -Copyright (c) 2011-2017 GitLab B.V.
           +Copyright (c) 2011-2019 GitLab B.V.
 
@@ -1034,7 +1114,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
           @@ -9,17 +9,21 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
           copies of the Software, and to permit persons to whom the Software is
-        EOS
+        DIFF
 
         expect(diff_file.diff_hunk(diff_line)).to eq(diff_hunk.strip)
       end
@@ -1394,6 +1474,16 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
         old_positions = old_lines.map(&:old_pos)
 
         expect(old_positions).to eq(old_positions.sort)
+      end
+
+      it 'does not duplicate lines at expansion boundaries' do
+        diff_file.expand_to_full!
+
+        lines = diff_file.highlighted_diff_lines
+        context_lines = lines.reject { |l| l.type == 'old' }
+        new_positions = context_lines.map(&:new_pos)
+
+        expect(new_positions).to eq(new_positions.uniq)
       end
 
       it 'preserves line codes on changed lines for commenting' do

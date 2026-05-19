@@ -5,26 +5,104 @@ module Mcp
     module WorkItems
       class GetSavedViewWorkItemsTool < BaseTool
         class << self
+          # Single source of truth for all filter definitions.
+          # Adding a new filter = adding one entry here (or in the EE override).
+          # Each entry: { key: 'graphqlArgName', type: 'GraphQLType' }
+          def filter_definitions
+            [
+              { key: 'assigneeUsernames',   type: '[String!]' },
+              { key: 'assigneeWildcardId',  type: 'AssigneeWildcardId' },
+              { key: 'authorUsername',      type: 'String' },
+              { key: 'confidential',        type: 'Boolean' },
+              { key: 'hierarchyFilters',    type: 'HierarchyFilterInput' },
+              { key: 'labelName',           type: '[String!]' },
+              { key: 'milestoneTitle',      type: '[String!]' },
+              { key: 'milestoneWildcardId', type: 'MilestoneWildcardId' },
+              { key: 'myReactionEmoji',     type: 'String' },
+              { key: 'types',               type: '[IssueType!]' },
+              { key: 'state',               type: 'IssuableState' },
+              { key: 'search',              type: 'String' },
+              { key: 'in',                  type: '[IssuableSearchableField!]' },
+              { key: 'closedAfter',          type: 'Time' },
+              { key: 'closedBefore',         type: 'Time' },
+              { key: 'createdAfter',         type: 'Time' },
+              { key: 'createdBefore',        type: 'Time' },
+              { key: 'dueAfter',             type: 'Time' },
+              { key: 'dueBefore',            type: 'Time' },
+              { key: 'updatedAfter',         type: 'Time' },
+              { key: 'updatedBefore',        type: 'Time' },
+              { key: 'subscribed',           type: 'SubscriptionStatus' },
+              { key: 'releaseTag',           type: '[String!]' },
+              { key: 'releaseTagWildcardId', type: 'ReleaseTagWildcardId' },
+              { key: 'crmContactId',         type: 'String' },
+              { key: 'crmOrganizationId',    type: 'String' },
+              { key: 'not',                 type: 'NegatedWorkItemFilterInput' },
+              { key: 'or',                  type: 'UnionedWorkItemFilterInput' }
+            ]
+          end
+
+          def widget_fragments
+            [
+              <<~GRAPHQL.indent(12),
+                ... on WorkItemWidgetAssignees {
+                  assignees {
+                    nodes {
+                      id
+                      name
+                      username
+                      webUrl
+                    }
+                  }
+                }
+              GRAPHQL
+              <<~GRAPHQL.indent(12),
+                ... on WorkItemWidgetLabels {
+                  labels {
+                    nodes {
+                      id
+                      title
+                      color
+                      description
+                    }
+                  }
+                }
+              GRAPHQL
+              <<~GRAPHQL.indent(12),
+                ... on WorkItemWidgetMilestone {
+                  milestone {
+                    id
+                    title
+                    dueDate
+                    startDate
+                  }
+                }
+              GRAPHQL
+              <<~GRAPHQL.indent(12),
+                ... on WorkItemWidgetStartAndDueDate {
+                  dueDate
+                  startDate
+                }
+              GRAPHQL
+              <<~GRAPHQL.indent(12)
+                ... on WorkItemWidgetHierarchy {
+                  parent {
+                    id
+                  }
+                }
+              GRAPHQL
+            ]
+          end
+
           def build_query
+            filter_vars = filter_definitions.map { |f| "  $#{f[:key]}: #{f[:type]}" }.join("\n")
+            filter_args = filter_definitions.map { |f| "    #{f[:key]}: $#{f[:key]}" }.join("\n")
+            widget_fragments_str = widget_fragments.join("\n")
+
             <<~GRAPHQL
               query GetWorkItemsFull(
                 $fullPath: ID!
                 $sort: WorkItemSort
-                $state: IssuableState
-                $search: String
-                $in: [IssuableSearchableField!]
-                $assigneeWildcardId: AssigneeWildcardId
-                $assigneeUsernames: [String!]
-                $authorUsername: String
-                $confidential: Boolean
-                $labelName: [String!]
-                $milestoneTitle: [String!]
-                $milestoneWildcardId: MilestoneWildcardId
-                $myReactionEmoji: String
-                $types: [IssueType!]
-                $not: NegatedWorkItemFilterInput
-                $or: UnionedWorkItemFilterInput
-                $hierarchyFilters: HierarchyFilterInput
+              #{filter_vars}
                 $includeDescendants: Boolean
                 $excludeProjects: Boolean
                 $excludeGroupWorkItems: Boolean
@@ -36,21 +114,7 @@ module Mcp
                   name
                   workItems(
                     sort: $sort
-                    state: $state
-                    search: $search
-                    in: $in
-                    assigneeUsernames: $assigneeUsernames
-                    assigneeWildcardId: $assigneeWildcardId
-                    authorUsername: $authorUsername
-                    confidential: $confidential
-                    labelName: $labelName
-                    milestoneTitle: $milestoneTitle
-                    milestoneWildcardId: $milestoneWildcardId
-                    myReactionEmoji: $myReactionEmoji
-                    types: $types
-                    not: $not
-                    or: $or
-                    hierarchyFilters: $hierarchyFilters
+              #{filter_args}
                     includeDescendants: $includeDescendants
                     excludeProjects: $excludeProjects
                     excludeGroupWorkItems: $excludeGroupWorkItems
@@ -91,43 +155,7 @@ module Mcp
                       }
                       widgets {
                         type
-                        ... on WorkItemWidgetAssignees {
-                          assignees {
-                            nodes {
-                              id
-                              name
-                              username
-                              webUrl
-                            }
-                          }
-                        }
-                        ... on WorkItemWidgetLabels {
-                          labels {
-                            nodes {
-                              id
-                              title
-                              color
-                              description
-                            }
-                          }
-                        }
-                        ... on WorkItemWidgetMilestone {
-                          milestone {
-                            id
-                            title
-                            dueDate
-                            startDate
-                          }
-                        }
-                        ... on WorkItemWidgetStartAndDueDate {
-                          dueDate
-                          startDate
-                        }
-                        ... on WorkItemWidgetHierarchy {
-                          parent {
-                            id
-                          }
-                        }
+              #{widget_fragments_str}
                       }
                     }
                   }
@@ -139,10 +167,15 @@ module Mcp
 
         register_version VERSIONS[:v0_1_0], {
           operation_name: 'namespace',
-          graphql_operation: build_query
+          # Lambda defers build_query evaluation until after prepend_mod
+          # applies the EE module, so EE filter_definitions and
+          # widget_fragments are included in the composed GraphQL query.
+          graphql_operation: -> { build_query }
         }
 
         attr_reader :unsupported_filters
+
+        COMPOSITE_FILTERS = %w[not or].freeze
 
         def initialize(current_user:, params:, version: nil)
           super
@@ -178,24 +211,7 @@ module Mcp
         def build_work_items_variables(full_path, filters, sort)
           variables = { fullPath: full_path }
 
-          # Map saved view filters to GraphQL variables
-          filter_mapping = {
-            'assigneeUsernames' => :assigneeUsernames,
-            'assigneeWildcardId' => :assigneeWildcardId,
-            'authorUsername' => :authorUsername,
-            'labelName' => :labelName,
-            'milestoneTitle' => :milestoneTitle,
-            'milestoneWildcardId' => :milestoneWildcardId,
-            'myReactionEmoji' => :myReactionEmoji,
-            'confidential' => :confidential,
-            'types' => :types,
-            'state' => :state,
-            'search' => :search,
-            'in' => :in,
-            'hierarchyFilters' => :hierarchyFilters,
-            'not' => :not,
-            'or' => :or
-          }
+          filter_mapping = self.class.filter_definitions.index_by { |f| f[:key] }
 
           # fullPath overrides the top-level namespace scope rather than
           # being a workItems argument, so handle it separately.
@@ -204,9 +220,18 @@ module Mcp
             filters = filters.except('fullPath')
           end
 
-          filter_mapping.each do |filter_key, variable_key|
+          filter_mapping.each do |filter_key, definition|
             value = filters[filter_key]
-            variables[variable_key] = value unless value.nil?
+            next if value.nil?
+
+            variable_key = filter_key.to_sym
+
+            if COMPOSITE_FILTERS.include?(filter_key)
+              variables[variable_key] = apply_nested_transforms(value, filter_mapping)
+            else
+              transform = definition[:transform]
+              variables[variable_key] = transform ? transform.call(value) : value
+            end
           end
 
           # Detect filters present in the saved view but not supported by this tool
@@ -227,7 +252,22 @@ module Mcp
 
           variables.compact
         end
+
+        def apply_nested_transforms(nested_filters, filter_mapping)
+          nested_filters.each_with_object({}) do |(key, value), result|
+            transform = filter_mapping[key]&.dig(:transform)
+            result[key] = if transform && value.is_a?(Array)
+                            value.map { |v| transform.call(v) }
+                          elsif transform
+                            transform.call(value)
+                          else
+                            value
+                          end
+          end
+        end
       end
     end
   end
 end
+
+Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool.prepend_mod

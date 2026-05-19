@@ -17,7 +17,7 @@ module Gitlab
               .where('gpg_key_id IS NULL OR verification_status <> ?', CommitSignatures::GpgSignature.verification_statuses[:verified])
               .where(gpg_key_primary_keyid: [key.keyid, key.fingerprint])
               .find_each do |sig|
-                sig.gpg_commit&.update_signature_with_keychain!(sig, key)
+                sig.gpg_commit&.update_cached_signature!(sig, key)
               end
           end
         end

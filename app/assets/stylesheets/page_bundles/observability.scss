@@ -4,7 +4,33 @@
   height: $calc-application-viewport-height;
   min-height: 600px;
   padding: $gl-spacing-scale-4;
-  border-radius: $gl-border-radius-lg;
+}
+
+// EXPERIMENTAL: Observability fullscreen overrides
+// These rules let the o11y iframe fill the viewport while the feature is
+// experimental. They override .panel-content positioning which is fragile
+// and considered tech debt. Before moving to beta this approach must be
+// revisited so fullscreen is either unnecessary or handled by the design
+// system. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/232269#note_3299933653
+html.o11y-fullscreen {
+  .static-panel .panel-content {
+    position: fixed !important;
+    contain: none !important;
+    inset: 0;
+    z-index: $zindex-modal-backdrop;
+    max-width: none;
+    padding-bottom: 0;
+
+    .panel-content-inner {
+      padding: 0;
+      overflow: hidden;
+      scrollbar-gutter: auto;
+    }
+  }
+
+  .observability-container {
+    padding: 0;
+  }
 }
 
 @mixin icon-styles($color) {

@@ -59,6 +59,8 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
   end
 
   before do
+    # this will be removed during - https://gitlab.com/gitlab-org/gitlab/-/work_items/594274
+    stub_feature_flags(subscription_sm_unification: false)
     stub_application_setting(require_admin_approval_after_user_signup: false)
   end
 
@@ -198,9 +200,12 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
           perform_enqueued_jobs do
             visit new_user_registration_path
 
-            expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
-            expect(page).to have_current_path users_almost_there_path, ignore_query: true
-            expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
+            expect do
+              fill_in_sign_up_form(new_user)
+
+              expect(page).to have_current_path users_almost_there_path, ignore_query: true
+              expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
+            end.to change { User.count }.by(1)
           end
 
           mail = find_email_for(new_user.email)
@@ -222,7 +227,7 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
         it 'creates the user account and sends a confirmation email' do
           visit new_user_registration_path
 
-          expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
+          expect { sign_up_successfully(new_user) }.to change { User.count }.by(1)
           expect(page).to have_current_path dashboard_projects_path
         end
       end
@@ -250,12 +255,15 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
       it 'creates the user but does not sign them in' do
         visit new_user_registration_path
 
-        expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
-        expect(page).to have_current_path new_user_session_path, ignore_query: true
-        expect(page).to have_content(<<~TEXT.squish)
-            You have signed up successfully. However, we could not sign you in
-            because your account is awaiting approval from your GitLab administrator
-        TEXT
+        expect do
+          fill_in_sign_up_form(new_user)
+
+          expect(page).to have_current_path new_user_session_path, ignore_query: true
+          expect(page).to have_content(<<~TEXT.squish)
+              You have signed up successfully. However, we could not sign you in
+              because your account is awaiting approval from your GitLab administrator
+          TEXT
+        end.to change { User.count }.by(1)
       end
     end
   end
@@ -358,7 +366,7 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
   it 'allows visiting of a page after initial registration' do
     visit new_user_registration_path
 
-    fill_in_sign_up_form(new_user)
+    sign_up_successfully(new_user)
 
     visit new_project_path
 
@@ -433,7 +441,7 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
         )
 
         new_user.password = new_user_password_ori
-        expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
+        expect { sign_up_successfully(new_user) }.to change { User.count }.by(1)
       end
     end
   end
@@ -453,8 +461,14 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
         new_user.email = email
         visit new_user_registration_path
 
-        expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
+        expect { sign_up_successfully(new_user) }.to change { User.count }.by(1)
       end
     end
+  end
+
+  def sign_up_successfully(user)
+    fill_in_sign_up_form(user)
+
+    expect(page).to have_current_path(dashboard_projects_path)
   end
 end

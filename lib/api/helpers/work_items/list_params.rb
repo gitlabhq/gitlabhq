@@ -62,6 +62,21 @@ module API
           optional :due_after, type: DateTime,
             desc: 'Filter by due date after the given date/time.'
 
+          optional :search, type: String,
+            desc: 'Search query for title or description.'
+          optional :in, type: Array[String],
+            values: ::Issuable::SEARCHABLE_FIELDS,
+            desc: 'Fields to search in. Values: title, description. Requires the search argument.',
+            coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
+
+          optional :timeframe, type: Hash,
+            desc: 'List items overlapping the given timeframe.' do
+            optional :start, type: Date,
+              desc: 'Start of the timeframe.'
+            optional :end, type: Date,
+              desc: 'End of the timeframe.'
+          end
+
           optional :confidential, type: Boolean,
             desc: 'Filter for confidential work items.'
           optional :subscribed, type: Symbol,

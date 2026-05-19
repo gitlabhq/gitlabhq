@@ -43,15 +43,10 @@ module Import
           Import::Offline::ExportWorker.perform_async(offline_export.id)
 
           ServiceResponse.success(payload: offline_export)
-        rescue ActiveRecord::RecordInvalid => e
+        rescue Import::Clients::ObjectStorage::ConnectionError,
+          Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError,
+          ActiveRecord::RecordInvalid => e
           service_error(e.message)
-        rescue Excon::Error, StandardError => e
-          # Providing a nonexistent AWS S3 bucket results in a NoMethodError caused by an excon error.
-          # Check if error's cause is an excon error for a more useful error to the user
-          raise e unless e.is_a?(Excon::Error) || e.cause.is_a?(Excon::Error)
-
-          # Excon errors may be long and contain sensitive information depending on provider implementation
-          service_error(s_('OfflineTransfer|Unable to access object storage bucket.'))
         end
 
         private
@@ -78,9 +73,20 @@ module Import
         end
 
         def validate_object_storage!
-          offline_export.configuration.validate! # Validate before attempting to connect using this configuration
+          offline_export.configuration.validate!
+          validate_endpoint_url! if offline_export.configuration.s3_compatible?
 
           client.test_connection!
+        end
+
+        def validate_endpoint_url!
+          endpoint = offline_export.configuration.endpoint
+          return unless endpoint.present?
+
+          ::Gitlab::HTTP_V2::UrlBlocker.validate!(
+            endpoint,
+            **Import::Framework::UrlBlockerParams.new.to_h
+          )
         end
 
         def create_self_relation_exports!

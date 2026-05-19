@@ -2,6 +2,8 @@
 
 module Observability
   class GroupO11ySetting < ApplicationRecord
+    include Gitlab::Utils::StrongMemoize
+
     HUMANIZED_ATTRIBUTES = {
       o11y_service_url: 'O11y service name'
     }.freeze
@@ -81,6 +83,11 @@ module Observability
 
       errors.add(:o11y_service_user_email, I18n.t(:invalid, scope: 'valid_email.validations.email'))
     end
+
+    def gitlab_observability_export_variable
+      group&.variables&.by_key('GITLAB_OBSERVABILITY_EXPORT')&.first
+    end
+    strong_memoize_attr :gitlab_observability_export_variable
 
     def provisioning?
       within_provisioning_window? || new_record?

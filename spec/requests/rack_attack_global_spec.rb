@@ -1335,6 +1335,92 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
     end
   end
 
+  describe 'product analytics collector requests' do
+    let(:aid) { SecureRandom.uuid }
+    let(:path) { "/-/collector/i?aid=#{aid}" }
+
+    def do_request
+      # The route /-/collector/i is not registered in Rails (handled externally in production).
+      # Use GET since the catchall route returns 404 gracefully; the throttle checks path only.
+      get path
+    end
+
+    # Verify production code registers the throttle with the expected hardcoded limits.
+    # This test must NOT stub throttle_definitions it tests the real production entry.
+    it 'is registered in production throttle_definitions with hardcoded limits' do
+      defn = Gitlab::RackAttack.throttle_definitions['throttle_product_analytics_collector']
+      expect(defn).not_to be_nil
+      expect(defn.options[:limit]).to eq(100)
+      expect(defn.options[:period]).to eq(60)
+    end
+
+    context 'when rate limited' do
+      let(:saved_rack_attack_throttles)    { Rack::Attack.throttles.dup }
+      let(:saved_rack_attack_safelists)    { Rack::Attack.safelists.dup }
+      let(:saved_rack_attack_blocklists)   { Rack::Attack.blocklists.dup }
+      let(:saved_rack_attack_tracks)       { Rack::Attack.tracks.dup }
+      let(:saved_rack_attack_responder)    { Rack::Attack.throttled_responder }
+
+      before do
+        # Force evaluation of saved state before mutating global Rack::Attack configuration.
+        saved_rack_attack_throttles
+        saved_rack_attack_safelists
+        saved_rack_attack_blocklists
+        saved_rack_attack_tracks
+        saved_rack_attack_responder
+        # without making 101 real requests.
+        allow(Gitlab::RackAttack).to receive(:throttle_definitions).and_return(
+          'throttle_product_analytics_collector' => Gitlab::RackAttack::ThrottleDefinition.new(
+            { limit: requests_per_period, period: period_in_seconds },
+            ->(req) { req.params['aid'] if req.product_analytics_collector_request? }
+          )
+        )
+
+        Gitlab::Redis::RateLimiting.with(&:flushdb)
+        Rack::Attack.clear_configuration
+        Gitlab::RackAttack.configure(Rack::Attack)
+      end
+
+      after do
+        Rack::Attack.clear_configuration
+        saved_rack_attack_throttles.each  { |name, throttle|  Rack::Attack.throttles[name]  = throttle }
+        saved_rack_attack_safelists.each  { |name, safelist|  Rack::Attack.safelists[name]  = safelist }
+        saved_rack_attack_blocklists.each { |name, blocklist| Rack::Attack.blocklists[name] = blocklist }
+        saved_rack_attack_tracks.each     { |name, track|     Rack::Attack.tracks[name]     = track }
+        Rack::Attack.throttled_responder = saved_rack_attack_responder
+      end
+
+      it 'rejects requests over the rate limit' do
+        requests_per_period.times do
+          do_request
+          expect(response).not_to have_gitlab_http_status(:too_many_requests)
+        end
+
+        expect_rejection { do_request }
+      end
+
+      it 'counts requests from different application IDs separately' do
+        requests_per_period.times do
+          do_request
+          expect(response).not_to have_gitlab_http_status(:too_many_requests)
+        end
+
+        get "/-/collector/i?aid=#{SecureRandom.uuid}"
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+      end
+
+      it 'does not throttle requests without an aid parameter' do
+        # The throttle key is nil when aid is absent, so Rack::Attack does not count the request.
+        (requests_per_period + 1).times { get '/-/collector/i' }
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+      end
+
+      it_behaves_like 'tracking when dry-run mode is set' do
+        let(:throttle_name) { 'throttle_product_analytics_collector' }
+      end
+    end
+  end
+
   describe 'throttle bypass header' do
     let(:headers) { {} }
     let(:bypass_header) { 'gitlab-bypass-rate-limiting' }

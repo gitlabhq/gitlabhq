@@ -26,6 +26,11 @@ RSpec.describe 'ArtifactDestroy', feature_category: :job_artifacts do
       artifact.job.project.add_maintainer(user)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_job_artifact do
+      let(:boundary_object) { artifact.job.project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     it 'destroys the artifact' do
       post_graphql_mutation(mutation, current_user: user)
 

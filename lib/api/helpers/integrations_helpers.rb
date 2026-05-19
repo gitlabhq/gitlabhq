@@ -84,7 +84,7 @@ module API
         ].freeze
       end
 
-      def self.integrations # rubocop: disable Metrics/AbcSize -- just being a struct, doesn't have behavior
+      def self.integrations
         {
           'apple-app-store' => ::Integrations::AppleAppStore.api_arguments,
           'asana' => ::Integrations::Asana.api_arguments,
@@ -126,7 +126,6 @@ module API
           'linear' => ::Integrations::Linear.api_arguments,
           'matrix' => ::Integrations::Matrix.api_arguments,
           'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_arguments,
-          'slack-slash-commands' => ::Integrations::SlackSlashCommands.api_arguments,
           'packagist' => ::Integrations::Packagist.api_arguments,
           'phorge' => ::Integrations::Phorge.api_arguments,
           'pipelines-email' => ::Integrations::PipelinesEmail.api_arguments,
@@ -195,7 +194,6 @@ module API
           ::Integrations::Pushover,
           ::Integrations::Redmine,
           ::Integrations::Slack,
-          ::Integrations::SlackSlashCommands,
           ::Integrations::SquashTm,
           ::Integrations::Teamcity,
           ::Integrations::Telegram,

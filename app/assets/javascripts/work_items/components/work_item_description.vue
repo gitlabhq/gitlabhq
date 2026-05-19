@@ -15,6 +15,8 @@ import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   findDescriptionWidget,
+  findLinkedItemsWidget,
+  findHierarchyWidget,
   newWorkItemId,
   newWorkItemFullPath,
   autocompleteDataSources,
@@ -23,6 +25,8 @@ import projectPermissionsQuery from '../graphql/ai_permissions_for_project.query
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import workItemDescriptionTemplateQuery from '../graphql/work_item_description_template.query.graphql';
 import namespacePathsQuery from '../graphql/namespace_paths.query.graphql';
+import workItemLinkedItemsQuery from '../graphql/work_item_linked_items.query.graphql';
+import workItemOpenChildCountQuery from '../graphql/open_child_count.query.graphql';
 import {
   i18n,
   NEW_WORK_ITEM_IID,
@@ -32,7 +36,11 @@ import {
   CREATION_CONTEXT_LIST_ROUTE,
   ROUTES,
   WIDGET_TYPE_DESCRIPTION,
+  STATE_CLOSED,
+  STATE_OPEN,
+  LINKED_CATEGORIES_MAP,
 } from '../constants';
+import WorkItemCloseConfirmModal from './work_item_close_confirm_modal.vue';
 import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
 import WorkItemDescriptionTemplateListbox from './work_item_description_template_listbox.vue';
 
@@ -48,6 +56,7 @@ export default {
     GlFormGroup,
     GlFormTextarea,
     MarkdownEditor,
+    WorkItemCloseConfirmModal,
     WorkItemDescriptionRendered,
     WorkItemDescriptionTemplateListbox,
   },
@@ -156,6 +165,10 @@ export default {
       markdownPaths: {},
       enableEditFromRedirect: getParameterByName('edit') === 'true',
       isCancellingEdit: false,
+      hasInitializedDescriptionText: false,
+      blockerItems: [],
+      openChildItemsCount: 0,
+      closeConfirmModalVisible: false,
     };
   },
   apollo: {
@@ -177,7 +190,15 @@ export default {
       result() {
         if (this.isEditing) {
           if (this.createFlow || this.enableEditFromRedirect) {
-            this.startEditing();
+            // Only initialize descriptionText from cache/draft on the first
+            // result while editing. Subsequent cache updates (e.g., from
+            // each keystroke writing to the resolver) must not overwrite
+            // descriptionText because that races with active user typing
+            // and produces ghost characters.
+            if (!this.hasInitializedDescriptionText) {
+              this.hasInitializedDescriptionText = true;
+              this.startEditing();
+            }
           } else {
             this.checkForConflicts();
           }
@@ -261,6 +282,48 @@ export default {
         Sentry.captureException(error);
       },
     },
+    blockerItems: {
+      query: workItemLinkedItemsQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+        };
+      },
+      skip() {
+        return !this.workItemIid || !this.hasCloseQuickAction;
+      },
+      update({ namespace }) {
+        if (!namespace?.workItem) return [];
+        const linkedWorkItems = findLinkedItemsWidget(namespace.workItem)?.linkedItems?.nodes || [];
+        return linkedWorkItems.filter(
+          (item) =>
+            item.linkType === LINKED_CATEGORIES_MAP.IS_BLOCKED_BY &&
+            item.workItemState !== STATE_CLOSED,
+        );
+      },
+      error(e) {
+        this.$emit('error', e.message || i18n.fetchError);
+      },
+    },
+    openChildItemsCount: {
+      query: workItemOpenChildCountQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+        };
+      },
+      skip() {
+        return !this.workItemIid || !this.hasCloseQuickAction;
+      },
+      update({ namespace }) {
+        if (!namespace?.workItem) return 0;
+        const countsByType = findHierarchyWidget(namespace.workItem)?.rolledUpCountsByType;
+        if (!countsByType) return 0;
+        return countsByType.reduce((acc, curr) => acc + curr.countsByState.opened, 0);
+      },
+    },
   },
   computed: {
     createFlow() {
@@ -301,7 +364,7 @@ export default {
         : findDescriptionWidget(this.workItem);
       return {
         ...descriptionWidget,
-        description: descriptionWidget?.description || '',
+        description: descriptionWidget?.description || this.description || '',
       };
     },
     workItemType() {
@@ -346,6 +409,15 @@ export default {
         return ['full-screen'];
       }
       return [];
+    },
+    hasCloseQuickAction() {
+      return /^\s*\/close\s*$/im.test(this.descriptionText) && this.workItem?.state === STATE_OPEN;
+    },
+    isBlockedByOpenItems() {
+      return this.hasCloseQuickAction && this.blockerItems.length > 0;
+    },
+    hasOpenChildItems() {
+      return this.hasCloseQuickAction && this.openChildItemsCount > 0;
     },
     enableTruncation() {
       /* truncationEnabled uses the local storage based setting,
@@ -429,6 +501,7 @@ export default {
     async startEditing() {
       this.isEditing = true;
       this.wasEdited = true;
+      this.hasInitializedDescriptionText = true;
 
       if (this.createFlow || this.enableEditFromRedirect) {
         const draftWidgets = JSON.parse(getDraft(this.workItemWidgetsAutoSaveKey));
@@ -498,6 +571,14 @@ export default {
         this.isSubmittingWithKeydown = true;
       }
 
+      if (this.isBlockedByOpenItems || this.hasOpenChildItems) {
+        this.closeConfirmModalVisible = true;
+        return;
+      }
+
+      this.proceedWithUpdate();
+    },
+    proceedWithUpdate() {
       if (this.$refs.markdownEditor) {
         trackSavedUsingEditor(
           this.$refs.markdownEditor.isContentEditorActive,
@@ -702,6 +783,7 @@ export default {
               category="primary"
               variant="confirm"
               :loading="isSubmitting"
+              class="js-no-auto-disable"
               data-testid="save-description"
               type="submit"
               >{{ saveButtonText }}
@@ -733,6 +815,16 @@ export default {
       :updated-at="lastEditedAt"
       :updated-by-name="lastEditedByName"
       :updated-by-path="lastEditedByPath"
+    />
+
+    <work-item-close-confirm-modal
+      v-if="closeConfirmModalVisible"
+      :work-item-type="workItemType"
+      :is-blocked-by-open-items="isBlockedByOpenItems"
+      :blocker-items="blockerItems"
+      :visible="closeConfirmModalVisible"
+      @hide="closeConfirmModalVisible = false"
+      @proceed="proceedWithUpdate"
     />
   </div>
 </template>

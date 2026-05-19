@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::RepoToIndexEvent
+description: Published when Zoekt repositories pending indexing are detected, so the
+  subscribed worker can enqueue indexing tasks for them.
+feature_category: global_search
+ee_only: true

@@ -578,6 +578,14 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
       let(:request) { post api(path, personal_access_token: pat) }
     end
 
+    it 'passes creation_source api to the service' do
+      expect(::PersonalAccessTokens::RotateService).to receive(:new)
+        .with(anything, anything, anything, hash_including(creation_source: PersonalAccessToken::CREATION_SOURCE_API))
+        .and_call_original
+
+      post api(path, token.user)
+    end
+
     it "rotates user's own token", :freeze_time do
       post api(path, token.user)
 

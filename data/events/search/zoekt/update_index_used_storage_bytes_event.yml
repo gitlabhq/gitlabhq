@@ -1,0 +1,7 @@
+---
+event: Search::Zoekt::UpdateIndexUsedStorageBytesEvent
+description: Published when Zoekt indices with stale used-storage statistics are detected,
+  so the subscribed worker can refresh their `used_storage_bytes` from the underlying
+  repositories.
+feature_category: global_search
+ee_only: true

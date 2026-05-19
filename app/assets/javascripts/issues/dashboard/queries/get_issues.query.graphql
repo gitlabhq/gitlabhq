@@ -22,6 +22,7 @@ query getDashboardIssues(
   $myReactionEmoji: String
   $subscribed: SubscriptionStatus
   $types: [IssueType!]
+  $workItemTypeIds: [WorkItemsTypeID!]
   $in: [IssuableSearchableField!]
   $not: NegatedIssueFilterInput
   $or: UnionedIssueFilterInput
@@ -49,6 +50,7 @@ query getDashboardIssues(
     myReactionEmoji: $myReactionEmoji
     subscribed: $subscribed
     types: $types
+    workItemTypeIds: $workItemTypeIds
     in: $in
     not: $not
     or: $or

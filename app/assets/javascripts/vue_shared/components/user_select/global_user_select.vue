@@ -12,6 +12,13 @@ export default {
     GlAvatar,
     GlAvatarLabeled,
   },
+  props: {
+    inputId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
   data() {
     return {
       loading: false,
@@ -25,6 +32,7 @@ export default {
     textInputAttrs() {
       return {
         'data-testid': 'global-user-select-input',
+        ...(this.inputId && { id: this.inputId }),
       };
     },
   },

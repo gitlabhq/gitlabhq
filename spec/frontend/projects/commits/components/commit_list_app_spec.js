@@ -1,16 +1,22 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
 import { GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import { groupCommitsByDay } from '~/projects/commits/utils';
+import { groupCommitsByDay } from '~/projects/commits/utils/commit_grouping';
 import CommitListApp from '~/projects/commits/components/commit_list_app.vue';
 import CommitListHeader from '~/projects/commits/components/commit_list_header.vue';
 import CommitListItem from '~/projects/commits/components/commit_list_item.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import commitsQuery from '~/projects/commits/graphql/queries/commits.query.graphql';
+import {
+  TOKEN_TYPE_COMMITTED_AFTER,
+  TOKEN_TYPE_COMMITTED_BEFORE,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   mockCommitsNodes,
   mockCommitsQueryResponse,
@@ -20,13 +26,16 @@ import {
 } from './mock_data';
 
 Vue.use(VueApollo);
+Vue.use(VueRouter);
 
 jest.mock('~/alert');
 jest.mock('~/performance/utils');
-jest.mock('~/projects/commits/utils');
+jest.mock('~/projects/commits/utils/commit_grouping');
 
 describe('CommitListApp', () => {
   let wrapper;
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const defaultProvide = {
     projectFullPath: 'gitlab-org/gitlab',
@@ -35,10 +44,22 @@ describe('CommitListApp', () => {
 
   const commitsQueryHandler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
 
-  const createComponent = (handler = commitsQueryHandler) => {
+  const createRouter = (routeQuery = {}) => {
+    const router = new VueRouter({
+      mode: 'abstract',
+      routes: [{ path: '/', component: CommitListApp }],
+    });
+
+    router.push({ path: '/', query: routeQuery });
+
+    return router;
+  };
+
+  const createComponent = (handler = commitsQueryHandler, routeQuery = {}) => {
     wrapper = shallowMountExtended(CommitListApp, {
       apolloProvider: createMockApollo([[commitsQuery, handler]]),
       provide: defaultProvide,
+      router: createRouter(routeQuery),
     });
   };
 
@@ -89,6 +110,7 @@ describe('CommitListApp', () => {
           ...defaultProvide,
           escapedRef: 'feature%2Fmy-branch',
         },
+        router: createRouter(),
       });
       await waitForPromises();
 
@@ -144,6 +166,17 @@ describe('CommitListApp', () => {
         expect(timeElement.attributes('datetime')).toBe(expectedDatetime[index]);
         expect(timeElement.text()).toBe(expectedDateText[index]);
       });
+    });
+
+    it('renders the raw day string when the authored date is outside the JS Date range', async () => {
+      const outOfRangeDay = '+292278994-08-17T07:12:55+00:00';
+      groupCommitsByDay.mockReturnValue([{ day: outOfRangeDay, commits: [mockCommitsNodes[0]] }]);
+      createComponent();
+      await waitForPromises();
+
+      const timeElements = findTimeElements();
+      expect(timeElements.at(0).attributes('datetime')).toBe(outOfRangeDay);
+      expect(timeElements.at(0).text()).toBe(outOfRangeDay);
     });
   });
 
@@ -314,6 +347,55 @@ describe('CommitListApp', () => {
       );
     });
 
+    it('refetches commits with committed-after filter when filter is applied', async () => {
+      commitsQueryHandler.mockClear();
+
+      findCommitHeader().vm.$emit('filter', [
+        { type: TOKEN_TYPE_COMMITTED_AFTER, value: { data: '2025-01-01' } },
+      ]);
+      await waitForPromises();
+
+      expect(commitsQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          committedAfter: '2025-01-01',
+          committedBefore: null,
+        }),
+      );
+    });
+
+    it('refetches commits with committed-before filter when filter is applied', async () => {
+      commitsQueryHandler.mockClear();
+
+      findCommitHeader().vm.$emit('filter', [
+        { type: TOKEN_TYPE_COMMITTED_BEFORE, value: { data: '2025-12-31' } },
+      ]);
+      await waitForPromises();
+
+      expect(commitsQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          committedAfter: null,
+          committedBefore: '2025-12-31',
+        }),
+      );
+    });
+
+    it('refetches commits with date range filters when both are applied', async () => {
+      commitsQueryHandler.mockClear();
+
+      findCommitHeader().vm.$emit('filter', [
+        { type: TOKEN_TYPE_COMMITTED_AFTER, value: { data: '2025-01-01' } },
+        { type: TOKEN_TYPE_COMMITTED_BEFORE, value: { data: '2025-12-31' } },
+      ]);
+      await waitForPromises();
+
+      expect(commitsQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          committedAfter: '2025-01-01',
+          committedBefore: '2025-12-31',
+        }),
+      );
+    });
+
     it('clears filters when empty filter array is passed', async () => {
       findCommitHeader().vm.$emit('filter', [{ type: 'author', value: { data: 'Administrator' } }]);
       await waitForPromises();
@@ -322,6 +404,121 @@ describe('CommitListApp', () => {
       await waitForPromises();
 
       expect(findDailyCommits()).toHaveLength(2);
+    });
+  });
+
+  describe('filter_commit_list event tracking', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('tracks filter event with author label', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findCommitHeader().vm.$emit('filter', [{ type: 'author', value: { data: 'Administrator' } }]);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'filter_commit_list',
+        { label: 'author' },
+        undefined,
+      );
+    });
+
+    it('tracks filter event with message label', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findCommitHeader().vm.$emit('filter', [{ type: 'message', value: { data: 'fix bug' } }]);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'filter_commit_list',
+        { label: 'message' },
+        undefined,
+      );
+    });
+
+    it('tracks filter event with message label for filtered-search-term token type', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findCommitHeader().vm.$emit('filter', [
+        { type: 'filtered-search-term', value: { data: 'fix bug' } },
+      ]);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'filter_commit_list',
+        { label: 'message' },
+        undefined,
+      );
+    });
+
+    it('tracks filter event with combined label when both filters are applied', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findCommitHeader().vm.$emit('filter', [
+        { type: 'author', value: { data: 'Administrator' } },
+        { type: 'message', value: { data: 'fix bug' } },
+      ]);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'filter_commit_list',
+        { label: 'author,message' },
+        undefined,
+      );
+    });
+
+    it('tracks filter event with committed-after label', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findCommitHeader().vm.$emit('filter', [
+        { type: TOKEN_TYPE_COMMITTED_AFTER, value: { data: '2025-01-01' } },
+      ]);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'filter_commit_list',
+        { label: 'committed-after' },
+        undefined,
+      );
+    });
+
+    it('tracks filter event with committed-before label', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findCommitHeader().vm.$emit('filter', [
+        { type: TOKEN_TYPE_COMMITTED_BEFORE, value: { data: '2025-12-31' } },
+      ]);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'filter_commit_list',
+        { label: 'committed-before' },
+        undefined,
+      );
+    });
+
+    it('tracks filter event with date range labels when both date filters are applied', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findCommitHeader().vm.$emit('filter', [
+        { type: TOKEN_TYPE_COMMITTED_AFTER, value: { data: '2025-01-01' } },
+        { type: TOKEN_TYPE_COMMITTED_BEFORE, value: { data: '2025-12-31' } },
+      ]);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'filter_commit_list',
+        { label: 'committed-after,committed-before' },
+        undefined,
+      );
+    });
+
+    it('tracks filter event with none label when filters are cleared', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findCommitHeader().vm.$emit('filter', []);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'filter_commit_list',
+        { label: 'none' },
+        undefined,
+      );
     });
   });
 
@@ -438,6 +635,189 @@ describe('CommitListApp', () => {
         await waitForPromises();
 
         expect(handler).toHaveBeenCalledWith(expect.objectContaining({ after: null }));
+      });
+    });
+  });
+
+  describe('URL synchronization', () => {
+    describe('reading from URL on mount', () => {
+      it('initializes filters from URL query parameters', async () => {
+        const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+        createComponent(handler, { author: 'john.doe', message: 'fix bug', page_size: '50' });
+        await waitForPromises();
+
+        expect(handler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            author: 'john.doe',
+            query: 'fix bug',
+            first: 50,
+          }),
+        );
+
+        expect(findCommitHeader().props('initialFilterTokens')).toEqual([
+          { type: 'author', value: { data: 'john.doe', operator: '=' } },
+          { type: 'message', value: { data: 'fix bug', operator: '=' } },
+        ]);
+      });
+
+      it('uses default values when URL has no query parameters', async () => {
+        const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+        createComponent(handler, {});
+        await waitForPromises();
+
+        expect(handler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            author: null,
+            query: null,
+            first: 20,
+          }),
+        );
+
+        expect(findCommitHeader().props('initialFilterTokens')).toEqual([]);
+      });
+
+      it('handles invalid page_size by using default', async () => {
+        const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+        createComponent(handler, { page_size: 'invalid' });
+        await waitForPromises();
+
+        expect(handler).toHaveBeenCalledWith(expect.objectContaining({ first: 20 }));
+      });
+    });
+
+    describe('writing to URL when filters change', () => {
+      it.each`
+        description               | filters                                                                                             | expectedQuery
+        ${'author only'}          | ${[{ type: 'author', value: { data: 'john' } }]}                                                    | ${{ author: 'john' }}
+        ${'message only'}         | ${[{ type: 'message', value: { data: 'fix bug' } }]}                                                | ${{ message: 'fix bug' }}
+        ${'author and message'}   | ${[{ type: 'author', value: { data: 'admin' } }, { type: 'message', value: { data: 'refactor' } }]} | ${{ author: 'admin', message: 'refactor' }}
+        ${'clearing all filters'} | ${[]}                                                                                               | ${{}}
+      `('updates URL when $description', async ({ filters, expectedQuery }) => {
+        createComponent(commitsQueryHandler, filters.length === 0 ? { author: 'existing' } : {});
+        await waitForPromises();
+
+        const pushSpy = jest.spyOn(wrapper.vm.$router, 'push');
+
+        findCommitHeader().vm.$emit('filter', filters);
+        await waitForPromises();
+
+        expect(pushSpy).toHaveBeenCalledWith({ query: expectedQuery });
+      });
+
+      it('updates URL with page_size when changed', async () => {
+        const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponseWithNextPage);
+        createComponent(handler);
+        await waitForPromises();
+
+        const pushSpy = jest.spyOn(wrapper.vm.$router, 'push');
+
+        findPageSizeSelector().vm.$emit('input', 50);
+        await waitForPromises();
+
+        expect(pushSpy).toHaveBeenCalledWith({ query: { page_size: '50' } });
+      });
+
+      it('omits page_size from URL when it equals default', async () => {
+        const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponseWithNextPage);
+        createComponent(handler, { page_size: '50' });
+        await waitForPromises();
+
+        const pushSpy = jest.spyOn(wrapper.vm.$router, 'push');
+
+        findPageSizeSelector().vm.$emit('input', 20);
+        await waitForPromises();
+
+        expect(pushSpy).toHaveBeenCalledWith({ query: {} });
+      });
+
+      it('preserves page_size when filters change', async () => {
+        createComponent(commitsQueryHandler, { page_size: '50' });
+        await waitForPromises();
+
+        const pushSpy = jest.spyOn(wrapper.vm.$router, 'push');
+
+        findCommitHeader().vm.$emit('filter', [{ type: 'author', value: { data: 'admin' } }]);
+        await waitForPromises();
+
+        expect(pushSpy).toHaveBeenCalledWith({ query: { author: 'admin', page_size: '50' } });
+      });
+
+      it('does not update URL if query has not changed', async () => {
+        createComponent(commitsQueryHandler, { author: 'admin' });
+        await waitForPromises();
+
+        const pushSpy = jest.spyOn(wrapper.vm.$router, 'push');
+
+        findCommitHeader().vm.$emit('filter', [{ type: 'author', value: { data: 'admin' } }]);
+        await waitForPromises();
+
+        expect(pushSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('route watcher for browser navigation', () => {
+      it('refetches commits with new filters when route changes', async () => {
+        const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+        createComponent(handler);
+        await waitForPromises();
+
+        handler.mockClear();
+
+        await wrapper.vm.$router.push({ query: { author: 'new-author', message: 'fix' } });
+        await waitForPromises();
+
+        expect(handler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            author: 'new-author',
+            query: 'fix',
+          }),
+        );
+
+        expect(findCommitHeader().props('initialFilterTokens')).toEqual([
+          { type: 'author', value: { data: 'new-author', operator: '=' } },
+          { type: 'message', value: { data: 'fix', operator: '=' } },
+        ]);
+      });
+
+      it('resets pagination when route changes', async () => {
+        const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponseWithNextPage);
+        createComponent(handler);
+        await waitForPromises();
+
+        findPagination().vm.$emit('next');
+        await waitForPromises();
+
+        handler.mockClear();
+
+        await wrapper.vm.$router.push({ query: { author: 'admin' } });
+        await waitForPromises();
+
+        expect(handler).toHaveBeenCalledWith(expect.objectContaining({ after: null }));
+      });
+    });
+
+    describe('ref changes via route path', () => {
+      it('extracts and uses ref from initial route path', async () => {
+        const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+        createComponent(handler);
+        await waitForPromises();
+
+        expect(handler).toHaveBeenCalledWith(expect.objectContaining({ ref: 'main' }));
+      });
+
+      it('handles encoded refs in initial route path', async () => {
+        const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+        wrapper = shallowMountExtended(CommitListApp, {
+          apolloProvider: createMockApollo([[commitsQuery, handler]]),
+          provide: {
+            ...defaultProvide,
+            escapedRef: 'feature%2Fmy-branch',
+          },
+          router: createRouter(),
+        });
+        await waitForPromises();
+
+        expect(handler).toHaveBeenCalledWith(expect.objectContaining({ ref: 'feature/my-branch' }));
       });
     });
   });

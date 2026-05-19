@@ -1,7 +1,7 @@
 import { setAttributes } from '~/lib/utils/dom_utils';
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#sandbox
-const IFRAME_SANDBOX_RESTRICTIONS = 'allow-scripts allow-popups allow-same-origin';
+export const IFRAME_SANDBOX_RESTRICTIONS = 'allow-scripts allow-popups allow-same-origin';
 
 const elsProcessingMap = new WeakMap();
 
@@ -31,8 +31,8 @@ function renderIframeEl(el) {
   const iframeEl = document.createElement('iframe');
   setAttributes(iframeEl, {
     src,
+    class: 'gl-border-none',
     sandbox: IFRAME_SANDBOX_RESTRICTIONS,
-    frameBorder: 0,
     allowfullscreen: 'true',
     referrerpolicy: 'strict-origin-when-cross-origin',
   });

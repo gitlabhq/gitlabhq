@@ -1,19 +1,14 @@
 # frozen_string_literal: true
 
-# Note that we actually update the attribute on the target_project/group, rather than
-# using `allow`.  This is because there are some specs where, based on how the notification
-# is done, using an `allow` doesn't change the correct object.
 RSpec.shared_examples 'project emails are disabled' do |check_delivery_jobs_queue: false|
   let(:target_project) { notification_target.is_a?(Project) ? notification_target : notification_target.project }
 
   before do
     reset_delivered_emails!
-    target_project.project_setting.clear_memoization(:emails_enabled?)
+    allow(target_project.project_setting).to receive(:emails_enabled?).and_return(false)
   end
 
   it 'sends no emails with project emails disabled' do
-    target_project.project_setting.update_attribute(:emails_enabled, false)
-
     notification_trigger
 
     if check_delivery_jobs_queue
@@ -24,48 +19,28 @@ RSpec.shared_examples 'project emails are disabled' do |check_delivery_jobs_queu
       should_not_email_anyone
     end
   end
-
-  it 'sends emails to someone' do
-    target_project.project_setting.update_attribute(:emails_enabled, true)
-
-    notification_trigger
-
-    if check_delivery_jobs_queue
-      # Only check enqueued jobs, not delivered emails
-      expect_any_delivery_jobs
-    else
-      # Deprecated: Check actual delivered emails
-      should_email_anyone
-    end
-  end
 end
 
-RSpec.shared_examples 'group emails are disabled' do
+RSpec.shared_examples 'group emails are disabled' do |check_delivery_jobs_queue: false|
   let(:target_group) { notification_target.is_a?(Group) ? notification_target : notification_target.project.group }
 
   before do
     reset_delivered_emails!
-    target_group.clear_memoization(:emails_enabled_memoized)
+    allow(target_group).to receive(:emails_enabled?).and_return(false)
   end
 
   it 'sends no emails with group emails disabled' do
-    target_group.update_attribute(:emails_enabled, false)
-
     notification_trigger
 
-    should_not_email_anyone
-  end
-
-  it 'sends emails to someone' do
-    target_group.update_attribute(:emails_enabled, true)
-
-    notification_trigger
-
-    should_email_anyone
+    if check_delivery_jobs_queue
+      expect_no_delivery_jobs
+    else
+      should_not_email_anyone
+    end
   end
 end
 
-RSpec.shared_examples 'sends notification only to a maximum of ten, most recently active group owners' do
+RSpec.shared_examples 'sends access request notification to a max of ten, most recently active group owners' do
   let(:owners) { create_list(:user, 12, :with_sign_ins) }
 
   before do
@@ -76,18 +51,20 @@ RSpec.shared_examples 'sends notification only to a maximum of ten, most recentl
     reset_delivered_emails!
   end
 
-  context 'limit notification emails' do
-    it 'sends notification only to a maximum of ten, most recently active group owners' do
-      ten_most_recently_active_group_owners = owners.sort_by(&:last_sign_in_at).last(10)
+  it 'sends limited notifications' do
+    ten_most_recently_active_group_owners = owners.sort_by(&:last_sign_in_at).last(10)
 
+    expect do
       notification_trigger
-
-      should_only_email(*ten_most_recently_active_group_owners)
-    end
+    end.to have_only_enqueued_mail_with_args(
+      Members::AccessRequestedMailer,
+      :email,
+      *ten_most_recently_active_group_owners.map { |user| hash_including(params: hash_including(recipient: user)) }
+    )
   end
 end
 
-RSpec.shared_examples 'sends notification only to a maximum of ten, most recently active project maintainers' do
+RSpec.shared_examples 'sends access request notification to a max of ten, most recently active project maintainers' do
   let(:maintainers) { create_list(:user, 12, :with_sign_ins) }
 
   before do
@@ -98,13 +75,17 @@ RSpec.shared_examples 'sends notification only to a maximum of ten, most recentl
     reset_delivered_emails!
   end
 
-  context 'limit notification emails' do
-    it 'sends notification only to a maximum of ten, most recently active project maintainers' do
-      ten_most_recently_active_project_maintainers = maintainers.sort_by(&:last_sign_in_at).last(10)
+  it 'sends limited notifications' do
+    ten_most_recently_active_project_maintainers = maintainers.sort_by(&:last_sign_in_at).last(10)
 
+    expect do
       notification_trigger
-
-      should_only_email(*ten_most_recently_active_project_maintainers)
-    end
+    end.to have_only_enqueued_mail_with_args(
+      Members::AccessRequestedMailer,
+      :email,
+      *ten_most_recently_active_project_maintainers.map do |user|
+        hash_including(params: hash_including(recipient: user))
+      end
+    )
   end
 end

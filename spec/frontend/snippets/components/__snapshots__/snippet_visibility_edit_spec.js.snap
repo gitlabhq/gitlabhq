@@ -15,12 +15,8 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
   >
     <gl-form-radio-group-stub
       checked="private"
-      disabledfield="disabled"
-      htmlfield="html"
       options=""
       stacked=""
-      textfield="text"
-      valuefield="value"
     >
       <gl-form-radio-stub
         class="gl-mb-3"

@@ -6,7 +6,7 @@
 # to validate that a file is safe, as it identifies files only by the
 # file extension and not its actual contents.
 #
-# An example useage of this module is in `FileMarkdownLinkBuilder` that
+# An example usage of this module is in `FileMarkdownLinkBuilder` that
 # renders markdown depending on a file name.
 #
 # We use Workhorse to detect the real extension when we serve files with

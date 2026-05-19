@@ -47,6 +47,8 @@ The GitLab Advanced SAST ruleset is not open source, and is not the same ruleset
 
 For details of which types of vulnerabilities GitLab Advanced SAST detects, see [Vulnerability detection criteria](gitlab_advanced_sast.md#vulnerability-detection-criteria).
 
+For a list of all rules used by GitLab Advanced SAST, see [GitLab Advanced SAST rules](glas_rules_docs/_index.md).
+
 ### Semgrep-based analyzer
 
 GitLab creates, maintains, and supports the rules that are used in the Semgrep-based GitLab SAST analyzer.

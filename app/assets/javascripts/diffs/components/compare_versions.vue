@@ -102,7 +102,7 @@ export default {
 <template>
   <div class="mr-version-controls">
     <div class="mr-version-menus-container gl-px-5 gl-pb-2 gl-pt-3">
-      <file-browser-toggle v-if="toggleFileTreeVisible" />
+      <file-browser-toggle v-if="toggleFileTreeVisible" class="gl-mr-3" />
       <div v-if="commit">
         {{ __('Viewing commit') }}
         <gl-link :href="commit.commit_url" class="monospace">{{ commit.short_id }}</gl-link>
@@ -153,7 +153,7 @@ export default {
         <template #target>
           <compare-dropdown-layout
             :versions="diffCompareDropdownTargetVersions"
-            class="mr-version-compare-dropdown"
+            class="mr-version-compare-dropdown gl-max-w-[170px]"
             data-testid="target-version-dropdown"
           />
         </template>

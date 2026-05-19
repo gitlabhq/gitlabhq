@@ -26,6 +26,18 @@ module ImportHelper
     end
   end
 
+  def import_by_url_data_attributes(project, ci_cd_only, git_timeout, repository_mirrors_available)
+    {
+      project_id: project.id,
+      import_by_url_validate_path: validate_import_url_path,
+      import_from_url: project.safe_import_url,
+      import_path: project_import_path(project),
+      git_timeout: git_timeout,
+      ci_cd_only: ci_cd_only.to_s,
+      has_repository_mirrors_feature: repository_mirrors_available.to_s
+    }
+  end
+
   def import_will_timeout_message(_ci_cd_only)
     timeout = time_interval_in_words(Gitlab.config.gitlab_shell.git_timeout)
     format(_('The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination.'), timeout: timeout)

@@ -28,6 +28,7 @@ module Quality
         dependencies
         elastic
         elastic_integration
+        events
         experiments
         facades
         factories

@@ -1,6 +1,6 @@
 <!-- This issue template can be used as a starting point for a UX Issue. This is not a feature request, rather an issue that is being created for a product designer to solve a problem.
 
-The goal of this template is to ensure we have captured all the information available to the product designer so they can approach the problem creatively and efficiently. Please add links to SSOT if this informatin exists elsewhere. -->
+The goal of this template is to ensure we have captured all the information available to the product designer so they can approach the problem creatively and efficiently. Please add links to SSOT if this information exists elsewhere. -->
 
 ### Who will use this solution?
 

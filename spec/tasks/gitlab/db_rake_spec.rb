@@ -228,6 +228,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       context 'when geo is not configured' do
         before do
           allow(ActiveRecord::Base).to receive_message_chain('configurations.configs_for').and_return([main_config])
+          allow(ActiveRecord::Base.configurations).to receive(:primary?).and_return(false)
           allow(Gitlab::Database).to receive(:has_config?).with(:geo).and_return(false)
         end
 
@@ -703,6 +704,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       before do
         # stub normal migrations
         allow(ActiveRecord::Base).to receive_message_chain('configurations.configs_for').and_return([main_config])
+        allow(ActiveRecord::Base.configurations).to receive(:primary?).and_return(false)
         allow(connection).to receive(:tables).and_return(%w[table1 table2])
         allow(Rake::Task['db:migrate']).to receive(:invoke)
 
@@ -1478,6 +1480,14 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             .to raise_error(/Don't know how to build task 'gitlab:db:reindex:geo'/)
         end
       end
+    end
+  end
+
+  describe 'reindex:stats' do
+    it 'delegates to Gitlab::Database::Reindexing.stats' do
+      expect(Gitlab::Database::Reindexing).to receive(:stats).with(no_args)
+
+      run_rake_task('gitlab:db:reindex:stats')
     end
   end
 

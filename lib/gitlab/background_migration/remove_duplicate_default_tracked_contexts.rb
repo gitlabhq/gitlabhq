@@ -194,6 +194,12 @@ module Gitlab
         self.table_name = 'vulnerability_reads'
       end
 
+      class SbomOccurrenceRefs < ::SecApplicationRecord
+        include EachBatch
+
+        self.table_name = 'sbom_occurrence_refs'
+      end
+
       class VulnerabilityStatistic < ::SecApplicationRecord
         self.table_name = 'vulnerability_statistics'
       end
@@ -268,21 +274,35 @@ module Gitlab
 
           next unless default_context
 
-          LARGE_TABLES.each do |table|
-            table
-              .where(project_id: project_id)
-              .where.not(security_project_tracked_context_id: default_context.id)
-              .each_batch do |relation|
-                relation.update_all(security_project_tracked_context_id: default_context.id)
-              end
-          end
+          delete_sbom_occurrences(project_id, default_context)
+          update_tables(project_id, default_context)
+        end
+      end
 
-          SMALL_TABLES.each do |table|
-            table
-              .where(project_id: project_id)
-              .where.not(security_project_tracked_context_id: default_context.id)
-              .update_all(security_project_tracked_context_id: default_context.id)
+      def delete_sbom_occurrences(project_id, default_context)
+        SbomOccurrenceRefs
+          .where(project_id: project_id)
+          .where.not(security_project_tracked_context_id: default_context.id)
+          .each_batch do |relation|
+            relation.delete_all
           end
+      end
+
+      def update_tables(project_id, default_context)
+        LARGE_TABLES.each do |table|
+          table
+            .where(project_id: project_id)
+            .where.not(security_project_tracked_context_id: default_context.id)
+            .each_batch do |relation|
+              relation.update_all(security_project_tracked_context_id: default_context.id)
+            end
+        end
+
+        SMALL_TABLES.each do |table|
+          table
+            .where(project_id: project_id)
+            .where.not(security_project_tracked_context_id: default_context.id)
+            .update_all(security_project_tracked_context_id: default_context.id)
         end
       end
     end

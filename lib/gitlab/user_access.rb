@@ -65,6 +65,10 @@ module Gitlab
       can_push_to_branch?(ref) || can_merge_to_branch?(ref)
     end
 
+    def can_run_pipeline_on_branch?(ref)
+      can_update_branch?(ref)
+    end
+
     request_cache def can_push_to_branch?(ref)
       return false unless can_access_git? && container && can_collaborate?(ref)
       return true unless protected?(ProtectedBranch, ref)
@@ -153,3 +157,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::UserAccess.prepend_mod

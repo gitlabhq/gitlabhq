@@ -149,19 +149,52 @@ describe('Actions Package list store', () => {
       );
     });
 
-    it('should stop the loading and call create alert on api error', async () => {
-      mock.onDelete(payload._links.delete_api_path).replyOnce(HTTP_STATUS_BAD_REQUEST);
-      await testAction(
-        actions.requestDeletePackage,
-        payload,
-        null,
-        [],
-        [
-          { type: 'setLoading', payload: true },
-          { type: 'setLoading', payload: false },
-        ],
-      );
-      expect(createAlert).toHaveBeenCalled();
+    describe('on API error', () => {
+      beforeEach(() => {
+        mock.onDelete(payload._links.delete_api_path).replyOnce(HTTP_STATUS_BAD_REQUEST);
+      });
+
+      it('stops the loading and creates alert with the default error message', async () => {
+        await testAction(
+          actions.requestDeletePackage,
+          payload,
+          null,
+          [],
+          [
+            { type: 'setLoading', payload: true },
+            { type: 'setLoading', payload: false },
+          ],
+        );
+        expect(createAlert).toHaveBeenCalledWith({
+          message: DELETE_PACKAGE_ERROR_MESSAGE,
+        });
+      });
+    });
+
+    describe('when the server returns an error message', () => {
+      const serverMessage = 'Package is deletion protected.';
+
+      beforeEach(() => {
+        mock
+          .onDelete(payload._links.delete_api_path)
+          .replyOnce(HTTP_STATUS_BAD_REQUEST, { message: serverMessage });
+      });
+
+      it('displays the server error message', async () => {
+        await testAction(
+          actions.requestDeletePackage,
+          payload,
+          null,
+          [],
+          [
+            { type: 'setLoading', payload: true },
+            { type: 'setLoading', payload: false },
+          ],
+        );
+        expect(createAlert).toHaveBeenCalledWith({
+          message: serverMessage,
+        });
+      });
     });
 
     it.each`

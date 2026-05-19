@@ -34,6 +34,7 @@ export { default as Highlight } from './highlight';
 export { default as HorizontalRule } from './horizontal_rule';
 export { default as HTMLMarks } from './html_marks';
 export { default as HTMLNodes } from './html_nodes';
+export { default as Iframe } from './iframe';
 export { default as Image } from './image';
 export { default as Indent } from './indent';
 export { default as InlineDiff } from './inline_diff';

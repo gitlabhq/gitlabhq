@@ -725,4 +725,175 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       subject.throttled?(:test_action, scope: [])
     end
   end
+
+  describe 'labkit adapter dispatch from _throttled?', :clean_gitlab_redis_rate_limiting do
+    before do
+      allow(described_class).to receive(:rate_limits).and_call_original
+      Gitlab::ApplicationRateLimiter::LabkitAdapter.instance_variable_set(:@limiters, nil)
+      allow(Gitlab::CurrentSettings.current_application_settings)
+        .to receive(:users_get_by_id_limit).and_return(1)
+    end
+
+    it 'preserves the throttled? parameter signature' do
+      expect(described_class.method(:throttled?).parameters).to eq(
+        [[:req, :key],
+          [:keyreq, :scope],
+          [:key, :resource],
+          [:key, :threshold],
+          [:key, :interval],
+          [:key, :users_allowlist],
+          [:key, :peek]]
+      )
+    end
+
+    it 'returns a Boolean from throttled?' do
+      result = described_class.throttled?(:users_get_by_id, scope: user)
+      expect(result).to be(true).or be(false)
+    end
+
+    context 'when the adapter does not apply' do
+      it 'does not dispatch when the key is not handled by the adapter' do
+        expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run!)
+        expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run_peek!)
+
+        described_class.throttled?(:notification_emails, scope: user)
+      end
+
+      it 'does not dispatch when a resource is provided' do
+        stub_feature_flags(rate_limiter_use_labkit_users_get_by_id: true)
+        expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run!)
+
+        described_class.throttled?(:users_get_by_id, scope: user, resource: user)
+      end
+    end
+
+    context 'in peek mode (cohort 3)' do
+      let_it_be(:namespace) { create(:namespace) }
+      let(:labkit_key) do
+        "labkit:rl:applimiter_update_namespace_name:limit_namespace_name_updates_by_namespace" \
+          ":namespace:#{namespace.id}"
+      end
+
+      def labkit_count
+        Gitlab::Redis::RateLimiting.with { |r| r.get(labkit_key) }.to_i
+      end
+
+      before do
+        allow(Gitlab::CurrentSettings.current_application_settings)
+          .to receive(:update_namespace_name_rate_limit).and_return(2)
+      end
+
+      context 'when use_labkit is on and enforce is off (shadow)' do
+        before do
+          stub_feature_flags(rate_limiter_use_labkit_cohort_3: true,
+            rate_limiter_use_labkit_cohort_3_enforce: false)
+        end
+
+        it 'reads the labkit counter without incrementing it' do
+          described_class.peek(:update_namespace_name, scope: namespace)
+
+          expect(labkit_count).to eq(0)
+        end
+
+        it 'returns the legacy decision even when the adapter says throttled' do
+          allow(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run_peek!).and_return(true)
+
+          expect(described_class.peek(:update_namespace_name, scope: namespace)).to be(false)
+        end
+      end
+
+      context 'when use_labkit and enforce are both on' do
+        before do
+          stub_feature_flags(rate_limiter_use_labkit_cohort_3: true,
+            rate_limiter_use_labkit_cohort_3_enforce: true)
+        end
+
+        it 'returns the labkit decision and skips legacy peek' do
+          allow(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run_peek!).and_return(true)
+          expect(described_class).not_to receive(:report_metrics)
+
+          expect(described_class.peek(:update_namespace_name, scope: namespace)).to be(true)
+        end
+
+        it 'does not increment either counter' do
+          described_class.peek(:update_namespace_name, scope: namespace)
+
+          expect(labkit_count).to eq(0)
+        end
+      end
+    end
+
+    context 'when use_labkit is on and enforce is off' do
+      let(:labkit_key) { "labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}" }
+
+      def legacy_key_count
+        Gitlab::Redis::RateLimiting.with do |r|
+          count = 0
+          r.scan_each(match: "application_rate_limiter:users_get_by_id:*") { count += 1 }
+          count
+        end
+      end
+
+      def labkit_count
+        Gitlab::Redis::RateLimiting.with { |r| r.get(labkit_key) }.to_i
+      end
+
+      before do
+        stub_feature_flags(rate_limiter_use_labkit_users_get_by_id: true,
+          rate_limiter_use_labkit_users_get_by_id_enforce: false)
+      end
+
+      it 'increments both the labkit and legacy counters' do
+        described_class.throttled?(:users_get_by_id, scope: user)
+
+        expect(labkit_count).to eq(1)
+        expect(legacy_key_count).to be > 0
+      end
+
+      it 'returns the legacy decision even when the adapter says throttle' do
+        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!).and_return(true)
+        allow(Gitlab::CurrentSettings.current_application_settings)
+          .to receive(:users_get_by_id_limit).and_return(100)
+
+        expect(described_class.throttled?(:users_get_by_id, scope: user)).to be(false)
+      end
+    end
+
+    context 'when use_labkit and enforce are both on' do
+      let(:labkit_key) { "labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}" }
+
+      def legacy_key_count
+        Gitlab::Redis::RateLimiting.with do |r|
+          count = 0
+          r.scan_each(match: "application_rate_limiter:users_get_by_id:*") { count += 1 }
+          count
+        end
+      end
+
+      def labkit_count
+        Gitlab::Redis::RateLimiting.with { |r| r.get(labkit_key) }.to_i
+      end
+
+      before do
+        stub_feature_flags(rate_limiter_use_labkit_users_get_by_id: true,
+          rate_limiter_use_labkit_users_get_by_id_enforce: true)
+      end
+
+      it 'increments the labkit counter and skips the legacy one' do
+        described_class.throttled?(:users_get_by_id, scope: user)
+
+        expect(labkit_count).to eq(1)
+        expect(legacy_key_count).to eq(0)
+      end
+
+      it 'returns the adapter decision without running the legacy path' do
+        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!).and_return(true)
+        allow(Gitlab::CurrentSettings.current_application_settings)
+          .to receive(:users_get_by_id_limit).and_return(100)
+
+        expect(described_class.throttled?(:users_get_by_id, scope: user)).to be(true)
+        expect(legacy_key_count).to eq(0)
+      end
+    end
+  end
 end

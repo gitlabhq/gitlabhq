@@ -2,6 +2,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 
 export default {
@@ -14,6 +15,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['projectRootPath'],
   props: {
     commit: {
       type: Object,
@@ -33,6 +35,9 @@ export default {
     copyCommitShaTitle() {
       return sprintf(__('Copy commit SHA %{sha}'), { sha: this.commit.sha });
     },
+    browseFilesPath() {
+      return joinPaths(this.projectRootPath, '-', 'tree', this.commit.sha);
+    },
   },
 };
 </script>
@@ -47,15 +52,20 @@ export default {
       size="small"
     />
     <gl-button
+      v-gl-tooltip
       category="tertiary"
       size="small"
       icon="folder-open"
-      :href="commit.webUrl"
+      :href="browseFilesPath"
+      :title="__('Browse commit files')"
       :aria-label="__('Browse commit files')"
       class="gl-ml-5"
       data-testid="browse-files-button"
     />
-    <div v-if="commit.description" class="gl-border-l gl-ml-4 gl-border-l-section">
+    <div
+      class="gl-border-l gl-ml-4 gl-border-l-section"
+      :class="{ 'gl-invisible': !commit.description }"
+    >
       <expand-collapse-button
         :is-collapsed="isCollapsed"
         :anchor-id="anchorId"

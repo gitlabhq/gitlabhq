@@ -30,9 +30,12 @@ module Gitlab
               strong_memoize(:content) { fetch_local_content }
             end
 
+            def include_type
+              :file
+            end
+
             def metadata
               super.merge(
-                type: :file,
                 location: masked_location,
                 blob: masked_blob,
                 raw: masked_raw,
@@ -112,9 +115,7 @@ module Gitlab
               BatchLoader.for([sha.to_s, location])
                          .batch(key: project) do |locations, loader, args|
                 context.logger.instrument(:config_file_fetch_project_content) do
-                  args[:key].repository.blobs_at(locations).each do |blob|
-                    loader.call([blob.commit_id, blob.path], blob.data)
-                  end
+                  fetch_batch_content(locations, loader, args[:key])
                 end
               rescue GRPC::NotFound, GRPC::Internal
                 # no-op
@@ -123,15 +124,52 @@ module Gitlab
               end
             end
 
+            def fetch_batch_content(items, loader, project)
+              items_with_cache_keys = build_items_with_cache_keys(items, project)
+              results = fetch_cached_content(items_with_cache_keys, project)
+
+              load_results(items, results, loader)
+            end
+
+            def build_items_with_cache_keys(items, project)
+              items.map do |sha_and_path|
+                [sha_and_path, cache_key(project, sha_and_path)]
+              end
+            end
+
+            def fetch_cached_content(items_with_cache_keys, project)
+              fetcher = CachedContentFetcher.new(
+                project: project,
+                cache_enabled: cache_enabled?
+              )
+
+              fetcher.fetch_batch(items_with_cache_keys)
+            end
+
+            def load_results(items, results, loader)
+              items.each do |sha_and_path|
+                content = results[sha_and_path]
+                loader.call(sha_and_path, content) if content
+              end
+            end
+
+            def cache_key(project, sha_and_path)
+              "ci_project_include_content:v1:#{project.id}:#{sha_and_path.join(':')}"
+            end
+
+            def cache_enabled?
+              Feature.enabled?(:ci_cache_project_includes, context.project)
+            end
+
             override :expand_context_attrs
             def expand_context_attrs
-              {
+              super.merge(
                 project: project,
                 sha: sha.to_s, # we need to use `.to_s` to load the value from the BatchLoader
                 user: context.user,
                 parent_pipeline: context.parent_pipeline,
                 variables: context.variables
-              }
+              )
             end
 
             def masked_project_name

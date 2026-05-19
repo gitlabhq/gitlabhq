@@ -1,0 +1,16 @@
+fragment WorkItemLinkedItemsFeaturesFragment on WorkItemFeatures {
+  linkedItems {
+    linkedItems {
+      nodes {
+        linkId
+        linkType
+        workItemState
+        workItem {
+          id
+          iid
+          webUrl
+        }
+      }
+    }
+  }
+}

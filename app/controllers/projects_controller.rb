@@ -198,6 +198,7 @@ class ProjectsController < Projects::ApplicationController
       format.atom do
         load_events
         @events = @events.select { |event| event.visible_to_user?(current_user) }
+        Events::RenderService.new(current_user).execute(@events, atom_request: true)
         render layout: 'xml'
       end
     end
@@ -418,12 +419,11 @@ class ProjectsController < Projects::ApplicationController
 
   def enqueue_async_transfer(namespace)
     service = ::Projects::TransferService.new(@project, current_user)
+    result = service.schedule_async_transfer(namespace)
 
-    if service.schedule_async_transfer(namespace)
-      flash[:notice] = s_("TransferProject|Project transfer has been queued. You will be notified when it completes.")
-    else
-      flash[:alert] = service.error
-    end
+    return if result.success?
+
+    flash[:alert] = result.message
   end
 
   def execute_sync_transfer(namespace)

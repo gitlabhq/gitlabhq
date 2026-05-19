@@ -1,0 +1,9 @@
+---
+name: run_ldap_sync
+description: Grants the ability to sync a group with LDAP
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - run_ldap_sync

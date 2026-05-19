@@ -37,7 +37,7 @@ Prerequisites:
 To manage the group default settings for a project integration:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select an integration.
 1. Complete the fields.
 1. Select **Save changes**.
@@ -77,7 +77,7 @@ Prerequisites:
 To remove a group default setting:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select an integration.
 1. Select **Reset** and confirm.
 
@@ -92,7 +92,7 @@ Prerequisites:
 To use instance or group default settings for a project integration:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select an integration.
 1. On the right, from the dropdown list, select **Use default settings**.
 1. Under **Enable integration**, ensure the **Active** checkbox is selected.
@@ -109,7 +109,7 @@ Prerequisites:
 To use custom settings for a project or group integration:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select an integration.
 1. On the right, from the dropdown list, select **Use custom settings**.
 1. Under **Enable integration**, ensure the **Active** checkbox is selected.
@@ -205,7 +205,6 @@ None of these integrations have integration hooks.
 | [Mattermost slash commands](mattermost_slash_commands.md)    | Run slash commands from a Mattermost chat environment.                                   | {{< no >}} |
 | [Pipeline status emails](pipeline_status_emails.md)          | Send the pipeline status to a list of recipients by email.                               | {{< no >}} |
 | [Pivotal Tracker](pivotal_tracker.md)                        | Add commit messages as comments to Pivotal Tracker stories.                              | {{< no >}} |
-| [Slack slash commands](slack_slash_commands.md)              | Run slash commands from a Slack chat environment.                                        | {{< no >}} |
 | [Squash TM](squash_tm.md)                                    | Update Squash TM requirements when GitLab issues are modified.                           | {{< yes >}} |
 
 ## Project webhooks

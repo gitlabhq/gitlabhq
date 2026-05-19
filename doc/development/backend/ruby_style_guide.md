@@ -17,7 +17,7 @@ Where a RuboCop rule is absent, refer to the following style guides as general g
 
 Generally, if a style is not covered by existing RuboCop rules or the above style guides, it shouldn't be a blocker.
 
-Some styles we have decided [no one should not have a strong opinion on](#styles-we-have-no-opinion-on).
+Some styles we have decided [no one should have a strong opinion on](#styles-we-have-no-opinion-on).
 
 See also:
 
@@ -411,18 +411,20 @@ Timelogs.for_project(project)
 
 #### `with_`
 
-For scopes which `joins`, `includes`, or filters `where(has_one: record)` or `where(has_many: record)` or `where(boolean condition)`
+For scopes that use `joins`, or filters `where(has_one: record)` or `where(has_many: record)`
+or `where(boolean condition)` where the result set changes.
+
 For example:
 
 ```ruby
-scope :with_labels, -> { includes(:labels) }
-AbuseReport.with_labels
-
 scope :with_status, ->(status) { where(status: status) }
 Clusters::AgentToken.with_status(:active)
 
 scope :with_due_date, -> { where.not(due_date: nil) }
 Issue.with_due_date
+
+scope :with_runner_type, ->(type) { joins(:runner).where(runner: { runner_type: type }) }
+Ci::Build.with_runner_type(:instance_type)
 ```
 
 It is also fine to use custom scope names, for example:
@@ -430,6 +432,38 @@ It is also fine to use custom scope names, for example:
 ```ruby
 scope :undeleted, -> { where('policy_index >= 0') }
 Security::Policy.undeleted
+```
+
+#### `including_`
+
+For scopes that eager load associations using `includes`. The result set does not change.
+Use `including_` to avoid N+1 queries when you do not need to control the SQL loading strategy.
+ActiveRecord decides whether to use a JOIN or a subquery.
+
+For example:
+
+```ruby
+scope :including_tags, -> { includes(:tags) }
+Package.including_tags
+
+scope :including_project, -> { includes(:project) }
+Issue.including_project
+```
+
+#### `preload_`
+
+For scopes that eager load associations using `preload`. The result set does not change.
+Use instead of `including_` when loading multiple `has_many` associations, or when a
+separate subquery is explicitly required.
+
+For example:
+
+```ruby
+scope :preload_author, -> { preload(:author) }
+MergeRequest.preload_author
+
+scope :preload_access_levels, -> { preload(:push_access_levels, :merge_access_levels, :unprotect_access_levels) }
+ProtectedBranch.preload_access_levels
 ```
 
 #### `order_by_`
@@ -444,6 +478,35 @@ Namespace.order_by_name
 scope :order_by_updated_at, ->(direction = :asc) { order(updated_at: direction) }
 Project.order_by_updated_at(:desc)
 ```
+
+### Avoid application logic at class load time
+
+Do not call application logic when defining class-level constants.
+These expressions run once at class load time, not at request time, which causes several problems:
+
+- Boot failures occur if the logic raises an error (for example, a missing database).
+- The constant never reflects changes that happen after the process starts.
+- Application boot slows down.
+
+```ruby
+# bad - result is frozen at boot; Gitlab::ProjectTemplate.all returns different results depending on state
+class GroupsController
+  VALID_TEMPLATE_NAMES = Gitlab::ProjectTemplate.all.map(&:name).to_set.freeze
+end
+```
+
+Use a method instead, so the logic runs at call time:
+
+```ruby
+# good
+def valid_template_names
+  Gitlab::ProjectTemplate.all.map(&:name).to_set
+end
+```
+
+Use [memoization](../utilities.md#strongmemoize) in case the result will not change during a request.
+
+This applies to any logic that queries the database, calls services, or invokes I18n helpers such as `_()`.
 
 ## Styles we have no opinion on
 

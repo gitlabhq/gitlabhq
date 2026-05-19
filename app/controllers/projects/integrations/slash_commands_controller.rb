@@ -51,8 +51,6 @@ module Projects
         integration = request_params[:integration]
 
         case integration
-        when 'slack_slash_commands'
-          project.slack_slash_commands_integration
         when 'mattermost_slash_commands'
           project.mattermost_slash_commands_integration
         end

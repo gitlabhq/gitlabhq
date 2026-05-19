@@ -8,8 +8,8 @@ RSpec.describe Resolvers::WorkItems::WidgetsResolver, feature_category: :team_pl
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:issue_type) { create(:work_item_type, :issue, namespace: group) }
-  let_it_be(:task_type) { create(:work_item_type, :task, namespace: group) }
+  let(:issue_type) { build(:work_item_system_defined_type, :issue) }
+  let(:task_type) { build(:work_item_system_defined_type, :task) }
 
   def resolve_items(args = {}, context = { current_user: current_user })
     resolve(described_class, args: args, ctx: context, arg_style: :internal, obj: group)

@@ -21,6 +21,7 @@ describe('Role selector', () => {
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const getDropdownItem = (id) => wrapper.findByTestId(`listbox-item-${id}`);
   const findRoleName = (id) => getDropdownItem(id).find('[data-testid="role-name"]');
+  const findRoleDescription = (id) => getDropdownItem(id).find('[data-testid="role-description"]');
 
   describe('dropdown component', () => {
     it('shows the dropdown with the expected props', () => {
@@ -68,6 +69,56 @@ describe('Role selector', () => {
 
     it.each(dropdownItems.flatten)('shows the role name for $text', ({ value, text }) => {
       expect(findRoleName(value).text()).toBe(text);
+    });
+
+    it.each(dropdownItems.flatten.filter((item) => item.dropdownDescription))(
+      'shows the dropdown description for base role $text',
+      ({ value, dropdownDescription }) => {
+        const description = findRoleDescription(value);
+
+        expect(description.exists()).toBe(true);
+        expect(description.text()).toBe(dropdownDescription);
+      },
+    );
+
+    it('falls back to description when dropdownDescription is not present', () => {
+      const itemWithDescription = {
+        value: 'role-custom-99',
+        text: 'Custom',
+        accessLevel: 10,
+        memberRoleId: 99,
+        description: 'A custom role description',
+      };
+      const roles = {
+        flatten: [itemWithDescription],
+        formatted: [itemWithDescription],
+      };
+
+      createWrapper({ roles, value: itemWithDescription });
+
+      const description = findRoleDescription('role-custom-99');
+
+      expect(description.exists()).toBe(true);
+      expect(description.text()).toBe('A custom role description');
+    });
+
+    it('does not show description for role without any description', () => {
+      const itemWithoutDescription = {
+        value: 'role-custom-100',
+        text: 'Custom No Desc',
+        accessLevel: 10,
+        memberRoleId: 100,
+      };
+      const roles = {
+        flatten: [itemWithoutDescription],
+        formatted: [itemWithoutDescription],
+      };
+
+      createWrapper({ roles, value: itemWithoutDescription });
+
+      const description = findRoleDescription('role-custom-100');
+
+      expect(description.exists()).toBe(false);
     });
   });
 });

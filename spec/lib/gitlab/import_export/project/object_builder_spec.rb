@@ -159,33 +159,6 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
     end
   end
 
-  context 'work item types', :request_store, feature_category: :team_planning do
-    let(:type_klass) { WorkItems::TypesFramework::SystemDefined::Type }
-
-    it 'returns the correct type by base type' do
-      task_type = described_class.new(type_klass, { 'base_type' => 'task' }).find
-      incident_type = described_class.new(type_klass, { 'base_type' => 'incident' }).find
-      default_type = described_class.new(type_klass, { 'base_type' => 'bad_input' }).find
-
-      expect(task_type).to eq(type_klass.find_by_type(:task))
-      expect(incident_type).to eq(type_klass.find_by_type(:incident))
-      expect(default_type).to eq(type_klass.find_by_type(:issue))
-    end
-
-    it 'caches the results' do
-      builder = described_class.new(type_klass, { 'base_type' => 'task' })
-
-      # Make sure finder works
-      expect(builder.find).to be_a(type_klass)
-
-      query_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-        builder.find
-      end.count
-
-      expect(query_count).to be_zero
-    end
-  end
-
   context 'merge_request' do
     it 'finds the existing merge_request' do
       merge_request = create(

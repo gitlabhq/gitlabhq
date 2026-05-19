@@ -13,6 +13,7 @@ title: Remote execution environment sandbox
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 - `network_policy` setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590021) in GitLab 18.10.
 - `allow_all_unix_sockets` network policy setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590871) in GitLab 18.11.
+- Instance-level and group-level network access controls [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229531) in GitLab 18.11 [with feature flags](../../administration/feature_flags/_index.md) named `dap_instance_network_access_controls` and `dap_group_network_access_controls`. Disabled by default.
 
 {{< /history >}}
 
@@ -79,7 +80,7 @@ At runtime, the runner checks that the SRT is available and working:
 $ if which srt > /dev/null; then
 $ echo "SRT found, creating config..."
 SRT found, creating config...
-$ echo '{"network":{"allowedDomains":["host.docker.internal","localhost","gitlab.com","*.gitlab.com","duo-workflow-svc.runway.gitlab.net"],"deniedDomains":[],"allowAllUnixSockets":false},"filesystem":{"denyRead":["~/.ssh"],"allowWrite":["./","/tmp/gitlab_duo_agent_platform"],"denyWrite":[],"allowGitConfig":true}}' > /tmp/gitlab_duo_agent_platform/srt-settings.json
+$ echo '{"network":{"allowedDomains":["host.docker.internal","localhost","gitlab.com","*.gitlab.com","duo-workflow-svc.runway.gitlab.net"],"deniedDomains":[],"allowAllUnixSockets":false},"filesystem":{"denyRead":["~/.ssh"],"allowWrite":["./","/tmp"],"denyWrite":["/opt/.gitlab-sandbox"],"allowGitConfig":true}}' > /opt/.gitlab-sandbox/srt-settings.json
 $ echo "Testing SRT sandbox capabilities..."
 Testing SRT sandbox capabilities...
 ```
@@ -132,7 +133,8 @@ Only the environment variables and parameters required to run DAP and Git operat
 The sandbox enforces the following filesystem restrictions:
 
 - Read restrictions: SSH keys (`~/.ssh`) are blocked.
-- Write allowed: Current directory (`./`) and temporary directory (`/tmp/gitlab_duo_agent_platform`).
+- Write allowed: Current directory (`./`) and `/tmp`.
+- Write restricted: `/opt/.gitlab-sandbox` (used for platform-internal files like sandbox settings).
 - Git configuration access: Allowed.
 
 ### Configure a network policy
@@ -152,12 +154,38 @@ If you use a custom image without SRT,
 no network restrictions are applied and the flow can access any domain
 reachable from the runner.
 
-To allow or deny additional domains, add a `network_policy` to your
-`agent-config.yml` file.
-
 > [!note]
-> The `network_policy` does not allow `"*"` in the `allowed_domains` or the `denied_domains`. SRT does not support turning on all network traffic.
-> However, wildcards are allowed as part of domains, for example `"*.domain.com"`.
+> The `network_policy` does not allow `"*"` in the `allowed_domains` or the `denied_domains`. SRT does not
+> support turning on all network traffic. However, wildcards are allowed as part of domains,
+> for example `"*.domain.com"`.
+
+#### Administrator network policy controls
+
+When a top-level group owner on GitLab.com or instance administrator on GitLab
+Self-Managed configures network access controls, those settings define the
+baseline policy for all flows. The **Allow projects to extend network sandbox
+settings** checkbox determines which settings are applied when project owners
+configure them in `agent-config.yml`.
+
+**Flexible mode** (**Allow projects to extend network sandbox settings** enabled):
+
+- `allowed_domains` from `agent-config.yml` are merged with the admin allow-list.
+- `denied_domains` from `agent-config.yml` are merged with the admin deny-list.
+- `include_recommended_allowed` in `agent-config.yml` overrides the admin setting.
+- `allow_all_unix_sockets` in `agent-config.yml` overrides the admin setting.
+
+**Strict mode** (**Allow projects to extend network sandbox settings** disabled):
+
+- `denied_domains` from `agent-config.yml` are merged with the admin deny-list.
+- `include_recommended_allowed` can only be set to `false` to tighten a setting the admin enabled.
+  It has no effect when the admin has it disabled.
+- `allow_all_unix_sockets` can only be set to `false` to tighten a setting the admin enabled.
+  It has no effect when the admin has it disabled.
+- `allowed_domains` from `agent-config.yml` are ignored.
+
+#### Configure project-level settings
+
+To allow or deny additional domains, add a `network_policy` to your `agent-config.yml` file:
 
 ```yaml
 network_policy:
@@ -171,20 +199,108 @@ network_policy:
 
 #### Allow Unix socket access
 
-Use the `allow_all_unix_sockets` setting to grant the flow access to all Unix domain sockets on the host. This is disabled by default.
+Use the `allow_all_unix_sockets` setting to grant the flow access to all Unix domain sockets on
+the host. This is disabled by default.
 
 > [!warning]
 > Enabling `allow_all_unix_sockets` grants access to all Unix sockets. Enable this only when necessary and only in trusted environments.
+
+### Configure network access controls for your instance or group
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229531) in GitLab 18.11 [with feature flags](../../administration/feature_flags/_index.md) named `dap_instance_network_access_controls` and `dap_group_network_access_controls`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+In addition to [project-level `agent-config.yml` settings](#configure-a-network-policy),
+administrators and top-level group owners can manage network access controls through the GitLab UI.
+These settings are stored at the instance level (GitLab Self-Managed) or top-level group level
+(GitLab.com) and are inherited by all projects underneath.
+
+For a description of how these settings combine with project-level `agent-config.yml`,
+see [Administrator network policy controls](#administrator-network-policy-controls).
+
+#### Configure instance-level network access controls
+
+Prerequisites:
+
+- You must be an administrator.
+
+To configure instance-level network access controls:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Data and privacy**, in the **Network access** section, configure the
+   following settings:
+   - **Include recommended domains in the allowlist**: When enabled, a curated
+     list of commonly needed domains is automatically included in the allowlist.
+   - **Allow all Unix sockets**: When enabled, all Unix socket connections are
+     permitted for agent platform operations.
+   - **Allow projects to extend network sandbox settings**: When enabled, project
+     maintainers can add additional domains to the allowlist, allow all Unix
+     sockets, and include recommended domains through their `agent-config.yml`
+     file.
+1. Optional. Use the **Allowed domains** card to add or remove specific domains
+   from the allowlist.
+1. Optional. Use the **Blocked domains** card to add or remove specific domains
+   from the denylist.
+1. Select **Save changes**.
+
+#### Configure top-level group network access controls (GitLab.com)
+
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+- The group must be a top-level group on GitLab.com. Subgroups inherit the
+  settings from their top-level group.
+
+To configure group-level network access controls:
+
+1. On the top bar, select **Search or go to** and find your top-level group.
+1. In the left sidebar, select **Settings**, then **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Data and privacy**, in the **Network access** section, configure the
+   same settings as described in
+   [Configure instance-level network access controls](#configure-instance-level-network-access-controls).
+1. Select **Save changes**.
+
+#### Related API resources
+
+- Instance-level booleans:
+  [`duoSettingsUpdate`](../../api/graphql/reference/_index.md#mutationduosettingsupdate)
+  GraphQL mutation.
+- Group-level booleans:
+  [Update group attributes](../../api/groups.md#update-group-attributes) REST API, using the
+  `ai_settings_attributes` parameter.
+- Domain allowlist and denylist:
+  [`aiDomainSettingsInstanceUpdate`](../../api/graphql/reference/_index.md#mutationaidomainsettingsinstanceupdate)
+  and
+  [`aiDomainSettingsNamespaceUpdate`](../../api/graphql/reference/_index.md#mutationaidomainsettingsnamespaceupdate)
+  GraphQL mutations.
 
 ### Turn on allowed domains
 
 To give your flows access to a set of external domains used for package registries and development tools,
 turn on the `include_recommended_allowed` setting.
 
-This setting is disabled by default (`false`). To turn it on, in your `agent-config.yml` file, set `include_recommended_allowed` to `true`.
+This setting is disabled by default (`false`). To turn it on, in your `agent-config.yml` file,
+set `include_recommended_allowed` to `true`.
+
+When network access controls are enabled in strict mode (**Allow projects to extend network sandbox settings** disabled),
+you can only disable `include_recommended_allowed`. Setting it to `true` has no effect when the
+admin has it disabled.
 
 > [!warning]
-> Enabling `include_recommended_allowed` permits network access to a broad set of external domains. These egress endpoints could potentially be used to exfiltrate data from your environment. Enable this only when necessary and only in trusted environments.
+> Enabling `include_recommended_allowed` permits network access to a broad set of external domains.
+> These egress endpoints could potentially be used to exfiltrate data from your environment.
+> Enable this only when necessary and only in trusted environments.
 
 This setting turns on access to the following domains:
 

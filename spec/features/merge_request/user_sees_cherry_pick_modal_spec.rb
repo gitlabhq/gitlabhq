@@ -17,9 +17,7 @@ RSpec.describe 'Merge request > User cherry-picks', :js, feature_category: :code
     before do
       service = MergeRequests::MergeService.new(project: project, current_user: user, params: { sha: merge_request.diff_head_sha })
 
-      perform_enqueued_jobs do
-        service.execute(merge_request)
-      end
+      service.execute(merge_request)
     end
 
     # Fast-forward merge, or merged before GitLab 8.5.

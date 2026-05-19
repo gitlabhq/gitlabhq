@@ -920,6 +920,14 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       end
     end
 
+    context 'when total_tuple_count is nil' do
+      let(:batched_migration) { create(:batched_background_migration, :active, total_tuple_count: nil, interval: 120) }
+
+      it 'returns nil' do
+        expect(batched_migration.compute_estimated_seconds_remaining).to be_nil
+      end
+    end
+
     context 'when no tuples have been migrated' do
       it 'returns nil' do
         expect(batched_migration.compute_estimated_seconds_remaining).to be_nil

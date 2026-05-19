@@ -5,7 +5,7 @@ CONFIG_FILES = %w[
   app/validators/json_schemas/build_metadata_config_options.json
   app/validators/json_schemas/build_metadata_secrets.json
   app/validators/json_schemas/ci_job_definition_config.json
-  app/validators/json_schemas/run_steps.json
+  app/validators/json_schemas/ci_run_steps.json
 ].freeze
 
 def format_file_path(path)

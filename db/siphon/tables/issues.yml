@@ -4,16 +4,6 @@ database: main
 ignored_columns:
   - title_html
   - description_html
-  - author_id_convert_to_bigint
-  - closed_by_id_convert_to_bigint
-  - duplicated_to_id_convert_to_bigint
-  - id_convert_to_bigint
-  - last_edited_by_id_convert_to_bigint
-  - milestone_id_convert_to_bigint
-  - moved_to_id_convert_to_bigint
-  - project_id_convert_to_bigint
-  - promoted_to_epic_id_convert_to_bigint
-  - updated_by_id_convert_to_bigint
 replication_targets:
   - name: clickhouse_main
     target: siphon_issues

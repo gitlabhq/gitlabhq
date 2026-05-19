@@ -115,7 +115,7 @@ Prerequisites:
 To create a release in the Releases page:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Deploy** > **Releases** and select **New release**.
+1. In the left sidebar, select **Deploy** > **Releases** and select **New release**.
 1. From the [**Tag name**](release_fields.md#tag-name) dropdown list, either:
    - Select an existing Git tag. Selecting an existing tag that is already associated with a release
      results in a validation error.
@@ -284,7 +284,7 @@ To delete a release, use either the
 In the UI:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Deploy** > **Releases**.
+1. In the left sidebar, select **Deploy** > **Releases**.
 1. In the upper-right corner of the release you want to delete, select **Edit this release**
    ({{< icon name="pencil" >}}).
 1. On the **Edit Release** page, select **Delete**.
@@ -381,7 +381,7 @@ To set a deploy freeze window in the UI, complete these steps:
 
 1. Sign in to GitLab as a user with the Maintainer role.
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Scroll to **Deploy freezes**.
 1. Select **Expand** to see the deploy freeze table.
 1. Select **Add deploy freeze** to open the deploy freeze modal.

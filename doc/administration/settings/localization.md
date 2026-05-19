@@ -1,7 +1,7 @@
 ---
-stage: None - Facilitated functionality, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
-group: Unassigned - Facilitated functionality, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+stage: Facilitated functionality
+group: Facilitated functionality
+info: For more information, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
 gitlab_dedicated: yes
 title: Localization
 ---
@@ -22,7 +22,7 @@ You can change the [Default first day of the week](../../user/profile/preference
 for the entire GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Preferences**.
+1. In the left sidebar, select **Settings** > **Preferences**.
 1. Scroll to the **Localization** section, and select your desired first day of the week.
 
 ## Change the default language
@@ -31,5 +31,5 @@ You can change the [Default language](../../user/profile/preferences.md)
 for the entire GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Preferences**.
+1. In the left sidebar, select **Settings** > **Preferences**.
 1. Scroll to the **Localization** section, and select your desired default language.

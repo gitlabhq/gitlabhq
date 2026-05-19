@@ -7,7 +7,9 @@ identifiers:
 - project
 - namespace
 - user
-product_group: knowledge
+product_group: platform_insights
+product_categories:
+- custom_dashboards_foundation
 milestone: '18.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195595
 tiers:

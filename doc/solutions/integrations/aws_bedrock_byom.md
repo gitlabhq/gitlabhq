@@ -590,7 +590,7 @@ self-hosted model from the dropdown list:
 
 | Feature | Recommended assignment |
 |---------|----------------------|
-| **GitLab Duo Agent Platform > All agents, except Agentic Chat** | Bedrock Claude Sonnet 4.6 |
+| **GitLab Duo Agent Platform > Agents & flows** | Bedrock Claude Sonnet 4.6 |
 | **GitLab Duo Agent Platform > Agentic Chat** | Bedrock Claude Sonnet 4.6 |
 | Code Suggestions | GitLab-managed (default) or Bedrock |
 | Chat | GitLab-managed (default) or Bedrock |

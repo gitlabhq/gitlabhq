@@ -922,6 +922,17 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
           update_merge_request({ target_branch: "target" })
         end
 
+        it 'destroys the merge_head_diff and enqueues an async mergeability check' do
+          create(:merge_request_diff, :merge_head, merge_request: merge_request)
+
+          expect(merge_request).to receive(:check_mergeability).with(async: true)
+          expect(merge_request.merge_head_diff).to be_present
+
+          update_merge_request({ target_branch: 'target' })
+
+          expect(merge_request.reload.merge_head_diff).not_to be_present
+        end
+
         it_behaves_like "creates a new pipeline" do
           let(:new_target_branch) { "target" }
         end
@@ -978,10 +989,11 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
         end
 
         context 'when merge_when_checks_pass is enabled' do
-          it 'publishes a DraftStateChangeEvent' do
+          it 'publishes a DraftStateChangeEvent with new_draft_status: false' do
             expected_data = {
               current_user_id: user.id,
-              merge_request_id: merge_request.id
+              merge_request_id: merge_request.id,
+              new_draft_status: false
             }
 
             expect { update_merge_request(title: 'New title') }.to publish_event(MergeRequests::DraftStateChangeEvent).with(expected_data)
@@ -994,6 +1006,17 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
               .to change { merge_request.title }
               .from(draft_title)
               .to(title)
+          end
+
+          it 'publishes a DraftStateChangeEvent with new_draft_status: false' do
+            expected_data = {
+              current_user_id: user.id,
+              merge_request_id: merge_request.id,
+              new_draft_status: false
+            }
+
+            expect { update_merge_request({ wip_event: "ready" }) }
+              .to publish_event(MergeRequests::DraftStateChangeEvent).with(expected_data)
           end
         end
       end
@@ -1015,10 +1038,11 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
         end
 
         context 'when merge_when_checks_pass is enabled' do
-          it 'publishes a DraftStateChangeEvent' do
+          it 'publishes a DraftStateChangeEvent with new_draft_status: true' do
             expected_data = {
               current_user_id: user.id,
-              merge_request_id: merge_request.id
+              merge_request_id: merge_request.id,
+              new_draft_status: true
             }
 
             expect { update_merge_request(title: 'Draft: New title') }.to publish_event(MergeRequests::DraftStateChangeEvent).with(expected_data)
@@ -1038,6 +1062,42 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
               .from(title)
               .to(draft_title)
           end
+
+          it 'publishes a DraftStateChangeEvent with new_draft_status: true' do
+            expected_data = {
+              current_user_id: user.id,
+              merge_request_id: merge_request.id,
+              new_draft_status: true
+            }
+
+            expect { update_merge_request({ wip_event: "draft" }) }
+              .to publish_event(MergeRequests::DraftStateChangeEvent).with(expected_data)
+          end
+        end
+      end
+
+      context 'when draft status does not change (draft title rename)' do
+        before do
+          merge_request.update_attribute(:title, "Draft: Old title")
+        end
+
+        it 'does not send notifications', :sidekiq_inline do
+          perform_enqueued_jobs do
+            described_class.new(project: project, current_user: user, params: { title: 'Draft: New title' }).execute(merge_request)
+          end
+
+          should_not_email(subscriber)
+          should_not_email(non_subscriber)
+        end
+
+        it 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+          expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated)
+
+          update_merge_request(title: 'Draft: New title')
+        end
+
+        it 'does not publish a DraftStateChangeEvent' do
+          expect { update_merge_request(title: 'Draft: New title') }.not_to publish_event(MergeRequests::DraftStateChangeEvent)
         end
       end
     end

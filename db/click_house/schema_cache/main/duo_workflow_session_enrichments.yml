@@ -1,0 +1,30 @@
+---
+name: duo_workflow_session_enrichments
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(updated_at) ORDER BY workflow_id SETTINGS index_granularity
+  = 8192
+primary_key: workflow_id
+sorting_key: workflow_id
+settings:
+  index_granularity: '8192'
+columns:
+- name: workflow_id
+  type: UInt64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: credits_used
+  type: Float64
+  default_kind: DEFAULT
+  default_expression: '0'
+  compression_codec: CODEC(ZSTD(1))
+- name: model_used
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+  compression_codec: CODEC(ZSTD(1))
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))

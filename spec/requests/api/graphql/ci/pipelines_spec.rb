@@ -85,6 +85,16 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
         'shortSha' => eq(pipeline.short_sha)
       )
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL',
+      [:read_project, :read_pipeline] do
+      let(:boundary_object) { project }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+
+      before_all do
+        project.add_developer(user)
+      end
+    end
   end
 
   describe 'duration fields' do
@@ -321,6 +331,16 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
     end
 
     it_behaves_like 'a working graphql query'
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL',
+      [:read_project, :read_pipeline, :download_job_artifact] do
+      let(:boundary_object) { project }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+
+      before_all do
+        project.add_developer(user)
+      end
+    end
 
     it 'returns the job_artifacts of a pipeline' do
       job_artifacts_graphql_data = graphql_data_at(*path).flatten
@@ -640,7 +660,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   shared_examples 'avoids N+1 queries for merge_request-dependent fields' do
-    it 'avoids N+1 queries' do
+    it 'avoids N+1 queries', :clean_gitlab_redis_shared_state do
       # Warm up caches so the control and assertion run from the same baseline.
       post_graphql(query, current_user: user)
 

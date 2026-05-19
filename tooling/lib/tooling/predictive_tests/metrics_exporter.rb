@@ -361,7 +361,7 @@ module Tooling
       # @param strategy [Symbol]
       # @return [void]
       def send_clickhouse_metrics(metrics, strategy)
-        unless clickhouse_enabled?
+        unless environment_variables_set?
           missing = REQUIRED_CLICKHOUSE_ENV_VARS.reject { |var| ENV[var] && !ENV[var].empty? }
           logger.warn("ClickHouse export skipped - missing env vars: #{missing.join(', ')}")
           return
@@ -393,7 +393,7 @@ module Tooling
       end
 
       # @return [Boolean]
-      def clickhouse_enabled?
+      def environment_variables_set?
         REQUIRED_CLICKHOUSE_ENV_VARS.all? { |var| ENV[var] && !ENV[var].empty? }
       end
 

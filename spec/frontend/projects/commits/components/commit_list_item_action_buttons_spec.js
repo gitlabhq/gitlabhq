@@ -7,12 +7,17 @@ import { mockCommit } from './mock_data';
 describe('CommitListItemActionButtons', () => {
   let wrapper;
 
+  const mockProjectRootPath = '/gitlab-org/gitlab-shell';
+
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(CommitListItemActionButtons, {
       propsData: {
         commit: mockCommit,
         isCollapsed: true,
         ...props,
+      },
+      provide: {
+        projectRootPath: mockProjectRootPath,
       },
     });
   };
@@ -44,10 +49,16 @@ describe('CommitListItemActionButtons', () => {
   });
 
   describe('browse files button', () => {
-    it('has correct attributes', () => {
+    it('links to the repository tree at the commit SHA', () => {
       const browseButton = findBrowseFilesButton();
-      expect(browseButton.attributes('href')).toBe(mockCommit.webUrl);
+      expect(browseButton.attributes('href')).toBe(
+        `${mockProjectRootPath}/-/tree/${mockCommit.sha}`,
+      );
       expect(browseButton.attributes('aria-label')).toBe('Browse commit files');
+    });
+
+    it('has a tooltip', () => {
+      expect(findBrowseFilesButton().attributes('title')).toBe('Browse commit files');
     });
   });
 

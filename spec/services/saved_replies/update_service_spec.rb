@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe SavedReplies::UpdateService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:saved_reply) { create(:saved_reply, user: current_user) }
+    let_it_be(:saved_reply, freeze: false) { create(:saved_reply, user: current_user) }
     let_it_be(:other_saved_reply) { create(:saved_reply, user: current_user) }
     let_it_be(:saved_reply_from_other_user) { create(:saved_reply) }
 

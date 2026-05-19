@@ -1,0 +1,5 @@
+---
+event: Projects::ProjectVisibilityChangedEvent
+description: Published when a project's visibility_level changes. Not published for
+  updates that leave visibility unchanged.
+feature_category: groups_and_projects

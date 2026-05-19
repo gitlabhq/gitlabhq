@@ -10,6 +10,8 @@ identifiers:
 additional_properties:
   label:
     description: 'Type of diffs experience: ''rapid_diffs'' or ''legacy_diffs'''
+  property:
+    description: 'Source of the visit. Set to ''spa_navigation'' when triggered from the frontend on SPA app boot.'
 product_group: code_review
 product_categories:
 - code_review_workflow

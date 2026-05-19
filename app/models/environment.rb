@@ -34,7 +34,20 @@ class Environment < ApplicationRecord
 
   # NOTE: If you preload multiple last deployments of environments, use Preloaders::Environments::DeploymentPreloader.
   has_one :last_deployment, -> { success.ordered }, class_name: 'Deployment', inverse_of: :environment
-  has_one :last_finished_deployment, -> { finished.ordered }, class_name: 'Deployment', inverse_of: :environment
+  has_one :last_finished_deployment, ->(environment) {
+    # Force the query planner to use the covering index on (environment_id,
+    # status, finished_at) instead of the partial index on (environment_id,
+    # finished_at DESC). This ensures worst-case O(log(n)) runtime instead of
+    # O(n) for pathological cases, like when there is a large number of blocked
+    # deployments.
+    union = Deployment.from_union(
+      Deployment::FINISHED_STATUSES.map { |status| where(environment_id: environment.id, status: status).ordered.limit(1) },
+      remove_duplicates: false,
+      remove_order: false
+    )
+
+    union.ordered
+  }, class_name: 'Deployment', inverse_of: :environment
   has_one :last_visible_deployment, -> { visible.order(id: :desc) }, inverse_of: :environment, class_name: 'Deployment'
   has_one :upcoming_deployment, -> { upcoming.order(id: :desc) }, class_name: 'Deployment', inverse_of: :environment
 

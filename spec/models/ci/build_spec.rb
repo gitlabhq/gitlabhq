@@ -38,7 +38,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   it { is_expected.to have_many(:needs).with_foreign_key(:build_id) }
 
-  it do
+  it 'has many sourced pipelines' do
     is_expected.to have_many(:sourced_pipelines).class_name('Ci::Sources::Pipeline').with_foreign_key(:source_job_id)
       .inverse_of(:build)
   end
@@ -57,11 +57,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to have_one(:pending_state).with_foreign_key(:build_id).inverse_of(:build) }
   it { is_expected.to have_one(:supply_chain_attestation).with_foreign_key(:build_id).inverse_of(:build) }
 
-  it do
+  it 'has one queuing entry' do
     is_expected.to have_one(:queuing_entry).class_name('Ci::PendingBuild').with_foreign_key(:build_id).inverse_of(:build)
   end
 
-  it do
+  it 'has one runtime metadata as running build' do
     is_expected.to have_one(:runtime_metadata).class_name('Ci::RunningBuild').with_foreign_key(:build_id)
       .inverse_of(:build)
   end
@@ -548,6 +548,28 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it { expect(eager_load_for_api.last.association(:ci_stage)).to be_loaded }
         it { expect(eager_load_for_api.last.association(:pipeline)).to be_loaded }
         it { expect(eager_load_for_api.last.pipeline.association(:project)).to be_loaded }
+      end
+    end
+
+    describe '.iac_sast_jobs' do
+      let_it_be(:pipeline) { create(:ci_pipeline) }
+
+      let_it_be(:standard_iac_job) { create(:ci_build, name: 'kics-iac-sast', pipeline: pipeline) }
+      let_it_be(:sep_iac_job_0) { create(:ci_build, name: 'kics-iac-sast-0', pipeline: pipeline) }
+      let_it_be(:sep_iac_job_1) { create(:ci_build, name: 'kics-iac-sast-1', pipeline: pipeline) }
+      let_it_be(:other_job) { create(:ci_build, name: 'my-kics-iac-sast-custom', pipeline: pipeline) }
+      let_it_be(:unrelated_job) { create(:ci_build, name: 'test-job', pipeline: pipeline) }
+
+      it 'returns jobs matching the IaC SAST pattern' do
+        expect(described_class.iac_sast_jobs).to contain_exactly(
+          standard_iac_job,
+          sep_iac_job_0,
+          sep_iac_job_1
+        )
+      end
+
+      it 'excludes jobs that do not match the pattern' do
+        expect(described_class.iac_sast_jobs).not_to include(other_job, unrelated_job)
       end
     end
   end
@@ -1073,7 +1095,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     subject(:any_runners_online?) { build.any_runners_online? }
 
     context 'when no runners' do
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_falsy }
     end
 
     context 'when there is a runner' do
@@ -1096,13 +1118,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'that is paused' do
         let(:runner_traits) { [:online, :paused] }
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
 
       context 'that is offline' do
         let(:runner_traits) { :offline }
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
 
       context 'that cannot handle build' do
@@ -1113,7 +1135,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             .and_return(false)
         end
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
     end
 
@@ -1128,7 +1150,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     subject(:any_runners_available?) { build.any_runners_available? }
 
     context 'when no runners' do
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_falsy }
     end
 
     context 'when there are runners' do
@@ -1223,7 +1245,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       context 'when artifacts do not exist' do
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
     end
 
@@ -1237,7 +1259,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           build.pipeline.locked = :unlocked
         end
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
 
       context 'when artifacts are locked' do
@@ -1254,7 +1276,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         context 'when artifacts do not exist' do
-          it { is_expected.to be_falsey }
+          it { is_expected.to be_falsy }
         end
       end
     end
@@ -1282,7 +1304,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'non public artifacts' do
       let(:build) { create(:ci_build, :private_artifacts, pipeline: pipeline) }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_falsy }
     end
 
     context 'no artifacts' do
@@ -1368,7 +1390,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         build.update!(artifacts_expire_at: Time.current + 7.days)
       end
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_falsy }
     end
   end
 
@@ -1480,14 +1502,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           end
 
           context 'without the `unprotect` option' do
-            it do
+            it 'uses protected cache keys' do
               is_expected.to all(a_hash_including(key: a_string_matching(/-protected$/)))
             end
 
             context 'and the caches have fallback keys' do
               let(:options) { options_with_fallback_keys }
 
-              it do
+              it 'applies protected suffix to both keys and fallback keys' do
                 is_expected.to all(a_hash_including({
                   key: a_string_matching(/-protected$/),
                   fallback_keys: array_including(a_string_matching(/-protected$/))
@@ -1504,7 +1526,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
               ] }
             end
 
-            it do
+            it 'uses non-protected cache keys' do
               is_expected.to all(a_hash_including(key: a_string_matching(/-non_protected$/)))
             end
 
@@ -1514,7 +1536,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
                 options_with_fallback_keys
               end
 
-              it do
+              it 'applies non-protected suffix to both keys and fallback keys' do
                 is_expected.to all(a_hash_including({
                   key: a_string_matching(/-non_protected$/),
                   fallback_keys: array_including(a_string_matching(/-non_protected$/))
@@ -1529,14 +1551,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             allow(build.pipeline).to receive(:protected_ref?).and_return(false)
           end
 
-          it do
+          it 'uses non-protected cache keys' do
             is_expected.to all(a_hash_including(key: a_string_matching(/-non_protected$/)))
           end
 
           context 'and the caches have fallback keys' do
             let(:options) { options_with_fallback_keys }
 
-            it do
+            it 'applies non-protected suffix to both keys and fallback keys' do
               is_expected.to all(a_hash_including({
                 key: a_string_matching(/-non_protected$/),
                 fallback_keys: array_including(a_string_matching(/-non_protected$/))
@@ -1584,7 +1606,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             context 'and the caches have fallback keys' do
               let(:options) { options_with_fallback_keys }
 
-              it do
+              it 'returns cache keys and fallback keys without type suffix' do
                 is_expected.to match([
                   a_hash_including({
                     key: 'cache-1',
@@ -1611,7 +1633,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             context 'and the caches have fallback keys' do
               let(:options) { options_with_fallback_keys }
 
-              it do
+              it 'returns cache keys and fallback keys without type suffix' do
                 is_expected.to match([
                   a_hash_including({
                     key: 'cache-1',
@@ -1638,7 +1660,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         context 'and the cache have fallback keys' do
           let(:options) { options_with_fallback_keys }
 
-          it do
+          it 'returns cache entries with cache index and type suffix in keys and fallback keys' do
             is_expected.to be_an(Array).and all(include({
               key: a_string_matching(/^cache-1-(?>protected|non_protected)/),
               fallback_keys: array_including(a_string_matching(/^cache\d-1-(?>protected|non_protected)/))
@@ -1652,7 +1674,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(nil)
         end
 
-        it do
+        it 'returns cache entries with non-protected suffix and empty fallback keys' do
           is_expected.to eq(
             options[:cache].map { |entry| entry.merge(key: "#{entry[:key]}-non_protected").merge(fallback_keys: []) })
         end
@@ -1660,7 +1682,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         context 'and the cache have fallback keys' do
           let(:options) { options_with_fallback_keys }
 
-          it do
+          it 'returns cache entries with non-protected suffix applied to keys and fallback keys' do
             is_expected.to eq(
               options[:cache].map do |entry|
                 entry[:key] = "#{entry[:key]}-non_protected"
@@ -1697,7 +1719,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'when build has no user' do
       let(:test_build) { create(:ci_build, user: nil, project: project) }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_falsy }
     end
 
     context 'when ci_separated_caches is disabled' do
@@ -1705,7 +1727,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         project.update!(ci_separated_caches: false)
       end
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_falsy }
     end
 
     context 'when user is a developer' do
@@ -1713,7 +1735,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         project.add_developer(cache_user)
       end
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_falsy }
     end
 
     context 'when user is a maintainer' do
@@ -1985,7 +2007,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'when build does not have a test report' do
       let(:build) { create(:ci_build, pipeline: pipeline) }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_falsy }
     end
   end
 
@@ -2133,7 +2155,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           subject { build.erased? }
 
           context 'job has not been erased' do
-            it { is_expected.to be_falsey }
+            it { is_expected.to be_falsy }
           end
 
           context 'job has been erased' do
@@ -2225,7 +2247,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'when set to something else' do
         let(:value) { 'something else' }
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
     end
 
@@ -2863,7 +2885,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context "and there is a project runner" do
         let!(:runner) { create(:ci_runner, :project, projects: [build.project], contacted_at: 1.second.ago) }
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
     end
 
@@ -2873,7 +2895,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           build.status = state
         end
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
     end
   end
@@ -2974,7 +2996,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         context 'when artifacts do not expire' do
-          it { is_expected.to be_falsey }
+          it { is_expected.to be_falsy }
         end
 
         context 'when artifacts expire in the future' do
@@ -3087,6 +3109,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_PROJECT_NAMESPACE_SLUG', value: Gitlab::Utils.slugify(project.namespace.full_path), public: true, masked: false },
           { key: 'CI_PROJECT_NAMESPACE_ID', value: project.namespace.id.to_s, public: true, masked: false },
           { key: 'CI_PROJECT_ROOT_NAMESPACE', value: project.namespace.root_ancestor.path, public: true, masked: false },
+          { key: 'CI_PROJECT_ROOT_NAMESPACE_SLUG', value: Gitlab::Utils.slugify(project.namespace.root_ancestor.path), public: true, masked: false },
           { key: 'CI_PROJECT_URL', value: project.web_url, public: true, masked: false },
           { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true, masked: false },
           { key: 'CI_PROJECT_REPOSITORY_LANGUAGES', value: project.repository_languages.map(&:name).join(',').downcase, public: true, masked: false },
@@ -3206,7 +3229,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
         context 'when build has environment and user-provided variables' do
           let(:expected_variables) do
-            predefined_variables.map { |variable| variable.fetch(:key) }
+            predefined_variables.filter_map { |variable| variable.fetch(:key) if variable.fetch(:value) }
           end
 
           before do
@@ -3235,7 +3258,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           end
 
           it 'matches explicit variables ordering' do
-            received_variables = subject.map { |variable| variable[:key] }
+            received_variables = subject.filter_map { |variable| variable[:key] if variable[:value] }
 
             expect(received_variables).to eq(expected_variables)
           end
@@ -3520,7 +3543,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         pipeline.update!(tag: true)
       end
 
-      it do
+      it 'includes tag variable and tag message variable' do
         build.reload
 
         expect(subject).to include(tag_variable, tag_message_variable)
@@ -4429,7 +4452,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'build does not have prerequisites' do
       let(:prerequisites) { [] }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_falsy }
     end
   end
 
@@ -4600,7 +4623,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it 'assigns the token' do
-        expect { build.enqueue }.to change(build, :token).from(nil).to(an_instance_of(String))
+        expect { build.enqueue }.to change { build.token }.from(nil).to(an_instance_of(String))
       end
     end
 
@@ -4747,14 +4770,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:timeout) { 1000 }
     let(:build) { create(:ci_build, :running, pipeline: pipeline, timeout: timeout) }
 
-    context 'when failure reason is job_execution_timeout' do
+    context 'when failure reason is server_timeout_running' do
       it 'overwrites finished_at' do
-        build.drop!(:job_execution_timeout)
+        build.drop!(:server_timeout_running)
         expect(build.reload.finished_at).to eq(build.started_at + timeout.seconds)
       end
     end
 
-    context 'when the failure reason is not job_execution_timeout' do
+    context 'when the failure reason is not server_timeout_running' do
       it 'does not overwrite finished_at' do
         build.drop!(:script_failure)
         expect(build.reload.finished_at).not_to eq(build.started_at + timeout.seconds)
@@ -4767,14 +4790,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:timeout) { 1000 }
     let(:build) { create(:ci_build, :canceling, pipeline: pipeline, timeout: timeout) }
 
-    context 'when failure reason is job_execution_server_timeout' do
+    context 'when failure reason is server_timeout_canceling' do
       it 'overwrites finished_at' do
-        build.drop!(:job_execution_server_timeout)
+        build.drop!(:server_timeout_canceling)
         expect(build.reload.finished_at).to eq(build.started_at + timeout.seconds)
       end
     end
 
-    context 'when the failure reason is not job_execution_server_timeout' do
+    context 'when the failure reason is not server_timeout_canceling' do
       it 'does not overwrite finished_at' do
         build.drop!(:script_failure)
         expect(build.reload.finished_at).not_to eq(build.started_at + timeout.seconds)
@@ -4789,17 +4812,17 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when a Reason class is passed as failure_reason' do
-      context 'when the reason is job_execution_server_timeout' do
+      context 'when the reason is server_timeout_canceling' do
         it 'overwrites finished_at' do
           reason = ::Gitlab::Ci::Build::Status::Reason
-                     .fabricate(build, :job_execution_server_timeout)
+                     .fabricate(build, :server_timeout_canceling)
 
           build.drop(reason)
           expect(build.reload.finished_at).to eq(build.started_at + timeout.seconds)
         end
       end
 
-      context 'when the reason is not job_execution_server_timeout' do
+      context 'when the reason is not server_timeout_canceling' do
         it 'does not overwrite finished_at' do
           reason = ::Gitlab::Ci::Build::Status::Reason
                      .fabricate(build, :script_failure)
@@ -5130,7 +5153,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it 'when runner_session_url is empty' do
         build.status = :running
 
-        expect(subject).to be_falsey
+        expect(subject).to be_falsy
       end
 
       context 'unless the build is running' do
@@ -5138,11 +5161,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           build.build_runner_session(url: 'whatever')
         end
 
-        it do
+        it 'returns falsy for all non-running states' do
           states.each do |state|
             build.status = state
 
-            is_expected.to be_falsey
+            is_expected.to be_falsy
           end
         end
       end
@@ -5470,13 +5493,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         { artifacts: { paths: ["file.txt"] } }
       end
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_falsy }
     end
 
     context 'when options are missing' do
       let(:options) { nil }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_falsy }
     end
   end
 
@@ -5548,7 +5571,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           {}
         end
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
     end
 
@@ -5566,7 +5589,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'when runner does not provide given feature' do
         let(:runner_features) { {} }
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
     end
 
@@ -5586,7 +5609,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'when runner does not provide given feature' do
         let(:runner_features) { {} }
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
     end
 
@@ -5606,7 +5629,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'when runner does not provide given feature' do
         let(:runner_features) { {} }
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
 
       context 'when the runner does not provide all of the required features' do
@@ -5620,7 +5643,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         let(:runner_features) { { return_exit_code: true } }
 
         it 'requires `upload_multiple_artifacts` too' do
-          is_expected.to be_falsey
+          is_expected.to be_falsy
         end
       end
     end
@@ -5641,7 +5664,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'when runner does not provide given feature' do
         let(:runner_features) { {} }
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
     end
   end
@@ -5977,7 +6000,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'without allow_failure_criteria nor retry' do
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_falsy }
     end
 
     context 'with allow_failure_critera' do
@@ -5990,7 +6013,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           }
         end
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
 
       context 'when exit_codes is an empty array' do
@@ -6002,7 +6025,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           }
         end
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
 
       context 'when exit_codes are defined' do
@@ -6028,7 +6051,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           }
         end
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
 
       context 'when exit_codes is an empty array' do
@@ -6040,7 +6063,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           }
         end
 
-        it { is_expected.to be_falsey }
+        it { is_expected.to be_falsy }
       end
 
       context 'when exit_codes are defined' do
@@ -6109,7 +6132,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it { expect(matchers.map(&:tag_list)).to match_array([[], %w[tag1 tag2]]) }
 
-      it { expect(matchers.map(&:protected?)).to all be_falsey }
+      it { expect(matchers.map(&:protected?)).to all be_falsy }
 
       context 'when the builds are protected' do
         before do

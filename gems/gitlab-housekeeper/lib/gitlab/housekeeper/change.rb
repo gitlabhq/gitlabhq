@@ -16,7 +16,8 @@ module Gitlab
         :mr_web_url,
         :push_options,
         :non_housekeeper_changes,
-        :context
+        :context,
+        :has_conflicts
       attr_reader :assignees,
         :reviewers
 
@@ -27,6 +28,7 @@ module Gitlab
         @non_housekeeper_changes = []
         @push_options = PushOptions.new
         @aborted = false
+        @has_conflicts = false
       end
 
       def assignees=(assignees)

@@ -5,6 +5,7 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { TRACKING_CATEGORY_SHOW, VIEW_CONTEXT } from '~/work_items/constants';
 
 export default {
+  name: 'WorkItemActivitySortFilter',
   components: {
     GlCollapsibleListbox,
     LocalStorageSync,

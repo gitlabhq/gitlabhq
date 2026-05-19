@@ -58,8 +58,8 @@ export default {
     hasDescription(description) {
       return description?.length;
     },
-    isArrayType(type) {
-      return type === this.$options.ARRAY_TYPE;
+    isArrayType(item) {
+      return item.type === this.$options.ARRAY_TYPE && !item.options?.length;
     },
   },
 };
@@ -89,7 +89,7 @@ export default {
         <span
           >{{ item.type.toLowerCase() }}
           <help-icon
-            v-if="isArrayType(item.type)"
+            v-if="isArrayType(item)"
             v-gl-tooltip.hover
             :title="s__('Pipelines|Array values must be in JSON format.')"
           />

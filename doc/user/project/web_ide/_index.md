@@ -220,7 +220,7 @@ To open the Command Palette and run a command in the Web IDE:
 
 ### Edit settings
 
-You can use the settings editor to view and edit your user and workspace settings.
+You can use the settings editor to view and edit your user and Web IDE workspace settings.
 To open the settings editor in the Web IDE:
 
 - On the top menu bar, select **File** > **Preferences** > **Settings**,
@@ -404,7 +404,7 @@ Prerequisites:
 To update the OAuth callback URL:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Applications**.
+1. In the left sidebar, select **Applications**.
 1. For **GitLab Web IDE**, select **Edit**.
 1. Enter the OAuth callback URL.
    You can enter multiple URLs separated by newlines.

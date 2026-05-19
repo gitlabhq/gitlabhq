@@ -7,9 +7,11 @@ product_categories:
 - code_testing
 performance_indicator_type: []
 value_type: number
-status: active
+status: removed
 milestone: '17.11'
+milestone_removed: '19.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184867
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233379
 time_frame:
 - 28d
 - 7d

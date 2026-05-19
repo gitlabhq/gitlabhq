@@ -14,7 +14,7 @@ import getCatalogResources from '../../graphql/queries/get_ci_catalog_resources.
 import getCurrentPage from '../../graphql/queries/client/get_current_page.query.graphql';
 import updateCurrentPageMutation from '../../graphql/mutations/client/update_current_page.mutation.graphql';
 import getCatalogResourcesCount from '../../graphql/queries/get_ci_catalog_resources_count.query.graphql';
-import { DEFAULT_SORT_VALUE, SCOPE, TAB_NAME } from '../../constants';
+import { DEFAULT_SORT_VALUE, SCOPE, TAB_NAME, getVerificationLevelOptions } from '../../constants';
 
 export default {
   name: 'CiResourcesPage',
@@ -32,14 +32,19 @@ export default {
   },
   data() {
     const searchTerm = getParameterByName('search');
+    const verificationLevel = getParameterByName('verification_level');
+    const topicsParam = getParameterByName('topics');
+    const topics = topicsParam ? topicsParam.split(',') : [];
 
     return {
       catalogResources: [],
       catalogResourcesCount: { all: 0, namespaces: 0, analytics: 0 },
       currentPage: 1,
       pageInfo: {},
-      searchTerm,
+      searchTerm: searchTerm || null,
       sortValue: DEFAULT_SORT_VALUE,
+      verificationLevel: verificationLevel || null,
+      topics,
       tabData: {
         name: TAB_NAME.all,
         scope: SCOPE.all,
@@ -53,6 +58,8 @@ export default {
       variables() {
         return {
           searchTerm: this.searchTerm,
+          verificationLevel: this.verificationLevelEnum,
+          topics: this.topics,
         };
       },
       update({ namespaces, all, analytics }) {
@@ -76,6 +83,8 @@ export default {
           minAccessLevel: this.tabData.minAccessLevel || null,
           searchTerm: this.searchTerm,
           sortValue: this.sortValue,
+          verificationLevel: this.verificationLevelEnum,
+          topics: this.topics,
           first: ciCatalogResourcesItemsCount,
         };
       },
@@ -98,6 +107,12 @@ export default {
     },
   },
   computed: {
+    verificationLevelEnum() {
+      if (!this.verificationLevel) return null;
+
+      const level = getVerificationLevelOptions().find((l) => l.text === this.verificationLevel);
+      return level?.value || null;
+    },
     hasResources() {
       return this.catalogResources.length > 0;
     },
@@ -159,11 +174,18 @@ export default {
     incrementPage() {
       this.updatePageCount(this.currentPage + 1);
     },
-    onUpdateSearchTerm(searchTerm) {
-      this.searchTerm = !searchTerm.length ? null : searchTerm;
+    onUpdateFilters({ searchTerm = null, verificationLevel = null, topics = [] }) {
+      this.searchTerm = searchTerm;
+      this.verificationLevel = verificationLevel;
+      this.topics = topics;
       this.resetPageCount();
-
-      historyPushState(setUrlParams({ search: this.searchTerm }));
+      historyPushState(
+        setUrlParams({
+          search: searchTerm,
+          verification_level: verificationLevel,
+          topics: topics.length ? topics.join(',') : null,
+        }),
+      );
     },
     onUpdateSorting(sortValue) {
       this.sortValue = sortValue;
@@ -185,8 +207,10 @@ export default {
     />
     <catalog-search
       :initial-search-term="searchTerm"
-      @update-search-term="onUpdateSearchTerm"
+      :initial-verification-level="verificationLevel"
+      :initial-topics="topics"
       @update-sorting="onUpdateSorting"
+      @update-filters="onUpdateFilters"
     />
     <catalog-list-skeleton-loader v-if="isLoading" class="gl-mt-3 gl-w-full" />
     <empty-state v-else-if="!hasResources" :search-term="searchTerm" :current-tab="tabData.name" />

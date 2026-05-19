@@ -48,6 +48,16 @@ module Types
           null: true,
           description: 'Custom payload template for the webhook request body.'
 
+        field :token_present, GraphQL::Types::Boolean,
+          null: false,
+          resolver_method: :token_present?,
+          description: 'Whether a secret token is configured for X-Gitlab-Token header validation.'
+
+        field :signing_token_present, GraphQL::Types::Boolean,
+          null: false,
+          resolver_method: :signing_token_present?,
+          description: 'Whether an HMAC signing token is configured for webhook-signature header generation.'
+
         field :push_events_branch_filter, GraphQL::Types::String,
           null: true,
           description: 'Trigger hook on push events for matching branches only.'
@@ -135,6 +145,14 @@ module Types
           null: true,
           description: 'A single webhook event.',
           resolver: Resolvers::WebHooks::EventsResolver.single
+
+        def token_present?
+          object.token.present?
+        end
+
+        def signing_token_present?
+          object.signing_token.present?
+        end
 
         def resolve_nil_confidential_note_events
           resolve_nil_events(object.confidential_note_events)

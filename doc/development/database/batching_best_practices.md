@@ -254,6 +254,22 @@ class MyJob
 end
 ```
 
+### Data retention and recurring cleanup
+
+For recurring data operations such as purging stale rows, deleting expired records,
+or performing ongoing data hygiene on large tables, use the
+[background operations framework](background_operations.md) (BBO) instead of
+building custom batching logic. BBO handles cursor management, crash-safe
+progress tracking, runtime limiting, batch size optimization, and database
+health checks automatically.
+
+> [!note]
+> BBO is experimental and subject to changes. Reach out to
+> `#g_database_architecture` on Slack before adopting it.
+
+For one-time data migrations tied to a release, use
+[batched background migrations](batched_background_migrations.md) instead.
+
 ### Considerations for Sidekiq jobs
 
 Sidekiq jobs can consume substantial database resources. If your job only batches over data but does not modify anything in the database, consider setting attributes favoring database replicas. See the documentation for the [Sidekiq worker attributes](../sidekiq/worker_attributes.md#job-data-consistency-strategies).

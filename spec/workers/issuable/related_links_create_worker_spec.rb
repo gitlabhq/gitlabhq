@@ -46,9 +46,9 @@ RSpec.describe Issuable::RelatedLinksCreateWorker, feature_category: :portfolio_
       subject
 
       expect(issuable.notes.last.note)
-        .to eq("marked this task as related to #{target1.to_reference} and #{target2.to_reference}")
-      expect(target1.notes.last.note).to eq("marked this task as related to #{issuable.to_reference}")
-      expect(target2.notes.last.note).to eq("marked this task as related to #{issuable.to_reference}")
+        .to eq("marked as related to #{target1.to_reference} and #{target2.to_reference}")
+      expect(target1.notes.last.note).to eq("marked as related to #{issuable.to_reference}")
+      expect(target2.notes.last.note).to eq("marked as related to #{issuable.to_reference}")
     end
 
     it_behaves_like 'an idempotent worker' do

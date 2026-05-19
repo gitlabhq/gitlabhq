@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe 'File blame', :js, feature_category: :source_code_management do
   include TreeHelper
 
+  # Disable inline_blame so all tests in this file exercise the legacy blame page.
+  # The redirect behaviour with inline_blame enabled is tested in blame_controller_spec.rb.
+  before do
+    stub_feature_flags(inline_blame: false)
+  end
+
   let_it_be(:project) { create(:project, :public, :repository) }
 
   let(:path) { 'CHANGELOG' }

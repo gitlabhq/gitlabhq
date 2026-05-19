@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project) }
-  let(:variables) {}
+  let(:variables) { nil }
   let(:context_params) { { sha: 'HEAD', variables: variables, project: project } }
   let(:ctx) { Gitlab::Ci::Config::External::Context.new(**context_params) }
 
@@ -14,6 +14,10 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
         @location = params[:location]
 
         super
+      end
+
+      def include_type
+        :test
       end
 
       def validate_context!
@@ -209,9 +213,38 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
 
     it do
       is_expected.to eq(
+        type: :test,
         context_project: project.full_path,
         context_sha: 'HEAD'
       )
+    end
+  end
+
+  describe '#include_type' do
+    let(:location) { 'some/file/config.yml' }
+
+    context 'when subclass does not implement include_type' do
+      let(:base_class) do
+        Class.new(described_class) do
+          def initialize(params, ctx)
+            @location = params[:location]
+
+            super
+          end
+
+          def validate_context!; end
+
+          def content
+            params[:content]
+          end
+        end
+      end
+
+      let(:base_file) { base_class.new({ location: location, content: content }, ctx) }
+
+      it 'raises NotImplementedError' do
+        expect { base_file.include_type }.to raise_error(NotImplementedError, 'subclass must implement `include_type`')
+      end
     end
   end
 

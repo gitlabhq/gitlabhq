@@ -10,10 +10,8 @@ import {
 } from '@gitlab/ui';
 import getCurrentUserOrganizations from '~/organizations/shared/graphql/queries/current_user_organizations.query.graphql';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__, __ } from '~/locale';
-import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   AVATAR_SHAPE_OPTION_RECT,
@@ -37,19 +35,11 @@ export default {
       ),
       callToAction: s__('Organization|sharing your experience'),
     },
-    switchingNotSupportedMessage: s__(
-      'Organization|Switching between organizations is not currently supported.',
-    ),
-    learnMore: __('Learn more'),
     projectStatus: __('Experiment'),
   },
-  switchingOrganizationsDocsPath: helpPagePath('user/organization/_index.md', {
-    anchor: 'switch-organizations',
-  }),
   feedbackUrl:
     'https://gitlab.com/gitlab-com/gl-infra/tenant-scale/organizations/organizations-internal-feedback/-/issues/1',
   components: { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon, GlLink, GlBadge, GlButton },
-  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       organizations: {},
@@ -68,7 +58,7 @@ export default {
         // In Cells 1.5 we will update this to fetch the organizations.
         // See https://docs.gitlab.com/ee/architecture/blueprints/cells/iterations/cells-1.0.html#features-on-gitlabcom-that-are-not-supported-on-cells
         // and https://docs.gitlab.com/ee/architecture/blueprints/cells/iterations/cells-1.5.html
-        return !this.organizationSwitchingEnabled || !this.dropdownShown;
+        return !this.dropdownShown;
       },
       error() {
         this.organizations = {
@@ -79,9 +69,6 @@ export default {
     },
   },
   computed: {
-    organizationSwitchingEnabled() {
-      return gon?.features?.organizationSwitching;
-    },
     loading() {
       return this.$apollo.queries.organizations.loading;
     },
@@ -118,26 +105,22 @@ export default {
       // This means we don't render available organizations.
       // See https://docs.gitlab.com/ee/architecture/blueprints/cells/iterations/cells-1.0.html#features-on-gitlabcom-that-are-not-supported-on-cells
       // and https://docs.gitlab.com/ee/architecture/blueprints/cells/iterations/cells-1.5.html
-      if (this.organizationSwitchingEnabled) {
-        const items = this.nodes
-          .map((node) => ({
-            id: getIdFromGraphQLId(node.id),
-            text: node.name,
-            href: node.webUrl,
-            avatarUrl: node.avatarUrl,
-          }))
-          .filter((item) => item.id !== this.currentOrganization.id);
+      const items = this.nodes
+        .map((node) => ({
+          id: getIdFromGraphQLId(node.id),
+          text: node.name,
+          href: node.rootPath,
+          avatarUrl: node.avatarUrl,
+        }))
+        .filter((item) => item.id !== this.currentOrganization.id);
 
-        return [
-          currentOrganizationGroup,
-          {
-            name: this.$options.i18n.switchOrganizations,
-            items: items.length ? items : [this.$options.ITEM_EMPTY],
-          },
-        ];
-      }
-
-      return [currentOrganizationGroup];
+      return [
+        currentOrganizationGroup,
+        {
+          name: this.$options.i18n.switchOrganizations,
+          items: items.length ? items : [this.$options.ITEM_EMPTY],
+        },
+      ];
     },
     dropdownOffset() {
       return {
@@ -202,36 +185,17 @@ export default {
 
     <template #footer>
       <div class="gl-border-t gl-mt-2 gl-border-t-dropdown gl-px-4 gl-pt-3">
-        <div v-if="!organizationSwitchingEnabled">
-          <div class="gl-text-sm gl-font-bold">
-            {{ $options.i18n.switchOrganizations }}
-          </div>
-          <div class="gl-py-3">
-            <p class="gl-m-0 gl-text-sm gl-text-subtle">
-              {{ $options.i18n.switchingNotSupportedMessage }}
-              <gl-link
-                class="gl-text-sm"
-                :href="$options.switchingOrganizationsDocsPath"
-                data-testid="switching-docs-link"
-                >{{ $options.i18n.learnMore }}</gl-link
-              >.
-            </p>
-          </div>
+        <div class="gl-text-sm gl-font-bold">
+          {{ $options.i18n.improveOrganizations.helpImprove }}
         </div>
-
-        <div v-else>
-          <div class="gl-text-sm gl-font-bold">
-            {{ $options.i18n.improveOrganizations.helpImprove }}
-          </div>
-          <div class="gl-py-3">
-            <p class="gl-m-0 gl-text-sm gl-text-subtle">
-              {{ $options.i18n.improveOrganizations.newFeatureExplanation }}
-              <gl-link class="gl-text-sm" data-testid="feedback-url" :href="$options.feedbackUrl">{{
-                $options.i18n.improveOrganizations.callToAction
-              }}</gl-link
-              >.
-            </p>
-          </div>
+        <div class="gl-py-3">
+          <p class="gl-m-0 gl-text-sm gl-text-subtle">
+            {{ $options.i18n.improveOrganizations.newFeatureExplanation }}
+            <gl-link class="gl-text-sm" data-testid="feedback-url" :href="$options.feedbackUrl">{{
+              $options.i18n.improveOrganizations.callToAction
+            }}</gl-link
+            >.
+          </p>
         </div>
       </div>
     </template>

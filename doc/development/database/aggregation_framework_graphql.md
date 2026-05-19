@@ -76,8 +76,9 @@ If `authorize` is not specified, you MUST take care of authorization manually.
 
 The generated GraphQL subtree uses a two-level structure:
 
-- The outer field (`issueAnalytics`) accepts **filter** arguments.
-- The inner `aggregated` field accepts **ordering** and **pagination** arguments, and returns the paginated connection.
+- The outer field (`issueAnalytics`) accepts **dimension and non-metric filter** arguments.
+- The inner `aggregated` field accepts **metric filter**, **ordering**, and **pagination** arguments,
+  and returns the paginated connection.
 
 ```graphql
 query IssueAnalytics($projectId: ID!) {
@@ -88,6 +89,7 @@ query IssueAnalytics($projectId: ID!) {
       createdAtTo: "2024-12-31"
     ) {
       aggregated(
+        totalCountFrom: 5
         orderBy: [{ identifier: "totalCount", direction: DESC }]
         first: 10
       ) {
@@ -109,6 +111,14 @@ query IssueAnalytics($projectId: ID!) {
   }
 }
 ```
+
+### Filter placement
+
+Filter arguments are split across the two levels based on when the filter is applied:
+
+- **Non-metric filters** (those defined with `exact_match` or `range`) appear on the outer field (e.g. `issueAnalytics`).
+- **Metric filters** (those defined with `metric_exact_match` or `metric_range`) appear on the
+  inner `aggregated` field.
 
 ## Custom Request Validations
 

@@ -65,23 +65,29 @@ RSpec.shared_examples 'common user build items' do
   end
 
   context 'for email-based OTP enrollment', :freeze_time do
-    it 'enrolls new users in email-based OTP' do
-      expect(user.email_otp_required_after).to be <= Time.current
-    end
-
-    context 'when user was created via SSO or SAML' do
+    context 'when require_minimum_email_based_otp_for_users_with_passwords is enabled' do
       before do
-        params.merge!({ password_automatically_set: true })
+        stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
       end
 
-      it 'does not enroll new users in email-based OTP' do
-        expect(user.email_otp_required_after).to be_nil
+      it 'enrolls new users in email-based OTP' do
+        expect(user.email_otp_required_after).to be <= Time.current
+      end
+
+      context 'when user was created via SSO or SAML' do
+        before do
+          params.merge!({ password_automatically_set: true })
+        end
+
+        it 'does not enroll new users in email-based OTP' do
+          expect(user.email_otp_required_after).to be_nil
+        end
       end
     end
 
-    context 'when feature flag is disabled' do
+    context 'when require_minimum_email_based_otp_for_users_with_passwords is disabled' do
       before do
-        stub_feature_flags(enrol_new_users_in_email_otp: false)
+        stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: false)
       end
 
       it 'does not enroll new users in email-based OTP' do
@@ -95,7 +101,7 @@ RSpec.shared_examples 'common user build items' do
       end
 
       it 'ignores it' do
-        expect(user.email_otp_required_after).to be <= Time.current
+        expect(user.email_otp_required_after).to be_nil
       end
     end
   end

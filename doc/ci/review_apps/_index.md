@@ -91,7 +91,7 @@ Prerequisites:
 To configure review apps in your project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Pipeline editor**.
+1. In the left sidebar, select **Build** > **Pipeline editor**.
 1. In your `.gitlab-ci.yml` file, add a job that creates a [dynamic environment](../environments/_index.md#create-a-dynamic-environment).
    You can use a [predefined CI/CD variable](../variables/predefined_variables.md) to differentiate
    each environment. For example, using the `CI_COMMIT_REF_SLUG` predefined variable:
@@ -120,7 +120,7 @@ GitLab provides a built-in template that's configured for merge request pipeline
 To use and customize this template:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Select **Enable review apps**.
 1. From the **Enable Review Apps** dialog that appears, copy the YAML template:
 
@@ -141,7 +141,7 @@ To use and customize this template:
 1. Customize the template based on your deployment needs:
 
    - Modify the deployment script and environment URL to work with your infrastructure.
-   - Adjust [the rules section](../jobs/job_rules.md) if you want to trigger review apps
+   - Adjust [the rules section](../jobs/job_rules.md) if you want to deploy review apps
      for branches even without merge requests.
 
    For example, for a deployment to Heroku:
@@ -229,7 +229,7 @@ review_app:
 To deploy and access review apps:
 
 1. Go to your merge request.
-1. Optional. If the review app job is manual, select **Run** ({{< icon name="play" >}}) to trigger the deployment.
+1. Optional. If the review app job is manual, select **Run** ({{< icon name="play" >}}) to start the deployment.
 1. When the pipeline finishes, select **View app** to open the review app in your browser.
 
 ## Example implementations

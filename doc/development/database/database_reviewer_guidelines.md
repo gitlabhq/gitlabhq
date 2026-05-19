@@ -41,7 +41,7 @@ to your profile YAML file:
 1. Create the merge request
    [using the "Database reviewer" template](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/.gitlab/merge_request_templates/Database%20reviewer.md).
 1. Assign to a database maintainer or the
-   [Database Team's Engineering Manager](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/).
+   [Database Team's Engineering Manager](https://handbook.gitlab.com/handbook/engineering/data-engineering/database-excellence/database-frameworks/).
 
 After the `team.yml` update is merged, the [Reviewer roulette](../code_review.md#reviewer-roulette)
 may recommend you as a database reviewer.

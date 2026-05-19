@@ -56,7 +56,7 @@ RSpec.describe Labels::FindOrCreateService, feature_category: :team_planning do
 
         context 'when label does not exist at group level' do
           it 'creates a new label at project level' do
-            expect { service.execute }.to change(project.labels, :count).by(1)
+            expect { service.execute }.to change { project.labels.count }.by(1)
           end
         end
 
@@ -92,7 +92,7 @@ RSpec.describe Labels::FindOrCreateService, feature_category: :team_planning do
           end
 
           it 'creates new labels if labels are not found' do
-            expect { service.execute }.to change(project.labels, :count).by(1)
+            expect { service.execute }.to change { project.labels.count }.by(1)
           end
         end
       end
@@ -106,7 +106,7 @@ RSpec.describe Labels::FindOrCreateService, feature_category: :team_planning do
 
         context 'when label does not exist at group level' do
           it 'creates a new label at group level' do
-            expect { service.execute }.to change(group.labels, :count).by(1)
+            expect { service.execute }.to change { group.labels.count }.by(1)
           end
         end
 

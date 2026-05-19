@@ -1035,7 +1035,7 @@ module Types
       BatchLoader::GraphQL.wrap(object.forks_count)
     end
 
-    def is_catalog_resource # rubocop:disable Naming/PredicateName
+    def is_catalog_resource # rubocop:disable Naming/PredicatePrefix
       lazy_catalog_resource = BatchLoader::GraphQL.for(object.id).batch do |project_ids, loader|
         ::Ci::Catalog::Resource.for_projects(project_ids).each do |catalog_resource|
           loader.call(catalog_resource.project_id, catalog_resource)
@@ -1051,7 +1051,7 @@ module Types
       Gitlab::Routing.url_helpers.explore_catalog_path(project.catalog_resource)
     end
 
-    def is_published # rubocop:disable Naming/PredicateName -- disabled to match the field name.
+    def is_published # rubocop:disable Naming/PredicatePrefix -- disabled to match the field name.
       project&.catalog_resource&.published?
     end
 

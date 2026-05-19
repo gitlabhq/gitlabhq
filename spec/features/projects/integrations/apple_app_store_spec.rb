@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upload Dropzone Field', feature_category: :integrations do
+RSpec.describe 'Upload Dropzone Field', feature_category: :mobile_devops do
   include_context 'project integration activation'
 
   it 'uploads the file data to the correct form fields and updates the messaging correctly', :js, :aggregate_failures do

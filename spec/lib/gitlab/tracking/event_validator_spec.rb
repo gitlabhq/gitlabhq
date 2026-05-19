@@ -66,11 +66,18 @@ RSpec.describe Gitlab::Tracking::EventValidator, feature_category: :service_ping
       ].each do |invalid_property|
         context "when #{invalid_property.each_key.first} is invalid" do
           let(:kwargs) { invalid_property }
+          let(:expected_class_mapping) do
+            {
+              namespace: [Namespaces::UserNamespace, Group, Namespaces::ProjectNamespace].join(', ')
+            }
+          end
 
           it 'raises an InvalidPropertyTypeError' do
             property_name = invalid_property.each_key.first
+            expected_class = expected_class_mapping.fetch(property_name, property_name.capitalize)
+
             expect { validate }.to raise_error(Gitlab::Tracking::EventValidator::InvalidPropertyTypeError,
-              /#{property_name} should be an instance of #{property_name.capitalize}/)
+              /#{property_name} should be an instance of #{expected_class}, got String/)
           end
         end
       end
@@ -88,10 +95,43 @@ RSpec.describe Gitlab::Tracking::EventValidator, feature_category: :service_ping
 
           it 'raises an InvalidPropertyTypeError' do
             property = invalid_property.each_key.first
-            expected_type = described_class::BASE_ADDITIONAL_PROPERTIES[property]
+            expected_type =
+              described_class::BASE_ADDITIONAL_PROPERTIES[property] || described_class::CUSTOM_PROPERTIES_CLASSES
+            actual_type = invalid_property[property].class
+
             expect { validate }.to raise_error(Gitlab::Tracking::EventValidator::InvalidPropertyTypeError,
-              /#{property} should be an instance of #{expected_type}/)
+              /#{property} should be an instance of #{expected_type.join(', ')}, got #{actual_type}/)
           end
+        end
+      end
+    end
+
+    context 'when a property value is an instance of a subclass' do
+      context 'for a kwargs property' do
+        let(:kwargs) { { user: Class.new(User).new } }
+
+        it 'does not raise an error' do
+          expect { validate }.not_to raise_error
+        end
+      end
+
+      context 'for a base String additional property' do
+        let(:additional_properties) do
+          { label: Class.new(String).new('sub_label'), property: 'test_property', value: 1, lang: 'eng' }
+        end
+
+        it 'does not raise an error' do
+          expect { validate }.not_to raise_error
+        end
+      end
+
+      context 'for a custom String additional property' do
+        let(:additional_properties) do
+          { label: 'test_label', property: 'test_property', value: 1, lang: Class.new(String).new('sub_eng') }
+        end
+
+        it 'does not raise an error' do
+          expect { validate }.not_to raise_error
         end
       end
     end

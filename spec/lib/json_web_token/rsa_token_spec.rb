@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe JSONWebToken::RSAToken, feature_category: :shared do
   let_it_be(:rsa_key) do
-    OpenSSL::PKey::RSA.new <<-EOS.strip_heredoc
+    OpenSSL::PKey::RSA.new <<~KEY
       -----BEGIN RSA PRIVATE KEY-----
       MIIBOgIBAAJBAMA5sXIBE0HwgIB40iNidN4PGWzOyLQK0bsdOBNgpEXkDlZBvnak
       OUgAPF+rME4PB0Yl415DabUI40T5UNmlwxcCAwEAAQJAZtY2pSwIFm3JAXIh0cZZ
@@ -14,7 +14,7 @@ RSpec.describe JSONWebToken::RSAToken, feature_category: :shared do
       A6PRG/PSTpQtAiBxtBg6zdf+JC3GH3zt/dA0/10tL4OF2wORfYQghRzyYQIhAL2l
       0ZQW+yLIZAGrdBFWYEAa52GZosncmzBNlsoTgwE4
       -----END RSA PRIVATE KEY-----
-    EOS
+    KEY
   end
 
   let(:rsa_token) { described_class.new(nil) }

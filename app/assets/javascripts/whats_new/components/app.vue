@@ -1,11 +1,10 @@
 <script>
-import { GlDrawer, GlResizeObserverDirective } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapActions } from 'vuex';
+import { GlDrawer } from '@gitlab/ui';
+import { mapState, mapActions } from 'pinia';
 import Tracking from '~/tracking';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { getDrawerBodyHeight } from '../utils/get_drawer_body_height';
+import { useWhatsNew } from '../store';
 import OtherUpdates from './other_updates.vue';
 
 const trackingMixin = Tracking.mixin();
@@ -14,9 +13,6 @@ export default {
   components: {
     GlDrawer,
     OtherUpdates,
-  },
-  directives: {
-    GlResizeObserver: GlResizeObserverDirective,
   },
   mixins: [trackingMixin, glFeatureFlagsMixin()],
   props: {
@@ -51,7 +47,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['open', 'features', 'pageInfo', 'drawerBodyHeight', 'fetching', 'readArticles']),
+    ...mapState(useWhatsNew, ['open', 'features', 'pageInfo', 'fetching', 'readArticles']),
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
     },
@@ -66,7 +62,7 @@ export default {
   },
   mounted() {
     this.openDrawer(this.versionDigest);
-    this.fetchFreshItems();
+    this.fetchInitialItems();
 
     const body = document.querySelector('body');
     const { namespaceId } = body.dataset;
@@ -78,14 +74,8 @@ export default {
     });
   },
   methods: {
-    ...mapActions([
-      'openDrawer',
-      'closeDrawer',
-      'fetchItems',
-      'setDrawerBodyHeight',
-      'setReadArticles',
-    ]),
-    bottomReached() {
+    ...mapActions(useWhatsNew, ['openDrawer', 'closeDrawer', 'fetchItems', 'setReadArticles']),
+    handleLoadMore() {
       const page = this.pageInfo.nextPage;
       if (page) {
         this.fetchFreshItems(page);
@@ -94,9 +84,18 @@ export default {
     focusDrawer() {
       this.$refs.drawer.$el.focus();
     },
-    handleResize() {
-      const height = getDrawerBodyHeight(this.$refs.drawer.$el);
-      this.setDrawerBodyHeight(height);
+    async fetchInitialItems() {
+      const { versionDigest } = this;
+      const INITIAL_PAGES = 3;
+
+      for (let i = 0; i < INITIAL_PAGES; i += 1) {
+        // eslint-disable-next-line no-await-in-loop
+        await this.fetchItems({
+          page: i === 0 ? undefined : this.pageInfo.nextPage,
+          versionDigest,
+        });
+        if (!this.pageInfo.nextPage) break;
+      }
     },
     fetchFreshItems(page) {
       const { versionDigest } = this;
@@ -118,7 +117,6 @@ export default {
   <div>
     <gl-drawer
       ref="drawer"
-      v-gl-resize-observer="handleResize"
       aria-labelledby="whats-new-drawer-heading"
       tabindex="0"
       class="whats-new-drawer gl-leading-reset focus:gl-focus"
@@ -141,9 +139,9 @@ export default {
           :total-articles-to-read="mostRecentReleaseItemsCount"
           :mark-as-read-path="markAsReadPath"
           :fetching="fetching"
-          :drawer-body-height="drawerBodyHeight"
+          :page-info="pageInfo"
           class="other-updates"
-          @bottom-reached="bottomReached"
+          @load-more="handleLoadMore"
           @close-drawer="closeDrawer"
         />
       </div>

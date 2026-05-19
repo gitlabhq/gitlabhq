@@ -36,7 +36,7 @@ module Boards
       def filter_params
         set_scope
         set_non_archived
-        set_issue_types
+        set_work_item_type_ids
 
         super
       end
@@ -49,18 +49,19 @@ module Boards
         params[:non_archived] = parent.is_a?(Group)
       end
 
-      def set_issue_types
-        types = Issue::TYPES_FOR_BOARD_LIST.dup
-        types << 'task' if should_include_task?
-        params[:issue_types] ||= types
-      end
-
-      def should_include_task?
-        parent&.work_item_tasks_on_boards_feature_flag_enabled?
+      def set_work_item_type_ids
+        work_item_type_ids = work_item_type_provider.filtered_types.filter_map do |type|
+          type.try(:converted_from_system_defined_type_identifier) || type.id if type.filterable_board_view?
+        end
+        params[:work_item_type_ids] ||= work_item_type_ids
       end
 
       def item_model
         Issue
+      end
+
+      def work_item_type_provider
+        ::WorkItems::TypesFramework::Provider.new(parent)
       end
     end
   end

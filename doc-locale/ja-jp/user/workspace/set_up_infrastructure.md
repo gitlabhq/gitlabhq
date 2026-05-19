@@ -146,11 +146,11 @@ Kubernetes向けGitLabエージェントは、AWS KubernetesクラスターをGi
 
 1. あなたのグループに移動します。
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **操作** > **Kubernetesクラスター**を選択します。
+1. 左サイドバーで、**操作** > **Kubernetesクラスター**を選択します。
 1. **クラスターに接続**を選択します。
 1. エージェントの名前を入力し、以降の作業で使用するために保存します。たとえば、`gitlab-workspaces-agentk-eks`などです。
 1. **作成して登録**を選択します。
-1. トークンとKASアドレスを以降の作業で使用するために保存します。
+1. トークンとGitLab Relay (KAS) アドレスを後で使用するために保存します。
 1. **続行する**を選択します。
 
 ## GitLab OAuthを設定する {#configure-gitlab-oauth}
@@ -182,7 +182,7 @@ GitLab OAuthを設定するには:
 CI/CD変数を設定するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **CI/CD**を選択します。
+1. 左サイドバーで、**設定** > **CI/CD**を選択します。
 1. **変数**を展開します。
 1. **プロジェクト変数**セクションで、次の必須変数を追加します:
 
@@ -191,7 +191,7 @@ CI/CD変数を設定するには:
    | `AWS_ACCESS_KEY_ID`                            | AWSアクセスキーID。 |
    | `AWS_SECRET_ACCESS_KEY`                        | AWSシークレットアクセスキー。 |
    | `TF_VAR_agent_token`                           | Kubernetes向けGitLabエージェントトークン。 |
-   | `TF_VAR_kas_address`                           | Kubernetes向けGitLabエージェントサーバーのアドレス。GitLab Self-Managedインスタンスの場合に必須です。たとえば、`wss://kas.gitlab.com`などです。 |
+   | `TF_VAR_kas_address`                           | GitLab Relay (KAS) アドレス。GitLab Self-Managedインスタンスの場合に必須です。たとえば、`wss://kas.gitlab.com`などです。 |
    | `TF_VAR_workspaces_proxy_auth_client_id`       | OAuthアプリケーションクライアントID。 |
    | `TF_VAR_workspaces_proxy_auth_client_secret`   | OAuthアプリケーションシークレット。 |
    | `TF_VAR_workspaces_proxy_auth_redirect_uri`    | OAuthコールバックURL。たとえば、`https://workspaces.example.dev/auth/callback`などです。 |
@@ -291,7 +291,7 @@ DNSレコードを設定するには:
 エージェントを承認するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
-1. **設定** > **ワークスペース**を選択します。
+1. 左サイドバーで、**設定** > **ワークスペース**を選択します。
 1. **グループエージェント**セクションで、**すべてのエージェント**タブを選択します。
 1. 利用可能なエージェントのリストから、ステータスが**ブロック済み**のエージェントを見つけて、**許可**を選択します。
 1. 確認ダイアログで、**エージェントを許可する**を選択します。

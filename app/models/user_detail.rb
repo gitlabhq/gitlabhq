@@ -22,8 +22,8 @@ class UserDetail < ApplicationRecord
   validate :bot_namespace_user_type, if: :bot_namespace_id_changed?
   validate :provisioning_source_mutually_exclusive
 
-  ignore_column :skype, remove_after: '2026-03-14', remove_with: '18.11'
   ignore_column :email_reset_offered_at, remove_after: '2026-01-16', remove_with: '18.8'
+  ignore_column :organization, remove_after: '2026-06-20', remove_with: '19.2'
 
   DEFAULT_FIELD_LENGTH = 500
 
@@ -71,7 +71,6 @@ class UserDetail < ApplicationRecord
   validate :mastodon_format
   validates :orcid, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validate :orcid_format
-  validates :organization, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validate :company_length_as_organization
   validates :twitter, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validates :website_url, length: { maximum: DEFAULT_FIELD_LENGTH }, url: true, allow_blank: true, if: :website_url_changed?
@@ -82,7 +81,7 @@ class UserDetail < ApplicationRecord
   sanitizes! :bluesky, :discord, :linkedin, :mastodon, :orcid, :twitter, :website_url, :github,
     if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) }
 
-  # New sanitization for location/organization (when feature flag is enabled)
+  # New sanitization for location/company (when feature flag is enabled)
   before_validation :sanitize_location_and_company, if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) }
 
   # Legacy sanitization (when feature flag is disabled)
@@ -106,15 +105,15 @@ class UserDetail < ApplicationRecord
       value = self[attr]
       self[attr] = Sanitize.clean(value) if value.present?
     end
-    # location, organization, company, website_url: preserve & (Sanitize.clean encodes & as &amp; which breaks URLs)
-    %i[location organization company website_url].each do |attr|
+    # location, company, website_url: preserve & (Sanitize.clean encodes & as &amp; which breaks URLs)
+    %i[location company website_url].each do |attr|
       value = self[attr]
       self[attr] = Sanitize.clean(value).gsub('&amp;', '&') if value.present?
     end
   end
 
   def sanitize_location_and_company
-    %i[location organization company].each do |attr|
+    %i[location company].each do |attr|
       value = self[attr]
       # Use Sanitize.fragment (modern) instead of deprecated Sanitize.clean
       # Apply special &amp; to & replacement for these fields
@@ -129,7 +128,6 @@ class UserDetail < ApplicationRecord
     self.linkedin = '' if linkedin.nil?
     self.location = '' if location.nil?
     self.mastodon = '' if mastodon.nil?
-    self.organization = '' if organization.nil?
     self.company = '' if company.nil?
     self.orcid = '' if orcid.nil?
     self.twitter = '' if twitter.nil?
@@ -140,7 +138,7 @@ class UserDetail < ApplicationRecord
   def company_length_as_organization
     return if company.to_s.length <= DEFAULT_FIELD_LENGTH
 
-    errors.add(:organization, :too_long, count: DEFAULT_FIELD_LENGTH)
+    errors.add(:base, "Organization is too long (maximum is 500 characters)")
   end
 
   def bot_namespace_user_type

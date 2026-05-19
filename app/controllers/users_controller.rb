@@ -91,7 +91,7 @@ class UsersController < ApplicationController
         @is_personal_homepage = params[:is_personal_homepage].present? && Feature.enabled?(:personal_homepage,
           current_user)
 
-        if Feature.enabled?(:profile_tabs_vue, current_user) && !@is_personal_homepage
+        if params[:type] == 'raw' || (Feature.enabled?(:profile_tabs_vue, current_user) && !@is_personal_homepage)
           @events = if user.include_private_contributions?
                       @events.reject(&:target_deleted?)
                     else
@@ -272,7 +272,8 @@ class UsersController < ApplicationController
   end
 
   def load_events
-    @events = UserRecentEventsFinder.new(current_user, user, nil, params).execute
+    event_filter = EventFilter.new(params[:event_filter]) if params[:event_filter].present?
+    @events = UserRecentEventsFinder.new(current_user, user, event_filter, params).execute
 
     Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end

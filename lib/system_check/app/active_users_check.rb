@@ -9,7 +9,7 @@ module SystemCheck
         active_users = User.active.count
         color_status = :red
         color_status = :green if active_users > 0
-        $stdout.puts Rainbow(active_users.to_s).color(color_status)
+        say Rainbow(active_users.to_s).color(color_status)
       end
     end
   end

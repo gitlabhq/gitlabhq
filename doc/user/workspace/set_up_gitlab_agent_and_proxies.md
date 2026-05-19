@@ -127,7 +127,7 @@ use that agent.
 To allow your GitLab agent for Kubernetes in a group and make it available to all projects in that group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Workspaces**.
+1. In the left sidebar, select **Settings** > **Workspaces**.
 1. In the **Group agents** section, select the **All agents** tab.
 1. For the GitLab agent for Kubernetes, select **Allow**.
 1. On the confirmation dialog, select **Allow agent**.

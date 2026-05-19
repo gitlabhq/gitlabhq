@@ -294,9 +294,14 @@ RSpec.describe Gitlab::PDF::Security::GenerateDashboardPdfService, feature_categ
         total_risk_score_page = nil
         vulnerabilities_by_age_page = nil
 
+        # consume enough space before the risk row so that after the fixed-height bounding_box
+        # the remaining page height is insufficient for vulnerabilities by age
+        allow(Gitlab::PDF::Security::VulnerabilitiesBySeverityCount).to receive(:render) do |pdf, **|
+          pdf.move_down 250
+        end
+
         allow(Gitlab::PDF::Security::TotalRiskScore).to receive(:render) do |pdf, **|
           total_risk_score_page = pdf.page_number
-          pdf.move_down 500
         end
 
         allow(Gitlab::PDF::Security::VulnerabilitiesByAge).to receive(:render) do |pdf, **|

@@ -11,7 +11,7 @@ module Gitlab
 
         SHORTER_TIMEOUT = 15.minutes.to_i
 
-        WRITE_IF_GREATER_SCRIPT = <<-EOF.strip_heredoc.freeze
+        WRITE_IF_GREATER_SCRIPT = <<-LUA.strip_heredoc.freeze
         local key, value, ttl = KEYS[1], tonumber(ARGV[1]), ARGV[2]
         local existing = tonumber(redis.call("get", key))
 
@@ -22,7 +22,7 @@ module Gitlab
         else
           return false
         end
-        EOF
+        LUA
 
         # Reads a cache key.
         #

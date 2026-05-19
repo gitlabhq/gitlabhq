@@ -83,16 +83,20 @@ describe('render_image_lightbox', () => {
       });
 
       it('adds click event listeners and accessibility attributes to image links', () => {
+        const expectedAlts = mockImages.map((img) => img.alt);
+
         renderImageLightbox(mockImages, container);
 
         const links = container.querySelectorAll('a');
         expect(links).toHaveLength(mockImages.length);
 
-        links.forEach((link) => {
+        links.forEach((link, index) => {
           expect(link.style.cursor).toBe('zoom-in');
-          expect(link.getAttribute('role')).toBe('button');
-          expect(link.getAttribute('aria-label')).toBe('View image');
+          expect(link.hasAttribute('role')).toBe(false);
+          expect(link.hasAttribute('aria-label')).toBe(false);
+          expect(link.getAttribute('aria-description')).toBe('Click to view image in full screen');
           expect(link.getAttribute('aria-haspopup')).toBe('dialog');
+          expect(link.querySelector('img').alt).toBe(expectedAlts[index]);
         });
       });
     });
@@ -280,8 +284,9 @@ describe('render_image_lightbox', () => {
         expect(links).toHaveLength(2);
         links.forEach((link) => {
           expect(link.style.cursor).toBe('zoom-in');
-          expect(link.getAttribute('role')).toBe('button');
-          expect(link.getAttribute('aria-label')).toBe('View image');
+          expect(link.hasAttribute('role')).toBe(false);
+          expect(link.hasAttribute('aria-label')).toBe(false);
+          expect(link.getAttribute('aria-description')).toBe('Click to view image in full screen');
           expect(link.getAttribute('aria-haspopup')).toBe('dialog');
         });
       });

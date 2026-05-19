@@ -15,7 +15,7 @@ RSpec.describe PagesDomainRemovalCronWorker, feature_category: :pages do
       end
     end
 
-    context 'where there is a domain which scheduled for removal in the future' do
+    context 'when there is a domain scheduled for removal in the future' do
       let!(:domain_for_removal) { create(:pages_domain, :scheduled_for_removal) }
 
       it 'does not remove pages domain' do

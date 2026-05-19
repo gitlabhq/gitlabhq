@@ -7,6 +7,8 @@ module API
         class JobInfo < Grape::Entity
           expose :id, :name, :stage
 
+          expose :pipeline_id
+
           expose :project_id
           expose :project_name do |build|
             build.project.name

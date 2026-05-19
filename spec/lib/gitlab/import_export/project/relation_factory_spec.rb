@@ -234,22 +234,8 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       expect(created_object.project).to equal(project)
     end
 
-    context 'computing relative position' do
-      context 'when max relative position in the hierarchy is not cached' do
-        it 'has computed new relative_position' do
-          expect(created_object.relative_position).to equal(1026) # 513*2 - ideal distance
-        end
-      end
-
-      context 'when max relative position in the hierarchy is cached' do
-        before do
-          Rails.cache.write("import:#{project.model_name.plural}:#{project.id}:hierarchy_max_issues_relative_position", 10000)
-        end
-
-        it 'has computed new relative_position' do
-          expect(created_object.relative_position).to equal(10000 + 1026) # 513*2 - ideal distance
-        end
-      end
+    it 'sets relative_position to nil so Issues::PlacementWorker can position it after import' do
+      expect(created_object.relative_position).to be_nil
     end
 
     context 'when issue_type is provided in the hash' do
@@ -268,22 +254,59 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       end
     end
 
-    context 'when work_item_type is provided in the hash' do
+    context 'when work_item_type hash with name is provided' do
       let(:incident_type) { build(:work_item_system_defined_type, :incident) }
-      let(:additional_relation_attributes) { { 'work_item_type' => incident_type } }
+      let(:additional_relation_attributes) { { 'work_item_type' => { 'name' => incident_type.name } } }
 
       it 'sets the correct work_item_type' do
         expect(created_object.work_item_type_id).to eq(incident_type.id)
       end
+
+      context 'when the provided name does not match any existing type' do
+        let(:additional_relation_attributes) { { 'work_item_type' => { 'name' => 'Non-existent type' } } }
+
+        it 'defaults to the issue type' do
+          expect(created_object.work_item_type_id).to eq(build(:work_item_system_defined_type, :issue).id)
+        end
+      end
+
+      context 'when work_item_configurable_types feature flag is disabled' do
+        before do
+          stub_feature_flags(work_item_configurable_types: false)
+        end
+
+        it 'ignores the name and does not set a work_item_type, lets the model default to issue' do
+          expect(created_object.work_item_type_id).to be_nil
+        end
+
+        context 'when base_type is also provided alongside name' do
+          let(:additional_relation_attributes) do
+            { 'work_item_type' => { 'name' => incident_type.name, 'base_type' => 'incident' } }
+          end
+
+          it 'falls back to base_type' do
+            expect(created_object.work_item_type_id).to eq(incident_type.id)
+          end
+        end
+      end
     end
 
-    context 'when issue_type is provided in the hash as well as a work_item_type' do
+    context 'when work_item_type hash with name is provided as well as issue_type' do
       let(:incident_type) { build(:work_item_system_defined_type, :incident) }
       let(:additional_relation_attributes) do
-        { 'issue_type' => 'task', 'work_item_type' => incident_type }
+        { 'issue_type' => 'task', 'work_item_type' => { 'name' => incident_type.name } }
       end
 
       it 'makes work_item_type take precedence over issue_type' do
+        expect(created_object.work_item_type_id).to eq(incident_type.id)
+      end
+    end
+
+    context 'when legacy work_item_type hash with base_type is provided (backward compatibility)' do
+      let(:incident_type) { build(:work_item_system_defined_type, :incident) }
+      let(:additional_relation_attributes) { { 'work_item_type' => { 'base_type' => 'incident' } } }
+
+      it 'sets the correct work_item_type' do
         expect(created_object.work_item_type_id).to eq(incident_type.id)
       end
     end

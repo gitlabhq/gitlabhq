@@ -19,6 +19,7 @@ export default {
       default: s__('TestReports|Jobs'),
     },
   },
+  emits: ['row-click'],
   computed: {
     ...mapGetters('testReports', ['getTestSuites']),
     hasSuites() {

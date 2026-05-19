@@ -18,9 +18,15 @@ module MergeRequests
       # successful pipeline should not be mergable at this point.
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
 
+      worker_params = params.merge(pipeline_creation_request: pipeline_creation_request)
+
+      if Feature.enabled?(:defer_mr_pipeline_creation_request_completion, merge_request.target_project)
+        worker_params = worker_params.merge(defer_request_completion: true)
+      end
+
       ::MergeRequests::CreatePipelineWorker.perform_async(
         project.id, current_user.id, merge_request.id,
-        params.merge(pipeline_creation_request: pipeline_creation_request).deep_stringify_keys
+        worker_params.deep_stringify_keys
       )
 
       GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request)
@@ -34,7 +40,8 @@ module MergeRequests
         ref: ref,
         push_options: params[:push_options],
         pipeline_creation_request: params[:pipeline_creation_request],
-        gitaly_context: params[:gitaly_context]
+        gitaly_context: params[:gitaly_context],
+        defer_request_completion: params[:defer_request_completion]
       ).execute(:merge_request_event, merge_request: merge_request)
     end
 
@@ -115,7 +122,10 @@ module MergeRequests
       if retriable
         ServiceResponse.error(message: message, payload: nil, reason: :retriable_error)
       else
-        ::Ci::PipelineCreation::Requests.failed(params[:pipeline_creation_request], message)
+        unless params[:defer_request_completion]
+          ::Ci::PipelineCreation::Requests.failed(params[:pipeline_creation_request], message)
+        end
+
         ServiceResponse.error(message: message, payload: nil)
       end
     end

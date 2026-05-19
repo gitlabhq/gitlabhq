@@ -1,3 +1,5 @@
+#import "~/graphql_shared/fragments/author.fragment.graphql"
+
 fragment Release on Release {
   id
   name
@@ -50,10 +52,7 @@ fragment Release on Release {
     title
   }
   author {
-    id
-    webUrl
-    avatarUrl
-    username
+    ...Author
   }
   milestones {
     nodes {

@@ -65,6 +65,10 @@ export class ContentEditor {
     return this._assetResolver.resolveUrl(canonicalSrc);
   }
 
+  resolveIframeSrc(canonicalSrc) {
+    return this._assetResolver.resolveIframeSrc(canonicalSrc);
+  }
+
   resolveReference(originalText) {
     return this._assetResolver.resolveReference(originalText);
   }

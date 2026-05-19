@@ -81,7 +81,7 @@ describe('Diff File Options Menu Adapter', () => {
     expect(get('vueButton')).not.toBeNull();
     /*
      * This button being replaced also means this replacement can only
-     * happen once (desireable!), so testing that it's no longer present is good
+     * happen once (desirable!), so testing that it's no longer present is good
      */
     expect(get('serverButton')).toBeNull();
     // Wait for Vue 3 to complete child component rendering and focus
@@ -96,8 +96,8 @@ describe('Diff File Options Menu Adapter', () => {
 
     const items = Array.from(get('menuItems'));
 
-    expect(items[0].textContent.trim()).toBe('Copy link to the file');
-    expect(items[1].textContent.trim()).toBe(item1.text);
-    expect(items[1].querySelector('a').getAttribute('href')).toBe(item1.href);
+    expect(items[0].textContent.trim()).toBe(item1.text);
+    expect(items[0].querySelector('a').getAttribute('href')).toBe(item1.href);
+    expect(items[1].textContent.trim()).toBe('Copy link to the file');
   });
 });

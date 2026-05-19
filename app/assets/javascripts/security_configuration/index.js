@@ -88,9 +88,12 @@ export const initSecurityConfiguration = (el) => {
       ...parseBooleanDataAttributes(el, [
         'secretPushProtectionAvailable',
         'secretPushProtectionEnabled',
+        'secretPushProtectionEnforced',
         'validityChecksAvailable',
         'validityChecksEnabled',
         'userIsProjectAdmin',
+        'cvsForContainerScanningEnabled',
+        'cvsForDependencyScanningEnabled',
       ]),
     },
     render(createElement) {

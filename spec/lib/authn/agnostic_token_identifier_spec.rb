@@ -25,6 +25,7 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
   let_it_be(:oauth_application_secret) { create(:oauth_application).plaintext_secret }
   let_it_be(:cluster_agent_token) { create(:cluster_agent_token, token_encrypted: nil).token }
   let_it_be(:runner_authentication_token) { create(:ci_runner, registration_type: :authenticated_user).token }
+  let_it_be(:runner_registration_token) { "#{::RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}sometoken" }
   let_it_be(:ci_trigger_token) { create(:ci_trigger, project: create(:project, maintainers: [user])).token }
   let_it_be(:feature_flags_client_token) { create(:operations_feature_flags_client).token }
   let_it_be(:gitlab_session) { '_gitlab_session=session_id' }
@@ -41,6 +42,7 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
       ref(:oauth_application_secret)    | ::Authn::Tokens::OauthApplicationSecret     | true
       ref(:cluster_agent_token)         | ::Authn::Tokens::ClusterAgentToken          | true
       ref(:runner_authentication_token) | ::Authn::Tokens::RunnerAuthenticationToken  | true
+      ref(:runner_registration_token)   | ::Authn::Tokens::RunnerRegistrationToken    | true
       ref(:ci_trigger_token)            | ::Authn::Tokens::CiTriggerToken             | true
       ref(:feature_flags_client_token)  | ::Authn::Tokens::FeatureFlagsClientToken    | true
       ref(:gitlab_session)              | ::Authn::Tokens::GitlabSession              | true
@@ -124,6 +126,7 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
       ref(:oauth_application_secret)    | 'oauth_application_secret'
       ref(:cluster_agent_token)         | 'cluster_agent_token'
       ref(:runner_authentication_token) | 'runner_authentication_token'
+      ref(:runner_registration_token)   | 'runner_registration_token'
       ref(:ci_trigger_token)            | 'ci_trigger_token'
       ref(:feature_flags_client_token)  | 'feature_flags_client_token'
       ref(:gitlab_session)              | 'gitlab_session'

@@ -25,3 +25,5 @@ export { default as localRulesNoOrphanedFeatureFlagReferences } from './local-ru
 export { default as localRulesNoWebUrl } from './local-rules-no-web-url.mjs';
 
 export { default as localRulesVueNoWebUrl } from './local-rules-vue-no-web-url.mjs';
+
+export { default as tailwindcssNoArbitraryValue } from './tailwindcss-no-arbitrary-value.mjs';

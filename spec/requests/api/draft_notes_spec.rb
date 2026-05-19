@@ -290,7 +290,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       end
 
       context "when attempting to resolve a discussion" do
-        context "when providing a non-existant ID" do
+        context "when providing a non-existent ID" do
           it "returns a 400 Bad Request" do
             create_draft_note(
               basic_create_params.merge(

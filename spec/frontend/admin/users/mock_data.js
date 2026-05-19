@@ -79,7 +79,7 @@ export const userStatus = {
 const organization = (index) => ({
   id: `gid://gitlab/Organizations::Organization/${index}`,
   name: `Foo ${index}`,
-  webUrl: `http://gdk.test:3000/-/organizations/foo-${index}`,
+  webUrl: `http://gdk.test:3000/o/foo-${index}/-/overview`,
 });
 
 export const oneSoloOwnedOrganization = {

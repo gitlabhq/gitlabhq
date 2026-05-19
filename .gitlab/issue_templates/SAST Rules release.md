@@ -6,7 +6,7 @@
 
 /assign @gitlab-org/secure/static-analysis/reaction-rotation
 
-Note: If the rules release includes support for a new file type, the engineer(s) on reaction rotation will refine and schedule the for an upcoming milestone.
+Note: If the rules release includes support for a new file type, the engineer(s) on reaction rotation will refine and schedule the issue for an upcoming milestone.
 
 ## Actions for ~"group::static analysis" team member
 

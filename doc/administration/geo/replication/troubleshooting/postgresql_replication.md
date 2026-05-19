@@ -231,7 +231,7 @@ SSL certificate issues, first confirm your authentication credentials are correc
 
 ## Investigate causes of database replication lag
 
-If the output of `sudo gitlab-rake geo:status` shows that `Database replication lag` remains significantly high over time, the primary node in database replication can be checked to determine the status of lag for
+If the output of `sudo gitlab-rake gitlab:geo:status` shows that `Database replication lag` remains significantly high over time, the primary node in database replication can be checked to determine the status of lag for
 different parts of the database replication process. These values are known as `write_lag`, `flush_lag`, and `replay_lag`. For more information, see
 [the official PostgreSQL documentation](https://www.postgresql.org/docs/16/monitoring-stats.html#MONITORING-PG-STAT-REPLICATION-VIEW).
 

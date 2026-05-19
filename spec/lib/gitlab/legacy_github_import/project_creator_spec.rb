@@ -29,7 +29,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
 
   describe '#execute' do
     it 'creates a project' do
-      expect { service.execute }.to change(Project, :count).by(1)
+      expect { service.execute }.to change { Project.count }.by(1)
     end
 
     it 'handle GitHub credentials' do

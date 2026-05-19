@@ -20,7 +20,8 @@ module API
         requires :id, type: String, desc: "The #{source_type} ID"
       end
       resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'Gets a list of group or project members viewable by the authenticated user.' do
+        desc 'Gets a list of group or project members viewable by the authenticated user,
+          excluding those with inherited membership from ancestor groups.' do
           success Entities::Member
           is_array true
           tags %w[members]
@@ -45,7 +46,8 @@ module API
           present_members members
         end
 
-        desc 'Gets a list of group or project members viewable by the authenticated user, including those who gained membership through ancestor group.' do
+        desc 'Gets a list of group or project members viewable by the authenticated user,
+          including those with inherited membership from ancestor groups.' do
           success Entities::Member
           is_array true
           tags %w[members]
@@ -118,7 +120,7 @@ module API
           tags %w[members]
         end
         params do
-          requires :access_level, type: Integer, desc: 'A valid access level.'
+          requires :access_level, type: Integer, desc: 'A valid access level.' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
           optional :user_id, types: [Integer, String], desc: 'The user ID of the new member or multiple IDs separated by commas.'
           optional :username, type: String, desc: 'The username of the new member or multiple usernames separated by commas.'
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
@@ -146,7 +148,7 @@ module API
         end
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the new member'
-          requires :access_level, type: Integer, desc: 'A valid access level'
+          requires :access_level, type: Integer, desc: 'A valid access level' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
           use :optional_put_params_ee
         end

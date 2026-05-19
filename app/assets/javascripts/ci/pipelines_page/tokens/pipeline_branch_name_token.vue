@@ -7,6 +7,7 @@ import { __ } from '~/locale';
 import { FILTER_PIPELINES_SEARCH_DELAY } from '../constants';
 
 export default {
+  name: 'PipelineBranchNameToken',
   components: {
     GlFilteredSearchToken,
     GlFilteredSearchSuggestion,

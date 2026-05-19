@@ -39,6 +39,12 @@ module Resolvers
 
         raise GraphQL::ExecutionError, error_message if alert_is_disabled?
 
+        if parent.is_a?(::Issue) && parent.association(:alert_management_alerts).loaded? && filtering_not_present?(args)
+          return ::AlertManagement::Alert.none unless alerts_authorized?(context[:current_user])
+
+          return apply_lookahead(parent.alert_management_alerts)
+        end
+
         apply_lookahead(::AlertManagement::AlertsFinder.new(context[:current_user], parent, args).execute)
       end
 
@@ -69,6 +75,14 @@ module Resolvers
       # If the FF is enabled in the future, we may need to consider deprecating this field.
       def error_message
         "Field 'alertManagementAlerts' doesn't exist on type 'Project'."
+      end
+
+      def filtering_not_present?(args)
+        args.except(:domain).empty?
+      end
+
+      def alerts_authorized?(current_user)
+        Ability.allowed?(current_user, :read_alert_management_alert, project)
       end
     end
   end

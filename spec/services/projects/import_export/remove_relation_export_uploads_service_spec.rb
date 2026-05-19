@@ -7,7 +7,9 @@ RSpec.describe Projects::ImportExport::RemoveRelationExportUploadsService, featu
     let_it_be(:project) { create(:project) }
     let_it_be(:export_job) { create(:project_export_job, project: project) }
     let_it_be(:relation_export) { create(:project_relation_export, project_export_job: export_job) }
-    let_it_be(:relation_export_upload) { create(:relation_export_upload, relation_export: relation_export) }
+    let_it_be(:relation_export_upload, freeze: false) do
+      create(:relation_export_upload, relation_export: relation_export)
+    end
 
     subject(:service) { described_class.new(project) }
 

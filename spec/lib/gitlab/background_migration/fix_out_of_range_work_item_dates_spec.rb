@@ -29,7 +29,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixOutOfRangeWorkItemDates, feature_
     )
   end
 
-  let(:issue_work_item_type_id) { table(:work_item_types).find_by(name: 'Issue').id }
+  let(:issue_work_item_type_id) { table(:work_item_types).create!(id: 1, name: 'Issue').id }
   let(:work_item) do
     work_item_table.create!(
       title: 'First issue',

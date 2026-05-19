@@ -965,7 +965,7 @@ export function handlePasteModifications(e) {
 }
 
 export function updateTextForToolbarBtn($toolbarBtn) {
-  const $textArea = $toolbarBtn.closest('.md-area').find('textarea');
+  const $textArea = $toolbarBtn.closest('.md-area').find('textarea.js-gfm-input');
   if (!$textArea.length) return;
 
   switch ($toolbarBtn.data('mdCommand')) {

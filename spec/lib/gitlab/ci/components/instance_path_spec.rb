@@ -249,9 +249,9 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         end
       end
 
-      context 'when ci_optimize_component_fetching feature flag is disabled' do
+      context 'when ci_cache_component_includes feature flag is disabled' do
         before do
-          stub_feature_flags(ci_optimize_component_fetching: false)
+          stub_feature_flags(ci_cache_component_includes: false)
         end
 
         context 'when fetching the latest release' do
@@ -414,16 +414,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
       let(:address) { "acme.com/#{project_path}/secret-detection@0.1.0" }
 
       it { is_expected.to eq '0.1.0' }
-
-      context 'when ci_optimize_component_instance_path is disabled' do
-        before do
-          stub_feature_flags(ci_optimize_component_instance_path: false)
-        end
-
-        it 'uses legacy fetch_catalog_version path' do
-          expect(matched_version).to eq '0.1.0'
-        end
-      end
     end
 
     context 'when using a partial semantic version' do
@@ -639,45 +629,92 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         path2.fetch_content!(current_user: user)
       end
     end
+  end
 
-    context 'when ci_optimize_component_instance_path feature flag is disabled' do
+  describe 'content fetching optimizations', :request_store, :clean_gitlab_redis_repository_cache do
+    let_it_be(:project) do
+      create(
+        :project, :custom_repo,
+        files: {
+          'templates/component-a.yml' => 'job_a: { script: echo a }',
+          'templates/component-b.yml' => 'job_b: { script: echo b }'
+        }
+      )
+    end
+
+    let(:version) { 'master' }
+    let(:project_path) { project.full_path }
+
+    before_all do
+      project.add_developer(user)
+    end
+
+    context 'when ci_cache_component_includes is disabled' do
       before do
-        stub_feature_flags(ci_optimize_component_instance_path: false)
+        stub_feature_flags(ci_cache_component_includes: false)
       end
 
-      describe '#project' do
-        it 'does not use SafeRequestStore caching' do
-          path1 = described_class.new(address: address)
-          path2 = described_class.new(address: address)
+      it 'does not write to cache' do
+        address = "acme.com/#{project_path}/component-a@#{version}"
+        path = described_class.new(address: address)
+        cache_store = Gitlab::Redis::RepositoryCache.cache_store
 
-          expect(Project).to receive(:find_by_full_path).twice.and_call_original
+        result = path.fetch_content!(current_user: user)
+        expect(result.content).not_to be_nil
 
-          path1.project
-          path2.project
-        end
+        sha = project.commit('master').sha
+        cache_key = "ci_component_content:v1:#{project.id}:#{sha}:templates/component-a.yml"
+
+        expect(cache_store.read(cache_key)).to be_nil
       end
 
-      describe '#sha' do
-        it 'uses legacy_find_version_sha without SafeRequestStore caching' do
-          path1 = described_class.new(address: address)
+      it 'does not read from cache' do
+        address = "acme.com/#{project_path}/component-a@#{version}"
+        path = described_class.new(address: address)
+        cache_store = Gitlab::Redis::RepositoryCache.cache_store
+        sha = project.commit('master').sha
+        cache_key = "ci_component_content:v1:#{project.id}:#{sha}:templates/component-a.yml"
 
-          expect(path1).to receive(:legacy_find_version_sha).and_call_original
+        cache_store.write(cache_key, 'cached: value')
 
-          path1.sha
-        end
+        result = path.fetch_content!(current_user: user)
+
+        expect(result.content).to eq('job_a: { script: echo a }')
+        expect(result.content).not_to eq('cached: value')
       end
+    end
 
-      describe '#fetch_content!' do
-        it 'does not cache the access check in SafeRequestStore' do
-          path1 = described_class.new(address: address)
-          path2 = described_class.new(address: address)
+    it 'caches content across multiple requests' do
+      address = "acme.com/#{project_path}/component-a@#{version}"
+      path1 = described_class.new(address: address)
 
-          expect(Ability).to receive(:allowed?).with(user, :download_code, project).twice.and_return(true)
+      first_result = path1.fetch_content!(current_user: user)
+      first_content = first_result.content
 
-          path1.fetch_content!(current_user: user)
-          path2.fetch_content!(current_user: user)
-        end
-      end
+      expect(project.repository).not_to receive(:blobs_at)
+
+      path2 = described_class.new(address: address)
+      second_result = path2.fetch_content!(current_user: user)
+
+      expect(second_result.content).to eq(first_content)
+      expect(second_result.path).to eq(first_result.path)
+    end
+
+    it 'generates cache keys for both simple and complex template paths' do
+      address = "acme.com/#{project_path}/component-a@#{version}"
+      path = described_class.new(address: address)
+
+      result = path.fetch_content!(current_user: user)
+      expect(result.content).to eq('job_a: { script: echo a }')
+
+      cache_store = Gitlab::Redis::RepositoryCache.cache_store
+      sha = project.commit('master').sha
+
+      simple_cache_key = "ci_component_content:v1:#{project.id}:#{sha}:templates/component-a.yml"
+      complex_cache_key = "ci_component_content:v1:#{project.id}:#{sha}:templates/component-a/template.yml"
+
+      expect(cache_store.read(simple_cache_key)).to eq('job_a: { script: echo a }')
+      expect(cache_store.read(complex_cache_key)).to be_nil
     end
   end
 end

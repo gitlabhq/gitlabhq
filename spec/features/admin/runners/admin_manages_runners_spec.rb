@@ -77,7 +77,7 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
 
     it 'shows an Active status badge that links to jobs tab' do
       runner = create(:ci_runner, :project, projects: [project])
-      create(:ci_build, :running, runner: runner)
+      create(:ci_build, :picked, runner: runner)
 
       visit admin_runners_path
 

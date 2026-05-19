@@ -38,7 +38,7 @@ RSpec.describe 'Users > User browses projects on user page', :js, feature_catego
 
     wait_for_requests
 
-    expect(page).not_to have_selector('.loading-status .loading', visible: true)
+    expect(page).not_to have_selector('.loading-status .loading', visible: :visible)
   end
 
   it 'paginates projects', :js do

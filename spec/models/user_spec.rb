@@ -205,9 +205,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to delegate_method(:location).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:location=).to(:user_detail).with_arguments(:args).allow_nil }
 
-    it { is_expected.to delegate_method(:organization).to(:user_detail).with_prefix.allow_nil }
-    it { is_expected.to delegate_method(:organization=).to(:user_detail).with_arguments(:args).with_prefix.allow_nil }
-
     it { is_expected.to delegate_method(:company).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:company=).to(:user_detail).with_arguments(:args).allow_nil }
 
@@ -387,7 +384,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         end
       end
 
-      it_behaves_like 'delegated field', :organization, prefix: 'user_detail'
+      it_behaves_like 'delegated field', :company
       it_behaves_like 'delegated field', :bio
       it_behaves_like 'delegated field', :linkedin
       it_behaves_like 'delegated field', :twitter
@@ -588,7 +585,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
   describe 'validations' do
     describe 'password' do
-      let!(:user) { build(:user) }
+      let(:user) { build(:user) }
 
       before do
         allow(Devise).to receive(:password_length).and_return(8..128)
@@ -1786,6 +1783,87 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#sa_provisioned_by_project?' do
+    context 'when user is not a service account' do
+      let_it_be(:user) { create(:user) }
+
+      it { expect(user.sa_provisioned_by_project?).to eq(false) }
+    end
+
+    context 'when service account has no provisioning source' do
+      let_it_be(:service_account) { create(:user, :service_account) }
+
+      it { expect(service_account.sa_provisioned_by_project?).to eq(false) }
+    end
+
+    context 'when service account is provisioned by a group' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:service_account) { create(:user, :service_account, provisioned_by_group: group) }
+
+      it { expect(service_account.sa_provisioned_by_project?).to eq(false) }
+    end
+
+    context 'when service account is provisioned by a project' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:service_account) do
+        create(:user, :service_account).tap do |sa|
+          sa.update!(provisioned_by_project: project)
+        end
+      end
+
+      it { expect(service_account.sa_provisioned_by_project?).to eq(true) }
+    end
+  end
+
+  describe '#sa_provisioned_by_subgroup?' do
+    context 'when user is not a service account' do
+      let_it_be(:user) { create(:user) }
+
+      it { expect(user.sa_provisioned_by_subgroup?).to eq(false) }
+    end
+
+    context 'when service account has no provisioning source' do
+      let_it_be(:service_account) { create(:user, :service_account) }
+
+      it { expect(service_account.sa_provisioned_by_subgroup?).to eq(false) }
+    end
+
+    context 'when service account is provisioned by a root group' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:service_account) { create(:user, :service_account, provisioned_by_group: root_group) }
+
+      it { expect(service_account.sa_provisioned_by_subgroup?).to eq(false) }
+    end
+
+    context 'when service account is provisioned by a subgroup' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: root_group) }
+      let_it_be(:service_account) { create(:user, :service_account, provisioned_by_group: subgroup) }
+
+      it { expect(service_account.sa_provisioned_by_subgroup?).to eq(true) }
+    end
+
+    context 'when service account is provisioned by a deeply nested subgroup' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: root_group) }
+      let_it_be(:nested_subgroup) { create(:group, parent: subgroup) }
+      let_it_be(:service_account) { create(:user, :service_account, provisioned_by_group: nested_subgroup) }
+
+      it { expect(service_account.sa_provisioned_by_subgroup?).to eq(true) }
+    end
+
+    context 'when provisioning group has been deleted' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:service_account) { create(:user, :service_account, provisioned_by_group: group) }
+
+      before do
+        allow(service_account).to receive(:provisioned_by_group).and_return(nil)
+      end
+
+      it { expect(service_account.sa_provisioned_by_subgroup?).to eq(false) }
+    end
+  end
+
   describe '#composite_identity_enforced!' do
     it 'sets the @composite_identity_enforced_override instance variable to true' do
       user = build(:user)
@@ -1928,6 +2006,12 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         user3 = create(:user, name: 'BBB')
 
         expect(described_class.ordered_by_name_asc_id_desc).to match([user2, user3, user1])
+      end
+    end
+
+    describe 'order_random' do
+      it 'returns a relation with a random order applied' do
+        expect(described_class.order_random.to_sql).to include('random()')
       end
     end
 
@@ -2682,13 +2766,13 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         it 'sets :unconfirmed_email' do
           expect do
             user.tap { |u| u.update!(email: new_email) }.reload
-          end.to change(user, :unconfirmed_email).to(new_email)
+          end.to change { user.unconfirmed_email }.to(new_email)
         end
 
         it 'does not change notification_email or notification_email_or_default before email is confirmed' do
           expect do
             user.tap { |u| u.update!(email: new_email) }.reload
-          end.not_to change(user, :notification_email_or_default)
+          end.not_to change { user.notification_email_or_default }
 
           expect(user.notification_email).to be_nil
         end
@@ -2698,7 +2782,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
           expect do
             user.tap(&:confirm).reload
-          end.to change(user, :notification_email_or_default).to eq(new_email)
+          end.to change { user.notification_email_or_default }.to eq(new_email)
 
           expect(user.notification_email).to be_nil
         end
@@ -2716,7 +2800,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         it 'does not change notification_email to email before email is confirmed' do
           expect do
             user.tap { |u| u.update!(email: new_email) }.reload
-          end.not_to change(user, :notification_email)
+          end.not_to change { user.notification_email }
         end
 
         it 'does not change notification_email to email once confirmed' do
@@ -2724,7 +2808,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
           expect do
             user.tap(&:confirm).reload
-          end.not_to change(user, :notification_email)
+          end.not_to change { user.notification_email }
         end
       end
     end
@@ -3430,14 +3514,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     it { is_expected.to be_truthy }
 
-    context 'when :passkeys feature flag is disabled' do
-      before do
-        stub_feature_flags(passkeys: false)
-      end
-
-      it { is_expected.to be_falsey }
-    end
-
     it_behaves_like 'OmniAuth user password authentication'
 
     context 'when the password authentication for web interface is disabled' do
@@ -3839,7 +3915,10 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
 
     it 'sets the otp_secret' do
-      expect(user.otp_secret).to have_attributes(length: described_class::OTP_SECRET_LENGTH)
+      # OTP_SECRET_LENGTH is the number of random bytes (20). ROTP::Base32.random encodes
+      # those bytes as Base32 without padding: 20 bytes * 8 bits / 5 bits-per-char = 32 chars.
+      expected_char_length = (described_class::OTP_SECRET_LENGTH * 8.0 / 5).ceil
+      expect(user.otp_secret).to have_attributes(length: expected_char_length)
     end
 
     it 'updates the otp_secret_expires_at' do
@@ -7840,7 +7919,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       let(:user) { build(:user) }
 
       it 'leaves the namespace untouched' do
-        expect { assign_personal_namespace }.not_to change(user, :namespace)
+        expect { assign_personal_namespace }.not_to change { user.namespace }
       end
 
       it 'returns the personal namespace' do
@@ -8529,13 +8608,13 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     let_it_be_with_reload(:user) { create(:user, failed_attempts: 0) }
 
     it 'logs failed sign-in attempts' do
-      expect { user.increment_failed_attempts! }.to change(user, :failed_attempts).from(0).to(1)
+      expect { user.increment_failed_attempts! }.to change { user.failed_attempts }.from(0).to(1)
     end
 
     it 'does not log failed sign-in attempts when in a GitLab read-only instance' do
       allow(Gitlab::Database).to receive(:read_only?) { true }
 
-      expect { user.increment_failed_attempts! }.not_to change(user, :failed_attempts)
+      expect { user.increment_failed_attempts! }.not_to change { user.failed_attempts }
     end
 
     context 'with service_accounts' do
@@ -9462,7 +9541,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
         expect(UpdateHighestRoleWorker).to receive(:perform_in).and_call_original
 
-        expect { subject }.to change(UpdateHighestRoleWorker.jobs, :size).by(1)
+        expect { subject }.to change { UpdateHighestRoleWorker.jobs.size }.by(1)
       end
     end
 

@@ -9,3 +9,9 @@ InternalAffairs:
 # whic does not apply here.
 InternalAffairs/UndefinedConfig:
   Enabled: false
+
+# Override the default Include path since GitLab's cops live under rubocop/cop/
+# rather than the standard lib/rubocop/cop/ path.
+InternalAffairs/OnSendWithoutOnCSend:
+  Include:
+    - 'rubocop/cop/**/*.rb'

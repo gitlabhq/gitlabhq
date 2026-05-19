@@ -142,7 +142,7 @@ upgrading GitLab:
    by [checking for pending migrations](background_migrations.md#check-for-pending-advanced-search-migrations).
 
    After upgrading GitLab, you might have to upgrade
-   [Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-requirements).
+   [Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-compatibility).
    Updating Elasticsearch is **out of scope for GitLab Support**.
 
 ## Pause CI/CD pipelines and jobs

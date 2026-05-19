@@ -115,8 +115,14 @@ module Gitlab
                   type: pipeline.source
                 },
                 builds: builds_validation_payload,
-                total_builds_count: current_user.pipelines.jobs_count_in_alive_pipelines
+                total_builds_count: total_builds_count
               }
+            end
+
+            def total_builds_count
+              ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do
+                current_user.pipelines.jobs_count_in_alive_pipelines
+              end
             end
 
             def builds_validation_payload

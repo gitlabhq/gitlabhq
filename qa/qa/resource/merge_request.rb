@@ -230,6 +230,9 @@ module QA
           :source_project_id,
           :target_project_id,
           :detailed_merge_status,
+          :prepared_at,
+          :imported,
+          :imported_from,
           # we consider mr to still be the same even if users changed
           :author,
           :reviewers,

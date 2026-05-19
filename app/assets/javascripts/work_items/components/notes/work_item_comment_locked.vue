@@ -3,6 +3,7 @@ import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
+  name: 'WorkItemCommentLocked',
   lockedIssueDocsPath: helpPagePath('user/discussions/_index.md', {
     anchor: 'prevent-comments-by-locking-the-discussion',
   }),

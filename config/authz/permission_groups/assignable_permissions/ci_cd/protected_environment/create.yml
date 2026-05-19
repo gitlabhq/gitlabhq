@@ -1,8 +1,10 @@
 ---
 name: create_protected_environment
 description: Grants the ability to create protected environments
-permissions:
-  - create_protected_environment
 boundaries:
   - project
   - group
+available_for:
+  - granular_access_token
+permissions:
+  - create_protected_environment

@@ -10,6 +10,6 @@ RSpec.describe Keys::DestroyService, feature_category: :source_code_management d
   it 'destroys a key' do
     key = create(:personal_key)
 
-    expect { subject.execute(key) }.to change(Key, :count).by(-1)
+    expect { subject.execute(key) }.to change { Key.count }.by(-1)
   end
 end

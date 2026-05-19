@@ -2,15 +2,21 @@
 import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
-import { __ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import RecentlyViewedItemsQuery from 'ee_else_ce/homepage/graphql/queries/recently_viewed_items.query.graphql';
+import { WIKI_ICON } from '~/wikis/constants';
 import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
   TRACKING_LABEL_RECENTLY_VIEWED,
 } from '../tracking_constants';
 
 const MAX_ITEMS = 10;
+const ICON_MAP = {
+  Issue: 'work-item-issue',
+  MergeRequest: 'merge-request',
+  Epic: 'work-item-epic',
+  WikiPage: WIKI_ICON,
+};
 
 export default {
   name: 'RecentlyViewedItems',
@@ -36,7 +42,7 @@ export default {
             viewedAt: entry.viewedAt,
             itemType: entry.itemType,
             // eslint-disable-next-line no-underscore-dangle
-            icon: this.getIconForItemType(entry.item.__typename),
+            icon: ICON_MAP[entry.item.__typename] || 'question',
           }))
           .slice(0, MAX_ITEMS);
       },
@@ -50,22 +56,11 @@ export default {
     isLoading() {
       return this.$apollo.queries.items.loading;
     },
-    emptyStateMessage() {
-      return __('Issues and merge requests you visit will appear here.');
-    },
   },
   methods: {
     reload() {
       this.error = null;
       this.$apollo.queries.items.refetch();
-    },
-    getIconForItemType(itemType) {
-      const iconMap = {
-        Issue: 'work-item-issue',
-        MergeRequest: 'merge-request',
-        Epic: 'work-item-epic',
-      };
-      return iconMap[itemType] || 'question';
     },
     handleItemClick(item) {
       this.trackEvent(EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE, {
@@ -101,7 +96,11 @@ export default {
     </template>
 
     <p v-else-if="!items.length" class="gl-my-0 gl-mb-3">
-      {{ emptyStateMessage }}
+      {{
+        s__(
+          'HomePageRecentlyViewedWidget|Issues, merge requests, and wiki pages you visit will appear here.',
+        )
+      }}
     </p>
     <ul v-else class="gl-m-0 gl-list-none gl-p-0">
       <li v-for="item in items" :key="item.id">

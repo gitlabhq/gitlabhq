@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { GlLoadingIcon } from '@gitlab/ui';
 import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 
@@ -12,6 +13,7 @@ describe('IndexLayout', () => {
     });
   };
 
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPageHeading = () => wrapper.findComponent(PageHeading);
   const findHeading = () => wrapper.find('[data-testid="page-heading"]');
   const findDescription = () => wrapper.find('[data-testid="page-heading-description"]');
@@ -25,7 +27,6 @@ describe('IndexLayout', () => {
         createComponent({ heading: 'Test Heading' });
         expect(findPageHeading().exists()).toBe(true);
         expect(findPageHeading().props('heading')).toBe('Test Heading');
-        expect(findPageHeading().classes()).toContain('!gl-my-0');
       });
 
       it('renders when heading slot is provided', () => {
@@ -64,6 +65,18 @@ describe('IndexLayout', () => {
     });
   });
 
+  describe('headingTag', () => {
+    it('defaults to null', () => {
+      createComponent();
+      expect(findPageHeading().props('headingTag')).toBeNull();
+    });
+
+    it('passes headingTag prop to PageHeading', () => {
+      createComponent({ headingTag: 'h2' });
+      expect(findPageHeading().props('headingTag')).toBe('h2');
+    });
+  });
+
   describe('pageHeadingSrOnly', () => {
     it('does not apply gl-sr-only class by default', () => {
       createComponent({ heading: 'Test Heading' });
@@ -76,15 +89,45 @@ describe('IndexLayout', () => {
     });
   });
 
+  describe('loading', () => {
+    it('does not render loading icon by default', () => {
+      createComponent({ heading: 'Test Heading' });
+      expect(findLoadingIcon().exists()).toBe(false);
+    });
+
+    it('renders loading icon when loading prop is true', () => {
+      createComponent({ heading: 'Test Heading', loading: true });
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
+
+    it('does not render content slot when loading', () => {
+      createComponent(
+        { heading: 'Test Heading', loading: true },
+        { default: '<div>Content</div>' },
+      );
+      expect(findLoadingIcon().exists()).toBe(true);
+      expect(findContent().text()).not.toContain('Content');
+    });
+
+    it('renders content slot when not loading', () => {
+      createComponent(
+        { heading: 'Test Heading', loading: false },
+        { default: '<div>Content</div>' },
+      );
+      expect(findLoadingIcon().exists()).toBe(false);
+      expect(findContent().text()).toContain('Content');
+    });
+  });
+
   describe('slots', () => {
     describe('alerts', () => {
       it('renders alerts container when slot is provided', () => {
-        createComponent({}, { alerts: '<div>Content</div>' });
-        expect(findAlerts().exists()).toBe(true);
+        createComponent({}, { alerts: '<div>Alerts slot content</div>' });
+        expect(findAlerts().text()).toContain('Alerts slot content');
       });
 
-      it('does not render alerts container when slots are not provided', () => {
-        createComponent();
+      it('does not render when no alerts slot is provided', () => {
+        createComponent({ heading: 'Test Heading' });
         expect(findAlerts().exists()).toBe(false);
       });
     });

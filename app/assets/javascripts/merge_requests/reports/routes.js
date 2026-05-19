@@ -10,18 +10,19 @@ export default [
   {
     name: SECURITY_SCAN_ROUTE,
     path: `/${SECURITY_SCAN_ROUTE}`,
-    component: () => import('ee_component/merge_requests/reports/pages/security_scans_page.vue'),
+    component: () =>
+      import('ee_component/merge_requests/reports/security_scans/security_scans_page.vue'),
   },
   {
     name: LICENSE_COMPLIANCE_ROUTE,
     path: `/${LICENSE_COMPLIANCE_ROUTE}`,
     component: () =>
-      import('ee_component/merge_requests/reports/pages/license_compliance_page.vue'),
+      import('ee_component/merge_requests/reports/license_compliance/license_compliance_page.vue'),
   },
   {
     name: CODE_QUALITY_ROUTE,
     path: `/${CODE_QUALITY_ROUTE}`,
-    component: () => import('~/merge_requests/reports/pages/code_quality_page.vue'),
+    component: () => import('~/merge_requests/reports/code_quality/code_quality_page.vue'),
   },
   {
     path: CATCH_ALL_ROUTE,

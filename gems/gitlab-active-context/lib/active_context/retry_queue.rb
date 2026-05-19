@@ -11,6 +11,10 @@ module ActiveContext
       def number_of_shards
         1
       end
+
+      def preprocess_options
+        { skip_missing_content: true }
+      end
     end
   end
 end

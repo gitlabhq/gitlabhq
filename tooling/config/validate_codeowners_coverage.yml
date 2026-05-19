@@ -1,0 +1,14 @@
+# Top-level directories that intentionally rely on the catch-all * rule
+# in .gitlab/CODEOWNERS and do not require an explicit entry.
+# Add an entry here only with justification, and prefer adding an explicit
+# CODEOWNERS entry instead.
+excluded_directories:
+  - builds       # only contains .gitkeep
+  - changelogs   # auto-generated changelog fragments, owned via catch-all
+  - data         # release posts, deprecations, owned via catch-all
+  - file_hooks   # only contains .gitkeep
+  - fixtures     # test fixture data, owned via catch-all
+  - .devfile     # devfile configuration
+  - .github      # GitHub-specific configuration
+  - .lefthook    # Lefthook configuration
+  - .vscode      # VS Code editor configuration

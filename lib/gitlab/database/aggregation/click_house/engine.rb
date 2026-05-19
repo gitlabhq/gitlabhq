@@ -10,20 +10,35 @@ module Gitlab
           INNER_QUERY_NAME = 'ch_aggregation_inner_query'
           DEDUP_QUERY_NAME = 'ch_aggregation_dedup_query'
           COLUMN_PREFIX = 'aeq_'
+          SCHEMA_CACHE_DATABASE = :main
 
           class << self
-            attr_accessor :table_name, :table_primary_key, :table_columns
+            attr_reader :table_name, :versioning_config, :table_primary_key
 
-            def versioned_by(column, deleted_marker: nil)
-              if table_columns.blank?
+            def table_name=(name)
+              table = ::ClickHouse::SchemaCache[SCHEMA_CACHE_DATABASE].table(name)
+              unless table
                 raise ArgumentError,
-                  'Full table columns list must be defined in `table_columns` before calling `versioned_by`'
+                  "Table '#{name}' was not found in the ClickHouse schema cache; " \
+                    "ensure the table exists in `db/click_house/schema_cache/#{SCHEMA_CACHE_DATABASE}/`"
               end
 
+              @table_name = name
+              @table_primary_key = table.primary_key.filter_map { |part| part.respond_to?(:name) ? part.name : nil }
+              apply_replacing_merge_tree_versioning(table)
+            end
+
+            def versioned_by(column, deleted_marker: nil)
               @versioning_config = { column: column.to_s, deleted_marker: deleted_marker&.to_s }.freeze
             end
 
-            attr_reader :versioning_config
+            def table_primary_key=(*columns)
+              @table_primary_key = columns.map(&:to_s).freeze
+            end
+
+            def table_columns
+              schema_cache_table.column_names
+            end
 
             def dimensions_mapping
               {
@@ -38,15 +53,36 @@ module Gitlab
                 mean: Mean,
                 rate: Rate,
                 quantile: Quantile,
-                sum: Sum
+                sum: Sum,
+                retained_count: RetainedCount,
+                lagged_count: LaggedCount
               }
             end
 
             def filters_mapping
               {
                 exact_match: ExactMatchFilter,
-                range: RangeFilter
+                range: RangeFilter,
+                metric_exact_match: MetricExactMatchFilter,
+                metric_range: MetricRangeFilter
               }
+            end
+
+            private
+
+            def schema_cache_table
+              raise ArgumentError, "`table_name` must be set on #{self}" unless table_name
+
+              ::ClickHouse::SchemaCache[SCHEMA_CACHE_DATABASE].table(table_name)
+            end
+
+            def apply_replacing_merge_tree_versioning(table)
+              return unless table.engine == 'ReplacingMergeTree'
+
+              version, deleted_marker = table.engine_params
+              return unless version
+
+              versioned_by(version, deleted_marker: deleted_marker)
             end
           end
 
@@ -88,13 +124,18 @@ module Gitlab
           def execute_query_plan(plan)
             base_scope = build_base_query(plan)
 
-            inner_projections, outer_projections = build_select_list_and_aliases(plan, context.merge(scope: base_scope))
+            inner_projections, outer_projections, outer_aliases = build_select_list_and_aliases(plan,
+              context.merge(scope: base_scope))
 
             inner_query = base_scope.select(*inner_projections).group(Arel.sql("ALL"))
             inner_query = apply_inner_filters(inner_query, plan)
 
             query = ::ClickHouse::Client::QueryBuilder.new(inner_query, INNER_QUERY_NAME)
               .select(*outer_projections).group(Arel.sql("ALL"))
+            query = apply_outer_filters(query, plan)
+
+            query = wrap_with_window_query(plan, query, outer_aliases) if has_window_metrics?(plan)
+
             plan.order.each { |order| query = query.order(Arel.sql(column_alias(order)), order.direction) }
 
             AggregationResult.new(self, plan, query, column_prefix: COLUMN_PREFIX)
@@ -112,7 +153,7 @@ module Gitlab
           end
 
           def apply_inner_filters(query, plan)
-            filters = plan.filters
+            filters = plan.filters.reject { |f| f.definition.metric? }
             # PK filters are applied in deduplication subquery.
             if self.class.versioning_config
               filters = filters.reject { |f| self.class.table_primary_key.include?(f.definition.name.to_s) }
@@ -120,6 +161,15 @@ module Gitlab
 
             filters.each { |filter| query = filter.definition.apply_inner(query, filter.configuration) }
             query
+          end
+
+          def apply_outer_filters(query, plan)
+            plan.filters
+              .select { |f| f.definition.metric? }
+              .reduce(query) do |q, filter|
+                metric_part = plan.metrics.find { |m| m.matches?(filter.configuration) }
+                filter.definition.apply_outer(q, filter.configuration, Arel.sql(column_alias(metric_part)))
+              end
           end
 
           def build_dedup_subquery
@@ -153,23 +203,26 @@ module Gitlab
           def build_select_list_and_aliases(plan, effective_context = context)
             inner_projections_list = []
             outer_projections_list = []
+            outer_aliases_list = []
 
             plan.dimensions.each do |dimension|
               inner_projections, outer_projections = *build_part_selections(dimension, effective_context)
               inner_projections_list += inner_projections
               outer_projections_list += outer_projections
+              outer_aliases_list << column_alias(dimension)
             end
 
             plan.metrics.each do |metric|
               inner_projections, outer_projections = *build_part_selections(metric, effective_context)
               inner_projections_list += inner_projections
               outer_projections_list += outer_projections
+              outer_aliases_list << column_alias(metric)
             end
 
             # fill in primary_key
             inner_projections_list += self.class.table_primary_key.map { |n| effective_context[:scope][n] }
 
-            [inner_projections_list.compact, outer_projections_list.compact]
+            [inner_projections_list.compact, outer_projections_list.compact, outer_aliases_list]
           end
 
           def build_part_selections(part, effective_context = context)
@@ -191,6 +244,62 @@ module Gitlab
 
           def column_alias(plan_part)
             "#{COLUMN_PREFIX}#{plan_part.instance_key}"
+          end
+
+          def has_window_metrics?(plan)
+            plan.metrics.any? { |metric| metric.definition.requires_window? }
+          end
+
+          def wrap_with_window_query(plan, base_query, outer_projection_aliases)
+            finalized_query_name = 'ch_aggregation_finalized_query'
+            window_query_name = 'ch_aggregation_window_query'
+
+            window_metric_by_alias = plan.metrics
+              .select { |m| m.definition.requires_window? }
+              .index_by { |m| column_alias(m) }
+
+            finalized_projections = build_layer_projections(outer_projection_aliases,
+              window_metric_by_alias) do |part, name|
+              part.definition.finalization_sql(name)
+            end
+
+            finalized_query = ::ClickHouse::Client::QueryBuilder.new(base_query, finalized_query_name)
+              .select(*finalized_projections)
+
+            windowed_projections = build_layer_projections(outer_projection_aliases,
+              window_metric_by_alias) do |part, _|
+              window_sql_for(part, plan)
+            end
+
+            ::ClickHouse::Client::QueryBuilder.new(finalized_query, window_query_name)
+              .select(*windowed_projections)
+          end
+
+          def build_layer_projections(outer_projection_aliases, window_metric_by_alias)
+            outer_projection_aliases.map do |alias_name|
+              metric_part = window_metric_by_alias[alias_name]
+              if metric_part
+                Arel::Nodes::SqlLiteral.new("#{yield(metric_part, alias_name)} AS #{alias_name}")
+              else
+                Arel::Nodes::SqlLiteral.new(alias_name)
+              end
+            end
+          end
+
+          def window_sql_for(metric_part, plan)
+            definition = metric_part.definition
+            alias_name = column_alias(metric_part)
+            over_alias = dimension_alias_for(definition.over_dimension, plan)
+
+            definition.build_window_sql(context, alias_name, over_alias: over_alias)
+          end
+
+          def dimension_alias_for(over_dimension, plan)
+            dimension_part = plan.dimensions.find { |d| d.definition.name == over_dimension }
+
+            raise ArgumentError, "Dimension '#{over_dimension}' not found in query plan" unless dimension_part
+
+            column_alias(dimension_part)
           end
         end
       end

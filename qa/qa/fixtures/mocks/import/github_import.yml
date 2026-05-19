@@ -441,6 +441,23 @@
       }
 
 - request:
+    path:
+      matcher: ShouldMatch
+      value: \/repositories\/466994992\/collaborators|\/repos\/gitlab-qa-github\/import-test\/collaborators
+    method: GET
+    headers:
+      Host: api.github.com
+  response:
+    status: 200
+    headers:
+      Content-Type: application/json; charset=utf-8
+      X-Ratelimit-Limit: '5000'
+      X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
+    body: |
+      []
+
+- request:
     path: /repos/gitlab-qa-github/import-test/labels
     method: GET
     query_params:

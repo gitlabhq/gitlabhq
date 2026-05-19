@@ -5,13 +5,6 @@
  */
 /* eslint-disable global-require */
 
-jest.mock('mermaid', () => ({
-  mermaidAPI: {
-    render: jest.fn().mockResolvedValue({ svg: '<svg></svg>' }),
-  },
-  initialize: jest.fn(),
-}));
-
 jest.mock('mermaid-v11', () => ({
   mermaidAPI: {
     render: jest.fn().mockResolvedValue({ svg: '<svg></svg>' }),
@@ -26,7 +19,7 @@ jest.mock('dompurify', () => ({
 
 jest.mock('~/lib/utils/webpack');
 
-['mermaid_v10', 'mermaid_v11'].forEach((entrypoint) => {
+['mermaid_v11'].forEach((entrypoint) => {
   describe(`${entrypoint} module - path validation integration`, () => {
     let resetServiceWorkersPublicPath;
 

@@ -46,6 +46,7 @@ export const convertJobToDeploymentAction = (job) => {
     name: job.name,
     playable: job.playable,
     scheduledAt: job.scheduledAt,
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- this is acceptable since `job.webPath` is generated in Rails
     playPath: `${job.webPath}/play`,
   };
 };
@@ -71,6 +72,7 @@ export const getRollbackActionFromDeploymentNode = (deploymentNode, environment)
   const isLastDeployment = id === environment.lastDeployment?.id;
   const { retryPath, webPath } = job;
   // Note: the retryFromWebPath is a fallback for backwards compatibility. It should be removed after %18.4
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- this is acceptable since `job.webPath` is generated in Rails
   const retryFromWebPath = webPath ? `${webPath}/retry` : '';
   const retryUrl = retryPath || retryFromWebPath;
   return {

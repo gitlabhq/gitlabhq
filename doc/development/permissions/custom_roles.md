@@ -190,7 +190,6 @@ before in a separate merge request, before completing the below.
 | `project_ability` | yes | Boolean value to whether this ability is checked on project level. |
 | `enabled_for_project_access_levels` | if `project_ability = true` | The array of access levels that already have access to this custom ability in a project. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. This is for information only and has no impact on how custom roles operate.  |
 | `requirements` | no | The list of custom permissions this ability is dependent on. For instance `admin_vulnerability` is dependent on `read_vulnerability`. If none, then enter `[]`  |
-| `available_from_access_level` | no | The access level of the predefined role from which this ability is available, if applicable. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. This is for information only and has no impact on how custom roles operate. |
 | `project_permissions` | if `project_ability = true` | List of permissions to enable when this custom ability is granted at the project level. These permissions are automatically applied in `ProjectPolicy` without needing to manually add policy rules. |
 | `group_permissions` | if `group_ability = true` | List of permissions to enable when this custom ability is granted at the group level. These permissions are automatically applied in `GroupPolicy` without needing to manually add policy rules. |
 
@@ -198,9 +197,38 @@ before in a separate merge request, before completing the below.
 
 - Run `bundle exec rails generate gitlab:custom_roles:code --ability <ABILITY_NAME>` which will update the permissions validation schema file and create an empty spec file.
 
-### Step 3: Create a feature flag (optional)
+### Step 3: Mark the ability as work in progress (optional)
 
-- If the ability is to be implemented in multiple MRs a `wip` [feature flag](../feature_flags/_index.md) should be used. The feature flag name should be in the format `custom_ability_<name>`. For example, if the new ability name is `read_code`, the feature flag will be `custom_ability_read_code`. The feature flag uses an `instance` actor on the backend check and when disabled, the custom ability will be treated as any other unknown ability. Once development is complete, the feature flag should be enabled globally and cleaned up. Due to the potential for inconsistent behavior with user access the feature flag should not be toggled on and off. If testing is needed, it should be completed in the staging environment before enabling in production.
+If the ability is implemented across multiple MRs, mark it as
+work-in-progress so it does not appear in the public API surface
+until it is ready to ship. Add `wip: true` to the ability YAML:
+
+```yaml
+# ee/config/custom_abilities/read_dependency.yml
+---
+name: read_dependency
+wip: true
+# ... other fields
+```
+
+A wip ability is excluded at boot from the loaded permission set. It
+does not appear in REST request parameters, REST response bodies, or
+GraphQL enums. Roles cannot be created or queried with the ability set.
+
+To work on the ability locally, set the
+`GITLAB_LOAD_WIP_CUSTOM_ABILITIES` environment variable before starting
+Rails:
+
+```shell
+export GITLAB_LOAD_WIP_CUSTOM_ABILITIES=true
+```
+
+Specs run with this variable set by default through `spec_helper.rb`,
+so all tests see wip abilities. Tests that need to verify the
+production-like gating behavior can opt in with the
+`:disable_wip_custom_abilities` RSpec metadata.
+
+Remove the `wip:` key when the ability is ready to ship.
 
 ### Step 4: Define permissions in the YAML configuration file
 

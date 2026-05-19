@@ -415,7 +415,8 @@ module Gitlab
         def raise_if_concurrent_ruby!
           Gitlab::Utils.raise_if_concurrent_ruby!(:db)
         rescue StandardError => e
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+          ::Gitlab::Database::LoadBalancing::Callbacks.track_exception(e)
+          raise if Rails.env.development? || Rails.env.test?
         end
       end
     end

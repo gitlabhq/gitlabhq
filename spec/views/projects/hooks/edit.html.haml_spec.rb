@@ -19,7 +19,7 @@ RSpec.describe 'projects/hooks/edit' do
     expect(rendered).to have_text(_('Recent events'))
   end
 
-  context 'webhook is rate limited' do
+  context 'when webhook is rate limited' do
     before do
       allow(hook).to receive(:rate_limited?).and_return(true)
     end
@@ -31,7 +31,7 @@ RSpec.describe 'projects/hooks/edit' do
     end
   end
 
-  context 'webhook is permanently disabled' do
+  context 'when webhook is permanently disabled' do
     before do
       allow(hook).to receive(:permanently_disabled?).and_return(true)
     end
@@ -43,7 +43,7 @@ RSpec.describe 'projects/hooks/edit' do
     end
   end
 
-  context 'webhook is temporarily disabled' do
+  context 'when webhook is temporarily disabled' do
     before do
       allow(hook).to receive(:temporarily_disabled?).and_return(true)
       allow(hook).to receive(:disabled_until).and_return(Time.now + 10.minutes)

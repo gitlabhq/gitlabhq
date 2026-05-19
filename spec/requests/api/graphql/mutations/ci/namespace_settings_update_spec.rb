@@ -16,6 +16,11 @@ RSpec.describe 'NamespaceSettingsUpdate', feature_category: :pipeline_compositio
 
   let(:mutation) { graphql_mutation(:namespace_settings_update, variables, 'errors') }
 
+  it 'requires update_ci_namespace_settings permission' do
+    expect(Mutations::Ci::NamespaceSettingsUpdate)
+      .to require_graphql_authorizations(:update_ci_namespace_settings)
+  end
+
   subject(:request) { post_graphql_mutation(mutation, current_user: user) }
 
   context 'when unauthorized' do

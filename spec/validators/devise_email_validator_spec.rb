@@ -8,7 +8,7 @@ RSpec.describe DeviseEmailValidator do
   subject(:validate) { validator.validate(user) }
 
   describe 'validations' do
-    context 'by default' do
+    context 'with default settings' do
       let(:validator) { described_class.new(attributes: [:public_email]) }
 
       it 'allows when email is valid' do

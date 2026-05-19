@@ -1,0 +1,11 @@
+---
+name: resend_webhook_event
+description: Grants the ability to resend webhook events
+deprecated: true
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - resend_webhook_event

@@ -1,0 +1,6 @@
+---
+event: Security::PolicyDismissalPreservedEvent
+description: Published when a Security::PolicyDismissal is preserved (transitioned
+  to the `preserved` status) because it still applies to outstanding violations.
+feature_category: security_policy_management
+ee_only: true

@@ -2,8 +2,8 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Run only relevant RSpec tests using the fail-fast template to get faster feedback on code changes.
-title: Fail Fast Testing
+description: Run only the RSpec specs relevant to your merge request changes to get pipeline feedback faster.
+title: Fail fast testing
 ---
 
 {{< details >}}
@@ -13,90 +13,69 @@ title: Fail Fast Testing
 
 {{< /details >}}
 
-For applications that use RSpec for running tests, you can use the `Verify/Failfast`
-[template to run subsets of your test suite](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Verify/FailFast.gitlab-ci.yml),
-based on the changes in your merge request.
+Fail fast testing runs the test specs most relevant to your merge request changes
+before the rest of the suite runs. If those specs fail,
+the pipeline stops immediately to save time and compute resources.
 
-The template uses the [`test_file_finder` (`tff`) gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder)
-that accepts a list of files as input, and returns a list of spec (test) files
-that it believes to be relevant to the input files.
+For Ruby on Rails projects that use RSpec, the
+[`Verify/FailFast` CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Verify/FailFast.gitlab-ci.yml)
+selects and runs only the relevant specs. It uses the
+[`test_file_finder` (`tff`) gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder),
+which maps changed files to their related spec files.
 
-`tff` is designed for Ruby on Rails projects, so the `Verify/FailFast` template is
-configured to run when changes to Ruby files are detected. By default, it runs in
-the [`.pre` stage](../yaml/_index.md#stage-pre) of a GitLab CI/CD pipeline,
-before all other stages.
+By default, the template runs in the [`.pre` stage](../yaml/_index.md#stage-pre),
+before all other pipeline stages.
 
-## Example use case
+## Configure fail fast testing
 
-Fail fast testing is useful when adding new functionality to a project and adding
-new automated tests.
+Configure fail fast testing to get faster feedback on merge request changes
+before your full test suite runs.
 
-Your project could have hundreds of thousands of tests that take a long time to complete.
-You may expect a new test to pass, but you have to wait for all the tests
-to complete to verify it. This could take an hour or more, even when using parallelization.
+Prerequisites:
 
-Fail fast testing gives you a faster feedback loop from the pipeline. It lets you
-know quickly that the new tests are passing and the new functionality did not break
-other tests.
-
-## Prerequisites
-
-This template requires:
-
-- A project built in Rails that uses RSpec for testing.
-- CI/CD configured to:
-  - Use a Docker image with Ruby available.
-  - Use [Merge request pipelines](../pipelines/merge_request_pipelines.md#prerequisites)
+- A Ruby on Rails project that uses RSpec.
 - [Merged results pipelines](../pipelines/merged_results_pipelines.md#enable-merged-results-pipelines)
-  enabled in the project settings.
-- A Docker image with Ruby available. The template uses `image: ruby:2.6` by default, but you [can override](../yaml/includes.md#override-included-configuration-values) this.
+  enabled in the project settings. This also requires
+  [merge request pipelines](../pipelines/merge_request_pipelines.md#prerequisites) to be enabled.
 
-## Configuring Fast RSpec Failure
+To configure fail fast testing:
 
-You can use the following plain RSpec configuration as a starting point. It installs all the
-project gems and executes `rspec`, on merge request pipelines only.
+1. Add an RSpec job to run your full suite on merge request pipelines:
 
-```yaml
-rspec-complete:
-  stage: test
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - bundle install
-    - bundle exec rspec
-```
+   ```yaml
+   rspec-complete:
+     stage: test
+     rules:
+       - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+     script:
+       - bundle install
+       - bundle exec rspec
+   ```
 
-To run the most relevant specs first instead of the whole suite, [`include`](../yaml/_index.md#include)
-the template by adding the following to your CI/CD configuration:
+1. Include the `Verify/FailFast` template in your CI/CD configuration:
 
-```yaml
-include:
-  - template: Verify/FailFast.gitlab-ci.yml
-```
+   ```yaml
+   include:
+     - template: Verify/FailFast.gitlab-ci.yml
+   ```
 
-To customize the job, specific options may be set to override the template. For example, to override the default Docker image:
+1. Optional. To use a different Docker image, set the image on the
+   `rspec-rails-modified-path-specs` job in your CI/CD configuration file:
 
-```yaml
-include:
-  - template: Verify/FailFast.gitlab-ci.yml
+   ```yaml
+   include:
+     - template: Verify/FailFast.gitlab-ci.yml
 
-rspec-rails-modified-path-specs:
-  image: custom-docker-image-with-ruby
-```
+   rspec-rails-modified-path-specs:
+     image: custom-docker-image-with-ruby
+   ```
 
-### Example test loads
+## Fail fast test results
 
-For illustrative purposes, our Rails app spec suite consists of 100 specs per model for ten models.
+The following examples assume a suite of 100 specs per model across 10 models (1000 specs total).
 
-If no Ruby files are changed:
-
-- `rspec-rails-modified-paths-specs` does not run any tests.
-- `rspec-complete` runs the full suite of 1000 tests.
-
-If one Ruby model is changed, for example `app/models/example.rb`, then `rspec-rails-modified-paths-specs`
-runs the 100 tests for `example.rb`:
-
-- If all of these 100 tests pass, then the full `rspec-complete` suite of 1000 tests is allowed to run.
-- If any of these 100 tests fail, they fail quickly, and `rspec-complete` does not run any tests.
-
-The final case saves resources and time as the full 1000 test suite does not run.
+| Changed files                            | `rspec-rails-modified-path-specs` | `rspec-complete` |
+| ---------------------------------------- | --------------------------------- | ---------------- |
+| No Ruby files                            | Does not run                      | Runs all 1000 specs |
+| `app/models/example.rb` (all specs pass) | Runs 100 specs for `example.rb`   | Runs all 1000 specs |
+| `app/models/example.rb` (any spec fails) | Runs 100 specs for `example.rb`   | Skipped          |

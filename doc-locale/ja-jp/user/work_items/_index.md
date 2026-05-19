@@ -34,7 +34,7 @@ GitLabは次の作業アイテムの種類をサポートしています:
 {{< history >}}
 
 - GitLab 18.7で`work_item_planning_view`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/11918)されました。デフォルトでは無効になっています。
-- GitLab 18.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/520452)になりました。
+- GitLab 18.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/520452)になりました。機能フラグ`work_item_planning_view`は削除されました。
 
 {{< /history >}}
 
@@ -45,7 +45,7 @@ GitLabの以前のバージョンでは、**Plan** > **イシュー**と**Plan**
 プロジェクトまたはグループの作業アイテムを表示するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトまたはグループを見つけます。
-1. **Plan** > **作業アイテム**を選択します。
+1. 左サイドバーで、**Plan** > **作業アイテム**を選択します。
 
 ### 作業アイテムをフィルターする {#filter-work-items}
 
@@ -64,9 +64,6 @@ GitLabの以前のバージョンでは、**Plan** > **イシュー**と**Plan**
 - 説明によるフィルターはGitLab 18.3で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/536876)。
 
 {{< /history >}}
-
-<!-- When the feature flag work_item_planning_view is removed, move more information from
-managing_issues.md#filter-the-list-of-issues here -->
 
 これらのフィルターは作業アイテムで利用できます:
 
@@ -117,9 +114,6 @@ managing_issues.md#filter-the-list-of-issues here -->
 
 {{< /history >}}
 
-<!-- When the feature flag work_item_planning_view is removed, move information from
-sorting_issue_lists.md to this page and redirect here -->
-
 作業アイテムのリストを次で並べ替えます:
 
 - 作成日
@@ -128,6 +122,7 @@ sorting_issue_lists.md to this page and redirect here -->
 - 期限
 - タイトル
 - ステータス
+- ウェイト
 
 並べ替えの基準を変更するには:
 
@@ -158,7 +153,7 @@ GitLabは、異なるレベルで表示設定を保存します:
 表示の環境設定を構成するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
-1. **Plan** > **作業アイテム**を選択します。
+1. 左サイドバーで、**Plan** > **作業アイテム**を選択します。
 1. フィルターバーの右側にある**表示オプション** ({{< icon name="preferences" >}}) を選択します。
 1. **フィールド**で、表示するメタデータをオンまたはオフにします: 
    - ステータス（イシュー用）

@@ -18,6 +18,7 @@ export default {
       required: true,
     },
   },
+  emits: ['remove'],
   computed: {
     deleteButtonLabel() {
       return sprintf(s__('Integrations|Remove exclusion for %{name}'), {

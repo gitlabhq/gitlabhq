@@ -1,0 +1,5 @@
+---
+# Cop supports --autocorrect.
+Layout/EmptyLines:
+  Exclude:
+    - 'config/puma.rb'

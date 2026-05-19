@@ -1,0 +1,34 @@
+---
+name: ai_usage_events
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree PARTITION BY toYYYYMM(timestamp) ORDER BY (namespace_path,
+  event, timestamp, user_id) SETTINGS index_granularity = 8192
+partition_key: toYYYYMM(timestamp)
+primary_key: namespace_path, event, timestamp, user_id
+sorting_key: namespace_path, event, timestamp, user_id
+settings:
+  index_granularity: '8192'
+columns:
+- name: user_id
+  type: UInt64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: event
+  type: UInt16
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: timestamp
+  type: DateTime64(6, 'UTC')
+  is_in_partition_key: true
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: namespace_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'0/'"
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: extras
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'{}'"

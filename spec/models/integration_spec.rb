@@ -13,6 +13,7 @@ RSpec.describe Integration, feature_category: :integrations do
   describe "associations" do
     it { is_expected.to belong_to(:project).inverse_of(:integrations) }
     it { is_expected.to belong_to(:group).inverse_of(:integrations) }
+    it { is_expected.to belong_to(:inherit_from).optional }
 
     it do
       is_expected.to have_one(:issue_tracker_data)
@@ -249,8 +250,8 @@ RSpec.describe Integration, feature_category: :integrations do
     end
 
     describe '.for_group' do
-      let!(:jira_group_integration) { create(:jira_integration, project_id: nil, group_id: group.id) }
-      let!(:jira_project_integration) { create(:jira_integration, project: project) }
+      let_it_be(:jira_group_integration) { create(:jira_integration, project_id: nil, group_id: group.id) }
+      let_it_be(:jira_project_integration) { create(:jira_integration, project: project) }
 
       it 'returns the right group integration' do
         expect(described_class.for_group(group)).to contain_exactly(jira_group_integration)
@@ -648,7 +649,7 @@ RSpec.describe Integration, feature_category: :integrations do
       # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
       context 'when data is stored in properties' do
         let(:properties) { data_params }
-        let!(:integration) do
+        let(:integration) do
           create(:jira_integration, :without_properties_callback, project: project,
             properties: properties.merge(additional: 'something'))
         end
@@ -739,8 +740,8 @@ RSpec.describe Integration, feature_category: :integrations do
   end
 
   describe '.create_from_default_integrations' do
-    let!(:instance_integration) { create(:confluence_integration, :instance, confluence_url: 'https://example.atlassian.net/wiki', organization: create(:organization)) }
-    let!(:instance_level_instance_specific_integration) { create(:beyond_identity_integration, :instance) }
+    let_it_be(:instance_integration) { create(:confluence_integration, :instance, confluence_url: 'https://example.atlassian.net/wiki', organization: create(:organization)) }
+    let_it_be(:instance_level_instance_specific_integration) { create(:beyond_identity_integration, :instance) }
 
     it 'creates integrations from default integrations' do
       expect(described_class).to receive(:create_from_active_default_integrations)
@@ -809,7 +810,7 @@ RSpec.describe Integration, feature_category: :integrations do
         end
 
         context 'when passing a group' do
-          let!(:subgroup) { create(:group, parent: group) }
+          let(:subgroup) { create(:group, parent: group) }
 
           it 'creates an integration from the group-level integration' do
             described_class.create_from_active_default_integrations(subgroup, :group_id)
@@ -929,7 +930,7 @@ RSpec.describe Integration, feature_category: :integrations do
         end
 
         context 'when passing a group' do
-          let!(:subgroup) { create(:group, parent: group) }
+          let(:subgroup) { create(:group, parent: group) }
 
           it 'creates an integration from the group-level integration' do
             described_class.create_from_default_instance_specific_integrations(subgroup, :group_id)
@@ -1031,12 +1032,12 @@ RSpec.describe Integration, feature_category: :integrations do
     let_it_be(:project) { create(:project, :in_subgroup) }
     let(:group) { project.root_namespace }
     let(:subgroup) { project.group }
-    let!(:group_integration) { create(:confluence_integration, :group, group: group) }
-    let!(:subgroup_integration) do
+    let(:group_integration) { create(:confluence_integration, :group, group: group) }
+    let(:subgroup_integration) do
       create(:confluence_integration, :group, group: subgroup, inherit_from_id: group_integration.id)
     end
 
-    let!(:project_custom_settings_integration) do
+    let(:project_custom_settings_integration) do
       create(:confluence_integration, project: project, inherit_from_id: nil)
     end
 

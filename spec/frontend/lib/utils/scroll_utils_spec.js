@@ -224,10 +224,10 @@ describe('scroll utils', () => {
   });
 
   describe('preventScrollToFragment', () => {
-    it('prevents scroll', () => {
+    const setupContainer = (innerHTML) => {
       setHTMLFixture(`
         <div id="target"></div>
-        <div id="container"><a href="#target">Click me</a></div>
+        <div id="container">${innerHTML}</div>
       `);
       Object.defineProperty(getScrollingElement(), 'scrollTop', {
         writable: true,
@@ -237,14 +237,57 @@ describe('scroll utils', () => {
         writable: true,
         value: 50,
       });
+    };
+
+    const triggerOn = (selector) => {
+      const target = document.querySelector(selector);
+      const preventDefault = jest.fn();
+      preventScrollToFragment({ target, preventDefault });
+      return { preventDefault };
+    };
+
+    it('prevents scroll for same-page hash links', () => {
+      setupContainer('<a href="#target">Click me</a>');
       const scrollSpy = jest.spyOn(getScrollingElement(), 'scrollTo');
-      document.querySelector('#container').addEventListener('click', preventScrollToFragment);
-      document.querySelector('a').click();
+      const { preventDefault } = triggerOn('a');
+      expect(preventDefault).toHaveBeenCalled();
       expect(document.querySelector('#target').classList.contains(NO_SCROLL_TO_HASH_CLASS)).toBe(
         true,
       );
       expect(window.location.hash).toBe('#target');
       expect(scrollSpy).toHaveBeenCalledWith({ top: 40, left: 50 });
+    });
+
+    it('does nothing when the link has no hash', () => {
+      setupContainer('<a href="/some/path">Click me</a>');
+      const scrollSpy = jest.spyOn(getScrollingElement(), 'scrollTo');
+      const { preventDefault } = triggerOn('a');
+      expect(preventDefault).not.toHaveBeenCalled();
+      expect(scrollSpy).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the link points to a different page', () => {
+      setupContainer('<a href="/other/page#target">Click me</a>');
+      const scrollSpy = jest.spyOn(getScrollingElement(), 'scrollTo');
+      const { preventDefault } = triggerOn('a');
+      expect(preventDefault).not.toHaveBeenCalled();
+      expect(scrollSpy).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the link points to the same path with different query', () => {
+      setupContainer(`<a href="${window.location.pathname}?foo=bar#target">Click me</a>`);
+      const scrollSpy = jest.spyOn(getScrollingElement(), 'scrollTo');
+      const { preventDefault } = triggerOn('a');
+      expect(preventDefault).not.toHaveBeenCalled();
+      expect(scrollSpy).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the click is not on a link', () => {
+      setupContainer('<span>not a link</span>');
+      const scrollSpy = jest.spyOn(getScrollingElement(), 'scrollTo');
+      const { preventDefault } = triggerOn('span');
+      expect(preventDefault).not.toHaveBeenCalled();
+      expect(scrollSpy).not.toHaveBeenCalled();
     });
   });
 });

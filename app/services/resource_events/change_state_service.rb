@@ -13,7 +13,7 @@ module ResourceEvents
       @params = params
 
       ResourceStateEvent.create(
-        user: user,
+        user: Gitlab::Auth::Identity.resolve_composite_identity_actor(user),
         resource.noteable_target_type_name => resource,
         source_commit: commit_id_of(mentionable_source),
         source_merge_request_id: merge_request_id_of(mentionable_source),

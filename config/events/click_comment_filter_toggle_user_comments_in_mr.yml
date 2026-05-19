@@ -7,6 +7,8 @@ identifiers:
 - namespace
 - user
 product_group: code_review
+product_categories:
+- code_review_workflow
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146939
 tiers:

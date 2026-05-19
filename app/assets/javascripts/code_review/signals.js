@@ -44,10 +44,23 @@ async function observeMergeRequestFinishingPreparation({ apollo, signaler }) {
         },
       });
 
-      preparationSubscriber = preparationObservable.subscribe((preparationUpdate) => {
+      preparationSubscriber = preparationObservable.subscribe(async (preparationUpdate) => {
         if (preparationUpdate.data.mergeRequestMergeStatusUpdated?.preparedAt) {
           signaler.$emit(EVT_MR_PREPARED);
           preparationSubscriber.unsubscribe();
+
+          try {
+            const freshStatus = await apollo.query({
+              query: getMr,
+              variables: { projectPath, iid },
+              fetchPolicy: 'network-only',
+            });
+            if (freshStatus.data.project?.mergeRequest) {
+              signaler.$emit(EVT_MR_DIFF_GENERATED, freshStatus.data.project.mergeRequest);
+            }
+          } catch {
+            // noop: tab counts remain as `-` until the user refreshes
+          }
         } else {
           signaler.$emit(EVT_MR_DIFF_GENERATED, currentStatus.data.project.mergeRequest);
         }

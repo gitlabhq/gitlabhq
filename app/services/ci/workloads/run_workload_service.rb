@@ -33,7 +33,8 @@ module Ci
           ignore_skip_ci: true,
           save_on_errors: false,
           content: ci_job_yaml,
-          duo_workflow_definition: @duo_workflow_definition
+          duo_workflow_definition: @duo_workflow_definition,
+          suspend_options: suspend_options
         )
 
         pipeline = response.payload
@@ -62,6 +63,16 @@ module Ci
         @ci_variables_included.each do |var|
           workload.variable_inclusions.create!(variable_name: var, project: workload.project)
         end
+      end
+
+      def suspend_options
+        opts = {
+          suspend_on_success: @workload_definition.suspend_on_success,
+          suspend_on_failure: @workload_definition.suspend_on_failure,
+          environment_key: @workload_definition.environment_key
+        }.compact
+
+        opts.presence
       end
 
       def ci_job_yaml

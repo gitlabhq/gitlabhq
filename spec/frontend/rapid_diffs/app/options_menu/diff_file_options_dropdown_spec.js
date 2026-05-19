@@ -44,6 +44,11 @@ describe('DiffFileOptionsDropdown', () => {
       expect(wrapper.html()).toContain('View file');
       expect(wrapper.html()).toContain('Download');
     });
+
+    it('renders provided items before the copy link', () => {
+      const texts = findDropdownItems().wrappers.map((item) => item.text());
+      expect(texts).toEqual(['View file', 'Download', 'Copy link to the file']);
+    });
   });
 
   describe('with grouped items', () => {
@@ -117,11 +122,11 @@ describe('DiffFileOptionsDropdown', () => {
       createComponent();
     });
 
-    it('copies link with file parameters and fileId hash', async () => {
-      const items = findDropdownItems();
-      const copyLinkItem = items.at(0);
+    const findCopyLinkItem = () =>
+      findDropdownItems().wrappers.find((item) => item.text() === 'Copy link to the file');
 
-      await copyLinkItem.props('item').action();
+    it('copies link with file parameters and fileId hash', async () => {
+      await findCopyLinkItem().props('item').action();
 
       expect(copyToClipboard.copyToClipboard).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -133,10 +138,7 @@ describe('DiffFileOptionsDropdown', () => {
     });
 
     it('shows toast notification', async () => {
-      const items = findDropdownItems();
-      const copyLinkItem = items.at(0);
-
-      await copyLinkItem.props('item').action();
+      await findCopyLinkItem().props('item').action();
 
       expect(toast).toHaveBeenCalledWith('Link to diff file copied.');
     });

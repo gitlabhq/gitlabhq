@@ -34,7 +34,6 @@ RSpec.describe 'Dashboard > User filters projects', :js, :with_current_organizat
 
     it 'allows viewing starred projects' do
       project2.add_developer(user)
-      visit dashboard_projects_path
 
       click_link 'Starred'
 

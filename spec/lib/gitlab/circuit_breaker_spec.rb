@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::CircuitBreaker, :clean_gitlab_redis_rate_limiting, feature_category: :shared do
+RSpec.describe Gitlab::CircuitBreaker, :clean_gitlab_redis_rate_limiting, feature_category: :ai_abstraction_layer do
   let(:service_name) { 'DummyService' }
   let(:volume_threshold) { 5 }
   let(:circuit) do

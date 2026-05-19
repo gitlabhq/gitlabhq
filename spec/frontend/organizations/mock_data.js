@@ -25,6 +25,6 @@ export const pageInfoEmpty = {
 export const defaultOrganization = {
   id: 1,
   name: 'Default',
-  web_url: '/-/organizations/default',
+  web_url: '/o/default/-/overview',
   avatar_url: null,
 };

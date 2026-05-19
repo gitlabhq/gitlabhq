@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::FogbugzImport::Importer do
+RSpec.describe Gitlab::FogbugzImport::Importer, feature_category: :importers do
   let(:project) { create(:project_empty_repo) }
   let(:fogbugz_project) { { 'ixProject' => project.id, 'sProject' => 'vim' } }
   let(:import_data) { { 'repo' => fogbugz_project } }
@@ -84,6 +84,86 @@ RSpec.describe Gitlab::FogbugzImport::Importer do
         created_at: expected_note_timestamp,
         updated_at: expected_note_timestamp
       )
+    end
+  end
+
+  describe 'IID pre-allocation' do
+    let(:bug) do
+      {
+        ixBug: '42',
+        fOpen: bug_fopen,
+        sTitle: 'Bug title',
+        sLatestTextSummary: "",
+        dtOpened: Time.now.to_s,
+        dtLastUpdated: Time.now.to_s,
+        events: { event: bug_events }
+      }.with_indifferent_access
+    end
+
+    it 'pre-allocates issue IIDs before importing cases' do
+      preallocator = instance_double(Gitlab::Import::IidPreallocator)
+      expect(Gitlab::Import::IidPreallocator).to receive(:new)
+        .with(project, { issues: 42 })
+        .and_return(preallocator)
+      expect(preallocator).to receive(:execute)
+
+      subject.execute
+    end
+
+    context 'when there are multiple bugs' do
+      let(:bug2) do
+        {
+          ixBug: '100',
+          fOpen: 'true',
+          sTitle: 'Another bug',
+          sLatestTextSummary: "",
+          dtOpened: Time.now.to_s,
+          dtLastUpdated: Time.now.to_s,
+          events: { event: [] }
+        }.with_indifferent_access
+      end
+
+      let(:fogbugz_bugs) { [bug, bug2] }
+
+      it 'pre-allocates using the maximum IID' do
+        preallocator = instance_double(Gitlab::Import::IidPreallocator)
+        expect(Gitlab::Import::IidPreallocator).to receive(:new)
+          .with(project, { issues: 100 })
+          .and_return(preallocator)
+        expect(preallocator).to receive(:execute)
+
+        subject.execute
+      end
+    end
+
+    context 'when there are no cases' do
+      let(:fogbugz_bugs) { [] }
+
+      it 'does not call IidPreallocator' do
+        expect(Gitlab::Import::IidPreallocator).not_to receive(:new)
+
+        subject.execute
+      end
+    end
+
+    context 'when ixBug values are not valid IID values' do
+      let(:bug) do
+        {
+          ixBug: '0',
+          fOpen: bug_fopen,
+          sTitle: 'Bug title',
+          sLatestTextSummary: "",
+          dtOpened: Time.now.to_s,
+          dtLastUpdated: Time.now.to_s,
+          events: { event: bug_events }
+        }.with_indifferent_access
+      end
+
+      it 'does not call IidPreallocator' do
+        expect(Gitlab::Import::IidPreallocator).not_to receive(:new)
+
+        subject.execute
+      end
     end
   end
 

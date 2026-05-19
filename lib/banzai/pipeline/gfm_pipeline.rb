@@ -61,6 +61,7 @@ module Banzai
           Filter::References::ExternalIssueReferenceFilter,
           Filter::References::MergeRequestReferenceFilter,
           Filter::References::SnippetReferenceFilter,
+          Filter::References::PersonalSnippetReferenceFilter,
           Filter::References::CommitRangeReferenceFilter,
           Filter::References::LabelReferenceFilter,
           Filter::References::MilestoneReferenceFilter,

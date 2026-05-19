@@ -68,40 +68,20 @@ RSpec.describe HandlesGitalyErrors, feature_category: :source_code_management do
     end
 
     with_them do
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(graceful_gitaly_degradation: false)
-        end
+      it 'returns 503 status' do
+        get action, format: :json
 
-        it 're-raises the error' do
-          expect { get action, format: :json }.to raise_error(error_class)
-        end
+        expect(response).to have_gitlab_http_status(:service_unavailable)
       end
 
-      context 'when feature flag is enabled' do
-        before do
-          stub_feature_flags(graceful_gitaly_degradation: true)
-        end
+      it 'tracks the exception' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(error_class))
 
-        it 'returns 503 status' do
-          get action, format: :json
-
-          expect(response).to have_gitlab_http_status(:service_unavailable)
-        end
-
-        it 'tracks the exception' do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(error_class))
-
-          get action, format: :json
-        end
+        get action, format: :json
       end
     end
 
     context 'with JSON format' do
-      before do
-        stub_feature_flags(graceful_gitaly_degradation: true)
-      end
-
       context 'on GitLab.com' do
         before do
           allow(Gitlab).to receive(:com?).and_return(true)
@@ -132,10 +112,6 @@ RSpec.describe HandlesGitalyErrors, feature_category: :source_code_management do
     end
 
     context 'with plain text format' do
-      before do
-        stub_feature_flags(graceful_gitaly_degradation: true)
-      end
-
       it 'returns 503 status' do
         get :index, format: :text
 
@@ -173,7 +149,6 @@ RSpec.describe HandlesGitalyErrors, feature_category: :source_code_management do
 
     context 'with HTML format' do
       before do
-        stub_feature_flags(graceful_gitaly_degradation: true)
         allow(controller).to receive(:render).and_call_original
         allow(controller).to receive(:render).with(action: 'index', status: :service_unavailable)
       end
@@ -193,13 +168,12 @@ RSpec.describe HandlesGitalyErrors, feature_category: :source_code_management do
 
     context 'with Atom format' do
       before do
-        stub_feature_flags(graceful_gitaly_degradation: true)
         allow(controller).to receive(:render).and_call_original
-        allow(controller).to receive(:render).with(action: 'index', status: :service_unavailable)
+        allow(controller).to receive(:render).with(action: 'index', layout: 'xml', status: :service_unavailable)
       end
 
-      it 'renders the action template with 503 status' do
-        expect(controller).to receive(:render).with(action: 'index', status: :service_unavailable)
+      it 'renders the action template with xml layout and 503 status' do
+        expect(controller).to receive(:render).with(action: 'index', layout: 'xml', status: :service_unavailable)
 
         get :index, format: :atom
       end

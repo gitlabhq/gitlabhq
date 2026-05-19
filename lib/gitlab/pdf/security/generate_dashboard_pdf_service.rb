@@ -6,6 +6,8 @@ module Gitlab
       class GenerateDashboardPdfService
         HEADER_SPACING = 60
         SECTION_SPACING = 20
+        GRID_COLUMNS = 12
+        RISK_SCORE_COLUMNS = 5
 
         def initialize(filename, report_data, exportable)
           @filename = filename
@@ -22,8 +24,7 @@ module Gitlab
           render_vulnerability_history
           render_vulnerabilities_severity_count
           render_group_security_status
-          render_total_risk_score
-          render_vulnerabilities_over_time
+          render_risk_row
           render_vulnerabilities_by_age
 
           draw_header
@@ -62,7 +63,7 @@ module Gitlab
 
         def draw_header
           pdf.repeat(:all, dynamic: true) do
-            Gitlab::PDF::Header.render(pdf, exportable.name, page: pdf.page_number, height: 50)
+            Gitlab::PDF::Header.render(pdf, exportable, page: pdf.page_number, height: 50)
           end
         end
 
@@ -131,44 +132,60 @@ module Gitlab
           )
         end
 
-        # Total Risk Score
+        # Total Risk Score and Vulnerabilities Over Time (side-by-side, mirroring the frontend 12-column layout)
+        # Risk score occupies 5/12 columns, SECTION_SPACING separates them, and VoT fills the rest.
 
         def should_render_total_risk_score?
           report_data['total_risk_score'].present?
         end
 
-        def render_total_risk_score
-          return unless should_render_total_risk_score?
-
-          ensure_space_for(Gitlab::PDF::Security::TotalRiskScore::TOTAL_HEIGHT)
-          add_section_page(_('Total Risk Score'), pdf.page_number)
-          draw_total_risk_score
-        end
-
-        def draw_total_risk_score
-          Gitlab::PDF::Security::TotalRiskScore.render(
-            pdf, data: report_data['total_risk_score']
-          )
-        end
-
-        # Vulnerabilities Over Time
-
         def should_render_vulnerabilities_over_time?
           report_data['open_vulnerabilities_over_time'].present?
         end
 
-        def render_vulnerabilities_over_time
+        def render_risk_row
+          return unless should_render_total_risk_score? || should_render_vulnerabilities_over_time?
+
+          ensure_space_for(Gitlab::PDF::Security::TotalRiskScore::TOTAL_HEIGHT)
+          start_y = pdf.cursor
+
+          if should_render_total_risk_score?
+            add_section_page(_('Total Risk Score'), pdf.page_number)
+            draw_total_risk_score(start_y)
+          end
+
           return unless should_render_vulnerabilities_over_time?
 
-          ensure_space_for(Gitlab::PDF::Security::VulnerabilitiesOverTime::TOTAL_HEIGHT)
           add_section_page(_('Vulnerabilities Over Time'), pdf.page_number)
-          draw_vulnerabilities_over_time
+          draw_vulnerabilities_over_time(start_y)
         end
 
-        def draw_vulnerabilities_over_time
-          Gitlab::PDF::Security::VulnerabilitiesOverTime.render(
-            pdf, data: report_data['open_vulnerabilities_over_time']
-          )
+        def draw_total_risk_score(y_pos)
+          pdf.bounding_box([0, y_pos], width: risk_score_column_width,
+            height: Gitlab::PDF::Security::TotalRiskScore::TOTAL_HEIGHT) do
+            Gitlab::PDF::Security::TotalRiskScore.render(pdf, data: report_data['total_risk_score'])
+          end
+        end
+
+        def draw_vulnerabilities_over_time(y_pos)
+          pdf.bounding_box([vot_column_x, y_pos], width: vot_column_width,
+            height: Gitlab::PDF::Security::TotalRiskScore::TOTAL_HEIGHT) do
+            Gitlab::PDF::Security::VulnerabilitiesOverTime.render(
+              pdf, data: report_data['open_vulnerabilities_over_time']
+            )
+          end
+        end
+
+        def risk_score_column_width
+          (pdf.bounds.right / GRID_COLUMNS.to_f) * RISK_SCORE_COLUMNS
+        end
+
+        def vot_column_x
+          risk_score_column_width + SECTION_SPACING
+        end
+
+        def vot_column_width
+          pdf.bounds.right - vot_column_x
         end
 
         # Vulnerabilities by Age

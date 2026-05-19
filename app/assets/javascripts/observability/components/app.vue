@@ -1,5 +1,5 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import simplePoll from '~/lib/utils/simple_poll';
@@ -20,6 +20,7 @@ export default {
   name: 'ObservabilityApp',
   components: {
     GlAlert,
+    GlButton,
     ObservabilityLoading,
   },
   i18n: {
@@ -44,8 +45,11 @@ export default {
       type: Object,
       required: true,
       validator(authTokens) {
-        // Allow empty objects - polling will handle fetching tokens
         if (!authTokens || Object.keys(authTokens).length === 0) {
+          return true;
+        }
+
+        if (authTokens.status === 'loading') {
           return true;
         }
 
@@ -85,6 +89,8 @@ export default {
       provisioningTimedOut: false,
       currentProvisioningMessageIndex: 0,
       provisioningMessageInterval: null,
+      isFullscreen: false,
+      fullscreenAnnouncementVisible: false,
     };
   },
 
@@ -99,6 +105,7 @@ export default {
     },
 
     needsPolling() {
+      if (this.currentAuthTokens?.status === 'loading') return true;
       const { accessJwt, refreshJwt } = this.currentAuthTokens || {};
       return !accessJwt?.trim() || !refreshJwt?.trim();
     },
@@ -128,6 +135,20 @@ export default {
             message: s__('Observability|Authentication failed. Please refresh the page.'),
           };
     },
+
+    fullscreenAnnouncement() {
+      if (this.isFullscreen) {
+        return s__('Observability|Entered full screen mode');
+      }
+      if (this.fullscreenAnnouncementVisible) {
+        return s__('Observability|Exited full screen mode');
+      }
+      return '';
+    },
+
+    showFullscreenToggle() {
+      return this.isAuthenticated && !this.isLoading;
+    },
   },
 
   watch: {
@@ -155,8 +176,13 @@ export default {
   beforeUnmount() {
     this.pollingCancelled = true;
     clearTimeout(this.iframeReadyTimeout);
+    clearTimeout(this.authTimeout);
     this.stopProvisioningMessageCycle();
     iframeNavigator.deregister();
+    if (this.isFullscreen) {
+      document.removeEventListener('keydown', this.handleFullscreenKeydown);
+      document.documentElement.classList.remove('o11y-fullscreen');
+    }
     if (this.authManager) {
       this.authManager.destroy();
     }
@@ -164,6 +190,26 @@ export default {
   },
 
   methods: {
+    toggleFullscreen() {
+      this.isFullscreen = !this.isFullscreen;
+      this.fullscreenAnnouncementVisible = true;
+      document.documentElement.classList.toggle('o11y-fullscreen', this.isFullscreen);
+      if (this.isFullscreen) {
+        document.addEventListener('keydown', this.handleFullscreenKeydown);
+      } else {
+        document.removeEventListener('keydown', this.handleFullscreenKeydown);
+        this.$nextTick(() => {
+          this.$refs.enterFullscreenToggle?.$el?.focus();
+        });
+      }
+    },
+
+    handleFullscreenKeydown(event) {
+      if (event.key === 'Escape' && this.isFullscreen) {
+        this.toggleFullscreen();
+      }
+    },
+
     handleIframeLoad() {
       const iframe = this.$refs.o11yFrame;
       this.iframeReadyTimeout = setTimeout(() => {
@@ -186,6 +232,12 @@ export default {
       );
       this.authManager.setCallbacks(this.handleAuthSuccess, this.handleAuthError);
 
+      this.authTimeout = setTimeout(() => {
+        if (this.isLoading) {
+          this.handleAuthError();
+        }
+      }, TIMEOUTS.AUTH_TIMEOUT);
+
       window.addEventListener('message', this.handleMessage);
     },
 
@@ -203,7 +255,6 @@ export default {
         .then((tokens) => {
           if (this.pollingCancelled) return;
           this.currentAuthTokens = tokens;
-          this.isLoading = false;
           this.initializeAuth();
         })
         .catch(() => {
@@ -276,12 +327,14 @@ export default {
     },
 
     handleAuthSuccess() {
+      clearTimeout(this.authTimeout);
       this.isLoading = false;
       this.isAuthenticated = true;
       iframeNavigator.register(this.$refs.o11yFrame, this.allowedOrigin);
     },
 
     handleAuthError() {
+      clearTimeout(this.authTimeout);
       this.isLoading = false;
       this.isAuthenticated = false;
     },
@@ -333,8 +386,33 @@ export default {
 
 <template>
   <div
-    class="gl-h-full gl-grow gl-overflow-hidden gl-rounded-base gl-border-1 gl-border-solid gl-border-default"
+    class="o11y-content-wrapper gl-relative gl-h-full gl-grow gl-overflow-hidden gl-rounded-base gl-border-1 gl-border-solid gl-border-default"
   >
+    <span aria-live="polite" class="gl-sr-only" data-testid="o11y-fullscreen-announcement">{{
+      fullscreenAnnouncement
+    }}</span>
+    <gl-button
+      v-if="showFullscreenToggle && !isFullscreen"
+      ref="enterFullscreenToggle"
+      icon="maximize"
+      :aria-label="s__('Observability|Enter full screen')"
+      category="tertiary"
+      size="small"
+      class="gl-absolute gl-right-3 gl-top-3 gl-z-1"
+      data-testid="o11y-enter-fullscreen"
+      @click="toggleFullscreen"
+    />
+    <gl-button
+      v-if="showFullscreenToggle && isFullscreen"
+      ref="exitFullscreenToggle"
+      icon="minimize"
+      :aria-label="s__('Observability|Exit full screen')"
+      category="tertiary"
+      size="small"
+      class="gl-absolute gl-right-3 gl-top-3 gl-z-1"
+      data-testid="o11y-exit-fullscreen"
+      @click="toggleFullscreen"
+    />
     <div
       v-if="isLoading"
       class="gl-mb-0 gl-mt-0 gl-flex gl-h-full gl-flex-col gl-items-center gl-justify-center gl-text-size-h-display gl-font-semibold gl-leading-36"

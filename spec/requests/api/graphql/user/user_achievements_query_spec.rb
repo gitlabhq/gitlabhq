@@ -8,8 +8,14 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :private, guests: user) }
   let_it_be(:achievement) { create(:achievement, namespace: group) }
-  let_it_be(:non_revoked_achievement) { create(:user_achievement, achievement: achievement, user: user) }
-  let_it_be(:revoked_achievement) { create(:user_achievement, :revoked, achievement: achievement, user: user) }
+  let_it_be(:non_revoked_achievement) do
+    create(:user_achievement, achievement: achievement, user: user, show_on_profile: true)
+  end
+
+  let_it_be(:revoked_achievement) do
+    create(:user_achievement, :revoked, achievement: achievement, user: user, show_on_profile: true)
+  end
+
   let_it_be(:fields) do
     <<~HEREDOC
     userAchievements {
@@ -69,7 +75,9 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
   context 'when the achievements feature flag is disabled for a namespace' do
     let_it_be(:group2) { create(:group) }
     let_it_be(:achievement2) { create(:achievement, namespace: group2) }
-    let_it_be(:user_achievement2) { create(:user_achievement, achievement: achievement2, user: user) }
+    let_it_be(:user_achievement2) do
+      create(:user_achievement, achievement: achievement2, user: user, show_on_profile: true)
+    end
 
     before do
       stub_feature_flags(achievements: false)

@@ -37,6 +37,13 @@ Supported attributes:
 
 ## Retrieve a project webhook
 
+{{< history >}}
+
+- `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+- `token_present` and `signing_token_present` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0.
+
+{{< /history >}}
+
 Retrieves a specified webhook for a project.
 
 ```plaintext
@@ -86,7 +93,9 @@ Example response:
     {
       "key": "Authorization"
     }
-  ]
+  ],
+  "token_present": false,
+  "signing_token_present": false
 }
 ```
 
@@ -403,8 +412,13 @@ Example response:
 {{< history >}}
 
 - `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+- `signing_token` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of the `signing_token` attribute is controlled by a feature flag.
+> For more information, see the history.
 
 Add a webhook to a specified project.
 
@@ -438,8 +452,9 @@ Supported attributes:
 | `push_events_branch_filter`    | string            | No       | Trigger project webhook on push events for matching branches only. |
 | `releases_events`              | boolean           | No       | Trigger project webhook on release events. |
 | `resource_access_token_events` | boolean           | No       | Trigger project webhook on project access token expiry events. |
+| `signing_token`                | string            | No       | HMAC signing token used to compute the `webhook-signature` header. Must be in `whsec_<base64>` format encoding a 32-byte key. Not returned in the response. |
 | `tag_push_events`              | boolean           | No       | Trigger project webhook on tag push events. |
-| `token`                        | string            | No       | Secret token to validate received payloads; the token isn't returned in the response. |
+| `token`                        | string            | No       | Secret token to validate received payloads. Not returned in the response. |
 | `wiki_page_events`             | boolean           | No       | Trigger project webhook on wiki events. |
 | `resource_deploy_token_events` | boolean           | No       | Trigger project webhook on project deploy token expiry events. |
 
@@ -448,8 +463,13 @@ Supported attributes:
 {{< history >}}
 
 - `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+- `signing_token` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of the `signing_token` attribute is controlled by a feature flag.
+> For more information, see the history.
 
 Updates a project webhook for a specified project.
 
@@ -484,6 +504,7 @@ Supported attributes:
 | `push_events_branch_filter`    | string            | No       | Trigger project webhook on push events for matching branches only. |
 | `releases_events`              | boolean           | No       | Trigger project webhook on release events. |
 | `resource_access_token_events` | boolean           | No       | Trigger project webhook on project access token expiry events. |
+| `signing_token`                | string            | No       | HMAC signing token used to compute the `webhook-signature` header. Must be in `whsec_<base64>` format encoding a 32-byte key. Not returned in the response. |
 | `tag_push_events`              | boolean           | No       | Trigger project webhook on tag push events. |
 | `token`                        | string            | No       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 | `wiki_page_events`             | boolean           | No       | Trigger project webhook on wiki page events. |

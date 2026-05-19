@@ -6,7 +6,7 @@ RSpec.describe Ci::ProjectMirror, feature_category: :continuous_integration do
   let_it_be(:group1) { create(:group) }
   let_it_be(:group2) { create(:group) }
 
-  let!(:project) { create(:project, namespace: group2) }
+  let_it_be_with_reload(:project) { create(:project, namespace: group2) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }

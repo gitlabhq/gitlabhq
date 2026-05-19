@@ -1,20 +1,24 @@
-- ref_type_enum_value = @ref_type&.upcase
 - add_page_specific_style 'page_bundles/tree'
-- current_route_path = request.fullpath.match(%r{-/tree/[^/]+/(.+$)}).to_a[1]
-- add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "", refType: ref_type_enum_value})
-- add_page_startup_graphql_call('repository/permissions', { projectPath: @project.full_path })
-- add_page_startup_graphql_call('repository/files', { nextPageCursor: "", pageSize: 100, projectPath: @project.full_path, ref: current_ref, path: current_route_path || "/", refType: ref_type_enum_value})
 - breadcrumb_title _("Repository")
-
 - page_title @path.presence || _("Files"), @ref
-= content_for :meta_tags do
-  = auto_discovery_link_tag(:atom, project_commits_url(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
-= render 'projects/last_push'
+- if @gitaly_unavailable
+  = render 'shared/errors/gitaly_unavailable', reason: s_('Tree|Unable to load repository files')
+- else
+  - ref_type_enum_value = @ref_type&.upcase
+  - current_route_path = request.fullpath.match(%r{-/tree/[^/]+/(.+$)}).to_a[1]
+  - add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "", refType: ref_type_enum_value})
+  - add_page_startup_graphql_call('repository/permissions', { projectPath: @project.full_path })
+  - add_page_startup_graphql_call('repository/files', { nextPageCursor: "", pageSize: 100, projectPath: @project.full_path, ref: current_ref, path: current_route_path || "/", refType: ref_type_enum_value})
 
-= render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)
+  = content_for :meta_tags do
+    = auto_discovery_link_tag(:atom, project_commits_url(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
-= render 'shared/web_ide_path'
+  = render 'projects/last_push'
 
--# https://gitlab.com/gitlab-org/gitlab/-/issues/408388#note_1578533983
-#js-ambiguous-ref-modal{ data: { ambiguous: @is_ambiguous_ref.to_s, ref: current_ref } }
+  = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)
+
+  = render 'shared/web_ide_path'
+
+  -# https://gitlab.com/gitlab-org/gitlab/-/issues/408388#note_1578533983
+  #js-ambiguous-ref-modal{ data: { ambiguous: @is_ambiguous_ref.to_s, ref: current_ref } }

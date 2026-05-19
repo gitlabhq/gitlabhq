@@ -71,10 +71,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
     before do
       allow(project.repository).to receive(:languages).and_return(
-        [{ value: 66.69, label: "Ruby", color: "#701516", highlight: "#701516" },
-          { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-          { value: 7.91, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-          { value: 2.42, label: "CoffeeScript", color: "#244776", highlight: "#244776" }]
+        [{ value: 66.69, label: "Ruby", color: "#701516", highlight: "#701516", language_id: 326 },
+          { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a", language_id: 183 },
+          { value: 7.91, label: "HTML", color: "#e34c26", highlight: "#e34c26", language_id: 146 },
+          { value: 2.42, label: "CoffeeScript", color: "#244776", highlight: "#244776", language_id: 63 }]
       )
     end
 
@@ -4337,7 +4337,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
     context 'when project is scheduled for deletion' do
       before do
-        project.update!(marked_for_deletion_at: 1.day.ago, deleting_user: user)
+        project.project_namespace.schedule_deletion!(transition_user: user)
       end
 
       it 'restores project' do
@@ -4952,12 +4952,12 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             expect(response).to have_gitlab_http_status(:ok)
           end
 
-          it 'rejects to ci_pipeline_variables_minimum_override_role to owner' do
+          it 'allows setting ci_pipeline_variables_minimum_override_role to owner' do
             project_param = { ci_pipeline_variables_minimum_override_role: 'owner' }
 
             put api("/projects/#{project3.id}", current_user), params: project_param
 
-            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
 
@@ -5509,6 +5509,22 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
+    context 'attribute mr_default_title_template' do
+      it 'is exposed in the project response' do
+        get api("/projects/#{project.id}", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include('mr_default_title_template')
+      end
+
+      it 'updates the template' do
+        put api("/projects/#{project.id}", user), params: { mr_default_title_template: '%{source_branch}' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['mr_default_title_template']).to eq('%{source_branch}')
+      end
+    end
+
     context 'attribute mr_default_target_self' do
       let_it_be(:source_project) { create(:project, :public) }
 
@@ -5545,6 +5561,52 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['mr_default_target_self']).to eq(true)
+        end
+      end
+    end
+
+    context 'when project has container registry tags' do
+      before do
+        stub_container_registry_config(enabled: true)
+        stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+        create(:container_repository, project: project, name: :image)
+      end
+
+      context 'when GitLab container registry API is not supported' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+        end
+
+        it 'returns 422 with an error message when trying to change path' do
+          put api("/projects/#{project.id}", user), params: { path: 'new-path' }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to match(/contains container registry tags/)
+        end
+
+        it 'does not silently apply other params when path change fails' do
+          original_description = project.description
+
+          put api("/projects/#{project.id}", user), params: { path: 'new-path', description: 'updated' }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(project.reload.description).to eq(original_description)
+        end
+      end
+
+      context 'when GitLab container registry API is supported' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+          allow(ContainerRegistry::GitlabApiClient)
+            .to receive(:rename_base_repository_path).and_return(:accepted, :ok)
+        end
+
+        it 'successfully changes the project path' do
+          put api("/projects/#{project.id}", user), params: { path: 'new-path' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['path']).to eq('new-path')
+          expect(project.reload.path).to eq('new-path')
         end
       end
     end
@@ -5635,17 +5697,30 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     let(:path) { "/projects/#{project.id}/unarchive" }
 
     context 'on an unarchived project' do
-      it 'remains unarchived' do
+      it 'returns error message' do
         post api(path, user)
 
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['archived']).to be_falsey
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('Failed to unarchive project.')
+      end
+
+      context 'when remove_project_ancestor_inherited_transitions flag is disabled' do
+        before do
+          stub_feature_flags(remove_project_ancestor_inherited_transitions: false)
+        end
+
+        it 'remains unarchived' do
+          post api(path, user)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['archived']).to be_falsey
+        end
       end
     end
 
     context 'on an archived project' do
       before do
-        project.update!(archived: true)
+        project.project_namespace.archive!
       end
 
       it_behaves_like 'authorizing granular token permissions', :unarchive_project do
@@ -6537,12 +6612,13 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     context 'when authenticated as owner' do
       let(:group) { create :group }
 
-      it 'transfers the project to the new namespace' do
+      it 'schedules async transfer and returns ok status' do
         group.add_owner(user)
 
         put api(path, user), params: { namespace: group.id }
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(project.project_namespace.reload.state).to eq('transfer_scheduled')
       end
 
       it 'fails when transferring to a non owned namespace' do
@@ -6575,6 +6651,21 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
+
+      context 'when transfer cannot be scheduled' do
+        before do
+          group.add_owner(user)
+          project.project_namespace.schedule_transfer!(transition_user: user)
+        end
+
+        it 'returns error when already scheduled', :aggregate_failures do
+          put api(path, user), params: { namespace: group.id }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message'])
+            .to eq('Unable to initiate transfer. The project may already have a transfer in progress.')
+        end
+      end
     end
 
     it_behaves_like 'authorizing granular token permissions', :transfer_project do
@@ -6590,18 +6681,37 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
-    context 'when authenticated as developer' do
+    context 'when groups_and_projects_async_transfer is disabled' do
       before do
-        group.add_developer(user)
+        stub_feature_flags(groups_and_projects_async_transfer: false)
       end
 
-      context 'target namespace allows developers to create projects' do
-        let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
+      context 'when authenticated as owner' do
+        let(:group) { create :group }
 
-        it 'fails transferring the project to the target namespace' do
+        it 'transfers the project to the new namespace synchronously' do
+          group.add_owner(user)
+
           put api(path, user), params: { namespace: group.id }
 
-          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(project.project_namespace.reload.state).to eq('ancestor_inherited')
+        end
+      end
+
+      context 'when authenticated as developer' do
+        before do
+          group.add_developer(user)
+        end
+
+        context 'target namespace allows developers to create projects' do
+          let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
+
+          it 'fails transferring the project to the target namespace' do
+            put api(path, user), params: { namespace: group.id }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
         end
       end
     end

@@ -249,8 +249,7 @@ RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :markdown do
     end
   end
 
-  it 'protects against malicious backtracking',
-    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16814' do
+  it 'protects against malicious backtracking' do
     doc = "http://#{'&' * 1_000_000}x"
 
     expect do

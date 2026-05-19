@@ -27,7 +27,7 @@ bundle exec rake db:migrate
 
 For GitLab.com, these migrations are executed on a daily basis at the discretion of
 release managers through the
-[post-deploy migration pipeline](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md).
+[post-deploy migration pipeline](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/database-migrations/post-deploy-migration/readme.md).
 
 ## Deployment Integration
 

@@ -7,7 +7,7 @@ module Gitlab
         class AdvancedSearch < Base
           override :should_pause?
           def should_pause?
-            Gitlab::CurrentSettings.elasticsearch_pause_indexing?
+            Gitlab::CurrentSettings.advanced_search_indexing_paused?
           end
         end
       end

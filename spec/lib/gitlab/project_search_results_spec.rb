@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
+RSpec.describe Gitlab::ProjectSearchResults, :with_current_organization, feature_category: :global_search do
   include SearchHelpers
 
   let_it_be(:user) { create(:user) }
@@ -12,7 +12,9 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
   let(:repository_ref) { nil }
   let(:filters) { {} }
 
-  subject(:results) { described_class.new(user, query, project: project, repository_ref: repository_ref, filters: filters) }
+  subject(:results) do
+    described_class.new(user, query, project: project, repository_ref: repository_ref, filters: filters)
+  end
 
   context 'with a repository_ref' do
     context 'when empty' do
@@ -50,14 +52,14 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
       end
     end
 
-    context 'blobs' do
+    context 'with blobs' do
       it "limits the search to #{described_class::COUNT_LIMIT} items" do
         expect(results).to receive(:blobs).with(limit: described_class::COUNT_LIMIT).and_call_original
         expect(results.formatted_count('blobs')).to eq('0')
       end
     end
 
-    context 'wiki_blobs' do
+    context 'with wiki_blobs' do
       it "limits the search to #{described_class::COUNT_LIMIT} items" do
         expect(results).to receive(:wiki_blobs).with(limit: described_class::COUNT_LIMIT).and_call_original
         expect(results.formatted_count('wiki_blobs')).to eq('0')
@@ -161,30 +163,33 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
   shared_examples 'blob search pagination' do |blob_type|
     let(:per_page) { 20 }
     let(:count_limit) { described_class::COUNT_LIMIT }
-    let(:file_finder) { instance_double('Gitlab::FileFinder') }
+    let(:file_finder) { instance_double(Gitlab::FileFinder) }
     let(:repository_ref) { 'master' }
 
     before do
       allow(file_finder).to receive(:find).and_return([])
-      expect(Gitlab::FileFinder).to receive(:new).with(project, repository_ref).and_return(file_finder)
     end
 
     it 'limits search results based on the first page' do
+      expect(Gitlab::FileFinder).to receive(:new).with(project, repository_ref).and_return(file_finder)
       expect(file_finder).to receive(:find).with(query, content_match_cutoff: count_limit)
       results.objects(blob_type, page: 1, per_page: per_page)
     end
 
     it 'limits search results based on the second page' do
+      expect(Gitlab::FileFinder).to receive(:new).with(project, repository_ref).and_return(file_finder)
       expect(file_finder).to receive(:find).with(query, content_match_cutoff: count_limit + per_page)
       results.objects(blob_type, page: 2, per_page: per_page)
     end
 
     it 'limits search results based on the third page' do
+      expect(Gitlab::FileFinder).to receive(:new).with(project, repository_ref).and_return(file_finder)
       expect(file_finder).to receive(:find).with(query, content_match_cutoff: count_limit + (per_page * 2))
       results.objects(blob_type, page: 3, per_page: per_page)
     end
 
     it 'uses the per_page value when passed' do
+      expect(Gitlab::FileFinder).to receive(:new).with(project, repository_ref).and_return(file_finder)
       expect(file_finder).to receive(:find).with(query, content_match_cutoff: count_limit + (10 * 2))
       results.objects(blob_type, page: 3, per_page: 10)
     end
@@ -232,7 +237,7 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
 
     it_behaves_like 'blob search pagination', 'wiki_blobs'
 
-    context 'return type' do
+    context 'when checking return type' do
       let(:blobs) { [Gitlab::Search::FoundBlob.new(project: project)] }
       let(:query) { "Files" }
 
@@ -264,7 +269,7 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
       include_examples "access restricted confidential issues"
     end
 
-    context 'filtering' do
+    context 'when filtering' do
       let_it_be(:project) { create(:project, :public) }
       let_it_be(:closed_result) { create(:issue, :closed, project: project, title: 'foo closed') }
       let_it_be(:opened_result) { create(:issue, :opened, project: project, title: 'foo opened') }
@@ -272,7 +277,7 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
 
       let(:query) { 'foo' }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -285,13 +290,31 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
     let(:scope) { 'merge_requests' }
     let(:project) { create(:project, :public) }
 
-    context 'filtering' do
+    context 'when filtering' do
       let!(:project) { create(:project, :public) }
       let!(:opened_result) { create(:merge_request, :opened, source_project: project, title: 'foo opened') }
       let!(:closed_result) { create(:merge_request, :closed, source_project: project, title: 'foo closed') }
       let(:query) { 'foo' }
 
       include_examples 'search results filtered by state'
+    end
+  end
+
+  describe 'organization_id propagation to NotesFinder' do
+    let(:project) { create(:project, :public) }
+    let(:query) { 'test' }
+
+    subject(:results) do
+      described_class.new(user, query, project: project, organization_id: current_organization.id)
+    end
+
+    it 'passes organization_id to NotesFinder' do
+      expect(NotesFinder).to receive(:new).with(
+        anything,
+        hash_including(organization_id: current_organization.id)
+      ).and_call_original
+
+      results.objects('notes')
     end
   end
 
@@ -419,7 +442,7 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
         end
       end
 
-      context 'team access' do
+      context 'with team access' do
         context 'when the user is the creator' do
           let(:user) { creator }
 
@@ -442,7 +465,7 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
   end
 
   describe 'commit search' do
-    context 'pagination' do
+    context 'with pagination' do
       let(:project) { create(:project, :public, :repository) }
 
       it 'returns the correct results for each page' do
@@ -455,7 +478,7 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
         expect(results_page(1).total_pages).to eq(project.repository.commit_count)
       end
 
-      context 'limiting requested commits' do
+      context 'when limiting requested commits' do
         context 'on page 1' do
           it "limits to #{described_class::COUNT_LIMIT}" do
             expect(project.repository)
@@ -488,7 +511,7 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
       end
     end
 
-    context 'by commit message' do
+    context 'when searching by commit message' do
       let(:project) { create(:project, :public, :repository) }
       let(:commit) { project.repository.commit('59e29889be61e6e0e5e223bfa9ac2721d31605b8') }
       let(:message) { 'Sorry, I did a mistake' }
@@ -524,7 +547,7 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
       end
     end
 
-    context 'by commit hash' do
+    context 'when searching by commit hash' do
       let(:project) { create(:project, :public, :repository) }
       let(:commit) { project.repository.commit('0b4bc9a') }
 

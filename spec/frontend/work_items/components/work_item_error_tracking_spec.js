@@ -27,13 +27,14 @@ describe('WorkItemErrorTracking component', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findStacktrace = () => wrapper.findComponent(Stacktrace);
 
-  const createComponent = ({ handler = queryHandler } = {}) => {
+  const createComponent = ({ handler = queryHandler, provide = {} } = {}) => {
     wrapper = shallowMount(WorkItemErrorTracking, {
       apolloProvider: createMockApollo([[workItemErrorTrackingQuery, handler]]),
       propsData: {
         fullPath: 'group/project',
         iid: '12345',
       },
+      provide,
     });
   };
 
@@ -46,7 +47,11 @@ describe('WorkItemErrorTracking component', () => {
   it('makes call to stack trace endpoint', () => {
     createComponent();
 
-    expect(queryHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '12345' });
+    expect(queryHandler).toHaveBeenCalledWith({
+      fullPath: 'group/project',
+      iid: '12345',
+      useWorkItemFeatures: false,
+    });
   });
 
   it('renders Stacktrace component when we get data', async () => {
@@ -83,5 +88,39 @@ describe('WorkItemErrorTracking component', () => {
     await waitForPromises();
 
     expect(findAlert().text()).toBe('Error tracking service responded with an error.');
+  });
+
+  describe('when workItemFeaturesField feature flag is enabled', () => {
+    it('passes useWorkItemFeatures as true to the query', () => {
+      const handler = jest.fn().mockResolvedValue(errorTrackingQueryResponseWithStackTrace);
+      createComponent({
+        handler,
+        provide: { glFeatures: { workItemFeaturesField: true } },
+      });
+
+      expect(handler).toHaveBeenCalledWith({
+        fullPath: 'group/project',
+        iid: '12345',
+        useWorkItemFeatures: true,
+      });
+    });
+
+    it('renders Stacktrace component when data comes from features', async () => {
+      const responseWithFeatures = getErrorTrackingQueryResponse({
+        nodes:
+          errorTrackingQueryResponseWithStackTrace.data.namespace.workItem.widgets[0].stackTrace
+            .nodes,
+        withFeatures: true,
+      });
+      createComponent({
+        handler: jest.fn().mockResolvedValue(responseWithFeatures),
+        provide: { glFeatures: { workItemFeaturesField: true } },
+      });
+      await waitForPromises();
+
+      expect(findStacktrace().props('entries')).toEqual(
+        responseWithFeatures.data.namespace.workItem.features.errorTracking.stackTrace.nodes,
+      );
+    });
   });
 });

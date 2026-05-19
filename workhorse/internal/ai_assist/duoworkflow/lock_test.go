@@ -18,11 +18,11 @@ func TestWorkflowLockManager_AcquireAndRelease(t *testing.T) {
 	ctx := context.Background()
 	workflowID := "test-workflow-123"
 
-	mutex, err := manager.acquireLock(ctx, workflowID, "software_development")
+	mutex, err := manager.acquireLock(ctx, workflowID)
 	require.NoError(t, err)
 	require.NotNil(t, mutex)
 
-	manager.releaseLock(ctx, mutex, workflowID, "software_development")
+	manager.releaseLock(ctx, mutex, workflowID)
 }
 
 func TestWorkflowLockManager_ConcurrentLockAttempts(t *testing.T) {
@@ -34,25 +34,25 @@ func TestWorkflowLockManager_ConcurrentLockAttempts(t *testing.T) {
 	workflowID := "test-workflow-concurrent"
 
 	// First instance acquires the lock
-	mutex1, err := manager.acquireLock(ctx, workflowID, "software_development")
+	mutex1, err := manager.acquireLock(ctx, workflowID)
 	require.NoError(t, err)
 	require.NotNil(t, mutex1)
 
 	// Second instance should fail to acquire the same lock
-	mutex2, err := manager.acquireLock(ctx, workflowID, "software_development")
+	mutex2, err := manager.acquireLock(ctx, workflowID)
 	require.Error(t, err)
 	require.Nil(t, mutex2)
 	assert.Contains(t, err.Error(), "failed to acquire workflow lock")
 
 	// Release the first lock
-	manager.releaseLock(ctx, mutex1, workflowID, "software_development")
+	manager.releaseLock(ctx, mutex1, workflowID)
 
 	// Now the second instance should be able to acquire the lock
-	mutex3, err := manager.acquireLock(ctx, workflowID, "software_development")
+	mutex3, err := manager.acquireLock(ctx, workflowID)
 	require.NoError(t, err)
 	require.NotNil(t, mutex3)
 
-	manager.releaseLock(ctx, mutex3, workflowID, "software_development")
+	manager.releaseLock(ctx, mutex3, workflowID)
 }
 
 func TestWorkflowLockManager_MisconfiguredRedis(t *testing.T) {
@@ -63,9 +63,9 @@ func TestWorkflowLockManager_MisconfiguredRedis(t *testing.T) {
 	ctx := context.Background()
 	workflowID := "test-workflow-concurrent"
 
-	mutex, err := manager.acquireLock(ctx, workflowID, "software_development")
+	mutex, err := manager.acquireLock(ctx, workflowID)
 	require.ErrorIs(t, err, errLockIsUnavailable)
 	require.Nil(t, mutex)
 
-	manager.releaseLock(ctx, mutex, workflowID, "software_development")
+	manager.releaseLock(ctx, mutex, workflowID)
 }

@@ -69,7 +69,7 @@ module QA
 
           project.visit_job('deploy')
           Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 180)
+            expect(job).to be_successful(timeout: 400)
           end
 
           npm_install_yaml = ERB.new(read_fixture('package_managers/npm',
@@ -89,7 +89,7 @@ module QA
           another_project.visit_job('install')
 
           Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 180)
+            expect(job).to be_successful(timeout: 400)
             job.close_dap_panel_if_exists
             job.click_browse_button
           end

@@ -50,7 +50,7 @@ describe Sidekiq::Launcher do
       assert_in_delta 1000, rtt.to_i, 1000
 
       expires = @config.redis { |c| c.pttl(@id) }
-      assert_in_delta 60000, expires, 500
+      assert_in_delta 120000, expires, 500
     end
 
     it "fires start heartbeat event only once" do
@@ -77,7 +77,7 @@ describe Sidekiq::Launcher do
       assert_equal ["1"], info
 
       expires = @config.redis { |c| c.pttl(@id) }
-      assert_in_delta 60000, expires, 50
+      assert_in_delta 120000, expires, 50
     end
 
     it "allows arbitrary proctitle extensions" do

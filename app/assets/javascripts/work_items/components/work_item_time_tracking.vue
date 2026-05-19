@@ -7,9 +7,11 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { outputChronicDuration } from '~/chronic_duration';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { s__, sprintf } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   CREATE_TIMELOG_MODAL_ID,
   SET_TIME_ESTIMATE_MODAL_ID,
@@ -17,6 +19,8 @@ import {
 import CreateTimelogForm from '~/sidebar/components/time_tracking/create_timelog_form.vue';
 import SetTimeEstimateForm from '~/sidebar/components/time_tracking/set_time_estimate_form.vue';
 import TimeTrackingReport from '~/sidebar/components/time_tracking/time_tracking_report.vue';
+import workItemTimeTrackingQuery from '../graphql/work_item_time_tracking.query.graphql';
+import { findTimeTrackingWidget } from '../utils';
 
 export default {
   i18n: {
@@ -37,6 +41,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['timeTrackingLimitToHours'],
   props: {
     canUpdate: {
@@ -44,20 +49,9 @@ export default {
       required: false,
       default: false,
     },
-    timeEstimate: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    timelogs: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    totalTimeSpent: {
-      type: Number,
-      required: false,
-      default: 0,
+    fullPath: {
+      type: String,
+      required: true,
     },
     workItemId: {
       type: String,
@@ -72,7 +66,42 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      timeTrackingWidget: {},
+    };
+  },
+  apollo: {
+    timeTrackingWidget: {
+      query: workItemTimeTrackingQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
+        };
+      },
+      skip() {
+        return !this.workItemIid;
+      },
+      update(data) {
+        return findTimeTrackingWidget(data?.namespace?.workItem) ?? {};
+      },
+      error(e) {
+        Sentry.captureException(e);
+      },
+    },
+  },
   computed: {
+    timeEstimate() {
+      return this.timeTrackingWidget?.timeEstimate ?? 0;
+    },
+    timelogs() {
+      return this.timeTrackingWidget?.timelogs?.nodes ?? [];
+    },
+    totalTimeSpent() {
+      return this.timeTrackingWidget?.totalTimeSpent ?? 0;
+    },
     humanTimeEstimate() {
       return outputChronicDuration(this.timeEstimate, this.options);
     },
@@ -117,6 +146,18 @@ export default {
         format: 'short',
         hoursOnly: this.limitToHours,
       };
+    },
+  },
+  methods: {
+    // Refetch the dedicated time tracking query after timelog delete mutation
+    // via `timelog-deleted` event as it returns a response that's not directly
+    // tied to workItems API and requires manually cache write that's very different
+    // from regular work item cache update.
+    refetchTimeTrackingWidget() {
+      this.$apollo
+        .getClient()
+        .refetchQueries({ include: ['workItemTimeTracking'] })
+        .catch((error) => Sentry.captureException(error));
     },
   },
 };
@@ -247,6 +288,7 @@ export default {
         :limit-to-hours="limitToHours"
         :timelogs="timelogs"
         :work-item-iid="workItemIid"
+        @timelog-deleted="refetchTimeTrackingWidget"
       />
     </gl-modal>
   </div>

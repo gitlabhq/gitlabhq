@@ -1,0 +1,111 @@
+---
+name: siphon_vulnerabilities
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (traversal_path, id) ORDER BY (traversal_path, id) SETTINGS index_granularity =
+  2048, deduplicate_merge_projection_mode = 'rebuild'
+primary_key: traversal_path, id
+sorting_key: traversal_path, id
+settings:
+  index_granularity: '2048'
+  deduplicate_merge_projection_mode: "'rebuild'"
+columns:
+- name: id
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: project_id
+  type: Int64
+- name: author_id
+  type: Int64
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: title
+  type: String
+  compression_codec: CODEC(ZSTD(1))
+- name: description
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+  compression_codec: CODEC(ZSTD(3))
+- name: state
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '1'
+- name: severity
+  type: Int16
+- name: severity_overridden
+  type: Nullable(Bool)
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: resolved_by_id
+  type: Nullable(Int64)
+- name: resolved_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: report_type
+  type: Int16
+- name: confirmed_by_id
+  type: Nullable(Int64)
+- name: confirmed_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: dismissed_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: dismissed_by_id
+  type: Nullable(Int64)
+- name: resolved_on_default_branch
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: present_on_default_branch
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'true'
+  compression_codec: CODEC(ZSTD(1))
+- name: detected_at
+  type: Nullable(DateTime64(6, 'UTC'))
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: finding_id
+  type: Int64
+- name: cvss
+  type: Nullable(String)
+  default_kind: DEFAULT
+  default_expression: "'[]'"
+- name: auto_resolved
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: uuid
+  type: Nullable(UUID)
+- name: solution
+  type: Nullable(String)
+- name: partition_id
+  type: Nullable(Int64)
+  default_kind: DEFAULT
+  default_expression: '1'
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
+    'traversal_path', project_id, '0/'), '0/')
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))

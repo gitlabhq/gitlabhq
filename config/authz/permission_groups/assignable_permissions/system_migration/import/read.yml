@@ -1,0 +1,14 @@
+---
+name: read_import
+description: Grants the ability to read import status
+boundaries:
+  - instance
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_bulk_import
+  - read_bulk_import_entity
+  - read_bulk_import_entity_failure
+  - read_project_import
+  - read_project_relation_import

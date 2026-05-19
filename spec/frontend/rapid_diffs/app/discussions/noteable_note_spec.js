@@ -1,4 +1,5 @@
 import { merge } from 'lodash-es';
+import { GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
@@ -6,6 +7,7 @@ import NoteHeader from '~/rapid_diffs/app/discussions/note_header.vue';
 import NoteActions from '~/rapid_diffs/app/discussions/note_actions.vue';
 import NoteBody from '~/rapid_diffs/app/discussions/note_body.vue';
 import TimelineEntryItem from '~/rapid_diffs/app/discussions/timeline_entry_item.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { createAlert } from '~/alert';
 
@@ -65,6 +67,11 @@ describe('NoteableNote', () => {
     wrapper = shallowMount(NoteableNote, {
       propsData: merge(defaultProps, props),
       provide: { store, ...provide },
+      stubs: {
+        GlSprintf: {
+          template: '<span><slot name="timeago" /><slot name="author" /></span>',
+        },
+      },
     });
   };
 
@@ -278,6 +285,54 @@ describe('NoteableNote', () => {
     await wrapper.findComponent(NoteActions).vm.$emit('award', award);
     await waitForPromises();
     expect(store.toggleAwardOnNote).toHaveBeenCalledWith(note, award);
+  });
+
+  describe('resolved note', () => {
+    const resolvedBy = {
+      id: 200,
+      name: 'Jane Doe',
+      path: '/jane_doe',
+    };
+    const resolvedAt = '2025-09-01T10:00:00.000Z';
+
+    const createResolvedNote = (overrides = {}) =>
+      createNote({ resolved_at: resolvedAt, resolved_by: resolvedBy, ...overrides });
+
+    it('does not show resolved section when isResolved is false', () => {
+      createComponent({ note: createResolvedNote(), isResolved: false });
+      expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
+    });
+
+    it('shows resolved section when isResolved is true', () => {
+      createComponent({ note: createResolvedNote(), isResolved: true });
+      expect(wrapper.findComponent(GlSprintf).exists()).toBe(true);
+    });
+
+    it('uses "Resolved" text when not resolved by push', () => {
+      createComponent({ note: createResolvedNote({ resolved_by_push: false }), isResolved: true });
+      expect(wrapper.findComponent(GlSprintf).attributes('message')).toBe(
+        'Resolved %{timeago} by %{author}',
+      );
+    });
+
+    it('uses "Automatically resolved" text when resolved by push', () => {
+      createComponent({ note: createResolvedNote({ resolved_by_push: true }), isResolved: true });
+      expect(wrapper.findComponent(GlSprintf).attributes('message')).toBe(
+        'Automatically resolved %{timeago} by %{author}',
+      );
+    });
+
+    it('passes resolved_at to TimeAgoTooltip', () => {
+      createComponent({ note: createResolvedNote(), isResolved: true });
+      expect(wrapper.findComponent(TimeAgoTooltip).props('time')).toBe(resolvedAt);
+    });
+
+    it('links to the resolver via GlLink', () => {
+      createComponent({ note: createResolvedNote(), isResolved: true });
+      const link = wrapper.findComponent(GlLink);
+      expect(link.attributes('href')).toBe(resolvedBy.path);
+      expect(link.text()).toBe(resolvedBy.name);
+    });
   });
 
   describe('draft notes', () => {

@@ -219,12 +219,9 @@ module Gitlab
 
         def next_min_value
           if cursor?
-            # Cursors require a subtle off-by-one change: we return the end of the last batch instead
-            # of bumping it by 1 with .next because this class doesn't know what's in the cursor.
-            # This means that the min_cursor here must be logically before the beginning of the batch, not just
-            # equal to the first row (if it's equal it'll make batching skip the first row), this is because the
-            # KeysetIterator we use for cursor batching expects the cursor passed to it to be before the start of
-            # the iteration range.
+            # Returns the end cursor of the last batch as the starting point for the next batch.
+            # The batching strategy uses a >= condition in the scope (not the cursor: param)
+            # so this value is included in the next batch's range.
             last_job&.max_cursor || min_cursor
           else
             last_job&.max_value&.next || min_value
@@ -339,6 +336,7 @@ module Gitlab
 
         def compute_estimated_seconds_remaining
           return if finished? || finalized?
+          return unless total_tuple_count.to_i > 0
           return if migrated_tuple_count == 0
 
           stats = succeeded_job_stats

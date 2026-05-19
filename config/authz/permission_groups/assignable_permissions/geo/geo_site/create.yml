@@ -3,5 +3,7 @@ name: create_geo_site
 description: Grants the ability to create Geo sites
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - create_geo_site

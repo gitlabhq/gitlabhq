@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::Issues::SetAssignees, feature_category: :api do
   include GraphqlHelpers
   context 'when the user does not have permissions' do
-    let_it_be(:issue) { create(:issue) }
+    let_it_be(:issue, freeze: false) { create(:issue) }
     let_it_be(:current_user) { create(:user) }
     let_it_be(:assignee) { create(:user) }
 

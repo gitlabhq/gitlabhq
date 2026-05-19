@@ -22,7 +22,9 @@ describe('TokenPermissions component', () => {
   const fullPath = 'root/my-repo';
 
   const findButton = () => wrapper.findComponent(GlButton);
-  const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findAllCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
+  const findCheckbox = () => findAllCheckboxes().at(0);
+  const findCrossProjectCheckbox = () => findAllCheckboxes().at(1);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   const createComponent = () => {
@@ -50,8 +52,8 @@ describe('TokenPermissions component', () => {
   };
 
   beforeEach(() => {
-    mockQuery.mockResolvedValue(mockPermissionsQueryResponse());
-    mockMutation.mockResolvedValue(mockPermissionsMutationResponse());
+    mockQuery.mockResolvedValue(mockPermissionsQueryResponse({}));
+    mockMutation.mockResolvedValue(mockPermissionsMutationResponse({}));
   });
 
   describe('while waiting for query to resolve', () => {
@@ -95,7 +97,9 @@ describe('TokenPermissions component', () => {
     });
 
     it('renders checked checkbox when data returns true', async () => {
-      mockQuery.mockResolvedValue(mockPermissionsQueryResponse(true));
+      mockQuery.mockResolvedValue(
+        mockPermissionsQueryResponse({ pushRepositoryForJobTokenAllowed: true }),
+      );
       createComponent();
       await waitForPromises();
 
@@ -103,7 +107,9 @@ describe('TokenPermissions component', () => {
     });
 
     it('renders unchecked checkbox when data returns false', async () => {
-      mockQuery.mockResolvedValue(mockPermissionsQueryResponse(false));
+      mockQuery.mockResolvedValue(
+        mockPermissionsQueryResponse({ pushRepositoryForJobTokenAllowed: false }),
+      );
       createComponent();
       await waitForPromises();
 
@@ -151,6 +157,7 @@ describe('TokenPermissions component', () => {
           input: {
             fullPath,
             pushRepositoryForJobTokenAllowed: true,
+            crossProjectPushForJobTokenAllowed: false,
           },
         });
       });
@@ -164,6 +171,37 @@ describe('TokenPermissions component', () => {
           `CI/CD job token permissions for 'ops' were successfully updated.`,
         );
       });
+    });
+  });
+
+  describe('cross-project push checkbox', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('is disabled when push to repo is not allowed', () => {
+      expect(findCrossProjectCheckbox().attributes('disabled')).toBeDefined();
+    });
+
+    it('is enabled when push to repo is allowed', async () => {
+      findCheckbox().vm.$emit('input', true);
+      await nextTick();
+
+      expect(findCrossProjectCheckbox().attributes('disabled')).toBeUndefined();
+    });
+
+    it('is cleared when push to repo is unchecked', async () => {
+      findCheckbox().vm.$emit('input', true);
+      await nextTick();
+
+      findCrossProjectCheckbox().vm.$emit('input', true);
+      await nextTick();
+
+      findCheckbox().vm.$emit('input', false);
+      await nextTick();
+
+      expect(findCrossProjectCheckbox().attributes('checked')).toBeUndefined();
     });
   });
 });

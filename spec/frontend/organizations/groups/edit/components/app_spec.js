@@ -39,8 +39,8 @@ describe('OrganizationGroupsEditApp', () => {
       fullPath: 'mock-namespace/foo-bar',
     },
     basePath: 'https://gitlab.com',
-    groupsAndProjectsOrganizationPath: '/-/organizations/carrot/groups_and_projects?display=groups',
-    groupsOrganizationPath: '/-/organizations/default/groups',
+    groupsAndProjectsOrganizationPath: '/o/carrot/-/groups_and_projects?display=groups',
+    groupsOrganizationPath: '/o/default/-/groups',
     availableVisibilityLevels: [
       VISIBILITY_LEVEL_PRIVATE_INTEGER,
       VISIBILITY_LEVEL_INTERNAL_INTEGER,

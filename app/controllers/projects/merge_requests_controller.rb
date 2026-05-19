@@ -41,9 +41,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action only: [:show, :diffs, :rapid_diffs, :reports] do
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
-    push_frontend_feature_flag(:rapid_diffs_on_mr_show, current_user, type: :wip)
-    push_frontend_feature_flag(:mr_related_work_items, project)
-    push_frontend_feature_flag(:mr_widget_pipeline_subscription, project)
+    push_frontend_feature_flag(:rapid_diffs_on_mr_show, current_user, type: :beta)
   end
 
   before_action do
@@ -118,15 +116,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def rapid_diffs
-    return render_404 unless rapid_diffs_page_enabled?
+    unless rapid_diffs_page_enabled?
+      cookies.delete(:rapid_diffs_enabled)
+      return redirect_to(diffs_project_merge_request_path(project, @merge_request))
+    end
 
     rapid_diffs_presenter.offset = 5
     show_merge_request
   rescue StandardError => exception
     log_exception(exception)
-
-    # Turns off the rapid diffs toggle
-    cookies.delete(:rapid_diffs_enabled)
 
     feedback_link = view_context.link_to(
       _("Leave feedback"),
@@ -137,7 +135,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     )
 
     redirect_to(
-      diffs_project_merge_request_path(project, @merge_request),
+      diffs_project_merge_request_path(project, @merge_request, rapid_diffs_disabled: 'true'),
       alert: safe_format(
         _("Rapid Diffs encountered an error and has been temporarily disabled. " \
           "The page has loaded using the standard diff view. %{feedback_link}"),
@@ -206,14 +204,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         all: @pipelines_count
       }
     }
-  end
-
-  def sast_reports
-    reports_response(merge_request.compare_sast_reports(current_user), head_pipeline)
-  end
-
-  def secret_detection_reports
-    reports_response(merge_request.compare_secret_detection_reports(current_user), head_pipeline)
   end
 
   def context_commits
@@ -399,7 +389,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def versions
-    return render_404 unless ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip)
+    return render_404 unless ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :beta)
 
     render json: RapidDiffs::DiffCompareVersionsEntity.represent(
       @merge_request,
@@ -722,15 +712,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     if @merge_request.reached_versions_limit?
       flash[:alert] = format(
         _("This merge request has reached the maximum limit of %{limit} versions and cannot be updated further. " \
-          "Close this merge request and create a new one instead."), limit: MergeRequest::DIFF_VERSION_LIMIT)
+          "Close this merge request and create a new one instead."), limit: Gitlab::CurrentSettings.diff_max_versions)
       return
     end
 
     return unless @merge_request.reached_diff_commits_limit?
 
-    flash[:alert] =
-      _("This merge request has too many diff commits, and can't be updated. " \
-        "Close this merge request and create a new one.")
+    flash[:alert] = format(
+      _("This merge request has reached the maximum limit of %{limit} diff commits and cannot be updated further. " \
+        "Close this merge request and create a new one instead."), limit: Gitlab::CurrentSettings.diff_max_commits)
   end
 
   def diff_file_component(base_args)
@@ -748,7 +738,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def rapid_diffs_page_enabled?
-    ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip) &&
+    ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :beta) &&
+      params[:rapid_diffs_disabled] != 'true' &&
       (params[:rapid_diffs] == 'true' || cookies[:rapid_diffs_enabled] == 'true')
   end
 

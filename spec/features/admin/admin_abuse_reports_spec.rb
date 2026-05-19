@@ -191,6 +191,12 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
     def filter(tokens)
       # remove all existing filters first
       page.find_all('.gl-token-close').each(&:click)
+      # After removing tokens, the filtered search activates the last token which
+      # hides the placeholder input. Blur to deactivate and restore the placeholder.
+      page.execute_script('document.activeElement.blur()')
+      within_testid('filtered-search-input') do
+        expect(page).to have_field('Filter reports')
+      end
 
       select_tokens(*tokens, submit: true, input_text: 'Filter reports')
     end

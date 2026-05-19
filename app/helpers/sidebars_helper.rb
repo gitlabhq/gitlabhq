@@ -96,6 +96,7 @@ module SidebarsHelper
       issues_dashboard_path: work_items_dashboard_path(assignee_username: user.username),
 
       merge_request_dashboard_path: merge_requests_dashboard_path,
+      explore_analytics_dashboards_path: explore_analytics_dashboards_path,
       todos_dashboard_path: dashboard_todos_path,
       compare_plans_url: compare_plans_url(user: user, project: project, group: group),
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),

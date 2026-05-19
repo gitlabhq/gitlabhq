@@ -2,6 +2,7 @@ mutation updateCiJobTokenPermissions($input: ProjectCiCdSettingsUpdateInput!) {
   projectCiCdSettingsUpdate(input: $input) {
     ciCdSettings {
       pushRepositoryForJobTokenAllowed
+      crossProjectPushForJobTokenAllowed @gl_introduced(version: "19.0.0")
     }
     errors
   }

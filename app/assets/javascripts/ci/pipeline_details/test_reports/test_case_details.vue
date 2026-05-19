@@ -35,6 +35,7 @@ export default {
       default: false,
     },
   },
+  emits: ['hidden'],
   computed: {
     failureHistoryMessage() {
       if (!this.hasRecentFailures) {

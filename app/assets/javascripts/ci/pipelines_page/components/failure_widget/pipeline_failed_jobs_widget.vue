@@ -6,7 +6,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __ } from '~/locale';
 import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import { graphqlEtagPipelinePath } from '~/ci/pipeline_details/utils';
-import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
+import { setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import getPipelineFailedJobsCount from '../../graphql/queries/get_pipeline_failed_jobs_count.query.graphql';
 import FailedJobsList from './failed_jobs_list.vue';
 import { POLL_INTERVAL } from './constants';
@@ -93,11 +93,16 @@ export default {
         this.$apollo.queries.failedJobsCount.startPolling(POLL_INTERVAL);
         // ensure we only toggle polling back on tab switch
         // if the pipeline is active
-        toggleQueryPollingByVisibility(this.$apollo.queries.failedJobsCount, POLL_INTERVAL);
+        this.pollingVisibilityCleanup?.();
+        this.pollingVisibilityCleanup = setupQueryPollingByVisibility(
+          this.$apollo.queries.failedJobsCount,
+          POLL_INTERVAL,
+        );
       }
     },
   },
   beforeDestroy() {
+    this.pollingVisibilityCleanup?.();
     this.$apollo.queries.failedJobsCount.stopPolling();
   },
   methods: {
@@ -150,16 +155,6 @@ export default {
       <gl-badge>
         {{ failedJobsCountBadge }}
       </gl-badge>
-    </template>
-    <template #actions>
-      <gl-button
-        v-if="isExpanded"
-        href="https://gitlab.com/gitlab-org/gitlab/-/issues/502436"
-        data-testid="feedback-button"
-        size="small"
-      >
-        {{ __('Leave feedback') }}
-      </gl-button>
     </template>
     <failed-jobs-list
       v-if="isExpanded"

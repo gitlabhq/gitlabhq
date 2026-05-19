@@ -5,6 +5,7 @@ import {
 } from '~/vue_shared/components/projects_list/formatter';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 
 const MOCK_AVAILABLE_ACTIONS = [ACTION_EDIT, ACTION_DELETE];
 
@@ -38,8 +39,9 @@ const itCorrectlyFormatsProject = (formattedProject, mockProject) => {
 };
 
 describe('formatGraphQLProject', () => {
+  useConfigurePathHelpers('/gitlab');
+
   it('correctly formats the projects', () => {
-    window.gon = { relative_url_root: '/gitlab' };
     const [mockProject] = projects;
     const formattedProject = formatGraphQLProject(mockProject, (project) => ({
       customProperty: project.nameWithNamespace,
@@ -50,8 +52,9 @@ describe('formatGraphQLProject', () => {
 });
 
 describe('formatGraphQLProjects', () => {
+  useConfigurePathHelpers('/gitlab');
+
   it('correctly formats the projects', () => {
-    window.gon = { relative_url_root: '/gitlab' };
     const [firstMockProject] = projects;
     const formattedProjects = formatGraphQLProjects(projects, (project) => ({
       customProperty: project.nameWithNamespace,

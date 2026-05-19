@@ -43,11 +43,11 @@ func newWorkflowLockManager(rdb *redis.Client) *workflowLockManager {
 // When a flow is running we need a distributed lock so that it can be resumed
 // concurrently from another workhorse instance. We store these distributed
 // locks in Redis keyed by the workflow ID.
-func (m *workflowLockManager) acquireLock(ctx context.Context, workflowID string, workflowDefinition string) (*redsync.Mutex, error) {
+func (m *workflowLockManager) acquireLock(ctx context.Context, workflowID string) (*redsync.Mutex, error) {
 	lockKey := workflowLockPrefix + workflowID
 	mutex := m.rs.NewMutex(lockKey, redsync.WithExpiry(workflowLockTimeout))
 
-	logger := log.WithContextFields(ctx, log.Fields{"workflow_id": workflowID, "lock_key": lockKey, "workflow_definition": workflowDefinition})
+	logger := log.WithContextFields(ctx, log.Fields{"workflow_id": workflowID, "lock_key": lockKey})
 
 	if err := mutex.TryLockContext(ctx); err != nil {
 		// Only fail the request if the lock is already taken by another process.
@@ -68,14 +68,12 @@ func (m *workflowLockManager) acquireLock(ctx context.Context, workflowID string
 	return mutex, nil
 }
 
-func (m *workflowLockManager) releaseLock(ctx context.Context, mutex *redsync.Mutex, workflowID string, workflowDefinition string) {
+func (m *workflowLockManager) releaseLock(ctx context.Context, mutex *redsync.Mutex, workflowID string) {
 	if m == nil || mutex == nil {
 		return
 	}
 
-	logger := log.WithContextFields(ctx, log.Fields{
-		"workflow_id": workflowID, "workflow_definition": workflowDefinition,
-	})
+	logger := log.WithContextFields(ctx, log.Fields{"workflow_id": workflowID})
 
 	ok, err := mutex.UnlockContext(ctx)
 	if err != nil {

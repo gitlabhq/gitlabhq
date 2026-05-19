@@ -19,7 +19,9 @@ module ActiveContext
           setup_connection_pool
         end
 
-        def search(user:, collection:, query:)
+        # source_fields is accepted for interface compatibility but not used.
+        # PG queries use SELECT * and column filtering is handled at the SQL level.
+        def search(user:, collection:, query:, source_fields: nil) # rubocop:disable Lint/UnusedMethodArgument -- see comment above
           sql = Processor.transform(collection: collection, node: query, user: user)
 
           query_result = log_search(collection: collection) do

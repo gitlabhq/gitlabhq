@@ -34,6 +34,12 @@ RSpec.describe Gitlab::Usage::Metric do
     it 'returns key_path metric with the corresponding value' do
       expect(described_class.new(issue_count_metric_definiton).with_value).to eq({ counts: { issues: 1 } })
     end
+
+    it 'returns meta data' do
+      value = described_class.new(issue_count_metric_definiton).with_value
+
+      expect(value[:counts][:issues].duration).to be_present
+    end
   end
 
   describe '#with_instrumentation' do

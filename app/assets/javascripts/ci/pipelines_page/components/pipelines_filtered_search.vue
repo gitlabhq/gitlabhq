@@ -12,6 +12,7 @@ import PipelineTagNameToken from '../tokens/pipeline_tag_name_token.vue';
 import PipelineTriggerAuthorToken from '../tokens/pipeline_trigger_author_token.vue';
 
 export default {
+  name: 'PipelinesFilteredSearch',
   userType: 'username',
   branchType: 'ref',
   tagType: 'tag',

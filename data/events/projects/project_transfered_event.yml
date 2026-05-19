@@ -1,0 +1,4 @@
+---
+event: Projects::ProjectTransferedEvent
+description: Published after a project is transferred to a different namespace.
+feature_category: groups_and_projects

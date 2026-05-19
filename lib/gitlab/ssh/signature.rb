@@ -94,17 +94,21 @@ module Gitlab
 
       def calculate_verification_status
         return :unknown_key unless signed_by_key
-        return :other_user unless committer?
+        return :other_user unless committed_by_key_owner?
         return :same_user_different_email unless signed_by_user_email_verified?
 
         :verified
       end
 
-      def committer?
-        # Lookup by email because users can push verified commits that were made
-        # by someone else. For example: Doing a rebase.
-        committer = User.find_by_any_email(committer_email)
-        committer && signed_by_key.user == committer
+      def committed_by_key_owner?
+        key_owner = signed_by_key.user
+        return false unless key_owner
+
+        # Includes unconfirmed emails so we can distinguish between
+        # a different user and the same user with an unverified email.
+        key_owner.email == committer_email ||
+          key_owner.private_commit_email == committer_email ||
+          key_owner.emails.any? { |e| e.email == committer_email }
       end
 
       def signed_by_user_email_verified?

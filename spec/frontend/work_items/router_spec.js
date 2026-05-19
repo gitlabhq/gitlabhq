@@ -15,10 +15,8 @@ import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphq
 import App from '~/work_items/components/app.vue';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
-import { WORK_ITEM_BASE_ROUTE_MAP, ROUTES } from '~/work_items/constants';
+import { WORK_ITEM_BASE_ROUTE_MAP } from '~/work_items/constants';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
-import { routes } from '~/work_items/router/routes';
-import { getAllItemsDraftFiltersStorageKey } from '~/work_items/utils';
 import { createRouter } from '~/work_items/router';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
 import getAllowedWorkItemChildTypes from '~/work_items/graphql/work_item_allowed_children.query.graphql';
@@ -165,32 +163,6 @@ describe('Work items router', () => {
       await createComponent(`/${type}/1`);
 
       expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
-    });
-  });
-
-  describe('beforeEnter guard on index route', () => {
-    const fullPath = '/full-path';
-    const storageKey = getAllItemsDraftFiltersStorageKey(fullPath);
-    let indexRouteGuard;
-    let next;
-
-    beforeEach(() => {
-      indexRouteGuard = routes(fullPath).find((r) => r.name === ROUTES.index).beforeEnter;
-      next = jest.fn();
-    });
-
-    it('calls removeItem when navigating from an unknown route (from.name is null)', () => {
-      indexRouteGuard({}, { name: null }, next);
-
-      expect(localStorage.removeItem).toHaveBeenCalledWith(storageKey);
-      expect(next).toHaveBeenCalled();
-    });
-
-    it('does not call removeItem when navigating from a known route', () => {
-      indexRouteGuard({}, { name: ROUTES.workItem }, next);
-
-      expect(localStorage.removeItem).not.toHaveBeenCalledWith(storageKey);
-      expect(next).toHaveBeenCalled();
     });
   });
 });

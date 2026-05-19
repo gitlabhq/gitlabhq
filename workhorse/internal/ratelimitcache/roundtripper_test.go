@@ -2,11 +2,9 @@ package ratelimitcache
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"io"
 	"net/http"
-	"os"
 	"strings"
 	"testing"
 	"time"
@@ -15,8 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-	configRedis "gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 type mockRoundTripper struct {
@@ -331,16 +328,10 @@ func newRequestWithKeyID(t *testing.T, keyID string) *http.Request {
 	return req
 }
 
+// testRedisDB is the Redis database number used by this package's tests.
+// Each package uses a unique number to avoid interference when tests run in parallel.
+const testRedisDB = 1
+
 func InitRdb(t *testing.T) *redis.Client {
-	buf, err := os.ReadFile("../../config.toml")
-	require.NoError(t, err)
-	cfg, err := config.LoadConfig(string(buf))
-	require.NoError(t, err)
-	rdb, err := configRedis.Configure(cfg)
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		rdb.FlushAll(context.Background())
-		assert.NoError(t, rdb.Close())
-	})
-	return rdb
+	return testhelper.SetupRedis(t, testRedisDB)
 }

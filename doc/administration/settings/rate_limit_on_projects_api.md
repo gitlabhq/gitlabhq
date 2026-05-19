@@ -44,7 +44,7 @@ Prerequisites:
 To change the rate limit:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Projects API rate limits**.
 1. Change the value of a rate limit, or set a rate limit to `0` to disable it.
 1. Select **Save changes**.
@@ -78,7 +78,7 @@ Prerequisites:
 To change the rate limit:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Members API rate limit**.
 1. In the **Maximum requests per minute per group / project** text box, enter a value.
 1. Select **Save changes**.
@@ -117,7 +117,7 @@ Prerequisites:
 To change the rate limit:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Projects API rate limits**.
 1. In the **Maximum requests to the `GET /projects/:id/members/all` API per minute per user or IP address** text box, enter a value.
 1. Select **Save changes**.

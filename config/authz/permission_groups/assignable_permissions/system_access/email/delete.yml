@@ -1,0 +1,9 @@
+---
+name: delete_email
+description: Grants the ability to delete emails
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - delete_user_email

@@ -73,13 +73,19 @@ namespace :dev do
 
   databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 
+  # Databases that define a fallback_database are secondary databases whose
+  # schema is templated from main. Parsed directly from YAML to avoid depending
+  # on Rails.root or the application being initialized at task-definition time.
+  fallback_database_names = Dir.glob(File.join(__dir__, '../../db/database_connections/*.yaml'))
+    .select { |f| YAML.load_file(f)['fallback_database'] }
+    .map { |f| File.basename(f, '.yaml') }
+    .to_set
+
   namespace :copy_db do
-    ALLOWED_DATABASES = %w[ci sec].freeze
-
     ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
-      next unless ALLOWED_DATABASES.include?(name)
+      next unless fallback_database_names.include?(name)
 
-      desc "Copies the #{name} database from the main database"
+      desc "Copies the main database to the #{name} database"
       task name => :environment do
         Rake::Task["dev:terminate_all_connections"].invoke
 

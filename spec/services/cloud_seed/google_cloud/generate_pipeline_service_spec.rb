@@ -8,7 +8,7 @@ RSpec.describe CloudSeed::GoogleCloud::GeneratePipelineService, feature_category
       let_it_be(:project) { create(:project, :repository) }
       let_it_be(:maintainer) { create(:user) }
       let_it_be(:service_params) { { action: described_class::ACTION_DEPLOY_TO_CLOUD_RUN } }
-      let_it_be(:service) { described_class.new(project, maintainer, service_params) }
+      let_it_be(:service, freeze: false) { described_class.new(project, maintainer, service_params) }
 
       before do
         project.add_maintainer(maintainer)
@@ -68,7 +68,7 @@ RSpec.describe CloudSeed::GoogleCloud::GeneratePipelineService, feature_category
         { action: CloudSeed::GoogleCloud::GeneratePipelineService::ACTION_DEPLOY_TO_CLOUD_RUN }
       end
 
-      let_it_be(:service) { described_class.new(project, maintainer, service_params) }
+      let_it_be(:service, freeze: false) { described_class.new(project, maintainer, service_params) }
 
       before_all do
         project.add_maintainer(maintainer)
@@ -126,7 +126,7 @@ EOF
         { action: CloudSeed::GoogleCloud::GeneratePipelineService::ACTION_DEPLOY_TO_CLOUD_RUN }
       end
 
-      let_it_be(:service) { described_class.new(project, maintainer, service_params) }
+      let_it_be(:service, freeze: false) { described_class.new(project, maintainer, service_params) }
 
       before do
         project.add_maintainer(maintainer)
@@ -176,7 +176,7 @@ EOF
         { action: CloudSeed::GoogleCloud::GeneratePipelineService::ACTION_DEPLOY_TO_CLOUD_RUN }
       end
 
-      let_it_be(:service) { described_class.new(project, maintainer, service_params) }
+      let_it_be(:service, freeze: false) { described_class.new(project, maintainer, service_params) }
 
       before do
         project.add_maintainer(maintainer)
@@ -223,7 +223,7 @@ EOF
         { action: CloudSeed::GoogleCloud::GeneratePipelineService::ACTION_DEPLOY_TO_CLOUD_STORAGE }
       end
 
-      let_it_be(:service) { described_class.new(project, maintainer, service_params) }
+      let_it_be(:service, freeze: false) { described_class.new(project, maintainer, service_params) }
 
       before do
         project.add_maintainer(maintainer)
@@ -259,7 +259,7 @@ EOF
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:maintainer) { create(:user) }
     let_it_be(:service_params) { { action: described_class::ACTION_VISION_AI_PIPELINE } }
-    let_it_be(:service) { described_class.new(project, maintainer, service_params) }
+    let_it_be(:service, freeze: false) { described_class.new(project, maintainer, service_params) }
 
     describe 'when there is no existing pipeline' do
       before do

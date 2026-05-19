@@ -27,7 +27,7 @@ exports[`Code navigation popover component renders popover 1`] = `
           >
             <span
               class="line"
-              lang="javascript"
+              data-lang="javascript"
             >
               <span
                 class="k"
@@ -41,7 +41,7 @@ exports[`Code navigation popover component renders popover 1`] = `
             </span>
             <span
               class="line"
-              lang="javascript"
+              data-lang="javascript"
             >
               <span>
                 }

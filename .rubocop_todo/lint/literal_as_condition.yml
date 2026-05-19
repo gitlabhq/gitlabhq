@@ -1,0 +1,5 @@
+---
+# Cop supports --autocorrect.
+Lint/LiteralAsCondition:
+  Exclude:
+    - 'app/controllers/projects/merge_requests_controller.rb'

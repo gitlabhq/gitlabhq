@@ -39,6 +39,8 @@ module API
           expose :run, if: ->(job) { job.run_steps.present? } do |job|
             job.run_steps.to_json
           end
+
+          expose :suspend_options, if: ->(build, _) { build.suspend_options.present? }
         end
       end
     end

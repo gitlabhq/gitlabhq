@@ -1,0 +1,10 @@
+---
+name: work_item_configurable_types
+description: Configurable work item types
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/9365
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213092
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581110
+milestone: '18.7'
+group: group::project management
+type: beta
+default_enabled: true

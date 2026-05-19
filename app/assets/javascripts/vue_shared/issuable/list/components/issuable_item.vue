@@ -34,7 +34,6 @@ import {
   findLinkedItemsWidget,
   canRouterNav,
 } from '~/work_items/utils';
-import { routeForWorkItemTypeName } from '~/work_items/router/utils';
 
 export default {
   components: {
@@ -170,7 +169,7 @@ export default {
       return this.issuable.reference || `${this.issuableSymbol}${this.issuable.iid}`;
     },
     type() {
-      return this.issuable.type || this.workItemType?.toUpperCase();
+      return this.issuable.type || this.workItemType;
     },
     labels() {
       return (
@@ -340,13 +339,17 @@ export default {
         return;
       }
 
-      this.$emit('select-issuable', {
-        id: this.issuable.id,
-        iid: this.issuableIid,
-        webUrl: this.issuable.webUrl,
-        fullPath: this.workItemFullPath,
-        workItemType: this.type.toLowerCase(),
-      });
+      if (this.isActive) {
+        this.$emit('select-issuable', null);
+      } else {
+        this.$emit('select-issuable', {
+          id: this.issuable.id,
+          iid: this.issuableIid,
+          webUrl: this.issuable.webUrl,
+          fullPath: this.workItemFullPath,
+          workItemType: this.type.toLowerCase(),
+        });
+      }
     },
     navigateToIssuable() {
       if (!this.fullPath) {
@@ -360,15 +363,11 @@ export default {
       });
 
       if (shouldRouterNav) {
-        const { useWorkItemUrl } = this.glFeatures;
-        const workItemTypeParameter = useWorkItemUrl
-          ? WORK_ITEM_TYPE_ROUTE_WORK_ITEM
-          : routeForWorkItemTypeName(this.issuable.workItemType?.name);
         this.$router.push({
           name: 'workItem',
           params: {
             iid: this.issuableIid,
-            type: workItemTypeParameter,
+            type: WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
           },
         });
       } else {
@@ -489,7 +488,7 @@ export default {
           v-bind="issuableTitleProps"
           @click.stop="handleIssuableItemClick"
         >
-          {{ issuable.title }}
+          <span v-safe-html="issuable.titleHtml"></span>
           <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
         </gl-link>
         <slot name="title-icons"></slot>

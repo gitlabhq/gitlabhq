@@ -2,10 +2,8 @@ package upstream
 
 import (
 	"bytes"
-	"context"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"sync/atomic"
 	"testing"
 
@@ -13,10 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
-
-	configRedis "gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 )
 
 func TestAdminGeoPathsWithGeoProxy(t *testing.T) {
@@ -159,18 +154,12 @@ func TestAllowedProxyRouteWithRateLimitCache(t *testing.T) {
 	}
 }
 
+// testRedisDB is the Redis database number used by this package's tests.
+// Each package uses a unique number to avoid interference when tests run in parallel.
+const testRedisDB = 3
+
 func initRdb(t *testing.T) *redis.Client {
-	buf, err := os.ReadFile("../../config.toml")
-	require.NoError(t, err)
-	cfg, err := config.LoadConfig(string(buf))
-	require.NoError(t, err)
-	rdb, err := configRedis.Configure(cfg)
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		rdb.FlushAll(context.Background())
-		assert.NoError(t, rdb.Close())
-	})
-	return rdb
+	return testhelper.SetupRedis(t, testRedisDB)
 }
 
 func TestWsRoutesRequireWebsocketUpgrade(t *testing.T) {

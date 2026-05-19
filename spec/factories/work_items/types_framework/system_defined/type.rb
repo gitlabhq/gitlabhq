@@ -3,7 +3,6 @@
 FactoryBot.define do
   factory :work_item_system_defined_type, class: 'WorkItems::TypesFramework::SystemDefined::Type' do
     skip_create
-    issue
 
     initialize_with do
       WorkItems::TypesFramework::SystemDefined::Type.find(attributes[:id] || 1)

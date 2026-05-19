@@ -10,7 +10,7 @@ module WorkItems
           true
         end
 
-        # overriden in EE
+        # overridden in EE
         def after_save_commit
           return unless target_work_item.get_widget(:hierarchy)
 

@@ -60,6 +60,8 @@ module Mutations
         description: 'Contents of the commit.'
 
       authorize :push_code
+      authorize_granular_token permissions: :push_code, boundary_argument: :project_path,
+        boundary_type: :project
 
       def resolve(project_path:, branch:, message:, **args)
         actions = args[:actions]

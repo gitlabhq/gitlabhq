@@ -1,0 +1,5 @@
+- return unless show_transfer_banner?(context)
+
+= render Pajamas::AlertComponent.new(variant: :info, dismissible: false) do |c|
+  = c.with_body do
+    = transfer_banner_message(context)

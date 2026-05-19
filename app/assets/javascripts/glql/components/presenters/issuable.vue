@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlIntersperse } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import initIssuablePopovers from '~/issuable/popover';
 import { extractGroupOrProject, relativeNamespace } from '../../utils/common';
 
@@ -15,6 +16,9 @@ export default {
   components: {
     GlLink,
     GlIntersperse,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     data: {
@@ -58,9 +62,10 @@ export default {
     :data-iid="data.iid"
     :data-project-path="project"
     :data-group-path="group"
+    :data-title-html="data.titleHtml"
   >
     <gl-intersperse separator="">
-      <span>{{ data.title }}</span>
+      <span v-safe-html="data.titleHtml"></span>
       <span> ({{ referencePrefix }}{{ data.reference }}</span>
       <span v-if="data.state === 'closed'"> - {{ __('closed') }}</span>
       <span v-if="data.state === 'merged'"> - {{ __('merged') }}</span>

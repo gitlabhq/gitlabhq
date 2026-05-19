@@ -4,6 +4,7 @@ import InputCopyToggleVisibility from '~/vue_shared/components/input_copy_toggle
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 
 export default {
+  name: 'NewToken',
   components: { InputCopyToggleVisibility, SettingsSection },
   props: {
     token: {

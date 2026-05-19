@@ -1,0 +1,7 @@
+---
+name: _admin_authored_snippet
+description: Grants the ability to administer a project snippet that the user
+  authored, including destructive actions such as deletion. Used by the project
+  snippet policy to gate :admin_snippet on the author's own snippets, separate
+  from the broader admin_snippet capability that applies to all snippets in the
+  project.

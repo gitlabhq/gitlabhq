@@ -64,6 +64,13 @@ To create a text file in the Web Editor:
      1. Ensure the **Create a merge request for this change** checkbox is selected.
      1. Select **Commit changes**.
 
+To open a new file editor with pre-filled content, use the `content` query parameter in the URL.
+For example:
+
+```plaintext
+https://gitlab.com/<your-namespace>/<your-project>/-/new/main?content=your+content+here
+```
+
 #### From a template
 
 To create a text file from a template in the Web Editor:

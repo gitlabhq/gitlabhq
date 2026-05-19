@@ -1,0 +1,39 @@
+{
+  "$comment": "Requires product_categories for active metrics. The list under 'not/enum' is a closed set of the existing metrics that predate this rule and must be backfilled. Do NOT add new entries; instead, set product_categories in the metric definition.",
+  "if": {
+    "properties": {
+      "status": {
+        "const": "active"
+      },
+      "key_path": {
+        "not": {
+          "enum": [
+            "redis_hll_counters.count_distinct_namespace_id_from_enforce_pipeline_execution_policy_in_project_monthly",
+            "redis_hll_counters.count_distinct_namespace_id_from_enforce_pipeline_execution_policy_in_project_weekly",
+            "usage_activity_by_stage_monthly.manage.groups",
+            "usage_activity_by_stage_monthly.manage.users_created",
+            "counts.groups",
+            "usage_activity_by_stage.manage.groups",
+            "usage_activity_by_stage.manage.users_created",
+            "topology"
+          ]
+        }
+      }
+    },
+    "required": [
+      "status",
+      "key_path"
+    ]
+  },
+  "then": {
+    "required": [
+      "product_categories"
+    ],
+    "properties": {
+      "product_categories": {
+        "type": "array",
+        "minItems": 1
+      }
+    }
+  }
+}

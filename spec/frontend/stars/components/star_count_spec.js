@@ -153,7 +153,7 @@ describe('StarCount', () => {
   });
 
   describe('star button state', () => {
-    it('is disabled when query is running and enabled when query is succesful', async () => {
+    it('is disabled when query is running and enabled when query is successful', async () => {
       createComponent();
       const starButton = findStarButton();
 

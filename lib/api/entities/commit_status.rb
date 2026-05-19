@@ -17,10 +17,10 @@ module API
       expose :started_at, documentation: { type: 'DateTime', example: '2016-01-20T08:40:25.832Z' }
       expose :finished_at, documentation: { type: 'DateTime', example: '2016-01-21T08:40:25.832Z' }
       expose :allow_failure, documentation: { type: 'Boolean', example: false }
-      expose :coverage, documentation: { type: 'number', format: 'float', example: 98.29 }
+      expose :coverage, documentation: { type: 'Float', format: 'float', example: 98.29 }
       expose :pipeline_id, documentation: { type: 'Integer', example: 101 }
 
-      expose :author, using: Entities::UserBasic
+      expose :author, using: ::API::Entities::UserBasic, documentation: { type: '::API::Entities::UserBasic' }
     end
   end
 end

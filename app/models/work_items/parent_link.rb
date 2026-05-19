@@ -11,6 +11,7 @@ module WorkItems
 
     belongs_to :work_item
     belongs_to :work_item_parent, class_name: 'WorkItem'
+    belongs_to :namespace
 
     validates :work_item_parent, presence: true
     validates :work_item, presence: true, uniqueness: true
@@ -75,8 +76,8 @@ module WorkItems
       return unless work_item && work_item_parent
 
       restriction = ::WorkItems::TypesFramework::SystemDefined::HierarchyRestriction.find_by(
-        parent_type_id: work_item_parent.work_item_type_id,
-        child_type_id: work_item.work_item_type_id
+        parent_type_id: resolved_type_id_for(work_item_parent),
+        child_type_id: resolved_type_id_for(work_item)
       )
 
       if restriction.nil?
@@ -89,11 +90,16 @@ module WorkItems
 
     def validate_depth(depth)
       return unless depth
-      return if work_item.work_item_type_id != work_item_parent.work_item_type_id
+      return if resolved_type_id_for(work_item) != resolved_type_id_for(work_item_parent)
 
       if work_item_parent.same_type_base_and_ancestors.count + work_item.same_type_descendants_depth > depth
         errors.add :work_item, _('reached maximum depth')
       end
+    end
+
+    def resolved_type_id_for(item)
+      @resolved_type_ids ||= {}
+      @resolved_type_ids[item.id] ||= item.work_item_type_id
     end
 
     def validate_cyclic_reference

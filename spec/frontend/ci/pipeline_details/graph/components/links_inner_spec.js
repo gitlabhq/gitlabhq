@@ -25,18 +25,13 @@ describe('Links Inner component', () => {
 
   let wrapper;
 
-  const createComponent = (props, updateVisualLanguage = false) => {
+  const createComponent = (props) => {
     const currentPipelineData = props?.pipelineData || defaultProps.pipelineData;
     wrapper = shallowMount(LinksInner, {
       propsData: {
         ...defaultProps,
         ...props,
         linksData: parseData(currentPipelineData.flatMap(({ groups }) => groups)).links,
-      },
-      provide: {
-        glFeatures: {
-          updateVisualLanguage,
-        },
       },
     });
   };
@@ -134,14 +129,6 @@ describe('Links Inner component', () => {
       setupComponentWithFixture(pipelineData);
     });
 
-    it('renders one link', () => {
-      expect(findAllLinksPath()).toHaveLength(1);
-    });
-
-    it('path does not contain NaN values', () => {
-      expect(wrapper.html()).not.toContain('NaN');
-    });
-
     it('matches snapshot and has expected path', () => {
       expect(wrapper.html()).toMatchSnapshot();
     });
@@ -198,53 +185,6 @@ describe('Links Inner component', () => {
 
     it('matches snapshot and has expected path', () => {
       expect(wrapper.html()).toMatchSnapshot();
-    });
-  });
-
-  describe('with updateVisualLanguage feature flag turned on', () => {
-    const setupComponentWithFixtureAndFlag = (data) => {
-      setHTMLFixtureLocal(data);
-      createComponent({ pipelineData: data.stages }, true);
-    };
-
-    describe('with one need', () => {
-      beforeEach(() => {
-        setupComponentWithFixtureAndFlag(pipelineData);
-      });
-
-      it('matches snapshot and has expected path', () => {
-        expect(wrapper.html()).toMatchSnapshot();
-      });
-    });
-
-    describe('with a parallel need', () => {
-      beforeEach(() => {
-        setupComponentWithFixtureAndFlag(parallelNeedData);
-      });
-
-      it('matches snapshot and has expected path', () => {
-        expect(wrapper.html()).toMatchSnapshot();
-      });
-    });
-
-    describe('with same stage needs', () => {
-      beforeEach(() => {
-        setupComponentWithFixtureAndFlag(sameStageNeeds);
-      });
-
-      it('matches snapshot and has expected path', () => {
-        expect(wrapper.html()).toMatchSnapshot();
-      });
-    });
-
-    describe('with a large number of needs', () => {
-      beforeEach(() => {
-        setupComponentWithFixtureAndFlag(largePipelineData);
-      });
-
-      it('matches snapshot and has expected path', () => {
-        expect(wrapper.html()).toMatchSnapshot();
-      });
     });
   });
 

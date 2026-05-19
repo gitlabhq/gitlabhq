@@ -26,14 +26,14 @@ A table displays the top 100 issues based on the global page filters, with the f
 - Assignee
 - Author
 
-![Issue analytics bar chart and table for a group](img/issue_analytics_v17_8.png)
+![Issue analytics bar chart and table showing issues created in a group.](img/issue_analytics_v17_8.png)
 
 ## View issue analytics
 
 To view issue analytics:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Analyze** > **Issue analytics**. To view the total number of issues for a month, hover over a bar.
+1. In the left sidebar, select **Analyze** > **Issue analytics**. To view the total number of issues for a month, hover over a bar.
 1. Optional. To filter the results, in **Search or filter results** text box, enter your criteria:
 
    - Author
@@ -69,4 +69,4 @@ You can also access issue analytics from the [Value Streams Dashboard](../../ana
 Enhanced issue analytics display the additional metric `Issues closed`, which represents the total number of resolved issues in your group over a selected period.
 You can use this metric to improve the overall turn-around time and value delivered to your customers.
 
-![Enhanced issue analytics bar chart and table for a group](img/enhanced_issue_analytics_v17_8.png)
+![Enhanced issue analytics bar chart and table showing issues opened and closed in a group.](img/enhanced_issue_analytics_v17_8.png)

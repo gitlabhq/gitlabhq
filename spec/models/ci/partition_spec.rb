@@ -42,7 +42,8 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
         preparing: 0,
         ready: 1,
         current: 2,
-        active: 3
+        active: 3,
+        archived: 4
       })
     end
   end
@@ -63,6 +64,16 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
         it 'returns the current record' do
           is_expected.to eq(ci_partition)
         end
+      end
+    end
+
+    describe '.id_before' do
+      let_it_be(:ci_next_partition) { create(:ci_partition) }
+
+      subject(:id_before) { described_class.id_before(ci_next_partition.id) }
+
+      it 'returns ci_partitions before given id' do
+        expect(id_before).to match_array(ci_partition)
       end
     end
 
@@ -178,6 +189,15 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
           end
           .not_to change { ci_partition.reload.current_from }
         end
+      end
+    end
+
+    context 'when transitioning from active to archived' do
+      let_it_be_with_reload(:active_partition) { create(:ci_partition, :active) }
+
+      it 'transitions to archived' do
+        expect { active_partition.archive! }
+          .to change { active_partition.reload.status_name }.from(:active).to(:archived)
       end
     end
   end

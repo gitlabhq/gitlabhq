@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { sanitize } from '~/lib/dompurify';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { createAlert } from '~/alert';
@@ -92,16 +91,16 @@ export class BlobViewer {
   }
 
   initMainViewers() {
-    this.$fileHolder = $('.file-holder');
-    if (!this.$fileHolder.length) return;
+    this.fileHolder = document.querySelector('.file-holder');
+    if (!this.fileHolder) return;
 
     this.switcher = document.querySelector('.js-blob-viewer-switcher');
     this.switcherBtns = document.querySelectorAll('.js-blob-viewer-switch-btn');
     this.copySourceBtn = document.querySelector('.js-copy-blob-source-btn');
     this.copySourceBtnTooltip = document.querySelector('.js-copy-blob-source-btn-tooltip');
 
-    this.simpleViewer = this.$fileHolder[0].querySelector('.blob-viewer[data-type="simple"]');
-    this.richViewer = this.$fileHolder[0].querySelector('.blob-viewer[data-type="rich"]');
+    this.simpleViewer = this.fileHolder.querySelector('.blob-viewer[data-type="simple"]');
+    this.richViewer = this.fileHolder.querySelector('.blob-viewer[data-type="rich"]');
 
     this.initBindings();
 
@@ -109,7 +108,7 @@ export class BlobViewer {
   }
 
   switchToInitialViewer() {
-    const initialViewer = this.$fileHolder[0].querySelector('.blob-viewer:not(.hidden)');
+    const initialViewer = this.fileHolder.querySelector('.blob-viewer:not(.hidden)');
     let initialViewerName = initialViewer.dataset.type;
 
     if (this.switcher && window.location.hash.indexOf('#L') === 0) {
@@ -162,19 +161,19 @@ export class BlobViewer {
       this.copySourceBtn.classList.add('disabled');
     }
 
-    fixTitle($(this.copySourceBtnTooltip));
+    fixTitle(this.copySourceBtnTooltip);
   }
 
   switchToViewer(name) {
     performanceMarkAndMeasure({
       mark: REPO_BLOB_SWITCH_TO_VIEWER_START,
     });
-    const newViewer = this.$fileHolder[0].querySelector(`.blob-viewer[data-type='${name}']`);
+    const newViewer = this.fileHolder.querySelector(`.blob-viewer[data-type='${name}']`);
     if (this.activeViewer === newViewer) return;
 
     const oldButton = document.querySelector('.js-blob-viewer-switch-btn.selected');
     const newButton = document.querySelector(`.js-blob-viewer-switch-btn[data-viewer='${name}']`);
-    const oldViewer = this.$fileHolder[0].querySelector(`.blob-viewer:not([data-type='${name}'])`);
+    const oldViewer = this.fileHolder.querySelector(`.blob-viewer:not([data-type='${name}'])`);
 
     if (oldButton) {
       oldButton.classList.remove('selected');
@@ -198,7 +197,7 @@ export class BlobViewer {
       .then((viewer) => {
         renderGFM(viewer);
         window.requestIdleCallback(() => {
-          this.$fileHolder.trigger('highlight:line');
+          this.fileHolder.dispatchEvent(new CustomEvent('highlight:line'));
           handleLocationHash();
 
           // eslint-disable-next-line no-param-reassign

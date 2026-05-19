@@ -19,7 +19,6 @@ Lint/AssignmentInCondition:
     - 'app/helpers/blob_helper.rb'
     - 'app/helpers/button_helper.rb'
     - 'app/helpers/snippets_helper.rb'
-    - 'app/mailers/emails/service_desk.rb'
     - 'app/mailers/notify.rb'
     - 'app/models/blob_viewer/go_mod.rb'
     - 'app/models/ci/runner.rb'

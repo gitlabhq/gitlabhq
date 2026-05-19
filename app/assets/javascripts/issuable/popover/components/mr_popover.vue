@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlBadge, GlPopover, GlSkeletonLoader } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { __ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -13,6 +14,9 @@ export default {
     GlPopover,
     GlSkeletonLoader,
     CiIcon,
+  },
+  directives: {
+    SafeHtml,
   },
   mixins: [timeagoMixin],
   props: {
@@ -31,6 +35,11 @@ export default {
     cachedTitle: {
       type: String,
       required: true,
+    },
+    cachedTitleHtml: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -65,8 +74,8 @@ export default {
           return __('Open');
       }
     },
-    title() {
-      return this.mergeRequest?.title || this.cachedTitle;
+    titleHtml() {
+      return this.mergeRequest?.titleHtml || this.cachedTitleHtml;
     },
     showDetails() {
       return Object.keys(this.mergeRequest).length > 0;
@@ -106,7 +115,10 @@ export default {
         </div>
         <ci-icon v-if="detailedStatus" :status="detailedStatus" class="gl-ml-2" />
       </div>
-      <h5 v-if="!$apollo.queries.mergeRequest.loading" class="!gl-my-3">{{ title }}</h5>
+      <h5 v-if="!$apollo.queries.mergeRequest.loading" class="!gl-my-3">
+        <span v-if="titleHtml" v-safe-html="titleHtml"></span>
+        <template v-else>{{ cachedTitle }}</template>
+      </h5>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
       <div class="gl-text-subtle">
         <gl-icon name="merge-request" />

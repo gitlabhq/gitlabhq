@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::ResyncEpicDatesToWorkItemsDatesSources, feature_category: :team_planning do
-  let!(:epic_type_id) { table(:work_item_types).find_by(base_type: 7).id }
+  # Work item type IDs are fixed now and only exist in memory.
+  let!(:epic_type_id) { 8 }
   let!(:author) { table(:users).create!(username: 'tester', projects_limit: 100, organization_id: organization.id) }
   let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
   let!(:namespace) do

@@ -3,10 +3,11 @@
 module API
   module Helpers
     class WorkItemsFilterParams
-      attr_reader :params
+      attr_reader :params, :resource_parent
 
-      def initialize(params)
+      def initialize(params, resource_parent: nil)
         @params = params
+        @resource_parent = resource_parent
       end
 
       def transform
@@ -29,6 +30,14 @@ module API
 
         rewrite_param_name(transformed, :release_tag_wildcard_id, :release_tag)
         transformed[:non_archived] = !transformed.delete(:include_archived) if transformed.key?(:include_archived)
+
+        transformed[:in] = transformed[:in].join(',') if transformed[:in].present?
+
+        if transformed[:timeframe]
+          transformed[:start_date] = transformed.dig(:timeframe, :start)
+          transformed[:end_date] = transformed.dig(:timeframe, :end)
+          transformed.delete(:timeframe)
+        end
 
         transformed
       end

@@ -10,6 +10,7 @@ import {
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { __, s__, sprintf } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   STATE_OPEN,
@@ -21,7 +22,7 @@ import {
   i18n,
   STATE_CLOSED,
 } from '../constants';
-import { findHierarchyWidget, findLinkedItemsWidget } from '../utils';
+import { findBlockerLinkedItems, findOpenChildItemsCountsByType } from '../utils';
 import { updateCountsForParent } from '../graphql/cache_utils';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
@@ -37,7 +38,7 @@ export default {
     GlModal,
     GlLink,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   inject: {
     viewContext: { default: VIEW_CONTEXT.fullScreen },
   },
@@ -98,6 +99,7 @@ export default {
         return {
           fullPath: this.fullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
         };
       },
       update(data) {
@@ -118,6 +120,7 @@ export default {
         return {
           fullPath: this.fullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       skip() {
@@ -126,7 +129,7 @@ export default {
       update({ namespace }) {
         if (!namespace?.workItem) return [];
 
-        const linkedWorkItems = findLinkedItemsWidget(namespace.workItem)?.linkedItems?.nodes || [];
+        const linkedWorkItems = findBlockerLinkedItems(namespace.workItem) || [];
 
         return linkedWorkItems.filter((item) => {
           return (
@@ -147,6 +150,7 @@ export default {
         return {
           fullPath: this.fullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       skip() {
@@ -156,7 +160,7 @@ export default {
         if (!namespace?.workItem) return 0;
 
         /** @type {Array<{countsByState: { opened : number }}> } */
-        const countsByType = findHierarchyWidget(namespace.workItem)?.rolledUpCountsByType;
+        const countsByType = findOpenChildItemsCountsByType(namespace.workItem);
 
         if (!countsByType) {
           return 0;

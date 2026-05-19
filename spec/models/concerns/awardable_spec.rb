@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Awardable do
-  let!(:note) { create(:note) }
-  let!(:award_emoji) { create(:award_emoji, :downvote, awardable: note) }
+  let_it_be_with_reload(:note) { create(:note) }
+  let_it_be(:award_emoji) { create(:award_emoji, :downvote, awardable: note) }
 
   describe "Associations" do
     subject { build(:note) }
@@ -13,8 +13,8 @@ RSpec.describe Awardable do
   end
 
   describe "ClassMethods" do
-    let!(:note2) { create(:note) }
-    let!(:award_emoji2) { create(:award_emoji, awardable: note2) }
+    let_it_be(:note2) { create(:note) }
+    let_it_be(:award_emoji2) { create(:award_emoji, awardable: note2) }
 
     describe "orders" do
       it "orders on upvotes" do

@@ -21,6 +21,11 @@ import (
 
 var errUsageQuotaExceededError = errors.New("usage quota exceeded")
 
+// errStreamUnavailable is returned by Recv when DWS closes the gRPC stream
+// with an Unavailable status code. This typically happens after DWS processes
+// a StopWorkflowRequest and tears down the workflow.
+var errStreamUnavailable = errors.New("stream unavailable")
+
 type streamManager struct {
 	wf                 workflowStream
 	client             *Client
@@ -175,12 +180,19 @@ func (sm *streamManager) Recv() (*pb.Action, error) {
 			return nil, err // Expected error when a workflow ends
 		}
 
-		grpcCode := status.Code(err).String()
-		sessionErrorsTotal.WithLabelValues(grpcCode).Inc()
+		grpcCode := status.Code(err)
+		sessionErrorsTotal.WithLabelValues(grpcCode.String()).Inc()
 
 		// Check if this is a RESOURCE_EXHAUSTED error indicating quota exceeded
 		if sm.isUsageQuotaExceededError(err) {
 			return nil, errUsageQuotaExceededError
+		}
+
+		// Unavailable typically means DWS closed the stream after processing
+		// a stop request. Return a sentinel so the caller can distinguish this
+		// from other gRPC errors.
+		if grpcCode == codes.Unavailable {
+			return nil, fmt.Errorf("failed to read a gRPC message: %w", errStreamUnavailable)
 		}
 
 		return nil, fmt.Errorf("failed to read a gRPC message: %w", err)

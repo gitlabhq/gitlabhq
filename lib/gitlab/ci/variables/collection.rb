@@ -16,7 +16,7 @@ module Gitlab
             new(input.map { |key, value| { key: key, value: value } })
           when Proc
             fabricate(input.call)
-          when self
+          when self, LazyHash
             input
           else
             raise ArgumentError, "Unknown `#{input.class}` variable collection!"
@@ -32,9 +32,18 @@ module Gitlab
         end
 
         def append(resource)
-          item = Collection::Item.fabricate(resource)
+          item = if resource.is_a?(Hash) && resource[:lazy]
+                   Collection::LazyItem.new(
+                     key: resource[:key],
+                     value_proc: resource[:value],
+                     **resource.slice(:public, :file, :masked, :raw).compact
+                   )
+                 else
+                   Collection::Item.fabricate(resource)
+                 end
+
           @variables.append(item)
-          @variables_by_key[item[:key]] << item
+          @variables_by_key[item.key] << item
 
           self
         end
@@ -76,17 +85,22 @@ module Gitlab
         # This method should only be called via runner_variables->to_runner_variables
         # because this is an expensive operation by initializing new objects in `to_runner_variable`.
         def to_runner_variables
-          self.map(&:to_runner_variable)
+          self.filter_map(&:to_runner_variable)
         end
 
         def to_hash_variables
-          self.map(&:to_hash_variable)
+          self.filter_map(&:to_hash_variable)
         end
 
         def to_hash
           self.each_with_object(ActiveSupport::HashWithIndifferentAccess.new) do |variable, result|
-            result[variable.key] = variable.value
+            value = variable.value
+            result[variable.key] = value unless value.nil? && variable.is_a?(LazyItem)
           end
+        end
+
+        def to_lazy_hash
+          LazyHash.new(self)
         end
 
         def reject(&block)

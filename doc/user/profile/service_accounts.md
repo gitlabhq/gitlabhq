@@ -54,6 +54,8 @@ Service accounts have the following characteristics:
   of GitLab. On GitLab.com, the Owner of the top-level group must verify their identity first.
 
 You can also manage service accounts through the [service accounts API](../../api/service_accounts.md).
+To manage SSH keys for service accounts, use the [user SSH and GPG keys API](../../api/user_keys.md). You
+cannot manage SSH keys through the GitLab UI.
 
 The number of service accounts you can create depends on your subscription and offering:
 
@@ -103,10 +105,10 @@ They cannot create top-level groups or service accounts.
 
 Prerequisites:
 
-- On GitLab.com, you must have the Owner or Maintainer role for the project.
+- On GitLab.com, you must have the Maintainer or Owner role for the project.
 - On GitLab Self-Managed or GitLab Dedicated, you must either:
   - Be an administrator for the instance.
-  - Have the Owner or Maintainer role in a project.
+  - Have the Maintainer or Owner role in a project.
 
 {{< /tab >}}
 
@@ -134,7 +136,7 @@ The service accounts page displays information about service accounts in your gr
 To view service accounts for the entire instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Service accounts**.
+1. In the left sidebar, select **Settings** > **Service accounts**.
 
 {{< /tab >}}
 
@@ -143,7 +145,7 @@ To view service accounts for the entire instance:
 To view service accounts for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Service accounts**.
+1. In the left sidebar, select **Settings** > **Service accounts**.
 
 {{< /tab >}}
 
@@ -152,7 +154,7 @@ To view service accounts for a group:
 To view service accounts for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Service accounts**.
+1. In the left sidebar, select **Settings** > **Service accounts**.
 
 {{< /tab >}}
 

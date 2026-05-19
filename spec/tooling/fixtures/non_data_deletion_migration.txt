@@ -1,0 +1,28 @@
+@@ -0,0 +1,27 @@
++# frozen_string_literal: true
++
++class TestNonDeletionMigration < Gitlab::Database::Migration[2.3]
++  def change
++    create_table :users do |t|
++      t.string :name
++      t.timestamps
++    end
++
++    add_column :projects, :description, :text
++    add_index :users, :name
++
++    drop_sequence(:users, :id, 'users_id_seq')
++    execute "DROP INDEX index_users_on_email"
++    execute "DROP VIEW my_view"
++    execute "DROP TRIGGER my_trigger ON users"
++    execute "DROP FUNCTION my_function()"
++
++    @drop_tables_to_skip = []
++    flag_destroy_all_widgets = true
++    config.remove_column_padding = true
++
++    # drop_table :legacy_table
++    # DROP TABLE old_table
++    # DELETE FROM users
++  end
++end

@@ -249,7 +249,6 @@ Now that your server is set up, install GitLab:
    curl --location "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh" | sudo bash
    ```
 
-   To see the contents of the script, visit <https://packages.gitlab.com/gitlab/gitlab-ee/install>.
 1. Install the GitLab package. Provide a strong password with
    `GITLAB_ROOT_PASSWORD` and replace the `EXTERNAL_URL`
    with your own. Don't forget to include `https` in the URL, so that a Let's Encrypt
@@ -373,7 +372,7 @@ Prerequisites:
 To require email verification for locked accounts:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Sign-in restrictions**.
 1. Select the **Email verification for locked accounts** checkbox.
 1. Select **Save changes**.

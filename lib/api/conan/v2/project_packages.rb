@@ -26,6 +26,16 @@ module API
           end
 
           def destroy_package_entity(entity, event_name)
+            if ::Feature.enabled?(:packages_protected_packages_delete, project)
+              service_response = ::Packages::Protection::CheckRuleExistenceService.for_delete(
+                project: project,
+                current_user: current_user,
+                params: { package_name: package.name, package_type: :conan }
+              ).execute
+
+              forbidden!('Package is deletion protected.') if service_response[:protection_rule_exists?]
+            end
+
             track_conan_package_event(event_name)
 
             entity.transaction do
@@ -160,8 +170,9 @@ module API
 
                     if package.conan_recipe_revisions.one?
                       destroy_conditionally!(package) do |package|
-                        ::Packages::MarkPackageForDestructionService.new(container: package,
+                        result = ::Packages::MarkPackageForDestructionService.new(container: package,
                           current_user: current_user).execute
+                        render_api_error!(result.message, result.http_status) if result.error?
 
                         # Conan cli expects 200 status code when deleting a recipe revision
                         status 200

@@ -49,6 +49,61 @@ RSpec.describe 'RunnerCreate', feature_category: :runner_core do
 
   let(:mutation_response) { graphql_mutation_response(:runner_create) }
 
+  context 'with project runner granular token authorization' do
+    let_it_be(:project) { create(:project, namespace: group) }
+    let(:current_user) { group_owner }
+
+    let(:mutation) do
+      graphql_mutation(
+        :runner_create,
+        { runner_type: 'PROJECT_TYPE', project_id: project.to_global_id.to_s, run_untagged: true },
+        'errors'
+      )
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_runner do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+  end
+
+  context 'with group runner granular token authorization' do
+    let(:current_user) { group_owner }
+
+    let(:mutation) do
+      graphql_mutation(
+        :runner_create,
+        { runner_type: 'GROUP_TYPE', group_id: group.to_global_id.to_s, run_untagged: true },
+        'errors'
+      )
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_runner do
+      let(:user) { current_user }
+      let(:boundary_object) { group }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+  end
+
+  context 'with instance runner granular token authorization' do
+    let(:current_user) { admin }
+
+    let(:mutation) do
+      graphql_mutation(
+        :runner_create,
+        { runner_type: 'INSTANCE_TYPE', run_untagged: true },
+        'errors'
+      )
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_runner do
+      let(:user) { current_user }
+      let(:boundary_object) { :instance }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+  end
+
   shared_context 'when model is invalid returns error' do
     let(:mutation_params) do
       {

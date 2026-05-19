@@ -41,31 +41,31 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
 
   shared_examples 'variables collection' do
     it 'returns a collection of variables' do
-      is_expected.to include('CI_COMMIT_REF_NAME'  => 'main')
-      is_expected.to include('CI_PIPELINE_IID'     => pipeline.iid.to_s)
-      is_expected.to include('CI_PROJECT_PATH'     => project.full_path)
-      is_expected.to include('CI_JOB_NAME'         => 'some-job')
-      is_expected.to include('CI_JOB_GROUP_NAME'   => 'some-job')
-      is_expected.to include('YAML_KEY'            => 'yaml_value')
-      is_expected.to include('CI_NODE_INDEX'       => '1')
-      is_expected.to include('CI_NODE_TOTAL'       => '2')
-      is_expected.to include('CI_ENVIRONMENT_NAME' => 'test')
-      is_expected.to include('CI_ENVIRONMENT_URL'  => 'http://example.com')
-      is_expected.to include('CI_ENVIRONMENT_TIER' => 'testing')
-      is_expected.to include('KUBECONFIG'          => anything)
-      is_expected.to include('GITLAB_USER_ID'      => user.id.to_s)
-      is_expected.to include('GITLAB_USER_EMAIL'   => user.email)
-      is_expected.to include('GITLAB_USER_LOGIN'   => user.username)
-      is_expected.to include('GITLAB_USER_NAME'    => user.name)
+      expect(subject.fetch('CI_COMMIT_REF_NAME')).to eq('main')
+      expect(subject.fetch('CI_PIPELINE_IID')).to eq(pipeline.iid.to_s)
+      expect(subject.fetch('CI_PROJECT_PATH')).to eq(project.full_path)
+      expect(subject.fetch('CI_JOB_NAME')).to eq('some-job')
+      expect(subject.fetch('CI_JOB_GROUP_NAME')).to eq('some-job')
+      expect(subject.fetch('YAML_KEY')).to eq('yaml_value')
+      expect(subject.fetch('CI_NODE_INDEX')).to eq('1')
+      expect(subject.fetch('CI_NODE_TOTAL')).to eq('2')
+      expect(subject.fetch('CI_ENVIRONMENT_NAME')).to eq('test')
+      expect(subject.fetch('CI_ENVIRONMENT_URL')).to eq('http://example.com')
+      expect(subject.fetch('CI_ENVIRONMENT_TIER')).to eq('testing')
+      expect(subject.fetch('KUBECONFIG')).to be_present
+      expect(subject.fetch('GITLAB_USER_ID')).to eq(user.id.to_s)
+      expect(subject.fetch('GITLAB_USER_EMAIL')).to eq(user.email)
+      expect(subject.fetch('GITLAB_USER_LOGIN')).to eq(user.username)
+      expect(subject.fetch('GITLAB_USER_NAME')).to eq(user.name)
     end
 
     context 'without passed build-specific attributes' do
       let(:context) { described_class.new(pipeline, {}, logger: logger) }
 
       it 'returns a collection of variables' do
-        is_expected.to include('CI_JOB_NAME'        => nil)
-        is_expected.to include('CI_COMMIT_REF_NAME' => 'main')
-        is_expected.to include('CI_PROJECT_PATH'    => pipeline.project.full_path)
+        expect(subject.fetch('CI_JOB_NAME')).to be_nil
+        expect(subject.fetch('CI_COMMIT_REF_NAME')).to eq('main')
+        expect(subject.fetch('CI_PROJECT_PATH')).to eq(pipeline.project.full_path)
       end
     end
   end
@@ -200,7 +200,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
   describe '#variables_hash' do
     subject { context.variables_hash }
 
-    it { expect(context.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
+    it { expect(context.variables_hash).to be_instance_of(Gitlab::Ci::Variables::Collection::LazyHash) }
 
     it_behaves_like 'variables collection'
   end
@@ -208,7 +208,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
   describe '#variables_hash_expanded' do
     subject { context.variables_hash_expanded }
 
-    it { expect(context.variables_hash_expanded).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
+    it { expect(context.variables_hash_expanded).to be_instance_of(Gitlab::Ci::Variables::Collection::LazyHash) }
 
     it_behaves_like 'variables collection'
   end

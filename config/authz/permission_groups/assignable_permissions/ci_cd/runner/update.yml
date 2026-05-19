@@ -1,0 +1,12 @@
+---
+name: update_runner
+description: Grants the ability to update runners
+boundaries:
+  - project
+  - group
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_runner
+  - clear_runner_cache

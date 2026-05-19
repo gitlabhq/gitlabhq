@@ -15,7 +15,7 @@ module Gitlab
     DEFAULT_INTERVAL_EVENTS = 100
 
     # this is a workaround for sidekiq, which defines its own SIGUSR2 handler.
-    # by defering to the sidekiq startup event, we get to set up our own
+    # by deferring to the sidekiq startup event, we get to set up our own
     # handler late enough.
     # see also: https://github.com/mperham/sidekiq/pull/4653
     def self.install

@@ -9,6 +9,7 @@ import { createAlert } from '~/alert';
 import { COMMENT_FORM } from '~/notes/i18n';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
+import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
 import NoteSignedOutWidget from '~/rapid_diffs/app/discussions/note_signed_out_widget.vue';
 import NoteableDiscussion from '~/rapid_diffs/app/discussions/noteable_discussion.vue';
@@ -323,8 +324,8 @@ describe('NoteableDiscussion', () => {
       it('calls store.addDraftToDiscussion and closes form', async () => {
         const discussion = createDiscussion({ isReplying: true });
         createComponent({ props: { discussion } });
-        await wrapper.findComponent(NoteForm).props('saveDraft')('draft text');
-        expect(store.addDraftToDiscussion).toHaveBeenCalledWith(discussion, 'draft text');
+        await wrapper.findComponent(NoteForm).props('saveDraft')('draft text', false);
+        expect(store.addDraftToDiscussion).toHaveBeenCalledWith(discussion, 'draft text', false);
         expect(wrapper.emitted('stopReplying')).toStrictEqual([[]]);
       });
 
@@ -370,6 +371,60 @@ describe('NoteableDiscussion', () => {
         await wrapper.findComponent(NoteForm).props('saveDraft')('');
         expect(store.addDraftToDiscussion).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('resolve with issue button', () => {
+    const resolveWithIssuePath = '/issues/new?discussion_to_resolve=1';
+
+    it('renders when discussion is resolvable and not resolved', () => {
+      createComponent({
+        props: {
+          discussion: createDiscussion({
+            resolvable: true,
+            resolved: false,
+            resolve_with_issue_path: resolveWithIssuePath,
+          }),
+        },
+      });
+      const button = wrapper.findComponent(ResolveWithIssueButton);
+      expect(button.exists()).toBe(true);
+      expect(button.props('url')).toBe(resolveWithIssuePath);
+    });
+
+    it('does not render when discussion is resolved', () => {
+      createComponent({
+        props: {
+          discussion: createDiscussion({
+            resolvable: true,
+            resolved: true,
+            resolve_with_issue_path: resolveWithIssuePath,
+          }),
+        },
+      });
+      expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(false);
+    });
+
+    it('does not render when discussion is not resolvable', () => {
+      createComponent({
+        props: {
+          discussion: createDiscussion({
+            resolvable: false,
+            resolved: false,
+            resolve_with_issue_path: resolveWithIssuePath,
+          }),
+        },
+      });
+      expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(false);
+    });
+
+    it('does not render when resolve_with_issue_path is absent', () => {
+      createComponent({
+        props: {
+          discussion: createDiscussion({ resolvable: true, resolved: false }),
+        },
+      });
+      expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(false);
     });
   });
 
@@ -460,5 +515,60 @@ describe('NoteableDiscussion', () => {
         }),
       );
     });
+  });
+
+  describe('resolve checkbox in reply form', () => {
+    const resolvableNote = {
+      id: 'note-1',
+      resolvable: true,
+      current_user: { can_resolve_discussion: true },
+    };
+
+    it.each`
+      scenario                        | resolvable | hasToggle | expected
+      ${'resolvable with toggle'}     | ${true}    | ${true}   | ${true}
+      ${'resolvable without toggle'}  | ${true}    | ${false}  | ${false}
+      ${'non-resolvable with toggle'} | ${false}   | ${true}   | ${false}
+    `(
+      'sets showResolveDiscussionToggle=$expected for $scenario',
+      ({ resolvable, hasToggle, expected }) => {
+        const noteProps = resolvable ? resolvableNote : {};
+        createComponent({
+          props: {
+            discussion: createDiscussion(
+              { isReplying: true, resolvable, resolved: false },
+              noteProps,
+            ),
+            ...(hasToggle ? { toggleResolveNote: jest.fn() } : {}),
+          },
+        });
+        expect(wrapper.findComponent(NoteForm).props('showResolveDiscussionToggle')).toBe(expected);
+      },
+    );
+
+    it.each`
+      shouldResolve | expectToggle
+      ${true}       | ${true}
+      ${false}      | ${false}
+    `(
+      'toggleResolveNote called=$expectToggle when shouldResolve=$shouldResolve',
+      async ({ shouldResolve, expectToggle }) => {
+        const toggleResolveNote = jest.fn().mockResolvedValue();
+        const discussion = createDiscussion(
+          { isReplying: true, resolvable: true, resolved: false },
+          resolvableNote,
+        );
+        createComponent({
+          props: { discussion, toggleResolveNote },
+        });
+        await wrapper.findComponent(NoteForm).props('saveNote')('test note', shouldResolve);
+        expect(store.replyToDiscussion).toHaveBeenCalledWith(discussion, 'test note');
+        if (expectToggle) {
+          expect(toggleResolveNote).toHaveBeenCalledWith(discussion);
+        } else {
+          expect(toggleResolveNote).not.toHaveBeenCalled();
+        }
+      },
+    );
   });
 });

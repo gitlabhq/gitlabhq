@@ -206,6 +206,32 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
       end
     end
 
+    context 'when an existing merge request has conflicts' do
+      before do
+        allow(gitlab_client).to receive(:get_existing_merge_request)
+          .and_return({ 'iid' => 1234, 'web_url' => 'https://example.com', 'has_conflicts' => true })
+      end
+
+      it 'sets has_conflicts on the change' do
+        described_class.new(max_mrs: 1, keeps: [fake_keep]).run
+
+        expect(change1.has_conflicts).to eq(true)
+      end
+    end
+
+    context 'when an existing merge request has no conflicts' do
+      before do
+        allow(gitlab_client).to receive(:get_existing_merge_request)
+          .and_return({ 'iid' => 1234, 'web_url' => 'https://example.com', 'has_conflicts' => false })
+      end
+
+      it 'sets has_conflicts to false on the change' do
+        described_class.new(max_mrs: 1, keeps: [fake_keep]).run
+
+        expect(change1.has_conflicts).to eq(false)
+      end
+    end
+
     context 'on dry run' do
       context 'for completion message' do
         it 'prints the expected message' do

@@ -15,7 +15,9 @@ If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-
 
 If GitLab Duo Chat or GitLab Duo Code Suggestions are not available in Visual Studio:
 
-- Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
+- Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo) and the necessary settings
+  are on.
+- Ensure that [Admin mode is disabled](../../administration/settings/sign_in_restrictions.md#turn-off-admin-mode-for-your-session).
 - Check that GitLab Duo Agentic Chat is enabled:
   1. In Visual Studio, go to **Tools** > **Options** > **GitLab**.
   1. Under **GitLab**, select **General**.
@@ -26,10 +28,17 @@ If GitLab Duo Chat or GitLab Duo Code Suggestions are not available in Visual St
   1. If Code Suggestions is not enabled, in the top bar, select **Extensions** > **GitLab** >
      **Toggle Code Suggestions**.
 
-For additional support:
+For support with Code Suggestions, see [troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#microsoft-visual-studio-troubleshooting).
 
-- [Troubleshooting the GitLab Duo Agent Platform in your IDE](../../user/duo_agent_platform/troubleshooting_ide.md)
-- Troubleshooting [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#microsoft-visual-studio-troubleshooting)
+## Network issues
+
+If you are seeing `HTTP/1.1` responses from GitLab Duo rather than `/-/cable`
+WebSocket endpoints in your logs, your WebSocket connections may be blocked.
+
+Your GitLab instance must allow inbound WebSocket connections from IDE clients.
+Ask your network administrator to
+[allow WebSocket traffic to your GitLab instance](../../administration/gitlab_duo/configure/_index.md#allow-inbound-connections-from-clients-to-the-gitlab-instance)
+if you suspect this is the issue.
 
 ## View more logs
 

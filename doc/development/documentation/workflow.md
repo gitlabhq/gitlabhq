@@ -118,7 +118,7 @@ ensure quality. Documentation forms part of the GitLab [definition of done](../c
 
 Documentation is sometimes merged with a feature without a technical writer review.
 If not assigned for a technical writer review prior to merging, the developer or maintainer must schedule a review immediately after the merge. For this,
-create an issue with the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Doc%20Review)
+create an issue with the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Doc%20Review)
 and add a link to the merged merge request that introduced the documentation change.
 
 Circumstances where a post-merge technical writer review might occur are:
@@ -586,7 +586,7 @@ When a new GitLab version is released, the Technical Writing team releases
 
 To make a documentation change that is not associated with a specific code change, the Technical Writing team encourages contributors to create an MR.
 
-If you start with an issue rather than an MR, use the [documentation template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Documentation).
+If you start with an issue rather than an MR, use the [documentation template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Documentation).
 For the labels you should apply, see [labels](#labels).
 
 Also include:

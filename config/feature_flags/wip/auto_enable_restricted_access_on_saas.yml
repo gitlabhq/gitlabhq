@@ -1,0 +1,10 @@
+---
+name: auto_enable_restricted_access_on_saas
+description: Automatically enable restricted access (block overages) on GitLab.com when syncing namespace provisions
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/580284
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229921
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596875
+milestone: '19.0'
+group: group::seat management
+type: wip
+default_enabled: false

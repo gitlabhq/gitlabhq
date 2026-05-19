@@ -19,7 +19,7 @@ RSpec.describe 'admin/application_settings/_package_registry' do
 
   subject { render partial: 'admin/application_settings/package_registry' }
 
-  context 'package file size limits' do
+  context 'with package file size limits' do
     before do
       assign(:plans, [default_plan_limits.plan])
     end
@@ -69,7 +69,7 @@ RSpec.describe 'admin/application_settings/_package_registry' do
     end
   end
 
-  context 'skip nuget package metadata url validation' do
+  context 'when skipping nuget package metadata url validation' do
     before do
       assign(:plans, [default_plan_limits.plan])
     end

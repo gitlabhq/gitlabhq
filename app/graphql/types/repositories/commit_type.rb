@@ -6,6 +6,7 @@ module Types
       graphql_name 'Commit'
 
       authorize :read_code
+      authorize_granular_token permissions: :read_code, boundary: :project, boundary_type: :project
 
       present_using CommitPresenter
 

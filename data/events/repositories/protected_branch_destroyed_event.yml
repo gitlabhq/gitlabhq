@@ -1,0 +1,4 @@
+---
+event: Repositories::ProtectedBranchDestroyedEvent
+description: Published after a branch protection rule is removed.
+feature_category: source_code_management

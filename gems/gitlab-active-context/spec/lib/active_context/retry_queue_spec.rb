@@ -11,4 +11,10 @@ RSpec.describe ActiveContext::RetryQueue do
       expect(ActiveContext::Queues.queues).to include('activecontext:{retry_queue}')
     end
   end
+
+  describe '.preprocess_options' do
+    it 'returns skip_missing_content: true so missing content is skipped rather than sent to DeadQueue' do
+      expect(described_class.preprocess_options).to eq({ skip_missing_content: true })
+    end
+  end
 end

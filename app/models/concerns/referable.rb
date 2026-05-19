@@ -80,43 +80,91 @@ module Referable
       raise NotImplementedError, "#{self} does not implement #{__method__}"
     end
 
-    def project_or_group_link_reference_pattern(route, parent_pattern, item_pattern)
+    # Regex to match a fully qualified URL to a particular route and pattern
+    # under a group or project context.
+    #
+    # Example use:  WikiPage.link_reference_pattern may be defined as follows:
+    #
+    #   def self.link_reference_pattern
+    #     @link_reference_pattern ||= project_or_group_link_reference_pattern(
+    #       'wikis',
+    #       %r{(?<wiki_page>[\/\w-]+)}
+    #     )
+    #   end
+    #
+    # This produces a regex which matches URLs like:
+    #
+    # 'http://gdk.test:3000/flightjs/Flight/-/wikis/henlo-worl/yippee' (wiki_page: '/henlo-worl/yippee')
+    # 'http://gdk.test:3000/groups/flightjs/-/wikis/home' (wiki_page: 'home')
+    #
+    # The regex also matches arbitrary trailing path components if the supplied
+    # `pattern` does not consume everything, as well as query string and anchor
+    # (fragment) components. See `link_reference_pattern_suffix` for details.
+    def project_or_group_link_reference_pattern(route, pattern)
       %r{
         (?<url>
           #{Regexp.escape(Gitlab.config.gitlab.url)}
-          \/(groups\/)?#{parent_pattern}
+          \/(groups\/)?#{namespace_reference_pattern}
           (?:\/\-)?
-          \/#{route.is_a?(Regexp) ? route : Regexp.escape(route)}
-          \/#{item_pattern}
-          (?<path>
-            (\/[a-z0-9_=-]+)*\/*
-          )?
-          (?<query>
-            \?[a-z0-9_=-]+
-            (&[a-z0-9_=-]+)*
-          )?
-          (?<anchor>\#[a-z0-9_-]+)?
+          #{link_reference_pattern_suffix(route, pattern)}
         )
       }x
     end
 
+    # Same as `project_or_group_link_reference_pattern`, except there's no
+    # provision for 'groups/' and `Project.reference_pattern` is used instead
+    # of `namespace_reference_pattern`; i.e. a fully-qualified project must
+    # be specified.
     def compose_link_reference_pattern(route, pattern)
       %r{
         (?<url>
           #{Regexp.escape(Gitlab.config.gitlab.url)}
           \/#{Project.reference_pattern}
           (?:\/\-)?
-          \/#{route.is_a?(Regexp) ? route : Regexp.escape(route)}
-          \/#{pattern}
-          (?<path>
-            (\/[a-z0-9_=-]+)*\/*
-          )?
-          (?<query>
-            \?[a-z0-9_=-]+
-            (&[a-z0-9_=-]+)*
-          )?
-          (?<anchor>\#[a-z0-9_-]+)?
+          #{link_reference_pattern_suffix(route, pattern)}
         )
+      }x
+    end
+
+    # Same as `project_or_group_link_reference_pattern`, except there's no
+    # provision for a group or pattern at all before the '/-', which is
+    # non-optional.
+    #
+    # Example use:  PersonalSnippet.link_reference_pattern may be defined as follows:
+    #
+    #   def self.link_reference_pattern
+    #     @link_reference_pattern ||=
+    #       compose_top_level_link_reference_pattern('snippets', /(?<snippet>\d+)/)
+    #   end
+    #
+    # This produces a regex which matches URLs like:
+    #
+    # 'http://gdk.test:3000/-/snippets/2468'  (snippet: '2468')
+    # 'http://gdk-oc.local:13000/-/snippets/2468/raw/main/socks'  (snippet: '2468', path: '/raw/main/socks')
+    def compose_top_level_link_reference_pattern(route, pattern)
+      %r{
+        (?<url>
+          #{Regexp.escape(Gitlab.config.gitlab.url)}
+          \/\-
+          #{link_reference_pattern_suffix(route, pattern)}
+        )
+      }x
+    end
+
+    private
+
+    def link_reference_pattern_suffix(route, pattern)
+      %r{
+        \/#{route.is_a?(Regexp) ? route : Regexp.escape(route)}
+        \/#{pattern}
+        (?<path>
+          (\/[a-z0-9_=-]+)*\/*
+        )?
+        (?<query>
+          \?[a-z0-9_=-]+
+          (&[a-z0-9_=-]+)*
+        )?
+        (?<anchor>\#[a-z0-9_-]+)?
       }x
     end
   end

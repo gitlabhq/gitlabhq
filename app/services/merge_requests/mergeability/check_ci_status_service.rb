@@ -50,11 +50,10 @@ module MergeRequests
       end
 
       def auto_merge_strategy_requires_ci?
-        strategies = [::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS]
-
-        if Feature.enabled?(:mwcp_skip_ci_guard, merge_request.project)
-          strategies << ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
-        end
+        strategies = [
+          ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS,
+          ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
+        ]
 
         strategies.include?(merge_request.auto_merge_strategy)
       end

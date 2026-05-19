@@ -3,5 +3,7 @@ name: create_container_registry_protection_tag_rule
 description: Grants the ability to create container registry protection tag rules
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
- - create_container_registry_protection_tag_rule
+  - create_container_registry_protection_tag_rule

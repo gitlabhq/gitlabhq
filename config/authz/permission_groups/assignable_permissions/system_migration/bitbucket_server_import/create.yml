@@ -1,0 +1,10 @@
+---
+name: create_bitbucket_server_import
+description: Grants the ability to import a repository from Bitbucket Server
+deprecated: true
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_bitbucket_server_import

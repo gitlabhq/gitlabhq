@@ -13,7 +13,7 @@ RSpec.describe IssuablePolicy, :models do
   let(:issue) { create(:issue, project: project) }
   let(:policies) { described_class.new(user, issue) }
 
-  before do
+  before_all do
     project.add_developer(developer)
     project.add_guest(guest)
     project.add_planner(planner)
@@ -58,7 +58,14 @@ RSpec.describe IssuablePolicy, :models do
       end
 
       context 'when project is private' do
-        let(:project) { create(:project, :private) }
+        let_it_be(:project) { create(:project, :private) }
+
+        before_all do
+          project.add_developer(developer)
+          project.add_guest(guest)
+          project.add_planner(planner)
+          project.add_reporter(reporter)
+        end
 
         context 'when user belongs to the projects team' do
           it 'enables user to read and update issuables' do
@@ -115,7 +122,7 @@ RSpec.describe IssuablePolicy, :models do
       end
 
       context 'when the user is a project member' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 
@@ -188,7 +195,7 @@ RSpec.describe IssuablePolicy, :models do
     end
 
     context 'when subject is a Merge Request' do
-      let(:issuable) { create(:merge_request) }
+      let_it_be(:issuable) { create(:merge_request) }
       let(:policy) { permissions(user, issuable) }
 
       before do
@@ -215,7 +222,7 @@ RSpec.describe IssuablePolicy, :models do
     end
 
     context 'when subject is an Issue' do
-      let(:issuable) { create(:issue) }
+      let_it_be(:issuable) { create(:issue) }
       let(:policy) { permissions(user, issuable) }
 
       before do

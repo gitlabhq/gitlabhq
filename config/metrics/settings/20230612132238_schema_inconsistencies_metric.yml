@@ -2,7 +2,7 @@
 key_path: schema_inconsistencies_metric
 name: "schema_inconsistencies"
 description: "List the schema inconsistencies in the database"
-product_group: database_frameworks
+product_group: database_health
 product_categories:
 - database
 value_type: boolean

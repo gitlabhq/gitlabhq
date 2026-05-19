@@ -108,7 +108,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         create(:cluster, :instance, :production_environment)
         create(:cluster, :management_project)
         create(:integrations_slack, project: project)
-        create(:slack_slash_commands_integration, project: project)
       end
 
       expect(described_class.usage_activity_by_stage_configure({})).to include(
@@ -124,8 +123,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         group_clusters_enabled: 2,
         project_clusters_disabled: 2,
         project_clusters_enabled: 10,
-        projects_slack_notifications_active: 2,
-        projects_slack_slash_active: 2
+        projects_slack_notifications_active: 2
       )
       expect(described_class.usage_activity_by_stage_configure(described_class.monthly_time_range_db_params)).to include(
         clusters_management_project: 1,
@@ -140,8 +138,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         group_clusters_enabled: 1,
         project_clusters_disabled: 1,
         project_clusters_enabled: 5,
-        projects_slack_notifications_active: 1,
-        projects_slack_slash_active: 1
+        projects_slack_notifications_active: 1
       )
     end
   end

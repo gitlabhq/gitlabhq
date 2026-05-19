@@ -3,44 +3,43 @@
 require 'spec_helper'
 
 RSpec.describe Noteable, feature_category: :code_review_workflow do
-  let!(:active_diff_note1) { create(:diff_note_on_merge_request) }
-  let(:project) { active_diff_note1.project }
-
-  let!(:active_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: subject, in_reply_to: active_diff_note1) }
-  let!(:active_diff_note3) { create(:diff_note_on_merge_request, project: project, noteable: subject, position: active_position2) }
-  let!(:outdated_diff_note1) { create(:diff_note_on_merge_request, project: project, noteable: subject, position: outdated_position) }
-  let!(:outdated_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: subject, in_reply_to: outdated_diff_note1) }
-  let!(:discussion_note1) { create(:discussion_note_on_merge_request, project: project, noteable: subject) }
-  let!(:discussion_note2) { create(:discussion_note_on_merge_request, in_reply_to: discussion_note1) }
-  let!(:commit_diff_note1) { create(:diff_note_on_commit, project: project) }
-  let!(:commit_diff_note2) { create(:diff_note_on_commit, project: project, in_reply_to: commit_diff_note1) }
-  let!(:commit_note1) { create(:note_on_commit, project: project) }
-  let!(:commit_note2) { create(:note_on_commit, project: project) }
-  let!(:commit_discussion_note1) { create(:discussion_note_on_commit, project: project) }
-  let!(:commit_discussion_note2) { create(:discussion_note_on_commit, in_reply_to: commit_discussion_note1) }
-  let!(:commit_discussion_note3) { create(:discussion_note_on_commit, project: project) }
-  let!(:note1) { create(:note, project: project, noteable: subject) }
-  let!(:note2) { create(:note, project: project, noteable: subject) }
-
-  let(:active_position2) do
-    Gitlab::Diff::Position.new(
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_refind(:active_diff_note1) { create(:diff_note_on_merge_request, project: project) }
+  let_it_be(:active_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: active_diff_note1.noteable, in_reply_to: active_diff_note1) }
+  let_it_be(:active_diff_note3) do
+    position = Gitlab::Diff::Position.new(
       old_path: 'files/ruby/popen.rb',
       new_path: 'files/ruby/popen.rb',
       old_line: 16,
       new_line: 22,
-      diff_refs: subject.diff_refs
+      diff_refs: active_diff_note1.noteable.diff_refs
     )
+    create(:diff_note_on_merge_request, project: project, noteable: active_diff_note1.noteable, position: position)
   end
 
-  let(:outdated_position) do
-    Gitlab::Diff::Position.new(
+  let_it_be(:outdated_diff_note1) do
+    position = Gitlab::Diff::Position.new(
       old_path: 'files/ruby/popen.rb',
       new_path: 'files/ruby/popen.rb',
       old_line: nil,
       new_line: 9,
       diff_refs: project.commit('874797c3a73b60d2187ed6e2fcabd289ff75171e').diff_refs
     )
+    create(:diff_note_on_merge_request, project: project, noteable: active_diff_note1.noteable, position: position)
   end
+
+  let_it_be(:outdated_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: active_diff_note1.noteable, in_reply_to: outdated_diff_note1) }
+  let_it_be(:discussion_note1) { create(:discussion_note_on_merge_request, project: project, noteable: active_diff_note1.noteable) }
+  let_it_be(:discussion_note2) { create(:discussion_note_on_merge_request, in_reply_to: discussion_note1) }
+  let_it_be(:commit_diff_note1) { create(:diff_note_on_commit, project: project) }
+  let_it_be(:commit_diff_note2) { create(:diff_note_on_commit, project: project, in_reply_to: commit_diff_note1) }
+  let_it_be(:commit_note1) { create(:note_on_commit, project: project) }
+  let_it_be(:commit_note2) { create(:note_on_commit, project: project) }
+  let_it_be(:commit_discussion_note1) { create(:discussion_note_on_commit, project: project) }
+  let_it_be(:commit_discussion_note2) { create(:discussion_note_on_commit, in_reply_to: commit_discussion_note1) }
+  let_it_be(:commit_discussion_note3) { create(:discussion_note_on_commit, project: project) }
+  let_it_be(:note1) { create(:note, project: project, noteable: active_diff_note1.noteable) }
+  let_it_be(:note2) { create(:note, project: project, noteable: active_diff_note1.noteable) }
 
   subject { active_diff_note1.noteable }
 

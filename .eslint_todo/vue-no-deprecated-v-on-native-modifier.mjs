@@ -6,7 +6,6 @@ export default {
     'app/assets/javascripts/batch_comments/components/draft_note.vue',
     'app/assets/javascripts/ci/pipeline_details/graph/components/job_item.vue',
     'app/assets/javascripts/ci/pipeline_details/graph/components/stage_column_component.vue',
-    'app/assets/javascripts/groups/settings/components/access_dropdown.vue',
     'app/assets/javascripts/projects/settings/components/access_dropdown.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents_labels_view.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_footer.vue',
@@ -14,6 +13,7 @@ export default {
     'app/assets/javascripts/vue_shared/components/user_select/user_select.vue',
     'ee/app/assets/javascripts/ai/duo_agentic_chat/components/duo_agentic_chat_view.vue',
     'ee/app/assets/javascripts/ai/tanuki_bot/components/duo_chat_view.vue',
+    'ee/app/assets/javascripts/groups/settings/components/access_dropdown.vue',
   ],
   rules: {
     'vue/no-deprecated-v-on-native-modifier': 'off',

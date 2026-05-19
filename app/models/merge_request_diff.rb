@@ -424,20 +424,28 @@ class MergeRequestDiff < ApplicationRecord
     project.commit_by(oid: head_commit_sha)
   end
 
-  def commit_shas(limit: nil, preload_metadata: false)
-    if association(:merge_request_diff_commits).loaded?
-      sorted_diff_commits = merge_request_diff_commits.sort_by { |diff_commit| [diff_commit.id, diff_commit.relative_order] }
-      sorted_diff_commits = sorted_diff_commits.take(limit) if limit
-
-      if preload_metadata
-        # ActiveRecord::Associations::Preloader works with both arrays and relations
-        preload_metadata_for_commits(sorted_diff_commits)
-      end
-
-      sorted_diff_commits.map(&:sha)
-    else
-      commit_shas_from_metadata(limit)
+  # Returns commit SHAs for this diff.
+  #
+  # @param limit [Integer, nil] maximum number of SHAs to return
+  # @param mode [Symbol] controls the data source:
+  #   :auto (default) - uses the preloaded association when available (no metadata preloading);
+  #     falls back to the metadata DB query when the association is not loaded.
+  #   :preload - like :auto but also preloads commit metadata for efficient SHA lookup.
+  #   :force_metadata - always queries the DB via the metadata join, bypassing any preloaded association.
+  def commit_shas(limit: nil, mode: :auto)
+    if mode == :force_metadata || !association(:merge_request_diff_commits).loaded?
+      return commit_shas_from_metadata(limit)
     end
+
+    sorted_diff_commits = merge_request_diff_commits.sort_by { |diff_commit| [diff_commit.id, diff_commit.relative_order] }
+    sorted_diff_commits = sorted_diff_commits.take(limit) if limit
+
+    if mode == :preload
+      # ActiveRecord::Associations::Preloader works with both arrays and relations
+      preload_metadata_for_commits(sorted_diff_commits)
+    end
+
+    sorted_diff_commits.map(&:sha)
   end
 
   def includes_any_commits?(shas)

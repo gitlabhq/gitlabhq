@@ -7,11 +7,13 @@ module Import
 
       RELATION = 'max_iids'
 
-      # Accepts the same constructor signature as TreeExportService and
-      # FileExportService for compatibility with ExportUploadable#export_service.
-      # The relation and user parameters are not used.
-      def initialize(portable, export_path, _relation = nil, _user = nil)
-        @portable = portable
+      # Matches the constructor signature of TreeExportService and FileExportService
+      # for compatibility with ExportUploadable#export_service.
+      # @param export [BulkImports::Export] the export record; only portable is used
+      # @param export_path [String] directory path where the exported file will be written
+      # @param_user [User] unused, accepted for interface compatibility
+      def initialize(export, export_path, _user = nil)
+        @portable = export.portable
         @export_path = export_path
       end
 

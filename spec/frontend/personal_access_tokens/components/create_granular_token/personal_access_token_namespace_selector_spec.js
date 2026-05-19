@@ -153,7 +153,7 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
       await waitForQuery();
       await findListbox().vm.$emit('select', selectedIds);
 
-      expect(wrapper.emitted('input')).toEqual([[selectedIds]]);
+      expect(wrapper.emitted('input')).toEqual([[[mockProjects[0], mockGroups[0]]]]);
     });
 
     it('displays selected groups', async () => {
@@ -190,16 +190,15 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
 
       await findListbox().vm.$emit('select', selectedIds);
 
+      // removing the project
       await findRemoveButtons().at(0).vm.$emit('click');
 
-      expect(wrapper.emitted('input')[1]).toEqual([['gid://gitlab/Group/1']]);
-
-      expect(findSelectedNamespaces().text()).not.toContain('test-group-1/test-project-1');
+      expect(wrapper.emitted('input')[1]).toEqual([[mockGroups[0]]]);
     });
   });
 
-  describe('prefillNamespaces prop', () => {
-    const prefillNamespaces = [
+  describe('pre-filling namespaces', () => {
+    const value = [
       {
         id: 'gid://gitlab/Group/1',
         name: 'Test Group 1',
@@ -208,20 +207,20 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
       },
     ];
 
-    it('initializes selectedIds from prefillNamespaces', () => {
-      createComponent({ props: { prefillNamespaces } });
+    it('initializes selectedIds from value prop', () => {
+      createComponent({ props: { value } });
 
       expect(wrapper.vm.selectedIds).toEqual(['gid://gitlab/Group/1']);
     });
 
-    it('initializes selectedItems from prefillNamespaces', () => {
-      createComponent({ props: { prefillNamespaces } });
+    it('initializes selectedItems from value prop', () => {
+      createComponent({ props: { value } });
 
-      expect(wrapper.vm.selectedItems).toEqual(prefillNamespaces);
+      expect(wrapper.vm.selectedItems).toEqual(value);
     });
 
     it('shows pre-populated namespace chips without requiring a search', () => {
-      createComponent({ props: { prefillNamespaces } });
+      createComponent({ props: { value } });
 
       expect(findSelectedNamespaces().exists()).toBe(true);
       expect(findSelectedNamespaces().text()).toContain('test-group-1');

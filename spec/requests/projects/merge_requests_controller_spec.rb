@@ -26,6 +26,27 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     merge_request.create_merge_request_diff
   end
 
+  let_it_be(:sha1) { "33f3729a45c02fc67d00adb1b8bca394b0e761d9" }
+  let_it_be(:sha2) { "ae73cb07c9eeaf35924a10f713b364d32b2dd34f" }
+
+  let_it_be(:context_commit_1) do
+    create(
+      :merge_request_context_commit,
+      merge_request: merge_request,
+      sha: sha1,
+      committed_date: project.commit_by(oid: sha1).committed_date
+    )
+  end
+
+  let_it_be(:context_commit_2) do
+    create(
+      :merge_request_context_commit,
+      merge_request: merge_request,
+      sha: sha2,
+      committed_date: project.commit_by(oid: sha2).committed_date
+    )
+  end
+
   describe 'GET #show' do
     let_it_be(:group) { create(:group) }
     let_it_be(:user) { create(:user) }
@@ -47,32 +68,20 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
     context 'when diff version limit is reached' do
       before do
-        stub_const('MergeRequest::DIFF_VERSION_LIMIT', 1)
+        stub_application_setting(diff_max_versions: 1)
       end
 
       it 'displays a warning' do
         get project_merge_request_path(project, merge_request)
 
         expect(flash[:alert]).to include('This merge request has reached the maximum limit')
-        expect(flash[:alert]).not_to include("This merge request has too many diff commits, and can't be updated")
-      end
-
-      context 'when "merge_requests_diffs_limit" feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_requests_diffs_limit: false)
-        end
-
-        it 'does not display a warning' do
-          get project_merge_request_path(project, merge_request)
-
-          expect(flash[:alert]).to be_blank
-        end
+        expect(flash[:alert]).not_to include("diff commits")
       end
     end
 
     context 'when diff commits limit is reached' do
       before do
-        stub_const('MergeRequest::DIFF_COMMITS_LIMIT', 1)
+        stub_application_setting(diff_max_commits: 1)
         # merge_request_diff model has a after_save callback that nullifies commits counts
         # using #update_column to override this behavior
         merge_request.merge_request_diff.update_column(:commits_count, 2)
@@ -81,31 +90,20 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       it 'displays a warning' do
         get project_merge_request_path(project, merge_request)
 
-        expect(flash[:alert]).to include("This merge request has too many diff commits, and can't be updated")
-      end
-
-      context 'when "merge_requests_diff_commits_limit" feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_requests_diff_commits_limit: false)
-        end
-
-        it 'does not display a warning' do
-          get project_merge_request_path(project, merge_request)
-
-          expect(flash[:alert]).to be_blank
-        end
+        expect(flash[:alert]).to include("has reached the maximum limit of")
+        expect(flash[:alert]).to include("diff commits")
       end
 
       context 'when diff version limit is also reached' do
         before do
-          stub_const('MergeRequest::DIFF_VERSION_LIMIT', 1)
+          stub_application_setting(diff_max_versions: 1)
         end
 
         it 'displays only one warning' do
           get project_merge_request_path(project, merge_request)
 
           expect(flash[:alert]).to include('This merge request has reached the maximum limit')
-          expect(flash[:alert]).not_to include("This merge request has too many diff commits, and can't be updated")
+          expect(flash[:alert]).not_to include("diff commits")
         end
       end
     end
@@ -305,13 +303,14 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         expect(response.body).to include('data-page="projects:merge_requests:rapid_diffs"')
       end
 
-      it 'returns 404 when cookie is set but feature flag is disabled' do
+      it 'deletes the cookie and redirects to legacy diffs when feature flag is disabled' do
         stub_feature_flags(rapid_diffs_on_mr_show: false)
         cookies[:rapid_diffs_enabled] = 'true'
 
         get diffs_project_merge_request_path(project, merge_request)
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to redirect_to(diffs_project_merge_request_path(project, merge_request))
+        expect(response.cookies['rapid_diffs_enabled']).to be_nil
       end
 
       it 'shows only first 5 files' do
@@ -344,6 +343,20 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         end
       end
 
+      context 'when only_context_commits is true' do
+        let(:params) { { only_context_commits: true } }
+
+        it 'shows context commit diffs' do
+          context_diff_files = merge_request.context_commits_diff.diffs.diff_files
+          context_file_hashes = context_diff_files.to_a.map(&:file_hash)
+
+          get diffs_project_merge_request_path(project, merge_request, params.merge(rapid_diffs: 'true'))
+
+          expect(response.body.scan('<diff-file ').size).to eq(4)
+          expect(response.body).to include(*context_file_hashes)
+        end
+      end
+
       context 'internal events tracking' do
         subject(:action) { get diffs_project_merge_request_path(project, merge_request, rapid_diffs: true) }
 
@@ -370,8 +383,20 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         end
       end
 
+      context 'when rapid_diffs_disabled param is present' do
+        it 'falls through to the legacy diffs action' do
+          cookies[:rapid_diffs_enabled] = 'true'
+
+          get diffs_project_merge_request_path(project, merge_request, rapid_diffs_disabled: 'true')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('data-page="projects:merge_requests:diffs"')
+          expect(response.cookies).not_to have_key('rapid_diffs_enabled')
+        end
+      end
+
       context 'when an error occurs during rendering' do
-        it 'logs the exception, deletes the cookie, and redirects with an alert' do
+        it 'logs the exception, preserves the cookie, and redirects with rapid_diffs_disabled param' do
           cookies['rapid_diffs_enabled'] = 'true'
 
           expect_next_instance_of(described_class) do |instance|
@@ -386,8 +411,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
           get diffs_project_merge_request_path(project, merge_request)
 
-          expect(response).to redirect_to(diffs_project_merge_request_path(project, merge_request))
-          expect(response.cookies['rapid_diffs_enabled']).to be_nil
+          expect(response).to redirect_to(
+            diffs_project_merge_request_path(project, merge_request, rapid_diffs_disabled: 'true')
+          )
+          expect(response.cookies).not_to have_key('rapid_diffs_enabled')
           expect(flash[:alert]).to eq(
             _("Rapid Diffs encountered an error and has been temporarily disabled. " \
               "The page has loaded using the standard diff view. " \
@@ -455,6 +482,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
     context 'when commit_id param is set' do
       let(:additional_params) { { commit_id: commit_id } }
+
+      include_examples 'diff files metadata'
+    end
+
+    context 'when only_context_commits is true' do
+      let(:additional_params) { { only_context_commits: true } }
 
       include_examples 'diff files metadata'
     end
@@ -543,6 +576,20 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         end
       end
     end
+
+    context 'when only_context_commits is true' do
+      let(:additional_params) { { only_context_commits: true } }
+
+      it_behaves_like 'diffs stats' do
+        let(:expected_stats) do
+          {
+            added_lines: 21,
+            removed_lines: 23,
+            diffs_count: 4
+          }
+        end
+      end
+    end
   end
 
   describe 'GET #diff_file' do
@@ -615,6 +662,13 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
         expect(merge_request.notes.system.last.author).to eq(user)
       end
+
+      it 'attributes the system note to the human user when assigning a service account as assignee' do
+        put project_merge_request_path(project, merge_request),
+          params: { merge_request: { assignee_ids: [service_account.id] } }
+
+        expect(merge_request.notes.system.last.author).to eq(user)
+      end
     end
 
     it 'applies correct timezone to merge_after' do
@@ -672,7 +726,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         "latest" => true,
         "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
         "commits_count" => latest_mr_diff.commits_count,
-        "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&rapid_diffs=true",
+        "href" => "#{diffs_path}?diff_id=#{latest_diff_id}",
         "selected" => true
       )
       expect(json_response['source_versions'].last).to include(
@@ -682,7 +736,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         "latest" => false,
         "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
         "commits_count" => previous_mr_diff.commits_count,
-        "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true",
+        "href" => "#{diffs_path}?diff_id=#{previous_diff_id}",
         "selected" => false
       )
 
@@ -693,7 +747,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         "head" => false,
         "latest" => true,
         "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
-        "href" => "#{diffs_path}?rapid_diffs=true",
+        "href" => diffs_path.to_s,
         "commits_count" => latest_mr_diff.commits_count,
         "selected" => true,
         "branch" => merge_request.target_branch
@@ -705,7 +759,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         "latest" => false,
         "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
         "commits_count" => previous_mr_diff.commits_count,
-        "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+        "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&start_sha=#{previous_start_sha}",
         "selected" => false
       )
     end
@@ -729,7 +783,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           "latest" => true,
           "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
           "commits_count" => latest_mr_diff.commits_count,
-          "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&rapid_diffs=true",
+          "href" => "#{diffs_path}?diff_id=#{latest_diff_id}",
           "selected" => false
         )
         expect(json_response['source_versions'].last).to include(
@@ -739,7 +793,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           "latest" => false,
           "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
           "commits_count" => previous_mr_diff.commits_count,
-          "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true",
+          "href" => "#{diffs_path}?diff_id=#{previous_diff_id}",
           "selected" => true
         )
 
@@ -750,7 +804,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           "head" => false,
           "latest" => true,
           "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
-          "href" => "#{diffs_path}?rapid_diffs=true",
+          "href" => diffs_path.to_s,
           "commits_count" => latest_mr_diff.commits_count,
           "selected" => true,
           "branch" => merge_request.target_branch
@@ -762,7 +816,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           "latest" => false,
           "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
           "commits_count" => previous_mr_diff.commits_count,
-          "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+          "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&start_sha=#{previous_start_sha}",
           "selected" => false
         )
       end
@@ -787,7 +841,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
             "latest" => true,
             "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
             "commits_count" => latest_mr_diff.commits_count,
-            "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+            "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&start_sha=#{previous_start_sha}",
             "selected" => false
           )
           expect(json_response['source_versions'].last).to include(
@@ -797,7 +851,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
             "latest" => false,
             "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
             "commits_count" => previous_mr_diff.commits_count,
-            "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+            "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&start_sha=#{previous_start_sha}",
             "selected" => true
           )
 
@@ -808,7 +862,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
             "head" => false,
             "latest" => true,
             "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
-            "href" => "#{diffs_path}?rapid_diffs=true",
+            "href" => diffs_path.to_s,
             "commits_count" => latest_mr_diff.commits_count,
             "selected" => false,
             "branch" => merge_request.target_branch
@@ -820,7 +874,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
             "latest" => false,
             "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
             "commits_count" => previous_mr_diff.commits_count,
-            "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+            "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&start_sha=#{previous_start_sha}",
             "selected" => true
           )
         end

@@ -7,7 +7,7 @@ title: Custom agents
 
 {{< details >}}
 
-- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
+- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -43,6 +43,7 @@ with GitLab Duo Chat in the GitLab UI, VS Code, and JetBrains IDEs.
 ## Prerequisites
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
+- Have [custom agents turned on](#turn-custom-agents-on-or-off).
 
 ## Agent visibility
 
@@ -74,7 +75,7 @@ Prerequisites:
 To view a list of agents associated with your project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Automate** > **Agents**.
+1. In the left sidebar, select **AI** > **Agents**.
    - To view agents enabled in the project, select the **Enabled** tab.
    - To view agents managed by the project, select the **Managed** tab.
 
@@ -95,7 +96,7 @@ Prerequisites:
 To create an agent:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Automate** > **Agents**.
+1. In the left sidebar, select **AI** > **Agents**.
 1. Select **New agent**.
 1. Under **Basic information**:
    1. In **Display name**, enter a name for the agent.
@@ -159,7 +160,7 @@ Prerequisites:
 To enable an agent:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Automate** > **Agents**.
+1. In the left sidebar, select **AI** > **Agents**.
 1. Select the **Managed** tab, then select the agent you want to enable.
 1. In the upper-right corner, select **Enable**.
 1. Under **Project**, select the project you want to enable the agent in.
@@ -182,7 +183,7 @@ To enable an agent:
 
 {{< /tabs >}}
 
-The agent appears in the group and project **Automate** > **Agents** pages.
+The agent appears in the group and project **AI** > **Agents** pages.
 Members of any project in the top-level group can now enable the agent in their project.
 
 In the project, you can start a new chat with the agent.
@@ -200,12 +201,12 @@ Prerequisites:
 To enable an agent in a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Automate** > **Agents**.
+1. In the left sidebar, select **AI** > **Agents**.
 1. In the upper-right corner, select **Enable agent from group**.
 1. From the dropdown list, select the agent you want to enable.
 1. Select **Enable**.
 
-The agent appears in the project's **Automate** > **Agents** page.
+The agent appears in the project's **AI** > **Agents** page.
 
 In the project, you can start a new chat with the agent.
 
@@ -277,7 +278,7 @@ Prerequisites:
 To disable an agent:
 
 1. In the top bar, select **Search or go to** and find your group or project.
-1. Select **Automate** > **Agents**.
+1. Select **AI** > **Agents**.
 1. Find the agent you want to remove and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Disable**.
 1. On the confirmation dialog, select **Disable**.
 
@@ -309,7 +310,7 @@ Prerequisites:
 - You must be a member of the managing project and have the Maintainer or Owner role.
 
 1. In the top bar, select **Search or go to** and find your group or project.
-1. Select **Automate** > **Agents**.
+1. Select **AI** > **Agents**.
 1. Select the agent you want to edit.
 1. In the upper-right corner, select **Edit**.
 1. Edit any fields you want to change, then select **Save changes**.
@@ -327,7 +328,7 @@ Prerequisites:
 To hide an agent:
 
 1. In the top bar, select **Search or go to** and find your group or project.
-1. Select **Automate** > **Agents**.
+1. Select **AI** > **Agents**.
 1. Find the agent you want to hide and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Hide**.
 1. In the confirmation dialog, select **Confirm**.
 
@@ -340,6 +341,65 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the top bar, select **Search or go to** and find your group or project.
-1. Select **Automate** > **Agents**.
+1. Select **AI** > **Agents**.
 1. Find the agent you want to delete and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
 1. In the confirmation dialog, select **Delete**.
+
+## Turn custom agents on or off
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.
+
+{{< /history >}}
+
+By default, custom agents are turned on.
+You can turn them on or off for a top-level group or for an instance.
+
+When custom agents are turned off:
+
+- Users cannot create, enable, disable, modify, or execute custom agents.
+- Existing custom agents are no longer visible
+  in the project under **AI** > **Agents** > **Enabled**.
+- Custom agents created in the project appear
+  under **AI** > **Agents** > **Managed**, but cannot be modified or executed.
+- [Foundational agents](foundational_agents/_index.md) and [external agents](external.md) remain available.
+
+{{< tabs >}}
+
+{{< tab title="GitLab.com" >}}
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Custom agents and flows**, select or clear the
+   **Allow custom agents** checkbox.
+1. Select **Save changes**.
+
+This setting cascades to all subgroups in the group.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed" >}}
+
+Prerequisites:
+
+- You must be an administrator.
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Custom agents and flows**, select or clear the
+   **Allow custom agents** checkbox.
+1. Select **Save changes**.
+
+When the instance-level setting is turned off,
+group-level settings cannot override it.
+
+{{< /tab >}}
+
+{{< /tabs >}}

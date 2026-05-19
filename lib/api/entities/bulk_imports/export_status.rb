@@ -12,7 +12,7 @@ module API
         expose :batched, documentation: { type: 'Boolean', example: true }
         expose :batches_count, documentation: { type: 'Integer', example: 2 }
         expose :total_objects_count, documentation: { type: 'Integer', example: 100 }
-        expose :batches, if: ->(export, _options) { export.batched? }, using: ExportBatchStatus
+        expose :batches, if: ->(export, _options) { export.batched? }, using: ::API::Entities::BulkImports::ExportBatchStatus
       end
     end
   end

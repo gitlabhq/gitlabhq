@@ -249,9 +249,9 @@ describe('Linked pipeline', () => {
                   });
                 });
 
-                it('emits the refreshPipelineGraph event', async () => {
+                it('emits the refresh-pipeline-graph event', async () => {
                   await waitForPromises();
-                  expect(wrapper.emitted('refreshPipelineGraph')).toHaveLength(1);
+                  expect(wrapper.emitted('refresh-pipeline-graph')).toHaveLength(1);
                 });
               });
 
@@ -315,9 +315,9 @@ describe('Linked pipeline', () => {
                     id: 'gid://gitlab/Ci::Pipeline/195',
                   });
                 });
-                it('emits the refreshPipelineGraph event', async () => {
+                it('emits the refresh-pipeline-graph event', async () => {
                   await waitForPromises();
-                  expect(wrapper.emitted('refreshPipelineGraph')).toHaveLength(1);
+                  expect(wrapper.emitted('refresh-pipeline-graph')).toHaveLength(1);
                 });
               });
 
@@ -461,10 +461,10 @@ describe('Linked pipeline', () => {
       createComponent({ propsData: props });
     });
 
-    it('emits `pipelineClicked` event', () => {
+    it('emits `pipeline-clicked` event', () => {
       findButton().trigger('click');
 
-      expect(wrapper.emitted('pipelineClicked')).toHaveLength(1);
+      expect(wrapper.emitted('pipeline-clicked')).toHaveLength(1);
     });
 
     it(`should emit ${BV_HIDE_TOOLTIP} to close the tooltip`, async () => {
@@ -474,19 +474,19 @@ describe('Linked pipeline', () => {
       expect(root.emitted(BV_HIDE_TOOLTIP)).toHaveLength(1);
     });
 
-    it('should emit downstreamHovered with job name on mouseover', () => {
+    it('should emit downstream-hovered with job name on mouseover', () => {
       findLinkedPipeline().trigger('mouseover');
-      expect(wrapper.emitted('downstreamHovered')).toStrictEqual([['test_c']]);
+      expect(wrapper.emitted('downstream-hovered')).toStrictEqual([['test_c']]);
     });
 
-    it('should emit downstreamHovered with empty string on mouseleave', () => {
+    it('should emit downstream-hovered with empty string on mouseleave', () => {
       findLinkedPipeline().trigger('mouseleave');
-      expect(wrapper.emitted('downstreamHovered')).toStrictEqual([['']]);
+      expect(wrapper.emitted('downstream-hovered')).toStrictEqual([['']]);
     });
 
-    it('should emit pipelineExpanded with job name and expanded state on click', () => {
+    it('should emit pipeline-expanded with job name and expanded state on click', () => {
       findExpandButton().trigger('click');
-      expect(wrapper.emitted('pipelineExpandToggle')).toStrictEqual([['test_c', true]]);
+      expect(wrapper.emitted('pipeline-expand-toggle')).toStrictEqual([['test_c', true]]);
     });
   });
 });

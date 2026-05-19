@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { pinia } from '~/pinia/instance';
 
 import IntegrationForm from './components/integration_form.vue';
-import { createStore } from './store';
+import { useIntegrationForm } from './store';
 
 Vue.use(GlToast);
 
@@ -171,6 +172,14 @@ export default function initIntegrationSettingsForm() {
     initialState.defaultState = Object.freeze(parseDatasetToProps(defaultSettingsEl.dataset));
   }
 
+  const store = useIntegrationForm(pinia);
+  store.$patch(initialState);
+  const override =
+    initialState.defaultState !== null
+      ? initialState.defaultState.id !== initialState.customState.inheritFromId
+      : false;
+  store.override = override;
+
   // Here, we capture the "helpHtml", so we can pass it to the Vue component
   // to position it where ever it wants.
   // Because this node is a _child_ of `el`, it will be removed when the Vue component is mounted,
@@ -180,7 +189,7 @@ export default function initIntegrationSettingsForm() {
   return new Vue({
     el: customSettingsEl,
     name: 'IntegrationEditRoot',
-    store: createStore(initialState),
+    pinia,
     provide: {
       helpHtml,
     },

@@ -102,7 +102,7 @@ To create hosted runners:
 
 You will receive an email notification when your hosted runner is ready to use.
 
-[Outbound private links](#outbound-private-link) configured for existing runners don't apply to new runners. A separate request is required for each new runner.
+[Outbound PrivateLink connections](#outbound-privatelink-connections) configured for existing runners don't apply to new runners. A separate request is required for each new runner.
 
 #### View hosted runners in Switchboard
 
@@ -130,7 +130,7 @@ Prerequisites:
 To view hosted runners in GitLab:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **CI/CD** > **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. Optional. Select **Fleet dashboard**.
 
 #### Configure hosted runners in GitLab
@@ -166,29 +166,29 @@ Hosted runners for GitLab Dedicated have the following configurations:
 - Only the runner manager can communicate with the ephemeral VMs.
 - Ephemeral runner VMs only serve a single job and are deleted after the job execution.
 
-You can also [enable private connections](#outbound-private-link) from hosted runners to your AWS account.
+You can also [enable PrivateLink connections](#outbound-privatelink-connections) from hosted runners to your AWS account.
 
 For more information, see the architecture diagram for [hosted runners for GitLab Dedicated](architecture.md#hosted-runners-for-gitlab-dedicated).
 
-### Outbound private link
+### Outbound PrivateLink connections
 
-Outbound private link creates a secure connection between hosted runners for GitLab Dedicated and services in your AWS VPC.
+Outbound PrivateLink connections create a secure connection between hosted runners for GitLab Dedicated and services in your AWS VPC.
 This connection doesn't expose any traffic to the public internet and allows hosted runners to:
 
 - Access private services, such as custom secrets managers.
 - Retrieve artifacts or job images stored in your infrastructure.
 - Deploy to your infrastructure.
 
-Two outbound private links exist by default for all runners in the GitLab-managed runner account:
+Two outbound PrivateLink connections exist by default for all runners in the GitLab-managed runner account:
 
-- A link to your GitLab instance
-- A link to a GitLab-controlled Prometheus instance
+- A connection to your GitLab instance
+- A connection to a GitLab-controlled Prometheus instance
 
-These links are pre-configured and cannot be modified. The tenant's Prometheus instance is managed by GitLab and is not accessible to users.
+These connections are pre-configured and cannot be modified. The tenant's Prometheus instance is managed by GitLab and is not accessible to users.
 
-To use an outbound private link with other VPC services for hosted runners,
-[manual configuration is required with a support request](configure_instance/network_security.md#add-an-outbound-private-link-with-a-support-request).
-For more information, see [Outbound private link](configure_instance/network_security.md#outbound-private-link).
+To use an outbound PrivateLink connection with other VPC services for hosted runners,
+[manual configuration is required with a support request](configure_instance/network_security.md#add-an-outbound-privatelink-connection).
+For more information, see [outbound PrivateLink connections](configure_instance/network_security.md#outbound-privatelink-connections).
 
 ### IP ranges
 

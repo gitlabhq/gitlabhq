@@ -60,6 +60,27 @@ RSpec.describe Keeps::Helpers::ReviewerRoulette, feature_category: :tooling do
 
         expect(result_with_identifiers).not_to eq(result_with_other_identifiers)
       end
+
+      it 'returns the same reviewer when other reviewers are added or removed' do
+        result_before = roulette.random_reviewer_for('maintainer::backend', identifiers: identifiers)
+
+        extra_reviewer = {
+          user: {
+            username: "@newperson",
+            name: "New Person",
+            type: [{ p: "gitlab", r: "maintainer::backend" }]
+          },
+          status: { available: true }
+        }.with_indifferent_access
+
+        allow(roulette).to receive(:available_reviewers).and_return(
+          roulette.send(:available_reviewers) + [extra_reviewer]
+        )
+
+        result_after = roulette.random_reviewer_for('maintainer::backend', identifiers: identifiers)
+
+        expect(result_after).to eq(result_before)
+      end
     end
   end
 

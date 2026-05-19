@@ -1,0 +1,10 @@
+---
+# Cop supports --autocorrect.
+Lint/UselessAccessModifier:
+  Exclude:
+    - 'ee/elastic/migrate/20241017094601_add_embedding_to_work_items_opensearch.rb'
+    - 'ee/elastic/migrate/20250522073150_reindex_work_items_for_knn_engine.rb'
+    - 'ee/spec/features/projects/quality/test_case_create_spec.rb'
+    - 'spec/features/projects/commits/user_browses_commits_spec.rb'
+    - 'spec/features/projects/fork_spec.rb'
+    - 'spec/features/projects/show/user_interacts_with_stars_spec.rb'

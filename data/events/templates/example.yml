@@ -1,0 +1,35 @@
+# Use this template to document a new GitLab EventStore event class.
+#
+# Copy this file to the matching path under data/events/, mirroring app/events/:
+#
+#   app/events/ci/pipeline_created_event.rb
+#     → data/events/ci/pipeline_created_event.yml
+#
+# Then fill in each field and regenerate the index:
+#
+#   bin/rake gitlab:docs:compile_events
+#
+# -----------------------------------------------------------------------
+# Prefer auto-generation with GitLab Duo CLI (handles publish sites
+# automatically):
+#
+#   scripts/generate_event_doc app/events/your/event_class.rb
+#
+# Requires glab with Duo CLI. Setup: https://docs.gitlab.com/ee/user/gitlab_duo_cli/
+# -----------------------------------------------------------------------
+
+# (required) Fully-qualified Ruby class name.
+event: Your::EventClassName
+
+# (required) One or two sentences describing what happened and why it was published.
+# If the event has non-obvious timing or conditional semantics (deferred via
+# run_after_commit, skipped on no-op, batched, etc.), include them here as prose.
+description: Published when ...
+
+# (required) Must match a value from config/feature_categories.yml.
+feature_category: your_feature_category
+
+# (optional) Set to `true` if and only if the event class lives under
+# `ee/app/events/`. Omit (or set `false`) for events under `app/events/`.
+# This is enforced by the Gitlab/EventStoreDocRequired cop.
+# ee_only: true

@@ -22,6 +22,9 @@ import {
   TOKEN_TYPE_STATUS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
+import { convertOldTypeTokenEnumToGid } from '~/work_items/list/utils';
 import { AssigneeFilterType, GroupByParamType } from 'ee_else_ce/boards/constants';
 
 const customFieldRegex = /custom-field\[([0-9]+)\]/g;
@@ -31,7 +34,8 @@ export default {
     search: __('Search'),
   },
   components: { FilteredSearch },
-  inject: ['initialFilterParams', 'hasCustomFieldsFeature'],
+  mixins: [glFeatureFlagMixin()],
+  inject: ['fullPath', 'initialFilterParams', 'hasCustomFieldsFeature'],
   props: {
     isSwimlanesOn: {
       type: Boolean,
@@ -56,7 +60,37 @@ export default {
     return {
       filterParams: this.initialFilterParams,
       filteredSearchKey: 0,
+      workItemTypesConfiguration: [],
     };
+  },
+  apollo: {
+    workItemTypesConfiguration: {
+      query: workItemTypesConfigurationQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update(data) {
+        return data?.namespace?.workItemTypes?.nodes || [];
+      },
+      result() {
+        // TODO remove when we no longer need to convert old type=ISSUE params to new type=1 params
+        if (
+          this.glFeatures.workItemConfigurableTypes &&
+          this.getFilteredSearchValue.some((token) => token.type === TOKEN_TYPE_TYPE)
+        ) {
+          const tokens = convertOldTypeTokenEnumToGid(
+            this.getFilteredSearchValue,
+            this.workItemTypesConfiguration,
+          );
+          this.handleFilter(tokens);
+        }
+      },
+      skip() {
+        return !this.glFeatures.workItemConfigurableTypes;
+      },
+    },
   },
   computed: {
     getFilteredSearchValue() {

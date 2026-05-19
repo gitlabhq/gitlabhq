@@ -1,7 +1,9 @@
 ---
 name: read_license
 description: Grants the ability to read licenses
-permissions:
-  - read_license
 boundaries:
   - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_license

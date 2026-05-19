@@ -19,7 +19,12 @@ module API
 
           params[:pagination] = 'keyset' if keyset_supported_for_order?
 
-          present paginate_with_strategies(work_items_relation),
+          paginated = paginate_with_strategies(work_items_relation) do |records|
+            preload_hierarchy_authorization(records, feature_keys)
+            records
+          end
+
+          present paginated,
             with: Entities::WorkItemBasic,
             current_user: current_user,
             scope_validator: ::Gitlab::Auth::ScopeValidator.new(
@@ -29,6 +34,21 @@ module API
             requested_features: feature_keys,
             fields: field_keys,
             resource_parent: resource_parent
+        end
+
+        def render_work_item_response(result, status:)
+          if result[:status] == :success
+            feature_keys = requested_feature_keys(params[:features]&.keys&.join(','))
+
+            present result[:work_item],
+              with: Entities::WorkItemBasic,
+              current_user: current_user,
+              requested_features: feature_keys,
+              fields: requested_field_keys(params[:fields]),
+              status: status
+          else
+            render_api_error!(Array(result[:message]).join(', '), result[:http_status] || :unprocessable_entity)
+          end
         end
 
         def render_work_item_for(resource_parent, work_item_iid)
@@ -46,6 +66,8 @@ module API
             .find_by_iid(work_item_iid)
 
           not_found!('Work Item') unless work_item
+
+          preload_hierarchy_authorization([work_item], feature_keys)
 
           present work_item,
             with: Entities::WorkItemDetail,

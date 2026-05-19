@@ -1,7 +1,7 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 
+import { useIntegrationForm } from '../../store';
 import JiraIssuesFields from '../jira_issues_fields.vue';
 
 export default {
@@ -16,8 +16,9 @@ export default {
       default: false,
     },
   },
+  emits: ['request-jira-issue-types'],
   computed: {
-    ...mapGetters(['currentKey', 'propsSource']),
+    ...mapState(useIntegrationForm, ['currentKey', 'propsSource']),
   },
 };
 </script>

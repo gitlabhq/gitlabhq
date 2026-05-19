@@ -43,8 +43,11 @@ RSpec.describe ::Devise::Models::TwoFactorBackupablePbkdf2 do
       end
 
       it 'generates recovery codes of the correct length' do
+        # otp_backup_code_length is a byte count; SecureRandom.hex(n) produces
+        # a hex string of length 2*n.
+        expected_length = subject.class.otp_backup_code_length * 2
         @plaintext_codes.each do |code|
-          expect(code.length).to eq(subject.class.otp_backup_code_length)
+          expect(code.length).to eq(expected_length)
         end
       end
 

@@ -90,6 +90,8 @@ module API
         optional :web_hook_calls_mid, type: Integer,
           desc: 'Maximum number of times a webhook can be called per minute, per top-level namespace. ' \
             '0 for unlimited (GitLab.com only).'
+        optional :max_pipelines_per_merge_train, type: Integer,
+          desc: 'Maximum number of parallel pipelines per merge train'
       end
       route_setting :authorization, permissions: :update_plan_limit, boundary_type: :instance
       put "application/plan_limits" do

@@ -34,9 +34,9 @@ RSpec.describe DesignManagement::MoveDesignsService, feature_category: :design_m
 
     context 'the user cannot move designs' do
       let(:current_design) { designs.first }
-      let(:current_user) { build_stubbed(:user) }
+      let(:current_user) { build_stubbed(:user, id: non_existing_record_id) }
 
-      it 'raises cannot_move', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17038' do
+      it 'raises cannot_move' do
         expect(subject).to be_error.and(have_attributes(message: :cannot_move))
       end
     end

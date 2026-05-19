@@ -32,7 +32,7 @@ configured by an administrator.
 To change the permitted Git access protocols for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Choose the permitted protocols from **Enabled Git access protocols**.
 1. Select **Save changes**.
@@ -82,7 +82,7 @@ Administrators can combine restricted access by IP address with
 To restrict group access by IP address:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict access by IP address** text box, enter a list of IPv4 or IPv6
    address ranges in CIDR notation:
@@ -126,6 +126,7 @@ list of security implications when accessing GitLab from a disallowed IP address
 - IP restrictions might not apply to forked projects or actions that indirectly interact with issues
   or artifacts in an IP-restricted group. For example, a merge request that closes an issue in an
   IP-restricted group by using an issue reference in the merge request description.
+- IP restrictions apply to project and group access tokens, service accounts, deploy keys, and deploy tokens.
 
 ### GitLab.com access restrictions
 
@@ -156,7 +157,7 @@ to access that group. Subgroups inherit the same allowlist.
 To restrict group access by domain:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict membership by email domain** text box, enter the domain names to allow.
 1. Select **Save changes**.
@@ -185,7 +186,7 @@ As a group Owner, you can prevent non-members from requesting access to
 your group.
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Allow users to request access** checkbox.
 1. Select **Save changes**.
@@ -219,7 +220,7 @@ Prerequisites:
 To prevent projects from being forked outside the group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Check **Prevent project forking outside current group**.
 1. Select **Save changes**.
@@ -251,7 +252,7 @@ The setting does not cascade. Projects in subgroups observe the subgroup configu
 To prevent members from being added to projects in a group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Under **Membership**, select **Users cannot be added to projects in this group**.
 1. Select **Save changes**.
@@ -341,7 +342,7 @@ GitLab begins linking the role to any matching LDAP users. This process may take
 ### Remove group links
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Active synchronization**.
+1. In the left sidebar, select **Settings** > **Active synchronization**.
 1. Identify the group link you want to remove and select **Remove**.
 
 > [!note]
@@ -352,7 +353,7 @@ GitLab begins linking the role to any matching LDAP users. This process may take
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Manage** > **Members**. If LDAP synchronization
+1. In the left sidebar, select **Manage** > **Members**. If LDAP synchronization
    has granted a user a role with:
    - More permissions than the parent group membership, that user is displayed as having
      [direct membership](../project/members/_index.md#display-direct-members) of the group.
@@ -385,7 +386,7 @@ Prerequisites:
 To set the default minimum role:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **CI/CD** > **Variables**.
+1. In the left sidebar, select **Settings** > **CI/CD** > **Variables**.
 1. Under **Default role to use pipeline variables** select a minimum role, or select
    **No one allowed** to prevent any user from using pipeline variables.
 1. Select **Save changes**.

@@ -136,7 +136,7 @@ You can retrieve a repository's metadata by either:
 To retrieve a repository's metadata by its virtual storage and relative path:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Projects** and select the project.
+1. In the left sidebar, select **Overview** > **Projects** and select the project.
 1. Note the values of **Storage name** and **Relative path** for the project.
 1. With these values, run the following command:
 

@@ -81,8 +81,12 @@
   }
 
   img.ProseMirror-selectednode,
+  audio.ProseMirror-selectednode,
   .ProseMirror-selectednode audio,
-  .ProseMirror-selectednode video {
+  video.ProseMirror-selectednode,
+  .ProseMirror-selectednode video,
+  iframe.ProseMirror-selectednode,
+  .ProseMirror-selectednode iframe {
     outline: 3px solid $blue-200;
     outline-offset: -3px;
   }
@@ -133,13 +137,13 @@
   }
 
   .image-resize-sw {
-    bottom: 4px;
+    bottom: -4px;
     left: -4px;
     cursor: sw-resize;
   }
 
   .image-resize-se {
-    bottom: 4px;
+    bottom: -4px;
     right: -4px;
     cursor: se-resize;
   }
@@ -149,8 +153,10 @@
     outline-offset: -2px;
   }
 
-  img {
+  img,
+  iframe {
     max-width: 100%;
+    vertical-align: bottom;
   }
 
   > ul {
@@ -473,4 +479,13 @@
     max-height: none !important;
     resize: none !important;
   }
+}
+
+.iframe-drag-placeholder {
+  border: 2px solid $blue-200;
+  border-radius: $gl-border-radius-base;
+  background: $gray-400;
+
+  @apply gl-absolute;
+  top: -9999px;
 }

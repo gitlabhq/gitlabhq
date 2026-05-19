@@ -1,0 +1,87 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -6529,7 +6529,7 @@
+   const configKeyCodes = config.keyCodes || {};
+   const mappedKeyCode = configKeyCodes[key] || builtInKeyCode;
+   if (builtInKeyName && eventKeyName && !configKeyCodes[key]) {
+-    return isKeyNotMatch(builtInKeyName, eventKeyName);
++    return isKeyNotMatch(builtInKeyName, eventKeyName, key);
+   } else if (mappedKeyCode) {
+     return isKeyNotMatch(mappedKeyCode, eventKeyCode);
+   } else if (eventKeyName) {
+@@ -6540,9 +6540,14 @@
+ function normalizeKeyForComparison(key) {
+   return typeof key === "string" ? key.toLowerCase() : key;
+ }
+-function isKeyNotMatch(expect, actual) {
++function isKeyNotMatch(expect, actual, modifierKey) {
+   const normalizedActual = normalizeKeyForComparison(actual);
+   if (isArray(expect)) {
++    /*! patch-package: also check if actual matches the modifier key name
++     * Vue 3 test-utils sends key: 'space' instead of key: ' ' */
++    if (modifierKey && normalizedActual === normalizeKeyForComparison(modifierKey)) {
++      return false;
++    }
+     return !expect.map(normalizeKeyForComparison).includes(normalizedActual);
+   } else {
+     return normalizeKeyForComparison(expect) !== normalizedActual;
+diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+@@ -6509,7 +6509,7 @@
+   const configKeyCodes = config.keyCodes || {};
+   const mappedKeyCode = configKeyCodes[key] || builtInKeyCode;
+   if (builtInKeyName && eventKeyName && !configKeyCodes[key]) {
+-    return isKeyNotMatch(builtInKeyName, eventKeyName);
++    return isKeyNotMatch(builtInKeyName, eventKeyName, key);
+   } else if (mappedKeyCode) {
+     return isKeyNotMatch(mappedKeyCode, eventKeyCode);
+   } else if (eventKeyName) {
+@@ -6520,9 +6520,14 @@
+ function normalizeKeyForComparison(key) {
+   return typeof key === "string" ? key.toLowerCase() : key;
+ }
+-function isKeyNotMatch(expect, actual) {
++function isKeyNotMatch(expect, actual, modifierKey) {
+   const normalizedActual = normalizeKeyForComparison(actual);
+   if (isArray(expect)) {
++    /*! patch-package: also check if actual matches the modifier key name
++     * Vue 3 test-utils sends key: 'space' instead of key: ' ' */
++    if (modifierKey && normalizedActual === normalizeKeyForComparison(modifierKey)) {
++      return false;
++    }
+     return !expect.map(normalizeKeyForComparison).includes(normalizedActual);
+   } else {
+     return normalizeKeyForComparison(expect) !== normalizedActual;
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -6436,7 +6436,7 @@
+   const configKeyCodes = config.keyCodes || {};
+   const mappedKeyCode = configKeyCodes[key] || builtInKeyCode;
+   if (builtInKeyName && eventKeyName && !configKeyCodes[key]) {
+-    return isKeyNotMatch(builtInKeyName, eventKeyName);
++    return isKeyNotMatch(builtInKeyName, eventKeyName, key);
+   } else if (mappedKeyCode) {
+     return isKeyNotMatch(mappedKeyCode, eventKeyCode);
+   } else if (eventKeyName) {
+@@ -6447,9 +6447,14 @@
+ function normalizeKeyForComparison(key) {
+   return typeof key === "string" ? key.toLowerCase() : key;
+ }
+-function isKeyNotMatch(expect, actual) {
++function isKeyNotMatch(expect, actual, modifierKey) {
+   const normalizedActual = normalizeKeyForComparison(actual);
+   if (isArray(expect)) {
++    /*! patch-package: also check if actual matches the modifier key name
++     * Vue 3 test-utils sends key: 'space' instead of key: ' ' */
++    if (modifierKey && normalizedActual === normalizeKeyForComparison(modifierKey)) {
++      return false;
++    }
+     return !expect.map(normalizeKeyForComparison).includes(normalizedActual);
+   } else {
+     return normalizeKeyForComparison(expect) !== normalizedActual;

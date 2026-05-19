@@ -180,7 +180,7 @@ class BackportOptions
     security_repo_url = prompt.select('Which remote format do you normally use?', git_remote_style_choices(:security))
     stdin, stdout, stderr, wait_thr = Open3.popen3("git remote add security #{security_repo_url}")
 
-    if wait_thr.value.success? # rubocop:disable Cop/LineBreakAroundConditionalBlock -- https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/merge_requests/258
+    if wait_thr.value.success?
       @security_remote_name = 'security'
       puts '✅ Successfully created `security` remote'.white
     else
@@ -218,7 +218,7 @@ class BackportOptions
     canonical_repo_url = prompt.select('Which remote format do you normally use?', git_remote_style_choices(:canonical))
     stdin, stdout, stderr, wait_thr = Open3.popen3("git remote add origin #{canonical_repo_url}")
 
-    if wait_thr.value.success? # rubocop:disable Cop/LineBreakAroundConditionalBlock -- https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/merge_requests/258
+    if wait_thr.value.success?
       @canonical_remote_name = 'origin'
       puts '✅ Successfully created `origin` remote'.white
     else

@@ -7,13 +7,13 @@ RSpec.describe 'OmniAuth::Strategies::OAuth2' do
     current_version = OmniAuth::OAuth2::VERSION
     expected_version = '1.8.0'
 
-    expect(current_version).to eq(expected_version), <<~EOF
+    expect(current_version).to eq(expected_version), <<~TEXT
       New version #{current_version} of the `omniauth-oauth2` gem detected!
 
       Please check if the monkey patches in `config/initializers_before_autoloader/100_patch_omniauth_oauth2.rb`
       are still needed, and either update/remove them, or bump the version in this spec.
 
-    EOF
+    TEXT
   end
 
   context 'when a Faraday exception is raised' do

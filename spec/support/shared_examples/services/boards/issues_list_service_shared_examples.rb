@@ -4,7 +4,7 @@ RSpec.shared_examples 'issues list service' do
   it 'delegates search to IssuesFinder' do
     params = { board_id: board.id, id: list1.id }
 
-    expect_any_instance_of(IssuesFinder).to receive(:execute).once.and_call_original
+    expect(IssuesFinder).to receive(:new).once.and_call_original
 
     described_class.new(parent, user, params).execute
   end

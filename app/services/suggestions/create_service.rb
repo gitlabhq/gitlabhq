@@ -37,5 +37,11 @@ module Suggestions
 
       Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_add_suggestion_action(note: @note)
     end
+
+    private
+
+    attr_reader :note, :project
   end
 end
+
+Suggestions::CreateService.prepend_mod_with('Suggestions::CreateService')

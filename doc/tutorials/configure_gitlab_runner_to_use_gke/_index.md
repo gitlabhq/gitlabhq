@@ -2,6 +2,7 @@
 stage: Verify
 group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Learn how to configure GitLab Runner to run CI/CD jobs in Google Kubernetes Engine using the Kubernetes Operator.
 title: 'Tutorial: Configure GitLab Runner to use the Google Kubernetes Engine'
 ---
 

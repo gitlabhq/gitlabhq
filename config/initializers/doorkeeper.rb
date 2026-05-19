@@ -24,29 +24,6 @@ Doorkeeper.configure do
     end
   end
 
-  resource_owner_from_credentials do |_routes|
-    user = User.find_by_login(params[:username])
-    next unless user
-
-    next if user.password_automatically_set? && !user.password_based_omniauth_user?
-    next if user.two_factor_enabled? || Gitlab::Auth::TwoFactorAuthVerifier.new(user, treat_email_otp_as_2fa: true).two_factor_authentication_enforced?
-
-    Gitlab::Auth.find_with_user_password(params[:username], params[:password], increment_failed_attempts: true, request: request)
-  end
-
-  allow_grant_flow_for_client do |grant_flow, client|
-    next true unless client
-    next true unless grant_flow == 'password'
-
-    next false if Applications::CreateService.disable_ropc_for_all_applications?
-
-    if Applications::CreateService.disable_ropc_available?
-      next client.ropc_enabled?
-    end
-
-    true
-  end
-
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
   # admin_authenticator do
   #   # Put your admin authentication logic here.
@@ -114,10 +91,9 @@ Doorkeeper.configure do
   # strings and the flows they enable are:
   #
   # "authorization_code" => Authorization Code Grant Flow
-  # "password"           => Resource Owner Password Credentials Grant Flow
   # "client_credentials" => Client Credentials Grant Flow
   #
-  grant_flows %w[authorization_code password client_credentials device_code]
+  grant_flows %w[authorization_code client_credentials device_code]
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.
@@ -130,11 +106,6 @@ Doorkeeper.configure do
   # realm "Doorkeeper"
 
   base_controller '::Gitlab::BaseDoorkeeperController'
-
-  # Allow Resource Owner Password Credentials Grant without client credentials,
-  # this was disabled by default in Doorkeeper 5.5.
-  #
-  skip_client_authentication_for_password_grant -> { Gitlab::CurrentSettings.ropc_without_client_credentials }
 
   # 2 hours in seconds
   # This is also the database default value
@@ -152,25 +123,6 @@ Doorkeeper.configure do
 
   enable_dynamic_scopes
   # Following doorkeeper monkey patches are to identify the organization on best effort basis
-
-  Doorkeeper::OAuth::PasswordAccessTokenRequest.class_eval do
-    private
-
-    def before_successful_response
-      organization = Gitlab::Current::Organization.new(user: resource_owner).organization
-
-      find_or_create_access_token(client, resource_owner, scopes, { organization_id: organization.id }, server)
-      super
-    end
-
-    def validate_client
-      if Doorkeeper.config.skip_client_authentication_for_password_grant.call
-        client.present? || (!parameters[:client_id] && credentials.blank?)
-      else
-        client.present?
-      end
-    end
-  end
 
   Doorkeeper::DeviceAuthorizationGrant::OAuth::DeviceAuthorizationRequest.class_eval do
     # @return [Hash]
@@ -210,6 +162,15 @@ Doorkeeper.configure do
       )
     end
   end
+
+  Doorkeeper::OAuth::ClientCredentialsRequest.prepend(
+    Module.new do
+      def initialize(server, client, parameters = {})
+        super
+        @parameters[:organization_id] ||= Gitlab::Current::Organization.new.organization.id
+      end
+    end
+  )
 
   application_class "Authn::OauthApplication"
   access_token_class "OauthAccessToken"

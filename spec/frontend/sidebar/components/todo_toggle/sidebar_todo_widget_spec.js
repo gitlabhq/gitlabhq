@@ -11,7 +11,12 @@ import epicTodoQuery from '~/sidebar/queries/epic_todo.query.graphql';
 import mergeRequestTodoQuery from '~/sidebar/queries/merge_request_todo.query.graphql';
 import mergeRequestTodoSubscription from '~/sidebar/queries/merge_request_todo.subscription.graphql';
 import TodoButton from '~/sidebar/components/todo_toggle/todo_button.vue';
-import { todosResponse, noMergeRequestTodosResponse, noTodosResponse } from '../../mock_data';
+import {
+  todosResponse,
+  multipleTodosResponse,
+  noMergeRequestTodosResponse,
+  noTodosResponse,
+} from '../../mock_data';
 
 jest.mock('~/alert');
 
@@ -74,6 +79,31 @@ describe('Sidebar Todo Widget', () => {
       expect(findTodoButton().props('isTodo')).toBe(true);
     });
 
+    it('passes todoCount of 1 to Todo button component', () => {
+      expect(findTodoButton().props('todoCount')).toBe(1);
+    });
+
+    it('emits `todoUpdated` event with a `true` payload', () => {
+      expect(wrapper.emitted('todoUpdated')).toEqual([[true]]);
+    });
+  });
+
+  describe('when user has multiple todos for the issuable', () => {
+    beforeEach(() => {
+      createComponent({
+        todosQueryHandler: jest.fn().mockResolvedValue(multipleTodosResponse),
+      });
+      return waitForPromises();
+    });
+
+    it('passes true isTodo prop to Todo button component', () => {
+      expect(findTodoButton().props('isTodo')).toBe(true);
+    });
+
+    it('passes correct todoCount to Todo button component', () => {
+      expect(findTodoButton().props('todoCount')).toBe(3);
+    });
+
     it('emits `todoUpdated` event with a `true` payload', () => {
       expect(wrapper.emitted('todoUpdated')).toEqual([[true]]);
     });
@@ -116,7 +146,7 @@ describe('Sidebar Todo Widget', () => {
 
       await waitForPromises();
       expect(wrapper.findComponent(GlAnimatedTodoIcon).props('isOn')).toBe(true);
-      expect(wrapper.findComponent(GlButton).attributes('title')).toBe('Mark as done');
+      expect(wrapper.findComponent(GlButton).attributes('title')).toBe('Mark to-do items done');
     });
 
     it('emits `todoUpdated` event on click on icon', async () => {

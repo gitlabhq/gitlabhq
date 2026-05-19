@@ -113,10 +113,6 @@ export const MAX_WORK_ITEMS = 10;
 export const FORM_TYPES = {
   create: 'create',
   add: 'add',
-  [WORK_ITEM_TYPE_ENUM_OBJECTIVE]: {
-    icon: `work-item-objective`,
-    name: s__('WorkItem|Objective'),
-  },
 };
 
 export const DEFAULT_PAGE_SIZE_NOTES = 20; // Set to 20 to not exceed query complexity
@@ -153,7 +149,6 @@ export const WORK_ITEM_ACTIVITY_SORT_OPTIONS = [
 
 export const TODO_ADD_ICON = 'todo-add';
 export const TODO_DONE_ICON = 'todo-done';
-export const TODO_DONE_STATE = 'done';
 export const TODO_PENDING_STATE = 'pending';
 
 export const WORK_ITEM_TO_ISSUABLE_MAP = {
@@ -254,12 +249,9 @@ export const WORK_ITEM_BASE_ROUTE_MAP = {
   [WORK_ITEM_TYPE_ROUTE_SERVICE_DESK]: WORK_ITEM_TYPE_ENUM_TICKET,
 };
 
-export const WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY = 'workItemLinks.showLabels';
 export const WORKITEM_LINKS_METADATA_LOCALSTORAGEKEY = 'workItemLinks.hiddenMetadataKeys';
-export const WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY = 'workItemTree.showLabels';
 export const WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemTree.showClosed';
 export const WORKITEM_TREE_METADATA_LOCALSTORAGEKEY = 'workItemTree.hiddenMetadataKeys';
-export const WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY = 'workItemRelationships.showLabels';
 export const WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemRelationships.showClosed';
 export const WORKITEM_RELATIONSHIPS_METADATA_LOCALSTORAGEKEY =
   'workItemRelationships.hiddenMetadataKeys';
@@ -274,11 +266,6 @@ export const NAME_TO_ENUM_MAP = {
   [WORK_ITEM_TYPE_NAME_TASK]: WORK_ITEM_TYPE_ENUM_TASK,
   [WORK_ITEM_TYPE_NAME_TEST_CASE]: WORK_ITEM_TYPE_ENUM_TEST_CASE,
   [WORK_ITEM_TYPE_NAME_TICKET]: WORK_ITEM_TYPE_ENUM_TICKET,
-};
-
-export const NAME_TO_ROUTE_MAP = {
-  [WORK_ITEM_TYPE_NAME_EPIC]: WORK_ITEM_TYPE_ROUTE_EPIC,
-  [WORK_ITEM_TYPE_NAME_ISSUE]: WORK_ITEM_TYPE_ROUTE_ISSUE,
 };
 
 export const WORK_ITEM_WIDGETS_NAME_MAP = {

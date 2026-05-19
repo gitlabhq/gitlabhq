@@ -5,7 +5,7 @@ module API
     class CommitDetail < Commit
       include ::API::Helpers::Presentable
 
-      expose :stats, using: Entities::CommitStats, if: :include_stats
+      expose :stats, using: ::API::Entities::CommitStats, if: :include_stats
       expose :status_for, as: :status, documentation: { type: 'String', example: 'success' }
       expose :project_id, documentation: { type: 'Integer', example: 1 }
 

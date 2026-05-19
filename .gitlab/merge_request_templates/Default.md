@@ -1,3 +1,9 @@
+<!--
+**Not ready yet?** Add `[ci skip]` to your MR title to skip the pipeline and save CI resources. 
+It's a small habit that makes a big difference for our shared compute budget and overall system load. 
+Every pipeline counts! 🙌
+-->
+
 ## What does this MR do and why?
 
 %{first_multiline_commit}

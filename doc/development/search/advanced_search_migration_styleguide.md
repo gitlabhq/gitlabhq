@@ -965,6 +965,52 @@ Follow these best practices for best results:
 - Pause indexing if you're using any Elasticsearch Reindex API operations.
 - Consider adding a retry limit if there is potential for the migration to fail.
   This ensures that migrations can be halted if an issue occurs.
+- Inline index mappings and settings within the migration file. This protects
+  the migration from future code changes in shared configuration classes. Define
+  mappings and settings in private methods rather than referencing external
+  classes or modules. This follows the same pattern as database migrations to
+  ensure migrations remain stable over time.
+
+### Inlining mappings and settings
+
+When creating or updating an index, define mappings and settings directly in the
+migration file using private methods:
+
+```ruby
+class MigrationName < Elastic::Migration
+  include ::Search::Elastic::MigrationHelper
+
+  def migrate
+    helper.create_index(
+      index_name: 'my-index',
+      settings: index_settings,
+      mappings: index_mappings
+    )
+  end
+
+  private
+
+  def index_settings
+    {
+      number_of_shards: 1,
+      number_of_replicas: 1
+    }
+  end
+
+  def index_mappings
+    {
+      properties: {
+        id: { type: 'keyword' },
+        name: { type: 'text' },
+        created_at: { type: 'date' }
+      }
+    }
+  end
+end
+```
+
+This approach ensures the migration continues to work correctly even if shared
+configuration classes change in future GitLab versions.
 
 ## Cleaning up advanced search migrations
 

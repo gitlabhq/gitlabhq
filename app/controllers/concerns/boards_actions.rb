@@ -13,7 +13,7 @@ module BoardsActions
 
   def index
     # if no board exists, create one
-    @board = board_create_service.execute.payload unless board # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @board = board_create_service.execute.payload[:board] unless board # rubocop:disable Gitlab/ModuleWithInstanceVariables -- Should be allowable in concerns
   end
 
   def show

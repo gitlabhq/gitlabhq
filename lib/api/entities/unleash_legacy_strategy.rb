@@ -3,10 +3,10 @@
 module API
   module Entities
     class UnleashLegacyStrategy < Grape::Entity
-      expose :name do |strategy|
+      expose :name, documentation: { type: 'String' } do |strategy|
         strategy['name']
       end
-      expose :parameters do |strategy|
+      expose :parameters, documentation: { type: 'Hash' } do |strategy|
         strategy['parameters']
       end
     end

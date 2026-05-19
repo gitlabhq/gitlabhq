@@ -1,0 +1,7 @@
+name: pipelines_email_notify_child_pipelines
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221010
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592862
+type: gitlab_com_derisk
+group: group::pipeline execution
+default_enabled: false
+milestone: "19.0"

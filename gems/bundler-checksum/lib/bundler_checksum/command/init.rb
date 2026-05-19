@@ -13,12 +13,14 @@ module BundlerChecksum::Command
       $stderr.puts "Initializing checksum file #{checksum_file}"
 
       checksums = []
+      seen = {}
 
       require "bundler/vendored_uri"
 
       Bundler.definition.resolve.sort_by(&:name).each do |spec|
         next unless spec.source.is_a?(Bundler::Source::Rubygems)
         spec_identifier = "#{spec.name}==#{spec.version}"
+        next if seen[spec_identifier]
 
         previous_checksum = previous_checksums.select do |checksum|
           checksum[:name] == spec.name && checksum[:version] == spec.version.to_s
@@ -27,7 +29,7 @@ module BundlerChecksum::Command
         if !previous_checksum.empty?
           $stderr.puts "Using #{spec_identifier}"
           checksums += previous_checksum
-
+          seen[spec_identifier] = true
           next
         end
 
@@ -55,6 +57,8 @@ module BundlerChecksum::Command
 
           checksums += remote_checksum.sort_by { |hash| hash.values }
         end
+
+        seen[spec_identifier] = true
       end
 
       File.write(checksum_file, JSON.generate(checksums, array_nl: "\n") + "\n")

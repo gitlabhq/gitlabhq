@@ -15,6 +15,21 @@ module QA
       CAPYBARA_MAX_WAIT_TIME = Env.max_capybara_wait_time
       DEFAULT_WINDOW_SIZE = '1480,2200'
 
+      class SeleniumDriverWithSafeQuit < Capybara::Selenium::Driver
+        def quit
+          super
+        # EOFError and Net::ReadTimeout are raised by selenium-webdriver >= 4.40.0 when
+        # Net::HTTP checks driver status after ChromeDriver has already exited or stopped
+        # responding. Introduced in:
+        #   https://github.com/SeleniumHQ/selenium/pull/16877
+        #   https://github.com/SeleniumHQ/selenium/pull/15635
+        # Safe to ignore -- driver process is confirmed stopped at this point.
+        rescue EOFError, Net::ReadTimeout
+          nil
+        end
+      end
+      private_constant :SeleniumDriverWithSafeQuit
+
       def self.blank_page?
         ['', 'about:blank', 'data:,'].include?(Capybara.current_session.driver.browser.current_url)
       rescue StandardError
@@ -28,6 +43,8 @@ module QA
       def self.configure! # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity -- TODO: Break up this method
         return if QA::Runtime::Env.dry_run
         return if @configured
+
+        stagger_browser_startup!
 
         RSpec.configure do |config|
           config.define_derived_metadata(file_path: %r{/qa/specs/features/}) do |metadata|
@@ -192,7 +209,7 @@ module QA
             })
           end
 
-          Capybara::Selenium::Driver.new(app, options: webdriver_options, **selenium_options)
+          SeleniumDriverWithSafeQuit.new(app, options: webdriver_options, **selenium_options)
         end
 
         # Keep only the screenshots generated from the last failing test suite
@@ -251,6 +268,26 @@ module QA
       rescue StandardError => e
         QA::Runtime::Logger.info("Chrome policy creation failed: #{e.message}")
       end
+
+      # Stagger browser startup across parallel workers to avoid a burst of connections
+      # to the http-router when all workers start their first browser session at the
+      # same time. Controlled by QA_PARALLEL_BROWSER_STAGGER_SECONDS (seconds per worker index)
+      # TEST_ENV_NUMBER is "1", "2", "3"... when parallel_tests runs with --first-is-1 set in parallel_runner.rb
+      # Worker 1 (TEST_ENV_NUMBER="1") always sleeps 0s.
+      def self.stagger_browser_startup!
+        stagger = Integer(ENV.fetch('QA_PARALLEL_BROWSER_STAGGER_SECONDS', '0'), exception: false) || 0
+        return if stagger <= 0
+
+        worker_index = [ENV['TEST_ENV_NUMBER'].to_i - 1, 0].max
+        sleep_time = worker_index * stagger
+        return if sleep_time <= 0
+
+        QA::Runtime::Logger.info(
+          "Staggering browser startup: worker #{worker_index + 1} sleeping #{sleep_time}s"
+        )
+        sleep(sleep_time)
+      end
+      private_class_method :stagger_browser_startup!
 
       ##
       # Visit a page that belongs to a GitLab instance under given address.

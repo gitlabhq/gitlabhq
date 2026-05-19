@@ -126,6 +126,13 @@ class ContainerRepository < ApplicationRecord
     end
   end
 
+  def tag_details(name:)
+    return unless gitlab_api_client.supports_gitlab_api?
+
+    tag_details = gitlab_api_client.tag_details(self.path, name)
+    transform_tag_details(tag_details)
+  end
+
   def image_manifest(reference)
     client.repository_manifest(path, reference)
   end
@@ -343,6 +350,22 @@ class ContainerRepository < ApplicationRecord
       tag.referrers = raw_tag['referrers']
       tag.published_at = raw_tag['published_at']
       tag.media_type = raw_tag['media_type']
+      tag
+    end
+  end
+
+  def transform_tag_details(tag_details_response_body)
+    return unless tag_details_response_body
+
+    tag_details_response_body.then do |raw_tag|
+      tag = ContainerRegistry::Tag.new(self, raw_tag['name'], from_api: true)
+      tag.force_created_at_from_iso8601(raw_tag['created_at'])
+      tag.published_at = raw_tag['published_at']
+      tag.total_size = raw_tag.dig('image', 'size_bytes')
+      tag.manifest_digest = raw_tag.dig('image', 'manifest', 'digest')
+      tag.media_type = raw_tag.dig('image', 'manifest', 'media_type')
+      tag.platform = raw_tag.dig('image', 'config', 'platform')
+      tag.manifests = raw_tag.dig('image', 'manifest', 'references')
       tag
     end
   end

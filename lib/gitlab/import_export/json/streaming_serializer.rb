@@ -17,7 +17,30 @@ module Gitlab
           end
         end
 
-        def initialize(exportable, relations_schema, json_writer, current_user:, exportable_path:, excluded_relations: [], logger: Gitlab::Export::Logger)
+        # @param exportable [Group, Project] the group or project being exported
+        # @param relations_schema [Hash] tree built from import_export.yml containing keys:
+        #   :only (included attributes), :except (excluded attributes), :methods (virtual
+        #   attributes), :include (nested relation definitions), :preload (AR preload hints),
+        #   :export_reorder (custom ordering per relation), and :include_if_exportable (conditional associations)
+        # @param json_writer [Gitlab::ImportExport::Json::NdjsonWriter] writer used to stream JSON output
+        # @param current_user [User] the user performing the export
+        # @param exportable_path [String] subdirectory path within the export that namespaces output files;
+        #   root attributes are written to "<exportable_path>.json" and each relation to
+        #   "<exportable_path>/<relation>.ndjson" (e.g. "project", "tree/project", "groups/123", or "" for
+        #   bulk imports where each relation is already isolated in its own export path)
+        # @param excluded_relations [Array<String>] relation names to skip during serialization
+        # @param logger [Logger] logger instance
+        # @param offline_export_id [Integer, nil] when present, scopes contributor caching to a single
+        #   offline export to prevent interference between concurrent exports of the same portable
+        def initialize(
+          exportable,
+          relations_schema,
+          json_writer,
+          current_user:,
+          exportable_path:,
+          excluded_relations: [],
+          logger: Gitlab::Export::Logger,
+          offline_export_id: nil)
           @exportable = exportable
           @current_user = current_user
           @exportable_path = exportable_path
@@ -26,6 +49,7 @@ module Gitlab
           @logger = logger
           @exported_objects_count = 0
           @excluded_relations = Array.wrap(excluded_relations).map(&:to_s)
+          @offline_export_id = offline_export_id
         end
 
         def execute
@@ -284,7 +308,7 @@ module Gitlab
         end
 
         def user_contributions_export_mapper
-          BulkImports::UserContributionsExportMapper.new(exportable)
+          BulkImports::UserContributionsExportMapper.new(exportable, offline_export_id: @offline_export_id)
         end
         strong_memoize_attr :user_contributions_export_mapper
 

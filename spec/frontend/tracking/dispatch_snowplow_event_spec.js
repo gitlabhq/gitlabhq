@@ -100,4 +100,24 @@ describe('dispatchSnowplowEvent', () => {
     expect(result).toBe(true);
     expect(snowplowMock).toHaveBeenCalledTimes(1);
   });
+
+  it('omits value if its not a number', () => {
+    const data = {
+      label: 'Show Incident',
+      property: 'click_event',
+      value: 'hello',
+      context: extraContext,
+      extra: { namespace: 'GitLab' },
+    };
+
+    dispatchSnowplowEvent(category, action, data);
+
+    expect(snowplowMock).toHaveBeenCalledWith('trackStructEvent', {
+      category,
+      action,
+      label: data.label,
+      property: data.property,
+      context: [mockStandardContext, data.context],
+    });
+  });
 });

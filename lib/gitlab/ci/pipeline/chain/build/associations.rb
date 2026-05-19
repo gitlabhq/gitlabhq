@@ -89,7 +89,7 @@ module Gitlab
 
             def validate_uniqueness(variables)
               duplicated_keys = variables
-                .map { |var| var[:key] } # rubocop: disable Rails/Pluck -- Pluck raises error too
+                .map { |var| var[:key] }
                 .tally
                 .filter_map { |key, count| key if count > 1 }
 

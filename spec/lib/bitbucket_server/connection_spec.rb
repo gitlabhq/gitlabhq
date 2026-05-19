@@ -32,6 +32,49 @@ RSpec.describe BitbucketServer::Connection, feature_category: :importers do
       expect { subject.get(url) }.to raise_error(described_class::ConnectionError)
     end
 
+    it 'includes the HTTP status code in the ConnectionError' do
+      WebMock.stub_request(:get, url).with(headers: { 'Accept' => 'application/json' })
+        .to_return(body: { 'errors' => [{ 'message' => 'Not Found' }] }.to_json, status: 404, headers: headers)
+
+      expect { subject.get(url) }.to raise_error(described_class::ConnectionError) do |error|
+        expect(error.http_status_code).to eq(404)
+      end
+    end
+
+    it 'sets http_status_code to nil for non-HTTP errors' do
+      WebMock.stub_request(:get, url).with(headers: { 'Accept' => 'application/json' }).to_raise(OpenSSL::SSL::SSLError)
+
+      expect { subject.get(url) }.to raise_error(described_class::ConnectionError) do |error|
+        expect(error.http_status_code).to be_nil
+      end
+    end
+  end
+
+  describe 'ConnectionError#retryable?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:status_code, :expected_retryable) do
+      nil | true
+      401 | false
+      403 | false
+      404 | false
+      410 | false
+      408 | true
+      429 | true
+      500 | true
+      502 | true
+      503 | true
+      599 | true
+      600 | false
+    end
+
+    with_them do
+      it 'returns the expected value' do
+        error = described_class::ConnectionError.new('test', http_status_code: status_code)
+        expect(error.retryable?).to eq(expected_retryable)
+      end
+    end
+
     it 'throws an exception if the response is not JSON' do
       WebMock.stub_request(:get, url).with(headers: { 'Accept' => 'application/json' }).to_return(body: 'bad data', status: 200, headers: headers)
 

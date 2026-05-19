@@ -1,0 +1,6 @@
+---
+event: Vulnerabilities::LinkToExternalIssueTrackerCreated
+description: Published when a vulnerability is linked to an issue in an external issue
+  tracker (for example, Jira).
+feature_category: vulnerability_management
+ee_only: true

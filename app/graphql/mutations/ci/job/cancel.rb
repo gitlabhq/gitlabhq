@@ -12,6 +12,7 @@ module Mutations
           description: 'Job after the mutation.'
 
         authorize :cancel_build
+        authorize_granular_token permissions: :cancel_job, boundary_argument: :id, boundary_type: :project
 
         def resolve(id:)
           job = authorized_find!(id: id)

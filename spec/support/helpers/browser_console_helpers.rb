@@ -16,17 +16,24 @@ module BrowserConsoleHelpers
       'Download the Apollo DevTools',
       "Unrecognized feature: 'interest-cohort'",
       'Does this page need fixes or improvements?',
+      '[vite] connecting...',
+      '[vite] connected.',
 
       # Needed after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60933
       # which opts out gitlab from FloC by default
       # see https://web.dev/floc/ for more info on FloC
       "Origin trial controlled feature not enabled: 'interest-cohort'",
 
+      # Font warning
+      /The resource .* was preloaded using link preload but not used/,
+
       # ERR_CONNECTION error could happen due to automated test session disabling browser network request
       'net::ERR_CONNECTION',
 
-      # GitLab UI translation fallback warnings
-      '@gitlab/ui.*translations have not been given.*fall back to their default US English strings',
+      # GitLab owned deps translation fallback warnings, matches warnings at:
+      # - https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/blob/main/packages/gitlab-ui/src/config.js
+      # - https://gitlab.com/gitlab-org/duo-ui/-/blob/main/src/config.js
+      'The following translations have not been given, so will fall back',
 
       # ProjectSelect initialization warning when element is not present on the page
       'Attempted to initialize ProjectSelect'

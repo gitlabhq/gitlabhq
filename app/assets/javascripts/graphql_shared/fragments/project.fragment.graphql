@@ -3,6 +3,7 @@
 
 fragment Project on Project {
   ...ProjectInterface
+  path
   editPath
   archived
   isSelfArchived

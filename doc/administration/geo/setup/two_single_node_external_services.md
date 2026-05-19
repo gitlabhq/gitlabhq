@@ -376,7 +376,7 @@ If you convert an existing site to Geo, you should check that the clone method i
 On the primary site:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. If you use Git over SSH:
    1. Ensure **Enabled Git access protocols** is set to **Both SSH and HTTP(S)**.
@@ -391,7 +391,7 @@ the primary site.
 After you sign in:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 1. Verify that the site is correctly identified as a secondary Geo site, and that
    Geo is enabled.
 

@@ -25,7 +25,7 @@ RSpec.describe Boards::Issues::CreateService, feature_category: :portfolio_manag
     end
 
     it 'creates a new issue' do
-      expect { service.execute }.to change(project.issues, :count).by(1)
+      expect { service.execute }.to change { project.issues.count }.by(1)
     end
 
     it 'adds the label of the list to the issue' do

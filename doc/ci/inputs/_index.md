@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Use typed, validated input parameters to customize reusable CI/CD templates and components.
 title: CI/CD inputs
 ---
 
@@ -79,6 +80,10 @@ scan-website:
 
 In this example, the inputs are `job-stage` and `environment`.
 
+You can only use inputs values in the file with the `spec` section.
+To use an input value from a different file added with `include`,
+[pass it to the included file explicitly](#for-configuration-added-with-include).
+
 With `spec:inputs`:
 
 - Inputs are mandatory if `default` is not specified.
@@ -91,7 +96,7 @@ With `spec:inputs`:
 
 Then you set the values for the inputs when you:
 
-- [Trigger a new pipeline](#for-a-pipeline) using this configuration file.
+- [Run a new pipeline](#for-a-pipeline) using this configuration file.
   You should always set default values when using inputs to configure new pipelines
   with any method other than `include`. Otherwise the pipeline could fail to start
   if a new pipeline triggers automatically, including in:
@@ -242,11 +247,44 @@ test_job:
 Array inputs must be formatted as JSON, for example `["array-input-1", "array-input-2"]`,
 when manually passing inputs for:
 
-- [Manually triggered pipelines](../pipelines/_index.md#run-a-pipeline-manually).
+- [Manually run pipelines](../pipelines/_index.md#run-a-pipeline-manually).
 - The [pipeline triggers API](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token).
 - The [pipelines API](../../api/pipelines.md#create-a-new-pipeline).
 - Git [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd)
 - [Pipeline schedules](../pipelines/schedules.md#create-a-pipeline-schedule)
+
+##### Array inputs with options
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/566155) in GitLab 19.0.
+
+{{< /history >}}
+
+You can define a list of options to restrict the allowed values for array inputs.
+When you run a pipeline manually, the UI displays a multi-select dropdown
+instead of a text field. For example:
+
+```yaml
+spec:
+  inputs:
+    runner_tags:
+      type: array
+      default: ["docker"]
+      options:
+        - docker
+        - linux
+        - gpu
+        - macos
+---
+
+test:
+  script:
+    - run_tests.sh
+  tags: $[[ inputs.runner_tags ]]
+```
+
+The pipeline fails to start if any value in the array input does not match a listed option.
 
 ##### Access individual array elements
 
@@ -497,6 +535,11 @@ it defaults to `test`.
 
 ## Set input values
 
+You can set input values in your pipeline configuration or when you trigger a pipeline.
+
+After the pipeline starts, you cannot fetch any used input values. If a value is safe to expose,
+you can output the value in a job log for future reference, or save it in an artifact.
+
 ### For configuration added with `include`
 
 {{< history >}}
@@ -536,6 +579,10 @@ In this example, the inputs for the included configuration are:
 | `version`        | `v1.3.2`        | Must be explicitly defined, and must match the regular expression in the `spec:inputs:regex` in the included configuration. |
 | `export_results` | `false`         | Must be either `true` or `false` to match the `spec:inputs:type` set to `boolean` in the included configuration. Overrides the default value. |
 
+Input values are only available in the same file as the `spec` section defining them.
+A file added with `include` cannot access inputs defined in other files, or the including file.
+To use a value from an included file, pass it explicitly with `include:inputs`.
+
 #### With multiple `include` entries
 
 Inputs must be specified separately for each include entry. For example:
@@ -569,16 +616,16 @@ of the main `.gitlab-ci.yml` file. You cannot use inputs defined in included fil
 > For enhanced security, you should [disable pipeline variables](../variables/_index.md#restrict-pipeline-variables) when using inputs.
 
 You should always set default values when defining inputs for pipelines.
-Otherwise the pipeline could fail to start if a new pipeline triggers automatically.
+If any input is missing a default, the pipeline fails when it triggers automatically.
 For example, merge request pipelines can trigger for changes to a merge request's source branch.
 You cannot manually set inputs for merge request pipelines, so if any input is missing a default,
-the pipeline fails to create. This can also happen for branch pipelines, tag pipelines,
+the pipeline fails. This can also happen for branch pipelines, tag pipelines,
 and other automatically triggered pipelines.
 
 You can set input values with:
 
 - [Downstream pipelines](../pipelines/downstream_pipelines.md#pass-inputs-to-a-downstream-pipeline)
-- [Manually triggered pipelines](../pipelines/_index.md#run-a-pipeline-manually).
+- [Manually run pipelines](../pipelines/_index.md#run-a-pipeline-manually).
 - The [pipeline triggers API](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token)
 - The [pipelines API](../../api/pipelines.md#create-a-new-pipeline)
 - Git [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd)

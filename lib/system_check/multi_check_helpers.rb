@@ -5,28 +5,28 @@ module SystemCheck
   # when using a multi_check version
   module MultiCheckHelpers
     def print_skipped(reason)
-      $stdout.puts Rainbow('skipped').magenta
+      say Rainbow('skipped').magenta
 
-      $stdout.puts Rainbow('  Reason:').blue
-      $stdout.puts "  #{reason}"
+      say Rainbow('  Reason:').blue
+      say "  #{reason}"
     end
 
     def print_warning(reason)
-      $stdout.puts Rainbow('warning').magenta
+      say Rainbow('warning').magenta
 
-      $stdout.puts Rainbow('  Reason:').blue
-      $stdout.puts "  #{reason}"
+      say Rainbow('  Reason:').blue
+      say "  #{reason}"
     end
 
     def print_failure(reason)
-      $stdout.puts Rainbow('no').red
+      say Rainbow('no').red
 
-      $stdout.puts Rainbow('  Reason:').blue
-      $stdout.puts "  #{reason}"
+      say Rainbow('  Reason:').blue
+      say "  #{reason}"
     end
 
     def print_pass
-      $stdout.puts Rainbow(self.class.check_pass).green
+      say Rainbow(self.class.check_pass).green
     end
   end
 end

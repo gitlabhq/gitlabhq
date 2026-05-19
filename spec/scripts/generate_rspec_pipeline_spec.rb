@@ -422,15 +422,27 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
         )
       end
 
+      context 'when no tier label is set' do
+        before do
+          stub_env('CI_MERGE_REQUEST_LABELS', nil)
+        end
+
+        it 'generates the pipeline config with system tests' do
+          subject.generate!
+
+          expect(File.read("#{pipeline_template.path}.yml")).to eq("rspec system:")
+        end
+      end
+
       context 'when on tier-2 pipeline' do
         before do
           stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-2')
         end
 
-        it 'generates the pipeline config using the no-op template' do
+        it 'generates the pipeline config with system tests' do
           subject.generate!
 
-          expect(File.read("#{pipeline_template.path}.yml")).to include("no-op:")
+          expect(File.read("#{pipeline_template.path}.yml")).to eq("rspec system:")
         end
       end
 
@@ -449,6 +461,31 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
       context 'when on tier-2 pipeline with spec-only label' do
         before do
           stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-2,pipeline:spec-only')
+        end
+
+        it 'generates the pipeline config with system tests' do
+          subject.generate!
+
+          expect(File.read("#{pipeline_template.path}.yml")).to eq("rspec system:")
+        end
+      end
+
+      context 'when on tier-3 pipeline' do
+        before do
+          stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-3')
+        end
+
+        # System tests are skipped here as they run by default in the tier-3 pipeline
+        it 'generates the pipeline config using the no-op template' do
+          subject.generate!
+
+          expect(File.read("#{pipeline_template.path}.yml")).to include("no-op:")
+        end
+      end
+
+      context 'when on tier-3 pipeline with spec-only label' do
+        before do
+          stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-3,pipeline:spec-only')
         end
 
         it 'generates the pipeline config with system tests' do

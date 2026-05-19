@@ -87,7 +87,7 @@ module Gitlab
             fog_file.directory.key,
             fog_file.key,
             source_generation: fog_file.generation,
-            if_generation_match: 0 # Makes the request fail if there is aleady a live version
+            if_generation_match: 0 # Makes the request fail if there is already a live version
           )
 
           log_rolled_back_object(fog_file)

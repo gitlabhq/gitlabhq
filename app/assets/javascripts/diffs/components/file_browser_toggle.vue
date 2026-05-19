@@ -69,7 +69,7 @@ export default {
   <gl-button
     ref="toggle"
     variant="default"
-    class="btn-icon max-@lg/panel:gl-hidden gl-mr-3"
+    class="btn-icon max-@lg/panel:gl-hidden"
     data-testid="file-tree-button"
     :aria-label="toggleFileBrowserTitle"
     :aria-keyshortcuts="toggleFileBrowserShortcutKey"

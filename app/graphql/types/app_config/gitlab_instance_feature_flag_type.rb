@@ -7,6 +7,7 @@ module Types
       description 'A feature flag for the GitLab instance.'
 
       authorize :read_instance_metadata
+      authorize_granular_token permissions: :read_metadata, boundary: :instance, boundary_type: :instance
 
       field :enabled, ::GraphQL::Types::Boolean, null: false,
         description: 'Indicates whether the GitLab instance feature flag is enabled or not.'

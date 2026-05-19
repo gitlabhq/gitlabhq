@@ -21,9 +21,9 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
     ])
   end
 
-  let(:globs) {}
-  let(:project_path) {}
-  let(:ref) {}
+  let(:globs) { nil }
+  let(:project_path) { nil }
+  let(:ref) { nil }
   let(:clause) { { paths: globs, project: project_path, ref: ref }.compact }
 
   before_all do
@@ -104,7 +104,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
         end
       end
 
-      context 'when the pattern comparision limit is reached' do
+      context 'when the pattern comparison limit is reached' do
         let_it_be(:project) { create(:project, :repository) }
         let(:globs) { ['*definitely_not_a_matching_glob*'] }
 
@@ -283,7 +283,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
 
       context 'when context has no project' do
         let(:globs) { ['Dockerfile'] }
-        let(:project) {}
+        let(:project) { nil }
 
         it { is_expected.to be_falsey }
       end

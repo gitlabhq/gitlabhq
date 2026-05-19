@@ -37,7 +37,7 @@ Slack message template:
 The Distribution::Deploy group created an issue (link to this issue) to
 determine if X.Y needs to be [a required upgrade
 stop](https://docs.gitlab.com/development/avoiding_required_stops/#causes-of-required-stops). Please review your
-upcoming changes and share any may require upgrade stop on the issue (link to
+upcoming changes and share any changes that may require upgrade stop on the issue (link to
 this issue), thank you.
 >>>
 

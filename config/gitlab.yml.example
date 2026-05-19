@@ -548,6 +548,18 @@ production: &base
         # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
         # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
+  ## Agent Plan Content (object storage for work item agent plan markdown)
+  agent_plan_content:
+    # storage_path: shared/agent_plan_content
+    object_store:
+      enabled: false
+      remote_directory: agent-plan-content # The bucket name
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+
   ## AI Catalog
   ai_catalog:
     # storage_path: shared/ai_catalog
@@ -658,9 +670,6 @@ production: &base
     # Stop expired environments
     environments_auto_stop_cron_worker:
       cron: "24 * * * *"
-    # Delete stopped environments
-    environments_auto_delete_cron_worker:
-      cron: "34 * * * *"
     # Periodically run 'git fsck' on all repositories. If started more than
     # once per hour you will have concurrent 'git fsck' jobs.
     repository_check_worker:
@@ -855,6 +864,9 @@ production: &base
 
     # Expected JWT audience claim
     # jwt_audience: gitlab-rails
+
+    # JWT issuer (must match the 'iss' claim in tokens issued by the IAM auth service)
+    # jwt_issuer: https://iam.example.com
 
   ## LDAP settings
   # You can test connections and inspect a sample of the LDAP users with login
@@ -1665,6 +1677,17 @@ test:
       remote_directory: ci-secure-files
       connection:
         provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+
+  agent_plan_content:
+    storage_path: tmp/tests/agent_plan_content
+    object_store:
+      enabled: false
+      remote_directory: agent-plan-content
+      connection:
+        provider: AWS
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: us-east-1

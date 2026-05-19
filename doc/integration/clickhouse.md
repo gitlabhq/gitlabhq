@@ -47,6 +47,7 @@ The supported ClickHouse version differs depending on your GitLab version:
 - GitLab 18.1 and later supports ClickHouse 23.x, 24.x, and 25.x.
 - GitLab 18.8 and later supports ClickHouse 23.x, 24.x, 25.x, and the Replicated database engine.
   - Older clusters will require an additional permission (`dictGet`), see the [snippet](#database-dictionary-read-support).
+- GitLab 19.0 and later supports ClickHouse 25.x and 26.x. Support for ClickHouse 23.x and 24.x has been removed.
 
 ClickHouse Cloud is always compatible with the latest stable GitLab release.
 
@@ -88,7 +89,7 @@ To set up ClickHouse Cloud:
 1. Select **Create Service**.
 1. Once provisioned, note your connection details from the service dashboard:
    - Host
-   - Port (usually `9440` for secure connections)
+   - Port (`8443` for HTTPS connections used by GitLab, or `9440` for native TCP with TLS used by `clickhouse-client`)
    - Username
    - Password
 
@@ -247,7 +248,7 @@ To provide GitLab with ClickHouse credentials:
    ```
 
    Replace the URL with:
-   - For ClickHouse Cloud: `https://your-service.clickhouse.cloud:9440`
+   - For ClickHouse Cloud: `https://your-service.clickhouse.cloud:8443`
    - ClickHouse for GitLab Self-Managed: `https://your-clickhouse-host:8443`
    - For ClickHouse for GitLab Self-Managed HA with load balancer: `https://your-load-balancer:8080` (or your load balancer URL)
 
@@ -289,7 +290,7 @@ To provide GitLab with ClickHouse credentials:
    ```
 
    Replace the URL with:
-   - For ClickHouse Cloud: `https://your-service.clickhouse.cloud:9440`
+   - For ClickHouse Cloud: `https://your-service.clickhouse.cloud:8443`
    - For ClickHouse for GitLab Self-Managed single node: `https://your-clickhouse-host:8443`
    - For ClickHouse for GitLab Self-Managed HA with load balancer: `https://your-load-balancer:8080` (or your load balancer URL)
 
@@ -328,6 +329,9 @@ If the connection fails, verify:
 - For HA cluster deployments: Load balancer is properly configured and routing requests.
 
 ### Run ClickHouse migrations
+
+> [!note]
+> This step is required. If you skip it, Analytics dashboards do not display data and show a "Failed to fetch data" error.
 
 {{< tabs >}}
 

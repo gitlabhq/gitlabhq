@@ -331,13 +331,6 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
     end
   end
 
-  it 'links to the "Explore groups" page' do
-    sign_in(user)
-    visit dashboard_groups_path
-
-    expect(page).to have_link("Explore groups", href: explore_groups_path)
-  end
-
   context 'when there are no groups to display' do
     let_it_be(:user) { create(:user) }
 

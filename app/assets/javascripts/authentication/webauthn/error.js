@@ -12,7 +12,7 @@ export default class WebAuthnError {
   }
 
   message() {
-    // Browser side errors due to calling navigator.credentials.create
+    // Browser side errors due to calling navigator.credentials.create or navigator.credentials.get
     if (this.errorName === 'NotSupportedError') {
       return __('Your device is not compatible with GitLab. Please try another device');
     }
@@ -20,7 +20,9 @@ export default class WebAuthnError {
       return __('This device has not been registered with us.');
     }
     if (this.errorName === 'InvalidStateError' && this.flowType === WEBAUTHN_REGISTER) {
-      return __('This device has already been registered with us.');
+      return __(
+        'This device has already been registered as a passkey or WebAuthn device. Delete it and try again.',
+      );
     }
     if (this.errorName === 'SecurityError' && this.httpsDisabled) {
       return __(

@@ -1,11 +1,14 @@
 import { GlProgressBar, GlLink, GlBadge, GlButton } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import originalRelease from 'test_fixtures/api/releases/release.json';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import initIssuablePopovers from '~/issuable/popover';
 import ReleaseBlockMilestoneInfo from '~/releases/components/release_block_milestone_info.vue';
 import { MAX_MILESTONES_TO_DISPLAY } from '~/releases/constants';
+
+jest.mock('~/issuable/popover');
 
 const { milestones: originalMilestones } = originalRelease;
 
@@ -14,7 +17,7 @@ describe('Release block milestone info', () => {
   let milestones;
 
   const factory = async (props) => {
-    wrapper = mount(ReleaseBlockMilestoneInfo, {
+    wrapper = mountExtended(ReleaseBlockMilestoneInfo, {
       propsData: props,
     });
 
@@ -23,15 +26,17 @@ describe('Release block milestone info', () => {
 
   beforeEach(() => {
     milestones = convertObjectPropsToCamelCase(originalMilestones, { deep: true });
+    initIssuablePopovers.mockClear();
   });
 
-  const milestoneProgressBarContainer = () => wrapper.find('.js-milestone-progress-bar-container');
+  const milestoneProgressBarContainer = () =>
+    wrapper.findByTestId('milestone-progress-bar-container');
   const milestoneListContainer = () => wrapper.find('.js-milestone-list-container');
   const issuesContainer = () => wrapper.find('[data-testid="issue-stats"]');
   const mergeRequestsContainer = () => wrapper.find('[data-testid="merge-request-stats"]');
 
   describe('with default props', () => {
-    beforeEach(() => factory({ milestones }));
+    beforeEach(() => factory({ milestones, showDetails: true }));
 
     it('renders the correct percentage', () => {
       expect(milestoneProgressBarContainer().text()).toContain('44% complete');
@@ -57,7 +62,6 @@ describe('Release block milestone info', () => {
 
         expect(milestoneLink.text()).toBe(m.title);
         expect(milestoneLink.attributes('href')).toBe(m.webUrl);
-        expect(milestoneLink.attributes('title')).toBe(m.description);
       });
     });
 
@@ -123,6 +127,30 @@ describe('Release block milestone info', () => {
       await clickShowMoreFewerButton();
       expect(milestoneListText()).toContain(`Milestones ${abbreviatedListString} • show 10 more`);
     });
+
+    it('re-initializes popovers after showing more milestones', async () => {
+      expect(initIssuablePopovers).toHaveBeenCalledTimes(1);
+
+      await clickShowMoreFewerButton();
+      await nextTick(); // watcher uses $nextTick internally
+
+      expect(initIssuablePopovers).toHaveBeenCalledTimes(2);
+      const [elements] = initIssuablePopovers.mock.calls[1];
+      expect(elements).toHaveLength(lotsOfMilestones.length);
+    });
+  });
+
+  describe('milestone popovers', () => {
+    beforeEach(() => factory({ milestones }));
+
+    it('initializes issuable popovers for all milestone links on mount', () => {
+      expect(initIssuablePopovers).toHaveBeenCalledTimes(1);
+      const [elements] = initIssuablePopovers.mock.calls[0];
+      expect(elements).toHaveLength(milestones.length);
+      elements.forEach((el) => {
+        expect(el.dataset.referenceType).toBe('milestone');
+      });
+    });
   });
 
   const expectAllZeros = () => {
@@ -149,7 +177,7 @@ describe('Release block milestone info', () => {
         },
       }));
 
-      return factory({ milestones });
+      return factory({ milestones, showDetails: true });
     });
 
     expectAllZeros();
@@ -162,7 +190,7 @@ describe('Release block milestone info', () => {
         issueStats: undefined,
       }));
 
-      return factory({ milestones });
+      return factory({ milestones, showDetails: true });
     });
 
     expectAllZeros();

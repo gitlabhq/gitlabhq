@@ -3,7 +3,12 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { s__ } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { CODE_QUALITY_ROUTE } from '~/merge_requests/reports/constants';
+import {
+  CODE_QUALITY_ROUTE,
+  CLICK_VIEW_REPORT_ON_MERGE_REQUEST_WIDGET,
+  TRACKING_LABEL_BY_ROUTE,
+} from '~/merge_requests/reports/constants';
+import { InternalEvents } from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
 import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
@@ -20,7 +25,7 @@ export default {
   components: {
     MrWidget,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
   i18n,
   props: {
     mr: {
@@ -84,6 +89,9 @@ export default {
             href: joinPaths(this.mr.reportsTabPath, CODE_QUALITY_ROUTE),
             onClick: (action, e) => {
               e.preventDefault();
+              this.trackEvent(CLICK_VIEW_REPORT_ON_MERGE_REQUEST_WIDGET, {
+                label: TRACKING_LABEL_BY_ROUTE[CODE_QUALITY_ROUTE],
+              });
               window.history.pushState(null, null, action.href);
               window.dispatchEvent(new PopStateEvent('popstate'));
             },

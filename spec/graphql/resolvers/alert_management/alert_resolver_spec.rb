@@ -13,7 +13,7 @@ RSpec.describe Resolvers::AlertManagement::AlertResolver do
 
   let(:args) { {} }
 
-  subject { resolve_alerts(args) }
+  subject { resolve_alerts_for(project, args) }
 
   context 'hide_incident_management_features flag disabled' do
     before do
@@ -60,12 +60,73 @@ RSpec.describe Resolvers::AlertManagement::AlertResolver do
           let_it_be(:alert_count_3) { create(:alert_management_alert, project: project, events: 3) }
 
           it 'sorts alerts ascending' do
-            expect(resolve_alerts(sort: :event_count_asc)).to eq [ignored_alert, resolved_alert, alert_count_3, alert_count_6]
+            expect(resolve_alerts_for(project, sort: :event_count_asc)).to eq [ignored_alert, resolved_alert, alert_count_3, alert_count_6]
           end
 
           it 'sorts alerts descending' do
-            expect(resolve_alerts(sort: :event_count_desc)).to eq [alert_count_6, alert_count_3, resolved_alert, ignored_alert]
+            expect(resolve_alerts_for(project, sort: :event_count_desc)).to eq [alert_count_6, alert_count_3, resolved_alert, ignored_alert]
           end
+        end
+      end
+    end
+  end
+
+  context 'when parent is an Issue' do
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:alert) { create(:alert_management_alert, project: project, issue: issue) }
+
+    before do
+      stub_feature_flags(hide_incident_management_features: false)
+    end
+
+    context 'when user does not have permission' do
+      it 'returns empty association' do
+        issue.association(:alert_management_alerts).load_target
+
+        result = resolve_alerts_for(issue)
+
+        expect(result).to eq(::AlertManagement::Alert.none)
+      end
+    end
+
+    context 'when user has permission' do
+      before do
+        project.add_developer(current_user)
+      end
+
+      context 'when alert_management_alerts association is preloaded' do
+        it 'returns the preloaded alerts without using AlertsFinder' do
+          issue.association(:alert_management_alerts).load_target
+
+          expect(::AlertManagement::AlertsFinder).not_to receive(:new)
+
+          result = resolve_alerts_for(issue)
+
+          expect(result).to contain_exactly(alert)
+        end
+      end
+
+      context 'when alert_management_alerts association is not preloaded' do
+        it 'falls through to AlertsFinder' do
+          fresh_issue = Issue.find(issue.id)
+
+          expect(::AlertManagement::AlertsFinder).to receive(:new).and_call_original
+
+          result = resolve_alerts_for(fresh_issue)
+
+          expect(result).to contain_exactly(alert)
+        end
+      end
+
+      context 'when alert_management_alerts association is preloaded and there are arguments in the request' do
+        it 'falls through to AlertsFinder' do
+          issue.association(:alert_management_alerts).load_target
+
+          expect(::AlertManagement::AlertsFinder).to receive(:new).and_call_original
+
+          result = resolve_alerts_for(issue, sort: :event_count_desc)
+
+          expect(result).to contain_exactly(alert)
         end
       end
     end
@@ -77,7 +138,7 @@ RSpec.describe Resolvers::AlertManagement::AlertResolver do
     end
 
     it 'returns a GraphQL::ExecutionError' do
-      result = resolve_alerts
+      result = resolve_alerts_for(project)
       expect(result).to be_a(GraphQL::ExecutionError)
       expect(result.message).to eq("Field 'alertManagementAlerts' doesn't exist on type 'Project'.")
     end
@@ -85,7 +146,7 @@ RSpec.describe Resolvers::AlertManagement::AlertResolver do
 
   private
 
-  def resolve_alerts(args = {}, context = { current_user: current_user })
-    resolve(described_class, obj: project, args: args, ctx: context, arg_style: :internal)
+  def resolve_alerts_for(object, args = {}, context = { current_user: current_user })
+    resolve(described_class, obj: object, args: args, ctx: context, arg_style: :internal)
   end
 end

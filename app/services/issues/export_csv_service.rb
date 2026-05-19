@@ -19,7 +19,6 @@ module Issues
 
     def associations_to_preload
       [
-        :work_item_type,
         :namespace,
         :author,
         :assignees,

@@ -71,6 +71,16 @@ describe('Chunk component', () => {
 
       expect(wrapper.emitted('disappear')).toHaveLength(1);
     });
+
+    it('emits highlighted when shouldHighlight transitions to true', async () => {
+      createComponent({ ...CHUNK_2, isHighlighted: false });
+      expect(wrapper.emitted('highlighted')).toBeUndefined();
+
+      await wrapper.setProps({ isHighlighted: true });
+      await nextTick();
+
+      expect(wrapper.emitted('highlighted')).toHaveLength(1);
+    });
   });
 
   describe('rendering', () => {

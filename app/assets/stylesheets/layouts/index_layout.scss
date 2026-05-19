@@ -1,0 +1,11 @@
+/* stylelint-disable gitlab/no-gl-class */
+.gl-index-layout-alerts {
+  @apply gl-mb-5;
+  @apply gl-flex;
+  @apply gl-flex-col;
+  @apply gl-gap-3;
+}
+
+.gl-index-layout-loading-icon {
+  @apply gl-m-5;
+}

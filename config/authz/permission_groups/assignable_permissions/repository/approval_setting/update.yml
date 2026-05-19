@@ -4,5 +4,7 @@ description: Grants the ability to update merge request approval settings
 boundaries:
   - group
   - project
+available_for:
+  - granular_access_token
 permissions:
   - update_merge_request_approval_setting

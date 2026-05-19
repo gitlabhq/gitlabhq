@@ -24,7 +24,7 @@ RSpec.describe Ci::Runners::ProcessRunnerVersionUpdateService, feature_category:
         expect do
           expect(execute).to be_error
           expect(execute.message).to eq 'upgrade version check failed'
-        end.not_to change(Ci::RunnerVersion, :count).from(0)
+        end.not_to change { Ci::RunnerVersion.count }.from(0)
         expect(service_double).to have_received(:check_runner_upgrade_suggestion).with(version).once
       end
     end
@@ -38,7 +38,7 @@ RSpec.describe Ci::Runners::ProcessRunnerVersionUpdateService, feature_category:
         expect do
           expect(execute).to be_error
           expect(execute.message).to eq 'version update disabled'
-        end.not_to change(Ci::RunnerVersion, :count).from(0)
+        end.not_to change { Ci::RunnerVersion.count }.from(0)
       end
     end
 
@@ -59,7 +59,7 @@ RSpec.describe Ci::Runners::ProcessRunnerVersionUpdateService, feature_category:
             expect(execute).to be_success
             expect(execute.http_status).to eq :ok
             expect(execute.payload).to eq({ upgrade_status: 'recommended' })
-          end.to change(Ci::RunnerVersion, :all).to contain_exactly(
+          end.to change { Ci::RunnerVersion.all }.to contain_exactly(
             an_object_having_attributes(version: version, status: 'recommended')
           )
         end

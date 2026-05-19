@@ -386,6 +386,14 @@ export const packagesDestroyMutation = () => ({
   },
 });
 
+export const packagesDestroyMutationWithUserErrors = (errors = []) => ({
+  data: {
+    destroyPackages: {
+      errors,
+    },
+  },
+});
+
 export const packagesDestroyMutationError = () => ({
   data: {
     destroyPackages: null,

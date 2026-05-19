@@ -10,7 +10,7 @@
  */
 
 function wrapLine(content, number, language) {
-  return `<div id="LC${number}" lang="${language}" class="line">${content}</div>`;
+  return `<div id="LC${number}" data-lang="${language}" class="line">${content}</div>`;
 }
 
 export default (result) => {

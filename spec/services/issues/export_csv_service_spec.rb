@@ -17,7 +17,7 @@ RSpec.describe Issues::ExportCsvService, :with_license, feature_category: :team_
 
   describe '#email' do
     it 'emails csv' do
-      expect { subject.email(user) }.to change(ActionMailer::Base.deliveries, :count)
+      expect { subject.email(user) }.to change { ActionMailer::Base.deliveries.count }
     end
 
     it 'renders with a target filesize' do

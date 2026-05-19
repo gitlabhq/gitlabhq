@@ -81,7 +81,7 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failur
     it 'creates a project successfully' do
       response = nil
       expect { response = subject.execute }
-        .to change(Project, :count).by(1)
+        .to change { Project.count }.by(1)
 
       expect(response).to be_success
       expect(response.http_status).to eq(:ok)
@@ -160,7 +160,7 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failur
       it 'merges the strategy project parameters' do
         response = nil
         expect { response = subject.execute }
-          .to change(Project, :count).by(1)
+          .to change { Project.count }.by(1)
 
         expect(response).to be_success
         expect(response.http_status).to eq(:ok)

@@ -18,6 +18,7 @@ module JiraConnectInstallations
       # the old instance_url.
       @installation = installation.dup
       @installation.instance_url = instance_url
+      @installation_id = installation.id
 
       @event = event.to_sym
 
@@ -34,6 +35,13 @@ module JiraConnectInstallations
       ServiceResponse.error(message: { type: :response_error, code: result.code })
     rescue *Gitlab::HTTP::HTTP_ERRORS => error
       ServiceResponse.error(message: { type: :network_error, message: error.message })
+    rescue URI::InvalidURIError => error
+      Gitlab::ErrorTracking.track_exception(error,
+        integration: 'JiraConnect',
+        jira_event_type: event,
+        jira_connect_installation_id: @installation_id
+      )
+      ServiceResponse.error(message: { type: :invalid_url, message: error.message })
     end
 
     private

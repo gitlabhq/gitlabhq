@@ -1,0 +1,3 @@
+---
+name: read_any_audit_event
+description: Grants the ability to read audit events from all members

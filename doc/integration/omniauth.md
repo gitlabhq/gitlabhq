@@ -66,119 +66,119 @@ configure the settings that are common for all providers.
 
 To change the OmniAuth settings:
 
-  {{< tabs >}}
+{{< tabs >}}
 
-  {{< tab title="Linux package (Omnibus)" >}}
+{{< tab title="Linux package (Omnibus)" >}}
 
-  1. Edit `/etc/gitlab/gitlab.rb`:
+1. Edit `/etc/gitlab/gitlab.rb`:
 
-     ```ruby
+   ```ruby
+   # CAUTION!
+   # This allows users to sign in without having a user account first. Define the allowed providers
+   # using an array, for example, ["saml", "google_oauth2"], or as true/false to allow all providers or none.
+   # User accounts will be created automatically when authentication was successful.
+   gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'google_oauth2']
+   gitlab_rails['omniauth_auto_link_ldap_user'] = true
+   gitlab_rails['omniauth_block_auto_created_users'] = true
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`, and update the `omniauth` section under `globals.appConfig`:
+
+   ```yaml
+   global:
+     appConfig:
+       omniauth:
+         enabled: true
+         allowSingleSignOn: ['saml', 'google_oauth2']
+         autoLinkLdapUser: false
+         blockAutoCreatedUsers: true
+   ```
+
+   For more details, see the
+   [globals documentation](https://docs.gitlab.com/charts/charts/globals/#omniauth).
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'google_oauth2']
+           gitlab_rails['omniauth_auto_link_ldap_user'] = true
+           gitlab_rails['omniauth_block_auto_created_users'] = true
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   ## OmniAuth settings
+   omniauth:
+     # Allow sign-in by using Google, GitLab, etc. using OmniAuth providers
+     # Versions prior to 11.4 require this to be set to true
+     # enabled: true
+
      # CAUTION!
      # This allows users to sign in without having a user account first. Define the allowed providers
      # using an array, for example, ["saml", "google_oauth2"], or as true/false to allow all providers or none.
      # User accounts will be created automatically when authentication was successful.
-     gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'google_oauth2']
-     gitlab_rails['omniauth_auto_link_ldap_user'] = true
-     gitlab_rails['omniauth_block_auto_created_users'] = true
-     ```
+     allow_single_sign_on: ["saml", "google_oauth2"]
 
-  1. Save the file and reconfigure GitLab:
+     auto_link_ldap_user: true
 
-     ```shell
-     sudo gitlab-ctl reconfigure
-     ```
+     # Locks down those users until they have been cleared by the admin (default: true).
+     block_auto_created_users: true
+   ```
 
-  {{< /tab >}}
+1. Save the file and restart GitLab:
 
-  {{< tab title="Helm chart (Kubernetes)" >}}
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
 
-  1. Export the Helm values:
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
 
-     ```shell
-     helm get values gitlab > gitlab_values.yaml
-     ```
+{{< /tab >}}
 
-  1. Edit `gitlab_values.yaml`, and update the `omniauth` section under `globals.appConfig`:
-
-     ```yaml
-     global:
-       appConfig:
-         omniauth:
-           enabled: true
-           allowSingleSignOn: ['saml', 'google_oauth2']
-           autoLinkLdapUser: false
-           blockAutoCreatedUsers: true
-     ```
-
-     For more details, see the
-     [globals documentation](https://docs.gitlab.com/charts/charts/globals/#omniauth).
-  1. Save the file and apply the new values:
-
-     ```shell
-     helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
-     ```
-
-  {{< /tab >}}
-
-  {{< tab title="Docker" >}}
-
-  1. Edit `docker-compose.yml`:
-
-     ```yaml
-     version: "3.6"
-     services:
-       gitlab:
-         environment:
-           GITLAB_OMNIBUS_CONFIG: |
-             gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'google_oauth2']
-             gitlab_rails['omniauth_auto_link_ldap_user'] = true
-             gitlab_rails['omniauth_block_auto_created_users'] = true
-     ```
-
-  1. Save the file and restart GitLab:
-
-     ```shell
-     docker compose up -d
-     ```
-
-  {{< /tab >}}
-
-  {{< tab title="Self-compiled (source)" >}}
-
-  1. Edit `/home/git/gitlab/config/gitlab.yml`:
-
-     ```yaml
-     ## OmniAuth settings
-     omniauth:
-       # Allow sign-in by using Google, GitLab, etc. using OmniAuth providers
-       # Versions prior to 11.4 require this to be set to true
-       # enabled: true
-
-       # CAUTION!
-       # This allows users to sign in without having a user account first. Define the allowed providers
-       # using an array, for example, ["saml", "google_oauth2"], or as true/false to allow all providers or none.
-       # User accounts will be created automatically when authentication was successful.
-       allow_single_sign_on: ["saml", "google_oauth2"]
-
-       auto_link_ldap_user: true
-
-       # Locks down those users until they have been cleared by the admin (default: true).
-       block_auto_created_users: true
-     ```
-
-  1. Save the file and restart GitLab:
-
-     ```shell
-     # For systems running systemd
-     sudo systemctl restart gitlab.target
-
-     # For systems running SysV init
-     sudo service gitlab restart
-     ```
-
-  {{< /tab >}}
-
-  {{< /tabs >}}
+{{< /tabs >}}
 
 After configuring these settings, you can configure
 your chosen [provider](#supported-providers).
@@ -256,7 +256,7 @@ gitlab_rails['omniauth_providers'] = [
 
 ### Passwords for users created via OmniAuth
 
-The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md)
+The [Generated passwords for users created through integrated authentication](../user/profile/user_passwords.md)
 guide provides an overview about how GitLab generates and sets passwords for
 users created with OmniAuth.
 
@@ -286,7 +286,7 @@ Administrators can enable or disable sign-in for some OmniAuth providers.
 To enable or disable an OmniAuth provider:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Sign-in restrictions**.
 1. In the **Enabled OAuth authentication sources** section, select or clear the checkbox for each provider you want to enable or disable.
 

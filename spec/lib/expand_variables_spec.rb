@@ -430,4 +430,66 @@ RSpec.describe ExpandVariables, feature_category: :pipeline_composition do
       end
     end
   end
+
+  describe 'LazyItem with nil value behavior' do
+    let(:collection) do
+      Gitlab::Ci::Variables::Collection.new.tap do |c|
+        c.append(key: 'REGULAR', value: 'regular_value')
+        c.append(key: 'LAZY_TRUE', lazy: true, value: -> { 'true' })
+        c.append(key: 'LAZY_NIL', lazy: true, value: -> { nil })
+      end
+    end
+
+    describe '#expand' do
+      it 'expands regular variables' do
+        result = described_class.expand('prefix-$REGULAR-suffix', collection)
+
+        expect(result).to eq('prefix-regular_value-suffix')
+      end
+
+      it 'expands lazy variables with value' do
+        result = described_class.expand('prefix-$LAZY_TRUE-suffix', collection)
+
+        expect(result).to eq('prefix-true-suffix')
+      end
+
+      it 'expands lazy variables with nil value to empty string' do
+        result = described_class.expand('prefix-$LAZY_NIL-suffix', collection)
+
+        expect(result).to eq('prefix--suffix')
+      end
+
+      it 'expands undefined variables to empty string' do
+        result = described_class.expand('prefix-$UNDEFINED-suffix', collection)
+
+        expect(result).to eq('prefix--suffix')
+      end
+    end
+
+    describe '#expand_existing' do
+      it 'expands regular variables' do
+        result = described_class.expand_existing('prefix-$REGULAR-suffix', collection)
+
+        expect(result).to eq('prefix-regular_value-suffix')
+      end
+
+      it 'expands lazy variables with value' do
+        result = described_class.expand_existing('prefix-$LAZY_TRUE-suffix', collection)
+
+        expect(result).to eq('prefix-true-suffix')
+      end
+
+      it 'keeps lazy variables with nil value as-is (same as undefined)' do
+        result = described_class.expand_existing('prefix-$LAZY_NIL-suffix', collection)
+
+        expect(result).to eq('prefix-$LAZY_NIL-suffix')
+      end
+
+      it 'keeps undefined variables as-is' do
+        result = described_class.expand_existing('prefix-$UNDEFINED-suffix', collection)
+
+        expect(result).to eq('prefix-$UNDEFINED-suffix')
+      end
+    end
+  end
 end

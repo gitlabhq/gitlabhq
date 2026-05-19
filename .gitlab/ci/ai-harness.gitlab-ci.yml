@@ -1,0 +1,10 @@
+ai-harness-doctor:
+  stage: lint
+  extends:
+    - .default-retry
+    - .ai-harness:rules:doctor
+  needs: []
+  variables:
+    GIT_DEPTH: 1
+  script:
+    - scripts/ai_harness/doctor

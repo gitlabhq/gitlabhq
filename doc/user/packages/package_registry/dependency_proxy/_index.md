@@ -229,7 +229,7 @@ The dependency proxy must be configured with:
 To set those parameters:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Packages and registries**.
+1. In the left sidebar, select **Settings** > **Packages and registries**.
 1. Expand **Package registry**.
 1. Under **Dependency Proxy**, complete the form for your package format:
 

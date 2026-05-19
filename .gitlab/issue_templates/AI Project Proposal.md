@@ -142,7 +142,7 @@ _What tasks or actions should the user be capable of performing with this featur
     - [ ] The Main Job story and Small Jobs it's expected to satisfy have been stated
     - [ ] Your assumptions have been defined
     - [ ] Proposal has been updated as necessary
-    - [ ] Problem validation inforamtion has been added
+    - [ ] Problem validation information has been added
     - [ ] Business objective has been defined
     - [ ] Requirements have been defined
     - [ ] Success metrics have been defined
@@ -161,7 +161,7 @@ _What tasks or actions should the user be capable of performing with this featur
 - [ ] Add information to the issue body about:
     - [ ] Your assumptions have been defined
     - [ ] Your proposal has been defined
-    - [ ] Problem validation inforamtion has been added
+    - [ ] Problem validation information has been added
     - [ ] Business objective has been defined
     - [ ] Confidence about this feature has been assessed and defined
     - [ ] Requirements have been defined

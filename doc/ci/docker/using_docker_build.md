@@ -71,7 +71,6 @@ the Docker commands, but needs permission to do so.
    default:
      before_script:
        - docker info
-
    build_image:
      script:
        - docker build -t my-docker-image .
@@ -445,7 +444,7 @@ Docker-in-Docker is the recommended configuration, but you should be aware of th
   To use `docker-compose` in your job scripts, follow the Docker Compose
   [installation instructions](https://docs.docker.com/compose/install/).
 - **Cache**: Each job runs in a new environment. Because every build gets its own instance of the Docker engine, concurrent jobs do not cause conflicts.
-  However, jobs can be slower because there's no caching of layers. See [Docker layer caching](#make-docker-in-docker-builds-faster-with-docker-layer-caching).
+  However, jobs can be slower because there's no caching of layers. See [Docker layer caching](#docker-layer-caching).
 - **Storage drivers**: By default, earlier versions of Docker use the `vfs` storage driver,
   which copies the file system for each job. Docker 17.09 and later use `--storage-driver overlay2`, which is
   the recommended storage driver. See [Using the OverlayFS driver](#use-the-overlayfs-driver) for details.
@@ -614,10 +613,21 @@ Windows Containers run Windows executables compiled for the Windows Server kerne
 with container support is required.
 For more information, see [Windows Containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/).
 
+Because Windows containers do [not support the Docker-in-Docker](https://github.com/docker-library/docker/issues/49)
+approach, you cannot run a nested Docker Engine inside a container.
+To build or manage Docker images from within a Windows container, use
+Docker pipe binding (also known as Docker-outside-of-Docker or DooD).
+
+> [!warning]
+> Docker pipe binding has security implications. When you bind-mount `\\\\.\\pipe\\docker_engine`,
+> the container has full administrative access to the host's Docker daemon. Processes inside the
+> container can start or stop other containers, manage images, and potentially gain elevated
+> privileges on the host system.
+
 To use Docker pipe binding, you must install and run a Docker Engine on the host Windows Server operating system.
 For more information, see [Install Docker Community Edition (CE) on Windows Server](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/set-up-environment?tabs=dockerce#windows-server-1).
 
-To use Docker commands in your Windows-based container CI/CD jobs, you can bind-mount `\\.\pipe\docker_engine`
+To use Docker commands in your Windows-based container CI/CD jobs, you can bind-mount `\\\\.\\pipe\\docker_engine`
 into the launched executor container. Docker is then available in the context of the image.
 
 The [Docker pipe binding in Windows](#use-docker-pipe-binding) is similar to
@@ -633,10 +643,10 @@ See: [Install Docker Community Edition (CE) on Windows Server](https://learn.mic
 
 You can use the [Docker executor](https://docs.gitlab.com/runner/executors/docker/) to run jobs in a Windows-based container.
 
-To mount the Docker pipe with the Docker executor, add `"\\.\pipe\docker_engine:\\.\pipe\docker_engine"` to the
+To mount the Docker pipe with the Docker executor, add `"\\\\.\\pipe\\docker_engine:\\\\.\\pipe\\docker_engine"` to the
 [Volumes in the `[runners.docker]` section](https://docs.gitlab.com/runner/configuration/advanced-configuration/#volumes-in-the-runnersdocker-section).
 
-1. To mount `"\\.\pipe\docker_engine` while registering your runner, include the following options:
+1. To mount `\\\\.\\pipe\\docker_engine` while registering your runner, include the following options:
 
    ```powershell
    .\gitlab-runner.exe register \
@@ -647,7 +657,7 @@ To mount the Docker pipe with the Docker executor, add `"\\.\pipe\docker_engine:
      --description "docker-windows-runner"
      --tag-list "docker-windows-runner" \
      --docker-image "docker:25-windowsservercore-ltsc2022" \
-     --docker-volumes "\\.\pipe\docker_engine:\\.\pipe\docker_engine"
+     --docker-volumes "\\\\.\\pipe\\docker_engine:\\\\.\\pipe\\docker_engine"
    ```
 
    The previous command creates a `config.toml` entry similar to the following example:
@@ -662,9 +672,7 @@ To mount the Docker pipe with the Docker executor, add `"\\.\pipe\docker_engine:
        image = "docker:25-windowsservercore-ltsc2022"
        privileged = false
        disable_cache = false
-       volumes = ["\\.\pipe\docker_engine:\\.\pipe\docker_engine"]
-     [runners.cache]
-       Insecure = false
+       volumes = ["\\\\.\\pipe\\docker_engine:\\\\.\\pipe\\docker_engine"]
    ```
 
 1. Use Docker in the job script:
@@ -716,8 +724,8 @@ To mount the Docker pipe with the Kubernetes executor, add `"\\.\pipe\docker_eng
 
          [runners.kubernetes]
            [[runners.kubernetes.volumes.host_path]]
-             host_path = '\\.\pipe\docker_engine'
-             mount_path = '\\.\pipe\docker_engine'
+             host_path = '\\\\.\\pipe\\docker_engine'
+             mount_path = '\\\\.\\pipe\\docker_engine'
              name = 'docker-pipe'
              read_only = true
 
@@ -900,9 +908,10 @@ The `dind` service detects this configuration.
 
 When you use Docker-in-Docker, the [standard authentication methods](using_docker_images.md#access-an-image-from-a-private-container-registry) do not work, because a fresh Docker daemon is started with the service. You should [authenticate with registry](authenticate_registry.md).
 
-## Make Docker-in-Docker builds faster with Docker layer caching
+## Docker layer caching
 
-When using Docker-in-Docker, Docker downloads all layers of your image every time you create a build. You can [make your builds faster with Docker layer caching](docker_layer_caching.md).
+You can cache Docker layers to speed up your builds.
+For more information, see [Cache Docker layers in Docker-in-Docker builds](docker_layer_caching.md).
 
 ## Use the OverlayFS driver
 

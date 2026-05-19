@@ -64,6 +64,47 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
       end
     end
 
+    context 'when boundary is a Proc' do
+      let(:boundary_proc) { ->(obj) { obj.repository.container } }
+
+      it 'does not serialize the proc into the directive boundary argument' do
+        test_type.authorize_granular_token permissions: :read_repository_tag,
+          boundary: boundary_proc,
+          boundary_type: :project
+
+        directive = test_type.directives.first
+        expect(directive).to be_a(Directives::Authz::GranularScope)
+        expect(directive.arguments[:boundary]).to be_nil
+        expect(directive.arguments[:boundary_type]).to eq('project')
+        expect(directive.arguments[:permissions]).to eq(['read_repository_tag'])
+      end
+
+      it 'stores the proc in granular_token_boundary_procs keyed by boundary_type' do
+        test_type.authorize_granular_token permissions: :read_repository_tag,
+          boundary: boundary_proc,
+          boundary_type: :project
+
+        expect(test_type.granular_token_boundary_procs).to eq({ 'project' => boundary_proc })
+      end
+
+      it 'stores different procs per boundary_type for multi-boundary support' do
+        project_proc = ->(obj) { obj.project }
+        group_proc = ->(obj) { obj.group }
+
+        test_type.authorize_granular_token permissions: :read_something,
+          boundary: project_proc,
+          boundary_type: :project
+        test_type.authorize_granular_token permissions: :read_something,
+          boundary: group_proc,
+          boundary_type: :group
+
+        expect(test_type.granular_token_boundary_procs).to eq({
+          'project' => project_proc,
+          'group' => group_proc
+        })
+      end
+    end
+
     context 'with different boundary_type values' do
       it 'applies directive with group boundary_type' do
         test_type.authorize_granular_token permissions: :read_group, boundary: :group, boundary_type: :group
@@ -88,6 +129,66 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
 
         directive = test_type.directives.first
         expect(directive.arguments[:boundary_type]).to eq('instance')
+      end
+    end
+  end
+
+  describe '.granular_token_boundary_procs' do
+    it 'returns an empty hash when no procs have been registered' do
+      expect(test_type.granular_token_boundary_procs).to eq({})
+    end
+
+    context 'when a proc is registered via authorize_granular_token' do
+      let(:boundary_proc) { ->(obj) { obj.project } }
+
+      before do
+        test_type.authorize_granular_token permissions: :read_something,
+          boundary: boundary_proc, boundary_type: :project
+      end
+
+      it 'returns the proc keyed by boundary_type string on the defining class' do
+        expect(test_type.granular_token_boundary_procs).to eq({ 'project' => boundary_proc })
+      end
+
+      context 'when a subclass inherits from the type' do
+        let(:child_type) do
+          Class.new(test_type) { graphql_name 'TestChildType' }
+        end
+
+        it 'inherits the proc from the parent' do
+          expect(child_type.granular_token_boundary_procs).to eq({ 'project' => boundary_proc })
+        end
+
+        it 'leaves the proc present on the parent' do
+          expect(test_type.granular_token_boundary_procs).to eq({ 'project' => boundary_proc })
+        end
+      end
+    end
+
+    context 'when authorize_granular_token with a proc is called inside a concern included block' do
+      let(:boundary_proc) { ->(obj) { obj.project } }
+
+      let(:concern) do
+        p = boundary_proc
+        Module.new do
+          extend ActiveSupport::Concern
+          included do
+            authorize_granular_token permissions: :read_something,
+              boundary: p, boundary_type: :project
+          end
+        end
+      end
+
+      let(:including_type) do
+        c = concern
+        Class.new(Types::BaseObject) do
+          graphql_name 'GranularTokenConcernIncludingType'
+          include c
+        end
+      end
+
+      it 'stores the proc on the including class' do
+        expect(including_type.granular_token_boundary_procs).to eq({ 'project' => boundary_proc })
       end
     end
   end
@@ -145,6 +246,20 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
           boundary: 'project'
         }
       }])
+    end
+
+    context 'when boundary is a Proc' do
+      let(:boundary_proc) { ->(obj) { obj.project } }
+
+      it 'stores the proc on self and omits boundary from the directive hash' do
+        result = test_type.granular_scope_directive(
+          permissions: :read_something, boundary: boundary_proc, boundary_type: :project
+        )
+
+        expect(test_type.granular_token_boundary_procs).to eq({ 'project' => boundary_proc })
+        expect(result.first[Directives::Authz::GranularScope][:boundary]).to be_nil
+        expect(result.first[Directives::Authz::GranularScope][:boundary_type]).to eq('PROJECT')
+      end
     end
   end
 

@@ -6,7 +6,7 @@ $design-pin-diameter-sm: 24px;
 .layout-page.design-detail-layout {
   max-height: 100vh;
 
-  .super-sidebar, .top-bar-fixed {
+  .super-sidebar, .panel-header-inner {
     z-index: 0;
   }
 }

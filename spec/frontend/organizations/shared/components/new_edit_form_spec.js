@@ -23,9 +23,9 @@ describe('NewEditForm', () => {
   let wrapper;
 
   const defaultProvide = {
-    organizationsPath: '/-/organizations',
-    rootUrl: 'http://127.0.0.1:3000/',
-    previewMarkdownPath: '/-/organizations/preview_markdown',
+    organizationsPath: '/o',
+    organizationsUrl: 'http://127.0.0.1:3000/o/',
+    previewMarkdownPath: '/o/-/preview_markdown',
   };
 
   const defaultPropsData = {

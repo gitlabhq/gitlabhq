@@ -250,7 +250,8 @@ To change how a merge request shows changed lines:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590833) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `rapid_diffs_on_mr_show`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590833) in GitLab 18.0 [with a flag](../../../administration/feature_flags/_index.md) named `rapid_diffs_on_mr_show`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/539581) in GitLab 19.0.
 
 {{< /history >}}
 
@@ -260,6 +261,10 @@ To change how a merge request shows changed lines:
 
 Rapid Diffs is a faster way to load and interact with code changes in merge requests.
 It reduces the time before you see the first file when reviewing a diff.
+
+Rapid Diffs is in beta. Some features from the classic diff experience are not available.
+For the list of known limitations, see [feedback issue 596236](https://gitlab.com/gitlab-org/gitlab/-/issues/596236).
+For the feature parity roadmap, see [epic 19380](https://gitlab.com/groups/gitlab-org/-/epics/19380).
 
 ### Turn on Rapid Diffs
 

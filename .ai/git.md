@@ -1,6 +1,6 @@
 # Git workflow rules
 
-Before creating any branch or commit, validate against all rules in this file.
+Before creating any branch or commit, or adding changelog entries, validate against all rules in this file.
 
 ## Branch naming rules
 
@@ -49,6 +49,40 @@ Use full URLs. Do not use short references.
 
 - Correct: `Resolves https://gitlab.com/gitlab-org/gitlab/-/issues/123456`
 - Incorrect: `Resolves #123456`
+
+## Changelog rules
+
+Add `Changelog: <type>` as the last line of the commit message body.
+
+`added`, `fixed`, `changed`, `deprecated`, `removed`, `security`, `performance`, `other`
+
+For EE-only changes, add `EE: true` on a separate line after the changelog entry.
+
+`added`, `fixed`, `changed`, `deprecated`, `removed`, `security`, `performance`, `other`
+
+### When to include
+
+- User-facing changes
+- API changes
+- Breaking changes
+- Security fixes
+- Database migrations
+
+### When to skip
+
+- Internal refactoring only
+- Test-only changes
+- Documentation-only changes
+- Development tooling changes
+
+### Feature flag changelog
+
+| Scenario | Changelog type |
+|----------|---------------|
+| Removing default-off flag, keeping the new feature | `added` / `changed` / `fixed` (describe the feature) |
+| Removing default-off flag, removing the new feature (rollback) | `other` |
+| Removing default-on flag, keeping the new feature (cleanup) | `other` |
+| Removing default-on flag, reverting to old behavior | `removed` / `changed` |
 
 ## Maintainer references
 

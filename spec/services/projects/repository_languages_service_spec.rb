@@ -24,8 +24,10 @@ RSpec.describe Projects::RepositoryLanguagesService, feature_category: :source_c
         languages = service.execute
 
         expect(languages.size).to eq(1)
-        expect(languages.last.attributes.values).to eq(
-          [project.id, repository_language.programming_language_id, repository_language.share]
+        expect(languages.last).to have_attributes(
+          project_id: project.id,
+          programming_language_id: repository_language.programming_language_id,
+          share: repository_language.share
         )
       end
 
@@ -42,8 +44,10 @@ RSpec.describe Projects::RepositoryLanguagesService, feature_category: :source_c
 
     it 'returns repository languages' do
       expect(languages.size).to eq(1)
-      expect(languages.last.attributes.values).to eq(
-        [project.id, repository_language.programming_language_id, repository_language.share]
+      expect(languages.last).to have_attributes(
+        project_id: project.id,
+        programming_language_id: repository_language.programming_language_id,
+        share: repository_language.share
       )
     end
   end

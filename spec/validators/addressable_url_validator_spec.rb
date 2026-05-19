@@ -66,7 +66,7 @@ RSpec.describe AddressableUrlValidator do
     end
   end
 
-  context 'by default' do
+  context 'with default settings' do
     let(:validator) { described_class.new(attributes: [:link_url]) }
 
     it 'does not block urls pointing to localhost' do
@@ -227,7 +227,7 @@ RSpec.describe AddressableUrlValidator do
   context 'when ports is' do
     let(:validator) { described_class.new(attributes: [:link_url], ports: ports) }
 
-    context 'empty' do
+    context 'when empty' do
       let(:ports) { [] }
 
       it 'does not block any port' do
@@ -237,7 +237,7 @@ RSpec.describe AddressableUrlValidator do
       end
     end
 
-    context 'set' do
+    context 'when set' do
       let(:ports) { [443] }
 
       it 'blocks urls with a different port' do
@@ -252,7 +252,7 @@ RSpec.describe AddressableUrlValidator do
     let(:url) { 'http://$user@example.com' }
     let(:validator) { described_class.new(attributes: [:link_url], enforce_user: enforce_user) }
 
-    context 'true' do
+    context 'when true' do
       let(:enforce_user) { true }
 
       it 'checks user format' do
@@ -264,7 +264,7 @@ RSpec.describe AddressableUrlValidator do
       end
     end
 
-    context 'false (default)' do
+    context 'when false (default)' do
       let(:enforce_user) { false }
 
       it 'does not check user format' do
@@ -281,7 +281,7 @@ RSpec.describe AddressableUrlValidator do
     let(:url) { 'https://𝕘itⅼαƄ.com/foo/foo.bar' }
     let(:validator) { described_class.new(attributes: [:link_url], ascii_only: ascii_only) }
 
-    context 'true' do
+    context 'when true' do
       let(:ascii_only) { true }
 
       it 'prevents unicode characters' do
@@ -293,7 +293,7 @@ RSpec.describe AddressableUrlValidator do
       end
     end
 
-    context 'false (default)' do
+    context 'when false (default)' do
       let(:ascii_only) { false }
 
       it 'does not prevent unicode characters' do
@@ -315,7 +315,7 @@ RSpec.describe AddressableUrlValidator do
       allow(ApplicationSetting).to receive(:current).and_return(ApplicationSetting.new)
     end
 
-    context 'true' do
+    context 'when true' do
       let(:options) { super().merge(deny_all_requests_except_allowed: true) }
 
       it 'prevents the url' do
@@ -341,7 +341,7 @@ RSpec.describe AddressableUrlValidator do
       end
     end
 
-    context 'false' do
+    context 'when false' do
       let(:options) { super().merge(deny_all_requests_except_allowed: false) }
 
       it 'allows the url' do
@@ -353,7 +353,7 @@ RSpec.describe AddressableUrlValidator do
       end
     end
 
-    context 'not given' do
+    context 'when not given' do
       before do
         stub_application_setting(deny_all_requests_except_allowed: app_setting)
       end
@@ -397,10 +397,10 @@ RSpec.describe AddressableUrlValidator do
       end
     end
 
-    context 'a proc' do
+    context 'with a proc' do
       let(:options) { super().merge(deny_all_requests_except_allowed: deny_all_requests_except_allowed_proc) }
 
-      context 'that is evaluating true' do
+      context 'when that is evaluating true' do
         let(:deny_all_requests_except_allowed_proc) { ->(_) { true } }
 
         it 'prevents the url' do
@@ -412,7 +412,7 @@ RSpec.describe AddressableUrlValidator do
         end
       end
 
-      context 'that is evaluating false' do
+      context 'when that is evaluating false' do
         let(:deny_all_requests_except_allowed_proc) { ->(_) { false } }
 
         it 'allows the url' do
@@ -436,7 +436,7 @@ RSpec.describe AddressableUrlValidator do
         "/'><script>alert(document.cookie)</script>"
     end
 
-    context 'true' do
+    context 'when true' do
       let(:enforce_sanitization) { true }
 
       it 'prevents unsafe urls' do
@@ -464,7 +464,7 @@ RSpec.describe AddressableUrlValidator do
       end
     end
 
-    context 'false' do
+    context 'when false' do
       let(:enforce_sanitization) { false }
 
       it 'allows unsafe urls' do
@@ -487,7 +487,7 @@ RSpec.describe AddressableUrlValidator do
       subject
     end
 
-    context 'true' do
+    context 'when true' do
       let(:dns_value) { true }
 
       it 'raises error' do
@@ -495,7 +495,7 @@ RSpec.describe AddressableUrlValidator do
       end
     end
 
-    context 'false' do
+    context 'when false' do
       let(:dns_value) { false }
 
       it 'allows urls that cannot be resolved' do

@@ -42,7 +42,6 @@ module Gitlab
                       committer: 'MergeRequest::DiffCommitUser',
                       merge_request_commits_metadata: 'MergeRequest::CommitsMetadata',
                       merge_request_diff_commits: 'MergeRequestDiffCommit',
-                      work_item_type: 'WorkItems::TypesFramework::SystemDefined::Type',
                       work_item_description: 'WorkItems::Description',
                       user_contributions: 'User',
                       squash_option: 'Projects::BranchRules::SquashOption' }.freeze
@@ -72,7 +71,6 @@ module Gitlab
           MergeRequest::DiffCommitUser
           MergeRequest::CommitsMetadata
           MergeRequestDiffCommit
-          WorkItems::TypesFramework::SystemDefined::Type
         ].freeze
 
         RELATIONS_WITH_REWRITABLE_USERNAMES = %i[
@@ -97,6 +95,10 @@ module Gitlab
           @object = preload_keys(@object, PROJECT_REFERENCES, @importable)
           @object = preload_keys(@object, GROUP_REFERENCES, @importable.group)
           @object = preload_keys(@object, USER_REFERENCES, @user)
+
+          @object.work_item_type = @work_item_type if @object && @work_item_type
+          attach_missing_work_item_type_label
+          @object
         end
 
         private
@@ -209,14 +211,38 @@ module Gitlab
         end
 
         def setup_work_item
-          @relation_hash['relative_position'] = compute_relative_position
+          @relation_hash['relative_position'] = nil
 
+          work_item_type_hash = @relation_hash.delete('work_item_type')
           issue_type = @relation_hash.delete('issue_type')
 
-          if issue_type
-            type = ::WorkItems::TypesFramework::Provider.new(@importable).find_by_base_type(issue_type)
-            @relation_hash['work_item_type'] ||= type
+          provider = ::WorkItems::TypesFramework::Provider.new(@importable)
+          @work_item_type = resolve_work_item_type(provider, work_item_type_hash, issue_type)
+        end
+
+        def resolve_work_item_type(provider, work_item_type_hash, issue_type)
+          name = work_item_type_hash&.dig('name')
+          if name && ::Feature.enabled?(:work_item_configurable_types, @importable.root_namespace)
+            matched = provider.find_by_name(name)
+            return matched if matched&.can_user_create_items?
+
+            @missing_work_item_type_name = name
+            return provider.default_issue_type
           end
+
+          # Backward compatibility: legacy exports use `base_type` or `issue_type`.
+          # Also used when the `work_item_configurable_types` feature flag is disabled.
+          base_type = work_item_type_hash&.dig('base_type') || issue_type
+          provider.find_by_base_type(base_type) if base_type
+        end
+
+        def attach_missing_work_item_type_label
+          return unless @object && @missing_work_item_type_name
+
+          label_id = MissingWorkItemTypeLabel.new(@importable).id_for(@missing_work_item_type_name)
+          return unless label_id
+
+          @object.label_links.build(label_id: label_id)
         end
 
         def setup_release
@@ -294,32 +320,6 @@ module Gitlab
           end
 
           @object_builder.build(relation_class, finder_hash)
-        end
-
-        def compute_relative_position
-          return unless max_relative_position
-
-          max_relative_position + ((@relation_index + 1) * Gitlab::RelativePositioning::IDEAL_DISTANCE)
-        end
-
-        def max_relative_position
-          Rails.cache.fetch("import:#{@importable.model_name.plural}:#{@importable.id}:hierarchy_max_issues_relative_position", expires_in: 24.hours) do
-            inner_sql = Issue
-                          .select(:id)
-                          .where(::Project.arel_table[:id].eq(Issue.arel_table[:project_id]))
-                          .order(iid: :asc)
-                          .limit(1)
-                          .to_sql
-
-            anchor_issue_id = @importable
-              .root_ancestor
-              .all_project_ids
-              .joins("INNER JOIN LATERAL (#{inner_sql}) issues ON TRUE")
-              .order(Issue.arel_table[:id].asc)
-              .pick(Issue.arel_table[:id])
-
-            ::Issue.mover.context(Issue.find_by(id: anchor_issue_id))&.max_relative_position || 0
-          end
         end
 
         def legacy_trigger?

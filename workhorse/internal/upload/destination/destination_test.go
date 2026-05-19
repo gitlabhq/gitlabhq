@@ -11,6 +11,8 @@ import (
 	"time"
 
 	jwt "github.com/golang-jwt/jwt/v5"
+	"github.com/sirupsen/logrus"
+	logrustest "github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
 	"gocloud.dev/blob"
 
@@ -44,6 +46,35 @@ func requireFileGetsRemovedAsync(t *testing.T, filePath string) {
 
 func requireObjectStoreDeletedAsync(t *testing.T, expectedDeletes int, osStub *test.ObjectstoreStub) {
 	require.Eventually(t, func() bool { return osStub.DeletesCnt() == expectedDeletes }, time.Second, time.Millisecond, "Object not deleted")
+}
+
+func TestNewLocalFileCleanupWhenFileAlreadyDeleted(t *testing.T) {
+	hook := logrustest.NewLocal(logrus.StandardLogger())
+	defer hook.Reset()
+
+	tmpFolder := t.TempDir()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	fh := &FileHandler{}
+	consumer, err := fh.newLocalFile(ctx, &UploadOpts{LocalTempPath: tmpFolder})
+	require.NoError(t, err)
+	require.NotNil(t, consumer)
+	require.NotEmpty(t, fh.LocalPath)
+
+	// Simulate the upload handler moving the temp file before context is canceled.
+	require.NoError(t, os.Remove(fh.LocalPath))
+
+	cancel()
+
+	require.Eventually(t, func() bool {
+		for _, entry := range hook.AllEntries() {
+			if entry.Level == logrus.WarnLevel && entry.Message == "newLocalFile: temporary file already removed, likely moved by upload handler" {
+				return true
+			}
+		}
+		return false
+	}, time.Second, 10*time.Millisecond, "expected warning log entry for already-removed file")
 }
 
 func TestUploadWrongSize(t *testing.T) {

@@ -36,7 +36,7 @@ Prerequisites:
 To select the group to manage the project templates for your instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Templates**.
+1. In the left sidebar, select **Settings** > **Templates**.
 1. Expand **Custom project templates**.
 1. Select a group to use.
 1. Select **Save changes**.

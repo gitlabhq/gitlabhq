@@ -48,6 +48,21 @@ class UserPolicy < BasePolicy
   rule { (user_is_self | admin) & ~blocked }.enable :rotate_personal_access_token
   rule { (user_is_self | admin) & ~blocked }.enable :get_user_associations_count
 
+  desc "The user has admin_service_accounts on the target service account's provisioning scope"
+  condition(:can_admin_target_service_account) do
+    next false unless @user && @subject.service_account?
+
+    scope = @subject.provisioned_by_group || @subject.provisioned_by_project
+    next false unless scope
+
+    can?(:admin_service_accounts, scope)
+  end
+
+  rule { can_admin_target_service_account & ~blocked }.policy do
+    enable :create_personal_access_token
+    enable :rotate_personal_access_token
+  end
+
   rule { admin }.policy do
     enable :read_custom_attribute
     enable :update_custom_attribute

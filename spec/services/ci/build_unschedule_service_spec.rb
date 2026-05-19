@@ -11,7 +11,7 @@ RSpec.describe Ci::BuildUnscheduleService, :aggregate_failures, feature_category
     subject(:execute) { described_class.new(build, user).execute }
 
     context 'when user is authorized to unschedule the build' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 

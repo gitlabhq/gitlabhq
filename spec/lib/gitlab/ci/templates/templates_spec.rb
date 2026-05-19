@@ -37,14 +37,14 @@ RSpec.describe 'CI YML Templates' do
 
       with_them do
         let(:content) do
-          <<~EOS
+          <<~YAML
             include:
               - template: #{template_name}
 
             concrete_build_implemented_by_a_user:
               stage: test
               script: do something
-          EOS
+          YAML
         end
 
         it { is_expected.to be_valid }
@@ -62,14 +62,14 @@ RSpec.describe 'CI YML Templates' do
 
       with_them do
         let(:content) do
-          <<~EOS
+          <<~YAML
             include:
               - template: #{template_name}
 
             concrete_build_implemented_by_a_user:
               stage: test
               script: do something
-          EOS
+          YAML
         end
 
         it { is_expected.not_to be_valid }
@@ -86,14 +86,14 @@ RSpec.describe 'CI YML Templates' do
 
       context 'with default stages' do
         let(:content) do
-          <<~EOS
+          <<~YAML
             include:
               - template: #{template_name}
 
             concrete_build_implemented_by_a_user:
               stage: test
               script: do something
-          EOS
+          YAML
         end
 
         it { is_expected.not_to be_valid }
@@ -101,7 +101,7 @@ RSpec.describe 'CI YML Templates' do
 
       context 'with defined stages' do
         let(:content) do
-          <<~EOS
+          <<~YAML
             include:
               - template: #{template_name}
 
@@ -114,7 +114,7 @@ RSpec.describe 'CI YML Templates' do
             concrete_build_implemented_by_a_user:
               stage: test
               script: do something
-          EOS
+          YAML
         end
 
         it { is_expected.to be_valid }
@@ -131,14 +131,14 @@ RSpec.describe 'CI YML Templates' do
 
       context 'with default stages' do
         let(:content) do
-          <<~EOS
+          <<~YAML
             include:
               - template: #{template_name}
 
             concrete_build_implemented_by_a_user:
               stage: test
               script: do something
-          EOS
+          YAML
         end
 
         it { is_expected.not_to be_valid }
@@ -146,7 +146,7 @@ RSpec.describe 'CI YML Templates' do
 
       context 'with defined stages' do
         let(:content) do
-          <<~EOS
+          <<~YAML
             include:
               - template: #{template_name}
 
@@ -159,7 +159,7 @@ RSpec.describe 'CI YML Templates' do
             concrete_build_implemented_by_a_user:
               stage: test
               script: do something
-          EOS
+          YAML
         end
 
         it { is_expected.to be_valid }
@@ -175,14 +175,14 @@ RSpec.describe 'CI YML Templates' do
 
         context 'with default stages' do
           let(:content) do
-            <<~EOS
+            <<~YAML
               include:
                 - template: #{template_name}
 
               concrete_build_implemented_by_a_user:
                 stage: test
                 script: do something
-            EOS
+            YAML
           end
 
           it { is_expected.not_to be_valid }
@@ -190,7 +190,7 @@ RSpec.describe 'CI YML Templates' do
 
         context 'with defined stages' do
           let(:content) do
-            <<~EOS
+            <<~YAML
               include:
                 - template: #{template_name}
 
@@ -203,7 +203,7 @@ RSpec.describe 'CI YML Templates' do
               concrete_build_implemented_by_a_user:
                 stage: test
                 script: do something
-            EOS
+            YAML
           end
 
           it { is_expected.to be_valid }

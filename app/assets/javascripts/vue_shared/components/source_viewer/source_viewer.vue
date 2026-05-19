@@ -78,13 +78,9 @@ export default {
   computed: {
     blameInfo() {
       return this.blameData.reduce((result, blame, index) => {
-        if (shouldRender(this.blameData, index)) {
-          result.push({
-            ...blame,
-            blameOffset: calculateBlameOffset(blame.lineno, index),
-          });
-        }
-
+        if (!shouldRender(this.blameData, index)) return result;
+        const blameOffset = calculateBlameOffset(blame.lineno);
+        if (blameOffset !== null) result.push({ ...blame, blameOffset });
         return result;
       }, []);
     },
@@ -180,7 +176,7 @@ export default {
       if (this.renderedChunks.includes(chunkIndex)) return;
 
       if (chunkIndex > 0 && handleOverlappingChunk) {
-        // request the blame information for overlapping chunk incase it is visible in the DOM
+        // request the blame information for overlapping chunk in case it is visible in the DOM
         this.handleChunkAppear(chunkIndex - 1, false);
       }
 
@@ -254,7 +250,7 @@ export default {
 <template>
   <div>
     <div class="flash-container gl-mb-3"></div>
-    <div ref="fileContent" class="gl-relative gl-flex">
+    <div ref="fileContent" class="gl-relative gl-flex gl-overflow-x-auto">
       <blame-info v-if="showBlame" :blame-info="blameInfo" :project-path="projectPath" />
 
       <blame-skeleton-loader
@@ -293,6 +289,7 @@ export default {
           :is-blame-active="showBlame"
           @appear="() => handleAppear(index)"
           @disappear="() => handleDisappear(index)"
+          @highlighted="blameData = [...blameData]"
         />
       </div>
     </div>

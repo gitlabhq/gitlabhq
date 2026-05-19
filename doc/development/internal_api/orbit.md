@@ -183,3 +183,110 @@ Example response:
   }
 ]
 ```
+
+### Merge requests
+
+The diff endpoints come in two formats:
+
+- Per-file JSON diffs (`merge_request_diffs/:diff_id`) return each changed file with its
+  diff content and metadata (path, mode, rename/delete status). These read from
+  `MergeRequestDiffFile` records. Use the `paths` parameter to request only specific files.
+- Raw unified patch (`merge_requests/:iid/raw_diffs` or `merge_request_diffs/:diff_id/raw_diffs`)
+  returns the full diff as `text/plain`, computed by Gitaly and streamed through Workhorse.
+
+#### Get raw diffs for the latest version of a merge request
+
+Use a GET command to get the full unified patch for the latest diff version of a merge request.
+The response is streamed as `text/plain` through Workhorse.
+
+```plaintext
+GET /internal/orbit/project/:project_id/merge_requests/:merge_request_iid/raw_diffs
+```
+
+| Attribute            | Type    | Required | Description                            |
+|:---------------------|:--------|:---------|:---------------------------------------|
+| `project_id`         | integer | yes      | ID of the project.                     |
+| `merge_request_iid`  | integer | yes      | IID of the merge request (project-scoped). |
+
+Example request:
+
+```shell
+curl --header "Gitlab-Orbit-Api-Request: <json-web-token>" \
+  "https://gitlab.example.com/api/v4/internal/orbit/project/1/merge_requests/42/raw_diffs"
+```
+
+The response is a `text/plain` unified patch streamed through Workhorse.
+
+### Merge request diffs
+
+These endpoints address a specific `MergeRequestDiff` version by its database ID.
+
+#### Get per-file diffs for a merge request diff
+
+Use a GET command to get per-file diffs for a `MergeRequestDiff` record.
+
+```plaintext
+GET /internal/orbit/project/:project_id/merge_request_diffs/:diff_id
+```
+
+| Attribute    | Type     | Required | Description                                                            |
+|:-------------|:---------|:---------|:-----------------------------------------------------------------------|
+| `project_id` | integer  | yes      | ID of the project.                                                     |
+| `diff_id`    | integer  | yes      | ID of the `MergeRequestDiff` record.                                   |
+| `paths`      | string[] | no       | Filter to these file paths (`new_path` or `old_path`). Maximum of 100. |
+
+Example request:
+
+```shell
+curl --header "Gitlab-Orbit-Api-Request: <json-web-token>" \
+  "https://gitlab.example.com/api/v4/internal/orbit/project/1/merge_request_diffs/42"
+```
+
+Example response:
+
+```json
+{
+  "id": 42,
+  "head_commit_sha": "abc123def456",
+  "base_commit_sha": "789fed012cba",
+  "start_commit_sha": "456abc789def",
+  "diffs": [
+    {
+      "diff": "@@ -1,3 +1,4 @@\n...",
+      "collapsed": false,
+      "too_large": false,
+      "new_path": "app/models/user.rb",
+      "old_path": "app/models/user.rb",
+      "a_mode": "100644",
+      "b_mode": "100644",
+      "new_file": false,
+      "renamed_file": false,
+      "deleted_file": false,
+      "generated_file": false
+    }
+  ]
+}
+```
+
+#### Get raw unified patch for a merge request diff
+
+Use a GET command to get the full unified patch for a `MergeRequestDiff` record as `text/plain`,
+streamed through Workhorse.
+
+```plaintext
+GET /internal/orbit/project/:project_id/merge_request_diffs/:diff_id/raw_diffs
+```
+
+| Attribute    | Type    | Required | Description                          |
+|:-------------|:--------|:---------|:-------------------------------------|
+| `project_id` | integer | yes      | ID of the project.                   |
+| `diff_id`    | integer | yes      | ID of the `MergeRequestDiff` record. |
+
+Example request:
+
+```shell
+curl --header "Gitlab-Orbit-Api-Request: <json-web-token>" \
+  "https://gitlab.example.com/api/v4/internal/orbit/project/1/merge_request_diffs/42/raw_diffs"
+```
+
+The response is a `text/plain` unified patch streamed through Workhorse.

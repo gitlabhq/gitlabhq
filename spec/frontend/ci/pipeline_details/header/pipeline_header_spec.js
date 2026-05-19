@@ -575,4 +575,23 @@ describe('Pipeline header', () => {
       expect(setFaviconOverlay).toHaveBeenCalledWith(detailedStatus.favicon);
     });
   });
+
+  describe('missing pipelineIid', () => {
+    it('skips the query when pipelineIid is missing', async () => {
+      // Simulate missing pipelineIid
+      await createComponent({
+        handlers: [
+          [getPipelineDetailsQuery, successHandler],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionHandler],
+        ],
+        provide: {
+          pipelineIid: '',
+        },
+      });
+
+      await waitForPromises();
+
+      expect(successHandler).not.toHaveBeenCalled();
+    });
+  });
 });

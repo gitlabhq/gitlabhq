@@ -176,7 +176,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
           end
 
           context 'when organization is the default organization' do
-            let(:organization) { build(:organization, :default, name: 'Default', path: 'default') }
+            let(:organization) { build(:organization, :default, name: 'Default', path: 'default') } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required for testing default organization properties
 
             it 'skips validation and is valid' do
               expect(organization).to be_valid
@@ -202,6 +202,27 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   end
 
   context 'when using scopes' do
+    describe '.active' do
+      let_it_be(:active_org) { create(:organization) }
+
+      let_it_be(:deletion_scheduled_org) do
+        create(:organization).tap do |o|
+          o.update_column(:state, described_class.states['deletion_scheduled'])
+        end
+      end
+
+      let_it_be(:deletion_in_progress_org) do
+        create(:organization).tap do |o|
+          o.update_column(:state, described_class.states['deletion_in_progress'])
+        end
+      end
+
+      it 'returns only active organizations' do
+        expect(described_class.active).to include(active_org)
+        expect(described_class.active).not_to include(deletion_scheduled_org, deletion_in_progress_org)
+      end
+    end
+
     describe '.by_path' do
       let_it_be(:other_organization) { create(:organization, path: 'other-org') }
 
@@ -319,6 +340,45 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
   end
 
+  describe '#empty?' do
+    context 'when the organization has no groups and no projects' do
+      it 'returns true' do
+        expect(organization.empty?).to be(true)
+      end
+    end
+
+    context 'when the organization has groups' do
+      before do
+        create(:group, organization: organization)
+      end
+
+      it 'returns false' do
+        expect(organization.empty?).to be(false)
+      end
+    end
+
+    context 'when the organization has projects' do
+      before do
+        create(:project, organization: organization)
+      end
+
+      it 'returns false' do
+        expect(organization.empty?).to be(false)
+      end
+    end
+  end
+
+  describe 'invalid state transitions' do
+    let_it_be(:user) { create(:user) }
+
+    it 'cannot schedule_deletion! from deletion_scheduled state' do
+      organization.update_column(:state, described_class.states['deletion_scheduled'])
+
+      expect { organization.schedule_deletion!(transition_user: user) }
+        .to raise_error(StateMachines::InvalidTransition)
+    end
+  end
+
   describe '#to_param' do
     let_it_be(:organization) { build(:organization, path: 'org_path') }
 
@@ -385,7 +445,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
 
   describe '#web_url' do
     it 'returns web url from `Gitlab::UrlBuilder`' do
-      web_url = 'http://127.0.0.1:3000/-/organizations/default'
+      web_url = 'http://127.0.0.1:3000/o/default/-/overview'
 
       expect(Gitlab::UrlBuilder).to receive(:build).with(organization, only_path: nil).and_return(web_url)
       expect(organization.web_url).to eq(web_url)
@@ -435,7 +495,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   end
 
   context 'when a default organization exists' do
-    let_it_be(:default_organization) { create(:organization, :default) }
+    let_it_be(:default_organization) { create(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required for testing default organization properties
 
     describe '.without_default' do
       it 'excludes default organization' do
@@ -464,6 +524,30 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
         it 'returns false' do
           expect(described_class.default?(organization.id)).to eq(false)
         end
+      end
+    end
+
+    describe '.find_by_path_with_isolation' do
+      let_it_be(:org) { create(:organization, path: 'My-Org') }
+
+      it 'finds organization case-insensitively' do
+        expect(described_class.find_by_path_with_isolation('my-org')).to eq(org)
+        expect(described_class.find_by_path_with_isolation('MY-ORG')).to eq(org)
+        expect(described_class.find_by_path_with_isolation('My-Org')).to eq(org)
+      end
+
+      it 'returns nil when path does not match' do
+        expect(described_class.find_by_path_with_isolation('nonexistent')).to be_nil
+      end
+
+      it 'uses LOWER in the query' do
+        query = described_class.with_isolation.where("LOWER(path) = ?", 'my-org').to_sql
+
+        expect(query).to include('LOWER(path)')
+      end
+
+      it 'returns nil when path is nil' do
+        expect(described_class.find_by_path_with_isolation(nil)).to be_nil
       end
     end
 

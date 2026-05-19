@@ -19,9 +19,12 @@ RSpec.describe Integrations::SlackOptions::LabelSearchHandler, feature_category:
     subject(:execute) { described_class.new(chat_name, search_value, view_id).execute }
 
     context 'when user has permission to read project and group labels' do
+      before_all do
+        project.add_developer(current_user)
+      end
+
       before do
         allow(Rails.cache).to receive(:read).and_return(project.id)
-        project.add_developer(current_user)
       end
 
       it 'returns the labels matching the search term' do

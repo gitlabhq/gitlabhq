@@ -27,6 +27,9 @@ module API
     helpers ::API::Helpers::Packages::Maven::BasicAuthHelpers
 
     helpers do
+      # overridden in EE
+      def enforce_dependency_firewall_on_upload!(_package_name, _version); end
+
       def path_exists?(path)
         return false if path.blank?
 
@@ -58,7 +61,6 @@ module API
       end
 
       def find_and_present_package_file(package, file_name, format, params)
-        project = package&.project
         package_file = nil
 
         package_file = ::Packages::PackageFileFinder.new(package, file_name).execute if package
@@ -75,16 +77,21 @@ module API
           unauthorized! if no_package_found && !current_user && params[:target].is_a?(::Group)
           not_found!('Package') if no_package_found
 
-          case format
-          when 'md5'
-            package_file.file_md5.to_s
-          when 'sha1'
-            package_file.file_sha1.to_s
-          else
-            track_package_event('pull_package', :maven, project: project, namespace: project&.namespace) if jar_file?(format)
+          present_package(package, format, package_file)
+        end
+      end
 
-            download_package_file!(package_file)
-          end
+      def present_package(package, format, package_file)
+        project = package.project
+        case format
+        when 'md5'
+          package_file.file_md5.to_s
+        when 'sha1'
+          package_file.file_sha1.to_s
+        else
+          track_package_event('pull_package', :maven, project: project, namespace: project.namespace) if jar_file?(format)
+
+          download_package_file!(package_file)
         end
       end
     end
@@ -128,16 +135,7 @@ module API
       package_file = ::Packages::PackageFileFinder
         .new(package, file_name).execute!
 
-      case format
-      when 'md5'
-        package_file.file_md5.to_s
-      when 'sha1'
-        package_file.file_sha1.to_s
-      else
-        track_package_event('pull_package', :maven, project: project, namespace: project.namespace) if jar_file?(format)
-
-        download_package_file!(package_file)
-      end
+      present_package(package, format, package_file)
     end
 
     desc 'Download the maven package file at a group level' do
@@ -246,8 +244,10 @@ module API
       put ':id/packages/maven/*path/:file_name/authorize', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         authorize_upload!
 
-        package_name = params[:path].rpartition('/').first
+        package_name, _, version = params[:path].rpartition('/')
         protect_package!(package_name, :maven)
+
+        enforce_dependency_firewall_on_upload!(package_name, version)
 
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
@@ -326,3 +326,5 @@ module API
     end
   end
 end
+
+API::MavenPackages.prepend_mod

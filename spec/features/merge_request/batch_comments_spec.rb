@@ -16,99 +16,120 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     project.add_maintainer(user)
 
     sign_in(user)
-
-    visit_diffs
   end
 
-  it 'adds draft note' do
-    write_diff_comment
-
-    expect(find('.draft-note')).to have_content('Line is wrong')
-
-    expect(first('[data-testid="review-drawer-toggle"] .gl-badge')).to have_content('1')
-  end
-
-  it 'publishes review' do
-    write_diff_comment
-
-    page.within '.merge-request-tabs-container' do
-      click_button 'Your review'
+  context 'on the diffs page' do
+    before do
+      visit_diffs
     end
 
-    click_button 'Submit review'
-
-    wait_for_requests
-
-    find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
-
-    expect(page).not_to have_selector('.draft-note', text: 'Line is wrong')
-
-    expect(page).to have_selector('.note:not(.draft-note)', text: 'Line is wrong')
-  end
-
-  it 'deletes draft note', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9328' do
-    write_diff_comment
-
-    find('.js-note-delete').click
-
-    wait_for_requests
-
-    page.within('.modal') do
-      click_button('Delete comment', match: :first)
-    end
-
-    wait_for_requests
-
-    expect(page).not_to have_selector('.draft-note', text: 'Line is wrong')
-  end
-
-  it 'edits draft note' do
-    write_diff_comment
-
-    find('.js-note-edit').click
-
-    wait_for_requests
-
-    # make sure comment form is in view
-    execute_script("document.querySelector('.js-static-panel-inner').scrollBy(0, 200)")
-
-    write_comment(text: 'Testing update', button_text: 'Save comment')
-
-    expect(page).to have_selector('.draft-note', text: 'Testing update')
-  end
-
-  context 'draft merge request' do
-    let(:merge_request) do
-      create(:merge_request_with_diffs, :draft_merge_request, source_project: project, target_project: project, source_branch: 'merge-test')
-    end
-
-    it 'shows /ready command explanation' do
-      text = <<~TEXT
-        Example comment
-
-        /ready
-      TEXT
-      write_diff_comment(text: text)
-
-      expect(page).to have_text("Marks this merge request as ready.")
-    end
-  end
-
-  context 'multiple times on the same diff line' do
-    it 'shows both drafts at once' do
+    it 'adds draft note' do
       write_diff_comment
 
-      # All of the Diff helpers like click_diff_line (or write_diff_comment)
-      #     fail very badly when run a second time.
-      # This recreates the relevant logic.
-      line = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
-      line.hover
-      line.find('.js-add-diff-note-button').click
+      expect(find('.draft-note')).to have_content('Line is wrong')
 
-      write_comment(text: 'A second draft!', button_text: 'Add to review')
+      expect(first('[data-testid="review-drawer-toggle"] .gl-badge')).to have_content('1')
+    end
 
-      expect(page).to have_text('Line is wrong')
-      expect(page).to have_text('A second draft!')
+    it 'publishes review' do
+      write_diff_comment
+
+      page.within '.merge-request-tabs-container' do
+        click_button 'Your review'
+      end
+
+      click_button 'Submit review'
+
+      wait_for_requests
+
+      find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
+
+      expect(page).not_to have_selector('.draft-note', text: 'Line is wrong')
+
+      expect(page).to have_selector('.note:not(.draft-note)', text: 'Line is wrong')
+    end
+
+    it 'deletes draft note', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9328' do
+      write_diff_comment
+
+      find('.js-note-delete').click
+
+      wait_for_requests
+
+      page.within('.modal') do
+        click_button('Delete comment', match: :first)
+      end
+
+      wait_for_requests
+
+      expect(page).not_to have_selector('.draft-note', text: 'Line is wrong')
+    end
+
+    it 'edits draft note' do
+      write_diff_comment
+
+      find('.js-note-edit').click
+
+      wait_for_requests
+
+      # make sure comment form is in view
+      execute_script("document.querySelector('.js-static-panel-inner').scrollBy(0, 200)")
+
+      write_comment(text: 'Testing update', button_text: 'Save comment')
+
+      expect(page).to have_selector('.draft-note', text: 'Testing update')
+    end
+
+    context 'draft merge request' do
+      let(:merge_request) do
+        create(:merge_request_with_diffs, :draft_merge_request, source_project: project, target_project: project, source_branch: 'merge-test')
+      end
+
+      it 'shows /ready command explanation' do
+        text = <<~TEXT
+          Example comment
+
+          /ready
+        TEXT
+        write_diff_comment(text: text)
+
+        expect(page).to have_text("Marks this merge request as ready.")
+      end
+    end
+
+    context 'multiple times on the same diff line' do
+      it 'shows both drafts at once' do
+        write_diff_comment
+
+        # All of the Diff helpers like click_diff_line (or write_diff_comment)
+        #     fail very badly when run a second time.
+        # This recreates the relevant logic.
+        line = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
+        line.hover
+        line.find('.js-add-diff-note-button').click
+
+        write_comment(text: 'A second draft!', button_text: 'Add to review')
+
+        expect(page).to have_text('Line is wrong')
+        expect(page).to have_text('A second draft!')
+      end
+    end
+
+    context 'in parallel diff' do
+      before do
+        find('.js-show-diff-settings').click
+        find_by_testid('listbox-item-parallel').click
+      end
+
+      it 'adds draft comments to both sides', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9327' do
+        write_parallel_comment('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9')
+        write_parallel_comment('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9', button_text: 'Add to review', text: 'Another wrong line')
+
+        expect(find('.new .draft-note')).to have_content('Line is wrong')
+        expect(find('.old .draft-note')).to have_content('Another wrong line')
+
+        expect(first('[data-testid="review-drawer-toggle"] .gl-badge')).to have_content('2')
+      end
     end
   end
 
@@ -117,22 +138,26 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     let!(:draft_on_text) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user, path: 'README.md', note: 'Lorem ipsum on text...') }
     let!(:draft_on_image) { create(:draft_note_on_image_diff, merge_request: merge_request, author: user, path: 'files/images/ee_repo_logo.png', note: 'Lorem ipsum on an image...') }
 
-    it 'does not show in overview' do
+    before do
       visit_overview
+    end
 
+    it 'does not show in overview' do
       expect(page).to have_no_text(draft_on_text.note)
       expect(page).to have_no_text(draft_on_image.note)
     end
   end
 
   context 'adding single comment to review' do
-    before do
-      visit_overview
-    end
+    context 'initial state' do
+      before do
+        visit_overview
+      end
 
-    it 'at first does not show `Add comment to review` and `Add comment now` buttons' do
-      expect(page).to have_no_button('Add comment to review')
-      expect(page).to have_no_button('Add comment now')
+      it 'at first does not show `Add comment to review` and `Add comment now` buttons' do
+        expect(page).to have_no_button('Add comment to review')
+        expect(page).to have_no_button('Add comment now')
+      end
     end
 
     context 'when review has started' do
@@ -167,23 +192,6 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
         expect(page).to have_text('1 pending comment')
       end
-    end
-  end
-
-  context 'in parallel diff' do
-    before do
-      find('.js-show-diff-settings').click
-      find_by_testid('listbox-item-parallel').click
-    end
-
-    it 'adds draft comments to both sides', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9327' do
-      write_parallel_comment('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9')
-      write_parallel_comment('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9', button_text: 'Add to review', text: 'Another wrong line')
-
-      expect(find('.new .draft-note')).to have_content('Line is wrong')
-      expect(find('.old .draft-note')).to have_content('Another wrong line')
-
-      expect(first('[data-testid="review-drawer-toggle"] .gl-badge')).to have_content('2')
     end
   end
 

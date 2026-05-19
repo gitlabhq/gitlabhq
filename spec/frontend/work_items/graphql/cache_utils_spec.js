@@ -1,18 +1,26 @@
 import { cloneDeep } from 'lodash-es';
-import { WIDGET_TYPE_HIERARCHY, STATE_CLOSED } from '~/work_items/constants';
+import { WIDGET_TYPE_HIERARCHY, WIDGET_TYPE_STATUS, STATE_CLOSED } from '~/work_items/constants';
 import {
   addHierarchyChild,
   removeHierarchyChild,
   addHierarchyChildren,
   setNewWorkItemCache,
+  getNewWorkItemSharedCache,
+  legacyGetNewWorkItemSharedCache,
   updateCacheAfterCreatingNote,
   updateCountsForParent,
 } from '~/work_items/graphql/cache_utils';
-import { findHierarchyWidget, findNotesWidget, getWorkItemWidgets } from '~/work_items/utils';
+import {
+  findHierarchyWidget,
+  findNotesWidget,
+  getWorkItemWidgets,
+  getNewWorkItemWidgetsAutoSaveKey,
+} from '~/work_items/utils';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import workItemLinkedItemsSlimQuery from '~/work_items/graphql/work_items_linked_items_slim.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
-import { apolloProvider, linkedItems } from '~/graphql_shared/issuable_client';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
+import { linkedItems } from '~/graphql_shared/issuable_client_state';
 import {
   childrenWorkItems,
   createWorkItemNoteResponse,
@@ -311,6 +319,172 @@ describe('work items graphql cache utils', () => {
         );
       },
     );
+  });
+
+  describe('statuses for getNewWorkItemSharedCache', () => {
+    const fullPath = 'gitlab-org';
+    const context = 'list-route';
+
+    const allowedStatus1 = {
+      id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+      category: 'to_do',
+      name: 'To do',
+      iconName: 'status-waiting',
+      color: '#737278',
+      __typename: 'WorkItemStatus',
+    };
+    const allowedStatus2 = {
+      id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/2',
+      category: 'in_progress',
+      name: 'In progress',
+      iconName: 'status-running',
+      color: '#1f75cb',
+      __typename: 'WorkItemStatus',
+    };
+    const disallowedStatus = {
+      id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/99',
+      category: 'done',
+      name: 'Done',
+      iconName: 'status-success',
+      color: '#108548',
+      __typename: 'WorkItemStatus',
+    };
+
+    const buildWidgetDefinitions = (overrides = {}) => [
+      {
+        __typename: 'WorkItemWidgetDefinitionStatus',
+        type: WIDGET_TYPE_STATUS,
+        allowedStatuses: [allowedStatus1, allowedStatus2],
+        defaultOpenStatus: allowedStatus1,
+        ...overrides,
+      },
+    ];
+
+    const callGetNewWorkItemSharedCache = (widgetDefinitions) =>
+      getNewWorkItemSharedCache({
+        fullPath,
+        context,
+        workItemType: 'Issue',
+        relatedItemId: null,
+        isValidWorkItemDescription: false,
+        workItemDescription: '',
+        widgetDefinitions,
+      });
+
+    const setCachedStatus = (status) => {
+      const widgetsKey = `autosave/${getNewWorkItemWidgetsAutoSaveKey({ fullPath, context, relatedItemId: null })}`;
+      localStorage.setItem(widgetsKey, JSON.stringify({ [WIDGET_TYPE_STATUS]: { status } }));
+    };
+
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    it('uses defaultOpenStatus when there is no cached status', () => {
+      const { features } = callGetNewWorkItemSharedCache(buildWidgetDefinitions());
+
+      expect(features.status.status).toEqual(allowedStatus1);
+    });
+
+    it('uses cached status when it exists in allowedStatuses', () => {
+      setCachedStatus(allowedStatus2);
+
+      const { features } = callGetNewWorkItemSharedCache(buildWidgetDefinitions());
+
+      expect(features.status.status).toEqual(allowedStatus2);
+    });
+
+    it('falls back to defaultOpenStatus when cached status is not in allowedStatuses', () => {
+      setCachedStatus(disallowedStatus);
+
+      const { features } = callGetNewWorkItemSharedCache(buildWidgetDefinitions());
+
+      expect(features.status.status).toEqual(allowedStatus1);
+    });
+  });
+
+  describe('statuses for legacyGetNewWorkItemSharedCache', () => {
+    const fullPath = 'gitlab-org';
+    const context = 'list-route';
+
+    const allowedStatus1 = {
+      id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+      category: 'to_do',
+      name: 'To do',
+      iconName: 'status-waiting',
+      color: '#737278',
+      __typename: 'WorkItemStatus',
+    };
+    const allowedStatus2 = {
+      id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/2',
+      category: 'in_progress',
+      name: 'In progress',
+      iconName: 'status-running',
+      color: '#1f75cb',
+      __typename: 'WorkItemStatus',
+    };
+    const disallowedStatus = {
+      id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/99',
+      category: 'done',
+      name: 'Done',
+      iconName: 'status-success',
+      color: '#108548',
+      __typename: 'WorkItemStatus',
+    };
+
+    const widgetDefinitions = [
+      {
+        __typename: 'WorkItemWidgetDefinitionStatus',
+        type: WIDGET_TYPE_STATUS,
+        allowedStatuses: [allowedStatus1, allowedStatus2],
+        defaultOpenStatus: allowedStatus1,
+      },
+    ];
+
+    const setCachedStatus = (status) => {
+      const widgetsKey = `autosave/${getNewWorkItemWidgetsAutoSaveKey({ fullPath, context, relatedItemId: null })}`;
+      localStorage.setItem(widgetsKey, JSON.stringify({ [WIDGET_TYPE_STATUS]: { status } }));
+    };
+
+    const buildLegacyCache = () =>
+      legacyGetNewWorkItemSharedCache({
+        workItemAttributesWrapperOrder: [WIDGET_TYPE_STATUS],
+        widgetDefinitions,
+        fullPath,
+        context,
+        workItemType: 'Issue',
+        relatedItemId: null,
+        isValidWorkItemDescription: false,
+        workItemDescription: '',
+      });
+
+    const findStatusWidget = (widgets) => widgets.find((w) => w.type === WIDGET_TYPE_STATUS);
+
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    it('uses defaultOpenStatus when there is no cached status', () => {
+      const { widgets } = buildLegacyCache();
+
+      expect(findStatusWidget(widgets).status).toEqual(allowedStatus1);
+    });
+
+    it('uses cached status when it exists in allowedStatuses', () => {
+      setCachedStatus(allowedStatus2);
+
+      const { widgets } = buildLegacyCache();
+
+      expect(findStatusWidget(widgets).status).toEqual(allowedStatus2);
+    });
+
+    it('falls back to defaultOpenStatus when cached status is not in allowedStatuses', () => {
+      setCachedStatus(disallowedStatus);
+
+      const { widgets } = buildLegacyCache();
+
+      expect(findStatusWidget(widgets).status).toEqual(allowedStatus1);
+    });
   });
 
   describe('updateCacheAfterCreatingNote', () => {

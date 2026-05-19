@@ -1,0 +1,9 @@
+---
+name: mr_ai_resolve_conflicts
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/588530
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230512
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/596465
+milestone: '19.0'
+group: group::code review
+type: beta
+default_enabled: true

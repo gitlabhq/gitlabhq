@@ -1,8 +1,8 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import { INTEGRATION_FORM_TYPE_JIRA, jiraIntegrationAuthFields } from '~/integrations/constants';
 
+import { useIntegrationForm } from '../../store';
 import ActiveCheckbox from '../active_checkbox.vue';
 import DynamicField from '../dynamic_field.vue';
 
@@ -28,8 +28,14 @@ export default {
       default: false,
     },
   },
+  emits: ['toggle-integration-active'],
+  data() {
+    return {
+      currentAuthType: null,
+    };
+  },
   computed: {
-    ...mapGetters(['currentKey', 'propsSource']),
+    ...mapState(useIntegrationForm, ['currentKey', 'propsSource']),
 
     isJiraIntegration() {
       return this.propsSource.type === INTEGRATION_FORM_TYPE_JIRA;
@@ -54,6 +60,11 @@ export default {
       );
     },
   },
+  methods: {
+    onChangeAuthType(value) {
+      this.currentAuthType = parseInt(value, 10);
+    },
+  },
 };
 </script>
 
@@ -64,17 +75,19 @@ export default {
       :key="`${currentKey}-active-checkbox`"
       @toggle-integration-active="$emit('toggle-integration-active', $event)"
     />
-    <dynamic-field
-      v-for="field in filteredFields"
-      :key="`${currentKey}-${field.name}`"
-      v-bind="field"
-      :is-validated="isValidated"
-    />
     <jira-auth-fields
       v-if="isJiraIntegration"
       :key="`${currentKey}-jira-auth-fields`"
       :is-validated="isValidated"
       :fields="jiraAuthFields"
+      :current-auth-type="currentAuthType"
+      @change-auth-type="onChangeAuthType"
+    />
+    <dynamic-field
+      v-for="field in filteredFields"
+      :key="`${currentKey}-${field.name}`"
+      v-bind="field"
+      :is-validated="isValidated"
     />
   </div>
 </template>

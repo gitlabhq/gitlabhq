@@ -17,6 +17,7 @@
       = markdown_field(@merge_request, :title)
 
     .gl-flex.gl-flex-row.gl-gap-3.gl-w-full.js-issuable-actions{ class: "@sm/panel:gl-w-auto" }
+      = render_if_exists "projects/merge_requests/conflicts/resolve_with_ai", merge_request: @merge_request
       - if can_update_merge_request
         - edit_action_description = _('Edit merge request')
         - edit_action_shortcut = 'e'

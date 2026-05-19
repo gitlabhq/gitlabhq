@@ -44,25 +44,25 @@ Do not add new content to these folders:
 
 When working with directories and files:
 
-1. When you create a new directory, always start with an `_index.md` file.
-   Don't use another filename and do not create `README.md` files.
-1. Do not use special characters and spaces, or capital letters in file
-   names, directory names, branch names, and anything that generates a path.
-1. When creating or renaming a file or directory and it has more than one word
-   in its name, use underscores (`_`) instead of spaces or dashes. For example,
-   proper naming would be `import_project/import_from_github.md`. This applies
-   to both [image files](../styleguide/_index.md#illustrations) and Markdown files.
-1. Do not upload video files to the product repositories.
-   [Link or embed videos](../styleguide/_index.md#videos) instead.
-1. In the `doc/user/` directory:
-   - `doc/user/project/` should contain all project related documentation.
-   - `doc/user/group/` should contain all group related documentation.
-   - `doc/user/profile/` should contain all profile related documentation.
-     Every page you would navigate under `/profile` should have its own document,
-     for example, `account.md`, `applications.md`, or `emails.md`.
-1. In the `doc/administration/` directory: all administrator-related
-   documentation for administrators, including admin tasks done in both
-   the UI and on the backend servers.
+- When you create a new directory, always start with an `_index.md` file.
+  Don't use another filename and do not create `README.md` files.
+- Do not use special characters and spaces, or capital letters in file
+  names, directory names, branch names, and anything that generates a path.
+- When creating or renaming a file or directory and it has more than one word
+  in its name, [use dashes (`-`) instead of spaces or underscores](https://developers.google.com/search/docs/crawling-indexing/url-structure).
+  For example, proper naming would be `import-project/import-from-github.md`. This applies
+  to both [image files](../styleguide/_index.md#illustrations) and Markdown files.
+- Do not upload video files to the product repositories.
+  [Link or embed videos](../styleguide/_index.md#videos) instead.
+- In the `doc/user/` directory:
+  - `doc/user/project/` should contain all project related documentation.
+  - `doc/user/group/` should contain all group related documentation.
+  - `doc/user/profile/` should contain all profile related documentation.
+    Every page you would navigate under `/profile` should have its own document,
+    for example, `account.md`, `applications.md`, or `emails.md`.
+- In the `doc/administration/` directory: all administrator-related
+  documentation for administrators, including admin tasks done in both
+  the UI and on the backend servers.
 
 If you're unsure where to place a document or a content addition, this shouldn't
 stop you from authoring and contributing. Use your best judgment, and then ask

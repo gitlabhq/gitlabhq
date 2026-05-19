@@ -289,8 +289,8 @@ The following authentication protocols are supported:
 
 | Package type                                           | Supported auth protocols                                    |
 |--------------------------------------------------------|-------------------------------------------------------------|
-| [Maven (with `mvn`)](../maven_repository/_index.md)    | Headers, Basic auth                                         |
-| [Maven (with `gradle`)](../maven_repository/_index.md) | Headers, Basic auth                                         |
+| [Maven (with `mvn`)](../maven_repository/_index.md)    | Headers, Basic auth, OAuth                                  |
+| [Maven (with `gradle`)](../maven_repository/_index.md) | Headers, Basic auth, OAuth                                  |
 | [Maven (with `sbt`)](../maven_repository/_index.md)    | Basic auth ([pulling](#pulling-packages) only)          |
 | [npm](../npm_registry/_index.md)                       | OAuth                                                       |
 | [NuGet](../nuget_repository/_index.md)                 | Basic auth                                                  |

@@ -52,6 +52,50 @@ RSpec.describe Gitlab::BackgroundOperation::UsersDeleteUnconfirmedSecondaryEmail
     expect { operation.perform }.to change { table(:emails).count }.by(-2)
   end
 
+  context 'with cells claims enabled' do
+    before do
+      allow(::Email).to receive(:cells_claims_enabled_for_attribute?).with(:email).and_return(true)
+    end
+
+    it 'schedules bulk claims destroy for deleted records' do
+      expect(::Cells::BulkClaimsWorker).to receive(:perform_async).with(
+        'Email', 'email', hash_including('destroy_metadata')
+      ).at_least(:once)
+
+      operation.perform
+    end
+  end
+
+  context 'with cells claims disabled' do
+    before do
+      allow(::Email).to receive(:cells_claims_enabled_for_attribute?).with(:email).and_return(false)
+    end
+
+    it 'does not schedule bulk claims destroy' do
+      expect(::Cells::BulkClaimsWorker).not_to receive(:perform_async)
+
+      operation.perform
+    end
+  end
+
+  context 'when no matching records exist' do
+    let!(:operation) do
+      described_class.new(
+        min_cursor: [max_cursor + 1],
+        max_cursor: [max_cursor + 100],
+        batch_table: :emails,
+        batch_column: :id,
+        sub_batch_size: 2,
+        pause_ms: 0,
+        connection: ::ApplicationRecord.connection
+      )
+    end
+
+    it 'does not delete anything' do
+      expect { operation.perform }.not_to change { table(:emails).count }
+    end
+  end
+
   private
 
   def create_email(email_address, confirmed_at, created_at)

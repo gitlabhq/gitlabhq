@@ -14,8 +14,8 @@ exports[`Design item component with notes renders item with multiple comments 1`
   href="/gitlab-org/gitlab-test/-/work_items/1/designs/test"
 >
   <gl-card-stub
-    bodyclass="gl-py-3 gl-px-4 gl-flex gl-bg-section gl-rounded-b-base"
-    class="design-list-item gl-border-section gl-mb-0 hover:gl-border-strong js-design-list-item"
+    bodyclass="gl-py-3 gl-px-4 gl-flex gl-bg-section gl-rounded-base"
+    class="design-list-item gl-border-section gl-mb-0 gl-rounded-lg hover:gl-border-strong js-design-list-item"
     footerclass=""
     headerclass=" gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-aspect-video"
   >
@@ -82,8 +82,8 @@ exports[`Design item component with notes renders item with single comment 1`] =
   href="/gitlab-org/gitlab-test/-/work_items/1/designs/test"
 >
   <gl-card-stub
-    bodyclass="gl-py-3 gl-px-4 gl-flex gl-bg-section gl-rounded-b-base"
-    class="design-list-item gl-border-section gl-mb-0 hover:gl-border-strong js-design-list-item"
+    bodyclass="gl-py-3 gl-px-4 gl-flex gl-bg-section gl-rounded-base"
+    class="design-list-item gl-border-section gl-mb-0 gl-rounded-lg hover:gl-border-strong js-design-list-item"
     footerclass=""
     headerclass=" gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-aspect-video"
   >

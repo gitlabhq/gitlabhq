@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe WebIdeTerminalSerializer do
-  let(:build) { create(:ci_build) }
+RSpec.describe WebIdeTerminalSerializer, feature_category: :web_ide do
+  let(:build) { build_stubbed(:ci_build) }
 
   subject { described_class.new.represent(WebIdeTerminal.new(build)) }
 

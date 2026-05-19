@@ -7,7 +7,7 @@ extends: existence
 message: "Offerings should be comma-separated and capitalized, without `and` or bold/italics. Example: `- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated`."
 link: https://docs.gitlab.com/development/documentation/styleguide/availability_details/#available-options
 vocab: false
-level: error
+level: warning
 nonword: true
 scope: raw
 tokens:

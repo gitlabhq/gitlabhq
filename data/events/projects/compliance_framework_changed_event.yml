@@ -1,0 +1,6 @@
+---
+event: Projects::ComplianceFrameworkChangedEvent
+description: Published when a compliance framework is added to or removed from a project.
+  The event_type field indicates whether the framework was added or removed.
+feature_category: compliance_management
+ee_only: true

@@ -54,15 +54,15 @@ module Types
           description: 'Indicates whether the entry is created by the autopopulation process.'
 
         def source_project
-          Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.source_project_id).find
+          Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.source_project_id, [:route]).find
         end
 
         def target
           case object
           when ::Ci::JobToken::ProjectScopeLink
-            Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.target_project_id).find
+            Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.target_project_id, [:route]).find
           when ::Ci::JobToken::GroupScopeLink
-            Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, object.target_group_id).find
+            Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, object.target_group_id, [:route]).find
           end
         end
 

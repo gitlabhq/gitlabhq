@@ -1,13 +1,13 @@
 <script>
 import { GlBadge } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
   integrationFormSectionComponents,
   billingPlanNames,
 } from 'ee_else_ce/integrations/constants';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
+import { useIntegrationForm } from '../../store';
 
 export default {
   name: 'IntegrationFormSection',
@@ -76,8 +76,9 @@ export default {
       required: true,
     },
   },
+  emits: ['request-jira-issue-types', 'toggle-integration-active'],
   computed: {
-    ...mapGetters(['propsSource']),
+    ...mapState(useIntegrationForm, ['propsSource']),
   },
   methods: {
     fieldsForSection(section) {

@@ -17,6 +17,11 @@ export default {
       required: false,
       default: false,
     },
+    todoCount: {
+      type: Number,
+      required: false,
+      default: 1,
+    },
   },
   computed: {
     buttonLabel() {
@@ -28,7 +33,7 @@ export default {
       updateGlobalTodoCount(1);
     },
     decrementGlobalTodoCount() {
-      updateGlobalTodoCount(-1);
+      updateGlobalTodoCount(-this.todoCount);
     },
     onToggle(event) {
       if (this.isTodo) {

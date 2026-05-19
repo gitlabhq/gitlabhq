@@ -729,7 +729,7 @@ RSpec.describe Snippets::UpdateService, feature_category: :source_code_managemen
 
       let!(:snippet) { create(:project_snippet, :repository, author: user, project: project) }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 

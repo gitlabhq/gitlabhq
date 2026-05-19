@@ -40,12 +40,12 @@ RSpec.describe Ci::ParseDotenvArtifactService, feature_category: :artifact_secur
       context 'when dotenv variables have duplicate variables' do
         let!(:artifact) { create(:ci_job_artifact, :dotenv, job: build) }
         let(:blob) do
-          <<~EOS
+          <<~DOTENV
             KEY1=VAR1
             KEY2=VAR2
             KEY2=VAR3
             KEY1=VAR4
-          EOS
+          DOTENV
         end
 
         before do
@@ -253,10 +253,10 @@ RSpec.describe Ci::ParseDotenvArtifactService, feature_category: :artifact_secur
 
         context 'when variables are cross-referenced in dotenv' do
           let(:blob) do
-            <<~EOS
+            <<~DOTENV
               KEY1=VAR1
               KEY2=${KEY1}_Test
-            EOS
+            DOTENV
           end
 
           it 'does not support variable expansion in dotenv parser' do
@@ -270,11 +270,11 @@ RSpec.describe Ci::ParseDotenvArtifactService, feature_category: :artifact_secur
 
         context 'when there is an empty line' do
           let(:blob) do
-            <<~EOS
+            <<~DOTENV
               KEY1=VAR1
 
               KEY2=VAR2
-            EOS
+            DOTENV
           end
 
           it 'does not support empty line in dotenv parser' do
@@ -288,9 +288,9 @@ RSpec.describe Ci::ParseDotenvArtifactService, feature_category: :artifact_secur
 
         context 'when there is a comment' do
           let(:blob) do
-            <<~EOS
+            <<~DOTENV
               KEY1=VAR1         # This is variable
-            EOS
+            DOTENV
           end
 
           it 'does not support comment in dotenv parser' do
@@ -304,7 +304,7 @@ RSpec.describe Ci::ParseDotenvArtifactService, feature_category: :artifact_secur
     end
 
     context 'when build does not have a dotenv artifact' do
-      let!(:artifact) {}
+      let!(:artifact) { nil }
 
       it 'raises an error' do
         expect { subject }.to raise_error(ArgumentError)

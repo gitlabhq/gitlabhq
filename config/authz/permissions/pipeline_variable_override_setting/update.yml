@@ -1,0 +1,4 @@
+---
+name: update_pipeline_variable_override_setting
+description: Grants the ability to update the project setting that controls
+  which user roles can override pipeline variables when running a pipeline.

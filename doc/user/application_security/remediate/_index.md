@@ -76,7 +76,7 @@ Prerequisites:
 To change a vulnerability's status to resolved:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Vulnerability report**.
+1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Find the vulnerability in the vulnerability report.
 1. Select the vulnerability's description.
 1. Select **Edit vulnerability** > **Change status**.
@@ -100,7 +100,7 @@ Prerequisites:
 To dismiss a vulnerability:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Vulnerability report**.
+1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Find the vulnerability in the vulnerability report.
 1. Select the vulnerability's description.
 1. Select **Edit vulnerability** > **Change status**.

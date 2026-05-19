@@ -1,9 +1,11 @@
 ---
 name: update_commit
 description: Grants the ability to update commits
+boundaries:
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - create_commit_comment
   - update_commit_discussion
   - update_commit_discussion_note
-boundaries:
-  - project

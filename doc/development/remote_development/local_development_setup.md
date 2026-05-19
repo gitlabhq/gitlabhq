@@ -90,7 +90,7 @@ You can choose between two setup modes depending on your development needs:
    gdk restart
    ```
 
-## Set up GitLab Agent Server (KAS) in GDK
+## Set up GitLab Relay (KAS) in GDK
 
 1. Enable agent for Kubernetes in your GDK by adding this configuration to `gdk.yml`:
 

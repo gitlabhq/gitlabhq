@@ -27,9 +27,8 @@ export const initYourWorkProjects = () => {
     dataset: { appData },
   } = el;
 
-  const { initialSort, programmingLanguages, basePath } = convertObjectPropsToCamelCase(
-    JSON.parse(appData),
-  );
+  const { initialSort, programmingLanguages, basePath, canCreateProject } =
+    convertObjectPropsToCamelCase(JSON.parse(appData));
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -41,7 +40,13 @@ export const initYourWorkProjects = () => {
     apolloProvider,
     name: 'YourWorkProjectsRoot',
     render(createElement) {
-      return createElement(YourWorkProjectsApp, { props: { initialSort, programmingLanguages } });
+      return createElement(YourWorkProjectsApp, {
+        props: {
+          initialSort,
+          programmingLanguages,
+          canCreateProject,
+        },
+      });
     },
   });
 };

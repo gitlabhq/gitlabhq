@@ -10,7 +10,7 @@ RSpec.shared_examples 'includes LinkableItem concern' do
     describe '#check_existing_parent_link' do
       context 'for new issuable link' do
         shared_examples 'invalid due to existing link' do
-          it do
+          it 'includes an error message' do
             is_expected.to be_invalid
             expect(link.errors.messages[:source]).to include("is a parent or child of this #{item_type}")
           end

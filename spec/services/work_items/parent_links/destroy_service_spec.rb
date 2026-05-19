@@ -39,8 +39,8 @@ RSpec.describe WorkItems::ParentLinks::DestroyService, feature_category: :team_p
           .to change { parent_link_class.count }.by(-1)
           .and change { WorkItems::ResourceLinkEvent.count }.by(1)
 
-        expect(work_item.notes.last.note).to eq("removed child task #{task.to_reference}")
-        expect(task.notes.last.note).to eq("removed parent issue #{work_item.to_reference}")
+        expect(work_item.notes.last.note).to eq("removed child item #{task.to_reference}")
+        expect(task.notes.last.note).to eq("removed parent item #{work_item.to_reference}")
         expect(WorkItems::ResourceLinkEvent.last).to have_attributes(
           user_id: user.id,
           issue_id: work_item.id,

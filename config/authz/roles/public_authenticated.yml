@@ -1,0 +1,63 @@
+---
+name: public_authenticated
+description: Authenticated users on public namespaces.
+inherits_from:
+- public_anonymous
+project:
+  permissions: []
+  raw_permissions:
+  - _delete_authored_timelog
+  - _read_assigned_work_item
+  - _read_authored_snippet
+  - _read_authored_work_item
+  - _read_public_build
+  - _read_public_pipeline
+  - _read_public_pipeline_schedule
+  - _reopen_assigned_work_item
+  - _reopen_authored_work_item
+  - _update_assigned_work_item
+  - _update_authored_snippet
+  - _update_authored_work_item
+  - admin_issue_link
+  - admin_issue_relation
+  - award_emoji
+  - build_download_code
+  - build_read_container_image
+  - create_issue
+  - create_merge_request_in
+  - create_note
+  - create_task
+  - create_work_item
+  - delete_saved_view
+  - download_code
+  - export_work_items
+  - fork_project
+  - read_ai_catalog_item_consumer
+  - read_analytics
+  - read_cycle_analytics
+  - read_insights
+  - read_issue
+  - read_issue_board
+  - read_issue_board_list
+  - read_iteration
+  - read_label
+  - read_milestone
+  - read_namespace
+  - read_namespace_via_membership
+  - read_note
+  - read_project
+  - read_project_member
+  - read_release
+  - read_saved_replies
+  - read_saved_view
+  - read_snippet
+  - read_upload
+  - read_wiki
+  - read_work_item
+  - request_access
+  - update_saved_view
+  - update_saved_view_visibility
+  - upload_file
+group:
+  permissions: []
+  raw_permissions: []

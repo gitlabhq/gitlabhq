@@ -275,6 +275,17 @@ describe('DiffsFileTree', () => {
     });
   });
 
+  describe('when screen is at md breakpoint', () => {
+    beforeEach(() => {
+      mockBreakpointInstance('md');
+    });
+
+    it('keeps enableStickyHeight true so the height matches sidebar mode', () => {
+      createComponent();
+      expect(wrapper.findComponent(FileBrowserHeight).props('enableStickyHeight')).toBe(true);
+    });
+  });
+
   describe('when screen is narrow', () => {
     beforeEach(() => {
       mockBreakpointInstance('sm');

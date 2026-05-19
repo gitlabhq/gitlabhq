@@ -8,8 +8,7 @@ title: GitLab for Eclipse
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
+- Tier: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
@@ -18,13 +17,17 @@ title: GitLab for Eclipse
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/163) from experiment to beta in GitLab 17.11.
+- Access to GitLab Duo Non-Agentic Chat removed for GitLab Duo Core customers on May 21, 2026 as part of GitLab 19.0, with a feature flag named `no_duo_classic_for_duo_core_users`. Enabled by default.
 
 {{< /history >}}
 
+> [!disclaimer]
+
 The GitLab for Eclipse plugin integrates with GitLab Duo to offer the following features:
 
-- [GitLab Duo Non-Agentic Chat](../../user/gitlab_duo_chat/_index.md)
 - [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md)
+- [GitLab Duo Non-Agentic Chat](../../user/gitlab_duo_chat/_index.md). Only available for GitLab Duo
+  Pro or Enterprise, or GitLab Duo with Amazon Q users.
 
 To install and configure the plugin, see [install and set up](setup.md).
 

@@ -173,8 +173,8 @@ Review the [release rollout schedule](../releases.md#release-rollout-schedule) f
 
 Plan ahead if you need any of the following features:
 
-- [Inbound Private Link](../configure_instance/network_security.md#inbound-private-link)
-- [Outbound Private Link](../configure_instance/network_security.md#outbound-private-link)
+- [Inbound PrivateLink connections](../configure_instance/network_security.md#inbound-privatelink-connections)
+- [Outbound PrivateLink connections](../configure_instance/network_security.md#outbound-privatelink-connections)
 - [SAML SSO](../configure_instance/authentication/saml.md)
 - [Custom domains](../configure_instance/network_security.md#custom-domains)
 

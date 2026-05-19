@@ -50,7 +50,6 @@ WORKDIR /home/gitlab/qa
 COPY qa/Gemfile* /home/gitlab/qa/
 COPY vendor/gems/ /home/gitlab/vendor/gems/
 COPY gems/gitlab-utils /home/gitlab/gems/gitlab-utils
-COPY gems/gitlab-rspec /home/gitlab/gems/gitlab-rspec
 COPY qa/gems /home/gitlab/qa/gems
 RUN bundle config set --local without development && bundle install --retry=3
 

@@ -44,6 +44,28 @@ module Gitlab
         raise
       end
 
+      def self.stats(database = nil)
+        Gitlab::Database::EachDatabase.each_connection do |connection, connection_name|
+          next if database && database.to_s != connection_name.to_s
+
+          log_pending_items(connection_name, "pending_indexes_to_create", Gitlab::Database::AsyncIndexes.pending_indexes_to_create)
+          log_pending_items(connection_name, "pending_indexes_to_drop", Gitlab::Database::AsyncIndexes.pending_indexes_to_drop)
+          log_pending_items(connection_name, "queued_indexes_to_reindex", queued_actions)
+          log_pending_items(connection_name, "pending_async_check_constraints", Gitlab::Database::AsyncConstraints.pending_entries)
+        end
+      rescue StandardError => e
+        Gitlab::AppLogger.error(e)
+        raise
+      end
+
+      def self.log_pending_items(connection_name, label, items)
+        Gitlab::AppLogger.info(message: 'Pending count', connection_name: connection_name, metric_label: label, count: items.count)
+        items.each do |index|
+          Gitlab::AppLogger.info(message: 'Pending item', connection_name: connection_name, metric_label: label, name: index.name)
+        end
+      end
+      private_class_method :log_pending_items
+
       # Performs automatic reindexing for a limited number of indexes per call
       #  1. Consume from the explicit reindexing queue
       #  2. Apply bloat heuristic to find most bloated indexes and reindex those
@@ -69,6 +91,11 @@ module Gitlab
           Coordinator.new(index).perform
         end
       end
+
+      def self.queued_actions
+        QueuedAction.in_queue_order
+      end
+      private_class_method :queued_actions
 
       # Reindex indexes that have been explicitly enqueued (for a limited number of indexes per call)
       def self.perform_from_queue(maximum_records: DEFAULT_INDEXES_PER_INVOCATION)

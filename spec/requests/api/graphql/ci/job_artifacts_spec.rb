@@ -8,6 +8,8 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.artifacts', feature_categ
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:job) { create(:ci_build, pipeline: pipeline) }
+  let_it_be(:artifact) { create(:ci_job_artifact, :junit, job: job) }
 
   let_it_be(:query) do
     %(
@@ -33,9 +35,6 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.artifacts', feature_categ
   end
 
   it 'returns the fields for the artifacts' do
-    job = create(:ci_build, pipeline: pipeline)
-    create(:ci_job_artifact, :junit, job: job)
-
     post_graphql(query, current_user: user)
 
     expect(response).to have_gitlab_http_status(:ok)
@@ -48,5 +47,15 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.artifacts', feature_categ
       "/#{project.full_path}/-/jobs/#{job.id}/artifacts/download?file_type=junit"
     )
     expect(artifact_data['fileType']).to eq('JUNIT')
+  end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL',
+    [:read_project, :read_pipeline, :read_job, :download_job_artifact] do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+
+    before_all do
+      project.add_developer(user)
+    end
   end
 end

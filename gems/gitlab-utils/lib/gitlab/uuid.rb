@@ -25,10 +25,6 @@ module Gitlab
         Digest::UUID.uuid_v5(namespace_id, name)
       end
 
-      def v5?(string)
-        UUID_V5_PATTERN.match(string).present?
-      end
-
       def uuid?(string)
         UUID_PATTERN.match?(string)
       end

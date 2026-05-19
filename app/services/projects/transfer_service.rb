@@ -25,12 +25,13 @@ module Projects
     end
 
     def schedule_async_transfer(new_namespace)
+      ensure_allowed_transfer(new_namespace)
+
       project_namespace = project.project_namespace
       project_namespace.state_metadata[:transfer_target_parent_id] = new_namespace.id
 
       unless project_namespace.schedule_transfer(transition_user: current_user)
-        @error = s_('TransferProject|Unable to initiate transfer. The project may already have a transfer in progress.')
-        return false
+        raise TransferError, s_('TransferProject|Unable to initiate transfer. The project may already have a transfer in progress.')
       end
 
       Projects::TransferWorker.perform_async(
@@ -39,28 +40,22 @@ module Projects
         current_user.id
       )
 
-      true
+      ServiceResponse.success(
+        message: s_("TransferProject|Project transfer has been queued. You will be notified when it completes.")
+      )
+    rescue Projects::TransferService::TransferError => ex
+      project.reset
+      project.errors.add(:new_namespace, ex.message)
+
+      log_project_transfer_error(project, @new_namespace, ex.message)
+
+      ServiceResponse.error(message: ex.message)
     end
 
     def execute(new_namespace)
+      ensure_allowed_transfer(new_namespace)
+
       @new_namespace = new_namespace
-
-      if @new_namespace.blank?
-        raise TransferError, s_('TransferProject|Please select a new namespace for your project.')
-      end
-
-      if @new_namespace.id == project.namespace_id
-        raise TransferError, s_('TransferProject|Project is already in this namespace.')
-      end
-
-      unless allowed_transfer_project?(current_user, project)
-        raise TransferError, s_("TransferProject|You don't have permission to transfer this project.")
-      end
-
-      unless allowed_to_transfer_to_namespace?(current_user, @new_namespace)
-        raise TransferError, s_("TransferProject|You don't have permission to transfer projects into that namespace.")
-      end
-
       @owner_of_personal_project_before_transfer = project.namespace.owner if project.personal?
 
       transfer(project)
@@ -100,6 +95,24 @@ module Projects
       else
         ::Gitlab::AppLogger.error(log_payload)
       end
+    end
+
+    def ensure_allowed_transfer(namespace)
+      raise TransferError, s_('TransferProject|Please select a new namespace for your project.') if namespace.blank?
+
+      if namespace.id == project.namespace_id
+        raise TransferError, s_('TransferProject|Project is already in this namespace.')
+      end
+
+      unless allowed_transfer_project?(current_user, project)
+        raise TransferError, s_("TransferProject|You don't have permission to transfer this project.")
+      end
+
+      unless allowed_to_transfer_to_namespace?(current_user, namespace)
+        raise TransferError, s_("TransferProject|You don't have permission to transfer projects into that namespace.")
+      end
+
+      nil
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

@@ -9,8 +9,8 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 import SetTimeEstimateForm from '~/sidebar/components/time_tracking/set_time_estimate_form.vue';
 import issueSetTimeEstimateMutation from '~/sidebar/queries/issue_set_time_estimate.mutation.graphql';
-import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import { updateWorkItemMutationResponse } from 'jest/work_items/mock_data';
+import updateWorkItemTimeTrackingMutation from '~/work_items/graphql/update_work_item_time_tracking.mutation.graphql';
+import { updateWorkItemTimeTrackingMutationResponse } from 'jest/work_items/mock_data';
 
 import {
   WORK_ITEM_TYPE_NAME_EPIC,
@@ -50,7 +50,9 @@ const resolvedMutationWithErrorsMock = jest.fn().mockResolvedValue(setIssueTimeE
 const rejectedMutationMock = jest.fn().mockRejectedValue();
 const modalCloseMock = jest.fn();
 
-const updateWorkItemMutationHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
+const updateWorkItemTimeTrackingMutationHandler = jest
+  .fn()
+  .mockResolvedValue(updateWorkItemTimeTrackingMutationResponse);
 
 describe('Set Time Estimate Form', () => {
   Vue.use(VueApollo);
@@ -105,7 +107,7 @@ describe('Set Time Estimate Form', () => {
       },
       apolloProvider: createMockApollo([
         [issueSetTimeEstimateMutation, mutationResolverMock],
-        [updateWorkItemMutation, updateWorkItemMutationHandler],
+        [updateWorkItemTimeTrackingMutation, updateWorkItemTimeTrackingMutationHandler],
       ]),
       stubs: {
         GlModal: stubComponent(GlModal, {
@@ -508,7 +510,7 @@ describe('Set Time Estimate Form', () => {
       triggerSave();
       await waitForPromises();
 
-      expect(updateWorkItemMutationHandler).toHaveBeenCalledWith({
+      expect(updateWorkItemTimeTrackingMutationHandler).toHaveBeenCalledWith({
         input: {
           id: 'gid://gitlab/WorkItem/1',
           timeTrackingWidget: {
@@ -516,6 +518,27 @@ describe('Set Time Estimate Form', () => {
           },
         },
         useWorkItemFeatures: false,
+      });
+    });
+
+    it('passes useWorkItemFeatures as true to mutation when workItemFeaturesField feature flag is enabled', async () => {
+      mountComponent({
+        props: { workItemId: 'gid://gitlab/WorkItem/1', workItemType: 'Task' },
+        providedProps: { issuableType: null, glFeatures: { workItemFeaturesField: true } },
+      });
+
+      findGlFormInput().vm.$emit('input', '2d');
+      triggerSave();
+      await waitForPromises();
+
+      expect(updateWorkItemTimeTrackingMutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          timeTrackingWidget: {
+            timeEstimate: '2d',
+          },
+        },
+        useWorkItemFeatures: true,
       });
     });
   });

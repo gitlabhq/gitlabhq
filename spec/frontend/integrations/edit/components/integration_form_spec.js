@@ -1,6 +1,8 @@
 import { GlAlert, GlForm } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { setHTMLFixture } from 'helpers/fixtures';
@@ -21,7 +23,7 @@ import {
   INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY,
   INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_IAM,
 } from '~/integrations/constants';
-import { createStore } from '~/integrations/edit/store';
+import { useIntegrationForm } from '~/integrations/edit/store';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import {
@@ -31,6 +33,8 @@ import {
   mockSectionJiraIssues,
 } from '../mock_data';
 
+Vue.use(PiniaVuePlugin);
+
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility');
 
@@ -38,7 +42,7 @@ describe('IntegrationForm', () => {
   const mockToastShow = jest.fn();
 
   let wrapper;
-  let dispatch;
+  let store;
   let mockAxios;
 
   const createComponent = ({
@@ -47,15 +51,16 @@ describe('IntegrationForm', () => {
     provide = {},
     mountFn = shallowMountExtended,
   } = {}) => {
-    const store = createStore({
+    const pinia = createTestingPinia({ stubActions: true });
+    store = useIntegrationForm();
+    Object.assign(store, {
       customState: { ...mockIntegrationProps, ...customStateProps },
       ...initialState,
     });
-    dispatch = jest.spyOn(store, 'dispatch').mockImplementation();
 
     wrapper = mountFn(IntegrationForm, {
       provide,
-      store,
+      pinia,
       stubs: {
         OverrideDropdown,
         ActiveCheckbox,
@@ -259,7 +264,7 @@ describe('IntegrationForm', () => {
       });
 
       it('dispatches `requestJiraIssueTypes` action', () => {
-        expect(dispatch).toHaveBeenCalledWith('requestJiraIssueTypes', expect.any(FormData));
+        expect(store.requestJiraIssueTypes).toHaveBeenCalledWith(expect.any(FormData));
       });
     });
   });

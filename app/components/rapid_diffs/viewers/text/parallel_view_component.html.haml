@@ -1,8 +1,8 @@
-%table.rd-text-view-root
+%table.rd-text-view-root.code-syntax-highlight-theme
   %thead.gl-sr-only
     %tr
       - column_titles.each do |title|
         %th= title
-  %tbody.rd-text-view-content.code.code-syntax-highlight-theme
-    - @diff_file.viewer_hunks.each do |hunk|
+  - hunks_with_row_counts.each do |hunk, row_count|
+    %tbody.rd-text-view-content{ style: "--virtual-total-rows: #{row_count}" }
       = render RapidDiffs::Viewers::Text::ParallelHunkComponent.new(diff_hunk: hunk, file_hash: @diff_file.short_file_hash)

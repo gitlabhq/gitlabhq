@@ -1,0 +1,10 @@
+---
+name: duo_agentic_chat_prefer_mcp_tools
+description: When enabled, AI Gateway strips DAP tools whose function is already covered by a currently enabled GitLab MCP Server tool, so the model only sees one option per operation. Initially used by Duo Agent Chat; intended to expand to other AI Gateway flows.
+feature_issue_url: https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/work_items/2160
+introduced_by_url: https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/5362
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/598593
+milestone: '19.0'
+group: group::ai framework
+type: gitlab_com_derisk
+default_enabled: false

@@ -47,7 +47,7 @@ export default {
       default: true,
     },
   },
-
+  emits: ['import-group'],
   computed: {
     showImportActions() {
       return this.isAvailableForImport || this.isFinished;

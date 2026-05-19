@@ -43,6 +43,7 @@ import {
   extendedWrapper,
 } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
@@ -98,7 +99,6 @@ describe('GroupsShowApp', () => {
 
   afterEach(() => {
     mockAxios.restore();
-    window.gon = {};
   });
 
   it('renders TabsWithList component and passes correct props', async () => {
@@ -137,28 +137,30 @@ describe('GroupsShowApp', () => {
   describe('when on Subgroups and projects tab', () => {
     const [mockProject, , mockGroup] = childrenResponse;
 
-    it('renders project with relative URL that supports relative_url_root', async () => {
-      window.gon = { relative_url_root: '/gitlab' };
-      mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
+    describe('when relative_url_root is set', () => {
+      useConfigurePathHelpers('/gitlab');
 
-      await createComponent({ mountFn: mountExtended });
-      await waitForPromises();
+      it('renders project with relative URL prefix', async () => {
+        mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
 
-      expect(wrapper.findByRole('link', { name: mockProject.name }).attributes('href')).toBe(
-        `/gitlab/${mockProject.full_path}`,
-      );
-    });
+        await createComponent({ mountFn: mountExtended });
+        await waitForPromises();
 
-    it('renders group with relative URL that supports relative_url_root', async () => {
-      window.gon = { relative_url_root: '/gitlab' };
-      mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
+        expect(wrapper.findByRole('link', { name: mockProject.name }).attributes('href')).toBe(
+          `/gitlab/${mockProject.full_path}`,
+        );
+      });
 
-      await createComponent({ mountFn: mountExtended });
-      await waitForPromises();
+      it('renders group with relative URL prefix', async () => {
+        mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
 
-      expect(wrapper.findByRole('link', { name: mockGroup.name }).attributes('href')).toBe(
-        `/gitlab/${mockGroup.full_path}`,
-      );
+        await createComponent({ mountFn: mountExtended });
+        await waitForPromises();
+
+        expect(wrapper.findByRole('link', { name: mockGroup.name }).attributes('href')).toBe(
+          `/gitlab/${mockGroup.full_path}`,
+        );
+      });
     });
 
     it('correctly renders `Edit` action on project', async () => {

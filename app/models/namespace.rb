@@ -32,8 +32,11 @@ class Namespace < ApplicationRecord
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
   ignore_columns :description, :description_html, :cached_markdown_version, remove_with: '18.3', remove_after: '2025-07-17'
+  ignore_column :file_template_project_id, remove_with: '19.2', remove_after: '2026-06-18'
+  ignore_column :custom_project_templates_group_id, remove_with: '19.2', remove_after: '2026-06-18'
+  ignore_column :push_rule_id, remove_with: '19.2', remove_after: '2026-06-18'
 
-  columns_changing_default :organization_id, :state
+  columns_changing_default :organization_id
 
   # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
@@ -218,6 +221,7 @@ class Namespace < ApplicationRecord
       delegate :emails_enabled, :emails_enabled=
       delegate :web_based_commit_signing_enabled?, :lock_web_based_commit_signing_enabled?
       delegate :web_based_commit_signing_enabled, :lock_web_based_commit_signing_enabled
+      delegate :granular_tokens_enforced?
     end
   end
 
@@ -248,6 +252,7 @@ class Namespace < ApplicationRecord
   scope :with_project_statistics, -> { includes(projects: :statistics) }
   scope :with_visibility_level_greater_than, ->(level) { where("visibility_level > ?", level) }
   scope :with_namespace_details, -> { preload(:namespace_details) }
+  scope :with_namespace_settings, -> { preload(:namespace_settings) }
 
   scope :archived, -> { self_or_ancestors_archived }
   scope :self_or_ancestors_archived, -> { where(self_or_ancestors_archived_setting_subquery.exists) }
@@ -471,6 +476,18 @@ class Namespace < ApplicationRecord
     ancestors.archived.exists?
   end
 
+  def self_or_ancestors_transfer_scheduled?
+    return transfer_scheduled? if parent_id.nil?
+
+    self_and_ancestors(skope: Namespace).transfer_scheduled.exists?
+  end
+
+  def self_or_ancestors_transfer_in_progress?
+    return transfer_in_progress? if parent_id.nil?
+
+    self_and_ancestors(skope: Namespace).transfer_in_progress.exists?
+  end
+
   def to_reference_base(from = nil, full: false, absolute_path: false)
     if full || cross_namespace_reference?(from)
       absolute_path ? "/#{full_path}" : full_path
@@ -534,6 +551,12 @@ class Namespace < ApplicationRecord
 
   def group_namespace?
     type == Group.sti_name
+  end
+
+  def work_item_positioning_root
+    return self if parent&.user_namespace?
+
+    root_ancestor
   end
 
   def project_namespace?

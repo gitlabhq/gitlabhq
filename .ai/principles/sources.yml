@@ -1,0 +1,447 @@
+sync:
+  schedule: hourly
+  branch_prefix: docs-sync/principles
+  labels:
+    - ai-agent
+    - documentation
+  mr_batch: true
+
+# Non-distilled .ai/ files included in AGENTS.md Context Loading.
+# These are manually maintained and have no SSOT sources.
+static_entries:
+  - description: Code style or linting
+    path: .ai/code-style.md
+  - description: Git, commits, or branches
+    path: .ai/git.md
+  - description: CI/CD pipelines or `.gitlab-ci.yml`
+    path: .ai/ci-cd.md
+
+principles:
+  # ── Database (4 sub-domains) ──────────────────────────────────────────────
+
+  database-fundamentals:
+    description: Database fundamentals (model queries, batching, sharding, partitioning, N+1)
+    group: Database
+    prerequisite: true
+    file_filters:
+      - 'db/**/*'
+      - 'lib/gitlab/database/**/*.rb'
+      - 'lib/gitlab/background_migration/**/*.rb'
+      - 'ee/db/**/*'
+    baseline: .ai/principles/baselines/database-fundamentals.md
+    sources:
+      - path: doc/development/database_review.md
+        url: https://docs.gitlab.com/development/database_review/
+      - path: doc/development/database/multiple_databases.md
+        url: https://docs.gitlab.com/development/database/multiple_databases/
+
+  database-migrations:
+    description: Database migration patterns and zero-downtime safety
+    group: Database
+    file_filters:
+      - 'db/migrate/**/*.rb'
+      - 'db/post_migrate/**/*.rb'
+      - 'ee/db/geo/migrate/**/*.rb'
+    baseline: .ai/principles/baselines/database-migrations.md
+    sources:
+      - path: doc/development/migration_style_guide.md
+        url: https://docs.gitlab.com/development/migration_style_guide/
+      - path: doc/development/database/avoiding_downtime_in_migrations.md
+        url: https://docs.gitlab.com/development/database/avoiding_downtime_in_migrations/
+      - path: doc/development/database/post_deployment_migrations.md
+        url: https://docs.gitlab.com/development/database/post_deployment_migrations/
+      - path: doc/development/database/rename_database_tables.md
+        url: https://docs.gitlab.com/development/database/rename_database_tables/
+
+  database-schema:
+    description: Column types, constraints, indexes, naming conventions
+    group: Database
+    file_filters:
+      - 'db/structure.sql'
+      - 'db/schema_migrations/**/*'
+    baseline: .ai/principles/baselines/database-schema.md
+    sources:
+      - path: doc/development/database/adding_database_indexes.md
+        url: https://docs.gitlab.com/development/database/adding_database_indexes/
+      - path: doc/development/database/foreign_keys.md
+        url: https://docs.gitlab.com/development/database/foreign_keys/
+      - path: doc/development/database/not_null_constraints.md
+        url: https://docs.gitlab.com/development/database/not_null_constraints/
+      - path: doc/development/database/ordering_table_columns.md
+        url: https://docs.gitlab.com/development/database/ordering_table_columns/
+      - path: doc/development/database/strings_and_the_text_data_type.md
+        url: https://docs.gitlab.com/development/database/strings_and_the_text_data_type/
+      - path: doc/development/database/creating_enums.md
+        url: https://docs.gitlab.com/development/database/creating_enums/
+      - path: doc/development/database/constraint_naming_convention.md
+        url: https://docs.gitlab.com/development/database/constraint_naming_convention/
+      - path: doc/development/database/check_constraints.md
+        url: https://docs.gitlab.com/development/database/check_constraints/
+      - path: doc/development/database/polymorphic_associations.md
+        url: https://docs.gitlab.com/development/database/polymorphic_associations/
+      - path: doc/development/database/serializing_data.md
+        url: https://docs.gitlab.com/development/database/serializing_data/
+      - path: doc/development/database/single_table_inheritance.md
+        url: https://docs.gitlab.com/development/database/single_table_inheritance/
+      - path: doc/development/database/hash_indexes.md
+        url: https://docs.gitlab.com/development/database/hash_indexes/
+
+  database-queries:
+    description: SQL performance, transactions, batching
+    group: Database
+    file_filters:
+      - 'app/models/**/*.rb'
+      - 'app/finders/**/*.rb'
+      - 'app/services/**/*.rb'
+      - 'ee/app/models/**/*.rb'
+      - 'ee/app/finders/**/*.rb'
+      - 'ee/app/services/**/*.rb'
+      - 'lib/gitlab/database/**/*.rb'
+    baseline: .ai/principles/baselines/database-queries.md
+    sources:
+      - path: doc/development/database/query_performance.md
+        url: https://docs.gitlab.com/development/database/query_performance/
+      - path: doc/development/database/transaction_guidelines.md
+        url: https://docs.gitlab.com/development/database/transaction_guidelines/
+      - path: doc/development/database/large_tables_limitations.md
+        url: https://docs.gitlab.com/development/database/large_tables_limitations/
+      - path: doc/development/sql.md
+        url: https://docs.gitlab.com/development/sql/
+      - path: doc/development/database/batching_best_practices.md
+        url: https://docs.gitlab.com/development/database/batching_best_practices/
+      - path: doc/development/database/iterating_tables_in_batches.md
+        url: https://docs.gitlab.com/development/database/iterating_tables_in_batches/
+      - path: doc/development/database/insert_into_tables_in_batches.md
+        url: https://docs.gitlab.com/development/database/insert_into_tables_in_batches/
+      - path: doc/development/database/pagination_performance_guidelines.md
+        url: https://docs.gitlab.com/development/database/pagination_performance_guidelines/
+
+  # ── ClickHouse ────────────────────────────────────────────────────────────
+
+  clickhouse:
+    description: ClickHouse database concerns
+    group: Database
+    file_filters:
+      - 'db/siphon/**/*'
+      - 'ee/app/models/click_house/**/*.rb'
+      - 'db/click_house/**/*'
+      - 'ee/db/click_house/**/*'
+      - 'lib/click_house/**/*.rb'
+    baseline: .ai/principles/baselines/clickhouse.md
+    sources:
+      - path: doc/development/database/clickhouse/reviewer_guidelines.md
+        url: https://docs.gitlab.com/development/database/clickhouse/reviewer_guidelines/
+
+  # ── Security ──────────────────────────────────────────────────────────────
+
+  security:
+    description: Security vulnerabilities and secure coding
+    group: Security
+    file_filters:
+      - '**/*'
+    sources:
+      - path: doc/development/secure_coding_guidelines/_index.md
+        url: https://docs.gitlab.com/development/secure_coding_guidelines/
+      - path: doc/development/secure_coding_guidelines/ruby.md
+        url: https://docs.gitlab.com/development/secure_coding_guidelines/ruby/
+      - path: doc/development/secure_coding_guidelines/go.md
+        url: https://docs.gitlab.com/development/secure_coding_guidelines/go/
+      - path: doc/development/shell_commands.md
+        url: https://docs.gitlab.com/development/shell_commands/
+      - path: doc/development/permissions/review_guidelines.md
+        url: https://docs.gitlab.com/development/permissions/review_guidelines/
+      - path: doc/development/fe_guide/security.md
+        url: https://docs.gitlab.com/development/fe_guide/security/
+
+  # ── Code Review ───────────────────────────────────────────────────────────
+
+  code-review:
+    description: General code review practices and acceptance checklist
+    group: Code Review
+    file_filters:
+      - '**/*'
+    sources:
+      - path: doc/development/code_review.md
+        url: https://docs.gitlab.com/development/code_review/
+
+  # ── Backend (3 sub-domains) ───────────────────────────────────────────────
+
+  backend-ruby:
+    description: Ruby/Rails style, logging, common pitfalls
+    group: Backend
+    prerequisite: true
+    file_filters:
+      - 'app/**/*.rb'
+      - 'lib/**/*.rb'
+      - 'ee/app/**/*.rb'
+      - 'ee/lib/**/*.rb'
+      - 'scripts/**/*.rb'
+      - 'tooling/**/*.rb'
+    baseline: .ai/principles/baselines/backend-ruby.md
+    sources:
+      - path: doc/development/backend/ruby_style_guide.md
+        url: https://docs.gitlab.com/development/backend/ruby_style_guide/
+      - path: doc/development/gotchas.md
+        url: https://docs.gitlab.com/development/gotchas/
+      - path: doc/development/logging.md
+        url: https://docs.gitlab.com/development/logging/
+      - path: doc/development/json.md
+        url: https://docs.gitlab.com/development/json/
+      - path: doc/development/i18n/externalization.md
+        url: https://docs.gitlab.com/development/i18n/externalization/
+      - path: doc/development/redis.md
+        url: https://docs.gitlab.com/development/redis/
+      - path: doc/development/polling.md
+        url: https://docs.gitlab.com/development/polling/
+      - path: doc/development/routing.md
+        url: https://docs.gitlab.com/development/routing/
+      - path: doc/development/rails_initializers.md
+        url: https://docs.gitlab.com/development/rails_initializers/
+      - path: doc/development/code_comments.md
+        url: https://docs.gitlab.com/development/code_comments/
+      - path: doc/development/rubocop_development_guide.md
+        url: https://docs.gitlab.com/development/rubocop_development_guide/
+
+  backend-architecture:
+    description: Service patterns, abstractions, design conventions
+    group: Backend
+    file_filters:
+      - 'app/services/**/*.rb'
+      - 'app/finders/**/*.rb'
+      - 'app/models/**/*.rb'
+      - 'ee/app/services/**/*.rb'
+      - 'ee/app/finders/**/*.rb'
+      - 'ee/app/models/**/*.rb'
+    baseline: .ai/principles/baselines/backend-architecture.md
+    sources:
+      - path: doc/development/reusing_abstractions.md
+        url: https://docs.gitlab.com/development/reusing_abstractions/
+      - path: doc/development/software_design.md
+        url: https://docs.gitlab.com/development/software_design/
+      - path: doc/development/event_store.md
+        url: https://docs.gitlab.com/development/event_store/
+      - path: doc/development/module_with_instance_variables.md
+        url: https://docs.gitlab.com/development/module_with_instance_variables/
+      - path: doc/development/application_limits.md
+        url: https://docs.gitlab.com/development/application_limits/
+      - path: doc/development/multi_version_compatibility.md
+        url: https://docs.gitlab.com/development/multi_version_compatibility/
+
+  backend-ee:
+    description: EE/CE separation, licensing, code placement
+    group: Backend
+    file_filters:
+      - 'ee/**/*.rb'
+    sources:
+      - path: doc/development/ee_features.md
+        url: https://docs.gitlab.com/development/ee_features/
+
+  # ── REST API ──────────────────────────────────────────────────────────────
+
+  rest-api:
+    description: REST API design and conventions
+    group: API
+    file_filters:
+      - 'lib/api/**/*.rb'
+      - 'ee/lib/api/**/*.rb'
+      - 'doc/api/**/*.md'
+    baseline: .ai/principles/baselines/rest-api.md
+    sources:
+      - path: doc/development/api_styleguide.md
+        url: https://docs.gitlab.com/development/api_styleguide/
+
+  # ── GraphQL ───────────────────────────────────────────────────────────────
+
+  graphql:
+    description: GraphQL API design and conventions
+    group: API
+    file_filters:
+      - 'app/graphql/**/*.rb'
+      - 'ee/app/graphql/**/*.rb'
+    sources:
+      - path: doc/development/api_graphql_styleguide.md
+        url: https://docs.gitlab.com/development/api_graphql_styleguide/
+      - path: doc/development/graphql_guide/reviewing.md
+        url: https://docs.gitlab.com/development/graphql_guide/reviewing/
+      - path: doc/development/graphql_guide/authorization.md
+        url: https://docs.gitlab.com/development/graphql_guide/authorization/
+      - path: doc/development/graphql_guide/batchloader.md
+        url: https://docs.gitlab.com/development/graphql_guide/batchloader/
+
+  # ── Workers ───────────────────────────────────────────────────────────────
+
+  workers:
+    description: Sidekiq worker design and reliability
+    group: Workers
+    file_filters:
+      - 'app/workers/**/*.rb'
+      - 'ee/app/workers/**/*.rb'
+    sources:
+      - path: doc/development/sidekiq/_index.md
+        url: https://docs.gitlab.com/development/sidekiq/
+      - path: doc/development/sidekiq/worker_attributes.md
+        url: https://docs.gitlab.com/development/sidekiq/worker_attributes/
+      - path: doc/development/sidekiq/idempotent_jobs.md
+        url: https://docs.gitlab.com/development/sidekiq/idempotent_jobs/
+      - path: doc/development/sidekiq/compatibility_across_updates.md
+        url: https://docs.gitlab.com/development/sidekiq/compatibility_across_updates/
+      - path: doc/development/sidekiq/limited_capacity_worker.md
+        url: https://docs.gitlab.com/development/sidekiq/limited_capacity_worker/
+      - path: doc/development/sidekiq/logging.md
+        url: https://docs.gitlab.com/development/sidekiq/logging/
+
+  # ── Frontend (4 sub-domains) ──────────────────────────────────────────────
+
+  frontend-vue:
+    description: Vue.js components, state management, patterns
+    group: Frontend
+    prerequisite: true
+    file_filters:
+      - 'app/assets/javascripts/**/*.vue'
+      - 'app/assets/javascripts/**/*.js'
+      - 'ee/app/assets/javascripts/**/*.vue'
+      - 'ee/app/assets/javascripts/**/*.js'
+      - '**/*.ts'
+    baseline: .ai/principles/baselines/frontend-vue.md
+    sources:
+      - path: doc/development/fe_guide/_index.md
+        url: https://docs.gitlab.com/development/fe_guide/
+      - path: doc/development/fe_guide/style/vue.md
+        url: https://docs.gitlab.com/development/fe_guide/style/vue/
+      - path: doc/development/fe_guide/style/javascript.md
+        url: https://docs.gitlab.com/development/fe_guide/style/javascript/
+      - path: doc/development/fe_guide/style/typescript.md
+        url: https://docs.gitlab.com/development/fe_guide/style/typescript/
+      - path: doc/development/fe_guide/design_patterns.md
+        url: https://docs.gitlab.com/development/fe_guide/design_patterns/
+      - path: doc/development/fe_guide/state_management.md
+        url: https://docs.gitlab.com/development/fe_guide/state_management/
+      - path: doc/development/fe_guide/pinia.md
+        url: https://docs.gitlab.com/development/fe_guide/pinia/
+      - path: doc/development/fe_guide/axios.md
+        url: https://docs.gitlab.com/development/fe_guide/axios/
+      - path: doc/development/i18n/externalization.md
+        url: https://docs.gitlab.com/development/i18n/externalization/
+
+  frontend-style:
+    description: CSS/SCSS, Tailwind, dark mode
+    group: Frontend
+    file_filters:
+      - 'app/assets/stylesheets/**/*.scss'
+      - 'ee/app/assets/stylesheets/**/*.scss'
+    baseline: .ai/principles/baselines/frontend-style.md
+    sources:
+      - path: doc/development/fe_guide/style/_index.md
+        url: https://docs.gitlab.com/development/fe_guide/style/
+      - path: doc/development/fe_guide/style/scss.md
+        url: https://docs.gitlab.com/development/fe_guide/style/scss/
+      - path: doc/development/fe_guide/dark_mode.md
+        url: https://docs.gitlab.com/development/fe_guide/dark_mode/
+
+  frontend-haml:
+    description: HAML templates, ViewComponents, Pajamas
+    group: Frontend
+    file_filters:
+      - 'app/views/**/*.haml'
+      - 'ee/app/views/**/*.haml'
+    sources:
+      - path: doc/development/fe_guide/style/html.md
+        url: https://docs.gitlab.com/development/fe_guide/style/html/
+      - path: doc/development/fe_guide/haml.md
+        url: https://docs.gitlab.com/development/fe_guide/haml/
+
+  frontend-a11y:
+    description: Frontend accessibility patterns and requirements
+    group: Frontend
+    file_filters:
+      - 'app/assets/javascripts/**/*.vue'
+      - 'app/views/**/*.haml'
+      - 'ee/app/assets/javascripts/**/*.vue'
+      - 'ee/app/views/**/*.haml'
+    sources:
+      - path: doc/development/fe_guide/accessibility/_index.md
+        url: https://docs.gitlab.com/development/fe_guide/accessibility/
+      - path: doc/development/fe_guide/accessibility/best_practices.md
+        url: https://docs.gitlab.com/development/fe_guide/accessibility/best_practices/
+
+  # ── QA (2 sub-domains) ───────────────────────────────────────────────────
+
+  qa-rspec:
+    description: RSpec patterns, factories, shared examples
+    group: Testing
+    file_filters:
+      - 'spec/**/*_spec.rb'
+      - 'ee/spec/**/*_spec.rb'
+      - 'qa/**/*'
+    baseline: .ai/principles/baselines/qa-rspec.md
+    sources:
+      - path: doc/development/testing_guide/_index.md
+        url: https://docs.gitlab.com/development/testing_guide/
+      - path: doc/development/testing_guide/best_practices.md
+        url: https://docs.gitlab.com/development/testing_guide/best_practices/
+      - path: doc/development/testing_guide/testing_levels.md
+        url: https://docs.gitlab.com/development/testing_guide/testing_levels/
+      - path: doc/development/testing_guide/testing_migrations_guide.md
+        url: https://docs.gitlab.com/development/testing_guide/testing_migrations_guide/
+      - path: doc/development/testing_guide/testing_rake_tasks.md
+        url: https://docs.gitlab.com/development/testing_guide/testing_rake_tasks/
+
+  qa-jest:
+    description: Jest, jsdom, Vue Test Utils patterns
+    group: Testing
+    file_filters:
+      - 'spec/frontend/**/*'
+      - 'ee/spec/frontend/**/*'
+    sources:
+      - path: doc/development/testing_guide/frontend_testing.md
+        url: https://docs.gitlab.com/development/testing_guide/frontend_testing/
+
+  # ── Remaining (unchanged) ─────────────────────────────────────────────────
+
+  performance:
+    description: Performance and scalability
+    group: Performance
+    file_filters:
+      - 'app/**/*.rb'
+      - 'ee/app/**/*.rb'
+      - 'lib/**/*.rb'
+      - 'ee/lib/**/*.rb'
+    sources:
+      - path: doc/development/merge_request_concepts/performance.md
+        url: https://docs.gitlab.com/development/merge_request_concepts/performance/
+
+  documentation:
+    description: Documentation style and completeness
+    group: Documentation
+    file_filters:
+      - 'doc/**/*.md'
+      - 'locale/**/*'
+    baseline: .ai/principles/baselines/documentation.md
+    sources:
+      - path: doc/development/documentation/styleguide/_index.md
+        url: https://docs.gitlab.com/development/documentation/styleguide/
+      - path: doc/development/documentation/workflow.md
+        url: https://docs.gitlab.com/development/documentation/workflow/
+
+  feature-flags:
+    description: Feature flag usage and lifecycle
+    group: Feature Flags
+    file_filters:
+      - 'config/feature_flags/**/*.yml'
+      - 'ee/config/feature_flags/**/*.yml'
+    baseline: .ai/principles/baselines/feature-flags.md
+    sources:
+      - path: doc/development/feature_flags/_index.md
+        url: https://docs.gitlab.com/development/feature_flags/
+
+  analytics:
+    description: Analytics instrumentation and metrics
+    group: Analytics
+    file_filters:
+      - 'config/events/**/*.yml'
+      - 'config/metrics/**/*.yml'
+      - 'ee/config/events/**/*.yml'
+      - 'ee/config/metrics/**/*.yml'
+    sources:
+      - path: doc/development/internal_analytics/review_guidelines.md
+        url: https://docs.gitlab.com/development/internal_analytics/review_guidelines/

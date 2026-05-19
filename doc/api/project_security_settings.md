@@ -16,7 +16,7 @@ description: API endpoints to list and update project security options like secr
 Every API call to project security settings must be [authenticated](rest/authentication.md).
 
 If a project is private, and a user isn't a member of the project to which the security setting
-belongs, requests to that project returns a `404 Not Found` status code.
+belongs, requests to that project return a `404 Not Found` status code.
 
 ## List all project security settings
 
@@ -83,7 +83,8 @@ PUT /projects/:id/security_settings
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/7/security_settings?secret_push_protection_enabled=false"
+  --data "secret_push_protection_enabled=false" \
+  --url "https://gitlab.example.com/api/v4/projects/7/security_settings"
 ```
 
 Example response:

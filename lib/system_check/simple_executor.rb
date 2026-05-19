@@ -51,7 +51,7 @@ module SystemCheck
 
       # When implements skip method, we run it first, and if true, skip the check
       if check.can_skip? && check.skip?
-        $stdout.puts Rainbow(check.skip_reason || check_klass.skip_reason).magenta
+        say Rainbow(check.skip_reason || check_klass.skip_reason).magenta
         return
       end
 
@@ -67,7 +67,7 @@ module SystemCheck
         print_check_failure(check_klass)
 
         if check.can_repair?
-          $stdout.print 'Trying to fix error automatically. ...'
+          print 'Trying to fix error automatically. ...' # rubocop:disable Rails/Output -- system check CLI output
 
           if check.repair!
             print_success
@@ -80,46 +80,50 @@ module SystemCheck
         check.show_error
       end
     rescue StandardError => e
-      $stdout.puts Rainbow("Exception: #{e.message}").red
+      say Rainbow("Exception: #{e.message}").red
     end
 
     private
 
+    def say(message = '')
+      puts message # rubocop:disable Rails/Output -- system check CLI output
+    end
+
     def print_display_name(check_klass)
-      $stdout.print "#{check_klass.display_name} ... "
+      print "#{check_klass.display_name} ... " # rubocop:disable Rails/Output -- system check CLI output
     end
 
     def print_check_pass(check_klass)
-      $stdout.puts Rainbow(check_klass.check_pass).green
+      say Rainbow(check_klass.check_pass).green
     end
 
     def print_check_failure(check_klass)
-      $stdout.puts Rainbow(check_klass.check_fail).red
+      say Rainbow(check_klass.check_fail).red
     end
 
     def print_success
-      $stdout.puts Rainbow('Success').green
+      say Rainbow('Success').green
     end
 
     def print_failure
-      $stdout.puts Rainbow('Failed').red
+      say Rainbow('Failed').red
     end
 
     # Prints header content for the series of checks to be executed for this component
     #
     # @param [String] component name of the component relative to the checks being executed
     def start_checking(component)
-      $stdout.puts "Checking #{Rainbow(component).yellow} ..."
-      $stdout.puts ''
+      say "Checking #{Rainbow(component).yellow} ..."
+      say ''
     end
 
     # Prints footer content for the series of checks executed for this component
     #
     # @param [String] component name of the component relative to the checks being executed
     def finished_checking(component)
-      $stdout.puts ''
-      $stdout.puts "Checking #{Rainbow(component).yellow} ... #{Rainbow('Finished').green}"
-      $stdout.puts ''
+      say ''
+      say "Checking #{Rainbow(component).yellow} ... #{Rainbow('Finished').green}"
+      say ''
     end
   end
 end

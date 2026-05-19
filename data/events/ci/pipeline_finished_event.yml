@@ -1,0 +1,6 @@
+---
+event: Ci::PipelineFinishedEvent
+description: Published when a CI pipeline transitions to a terminal state (success,
+  failed, canceled, skipped, or manual). Deferred via run_after_commit, so it fires
+  only after the status change is committed.
+feature_category: continuous_integration

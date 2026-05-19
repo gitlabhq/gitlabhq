@@ -37,14 +37,14 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
 
       it 'does not show any entries in the list of activities' do
         page.within('.activities-block') do
-          expect(page).to have_selector('.loading', visible: false)
+          expect(page).to have_selector('.loading', visible: :hidden)
           expect(page).to have_content('Join or create a group to start contributing by commenting on issues or submitting merge requests!')
           expect(page).not_to have_selector('.event-item')
         end
       end
 
       it 'does not show a link to the activity list' do
-        expect(find('#js-legacy-tabs-container .activities-block')).to have_selector('.js-view-all', visible: false)
+        expect(find('#js-legacy-tabs-container .activities-block')).to have_selector('.js-view-all', visible: :hidden)
       end
     end
 
@@ -72,7 +72,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'shows a link to the activity list' do
-        expect(find('#js-legacy-tabs-container .activities-block')).to have_selector('.js-view-all', visible: true)
+        expect(find('#js-legacy-tabs-container .activities-block')).to have_selector('.js-view-all', visible: :visible)
       end
 
       it 'links to the activity tab' do
@@ -100,7 +100,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'shows a link to the project list' do
-        expect(find('#js-legacy-tabs-container .projects-block')).to have_selector('.js-view-all', visible: true)
+        expect(find('#js-legacy-tabs-container .projects-block')).to have_selector('.js-view-all', visible: :visible)
       end
 
       it 'shows projects in "card mode"' do
@@ -126,7 +126,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'shows a link to the project list' do
-        expect(find('#js-legacy-tabs-container .projects-block')).to have_selector('.js-view-all', visible: true)
+        expect(find('#js-legacy-tabs-container .projects-block')).to have_selector('.js-view-all', visible: :visible)
       end
 
       it 'does not show pagination' do

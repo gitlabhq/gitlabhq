@@ -1,0 +1,6 @@
+---
+event: Projects::ProjectFeaturesChangedEvent
+description: Published when a project's feature availability settings change (for
+  example, issues, wiki, CI enabled/disabled). Not published when ProjectFeature#previous_changes
+  is blank.
+feature_category: groups_and_projects

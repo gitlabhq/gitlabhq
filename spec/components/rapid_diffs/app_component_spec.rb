@@ -261,6 +261,27 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     end
   end
 
+  context 'with custom empty_state slot' do
+    it 'renders slot content instead of default empty state' do
+      result = render_component do |c|
+        c.with_empty_state do
+          'custom empty state'
+        end
+      end
+      expect(result).to have_text('custom empty state')
+      expect(result).not_to have_text('There are no changes')
+    end
+
+    it 'does not render diff files' do
+      result = render_component do |c|
+        c.with_empty_state do
+          'custom empty state'
+        end
+      end
+      expect(result).not_to have_css('diff-file')
+    end
+  end
+
   context "with linked file" do
     let(:linked_diff_file) do
       build(:diff_file).tap do |file|

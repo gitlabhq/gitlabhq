@@ -62,6 +62,22 @@ RSpec.describe 'projects/settings/merge_requests/show', feature_category: :code_
     end
   end
 
+  describe 'merge request default title template' do
+    it 'displays the title template field' do
+      render
+
+      expect(rendered).to have_css('[data-testid="mr-default-title-template-fieldset"]')
+    end
+
+    it 'displays the user entered value' do
+      project.update!(mr_default_title_template: '%{source_branch}')
+
+      render
+
+      expect(rendered).to have_field('project[mr_default_title_template]', with: '%{source_branch}')
+    end
+  end
+
   describe 'squash template' do
     it 'displays default template if none is set' do
       render

@@ -161,6 +161,7 @@ export default {
       return this.project?.userPermissions || DEFAULT_BLOB_INFO.userPermissions;
     },
     showBlameButton() {
+      if (this.glFeatures.inlineBlame) return false;
       return showBlameButton(this.blobInfo);
     },
     isUsingLfs() {

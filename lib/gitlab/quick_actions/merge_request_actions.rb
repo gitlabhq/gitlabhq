@@ -501,12 +501,12 @@ module Gitlab
         merge_orchestration_service.preferred_auto_merge_strategy(merge_request)
       end
 
-      # Overriden in EE
+      # Overridden in EE
       def process_reviewer_users(users)
         users
       end
 
-      # Overriden in EE
+      # Overridden in EE
       def process_reviewer_users_message
         nil
       end

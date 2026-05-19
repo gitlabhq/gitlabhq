@@ -44,6 +44,12 @@ RSpec.describe 'Deletion of a tag', feature_category: :source_code_management do
           project.add_developer(current_user)
         end
 
+        it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_repository_tag do
+          let(:user) { current_user }
+          let(:boundary_object) { project }
+          let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+        end
+
         it_behaves_like 'deletes a tag'
 
         context 'when name is not correct' do

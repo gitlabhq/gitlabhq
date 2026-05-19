@@ -1,0 +1,11 @@
+---
+name: test_webhook
+description: Grants the ability to test webhooks
+deprecated: true
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - test_webhook

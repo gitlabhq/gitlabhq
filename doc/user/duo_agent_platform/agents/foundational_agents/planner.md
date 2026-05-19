@@ -7,7 +7,7 @@ title: Planner Agent
 
 {{< details >}}
 
-- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
+- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -18,6 +18,7 @@ title: Planner Agent
 - Create and edit features introduced in GitLab 18.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
+- To-do management introduced in GitLab 19.0.
 
 {{< /history >}}
 
@@ -37,6 +38,7 @@ Use the Planner Agent when you need help with:
 - Dependency analysis: Identifying blocked work and understanding relationships between items.
 - Editing content: Updating work items, labels, milestones, and other attributes either when asked or after it
   asks for confirmation to take action.
+- To-do management: Adding to-dos to work items and marking them as done.
 - Planning sessions: Organizing sprints, milestones, or quarterly planning.
 - Status reporting: Generating summaries of progress, risks, and blockers.
 - Backlog management: Identifying stale issues, duplicates, or items needing refinement.
@@ -161,6 +163,9 @@ Then, to use the Planner Agent:
 - Content editing:
   - "Close this work item as completed and create a new retrospective work item documenting
     what went well and what needs improvement: `<URL>`"
+- To-do management:
+  - "Add a to-do for this work item: `<URL>`"
+  - "Mark all my to-dos as done for this work item: `<URL>`"
 
 ## Known issues
 

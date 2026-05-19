@@ -22,8 +22,12 @@ RSpec.describe 'getting organization information', feature_category: :organizati
     FIELDS
   end
 
-  let_it_be(:organization_owner) { create(:organization_owner) }
-  let_it_be(:organization) { organization_owner.organization }
+  let_it_be(:public_organization) { create(:organization, :public) }
+  let_it_be(:private_organization) { create(:organization, :private) }
+  let_it_be(:private_organization_owner) { create(:organization_owner, organization: private_organization) }
+
+  let_it_be(:organization) { public_organization }
+  let_it_be(:organization_owner) { create(:organization_owner, organization: public_organization) }
   let_it_be(:user) { organization_owner.user }
   let_it_be(:project) { create(:project, organization: organization) { |p| p.add_developer(user) } }
   let_it_be(:other_group) do
@@ -44,7 +48,8 @@ RSpec.describe 'getting organization information', feature_category: :organizati
     let(:current_user) { create(:user) }
 
     context 'when organization is private' do
-      let_it_be(:organization) { create(:organization, :private) }
+      let(:organization) { private_organization }
+      let(:query_param) { { 'id' => private_organization.to_gid } }
 
       it 'returns no organization' do
         request_organization
@@ -371,6 +376,35 @@ RSpec.describe 'getting organization information', feature_category: :organizati
           request_organization
 
           expect(graphql_data_at(:organization, :root_path)).to eq("/o/#{organization.path}")
+        end
+      end
+    end
+
+    describe 'visibility field' do
+      let(:organization_fields) do
+        <<~FIELDS
+          id
+          visibility
+        FIELDS
+      end
+
+      context 'when organization is public' do
+        it 'returns public visibility' do
+          request_organization
+
+          expect(graphql_data_at(:organization, :visibility)).to eq(Gitlab::VisibilityLevel.string_level(organization.visibility_level))
+        end
+      end
+
+      context 'when organization is private' do
+        let(:organization) { private_organization }
+        let(:current_user) { private_organization_owner.user }
+        let(:query_param) { { 'id' => private_organization.to_gid } }
+
+        it 'returns private visibility' do
+          request_organization
+
+          expect(graphql_data_at(:organization, :visibility)).to eq(Gitlab::VisibilityLevel.string_level(organization.visibility_level))
         end
       end
     end

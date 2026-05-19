@@ -7,6 +7,7 @@ query getSourcePersonalAccessToken($userId: UserID, $id: PersonalAccessTokenID!)
         id
         name
         description
+        granular
         scopes {
           ... on AccessTokenGranularScope {
             access
@@ -21,8 +22,7 @@ query getSourcePersonalAccessToken($userId: UserID, $id: PersonalAccessTokenID!)
               fullPath
             }
             permissions {
-              action
-              resource
+              name
             }
           }
         }

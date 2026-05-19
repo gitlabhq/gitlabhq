@@ -1005,12 +1005,9 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           end
 
           shared_examples 'deleting package protected' do
-            it_behaves_like 'returning response status', :forbidden
-            it do
-              subject
-
-              expect(json_response).to include('message' => "403 Forbidden - Package is deletion protected.")
-            end
+            it_behaves_like 'returning response status with message',
+              status: :forbidden,
+              message: 'Package is deletion protected.'
 
             it { expect { subject }.not_to change { ::Packages::Package.pending_destruction.count } }
 
@@ -1056,12 +1053,12 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           end
 
           context 'for package with unsupported package type for package protection rule' do
-            let_it_be(:golang_package) { create(:golang_package, project: project, name: "#{project.root_namespace.path}/golang.org/x/pkg") }
+            let_it_be(:rubygems_package) { create(:rubygems_package, project:) }
 
             let(:headers) { headers_pat_project_maintainer }
 
             subject do
-              delete api("/projects/#{project.id}/packages/#{golang_package.id}"), headers: headers
+              delete api("/projects/#{project.id}/packages/#{rubygems_package.id}"), headers: headers
               response
             end
 

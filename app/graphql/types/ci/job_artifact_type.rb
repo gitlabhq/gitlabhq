@@ -5,6 +5,7 @@ module Types
     # rubocop: disable Graphql/AuthorizeTypes
     class JobArtifactType < BaseObject
       graphql_name 'CiJobArtifact'
+      authorize_granular_token permissions: :download_job_artifact, boundary: :project, boundary_type: :project
 
       field :id, Types::GlobalIDType[::Ci::JobArtifact], null: false,
         description: 'ID of the artifact.'

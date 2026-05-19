@@ -7,6 +7,8 @@ module Mutations
         graphql_name 'RunnerUnassignFromProject'
 
         authorize :unassign_runner
+        authorize_granular_token permissions: :unassign_runner, boundary_argument: :project_path,
+          boundary_type: :project
 
         argument :runner_id, ::Types::GlobalIDType[::Ci::Runner],
           required: true,

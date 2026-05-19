@@ -1,0 +1,7 @@
+---
+event: Organizations::GroupTransferredEvent
+description: Published when a root group is transferred to a different organization.
+  Fired once for the transferred group only — subscribers are responsible for traversing
+  descendants if needed. Published via run_after_commit_or_now inside the transfer
+  transaction, so it is never emitted on rollback.
+feature_category: organization

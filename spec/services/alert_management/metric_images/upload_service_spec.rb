@@ -21,7 +21,7 @@ RSpec.describe AlertManagement::MetricImages::UploadService, feature_category: :
 
     shared_examples 'uploads the metric' do
       it 'uploads the metric and returns a success' do
-        expect { subject }.to change(AlertManagement::MetricImage, :count).by(1)
+        expect { subject }.to change { AlertManagement::MetricImage.count }.by(1)
         expect(subject.success?).to eq(true)
         expect(subject.payload).to match({ metric: instance_of(AlertManagement::MetricImage), alert: alert })
       end

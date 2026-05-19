@@ -37,7 +37,7 @@ Complete these steps on GitHub:
 Complete these steps in GitLab:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **GitHub**.
 1. Ensure the **Active** checkbox is selected.
 1. In **Token**, paste the token you generated on GitHub.

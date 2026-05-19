@@ -3,7 +3,7 @@
 module Authn
   module TokenField
     class Insecure < Base
-      def find_token_authenticatable(token, unscoped = false)
+      def find_token_authenticatable(token, unscoped = false, uniqueness_check: false) # rubocop:disable Lint/UnusedMethodArgument -- match Base's signature
         relation(unscoped).find_by(@token_field => token) if token # rubocop:disable CodeReuse/ActiveRecord -- This is meant to be used inside an AR model.
       end
 

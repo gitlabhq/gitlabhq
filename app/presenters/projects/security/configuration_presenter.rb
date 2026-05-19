@@ -21,7 +21,11 @@ module Projects
           gitlab_ci_history_path: gitlab_ci_history_path,
           security_training_enabled: project.security_training_available?,
           container_scanning_for_registry_enabled: container_scanning_for_registry_enabled,
+          cvs_for_container_scanning_enabled: cvs_for_container_scanning_enabled,
+          cvs_for_dependency_scanning_enabled: cvs_for_dependency_scanning_enabled,
+
           secret_push_protection_available: secret_push_protection_available?,
+          secret_push_protection_enforced: secret_push_protection_enforced,
           secret_push_protection_enabled: secret_push_protection_enabled,
           validity_checks_available: validity_checks_available,
           validity_checks_enabled: validity_checks_enabled,
@@ -165,6 +169,12 @@ module Projects
       def validity_checks_available; end
       def validity_checks_enabled; end
       def container_scanning_for_registry_enabled; end
+      def secret_push_protection_enforced; end
+      def cvs_for_container_scanning_enabled; end
+      def cvs_for_dependency_scanning_enabled; end
+      def cvs_for_container_scanning_available; end
+      def cvs_for_dependency_scanning_available; end
+
       def secret_push_protection_enabled; end
       def secret_detection_configuration_path; end
       def license_configuration_source; end

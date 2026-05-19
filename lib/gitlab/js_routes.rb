@@ -69,17 +69,21 @@ module Gitlab
       end
 
       def route_pairs
-        routes = Rails.application.routes.routes.to_a.index_by(&:name)
-        route_name_pairs = ::Routing::OrganizationsHelper::MappedHelpers.find_route_pairs
-        route_name_pairs
-          .filter_map do |global_route_name, organization_route_name|
-            next if global_route_name.nil?
+        routes = Rails.application.routes.routes.to_a.select(&:name).index_by(&:name)
+        organization_routes = ::Routing::OrganizationsHelper::MappedHelpers.find_route_pairs
 
-            global_route = routes[global_route_name]
-            organization_route = routes[organization_route_name]
+        routes.filter_map do |route_name, route|
+          # Skip if it is an organization scoped route (e.g. /o/:organization_path)
+          next if organization_routes.value?(route_name)
 
-            [global_route, organization_route]
-          end
+          organization_route_name = organization_routes[route_name]
+
+          # Return route pair of [global route, organization scoped route]
+          next [route, routes[organization_route_name]] if organization_route_name
+
+          # This route does not have an organization scoped counterpart
+          [route, nil]
+        end
       end
 
       # Group route pairs by their namespace (source location)
@@ -111,19 +115,9 @@ module Gitlab
             generate_path_helper(global_route, organization_route)
           end.join("\n")
 
-          utils_import = if path_helpers.include?('splitProjectFullPath')
-                           <<~JS
-                            import { hasOrganizationScopedPaths, splitProjectFullPath } from '~/lib/utils/path_helpers/utils';
-                           JS
-                         else
-                           <<~JS
-                            import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
-                           JS
-                         end
-
           output = <<~JS
             import { __jsr } from '~/lib/utils/path_helpers/core';
-            #{utils_import}
+            #{utils_import_statement(path_helpers)}
 
             #{path_helpers}
           JS
@@ -134,6 +128,8 @@ module Gitlab
       end
 
       def generate_path_helper(global_route, organization_route)
+        return generate_path_helper_without_organization_scoping(global_route) if organization_route.nil?
+
         # To support short hand project helpers defined in
         # https://gitlab.com/gitlab-org/gitlab/-/blob/4202e37329fb343ae674db79593ce04427ebab6b/config/routes.rb#L368
         if global_route.name.include?('namespace_project')
@@ -204,6 +200,16 @@ module Gitlab
         JS
       end
 
+      def generate_path_helper_without_organization_scoping(global_route)
+        jsdoc, path_helper_name, path_helper = generate_global_path_helper(global_route)
+
+        return '' if path_helper_name.nil? || path_helper.nil?
+
+        <<~JS
+          #{jsdoc}export const #{path_helper_name} = #{path_helper};
+        JS
+      end
+
       # Generate path helper for global route
       def generate_global_path_helper(global_route)
         ::JsRoutes::Route.new(
@@ -225,6 +231,18 @@ module Gitlab
       # Prefix path helper name with underscore to mark as private
       def private_path_helper_name(path_helper_name)
         "_#{path_helper_name}"
+      end
+
+      def utils_import_statement(path_helpers)
+        imports = %w[hasOrganizationScopedPaths splitProjectFullPath].select do |name|
+          path_helpers.include?(name)
+        end
+
+        return '' if imports.empty?
+
+        <<~JS
+          import { #{imports.join(', ')} } from '~/lib/utils/path_helpers/utils';
+        JS
       end
 
       def javascript_utils

@@ -10,6 +10,10 @@ module Mutations
 
       authorize :admin_group_or_admin_runners
 
+      authorize_granular_token permissions: :update_group,
+        boundary_argument: :full_path,
+        boundary_type: :group
+
       field :group, Types::GroupType,
         null: true,
         description: 'Group after update.'

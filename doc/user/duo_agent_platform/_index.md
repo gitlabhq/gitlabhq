@@ -2,6 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Explore AI-powered agents and flows that automate tasks across the software development lifecycle.
 title: GitLab Duo Agent Platform
 ---
 
@@ -64,7 +65,7 @@ To use the Agent Platform in your local environment:
 
 These features are generally available and consume [GitLab Credits](../../subscriptions/gitlab_credits.md) when used.
 
-Features available on the Free tier for GitLab.com customers require the purchase of [GitLab Credits](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom).
+Features available on the Free tier require the purchase of [GitLab Credits](../../subscriptions/gitlab_credits.md#for-the-free-tier).
 
 | Feature | Free | Premium | Ultimate |
 |---------|---------|---------|---------|
@@ -73,6 +74,7 @@ Features available on the Free tier for GitLab.com customers require the purchas
 | [Custom agents](agents/custom.md) <br /> Build team-specific agents for your unique development requirements. | {{< yes >}} |  {{< yes >}}  | {{< yes >}} |
 | [External agents](agents/external.md) <br /> Securely connect third-party integrations and tools to extend Agent Platform capabilities. | {{< no >}} |  {{< yes >}}  | {{< yes >}} |
 | [Planner Agent](agents/foundational_agents/planner.md) <br /> Plan, prioritize, and track work. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Data Analyst Agent](agents/foundational_agents/data_analyst.md) <br /> Analyze data and generate insights from your development metrics and project data. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Developer Flow](flows/foundational_flows/developer.md) <br /> Convert issues into merge requests. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Code Review Flow](flows/foundational_flows/code_review.md) <br /> Automate code review tasks and enforce coding standards across your team. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Convert to GitLab CI/CD Flow](flows/foundational_flows/convert_to_gitlab_ci.md) <br /> Convert legacy CI/CD pipelines to the GitLab CI/CD format. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
@@ -91,7 +93,7 @@ Features available on the Free tier for GitLab.com customers require the purchas
 
 These features are either beta or experiment and do not consume GitLab Credits.
 
-For [GitLab.com users on the Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom) tier, beta and experimental features don't consume credits,
+For [users on the Free](../../subscriptions/gitlab_credits.md#for-the-free-tier) tier, beta and experimental features do not consume credits,
 but you require credits in your Monthly Commitment Pool to access them.
 
 > [!warning]
@@ -102,6 +104,7 @@ but you require credits in your Monthly Commitment Pool to access them.
 |---------|---|---|---|
 | [Custom flows](flows/custom.md) <br /> Combine multiple agents to solve your business problems. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [MCP server](../gitlab_duo/model_context_protocol/mcp_server.md) <br /> Securely connect AI tools and applications to your GitLab instance. | {{< no >}} | {{< yes >}} | {{< yes >}} |
-| [Data Analyst Agent](agents/foundational_agents/data_analyst.md) <br /> Analyze data and generate insights from your development metrics and project data. | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [CI Expert Agent](agents/foundational_agents/ci_expert_agent.md) <br /> Create, debug, and optimize GitLab CI/CD pipelines. | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [External MCP servers](../gitlab_duo/model_context_protocol/ai_catalog_mcp_servers.md) <br /> Connect custom agents to external data sources and third-party services using MCP servers. | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Knowledge Graph](../project/repository/knowledge_graph/_index.md) <br /> Create structured, queryable representations of code repositories to power AI features. | {{< no >}} |{{< yes >}} | {{< yes >}} |
+| [Resolve merge conflicts](../project/merge_requests/conflicts.md#resolve-conflicts-with-gitlab-duo) <br /> Autonomously analyze merge conflicts, edit conflicting files, and push a resolution commit. | {{< no >}} | {{< yes >}} | {{< yes >}} |

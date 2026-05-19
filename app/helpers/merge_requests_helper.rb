@@ -163,7 +163,7 @@ module MergeRequestsHelper
     false
   end
 
-  # Overriden in EE
+  # Overridden in EE
   def summarize_new_merge_request_disabled_reason(_merge_request); end
 
   def diffs_tab_pane_data(project, merge_request, params)

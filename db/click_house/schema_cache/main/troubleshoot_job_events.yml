@@ -1,0 +1,52 @@
+---
+name: troubleshoot_job_events
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree PARTITION BY toYear(timestamp) ORDER BY (user_id,
+  event, namespace_path, timestamp) SETTINGS index_granularity = 8192
+partition_key: toYear(timestamp)
+primary_key: user_id, event, namespace_path, timestamp
+sorting_key: user_id, event, namespace_path, timestamp
+settings:
+  index_granularity: '8192'
+columns:
+- name: user_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: timestamp
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  is_in_partition_key: true
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: job_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: project_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: event
+  type: UInt8
+  default_kind: DEFAULT
+  default_expression: '0'
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: namespace_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: pipeline_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: merge_request_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'

@@ -3,6 +3,8 @@
 module Analytics
   module CycleAnalytics
     class StageEventHash < ApplicationRecord
+      belongs_to :organization, class_name: 'Organizations::Organization'
+
       has_many :cycle_analytics_stages, class_name: 'Analytics::CycleAnalytics::Stage', inverse_of: :stage_event_hash
 
       validates :hash_sha256, presence: true

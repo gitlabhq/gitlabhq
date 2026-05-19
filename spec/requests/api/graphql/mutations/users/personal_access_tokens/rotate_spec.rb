@@ -17,6 +17,14 @@ RSpec.describe 'Rotate a personal access token', feature_category: :system_acces
     post_graphql_mutation(mutation, current_user: current_user, token: { personal_access_token: request_token })
   end
 
+  it 'passes creation_source api to the service' do
+    expect(::PersonalAccessTokens::RotateService).to receive(:new)
+      .with(anything, anything, anything, hash_including(creation_source: PersonalAccessToken::CREATION_SOURCE_API))
+      .and_call_original
+
+    mutation_request
+  end
+
   it 'rotates the specified personal access token', :aggregate_failures do
     expect { mutation_request }.to change { token_owner.reload.personal_access_tokens.count }.by(1)
     expect(token.reload).to be_revoked

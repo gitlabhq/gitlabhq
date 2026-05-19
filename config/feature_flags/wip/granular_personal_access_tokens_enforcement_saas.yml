@@ -1,0 +1,10 @@
+---
+name: granular_personal_access_tokens_enforcement_saas
+description: Enable enforcement of granular personal access tokens on a per-namespace basis for SaaS. When enabled for a root namespace, users will be required to use fine-grained tokens if the namespace has enforce_granular_tokens configured.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20180
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229817
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594831
+milestone: '19.0'
+group: group::authorization
+type: wip
+default_enabled: false

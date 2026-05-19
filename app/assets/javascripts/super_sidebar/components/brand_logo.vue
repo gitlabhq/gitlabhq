@@ -6,6 +6,7 @@ import { hasTouchCapability } from '~/lib/utils/touch_detection';
 import logo from '../../../../views/shared/_logo.svg?raw';
 
 export default {
+  name: 'BrandLogo',
   logo,
   i18n: {
     homepage: __('Homepage'),

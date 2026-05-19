@@ -1,8 +1,10 @@
 ---
 name: delete_terraform_state
 description: Grants the ability to delete Terraform state
+boundaries:
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - delete_terraform_state
   - delete_terraform_state_version
-boundaries:
-  - project

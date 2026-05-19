@@ -55,6 +55,7 @@ RSpec.describe Authz::PermissionGroups::Resource, feature_category: :permissions
           allow(Dir).to receive(:glob).and_return(
             %w[/path/create.yml /path/delete.yml /path/read.yml]
           )
+          allow(File).to receive(:read).with(%r{/path/\w+\.yml}).and_return("---\nname: action\n")
 
           expect(resource.description).to eq('Grants the ability to create, delete, and read CI pipelines.')
         end
@@ -75,8 +76,25 @@ RSpec.describe Authz::PermissionGroups::Resource, feature_category: :permissions
           allow(Dir).to receive(:glob).and_return(
             %w[/path/admin_read.yml /path/create.yml]
           )
+          allow(File).to receive(:read).with(%r{/path/\w+\.yml}).and_return("---\nname: action\n")
 
           expect(resource.description).to eq('Grants the ability to admin read and create CI pipelines.')
+        end
+      end
+
+      context 'when some actions are deprecated' do
+        let(:definition) { { description: 'Grants the ability to <actions> work items.' } }
+
+        it 'excludes deprecated actions from the action list' do
+          allow(Dir).to receive(:glob).and_return(
+            %w[/path/create.yml /path/update.yml /path/write.yml]
+          )
+          allow(File).to receive(:read).with('/path/create.yml').and_return("---\nname: create_work_item\n")
+          allow(File).to receive(:read).with('/path/update.yml').and_return("---\nname: update_work_item\n")
+          allow(File).to receive(:read).with('/path/write.yml')
+            .and_return("---\nname: write_work_item\ndeprecated: true\n")
+
+          expect(resource.description).to eq('Grants the ability to create and update work items.')
         end
       end
 
@@ -87,6 +105,7 @@ RSpec.describe Authz::PermissionGroups::Resource, feature_category: :permissions
           allow(Dir).to receive(:glob).and_return(
             %w[/path/create.yml /path/read.yml]
           )
+          allow(File).to receive(:read).with(%r{/path/\w+\.yml}).and_return("---\nname: action\n")
 
           expect(resource.description).to eq('Grants the ability to create and read pipelines.')
         end
@@ -98,6 +117,7 @@ RSpec.describe Authz::PermissionGroups::Resource, feature_category: :permissions
 
         it 'preserves casing from the name field' do
           allow(Dir).to receive(:glob).and_return(%w[/path/read.yml])
+          allow(File).to receive(:read).with('/path/read.yml').and_return("---\nname: action\n")
 
           expect(resource.description).to eq('Grants the ability to read SSH Keys.')
         end

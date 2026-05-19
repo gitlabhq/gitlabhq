@@ -11,6 +11,7 @@ Upgrade notes for supported GitLab versions. For upgrade notes for older version
 
 {{< cards >}}
 
+- [GitLab 19 upgrade notes](gitlab_19_changes.md)
 - [GitLab 18 upgrade notes](gitlab_18_changes.md)
 - [GitLab 17 upgrade notes](gitlab_17_changes.md)
 - [GitLab 16 upgrade notes](gitlab_16_changes.md)

@@ -56,10 +56,19 @@ module UseSqlFunctionForPrimaryKeyLookups
 
       return unless verification_arel.ast == arel.ast
 
-      function_call = Arel::Nodes::NamedFunction.new("find_#{table_name}_by_id", [pk_value_attribute]).as(table_name)
+      # rubocop:disable Gitlab/AvoidCurrentOrganization -- We check if it is set
+      function_call = if Gitlab::Organizations::Isolation.enabled?
+                        Arel::Nodes::NamedFunction.new(
+                          "find_#{table_name}_by_id_and_organization_id", [pk_value_attribute, Current.organization.id]
+                        )
+                      else
+                        Arel::Nodes::NamedFunction.new("find_#{table_name}_by_id", [pk_value_attribute])
+                      end
+      # rubocop:enable Gitlab/AvoidCurrentOrganization
+
       filter_empty_row = "#{quoted_table_name}.#{adapter_class.quote_column_name(primary_key)} IS NOT NULL"
 
-      from(function_call).where(filter_empty_row).limit(1)
+      from(function_call.as(table_name)).where(filter_empty_row).limit(1)
     end
   end
 end

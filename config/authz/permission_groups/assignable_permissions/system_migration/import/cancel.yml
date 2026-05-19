@@ -1,0 +1,11 @@
+---
+name: cancel_import
+description: Grants the ability to cancel imports
+boundaries:
+  - instance
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - cancel_bulk_import
+  - cancel_github_import

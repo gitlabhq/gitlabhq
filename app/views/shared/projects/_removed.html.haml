@@ -1,10 +1,10 @@
-- return unless project.self_deletion_scheduled?
-
-.gl-flex.gl-items-center.gl-flex-wrap.project-title
-  %span.small
-    - marked_for_deletion_at = project.marked_for_deletion_at.strftime(Date::DATE_FORMATS[:medium])
-    = _("Marked For Deletion At - %{deletion_time}") % { deletion_time: marked_for_deletion_at }
-.gl-flex.gl-items-center.gl-flex-wrap.project-title
-  %p.small
-    - permanent_deletion_time = permanent_deletion_date_formatted(project, format: Date::DATE_FORMATS[:medium])
-    = _("Scheduled Deletion At - %{permanent_deletion_time}") % { permanent_deletion_time: permanent_deletion_time }
+- if project.self_deletion_scheduled?
+  .gl-flex.gl-items-center.gl-flex-wrap.project-title
+    %span.small
+      - marked_for_deletion_at = project.self_deletion_scheduled_deletion_created_on&.strftime(Date::DATE_FORMATS[:medium])
+      - if marked_for_deletion_at
+        = _("Marked For Deletion At - %{deletion_time}") % { deletion_time: marked_for_deletion_at }
+  .gl-flex.gl-items-center.gl-flex-wrap.project-title
+    %p.small
+      - permanent_deletion_time = permanent_deletion_date_formatted(project, format: Date::DATE_FORMATS[:medium])
+      = _("Scheduled Deletion At - %{permanent_deletion_time}") % { permanent_deletion_time: permanent_deletion_time }

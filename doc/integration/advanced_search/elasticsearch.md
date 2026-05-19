@@ -59,7 +59,7 @@ The cluster cannot assign replica shards to the same node as primary shards.
 > Before you use a new Elasticsearch cluster in production, see
 > [important Elasticsearch configuration](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html).
 
-### Version requirements
+### Version compatibility
 
 #### Elasticsearch
 
@@ -72,37 +72,33 @@ The cluster cannot assign replica shards to the same node as primary shards.
 > [!warning]
 > Support for Elasticsearch 7.x was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/583544)
 > in GitLab 18.10 and is planned for removal in 19.1.
->
-> [!note]
-> GitLab.com uses Elasticsearch 9.x in production. For self-managed instances, Elasticsearch 9.x
-> is the recommended version for optimal performance and forward compatibility.
 
-Advanced search works with the following versions of Elasticsearch.
+Advanced search is compatible with the following versions of Elasticsearch.
 
-| GitLab version        | Elasticsearch version       |
-|-----------------------|-----------------------------|
-| GitLab 18.1 and later | Elasticsearch 7.x and later |
-| GitLab 15.0 to 18.0   | Elasticsearch 7.x and 8.x   |
-| GitLab 14.0 to 14.10  | Elasticsearch 6.8 to 7.x    |
+| GitLab version | Elasticsearch version |
+|----------------|-----------------------|
+| 18.1 and later | 7.x and later         |
+| 15.0 to 18.0   | 7.x and 8.x           |
+| 14.0 to 14.10  | 6.8 to 7.x            |
+
+GitLab.com uses Elasticsearch 8.x.
+On GitLab Self-Managed, you should use Elasticsearch 9.x
+for optimal performance and forward compatibility.
 
 Advanced search follows the [Elasticsearch end-of-life policy](https://www.elastic.co/support/eol).
 
 #### OpenSearch
 
-| GitLab version          | OpenSearch version             |
-|-------------------------|--------------------------------|
-| GitLab 18.1 and later   | OpenSearch 1.x and later       |
-| GitLab 17.6.3 to 18.0   | OpenSearch 1.x and 2.x         |
-| GitLab 15.5.3 to 17.6.2 | OpenSearch 1.x, 2.0 to 2.17    |
-| GitLab 15.0 to 15.5.2   | OpenSearch 1.x                 |
+Advanced search is compatible with the following versions of OpenSearch.
 
-OpenSearch 3.x is supported starting from GitLab 18.1. See [merge request 192197](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192197) for details.
+| GitLab version   | OpenSearch version |
+|------------------|--------------------|
+| 18.1 and later   | 1.x and later      |
+| 17.6.3 to 18.0   | 1.x and 2.x        |
+| 15.5.3 to 17.6.2 | 1.x, 2.0 to 2.17   |
+| 15.0 to 15.5.2   | 1.x                |
 
-If your version of Elasticsearch or OpenSearch is incompatible, to prevent data loss, indexing pauses and
-a message is logged in the
-[`elasticsearch.log`](../../administration/logs/_index.md#elasticsearchlog) file.
-
-If you are using a compatible version and after connecting to OpenSearch, you get the message `Elasticsearch version not compatible`, [resume indexing](#resume-indexing).
+Advanced search follows the [OpenSearch maintenance policy](https://opensearch.org/releases/).
 
 ### System requirements
 
@@ -273,7 +269,7 @@ To set an IAM ARN as a master user, you must
 use AWS OpenSearch Service with IAM credentials on your GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Advanced search**.
 1. In the **AWS OpenSearch IAM credentials** section:
    1. Select the **Use AWS OpenSearch Service with IAM credentials** checkbox.
@@ -305,7 +301,7 @@ To create a master user, you must configure the OpenSearch domain URL and
 the master username and password on your GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Advanced search**.
 1. In **OpenSearch domain URL**, enter the URL to the OpenSearch domain endpoint.
 1. In **Username**, enter the master username.
@@ -433,7 +429,7 @@ Prerequisites:
 To enable advanced search:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Configure the [advanced search settings](#advanced-search-configuration) for
    your Elasticsearch cluster. Do not select the **Search with advanced search** checkbox yet.
 1. [Index the instance](#index-the-instance).
@@ -467,7 +463,7 @@ You can perform initial indexing or re-create an index from the user interface.
 To enable advanced search and index the instance from the user interface:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Select the **Turn on indexing for advanced search** checkbox, then select **Save changes**.
 1. Select **Index the instance**.
 
@@ -518,7 +514,7 @@ Prerequisites:
 To check indexing status:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Advanced search indexing status**.
 
 #### Monitor the status of background jobs
@@ -530,7 +526,7 @@ Prerequisites:
 To monitor indexing progress, you can also check the status of background jobs:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Monitoring** > **Background jobs**.
+1. In the left sidebar, select **Monitoring** > **Background jobs**.
 1. On the Sidekiq dashboard, select **Busy** and watch for these indexing jobs:
    - `Search::Elastic::CommitIndexerWorker` for code and commits.
    - `ElasticWikiIndexerWorker` for wiki data.
@@ -544,7 +540,7 @@ Prerequisites:
 To enable search with advanced search in GitLab:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Select the **Search with advanced search** checkbox.
 1. Select **Save changes**.
 
@@ -557,7 +553,7 @@ Prerequisites:
 To enable code search with advanced search in GitLab:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Select the **Code search with advanced search** checkbox.
 1. Select **Save changes**.
 
@@ -587,7 +583,7 @@ The following Elasticsearch settings are available:
 | **Number of shards for non-code indexing**                  | Number of indexing worker shards. This improves non-code indexing throughput by enqueuing more parallel Sidekiq jobs. Increasing the number of shards is not recommended for smaller instances or instances with few Sidekiq processes. Default is `2`. |
 | **Maximum bulk request size (MiB)**                         | Used by the GitLab Ruby and Go-based indexer processes. This setting indicates how much data must be collected (and stored in memory) in a given indexing process before submitting the payload to the Elasticsearch Bulk API. For the GitLab Go-based indexer, you should use this setting with **Bulk request concurrency**. **Maximum bulk request size (MiB)** must accommodate the resource constraints of both the Elasticsearch hosts and the hosts running the GitLab Go-based indexer from either the `gitlab-rake` command or the Sidekiq tasks. |
 | **Bulk request concurrency**                                | The Bulk request concurrency indicates how many of the GitLab Go-based indexer processes (or threads) can run in parallel to collect data to subsequently submit to the Elasticsearch Bulk API. This increases indexing performance, but fills the Elasticsearch bulk requests queue faster. This setting should be used together with the **Maximum bulk request size (MiB)** setting and needs to accommodate the resource constraints of both the Elasticsearch hosts and the hosts running the GitLab Go-based indexer either from the `gitlab-rake` command or the Sidekiq tasks. |
-| **Client request timeout**                                  | Elasticsearch HTTP client request timeout value in seconds. `0` means using the system default timeout value, which depends on the libraries that GitLab application is built upon. |
+| **Client request timeout**                                  | Elasticsearch HTTP client request timeout value in seconds. A value of `0` uses the default timeout of 30 seconds. Search requests that exceed this limit return `HTTP 408` instead of failing with a `500` after the application server terminates the request. If your Elasticsearch queries regularly take longer than 30 seconds, set a higher value. The application server terminates requests at 60 seconds, so do not set a value higher than `60`. For a longer timeout, you should set a value between `30` and `55`. |
 | **Code indexing concurrency**                               | Maximum number of Elasticsearch code indexing background jobs allowed to run concurrently. This only applies to repository indexing operations. |
 | **Retry on failure**                                        | Maximum number of possible retries for Elasticsearch search requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/486935) in GitLab 17.6. |
 | **Index prefix**                                            | Custom prefix for Elasticsearch index names. Defaults to `gitlab`. When changed, all indices will use this prefix instead of `gitlab` (for example, `custom-production-issues` instead of `gitlab-production-issues`). Must be 1-100 characters, contain only lowercase alphanumeric characters, hyphens, and underscores, and cannot start or end with a hyphen or underscore. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3421) in GitLab 18.2. |
@@ -652,7 +648,7 @@ For example, if you index two separate groups, you must run separate code search
 To enable global search for limited indexing:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Advanced search**
 1. Select **Enable global search for limited indexing**.
 1. Select **Save changes**.
@@ -672,7 +668,7 @@ To enable custom language analyzers:
 
 1. Install the desired plugins, refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugins must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Locate **Custom analyzers: language support**.
 1. Enable plugins support for **Indexing**.
 1. Select **Save changes** for the changes to take effect.
@@ -697,7 +693,7 @@ Prerequisites:
 To disable advanced search in GitLab:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Clear the **Turn on indexing for advanced search** and **Search with advanced search** checkboxes.
 1. Select **Save changes**.
 1. Optional. For Elasticsearch instances that are still online, delete existing indices:
@@ -719,7 +715,7 @@ Prerequisites:
 To disable search with advanced search in GitLab:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Clear the **Search with advanced search** checkbox.
 1. Select **Save changes**.
 
@@ -732,7 +728,7 @@ Prerequisites:
 To disable code search with advanced search in GitLab:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Clear the **Code search with advanced search** checkbox.
 1. Select **Save changes**.
 
@@ -745,7 +741,7 @@ Prerequisites:
 To pause indexing:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Advanced search**.
 1. Select the **Pause indexing for advanced search** checkbox.
 1. Select **Save changes**.
@@ -759,7 +755,7 @@ Prerequisites:
 To resume indexing:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Advanced search**.
 1. Clear the **Pause indexing for advanced search** checkbox.
 1. Select **Save changes**.
@@ -789,7 +785,7 @@ To trigger reindexing:
 
 1. Sign in to your GitLab instance as an administrator.
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Advanced search zero-downtime reindexing**.
 1. Select **Trigger cluster reindexing**.
 
@@ -810,7 +806,7 @@ Prerequisites:
 To trigger zero-downtime reindexing:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Advanced search zero-downtime reindexing**.
    The following settings are available:
 
@@ -862,7 +858,7 @@ To abandon an unfinished reindexing job and resume indexing:
    ```
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Advanced search**.
 1. Clear the **Pause indexing for advanced search** checkbox.
 
@@ -967,7 +963,7 @@ debug why the migration was halted and make any changes before retrying the migr
 When you believe you've fixed the cause of the failure:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Search**.
+1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Advanced search**.
 1. Inside the **Elasticsearch migration halted** alert box, select **Retry migration**. The migration is scheduled to be retried in the background.
 

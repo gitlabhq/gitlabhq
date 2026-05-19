@@ -17,6 +17,10 @@ module Gitlab
       detection.dig(name, :color)
     end
 
+    def language_gitaly_id(name)
+      detection.dig(name, :language_id)
+    end
+
     # Newly detected languages, returned in a structure accepted by
     # ApplicationRecord.legacy_bulk_insert
     def insertions(programming_languages)

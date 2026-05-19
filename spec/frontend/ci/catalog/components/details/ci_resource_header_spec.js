@@ -25,12 +25,14 @@ describe('CiResourceHeader', () => {
     },
   ];
   const initialVersionId = 'gid://gitlab/Ci::Catalog::Resources::Version/1';
+  const latestVersionName = '1.1.0';
 
   const defaultProps = {
     isLoadingData: false,
     resource,
     versions,
     initialVersionId,
+    latestVersionName,
   };
 
   const $router = {
@@ -298,6 +300,41 @@ describe('CiResourceHeader', () => {
 
       it('shows "No versions available" text', () => {
         expect(findVersionButton().text()).toContain('No versions available');
+      });
+    });
+
+    describe('when searching versions', () => {
+      it('shows loading icon when isSearchingVersions is true', () => {
+        createComponent({ props: { isSearchingVersions: true } });
+
+        expect(findVersionDropdown().props('loading')).toBe(true);
+        expect(findVersionButton().props('loading')).toBe(true);
+      });
+
+      it('emits version-search event', () => {
+        createComponent();
+
+        findVersionDropdown().vm.$emit('search', '1.0');
+
+        expect(wrapper.emitted('version-search')).toEqual([['1.0']]);
+      });
+
+      it('preserves selected version when versions prop changes to filtered results', async () => {
+        createComponent();
+
+        expect(findVersionButton().text()).toBe('1.0.0 (2023-01-01)');
+
+        const filteredVersions = [
+          {
+            value: 'gid://gitlab/Ci::Catalog::Resources::Version/3',
+            text: '2.0.0',
+            createdAt: '2026-01-01',
+          },
+        ];
+
+        await wrapper.setProps({ versions: filteredVersions });
+
+        expect(findVersionButton().text()).toBe('1.0.0 (2023-01-01)');
       });
     });
   });

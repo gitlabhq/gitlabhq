@@ -163,9 +163,9 @@ because it's reachable and has a clear remediation path.
    > - `fastify` - version 2.14.1
    >
    > Dependency scanning detected vulnerabilities in both `fastify` and `axios`, and their
-   > transitive dependencies. However, only `fastify` is imported by the example application, so
-   > vulnerabilities in `axios` are not reachable. When you apply the reachability filter,
-   > vulnerabilities in `axios` are excluded from the vulnerability report.
+   > transitive dependencies. However, only `axios` is imported by the example application, so
+   > vulnerabilities in `fastify` are not reachable. When you apply the reachability filter,
+   > vulnerabilities in `fastify` are excluded from the vulnerability report.
 
 1. Select the description of CVE-2026-25223 - "Fastify's Content-Type header tab character allows
    body validation bypass".

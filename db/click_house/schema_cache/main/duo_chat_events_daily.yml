@@ -1,0 +1,40 @@
+---
+name: duo_chat_events_daily
+engine: SummingMergeTree
+engine_full: SummingMergeTree PARTITION BY toYear(date) ORDER BY (namespace_path,
+  user_id, date, event) SETTINGS index_granularity = 64
+partition_key: toYear(date)
+primary_key: namespace_path, user_id, date, event
+sorting_key: namespace_path, user_id, date, event
+settings:
+  index_granularity: '64'
+columns:
+- name: namespace_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'0/'"
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: user_id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: date
+  type: Date32
+  default_kind: DEFAULT
+  default_expression: toDate(now64())
+  is_in_partition_key: true
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: event
+  type: UInt8
+  default_kind: DEFAULT
+  default_expression: '0'
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: occurrences
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'

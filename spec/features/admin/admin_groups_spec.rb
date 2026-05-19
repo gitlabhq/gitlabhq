@@ -62,6 +62,7 @@ RSpec.describe 'Admin Groups', :with_current_organization, feature_category: :gr
       fill_in 'group_admin_note_attributes_note', with: group_admin_note
       click_button "Create group"
 
+      expect(page).to have_content(format(_('Group %{group_name} was successfully created.'), group_name: group_name))
       expect(page).to have_current_path admin_group_path(Group.find_by(path: path_component)), ignore_query: true
       content = page.find('#content-body')
       expect(page).to have_content group_name
@@ -318,6 +319,8 @@ RSpec.describe 'Admin Groups', :with_current_organization, feature_category: :gr
       end
 
       wait_for_all_requests
+
+      expect(page).to have_content(format(_('You left the "%{group_name}" group.'), group_name: group.name))
 
       visit group_group_members_path(group)
 

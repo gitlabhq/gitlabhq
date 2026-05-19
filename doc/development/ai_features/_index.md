@@ -94,7 +94,7 @@ After the script finishes without error, now go to `gitlab-duo/test` and validat
 
 ### Troubleshooting
 
-In most cases, you can simply run the [ai-services script](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/#step-1-run-the-automated-setup-script) to reset your GDK environment variables and it may be enough to fix any errors that occured.
+In most cases, you can simply run the [ai-services script](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/#step-1-run-the-automated-setup-script) to reset your GDK environment variables and it may be enough to fix any errors that occurred.
 
 If you get error [A9999](../../user/gitlab_duo_chat/troubleshooting.md#error-a9999), it is a catchall error. The biggest offender is not setting up the AI Gateway URL correctly as described in the
 [AI Gateway installation instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-the-ai-gateway).
@@ -327,3 +327,5 @@ Refer to the [secure coding guidelines for Artificial Intelligence (AI) features
 
 - [Here's how to reach us!](https://handbook.gitlab.com/handbook/engineering/development/data-science/ai-powered/ai-framework/#-how-to-reach-us)
 - View [guidelines](duo_chat.md) for working with GitLab Duo Chat.
+- Learn how to [add foundational chat agents](foundational_chat_agents.md) to GitLab Duo.
+- Learn how to [add foundational flows](foundational_flows.md) to GitLab Duo Agent Platform.

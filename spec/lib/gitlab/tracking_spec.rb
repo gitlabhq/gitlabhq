@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation do
@@ -49,7 +50,6 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
           cookieDomain: '.gitlab.com',
           appId: '_abc123_',
           protocol: 'http',
-          port: 9090,
           forceSecureTracker: false,
           formTracking: true,
           linkClickTracking: true

@@ -1059,6 +1059,32 @@ export const todosResponse = {
   },
 };
 
+export const multipleTodosResponse = {
+  data: {
+    namespace: {
+      __typename: 'Group',
+      id: '1',
+      issuable: {
+        __typename: 'Epic',
+        id: 'gid://gitlab/Epic/4',
+        currentUserTodos: {
+          nodes: [
+            {
+              id: 'gid://gitlab/Todo/433',
+            },
+            {
+              id: 'gid://gitlab/Todo/434',
+            },
+            {
+              id: 'gid://gitlab/Todo/435',
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
 export const noMergeRequestTodosResponse = {
   data: {
     namespace: {

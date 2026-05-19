@@ -1,4 +1,5 @@
 import { merge } from 'lodash-es';
+import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import DiscussionNotes from '~/rapid_diffs/app/discussions/discussion_notes.vue';
 import DraftNote from '~/rapid_diffs/app/discussions/draft_note.vue';
@@ -20,6 +21,7 @@ describe('DiscussionNotes', () => {
       propsData,
       provide: merge(defaultProvisions, provide),
       scopedSlots,
+      stubs: { GlSprintf },
     });
   };
 
@@ -183,6 +185,48 @@ describe('DiscussionNotes', () => {
       const note = { id: 'foo' };
       createComponent({ notes: [note] });
       expect(wrapper.findComponent(NoteableNote).props('isLastDiscussion')).toBe(false);
+    });
+  });
+
+  describe('multiline comment headline', () => {
+    const multiLineRange = {
+      start: { old_line: 5, new_line: 5, type: null },
+      end: { old_line: 8, new_line: 8, type: null },
+    };
+
+    const singleLineRange = {
+      start: { old_line: 5, new_line: 5, type: null },
+      end: { old_line: 5, new_line: 5, type: null },
+    };
+
+    it('does not render headline when note has no position', () => {
+      createComponent({ notes: [{ id: 'foo' }] });
+      expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
+    });
+
+    it('does not render headline when note has no line range', () => {
+      createComponent({ notes: [{ id: 'foo', position: {} }] });
+      expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
+    });
+
+    it('does not render headline for a single-line comment', () => {
+      createComponent({
+        notes: [{ id: 'foo', position: { line_range: singleLineRange } }],
+      });
+      expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
+    });
+
+    it('renders headline for a multi-line comment', () => {
+      createComponent({
+        notes: [{ id: 'foo', position: { line_range: multiLineRange } }],
+      });
+      expect(wrapper.findComponent(GlSprintf).exists()).toBe(true);
+    });
+
+    it('renders the start and end line numbers', () => {
+      createComponent({ notes: [{ id: 'foo', position: { line_range: multiLineRange } }] });
+
+      expect(wrapper.text()).toContain('Comment on lines 5 to 8');
     });
   });
 });

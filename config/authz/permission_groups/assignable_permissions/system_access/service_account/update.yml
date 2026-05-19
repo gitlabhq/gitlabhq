@@ -4,5 +4,7 @@ description: Grants the ability to update service accounts
 boundaries:
   - group
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - update_service_account

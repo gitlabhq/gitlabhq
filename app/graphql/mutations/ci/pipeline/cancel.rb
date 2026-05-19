@@ -12,6 +12,7 @@ module Mutations
           description: 'Pipeline after mutation.'
 
         authorize :cancel_pipeline
+        authorize_granular_token permissions: :cancel_pipeline, boundary_argument: :id, boundary_type: :project
 
         def resolve(id:)
           pipeline = authorized_find!(id: id)

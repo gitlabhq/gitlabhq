@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::Environments::Stop, feature_category: :environment_management do
   include GraphqlHelpers
   let_it_be(:project) { create(:project) }
-  let_it_be(:environment) { create(:environment, project: project, state: 'available') }
+  let_it_be(:environment, freeze: false) { create(:environment, project: project, state: 'available') }
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
 

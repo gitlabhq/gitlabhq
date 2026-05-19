@@ -15,9 +15,9 @@ describe('NewEditForm', () => {
   let wrapper;
 
   const defaultPropsData = {
-    cancelButtonHref: '/-/organizations/default/groups_and_projects?display=projects',
+    cancelButtonHref: '/o/default/-/groups_and_projects?display=projects',
     loading: false,
-    previewMarkdownPath: '/-/organizations/preview_markdown',
+    previewMarkdownPath: '/o/-/preview_markdown',
   };
 
   const createComponent = ({ propsData = {} } = {}) => {

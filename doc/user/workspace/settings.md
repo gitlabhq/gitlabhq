@@ -6,9 +6,7 @@ description: Configure the GitLab agent for Kubernetes to support workspaces.
 title: Workspace settings
 ---
 
-Workspace settings configure how the GitLab agent for Kubernetes manages remote development environments
-in
-your Kubernetes cluster. These settings control:
+Workspace settings configure how the GitLab agent for Kubernetes manages remote development environments in your Kubernetes cluster. These settings control:
 
 - Resource allocation
 - Security

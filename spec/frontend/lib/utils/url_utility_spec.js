@@ -1497,6 +1497,7 @@ describe('URL utility', () => {
         'https://github.com/user/repo',
         'http://example.com/repo.git',
         'git://example.com/path/to/repo',
+        'http://127.com/repo.git',
       ])('returns true for %s', (url) => {
         expect(urlUtils.isReasonableGitUrl(url)).toBe(true);
       });
@@ -1516,6 +1517,11 @@ describe('URL utility', () => {
         'https://gitlab',
         'not a url',
         ' ',
+        'http://localhost:3000',
+        'http://127.0.0.2',
+        'http://0.0.0.0/repo.git',
+        'http://127.1.2.3/repo.git',
+        'http://[::1]/repo.git',
       ])('returns false for invalid protocol or format: %s', (url) => {
         expect(urlUtils.isReasonableGitUrl(url)).toBe(false);
       });

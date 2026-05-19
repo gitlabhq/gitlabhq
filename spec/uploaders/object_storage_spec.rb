@@ -1007,7 +1007,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
                 uploader.store!(uploaded_file)
               end
 
-              it 'file to be remotely stored in permament location' do
+              it 'file to be remotely stored in permanent location' do
                 subject
 
                 expect(uploader).to be_exists
@@ -1031,7 +1031,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
                 uploader.store!(uploaded_file)
               end
 
-              it 'file to be remotely stored in permament location' do
+              it 'file to be remotely stored in permanent location' do
                 subject
 
                 expect(uploader).to be_exists
@@ -1137,7 +1137,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
               uploader.store!(uploaded_file)
             end
 
-            it 'file to be remotely stored in permament location' do
+            it 'file to be remotely stored in permanent location' do
               subject
 
               expect(uploader).to be_exists
@@ -1236,7 +1236,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
                 uploader.store!(uploaded_file)
               end
 
-              it 'file to be remotely stored in permament location' do
+              it 'file to be remotely stored in permanent location' do
                 subject
 
                 expect(uploader).to be_exists

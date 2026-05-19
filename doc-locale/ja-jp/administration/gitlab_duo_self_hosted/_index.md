@@ -38,9 +38,19 @@ title: セルフホストモデル
 
 オフラインライセンスをお持ちのお客様の場合、価格設定はシートベースで、[GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md#gitlab-duo-agent-platform-self-hosted)アドオンが必要です。
 
-オンラインライセンスをお持ちのお客様の場合、価格設定は使用量ベースです。ハイブリッドデプロイメントでは、GitLabが管理するモデルも使用できます。
+オンラインライセンスをお持ちのお客様の場合、請求は[使用量課金](../../subscriptions/gitlab_credits.md)です。ハイブリッドデプロイメントでは、GitLabが管理するモデルも使用できます。
 
-推論データ（コードの入力、モデルプロンプト、モデル応答を含む）は、顧客ネットワーク外に出ません。匿名化された請求メタデータ（インスタンスID、呼び出し数、匿名化されたユーザーID）は、使用量課金のためにGitLabに送信されます。GitLabは、顧客がどのモデルまたはモデルプロバイダーを使用しているかを捕捉しません。
+### データ送信 {#data-transmission}
+
+次の請求メタデータがGitLabに使用量課金のために送信されます:
+
+- 匿名化されたインスタンスID
+- 呼び出し回数
+- ユーザーID
+
+推論データ（codeコード入力、モデルプロンプト、モデル応答を含む）は、顧客ネットワークから外に出ることはありません。
+
+GitLabは、顧客がどのモデルまたはモデルプロバイダーを使用しているかを捕捉しません。
 
 ### GitLab Duo {#gitlab-duo}
 
@@ -65,7 +75,7 @@ GitLab Duo Self-HostedでGitLab Duo機能を使用するには、GitLab Duo Ente
 | [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                                   | GitLab 18.8以降   | 一般提供 |
 | **GitLab Duo** | | |
 | [コード提案](../../user/project/repository/code_suggestions/_index.md)                                                 | GitLab 17.9以降   | 一般提供 |
-| [GitLab Duo Chat（非エージェント型）](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9以降   | 一般提供 |
+| [GitLab Duo非エージェンティックチャット](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9以降   | 一般提供 |
 | [コード説明](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                                       | GitLab 17.9以降   | 一般提供 |
 | [テスト生成](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.9以降   | 一般提供 |
 | [コードのリファクタリング](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | GitLab 17.9以降   | 一般提供 |
@@ -107,7 +117,7 @@ GitLab Duo Self-HostedでGitLab Duo機能を使用するには、GitLab Duo Ente
 
 インターネットアクセスを防止または制限する物理的な障壁やセキュリティポリシーがあるオフライン環境で、包括的なLLM制御が必要な場合は、この完全なセルフホスト設定を使用する必要があります。
 
-詳細については、以下を参照してください: 
+詳細については、以下を参照してください:
 
 - [セルフホストAIゲートウェイ構成図](configuration_types.md#self-hosted-ai-gateway)。
 
@@ -143,7 +153,7 @@ AIネイティブ機能で使用するデフォルトのGitLabモデルを選択
 
 特定のGitLab管理モデルを選択すると、その機能のすべてのリクエストはそのモデルのみを使用します。モデルが利用できなくなった場合、AIゲートウェイへのリクエストは失敗し、別のモデルが選択されるまで、ユーザーはその機能を使用できません。
 
-> [!note]
+> [!note] 
 > GitLab管理モデルを使用するように機能を設定する場合:
 >
 > - これらの機能への呼び出しは、セルフホストAIゲートウェイではなく、GitLabでホストされているAIゲートウェイを使用します。
@@ -192,3 +202,4 @@ GitLab.com AIゲートウェイはデフォルトのEnterprise提供であり、
 - [GitLab AIゲートウェイをインストールする](../../install/install_ai_gateway.md)
 - [サポート対象モデル](supported_models_and_hardware_requirements.md)
 - [サポートされているプラットフォーム](supported_llm_serving_platforms.md)
+- [チュートリアル: AWS Bedrock BYOMデプロイガイド](../../solutions/integrations/aws_bedrock_byom.md)

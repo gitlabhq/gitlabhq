@@ -1,0 +1,6 @@
+---
+name: _read_external_build
+description: Grants the ability to read a build whose pipeline originated
+  from an external CI integration. The pipeline policy uses this so that
+  external CI status remains visible to project members even when the
+  project has GitLab CI/CD disabled.

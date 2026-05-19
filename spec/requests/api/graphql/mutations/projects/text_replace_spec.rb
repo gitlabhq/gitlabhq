@@ -30,6 +30,11 @@ RSpec.describe "projectTextReplace", feature_category: :source_code_management d
 
   subject(:post_mutation) { post_graphql_mutation(mutation, current_user: current_user) }
 
+  it 'requires rewrite_repository_history permission' do
+    expect(Mutations::Projects::TextReplace)
+      .to require_graphql_authorizations(:rewrite_repository_history)
+  end
+
   describe 'Replacing text' do
     it 'processes text redaction asynchoronously' do
       expect(::Repositories::RewriteHistoryWorker).to receive(:perform_async).with(

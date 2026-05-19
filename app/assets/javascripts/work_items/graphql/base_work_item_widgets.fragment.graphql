@@ -1,12 +1,11 @@
 #import "~/graphql_shared/fragments/label.fragment.graphql"
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/work_items/graphql/milestone.fragment.graphql"
-#import "~/work_items/graphql/timelog.fragment.graphql"
 #import "~/work_items/graphql/work_item_parent_fields.fragment.graphql"
 
 fragment BaseWorkItemWidgets on WorkItemWidget {
   type
-  ... on WorkItemWidgetAssignees {
+  ... on WorkItemWidgetAssignees @skip(if: $useWorkItemFeatures) {
     allowsMultipleAssignees
     canInviteMembers
     assignees {
@@ -15,7 +14,7 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
       }
     }
   }
-  ... on WorkItemWidgetCrmContacts {
+  ... on WorkItemWidgetCrmContacts @skip(if: $useWorkItemFeatures) {
     contactsAvailable
     contacts {
       nodes {
@@ -58,7 +57,7 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
       count
     }
   }
-  ... on WorkItemWidgetErrorTracking {
+  ... on WorkItemWidgetErrorTracking @skip(if: $useWorkItemFeatures) {
     identifier
   }
   ... on WorkItemWidgetHierarchy {
@@ -80,14 +79,14 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
       ...WorkItemParentFields
     }
   }
-  ... on WorkItemWidgetLabels {
+  ... on WorkItemWidgetLabels @skip(if: $useWorkItemFeatures) {
     labels {
       nodes {
         ...Label
       }
     }
   }
-  ... on WorkItemWidgetLinkedResources {
+  ... on WorkItemWidgetLinkedResources @skip(if: $useWorkItemFeatures) {
     linkedResources {
       nodes {
         url
@@ -99,24 +98,12 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
       ...MilestoneFragment
     }
   }
-  ... on WorkItemWidgetNotes {
+  ... on WorkItemWidgetNotes @skip(if: $useWorkItemFeatures) {
     discussionLocked
   }
-  ... on WorkItemWidgetStartAndDueDate {
+  ... on WorkItemWidgetStartAndDueDate @skip(if: $useWorkItemFeatures) {
     dueDate
     startDate
     rollUp
-  }
-  ... on WorkItemWidgetTimeTracking {
-    timeEstimate
-    humanReadableAttributes {
-      timeEstimate
-    }
-    timelogs {
-      nodes {
-        ...TimelogFragment
-      }
-    }
-    totalTimeSpent
   }
 }

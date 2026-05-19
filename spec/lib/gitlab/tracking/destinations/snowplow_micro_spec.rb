@@ -42,11 +42,17 @@ RSpec.describe Gitlab::Tracking::Destinations::SnowplowMicro, feature_category: 
       options = subject.snowplow_options
 
       expect(options).to include(
+        hostname: subject.hostname,
         protocol: 'http',
-        port: 9091,
         forceSecureTracker: false
       )
       expect(options).to include(base_options)
+    end
+
+    it 'does not pass a separate port option to avoid double-port URLs in the JS tracker' do
+      options = subject.snowplow_options
+
+      expect(options).not_to have_key(:port)
     end
   end
 end

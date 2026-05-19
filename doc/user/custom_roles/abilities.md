@@ -20,6 +20,7 @@ description: Configure granular permissions with specific abilities for fine-gra
 
 - Custom admin roles [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `custom_admin_roles`. Disabled by default.
 - Custom admin roles [generally available](https://gitlab.com/groups/gitlab-org/-/epics/15957) in GitLab 18.3. Feature flag `custom_admin_roles` enabled by default.
+- Feature flag `custom_admin_roles` removed in GitLab 19.0.
 
 {{< /history >}}
 
@@ -61,6 +62,13 @@ You can create a [custom role](_index.md) by adding one or more custom permissio
 | Manage deploy tokens | Manage deploy tokens at the group or project level. | [`manage_deploy_tokens`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151677) | Group,<br> Project | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/448843) |
 | Manage Protected Environments | Create, read, update, and delete protected environments | [`admin_protected_environments`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178283) | Group,<br> Project | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/471385) |
 
+## Duo agent platform
+
+| Permission | Description | API Attribute | Scope | Introduced |
+|:-----------|:------------|:--------------|:------|:-----------|
+| Configure AI catalog items | Enable, disable, and configure custom agents and flows from the AI catalog for a project. | [`admin_ai_catalog_item_consumer`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234759) | Project | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/578558) |
+| Manage AI catalog items | Create, edit, and delete custom agents and flows in the AI catalog. | [`admin_ai_catalog_item`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234759) | Project | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/578558) |
+
 ## Groups and projects
 
 | Permission | Description | API Attribute | Scope | Introduced |
@@ -94,6 +102,13 @@ You can create a [custom role](_index.md) by adding one or more custom permissio
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
 | Manage CI/CD variables | Create, read, update, and delete CI/CD variables. | [`admin_cicd_variables`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143369) | Group,<br> Project | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/437947) |
+
+## Security asset inventories
+
+| Permission | Description | API Attribute | Scope | Introduced |
+|:-----------|:------------|:--------------|:------|:-----------|
+| Manage security attributes | Manage the security categories and attributes belonging to a top-level group. Also requires the `read_security_attribute` permission. | [`admin_security_attributes`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195554) | Group | GitLab [18.2](https://gitlab.com/groups/gitlab-org/-/epics/18010) |
+| View security attributes | Allows read-only access to the security categories and attributes that belong to a top-level group. | [`read_security_attribute`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209670) | Group | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/567237) |
 
 ## Security policy management
 

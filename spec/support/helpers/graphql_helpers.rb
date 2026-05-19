@@ -476,6 +476,7 @@ module GraphqlHelpers
   end
 
   DEFAULT_EXCLUSIONS = [
+    'agentPlan', # FieldCallCount limit
     'aiCatalogItems', # FieldCallCount limit
     'isEnabledInManagedByProject',
     'linkedWorkItems' # FieldCallCount limit

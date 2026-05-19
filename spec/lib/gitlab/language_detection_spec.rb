@@ -9,12 +9,12 @@ RSpec.describe Gitlab::LanguageDetection do
 
   let(:repository) { project.repository }
   let(:detection) do
-    [{ value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },
-      { value: 12.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-      { value: 7.9, label: "Elixir", color: "#e34c26", highlight: "#e34c26" },
-      { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776" },
-      { value: 1.51, label: "Go", color: "#2a4776", highlight: "#244776" },
-      { value: 1.1, label: "MepmepLang", color: "#2a4776", highlight: "#244776" }]
+    [{ value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516", language_id: 326 },
+      { value: 12.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a", language_id: 183 },
+      { value: 7.9, label: "Elixir", color: "#e34c26", highlight: "#e34c26", language_id: 104 },
+      { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776", language_id: 63 },
+      { value: 1.51, label: "Go", color: "#2a4776", highlight: "#244776", language_id: 132 },
+      { value: 1.1, label: "MepmepLang", color: "#2a4776", highlight: "#244776", language_id: 999 }]
   end
 
   let(:repository_languages) do
@@ -33,10 +33,26 @@ RSpec.describe Gitlab::LanguageDetection do
     end
   end
 
+  describe '#language_gitaly_id' do
+    subject { described_class.new(repository, repository_languages).language_gitaly_id(name) }
+
+    context 'when the language is detected' do
+      let(:name) { 'Ruby' }
+
+      it { is_expected.to eq(326) }
+    end
+
+    context 'when the language is not detected' do
+      let(:name) { 'Unknown' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#insertions' do
     let(:programming_languages) { [ruby, haskell] }
     let(:detection) do
-      [{ value: 10, label: haskell.name, color: haskell.color }]
+      [{ value: 10, label: haskell.name, color: haskell.color, language_id: 150 }]
     end
 
     it 'only includes new languages' do

@@ -38,17 +38,8 @@ default:
   RUBY_VERSION: "${RUBY_VERSION_NEXT}"
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_3"
 
-.default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
-  CREATE_RAILS_FLAKY_TEST_ISSUES: "true"
-  CREATE_RAILS_SLOW_TEST_ISSUES: "true"
-  CREATE_RAILS_TEST_FAILURE_ISSUES: "true"
-  GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS: "true"
-
 .default-merge-request-variables: &default-merge-request-variables
-  ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST: "true"
-  CREATE_RAILS_TEST_FAILURE_ISSUES: "false"
   NO_SOURCEMAPS: "true"
-  GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS: "true"
 
 .if-merge-request-security-canonical-sync: &if-merge-request-security-canonical-sync
   if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
@@ -150,7 +141,7 @@ workflow:
         on_new_commit: none
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
-        <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
+        <<: [*default-ruby-variables]
         CRYSTALBALL: "true"
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
       auto_cancel:
@@ -170,7 +161,7 @@ workflow:
     # and we would always reconfigure the docker deamon for any CI/CD pipeline.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot/'
       variables:
-        <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
+        <<: [*default-ruby-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         DOCKER_AUTH_CONFIG: "${DOCKER_AUTH_CONFIG_OVERRIDE}"
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch (triggered by a project token)'
@@ -184,7 +175,7 @@ workflow:
     # For `$CI_DEFAULT_BRANCH` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       variables:
-        <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
+        <<: [*default-ruby-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
       auto_cancel:
         on_new_commit: none
@@ -224,10 +215,6 @@ workflow:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Weekly scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
         FAST_QUARANTINE: "false"
-        CREATE_RAILS_FLAKY_TEST_ISSUES: "false"
-        CREATE_RAILS_SLOW_TEST_ISSUES: "false"
-        CREATE_RAILS_TEST_FAILURE_ISSUES: "false"
-        GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS: "false"
 
 variables:
   PG_VERSION: "16"
@@ -271,6 +258,7 @@ variables:
   GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ALT_PATH: crystalball/mapping-alt.json
   GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-predictive.gitlab-ci.yml.erb
   GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH: rspec/duo_system_test_files.txt
+  GLCI_PREDICTIVE_RSPEC_SYSTEM_FULL_PIPELINE_YML: .gitlab/ci/rails/rspec-predictive-system-full-generated.yml
 
   # Test execution result export to ClickHouse
   GLCI_EXPORT_TEST_METRICS: "true"
@@ -292,7 +280,6 @@ variables:
 
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"
-  BUNDLER_CHECKSUM_VERIFICATION_OPT_IN: "1"
   CACHE_CLASSES: "true"
   CHECK_PRECOMPILED_ASSETS: "true"
   RETRY_FAILED_TESTS_IN_NEW_PROCESS: "true"

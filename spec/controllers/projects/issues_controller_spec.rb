@@ -10,7 +10,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user, reload: true) { create(:user) }
 
-  let(:issue) { create(:issue, project: project) }
+  let_it_be(:issue) { create(:issue, project: project) }
   let(:spam_action_response_fields) { { 'stub_spam_action_response_fields' => true } }
 
   before do
@@ -20,10 +20,13 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
   describe "GET #index" do
     context 'external issue tracker' do
-      before do
-        sign_in(user)
+      before_all do
         project.add_developer(user)
         create(:jira_integration, project: project)
+      end
+
+      before do
+        sign_in(user)
       end
 
       context 'when GitLab issues disabled' do
@@ -49,10 +52,13 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         let_it_be(:new_project) { create(:project) }
         let_it_be(:issue) { create(:issue, project: new_project) }
 
+        before_all do
+          new_project.add_developer(user)
+        end
+
         before do
           project.route.destroy!
           new_project.redirect_routes.create!(path: project.full_path)
-          new_project.add_developer(user)
         end
 
         it 'redirects to the new issue tracker from the old one' do
@@ -72,9 +78,12 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'internal issue tracker' do
+      before_all do
+        project.add_developer(user)
+      end
+
       before do
         sign_in(user)
-        project.add_developer(user)
       end
 
       it 'redirects to work items index page' do
@@ -99,7 +108,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     describe 'pagination' do
-      let!(:issue_list) { create_list(:issue, 2, project: project) }
+      let_it_be(:issue_list) { create_list(:issue, 2, project: project) }
       let(:collection) { project.issues }
       let(:last_page) { collection.page.total_pages }
       let(:params) do
@@ -110,9 +119,12 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         }
       end
 
+      before_all do
+        project.add_developer(user)
+      end
+
       before do
         sign_in(user)
-        project.add_developer(user)
         allow(Kaminari.config).to receive(:default_per_page).and_return(1)
       end
 
@@ -125,9 +137,12 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'external authorization' do
+      before_all do
+        project.add_developer(user)
+      end
+
       before do
         sign_in user
-        project.add_developer(user)
       end
 
       it_behaves_like 'unauthorized when external service denies access' do
@@ -137,9 +152,12 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe "GET #show" do
+    before_all do
+      project.add_developer(user)
+    end
+
     before do
       sign_in(user)
-      project.add_developer(user)
     end
 
     it 'redirects to work item' do
@@ -198,8 +216,11 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
   describe 'GET #edit' do
     context 'when visiting issues edit route and user can edit issue' do
-      before do
+      before_all do
         project.add_developer(user)
+      end
+
+      before do
         sign_in(user)
       end
 
@@ -212,8 +233,11 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'when visiting issues edit route and user cannot edit issue' do
-      before do
+      before_all do
         project.add_guest(user)
+      end
+
+      before do
         sign_in(user)
       end
 
@@ -226,10 +250,13 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'when item is a work item type and user cannot edit' do
-      let(:work_item_issue) { create(:issue, :task, project: project) }
+      let_it_be(:work_item_issue) { create(:issue, :task, project: project) }
+
+      before_all do
+        project.add_guest(user)
+      end
 
       before do
-        project.add_guest(user)
         sign_in(user)
       end
 
@@ -251,8 +278,11 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'on internal issue tracker' do
-      before do
+      before_all do
         project.add_guest(user)
+      end
+
+      before do
         sign_in user
       end
 
@@ -264,13 +294,16 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'on external issue tracker' do
-      let!(:service) do
+      let_it_be(:service) do
         create(:custom_issue_tracker_integration, project: project, new_issue_url: 'http://test.com')
+      end
+
+      before_all do
+        project.add_developer(user)
       end
 
       before do
         sign_in(user)
-        project.add_developer(user)
 
         external = double
         allow(project).to receive(:external_issue_tracker).and_return(external)
@@ -292,12 +325,13 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   describe '#related_branches' do
     subject { get :related_branches, params: params, format: :json }
 
-    before do
-      sign_in(user)
-      project.add_developer(developer)
+    before_all do
+      project.add_developer(user)
     end
 
-    let_it_be(:issue) { create(:issue, project: project) }
+    before do
+      sign_in(user)
+    end
 
     let(:developer) { user }
     let(:params) do
@@ -406,16 +440,19 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
   describe 'POST #move' do
     shared_examples 'move issue request' do
+      before_all do
+        project.add_developer(user)
+      end
+
       before do
         sign_in(user)
-        project.add_developer(user)
       end
 
       context 'when moving issue to another private project' do
         let_it_be(:another_project) { create(:project, :private) }
 
         context 'when user has access to move issue' do
-          before do
+          before_all do
             another_project.add_reporter(user)
           end
 
@@ -456,13 +493,15 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     let_it_be(:issue1) { create(:issue, project: project, relative_position: 10) }
     let_it_be(:issue2) { create(:issue, project: project, relative_position: 20) }
     let_it_be(:issue3) { create(:issue, project: project, relative_position: 30) }
+    let_it_be(:other_group_project) { create(:project, group: create(:group)) }
+    let_it_be(:other_group_issue) { create(:issue, project: other_group_project) }
 
     before do
       sign_in(user)
     end
 
     context 'when user has access' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -494,9 +533,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         end
 
         it 'returns a unprocessable entity 422 response for issues not in group' do
-          other_group_project = create(:project, group: create(:group))
-          other_group_issue = create(:issue, project: other_group_project)
-
           reorder_issue(issue1, move_after_id: issue2.id, move_before_id: other_group_issue.id)
 
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
@@ -505,7 +541,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'with unauthorized user' do
-      before do
+      before_all do
         project.add_guest(user)
       end
 
@@ -544,9 +580,12 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'when user has access to update issue' do
+      before_all do
+        project.add_developer(user)
+      end
+
       before do
         project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-        project.add_developer(user)
       end
 
       it 'updates the issue' do
@@ -605,7 +644,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'when user does not have access to update issue' do
-      before do
+      before_all do
         project.add_guest(user)
       end
 
@@ -618,6 +657,10 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'GET #realtime_changes' do
+    before_all do
+      project.add_developer(user)
+    end
+
     def go(id:)
       get :realtime_changes,
         params: {
@@ -630,8 +673,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
     context 'when an issue was edited' do
       before do
-        project.add_developer(user)
-
         issue.update!(last_edited_by: user, last_edited_at: issue.created_at + 1.minute)
 
         sign_in(user)
@@ -649,8 +690,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       let(:deleted_user) { create(:user) }
 
       before do
-        project.add_developer(user)
-
         issue.update!(last_edited_by: deleted_user, last_edited_at: Time.current)
 
         deleted_user.destroy!
@@ -666,8 +705,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
     context 'when getting the changes' do
       before do
-        project.add_developer(user)
-
         sign_in(user)
       end
 
@@ -773,18 +810,24 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         update_issue(id: id)
       end
 
+      before_all do
+        project.add_developer(user)
+      end
+
       before do
         sign_in(user)
-        project.add_developer(user)
       end
 
       it_behaves_like 'restricted action', success: 200
 
       context 'changing the assignee' do
-        it 'limits the attributes exposed on the assignee' do
-          assignee = create(:user)
-          project.add_developer(assignee)
+        let_it_be(:assignee) { create(:user) }
 
+        before_all do
+          project.add_developer(assignee)
+        end
+
+        it 'limits the attributes exposed on the assignee' do
           update_issue(issue_params: { assignee_ids: [assignee.id] })
 
           expect(json_response['assignees'].first.keys)
@@ -878,8 +921,8 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
           end
 
           context 'when recaptcha is verified' do
-            let(:spammy_title) { 'Whatever' }
-            let!(:spam_logs) { create_list(:spam_log, 2, user: user, title: spammy_title) }
+            let_it_be(:spammy_title) { 'Whatever' }
+            let_it_be(:spam_logs) { create_list(:spam_log, 2, user: user, title: spammy_title) }
 
             def update_verified_issue
               update_issue(issue_params: { title: spammy_title }, additional_params: { spam_log_id: spam_logs.last.id, 'g-recaptcha-response': 'a-valid-captcha-response' })
@@ -971,10 +1014,10 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'POST #create' do
+    let(:project) { create(:project, :public, developers: user) }
+
     def post_new_issue(issue_attrs = {}, additional_params = {})
       sign_in(user)
-      project = create(:project, :public)
-      project.add_developer(user)
 
       post :create, params: {
         namespace_id: project.namespace.to_param,
@@ -1075,16 +1118,18 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
     context 'resolving discussions in MergeRequest' do
       let_it_be(:discussion) { create(:diff_note_on_merge_request).to_discussion }
-
-      let(:merge_request) { discussion.noteable }
-      let(:project) { merge_request.source_project }
+      let_it_be(:merge_request) { discussion.noteable }
+      let_it_be(:project) { merge_request.source_project }
 
       let(:merge_request_params) do
         { merge_request_to_resolve_discussions_of: merge_request.iid }
       end
 
-      before do
+      before_all do
         project.add_maintainer(user)
+      end
+
+      before do
         sign_in user
       end
 
@@ -1093,7 +1138,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       it 'creates an issue for the project' do
-        expect { post_issue(title: 'Hello') }.to change { project.issues.reload.size }.by(1)
+        expect { post_issue(title: 'Hello') }.to change { project.issues.count }.by(1)
       end
 
       it "doesn't overwrite given params" do
@@ -1203,8 +1248,9 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         end
 
         context 'when Recaptcha is verified' do
-          let!(:spam_logs) { create_list(:spam_log, 2, user: user, title: 'Title') }
-          let!(:last_spam_log) { spam_logs.last }
+          let_it_be(:spam_logs) { create_list(:spam_log, 2, user: user, title: 'Title') }
+          let_it_be_with_reload(:last_spam_log) { spam_logs.last }
+          let_it_be(:other_user_spam_log) { create(:spam_log) }
 
           def post_verified_issue
             post_new_issue({}, { spam_log_id: last_spam_log.id, 'g-recaptcha-response': 'abc123' })
@@ -1225,9 +1271,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
           end
 
           it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
-            spam_log = create(:spam_log)
-
-            expect { post_new_issue({}, { spam_log_id: spam_log.id, 'g-recaptcha-response': true }) }
+            expect { post_new_issue({}, { spam_log_id: other_user_spam_log.id, 'g-recaptcha-response': true }) }
               .not_to change { last_spam_log.recaptcha_verified }
           end
         end
@@ -1282,7 +1326,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
       context 'when issue creation limits imposed' do
         before do
-          project.add_developer(user)
           sign_in(user)
         end
 
@@ -1335,9 +1378,11 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe "DELETE #destroy" do
-    let_it_be(:owner)     { create(:user) }
-    let_it_be(:namespace) { create(:namespace, owner: owner) }
-    let_it_be(:project)   { create(:project, namespace: namespace) }
+    let_it_be(:owner) { create(:user) }
+
+    before_all do
+      project.add_owner(owner)
+    end
 
     before do
       sign_in(owner)
@@ -1399,9 +1444,12 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'POST #toggle_award_emoji' do
+    before_all do
+      project.add_developer(user)
+    end
+
     before do
       sign_in(user)
-      project.add_developer(user)
     end
 
     subject(:make_request) do
@@ -1425,10 +1473,14 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   describe 'POST create_merge_request' do
     let(:target_project_id) { nil }
 
-    let_it_be(:project) { create(:project, :repository, :public) }
+    let_it_be_with_reload(:project) { create(:project, :repository, :public) }
+    let(:issue) { create(:issue, project: project) }
+
+    before_all do
+      project.add_developer(user)
+    end
 
     before do
-      project.add_developer(user)
       sign_in(user)
     end
 
@@ -1520,20 +1572,30 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         expect(response).to have_gitlab_http_status :not_found
       end
 
-      it 'returns 404 for project members with reporter role' do
-        sign_in(user)
-        project.add_reporter(user)
+      context 'when user is a reporter' do
+        before_all do
+          project.add_reporter(user)
+        end
 
-        import_csv
+        before do
+          sign_in(user)
+        end
 
-        expect(response).to have_gitlab_http_status :not_found
+        it 'returns 404 for project members with reporter role' do
+          import_csv
+
+          expect(response).to have_gitlab_http_status :not_found
+        end
       end
     end
 
     context 'authorized' do
+      before_all do
+        project.add_developer(user)
+      end
+
       before do
         sign_in(user)
-        project.add_developer(user)
       end
 
       context 'when upload proceeds correctly' do
@@ -1574,9 +1636,8 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
   describe 'POST export_csv' do
     let(:viewer) { user }
-    let(:issue) { create(:issue, project: project) }
 
-    before do
+    before_all do
       project.add_developer(user)
     end
 
@@ -1604,8 +1665,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'when not logged in' do
-      let(:empty_project) { create(:project_empty_repo, :public) }
-
       it 'redirects to the sign in page' do
         request_csv
 
@@ -1653,23 +1712,22 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'GET #discussions' do
-    let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
 
     context 'when authenticated' do
-      before do
+      before_all do
         project.add_developer(user)
+      end
+
+      before do
         sign_in(user)
       end
 
       context do
         it_behaves_like 'discussions provider' do
-          let!(:author) { create(:user) }
-          let!(:project) { create(:project) }
-
-          let!(:issue) { create(:issue, project: project, author: user) }
-
-          let!(:note_on_issue1) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }
-          let!(:note_on_issue2) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }
+          let_it_be(:note_on_issue1) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }
+          let_it_be(:note_on_issue2) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }
 
           let(:requested_iid) { issue.iid }
           let(:expected_discussion_count) { 3 }
@@ -1687,6 +1745,13 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
         expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion discussion_path individual_note resolvable commit_id for_commit project_id confidential resolve_path resolved resolved_at resolved_by resolved_by_push])
+      end
+
+      it 'starts and completes covered experience for load_comments' do
+        expect do
+          get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+        end.to start_user_experience(:load_comments)
+        .and complete_user_experience(:load_comments)
       end
 
       it 'renders the author status html if there is a status' do
@@ -1713,9 +1778,9 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       context 'when user is setting notes filters' do
-        let(:issuable) { issue }
-        let(:issuable_parent) { project }
-        let!(:discussion_note) { create(:discussion_note_on_issue, :system, noteable: issuable, project: project) }
+        let_it_be(:issuable) { issue }
+        let_it_be(:issuable_parent) { project }
+        let_it_be(:discussion_note) { create(:discussion_note_on_issue, :system, noteable: issuable, project: project) }
 
         it_behaves_like 'issuable notes filter'
       end
@@ -1766,13 +1831,13 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       context 'private project' do
-        let!(:branch_note) { create(:discussion_note_on_issue, :system, noteable: issue, project: project) }
-        let!(:commit_note) { create(:discussion_note_on_issue, :system, noteable: issue, project: project) }
-        let!(:branch_note_meta) { create(:system_note_metadata, note: branch_note, action: "branch") }
-        let!(:commit_note_meta) { create(:system_note_metadata, note: commit_note, action: "commit") }
+        let_it_be(:branch_note) { create(:discussion_note_on_issue, :system, noteable: issue, project: project) }
+        let_it_be(:commit_note) { create(:discussion_note_on_issue, :system, noteable: issue, project: project) }
+        let_it_be(:branch_note_meta) { create(:system_note_metadata, note: branch_note, action: "branch") }
+        let_it_be(:commit_note_meta) { create(:system_note_metadata, note: commit_note, action: "commit") }
 
         context 'user is allowed access' do
-          before do
+          before_all do
             project.add_member(user, :maintainer)
           end
 
@@ -1790,7 +1855,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
               .map { |note| note["id"].to_i }
           end
 
-          before do
+          before_all do
             project.add_guest(user)
           end
 
@@ -1806,9 +1871,12 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'GET #designs' do
+    before_all do
+      project.add_developer(user)
+    end
+
     before do
       sign_in(user)
-      project.add_developer(user)
     end
 
     it 'redirects to work item path' do

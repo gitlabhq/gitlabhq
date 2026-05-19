@@ -1,0 +1,20 @@
+@@ -0,0 +1,19 @@
++# frozen_string_literal: true
++
++class DropUserProjects < Gitlab::Database::Migration[2.3]
++  milestone '19.0'
++
++  def up
++    drop_user_projects([1, 2, 3])
++  end
++
++  def down
++    # not reversible
++  end
++
++  private
++
++  def drop_user_projects(ids)
++    execute("DELETE FROM user_projects WHERE user_id IN (?)", ids)
++  end
++end

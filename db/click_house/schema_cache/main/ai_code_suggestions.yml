@@ -1,0 +1,54 @@
+---
+name: ai_code_suggestions
+engine: AggregatingMergeTree
+engine_full: AggregatingMergeTree PARTITION BY toYYYYMM(timestamp) ORDER BY (namespace_path,
+  user_id, uid) SETTINGS index_granularity = 8192
+partition_key: toYYYYMM(timestamp)
+primary_key: namespace_path, user_id, uid
+sorting_key: namespace_path, user_id, uid
+settings:
+  index_granularity: '8192'
+columns:
+- name: uid
+  type: String
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: namespace_path
+  type: String
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: user_id
+  type: UInt64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: timestamp
+  type: DateTime64(6, 'UTC')
+  is_in_partition_key: true
+- name: shown_at
+  type: AggregateFunction(minIf, Nullable(DateTime64(6, 'UTC')), UInt8)
+- name: accepted_at
+  type: AggregateFunction(maxIf, Nullable(DateTime64(6, 'UTC')), UInt8)
+- name: rejected_at
+  type: AggregateFunction(maxIf, Nullable(DateTime64(6, 'UTC')), UInt8)
+- name: language
+  type: String
+- name: branch_name
+  type: String
+- name: ide_name
+  type: String
+- name: ide_vendor
+  type: String
+- name: ide_version
+  type: String
+- name: extension_name
+  type: String
+- name: extension_version
+  type: String
+- name: language_server_version
+  type: String
+- name: model_name
+  type: String
+- name: model_engine
+  type: String
+- name: suggestion_size
+  type: SimpleAggregateFunction(max, UInt64)

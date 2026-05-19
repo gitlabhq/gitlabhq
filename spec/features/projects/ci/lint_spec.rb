@@ -86,7 +86,7 @@ RSpec.describe 'CI Lint', :js, feature_category: :pipeline_composition do
       end
 
       it 'YAML content is cleared' do
-        expect(page).to have_field(class: 'inputarea', with: '', visible: false, type: 'textarea')
+        expect(page).to have_field(class: 'inputarea', with: '', visible: :visible, type: 'textarea')
       end
     end
   end

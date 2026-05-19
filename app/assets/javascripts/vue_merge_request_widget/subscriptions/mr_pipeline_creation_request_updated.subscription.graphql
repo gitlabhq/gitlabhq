@@ -1,0 +1,10 @@
+# @feature_category: continuous_integration
+
+subscription mrPipelineCreationRequestUpdated($mergeRequestId: MergeRequestID!) {
+  ciPipelineCreationRequestsUpdated(mergeRequestId: $mergeRequestId) {
+    id
+    pipelineCreationRequests {
+      status
+    }
+  }
+}

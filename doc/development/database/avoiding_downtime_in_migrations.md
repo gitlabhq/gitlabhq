@@ -719,8 +719,8 @@ for batched background migration:
 
 To monitor the health of the database, use these additional metrics:
 
-- [PostgreSQL Tuple Statistics](https://dashboards.gitlab.net/d/000000167/postgresql-tuple-statistics?orgId=1&refresh=1m): if you see high rate of updates for the tables being actively converted, or increasing percentage of dead tuples for this table, it might mean that `autovacuum` cannot keep up.
-- [PostgreSQL Overview](https://dashboards.gitlab.net/d/000000144/postgresql-overview?orgId=1): if you see high system usage or transactions per second (TPS) on the primary database server, it might mean that the migration is causing problems.
+- [PostgreSQL Tuple Statistics](https://dashboards.gitlab.net/d/postgresql-postgresql-tuple-stats): if you see high rate of updates for the tables being actively converted, or increasing percentage of dead tuples for this table, it might mean that `autovacuum` cannot keep up.
+- [PostgreSQL Overview](https://dashboards.gitlab.net/d/postgresql-postgresql-overview): if you see high system usage or transactions per second (TPS) on the primary database server, it might mean that the migration is causing problems.
 
 ### Prometheus metrics
 

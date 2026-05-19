@@ -21,6 +21,7 @@ RSpec.describe Types::Security::ConfigurationType, feature_category: :security_a
       :secret_detection_configuration_path,
       :secret_push_protection_available,
       :secret_push_protection_enabled,
+      :secret_push_protection_enforced,
       :secret_push_protection_licensed,
       :security_training_enabled,
       :user_is_project_admin,

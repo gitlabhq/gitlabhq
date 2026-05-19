@@ -100,14 +100,17 @@ this period.
 
 When the enforcement date passes, you must enter a one-time passcode at every password-based
 sign-in. To avoid being locked out, ensure you can access your primary email address, or
-[change your primary email address](../../profile/_index.md#change-your-primary-email).
+[change your primary email address](../_index.md#change-your-primary-email).
 
 ### Didn't receive email verification code or code has expired
 
-Check your spam folder. On GitLab.com, emails are sent from `gitlab@mg.gitlab.com`
-and can be [verified as genuine](https://handbook.gitlab.com/handbook/security/corporate/systems/google/mail/verification/#verify-an-email-from-gitlabcom-is-genuine).
+Allow a minute for the email to arrive, then check your spam folder.
+On GitLab.com, emails are sent from `gitlab@mg.gitlab.com` and can be
+[verified as genuine](https://handbook.gitlab.com/handbook/security/corporate/systems/google/mail/verification/#verify-an-email-from-gitlabcom-is-genuine).
 
-If your code expires, you can request a new code. From the sign-in page, select **Resend code**.
+If the code doesn't arrive or has expired, select **Resend code** from
+the sign-in page. Each resend generates a new code and invalidates
+the previous one, so wait for each email before requesting another.
 
 ### Cannot access your email address
 

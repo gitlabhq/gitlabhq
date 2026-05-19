@@ -1,6 +1,7 @@
 <script>
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 
 export default normalizeRender({
@@ -22,6 +23,7 @@ export default normalizeRender({
       default: '',
     },
   },
+  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       skipQuery: true,
@@ -36,6 +38,7 @@ export default normalizeRender({
         return {
           fullPath: this.workItemFullPath || this.fullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
         };
       },
       skip() {

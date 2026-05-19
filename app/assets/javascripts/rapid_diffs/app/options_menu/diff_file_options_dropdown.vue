@@ -39,11 +39,11 @@ export default {
   computed: {
     allItems() {
       return [
+        ...this.items,
         {
           text: __('Copy link to the file'),
           action: this.onFileLinkCopyClick,
         },
-        ...this.items,
       ];
     },
   },

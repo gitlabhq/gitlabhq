@@ -22,17 +22,26 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Client do
       allow(elasticsearch_client).to receive(:search).and_return(search_response)
       allow(collection).to receive_messages(
         collection_name: 'test',
-        redact_unauthorized_results!: [[], []],
-        indexing_embedding_fields: %w[embedding_v1 embedding_v2]
+        redact_unauthorized_results!: [[], []]
       )
     end
 
-    it 'calls search on the Elasticsearch client' do
+    it 'calls search on the Elasticsearch client without _source by default' do
       expect(elasticsearch_client).to receive(:search).with(
         index: 'test',
-        body: hash_including(_source: { includes: ['*', 'embedding_v1', 'embedding_v2'] })
+        body: hash_not_including(:_source)
       )
       client.search(collection: collection, query: query, user: user)
+    end
+
+    context 'when source_fields is provided' do
+      it 'includes _source with the specified fields' do
+        expect(elasticsearch_client).to receive(:search).with(
+          index: 'test',
+          body: hash_including(_source: { includes: ['content'] })
+        )
+        client.search(collection: collection, query: query, user: user, source_fields: ['content'])
+      end
     end
 
     it 'logs search duration and result count' do

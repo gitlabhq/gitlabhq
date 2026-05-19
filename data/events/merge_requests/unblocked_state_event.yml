@@ -1,0 +1,7 @@
+---
+event: MergeRequests::UnblockedStateEvent
+description: Published when the set of blocking merge requests changes (for example,
+  a blocking MR is merged, unlinked, or added). Requires the :blocking_merge_requests
+  feature on the target project, and only fires when the set actually differs from
+  the previous state.
+feature_category: code_review_workflow

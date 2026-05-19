@@ -7,8 +7,8 @@
     "topology_service_concurrency_limit": {
       "type": "integer",
       "minimum": 1,
-      "default": 200,
-      "description": "Maximum number of concurrent requests allowed to the Topology Service"
+      "default": 40,
+      "description": "Maximum number of concurrent in-flight requests allowed to the Topology Service. The default of 40 yields a peak of ~200 req/sec given the 200ms per-request timeout (each connection can issue up to 5 requests per second)."
     }
   }
 }

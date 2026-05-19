@@ -25,7 +25,7 @@ These recordings and presentations provide in-depth knowledge about the Advanced
 
 ### Supported versions
 
-See [Version Requirements](../integration/advanced_search/elasticsearch.md#version-requirements).
+See [version compatibility](../integration/advanced_search/elasticsearch.md#version-compatibility).
 
 Developers making significant changes to Elasticsearch queries should test their features against all our supported versions.
 

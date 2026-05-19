@@ -12,6 +12,8 @@ module Gitlab
                                'pipeline_execution_policy'
                              elsif scan_execution_policy_build?(job)
                                'scan_execution_policy'
+                             elsif security_scan_profile_build?(job)
+                               'security_scan_profiles'
                              else
                                pipeline.source
                              end
@@ -34,6 +36,11 @@ module Gitlab
 
           # Overridden in EE
           def scan_execution_policy_build?(_build)
+            false
+          end
+
+          # Overridden in EE
+          def security_scan_profile_build?(_build)
             false
           end
         end

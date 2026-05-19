@@ -436,7 +436,6 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
 
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(group_path(group))
-        expect(flash[:notice]).to eq("Group transfer has been queued. You will be notified when it completes.")
       end
 
       it 'transitions the group to transfer_scheduled and stores metadata' do

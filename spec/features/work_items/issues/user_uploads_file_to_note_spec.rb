@@ -17,7 +17,7 @@ RSpec.describe 'User uploads file to note', :js, feature_category: :text_editors
   context 'before uploading' do
     it 'shows "Attach a file or image" button' do
       expect(page).to have_selector('[data-testid="button-attach-file"]')
-      expect(page).not_to have_selector('.uploading-progress-container', visible: true)
+      expect(page).not_to have_selector('.uploading-progress-container', visible: :visible)
     end
   end
 
@@ -31,14 +31,14 @@ RSpec.describe 'User uploads file to note', :js, feature_category: :text_editors
 
       expect(page).to have_selector('[data-testid="button-attach-file"]')
       expect(page).not_to have_button('Cancel')
-      expect(page).not_to have_selector('.uploading-progress-container', visible: true)
+      expect(page).not_to have_selector('.uploading-progress-container', visible: :visible)
     end
 
     it 'shows "Attaching a file" message on uploading 1 file' do
       slow_requests do
         dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
 
-        expect(page).to have_selector('.attaching-file-message', visible: true, text: 'Attaching a file -')
+        expect(page).to have_selector('.attaching-file-message', visible: :visible, text: 'Attaching a file -')
       end
     end
 
@@ -47,7 +47,7 @@ RSpec.describe 'User uploads file to note', :js, feature_category: :text_editors
         dropzone_file([Rails.root.join('spec', 'fixtures', 'video_sample.mp4'),
           Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
 
-        expect(page).to have_selector('.attaching-file-message', visible: true, text: 'Attaching 2 files -')
+        expect(page).to have_selector('.attaching-file-message', visible: :visible, text: 'Attaching 2 files -')
       end
     end
 
@@ -56,9 +56,9 @@ RSpec.describe 'User uploads file to note', :js, feature_category: :text_editors
 
       error_text = 'File is too big (0.06MiB). Max filesize: 0.01MiB.'
 
-      expect(page).to have_selector('.uploading-error-message', visible: true, text: error_text)
-      expect(page).to have_button('Try again', visible: true)
-      expect(page).to have_button('attach a new file', visible: true)
+      expect(page).to have_selector('.uploading-error-message', visible: :visible, text: error_text)
+      expect(page).to have_button('Try again', visible: :visible)
+      expect(page).to have_button('attach a new file', visible: :visible)
     end
   end
 
@@ -68,7 +68,7 @@ RSpec.describe 'User uploads file to note', :js, feature_category: :text_editors
       wait_for_requests
 
       expect(page).to have_selector('[data-testid="button-attach-file"]')
-      expect(page).not_to have_selector('.uploading-progress-container', visible: true)
+      expect(page).not_to have_selector('.uploading-progress-container', visible: :visible)
     end
 
     it 'they see the attached file' do

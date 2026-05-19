@@ -19,7 +19,8 @@ const mockDashboards = [
     isStarred: false,
     isEditable: true,
     shareLink: '/fake/link/to/share',
-    updatedAt: '2025-09-10',
+    updatedAt: '2020-07-01',
+    dashboardUrl: '/fake/url/1',
   },
   {
     name: 'Cool dashboard',
@@ -38,7 +39,8 @@ const mockDashboards = [
     isStarred: false,
     isEditable: true,
     shareLink: '/fake/link/to/share',
-    updatedAt: '2025-10-28',
+    updatedAt: '2020-06-01',
+    dashboardUrl: '/fake/url/2',
   },
 ];
 
@@ -74,67 +76,124 @@ describe('DashboardsList', () => {
   });
 
   describe('with data', () => {
-    beforeEach(() => {
-      createWrapper({}, mountExtended);
-    });
+    describe('with custom dashboards', () => {
+      beforeEach(() => {
+        createWrapper({}, mountExtended);
+      });
 
-    it('renders the correct number of table rows', () => {
-      expect(findTableRows()).toHaveLength(mockDashboards.length);
-    });
+      it('renders the correct number of table rows', () => {
+        expect(findTableRows()).toHaveLength(mockDashboards.length);
+      });
 
-    it('renders user avatars with correct props', () => {
-      const avatars = findUserAvatars();
+      it('renders user avatars with correct props', () => {
+        const avatars = findUserAvatars();
 
-      avatars.wrappers.forEach((avatar, index) => {
-        const dashboard = mockDashboards[index];
-        expect(avatar.props()).toMatchObject({
-          src: dashboard.createdBy.avatarUrl,
-          size: 24,
-          shape: 'circle',
-          fallbackOnError: true,
-          label: dashboard.createdBy.name,
+        avatars.wrappers.forEach((avatar, index) => {
+          const dashboard = mockDashboards[index];
+          expect(avatar.props()).toMatchObject({
+            src: dashboard.createdBy.avatarUrl,
+            size: 24,
+            shape: 'circle',
+            fallbackOnError: true,
+            label: dashboard.createdBy.name,
+          });
         });
       });
-    });
 
-    it('renders user', () => {
-      mockDashboards.forEach((dashboard, index) => {
-        const row = findTableRows().at(index);
-        expect(row.text()).toContain(dashboard.createdBy.name);
+      it('renders user', () => {
+        mockDashboards.forEach((dashboard, index) => {
+          const row = findTableRows().at(index);
+          expect(row.text()).toContain(dashboard.createdBy.name);
 
-        expect(row.html()).toContain(dashboard.createdBy.webPath);
-      });
-    });
-
-    it('renders last edited dates', () => {
-      mockDashboards.forEach((dashboard, index) => {
-        const row = findTableRows().at(index);
-        expect(row.text()).toContain(dashboard.updatedAt);
-      });
-    });
-
-    it('renders action dropdowns for each dashboard', () => {
-      const actionDropdowns = findActionDropdowns();
-
-      expect(actionDropdowns).toHaveLength(mockDashboards.length);
-
-      actionDropdowns.wrappers.forEach((dropdown) => {
-        expect(dropdown.props()).toMatchObject({
-          icon: 'ellipsis_v',
-          category: 'tertiary',
-          textSrOnly: true,
-          noCaret: true,
+          expect(row.html()).toContain(dashboard.createdBy.webPath);
         });
       });
+
+      it('renders last edited dates as relative time', () => {
+        mockDashboards.forEach((dashboard, index) => {
+          const row = findTableRows().at(index);
+          const updatedAt = row.find('[data-testid="dashboard-updated-at"]');
+          expect(updatedAt.exists()).toBe(true);
+        });
+
+        expect(findTableRows().at(0).text()).toContain('5 days ago');
+        expect(findTableRows().at(1).text()).toContain('1 month ago');
+      });
+
+      it('renders action dropdowns for each dashboard', () => {
+        const actionDropdowns = findActionDropdowns();
+
+        expect(actionDropdowns).toHaveLength(mockDashboards.length);
+
+        actionDropdowns.wrappers.forEach((dropdown) => {
+          expect(dropdown.props()).toMatchObject({
+            icon: 'ellipsis_v',
+            category: 'tertiary',
+            textSrOnly: true,
+            noCaret: true,
+          });
+        });
+      });
+
+      it('renders the valid fields', () => {
+        const expectedFields = ['Title', 'Created by', 'Last edited', 'Actions'];
+        const fields = findTable()
+          .props('fields')
+          .map(({ label }) => label);
+
+        expect(fields).toEqual(expectedFields);
+      });
     });
 
-    it('renders the valid fields', () => {
-      const expectedFields = ['Title', 'Created by', 'Last edited', 'Actions'];
-      const fields = findTable()
-        .props('fields')
-        .map(({ label }) => label);
+    describe('with system dashboards', () => {
+      const mockSystemDashboards = [
+        {
+          name: 'System dashboard',
+          system: true,
+          description:
+            'Cool custom dashboard that has a description that is very long and will most definitely overflow',
+          slug: 'cool-custom-dashboard',
+          shareLink: '/fake/link/to/share',
+          updatedAt: '2025-10-28',
+          dashboardUrl: '/fake/url/2',
+        },
+      ];
 
-      expect(fields).toEqual(expectedFields);
+      beforeEach(() => {
+        createWrapper({ dashboards: mockSystemDashboards }, mountExtended);
+      });
+
+      it('renders the correct number of table rows', () => {
+        expect(findTableRows()).toHaveLength(mockSystemDashboards.length);
+      });
+
+      it('renders GitLab in the created by field', () => {
+        const avatars = findUserAvatars();
+
+        avatars.wrappers.forEach((avatar) => {
+          expect(avatar.props()).toMatchObject({
+            src: 'file-mock',
+            size: 24,
+            shape: 'circle',
+            fallbackOnError: true,
+            label: 'GitLab',
+          });
+        });
+      });
+
+      it('renders the valid fields', () => {
+        const expectedFields = ['Title', 'Created by', 'Last edited', 'Actions'];
+        const fields = findTable()
+          .props('fields')
+          .map(({ label }) => label);
+
+        expect(fields).toEqual(expectedFields);
+      });
+
+      it('does not render the last edited time for system dashboards', () => {
+        const updatedAt = findTableRows().at(0).find('[data-testid="dashboard-updated-at"]');
+        expect(updatedAt.exists()).toBe(false);
+      });
     });
   });
 

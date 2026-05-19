@@ -5,9 +5,14 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_AWARD_EMOJI,
+  WIDGET_TYPE_NOTIFICATIONS,
   WIDGET_TYPE_NOTES,
+  WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_CRM_CONTACTS,
+  WIDGET_TYPE_LABELS,
+  WIDGET_TYPE_LINKED_RESOURCES,
   WIDGET_TYPE_HIERARCHY,
+  WIDGET_TYPE_LINKED_ITEMS,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
@@ -28,14 +33,23 @@ import {
   WORK_ITEM_TYPE_NAME_TICKET,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_START_AND_DUE_DATE,
+  WIDGET_TYPE_TIME_TRACKING,
 } from '~/work_items/constants';
 import {
   autocompleteDataSources,
   convertTypeEnumToName,
   findAssigneesWidget,
   findAwardEmojiWidget,
+  findBlockerLinkedItems,
+  findErrorTrackingWidget,
+  findNotificationsWidget,
   findNotesWidget,
+  findOpenChildItemsCountsByType,
   findCrmContactsWidget,
+  findLabelsWidget,
+  findLinkedResourcesWidget,
+  findStartAndDueDateWidget,
+  findTimeTrackingWidget,
   formatLabelForListbox,
   formatUserForListbox,
   newWorkItemPath,
@@ -44,8 +58,8 @@ import {
   workItemRoadmapPath,
   saveHiddenMetadataKeysToLocalStorage,
   getHiddenMetadataKeysFromLocalStorage,
-  makeDrawerUrlParam,
-  makeDrawerItemFullPath,
+  makeDetailPanelUrlParam,
+  makeDetailPanelItemFullPath,
   getItems,
   canRouterNav,
   formatSelectOptionForCustomField,
@@ -62,6 +76,7 @@ import {
   combineWorkItemLists,
   isCurrentViewWorkItem,
   getSortValue,
+  isWorkplanTemplate,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -199,36 +214,16 @@ describe('newWorkItemPath', () => {
     );
   });
 
-  it('returns correct path for workItemType', () => {
-    expect(
-      newWorkItemPath({ fullPath: 'group/project', workItemType: WORK_ITEM_TYPE_NAME_ISSUE }),
-    ).toBe('/foobar/group/project/-/issues/new');
-  });
-
   it('returns correct data sources with group context', () => {
-    expect(
-      newWorkItemPath({
-        fullPath: 'group',
-        isGroup: true,
-        workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-      }),
-    ).toBe('/foobar/groups/group/-/epics/new');
+    expect(newWorkItemPath({ fullPath: 'group', isGroup: true })).toBe(
+      '/foobar/groups/group/-/work_items/new',
+    );
   });
 
   it('appends a query string to the path', () => {
     expect(newWorkItemPath({ fullPath: 'project', query: '?foo=bar' })).toBe(
       '/foobar/project/-/work_items/new?foo=bar',
     );
-  });
-
-  it('returns `work_items` path for group issues', () => {
-    expect(
-      newWorkItemPath({
-        fullPath: 'my-group',
-        isGroup: true,
-        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-      }),
-    ).toBe('/foobar/groups/my-group/-/work_items/new');
   });
 });
 
@@ -357,28 +352,28 @@ describe('utils for remembering hidden metadata keys', () => {
   });
 });
 
-describe('`makeDrawerItemFullPath`', () => {
+describe('`makeDetailPanelItemFullPath`', () => {
   it('returns the items `fullPath` if present', () => {
-    const result = makeDrawerItemFullPath(
+    const result = makeDetailPanelItemFullPath(
       { fullPath: 'this/should/be/returned' },
       'this/should/not',
     );
     expect(result).toBe('this/should/be/returned');
   });
   it('returns the fallback `fullPath` if `activeItem` does not have a `referencePath`', () => {
-    const result = makeDrawerItemFullPath({}, 'this/should/be/returned');
+    const result = makeDetailPanelItemFullPath({}, 'this/should/be/returned');
     expect(result).toBe('this/should/be/returned');
   });
   describe('when `activeItem` has a `referencePath`', () => {
     it('handles the default `issuableType` of `ISSUE`', () => {
-      const result = makeDrawerItemFullPath(
+      const result = makeDetailPanelItemFullPath(
         { referencePath: 'this/should/be/returned#100' },
         'this/should/not',
       );
       expect(result).toBe('this/should/be/returned');
     });
     it('handles case where `issuableType` is an `EPIC`', () => {
-      const result = makeDrawerItemFullPath(
+      const result = makeDetailPanelItemFullPath(
         { referencePath: 'this/should/be/returned&100' },
         'this/should/not',
         TYPE_EPIC,
@@ -388,9 +383,9 @@ describe('`makeDrawerItemFullPath`', () => {
   });
 });
 
-describe('`makeDrawerUrlParam`', () => {
+describe('`makeDetailPanelUrlParam`', () => {
   it('returns iid, full_path, and id', () => {
-    const result = makeDrawerUrlParam(
+    const result = makeDetailPanelUrlParam(
       { id: 'gid://gitlab/Issue/1', iid: '123', fullPath: 'gitlab-org/gitlab' },
       'gitlab-org/gitlab',
     );
@@ -1131,6 +1126,30 @@ describe('findAwardEmojiWidget', () => {
   });
 });
 
+describe('findNotificationsWidget', () => {
+  const notificationsWidget = { type: WIDGET_TYPE_NOTIFICATIONS, subscribed: true };
+  const featuresNotifications = { subscribed: true };
+
+  it('returns features.notifications when present', () => {
+    const workItem = {
+      features: { notifications: featuresNotifications },
+      widgets: [notificationsWidget],
+    };
+
+    expect(findNotificationsWidget(workItem)).toBe(featuresNotifications);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [notificationsWidget] };
+
+    expect(findNotificationsWidget(workItem)).toBe(notificationsWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findNotificationsWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
 describe('findNotesWidget', () => {
   describe('when features.notes is present', () => {
     const featuresNotes = { discussionLocked: true };
@@ -1169,6 +1188,35 @@ describe('findNotesWidget', () => {
   });
 });
 
+describe('findErrorTrackingWidget', () => {
+  const errorTrackingWidget = {
+    type: WIDGET_TYPE_ERROR_TRACKING,
+    identifier: '1',
+    stackTrace: { nodes: [] },
+    status: 'SUCCESS',
+  };
+  const featuresErrorTracking = { identifier: '1', stackTrace: { nodes: [] }, status: 'SUCCESS' };
+
+  it('returns features.errorTracking when present', () => {
+    const workItem = {
+      features: { errorTracking: featuresErrorTracking },
+      widgets: [errorTrackingWidget],
+    };
+
+    expect(findErrorTrackingWidget(workItem)).toBe(featuresErrorTracking);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [errorTrackingWidget] };
+
+    expect(findErrorTrackingWidget(workItem)).toBe(errorTrackingWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findErrorTrackingWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
 describe('findCrmContactsWidget', () => {
   const crmContactsWidget = { type: WIDGET_TYPE_CRM_CONTACTS, contacts: { nodes: [] } };
   const featuresCrmContacts = { contactsAvailable: true, contacts: { nodes: [] } };
@@ -1190,5 +1238,200 @@ describe('findCrmContactsWidget', () => {
 
   it('returns undefined when neither exists', () => {
     expect(findCrmContactsWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findLinkedResourcesWidget', () => {
+  const linkedResourcesWidget = {
+    type: WIDGET_TYPE_LINKED_RESOURCES,
+    linkedResources: { nodes: [] },
+  };
+  const featuresLinkedResources = { linkedResources: { nodes: [] } };
+
+  it('returns features.linkedResources when present', () => {
+    const workItem = {
+      features: { linkedResources: featuresLinkedResources },
+      widgets: [linkedResourcesWidget],
+    };
+
+    expect(findLinkedResourcesWidget(workItem)).toBe(featuresLinkedResources);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [linkedResourcesWidget] };
+
+    expect(findLinkedResourcesWidget(workItem)).toBe(linkedResourcesWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findLinkedResourcesWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findStartAndDueDateWidget', () => {
+  const startAndDueDateWidget = {
+    type: WIDGET_TYPE_START_AND_DUE_DATE,
+    startDate: '2024-01-01',
+    dueDate: '2024-01-31',
+  };
+  const featuresStartAndDueDate = { startDate: '2024-02-01', dueDate: '2024-02-28' };
+
+  it('returns features.startAndDueDate when present', () => {
+    const workItem = {
+      features: { startAndDueDate: featuresStartAndDueDate },
+      widgets: [startAndDueDateWidget],
+    };
+
+    expect(findStartAndDueDateWidget(workItem)).toBe(featuresStartAndDueDate);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [startAndDueDateWidget] };
+
+    expect(findStartAndDueDateWidget(workItem)).toBe(startAndDueDateWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findStartAndDueDateWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findLabelsWidget', () => {
+  const labelsWidget = {
+    type: WIDGET_TYPE_LABELS,
+    allowsScopedLabels: false,
+    labels: { nodes: [{ id: 'gid://gitlab/Label/1', title: 'bug' }] },
+  };
+  const featuresLabels = {
+    allowsScopedLabels: true,
+    labels: { nodes: [{ id: 'gid://gitlab/Label/2', title: 'feature' }] },
+  };
+
+  it('returns features.labels when present', () => {
+    const workItem = {
+      features: { labels: featuresLabels },
+      widgets: [labelsWidget],
+    };
+
+    expect(findLabelsWidget(workItem)).toBe(featuresLabels);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [labelsWidget] };
+
+    expect(findLabelsWidget(workItem)).toBe(labelsWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findLabelsWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findTimeTrackingWidget', () => {
+  const timeTrackingWidget = {
+    type: WIDGET_TYPE_TIME_TRACKING,
+    timeEstimate: 0,
+    humanReadableAttributes: { timeEstimate: '' },
+    timelogs: { nodes: [] },
+    totalTimeSpent: 0,
+  };
+  const featuresTimeTracking = {
+    timeEstimate: 3600,
+    humanReadableAttributes: { timeEstimate: '1h' },
+    timelogs: { nodes: [] },
+    totalTimeSpent: 1800,
+  };
+
+  it('returns features.timeTracking when present', () => {
+    const workItem = {
+      features: { timeTracking: featuresTimeTracking },
+      widgets: [timeTrackingWidget],
+    };
+
+    expect(findTimeTrackingWidget(workItem)).toBe(featuresTimeTracking);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [timeTrackingWidget] };
+
+    expect(findTimeTrackingWidget(workItem)).toBe(timeTrackingWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findTimeTrackingWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findBlockerLinkedItems', () => {
+  const widgetNodes = [{ linkId: 'gid://gitlab/IssueLink/1', linkType: 'is_blocked_by' }];
+  const featuresNodes = [{ linkId: 'gid://gitlab/IssueLink/2', linkType: 'is_blocked_by' }];
+  const linkedItemsWidget = {
+    type: WIDGET_TYPE_LINKED_ITEMS,
+    linkedItems: { nodes: widgetNodes },
+  };
+
+  it('returns features.linkedItems.linkedItems.nodes when present', () => {
+    const workItem = {
+      features: { linkedItems: { linkedItems: { nodes: featuresNodes } } },
+      widgets: [linkedItemsWidget],
+    };
+
+    expect(findBlockerLinkedItems(workItem)).toBe(featuresNodes);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [linkedItemsWidget] };
+
+    expect(findBlockerLinkedItems(workItem)).toBe(widgetNodes);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findBlockerLinkedItems({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findOpenChildItemsCountsByType', () => {
+  const widgetCounts = [
+    { countsByState: { opened: 1, all: 1, closed: 0 }, workItemType: { name: 'Task' } },
+  ];
+  const featuresCounts = [
+    { countsByState: { opened: 2, all: 2, closed: 0 }, workItemType: { name: 'Issue' } },
+  ];
+  const hierarchyWidget = {
+    type: WIDGET_TYPE_HIERARCHY,
+    rolledUpCountsByType: widgetCounts,
+  };
+
+  it('returns features.hierarchy.rolledUpCountsByType when present', () => {
+    const workItem = {
+      features: { hierarchy: { rolledUpCountsByType: featuresCounts } },
+      widgets: [hierarchyWidget],
+    };
+
+    expect(findOpenChildItemsCountsByType(workItem)).toBe(featuresCounts);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [hierarchyWidget] };
+
+    expect(findOpenChildItemsCountsByType(workItem)).toBe(widgetCounts);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findOpenChildItemsCountsByType({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('isWorkplanTemplate', () => {
+  it.each([
+    ['feature.plan', true],
+    ['something.plan', true],
+    ['Bug', false],
+    ['plan', false],
+    ['', false],
+    [undefined, false],
+    [null, false],
+  ])('returns %p for "%s"', (input, expected) => {
+    expect(isWorkplanTemplate(input)).toBe(expected);
   });
 });

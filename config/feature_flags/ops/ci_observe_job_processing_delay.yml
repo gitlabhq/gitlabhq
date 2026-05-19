@@ -1,0 +1,10 @@
+---
+name: ci_observe_job_processing_delay
+description: Emit Prometheus histogram metric measuring delay between job dependencies completing and job being processed
+feature_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/work_items/592819"
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230396"
+rollout_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/work_items/597277"
+milestone: "19.0"
+type: ops
+group: group::pipeline execution
+default_enabled: false

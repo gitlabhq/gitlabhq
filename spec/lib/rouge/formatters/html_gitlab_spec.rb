@@ -30,8 +30,8 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
     context 'when options are empty' do
       let(:options) { {} }
 
-      it 'returns highlighted code without language' do
-        code = %q(<span id="LC1" class="line" lang=""><span class="k">def</span> <span class="nf">hello</span></span>)
+      it 'returns highlighted code without lang' do
+        code = %q(<span id="LC1" class="line"><span class="k">def</span> <span class="nf">hello</span></span>)
 
         is_expected.to eq(code)
       end
@@ -40,8 +40,18 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
     context 'when fix_attributes is true' do
       let(:options) { { fix_attributes: true } }
 
-      it 'returns highlighted code without attributes' do
+      it 'returns highlighted code without data-lang' do
         code = %q(<span class="line"><span class="k">def</span> <span class="nf">hello</span></span>)
+
+        is_expected.to eq(code)
+      end
+    end
+
+    context 'when fix_attributes is true with a language tag' do
+      let(:options) { { fix_attributes: true, tag: lang } }
+
+      it 'returns highlighted code with data-lang attribute' do
+        code = %q(<span class="line" data-lang="ruby"><span class="k">def</span> <span class="nf">hello</span></span>)
 
         is_expected.to eq(code)
       end

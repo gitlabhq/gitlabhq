@@ -15,7 +15,7 @@ class SearchService
 
   def initialize(current_user, params = {})
     @current_user = current_user
-    @params = Gitlab::Search::Params.new(params, detect_abuse: true)
+    @params = Search::Params.new(params, detect_abuse: true)
   end
 
   def project

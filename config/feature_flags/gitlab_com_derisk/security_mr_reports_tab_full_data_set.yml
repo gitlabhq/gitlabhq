@@ -1,0 +1,10 @@
+---
+name: security_mr_reports_tab_full_data_set
+description: Enables pagination over all security findings on the merge request report tab, replacing the 25-finding cap.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20760
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/232398
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/597608
+milestone: '19.0'
+group: group::security insights
+type: gitlab_com_derisk
+default_enabled: false

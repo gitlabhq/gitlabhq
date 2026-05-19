@@ -8,6 +8,7 @@ import {
 } from '~/work_items/constants';
 
 export default {
+  name: 'WorkItemHistoryOnlyFilterNote',
   WORK_ITEM_NOTES_FILTER_ALL_NOTES,
   WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
   i18n: {

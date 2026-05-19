@@ -60,6 +60,7 @@
   gitlab-com: true
   available_in: [Ultimate]
   documentation_link: https://docs.gitlab.com/user/application_security/policies/vulnerability_management_policy/#severity-override-policies
+  image_url: https://about.gitlab.com/images/18_11/automated-severity-overrides.png
   published_at: 2026-04-16
   release: "18.11"
 
@@ -74,6 +75,7 @@
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/user/profile/service_accounts/
+  image_url: https://about.gitlab.com/images/18_11/sa-subgroupsprojects.png
   published_at: 2026-04-16
   release: "18.11"
 
@@ -121,6 +123,7 @@
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/auth/tokens/fine_grained_access_tokens/
+  image_url: https://about.gitlab.com/images/18_11/gpat-beta.png
   published_at: 2026-04-16
   release: "18.11"
 

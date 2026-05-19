@@ -67,7 +67,7 @@ export default {
           return;
         }
 
-        visitUrlWithAlerts(joinPaths(organization.webUrl, '/settings/general'), [
+        visitUrlWithAlerts(joinPaths(organization.webUrl, '/-/settings/general'), [
           {
             id: 'organization-url-successfully-changed',
             message: this.$options.i18n.successAlertMessage,

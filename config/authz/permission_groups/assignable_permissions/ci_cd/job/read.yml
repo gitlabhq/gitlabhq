@@ -1,7 +1,9 @@
 ---
 name: read_job
 description: Grants the ability to read jobs
-permissions:
-  - read_job
 boundaries:
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_job

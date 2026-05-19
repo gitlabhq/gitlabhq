@@ -34,7 +34,7 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
     project
   end
 
-  before do
+  before_all do
     project.add_developer(user)
   end
 

@@ -419,4 +419,4 @@ For self-compiled installations:
 
 ## Passwords for users created via smart card authentication
 
-The [Generated passwords for users created through integrated authentication](../../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via smart card authentication.
+The [Generated passwords for users created through integrated authentication](../../user/profile/user_passwords.md) guide provides an overview of how GitLab generates and sets passwords for users created via smart card authentication.

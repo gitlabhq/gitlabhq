@@ -40,6 +40,11 @@ fragment Todo on Todo {
       reference
       webPath
       dueDate
+      workItemType {
+        id
+        name
+        iconName
+      }
     }
     ... on MergeRequest {
       mergeRequestState: state

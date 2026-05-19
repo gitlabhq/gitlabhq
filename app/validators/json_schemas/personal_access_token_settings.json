@@ -15,7 +15,7 @@
         "null"
       ],
       "format": "date",
-      "description": "Date after which only fine-grained personal access tokens can be created. Existing legacy tokens remain valid."
+      "description": "On self-managed, date after which only fine-grained personal access tokens can be created, existing legacy tokens remain valid. On SaaS, legacy tokens are blocked from accessing group resources after this date."
     }
   }
 }

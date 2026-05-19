@@ -25,4 +25,3 @@ RSpec/ExcessiveDocstringSpacing:
     - 'spec/services/ml/experiment_tracking/candidate_repository_spec.rb'
     - 'spec/services/quick_actions/interpret_service_spec.rb'
     - 'spec/support/shared_examples/requests/projects/google_cloud/google_oauth2_config_examples.rb'
-    - 'spec/views/projects/settings/operations/show.html.haml_spec.rb'

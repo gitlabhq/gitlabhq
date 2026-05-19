@@ -27,7 +27,7 @@ RSpec.describe 'getting work item description templates', feature_category: :gro
 
   let_it_be(:project) do
     create(:project, :custom_repo, files: template_files, group: group)
-       .tap { |p| group.file_template_project_id = p.id }
+       .tap { |p| set_file_template_project_id(group, p.id) }
   end
 
   let_it_be(:no_files_project) { create(:project, :custom_repo, group: group) }
@@ -76,7 +76,7 @@ RSpec.describe 'getting work item description templates', feature_category: :gro
   context 'when the namespace is a Group with no file template project set' do
     before do
       stub_licensed_features(custom_file_templates: true, custom_file_templates_for_namespace: true)
-      group.update_columns(file_template_project_id: nil)
+      set_file_template_project_id(group, nil)
     end
 
     it 'returns nil' do

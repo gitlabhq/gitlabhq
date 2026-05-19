@@ -101,6 +101,7 @@ permissions:
   - destroy_vulnerability
   - destroy_vulnerability_feedback
   - destroy_wiki
+  - manage_trigger
   - push_code
   - push_code_to_protected_branches
   - push_to_delete_protected_branch

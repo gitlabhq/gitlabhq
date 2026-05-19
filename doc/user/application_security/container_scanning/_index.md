@@ -110,7 +110,7 @@ Prerequisites:
 To enable container scanning:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. In the **Container Scanning** row, select **Configure with a merge request**.
 1. Select **Create merge request**.
 1. Review the merge request, then select **Merge**.
@@ -136,7 +136,7 @@ Prerequisites:
 To enable container scanning:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Pipeline editor**.
+1. In the left sidebar, select **Build** > **Pipeline editor**.
 1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
    content.
 1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
@@ -1024,7 +1024,7 @@ Prerequisites:
 To turn on container scanning for the GitLab container registry:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. Scroll down to the **Container Scanning For Registry** section and turn on the toggle.
 
 ### Use with offline or air-gapped environments
@@ -1042,7 +1042,7 @@ Prerequisites:
 To configure a custom scanner image:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand the **Variables** section.
 1. Select **Add variable** and fill in the details:
    - Key: `CS_ANALYZER_IMAGE`

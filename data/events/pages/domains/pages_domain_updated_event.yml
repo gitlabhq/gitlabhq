@@ -1,0 +1,6 @@
+---
+event: Pages::Domains::PagesDomainUpdatedEvent
+description: Published when a custom GitLab Pages domain is updated, including on
+  ACME-order retries that reset auto_ssl_failed (retries fire only when auto_ssl_enabled
+  and auto_ssl_failed were both true before).
+feature_category: pages

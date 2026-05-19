@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Patch::DatabaseConfig do
     let(:configuration) { Rails::Application::Configuration.new(Rails.root) }
 
     let(:database_yml) do
-      <<-EOS
+      <<-YAML
           production:
             main:
               adapter: postgresql
@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Patch::DatabaseConfig do
               prepared_statements: false
               variables:
                 statement_timeout: 15s
-      EOS
+      YAML
     end
 
     before do
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Patch::DatabaseConfig do
 
     context 'when config/database.yml contains extra configuration through an external command' do
       let(:database_yml) do
-        <<-EOS
+        <<-YAML
             production:
               config_command: '/opt/database-config.sh'
               main:
@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Patch::DatabaseConfig do
                 prepared_statements: false
                 variables:
                   statement_timeout: 15s
-        EOS
+        YAML
       end
 
       context 'when the external command returns valid yaml' do

@@ -64,6 +64,10 @@
         8,
         99
       ]
+    },
+    "country": {
+      "description": "ISO 3166-1 alpha-2 country code collected during SM welcome onboarding. See https://gitlab.com/gitlab-org/gitlab/-/issues/595896",
+      "type": "string"
     }
   },
   "additionalProperties": false

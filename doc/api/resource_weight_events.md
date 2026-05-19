@@ -74,7 +74,7 @@ Example response:
 
 ### Retrieve single issue weight event
 
-Retrieves a single weight event for a specific project issue
+Retrieves a single weight event for a specific project issue.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_weight_events/:resource_weight_event_id

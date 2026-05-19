@@ -265,6 +265,10 @@ module Banzai
           @object_reference_pattern ||= object_class.reference_pattern
         end
 
+        def object_link_reference_pattern
+          @object_link_reference_pattern ||= object_class.link_reference_pattern
+        end
+
         def object_name
           @object_name ||= object_class.name.underscore
         end

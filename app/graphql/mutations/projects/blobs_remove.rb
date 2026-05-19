@@ -11,7 +11,7 @@ module Mutations
         Argument 'blobOids' on InputObject 'projectBlobsRemoveInput' is required. Expected type [String!]!
       ERROR
 
-      authorize :owner_access
+      authorize :rewrite_repository_history
 
       argument :project_path, GraphQL::Types::ID,
         required: true,

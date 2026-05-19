@@ -1,0 +1,10 @@
+---
+name: create_bulk_import
+description: Grants the ability to start a new GitLab Migration (bulk import)
+deprecated: true
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_bulk_import

@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
       using RSpec::Parameterized::TableSyntax
 
       let(:pipeline) { build(:ci_pipeline) }
-      let(:context) {}
+      let(:context) { nil }
       let(:changed_files) { files.keys.map { |path| instance_double(Gitlab::Git::ChangedPath, path: path) } }
 
       before do
@@ -41,8 +41,8 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
     end
 
     context 'when pipeline is nil' do
-      let(:pipeline) {}
-      let(:context) {}
+      let(:pipeline) { nil }
+      let(:context) { nil }
       let(:globs) { { paths: [] } }
 
       it { is_expected.to be_truthy }
@@ -235,7 +235,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
       end
 
       context 'when context is nil' do
-        let(:context) {}
+        let(:context) { nil }
 
         it { is_expected.to be_falsey }
       end

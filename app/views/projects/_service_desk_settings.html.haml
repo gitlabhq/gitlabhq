@@ -23,7 +23,7 @@
       selected_file_template_project_id: "#{@project.service_desk_setting&.file_template_project_id}",
       outgoing_name: "#{@project.service_desk_setting&.outgoing_name}",
       project_key: "#{@project.service_desk_setting&.project_key}",
-      tickets_confidential_by_default: "#{@project.service_desk_setting.nil? ? true : @project.service_desk_setting&.tickets_confidential_by_default}",
+      tickets_confidential_by_default: "#{@project.service_desk_setting.nil? ? true : @project.service_desk_setting.tickets_confidential_by_default}", # rubocop:disable Style/RedundantCondition -- || true would incorrectly return true when the setting is false
       reopen_issue_on_external_participant_note: "#{@project.service_desk_setting&.reopen_issue_on_external_participant_note}",
       add_external_participants_from_cc: "#{@project.service_desk_setting&.add_external_participants_from_cc}",
       templates: available_service_desk_templates_for(@project),

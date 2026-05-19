@@ -617,6 +617,12 @@ export const MR_COLLAPSE_ALL_FILES = {
   defaultKeys: ['shift+;'],
 };
 
+export const MR_TOGGLE_DIFF_VIEW_TYPE = {
+  id: 'mergeRequests.toggleDiffViewType',
+  description: __('Toggle between inline and side-by-side diff view'),
+  defaultKeys: ['shift+d'],
+};
+
 export const MR_COMMITS_NEXT_COMMIT = {
   id: 'mergeRequestCommits.nextCommit',
   description: __('Next commit'),
@@ -816,6 +822,7 @@ const MR_SHORTCUTS_GROUP = {
     MR_ADD_TO_REVIEW,
     MR_ADD_COMMENT_NOW,
     MR_TOGGLE_REVIEW,
+    MR_TOGGLE_DIFF_VIEW_TYPE,
   ],
 };
 

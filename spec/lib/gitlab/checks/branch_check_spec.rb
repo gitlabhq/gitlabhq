@@ -198,7 +198,7 @@ RSpec.describe Gitlab::Checks::BranchCheck, feature_category: :source_code_manag
           end
 
           it 'raises an error' do
-            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, /Ask a project Owner or Maintainer to create a default branch/)
+            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, /You cannot push the initial commit/)
           end
         end
 

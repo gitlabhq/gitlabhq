@@ -3,5 +3,7 @@ name: update_scim_identity
 description: Grants the ability to update SCIM user identity
 boundaries:
   - group
+available_for:
+  - granular_access_token
 permissions:
   - update_scim_identity

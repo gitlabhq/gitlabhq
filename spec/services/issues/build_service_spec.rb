@@ -220,6 +220,122 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
           end
         end
       end
+
+      context 'when an explicit work_item_type_id is provided but cannot be resolved' do
+        it 'adds an error to the issue instead of falling back to issue type' do
+          issue = build_issue(work_item_type_id: non_existing_record_id)
+
+          expect(issue.errors[:work_item_type]).to include(
+            s_('WorkItem|could not be found or is not accessible.')
+          )
+        end
+      end
+
+      context 'when an explicit work_item_type is provided but cannot be resolved' do
+        it 'adds an error to the issue instead of falling back to issue type' do
+          issue = build_issue(work_item_type: non_existing_record_id)
+
+          expect(issue.errors[:work_item_type]).to include(
+            s_('WorkItem|could not be found or is not accessible.')
+          )
+        end
+      end
+
+      context 'when an explicit work_item_type_id is resolved but creation is not allowed' do
+        let(:user) { guest }
+
+        it 'adds an error instead of silently falling back to issue type' do
+          incident_type = build(:work_item_system_defined_type, :incident)
+          issue = build_issue(work_item_type_id: incident_type.id)
+
+          expect(issue.work_item_type).to eq(WorkItems::TypesFramework::Provider.new.default_issue_type)
+          expect(issue.errors[:work_item_type]).to include(
+            s_('WorkItem|could not be found or is not accessible.')
+          )
+        end
+      end
+
+      context 'when type is resolved but not enabled' do
+        let_it_be(:task_type) { build(:work_item_system_defined_type, :task) }
+
+        shared_examples 'rejects the type and adds an error' do
+          it 'adds an error' do
+            service = described_class.new(
+              container: project, current_user: user, params: { work_item_type_id: task_type.id }
+            )
+            allow(service).to receive(:work_item_type_provider).and_return(
+              instance_double(
+                WorkItems::TypesFramework::Provider,
+                fetch_work_item_type: namespaced_type,
+                default_issue_type: WorkItems::TypesFramework::Provider.new.default_issue_type
+              )
+            )
+
+            issue = service.execute
+
+            expect(issue.errors[:work_item_type]).to include(
+              s_('WorkItem|could not be found or is not accessible.')
+            )
+          end
+        end
+
+        context 'when disabled via visibility controls' do
+          let(:namespaced_type) do
+            WorkItems::TypesFramework::NamespacedType.new(
+              task_type, enabled: false, is_a_group: false, tasks_on_boards: false
+            )
+          end
+
+          it_behaves_like 'rejects the type and adds an error'
+        end
+
+        context 'when type is archived' do
+          let(:namespaced_type) do
+            archived_type = instance_double(
+              WorkItems::TypesFramework::SystemDefined::Type,
+              base_type: 'task',
+              archived?: true,
+              only_for_group?: false,
+              creatable?: true
+            )
+
+            WorkItems::TypesFramework::NamespacedType.new(
+              archived_type, enabled: true, is_a_group: false, tasks_on_boards: false
+            )
+          end
+
+          it_behaves_like 'rejects the type and adds an error'
+        end
+
+        context 'when importing' do
+          let(:namespaced_type) do
+            WorkItems::TypesFramework::NamespacedType.new(
+              task_type, enabled: false, is_a_group: false, tasks_on_boards: false
+            )
+          end
+
+          it 'skips the visibility check and assigns the disabled type' do
+            service = described_class.new(
+              container: project, current_user: user, params: { work_item_type_id: task_type.id }
+            )
+            allow(service).to receive(:work_item_type_provider).and_return(
+              instance_double(
+                WorkItems::TypesFramework::Provider,
+                fetch_work_item_type: namespaced_type,
+                default_issue_type: WorkItems::TypesFramework::Provider.new.default_issue_type
+              )
+            )
+
+            allow(Issue).to receive(:new).and_wrap_original do |method, *args, **kwargs|
+              method.call(*args, **kwargs).tap { |issue| issue.importing = true }
+            end
+
+            issue = service.execute
+
+            expect(issue.errors[:work_item_type]).to be_empty
+          end
+        end
+      end
     end
 
     context 'when a service account with composite identity is in use' do

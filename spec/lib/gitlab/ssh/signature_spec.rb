@@ -257,6 +257,34 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
       end
     end
 
+    context 'when committer email is an unconfirmed secondary email of the key owner' do
+      let(:committer_email) { 'unconfirmed-secondary@example.com' }
+
+      before do
+        create(:email, user: user, email: committer_email, confirmed_at: nil)
+      end
+
+      it 'reports same_user_different_email status' do
+        expect(signature.verification_status).to eq(:same_user_different_email)
+      end
+    end
+
+    context 'when committer email is a confirmed secondary email of the key owner' do
+      let(:committer_email) { 'confirmed-secondary@example.com' }
+
+      before do
+        create(:email, :confirmed, user: user, email: committer_email)
+      end
+
+      it_behaves_like 'verified signature'
+    end
+
+    context 'when committer email is the private commit email of the key owner' do
+      let(:committer_email) { user.private_commit_email }
+
+      it_behaves_like 'verified signature'
+    end
+
     context 'when no user exist with the committer email' do
       before do
         user.delete

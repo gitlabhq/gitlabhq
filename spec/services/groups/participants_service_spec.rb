@@ -19,34 +19,14 @@ RSpec.describe Groups::ParticipantsService, feature_category: :groups_and_projec
       parent_group.add_developer(developer)
     end
 
-    before do
-      stub_feature_flags(disable_all_mention: false)
-    end
-
     it 'returns results in correct order' do
       expect(service_result.pluck(:username)).to eq([
-        'all', developer.username, parent_group.full_path, group.full_path, subgroup.full_path
+        developer.username, parent_group.full_path, group.full_path, subgroup.full_path
       ])
     end
 
-    it 'includes `All Group Members`' do
-      group.add_developer(create(:user))
-
-      # These should not be included in the count for the @all entry
-      subgroup.add_developer(create(:user))
-      subproject.add_developer(create(:user))
-
-      expect(service_result).to include(a_hash_including({ username: "all", name: "All Group Members", count: 1 }))
-    end
-
-    context 'when `disable_all_mention` FF is enabled' do
-      before do
-        stub_feature_flags(disable_all_mention: true)
-      end
-
-      it 'does not include `All Group Members`' do
-        expect(service_result).not_to include(a_hash_including({ username: "all", name: "All Group Members" }))
-      end
+    it 'does not include `All Group Members`' do
+      expect(service_result).not_to include(a_hash_including({ username: "all", name: "All Group Members" }))
     end
 
     it 'returns all members in parent groups, sub-groups, and sub-projects' do

@@ -9,7 +9,7 @@ title: GitLab Duo CLI（`duo`）
 
 - プラン: Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-- ステータス: 実験的機能
+- ステータス: ベータ版
 
 {{< /details >}}
 
@@ -23,11 +23,15 @@ title: GitLab Duo CLI（`duo`）
 {{< history >}}
 
 - GitLab 18.9で[実験的機能](../../policy/development_stages_support.md#experiment)として導入されました。
-- GitLab CLIに実験的に`glab` 1.87.0で[追加](https://gitlab.com/gitlab-org/cli/-/merge_requests/2838)されました。
-
+- [追加](https://gitlab.com/gitlab-org/cli/-/merge_requests/2838)されました。GitLab CLIに実験として`glab` 1.87.0に、GitLab 18.9のリリース中に。
+- GitLab 18.10のリリース中に、GitLab Duo CLI 8.68.0でモデル選択オプションと環境変数が[導入](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.68.0)されました。
+- GitLab 18.10のリリース中に、GitLab Duo CLI 8.76.0でモデル選択スラッシュコマンドが[導入](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.76.0)されました。
+- GitLab 18.11で実験からベータに[変更](https://gitlab.com/groups/gitlab-org/-/work_items/19716)されました。
+- 環境変数とユーザーレベルのAgent Skillsを有効にするオプションは、GitLab 19.0リリース中に、GitLab Duo CLI 8.83.0で[実験](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.83.0)として[導入](../../policy/development_stages_support.md#experiment)されました。
+ 
 {{< /history >}}
 
-GitLab Duo CLIは、ターミナルに[GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md)をもたらすコマンドラインインターフェースツールです。どのオペレーティングシステムやエディタでも使用でき、`duo`を使用してコードベースに関する複雑な質問をしたり、ユーザーに代わって自律的にアクションを実行させたりできます。
+GitLab Duo CLIは、ターミナルに[GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md)をもたらすコマンドラインインターフェースツールです。どのオペレーティングシステムとエディタでも使用でき、CLIを使用してコードベースに関する複雑な質問をしたり、あなたの代わりに自律的にアクションを実行したりできます。
 
 GitLab Duo CLIは、以下を支援します:
 
@@ -39,12 +43,16 @@ GitLab Duo CLIは、以下を支援します:
 
 GitLab Duo CLIには、2つのモードがあります:
 
-- インタラクティブモード: GitLab UIまたはエディタ拡張機能内のGitLab Duo Chatと同様のチャットエクスペリエンスを提供します。
+- インタラクティブモード: GitLab UIまたはエディタ拡張機能内のGitLab Duo Chatと同様のチャットエクスペリエンスを提供します。ビルドモードとプランモードをサポートします。
 - ヘッドレスモード: Runner、スクリプト、その他の自動化されたワークフローで非インタラクティブに使用できます。
+
+また、GitLab Duo Agent Platform用に設定された[カスタム指示](../duo_agent_platform/customize/_index.md)もサポートしており、`chat-rules.md`、`AGENTS.md`、`SKILL.md`ファイルが含まれます。
 
 ## 前提条件 {#prerequisites}
 
+- GitLab 18.11以降。
 - [GitLab Duo Agent Platformの前提条件](../duo_agent_platform/_index.md#prerequisites)を満たしてください。
+- [ベータ版および実験的機能](../duo_agent_platform/turn_on_off.md#turn-on-beta-and-experimental-features)が有効になっている。
 
 ## GitLab Duo CLIをセットアップする {#set-up-the-gitlab-duo-cli}
 
@@ -58,7 +66,7 @@ GitLab Duo CLIには、2つのモードがあります:
 
 前提条件: 
 
-- [GitLab CLI](https://docs.gitlab.com/cli/) 1.87.0以降
+- [GitLab CLI](https://docs.gitlab.com/cli/) 1.87.0以降。
 - GitLab CLIは[認証済み](https://docs.gitlab.com/cli/#authenticate-with-gitlab)です。
 
 GitLab CLIを介してGitLab Duo CLIを使用するようにセットアップするには:
@@ -197,7 +205,7 @@ GitLab Duo CLIをインタラクティブモードで使用するには:
 
    {{< /tabs >}}
 
-1. ターミナルウィンドウにプロンプト`Duo`が表示されます。プロンプトの後に質問またはリクエストを入力し、<kbd>Enter</kbd>を押します。
+1. プロンプト`>`があなたのターミナルウィンドウに表示されます。プロンプトの後に質問またはリクエストを入力し、<kbd>Enter</kbd>を押します。
 
    例: 
 
@@ -213,10 +221,40 @@ GitLab Duo CLIをインタラクティブモードで使用するには:
 
 GitLab Duo CLIの動作中に応答をキャンセルするには、<kbd>Escape</kbd>を押します。GitLab Duo CLIは現在の操作を停止し、プロンプトに戻ります。
 
+<kbd>↑</kbd>キーを使用してプロンプトの履歴を表示するか、<kbd>Control</kbd>+<kbd>R</kbd>で検索します。
+
+#### ビルドモードとプランモードを切り替える {#switch-between-build-and-plan-modes}
+
+インタラクティブモードでは、作業中にGitLab Duo CLIを2つのモードで切り替えることができます:
+
+| モード                 | 権限 | 仕組み                                                                  |
+|----------------------|-------------|-------------------------------------------------------------------------------|
+| ビルドモード（デフォルト） | 読み取り/書き込み  | GitLab Duoはタスクを実行し、プロジェクトに変更を加えることができます。               |
+| プランモード            | 読み取り専用   | GitLab Duoは、変更を加えることなくプロジェクトを分析し、プランを作成できます。 |
+
+たとえば、プランモードでGitLab Duoと問題について議論することから始めます。準備ができたら、ビルドモードに切り替えて、GitLab Duoにプランを実行するように指示します。
+
+GitLab Duo CLIは、`>`プロンプトの下に現在のモードを表示します。モードを切り替えるには、<kbd>Tab</kbd>を押します。
+
+#### スラッシュコマンド {#slash-commands}
+
+インタラクティブモードでは、スラッシュコマンドを使用してGitLab Duo CLIを設定し、アクションを実行します。プロンプトでスラッシュコマンドを入力し、<kbd>Enter</kbd>を押します。
+
+以下のスラッシュコマンドが利用可能です:
+
+| コマンド      | 説明                                         |
+|--------------|-----------------------------------------------------|
+| `/copy`      | 最後のGitLab Duoの応答をクリップボードにコピーします。 |
+| `/feedback`  | バグレポートまたは機能リクエストを送信します。             |
+| `/help`      | 利用可能なスラッシュコマンドのリストを表示します。         |
+| `/model`     | 現在のセッションのAIモデルを切り替えます。        |
+| `/new`       | 新しいチャットセッションを開始します。                           |
+| `/sessions`  | セッションを参照、検索、切り替えます。                |
+
 ### ヘッドレスモード {#headless-mode}
 
 > [!caution]
-> ヘッドレスモードは、制御されたサンドボックス環境で注意して使用してください。
+> ヘッドレスモードは、注意して制御された[サンドボックス環境](../../editor_extensions/security_considerations.md#use-development-containers-for-isolation)で使用してください。
 
 非インタラクティブモードでワークフローを実行するには、セットアップに応じたコマンドを使用します:
 
@@ -261,18 +299,6 @@ duo run --goal "Fix these errors: $eslint_output"
 - 手動によるツール承認をバイパスし、すべてのツールの使用を自動的に承認します。
 - 以前の会話からのコンテキストを保持しません。`run`コマンドを実行するたびに新しいワークフローが開始されます。
 
-## スラッシュコマンド {#slash-commands}
-
-インタラクティブモードでは、スラッシュコマンドを使用して、AIモデルにメッセージを送信せずにアクションを実行します。プロンプトでスラッシュコマンドを入力し、<kbd>Enter</kbd>を押します。
-
-以下のスラッシュコマンドが利用可能です:
-
-| コマンド | 説明 |
-|---------|-------------|
-| `/copy`   | 最後のGitLab Duoの応答をクリップボードにコピーします。 |
-| `/help`   | 利用可能なスラッシュコマンドのリストを表示します。 |
-| `/model`  | 現在のセッションのAIモデルを切り替えます。 |
-
 ## モデルを選択する {#select-a-model}
 
 インタラクティブモードまたはヘッドレスモードでモデルを選択できます。
@@ -287,7 +313,7 @@ duo run --goal "Fix these errors: $eslint_output"
 
 インタラクティブモードでモデルを選択するには:
 
-1. インタラクティブモードで、`/model`コマンドを入力します。
+1. インタラクティブモードで、`/model`と入力し、<kbd>Enter</kbd>を押します。
 1. 矢印キーを使用して利用可能なモデルのリストをスクロールするか、モデル名を入力してリストを絞り込みます。
 1. モデルを選択し、<kbd>Enter</kbd>を押して切り替えます。
 
@@ -360,6 +386,20 @@ duo run --goal "Fix these errors: $eslint_output"
 
    {{< /tabs >}}
 
+## セッションの切り替え {#switch-sessions}
+
+GitLab Duo Chatセッションは、会話の履歴とワークフローデータを保存し、GitLab Duo CLI、GitLab UI、およびエディタ拡張機能全体で共有されます。
+
+たとえば、ブラウザで会話を開始し、ターミナルで続けることができます。
+
+セッションを参照して切り替えるには:
+
+1. インタラクティブモードで、`/sessions`と入力し、<kbd>Enter</kbd>を押します。
+1. 矢印キーを使用して利用可能なセッションのリストをスクロールするか、テキストを入力してリストをフィルターします。
+1. セッションを選択し、<kbd>Enter</kbd>を押します。
+
+ヘッドレスモードでセッションに切り替えるには、`--existing-session-id`オプションを使用します。
+
 ## Model Context Protocol（MCP）接続 {#model-context-protocol-mcp-connections}
 
 GitLab Duo CLIをローカルまたはリモートのMCPサーバーに接続するには、GitLab IDE拡張機能と同じMCP設定を使用します。手順については、[MCPサーバーを設定する](../gitlab_duo/model_context_protocol/mcp_clients.md#configure-mcp-servers)を参照してください。
@@ -372,6 +412,7 @@ GitLab Duo CLIは、次のオプションをサポートしています:
 - `-h, --help`: GitLab Duo CLIまたは特定のコマンドのヘルプを表示します。例: `duo --help`、`duo run --help`。
 - `--log-level <level>`: ログレベルを設定します（`debug`、`info`、`warn`、`error`）。
 - `-v`、`--version`: バージョン情報を表示します。
+- `--enable-global-skills`: （実験的）ユーザーレベルの[Agent Skills](../duo_agent_platform/customize/agent_skills.md#create-user-level-skills)を有効にします。
 - `--model <model>`: セッションに使用するAIモデルを選択します。
 
 ヘッドレスモードの追加オプション:
@@ -422,6 +463,7 @@ GitLab Duo CLIは、次のオプションをサポートしています:
 - `DUO_WORKFLOW_GIT_HTTP_USER`: Git HTTP認証ユーザー名。
 - `GITLAB_BASE_URL`または`GITLAB_URL`: GitLabインスタンスのURL。
 - `GITLAB_DUO_MODEL`: セッションに使用するAIモデル。
+- `GITLAB_ENABLE_GLOBAL_SKILLS`: （実験的）ユーザーレベルの[Agent Skills](../duo_agent_platform/customize/agent_skills.md#create-user-level-skills)を有効にします。
 - `GITLAB_OAUTH_TOKEN`または`GITLAB_TOKEN`: 認証トークン。
 - `LOG_LEVEL`: ログレベル。
 
@@ -515,3 +557,5 @@ GitLab Duo CLIへのコントリビュートについては、[開発ガイド](
 
 - [エディタ拡張機能のセキュリティに関する考慮事項](../../editor_extensions/security_considerations.md)
 - [GitLab CLI](https://docs.gitlab.com/cli/)
+- [GitLab Duo Agent Platformをカスタマイズする](../duo_agent_platform/customize/_index.md)
+- [GitLab Duo Agent Platformセッション](../duo_agent_platform/sessions/_index.md)

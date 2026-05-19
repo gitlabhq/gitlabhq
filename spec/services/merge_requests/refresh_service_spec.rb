@@ -178,29 +178,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           expect(merge_status_updates.values.sum).to eq(2)
         end
 
-        context 'when batch_merge_status_updates feature flag is disabled' do
-          before do
-            stub_feature_flags(batch_merge_status_updates: false)
-          end
-
-          it 'updates merge status individually with more queries' do
-            recorder = ActiveRecord::QueryRecorder.new do
-              refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-            end
-
-            expect(@merge_request.reload.merge_status).to eq('unchecked')
-            expect(@another_merge_request.reload.merge_status).to eq('unchecked')
-            expect(@fork_merge_request.reload.merge_status).to eq('unchecked')
-            expect(extra_merge_request1.reload.merge_status).to eq('cannot_be_merged_recheck')
-            expect(extra_merge_request2.reload.merge_status).to eq('cannot_be_merged_recheck')
-
-            # Individual updates would have one UPDATE per MR (5 MRs)
-            merge_status_updates = recorder.occurrences_starting_with('UPDATE "merge_requests" SET "merge_status"')
-            expect(merge_status_updates.values.sum).to eq 5
-          end
-        end
-
-        context 'when auto_merge_on_mark_as_unchecked feature flag is enabled' do
+        context 'with auto-merge enabled MRs' do
           let!(:auto_merge_mr) do
             create(
               :merge_request,
@@ -277,30 +255,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
               skipped_mrs = auto_merge_mrs.reject { |mr| enqueued_mr_ids.include?(mr.id) }
               expect(skipped_mrs.size).to eq(5)
             end
-          end
-        end
-
-        context 'when auto_merge_on_mark_as_unchecked feature flag is disabled' do
-          let!(:auto_merge_mr) do
-            create(
-              :merge_request,
-              source_project: @project,
-              source_branch: 'feature3',
-              target_branch: 'master',
-              merge_status: 'can_be_merged',
-              auto_merge_enabled: true,
-              merge_user: @user
-            )
-          end
-
-          before do
-            stub_feature_flags(auto_merge_on_mark_as_unchecked: false)
-          end
-
-          it 'does not enqueue AutoMergeProcessWorker' do
-            expect(AutoMergeProcessWorker).not_to receive(:perform_in)
-
-            refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
           end
         end
       end

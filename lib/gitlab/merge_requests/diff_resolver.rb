@@ -14,7 +14,7 @@ module Gitlab
         return merge_request.compare if merge_request.compare
         return commit if commit.present?
         return merge_request.merge_head_diff if merge_head_diff?
-        return merge_request.merge_request_diff if diff_id.blank?
+        return merge_request.latest_merge_request_diff || merge_request.merge_request_diff if diff_id.blank?
 
         merge_request_diff_by_id
       end
@@ -24,7 +24,11 @@ module Gitlab
       attr_reader :merge_request, :params
 
       def merge_head_diff?
-        merge_request.diffable_merge_ref? && diff_id.blank? && start_sha.blank?
+        merge_request.diffable_merge_ref? && start_sha.blank? && (diff_id.blank? || latest_diff_id?)
+      end
+
+      def latest_diff_id?
+        merge_request.latest_merge_request_diff_id == diff_id.to_i
       end
 
       def commit

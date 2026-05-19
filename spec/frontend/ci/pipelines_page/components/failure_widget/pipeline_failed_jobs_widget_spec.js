@@ -5,7 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
+import { setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import FailedJobsList from '~/ci/pipelines_page/components/failure_widget/failed_jobs_list.vue';
 import getPipelineFailedJobsCount from '~/ci/pipelines_page/graphql/queries/get_pipeline_failed_jobs_count.query.graphql';
@@ -57,7 +57,6 @@ describe('PipelineFailedJobsWidget component', () => {
   const findFailedJobsList = () => wrapper.findComponent(FailedJobsList);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findCount = () => wrapper.findComponent(GlBadge);
-  const findFeedbackButton = () => wrapper.findByTestId('feedback-button');
 
   describe('when there are failed jobs', () => {
     beforeEach(async () => {
@@ -96,10 +95,6 @@ describe('PipelineFailedJobsWidget component', () => {
     it('the failed jobs button has the correct "aria-expanded" attribute value', () => {
       expect(findFailedJobsButton().attributes('aria-expanded')).toBe('true');
     });
-
-    it('displays feedback button', () => {
-      expect(findFeedbackButton().exists()).toBe(true);
-    });
   });
 
   describe('when the job details are not expanded', () => {
@@ -113,10 +108,6 @@ describe('PipelineFailedJobsWidget component', () => {
 
     it('the failed jobs button has the correct "aria-expanded" attribute value', () => {
       expect(findFailedJobsButton().attributes('aria-expanded')).toBe('false');
-    });
-
-    it('does not display feedback button', () => {
-      expect(findFeedbackButton().exists()).toBe(false);
     });
   });
 
@@ -165,7 +156,7 @@ describe('PipelineFailedJobsWidget component', () => {
 
       await waitForPromises();
 
-      expect(toggleQueryPollingByVisibility).toHaveBeenCalled();
+      expect(setupQueryPollingByVisibility).toHaveBeenCalled();
     });
   });
 

@@ -4,6 +4,7 @@ query mergeRequest($projectPath: ID!, $iid: String!) {
     mergeRequest(iid: $iid) {
       id
       title
+      titleHtml
       createdAt
       state
       headPipeline {

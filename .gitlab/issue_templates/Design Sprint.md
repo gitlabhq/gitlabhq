@@ -75,7 +75,7 @@ We will use FigJam for most of the Sprint collaboration. Some of the things we w
 - Create the first draft of the prototype.
 - **The FigJam link can be found here:** (FigJam Link)
 
-### Video and/or Screen REcording Tool (Quicktime, Zoom or another tool you are using)
+### Video and/or Screen Recording Tool (Quicktime, Zoom or another tool you are using)
 
 As part of the pre-Sprint homework, you will be asked to record a short Lightning Walkthrough video (don't worry, this will be explained in detail during the Sprint :smile:). You can use any tool you feel comfortable with as long as it can capture your screen, mouse pointer, and audio.
 
@@ -161,7 +161,7 @@ Deciding which persona we are focusing on will be part of the Day 1 discussions 
 
 | Activity | Type of Activity | Duration | Tool | Description |
 |----------|------------------|----------|------|-------------|
-| Introduction to Design Sprints | Async | 20 Minutes | Video Recording | • The facilitator gives an overview of the Sprint, including details about what they are, why they are used, and why they can help solve the problem for this Sprint. <br/> • The facilitator gives participants an overview of what they need to complete a Design Sprint such as a run down of the rules, and supples, as well as an agenda and basic expectations. <br/> • The facilitator gives participants an overview of the problem we will be solving and allows for an async Q&A period. |
+| Introduction to Design Sprints | Async | 20 Minutes | Video Recording | • The facilitator gives an overview of the Sprint, including details about what they are, why they are used, and why they can help solve the problem for this Sprint. <br/> • The facilitator gives participants an overview of what they need to complete a Design Sprint such as a run down of the rules, and supplies, as well as an agenda and basic expectations. <br/> • The facilitator gives participants an overview of the problem we will be solving and allows for an async Q&A period. |
 | Icebreaker | Async | 5 Minutes | FigJam | • All Sprint participants give an async introduction in FigJam. |
 | Q&A Period | Async | 5 Minutes | GitLab and Slack | • Participants can ask questions about the Sprint. (Optional) |
 | Record Lightning Talk | Async | 10 Minutes | Zoom | • Participants record their Lightning Talk. |

@@ -82,7 +82,7 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
     subject.perform
   end
 
-  context 'payload computation' do
+  context 'when computing payload' do
     describe "RawUsageData creation" do
       it 'creates RawUsageData entry when there is NO entry with the same recorded_at timestamp' do
         expect { subject.perform }.to change { RawUsageData.count }.by(1)

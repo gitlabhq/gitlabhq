@@ -175,7 +175,7 @@ you should disable all cron jobs except for those related to Geo.
 To monitor queues and disable jobs:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Monitoring** > **Background jobs**.
+1. In the left sidebar, select **Monitoring** > **Background jobs**.
 1. In the Sidekiq dashboard, select **Cron** and disable jobs individually or all at once by selecting **Disable All**.
 
 ### Incident management

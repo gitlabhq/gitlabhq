@@ -1,0 +1,9 @@
+---
+name: short_ttl_approval_cache
+description: Short-TTL Redis cache for MR approval state in the mergeability check framework
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227379
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/593675
+milestone: '19.0'
+type: gitlab_com_derisk
+group: group::code review
+default_enabled: false

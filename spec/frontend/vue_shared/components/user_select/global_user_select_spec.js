@@ -40,6 +40,23 @@ describe('Global user select dropdown', () => {
     expect(findTokenSelector().props('dropdownItems')).toMatchObject(usersMock);
   });
 
+  describe('textInputAttrs', () => {
+    it('does not include id when inputId prop is not provided', () => {
+      expect(findTokenSelector().props('textInputAttrs')).toEqual({
+        'data-testid': 'global-user-select-input',
+      });
+    });
+
+    it('includes id when inputId prop is provided', async () => {
+      await wrapper.setProps({ inputId: 'my-custom-id' });
+
+      expect(findTokenSelector().props('textInputAttrs')).toEqual({
+        'data-testid': 'global-user-select-input',
+        id: 'my-custom-id',
+      });
+    });
+  });
+
   describe('when searching', () => {
     it('passes search term to users API', async () => {
       findTokenSelector().vm.$emit('text-input', 'ro');

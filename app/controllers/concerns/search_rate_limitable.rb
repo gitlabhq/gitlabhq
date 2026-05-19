@@ -22,6 +22,6 @@ module SearchRateLimitable
   def safe_search_scope
     # Sometimes search scope can have abusive length or invalid keyword. We don't want
     # to send those to redis for rate limit checks, so we guard against that here.
-    params[:scope] unless Gitlab::Search::Params.new(params).abusive?
+    params[:scope] unless Search::Params.new(params).abusive?
   end
 end

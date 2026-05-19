@@ -24,6 +24,64 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
     expect(graphql_data['project']['repository']).to be_present
   end
 
+  context 'when authorizing granular token permissions' do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_code] do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:query) do
+        graphql_query_for(
+          'project',
+          { fullPath: project.full_path },
+          query_graphql_field('repository', {}, 'rootRef')
+        )
+      end
+
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL',
+      [:read_project, :read_code, :read_repository_tree] do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:query) do
+        graphql_query_for(
+          'project',
+          { fullPath: project.full_path },
+          query_graphql_field('repository', {}, <<~QUERY)
+            tree(path:"", ref:"#{project.default_branch}") {
+              __typename
+            }
+          QUERY
+        )
+      end
+
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL',
+      [:read_project, :read_code, :read_repository_tree, :read_repository_blob] do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:query) do
+        graphql_query_for(
+          'project',
+          { fullPath: project.full_path },
+          query_graphql_field('repository', {}, <<~QUERY)
+            tree(path:"", ref:"#{project.default_branch}") {
+              blobs {
+                nodes {
+                  webPath
+                }
+              }
+            }
+          QUERY
+        )
+      end
+
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+  end
+
   context 'as a non-authorized user' do
     let(:current_user) { create(:user) }
 
@@ -219,17 +277,17 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
           it 'respects the passed value' do
             expect(repository)
               .to have_received(:list_commits)
-              .with(a_hash_including(pagination_params: { limit: first + 1 }))
+              .with(a_hash_including(pagination_params: { limit: first }))
           end
         end
 
         context 'with a page size exceeding the max_page_size' do
           let(:first) { max_page_size + 1 }
 
-          it 'respects the default_max_page_size' do
+          it 'respects the max_page_size' do
             expect(repository)
               .to have_received(:list_commits)
-              .with(a_hash_including(pagination_params: { limit: max_page_size + 1 }))
+              .with(a_hash_including(pagination_params: { limit: max_page_size }))
           end
         end
 
@@ -237,7 +295,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
           it 'picks the fields max_page_size' do
             expect(repository)
               .to have_received(:list_commits)
-              .with(a_hash_including(pagination_params: { limit: max_page_size + 1 }))
+              .with(a_hash_including(pagination_params: { limit: max_page_size }))
           end
         end
 
@@ -247,7 +305,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
           it 'picks the fields max_page_size' do
             expect(repository)
               .to have_received(:list_commits)
-              .with(a_hash_including(pagination_params: { limit: max_page_size + 1 }))
+              .with(a_hash_including(pagination_params: { limit: max_page_size }))
           end
         end
 
@@ -261,7 +319,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
           it 'passes the decoded page_token' do
             expect(repository)
               .to have_received(:list_commits)
-              .with(a_hash_including(pagination_params: { limit: max_page_size + 1, page_token: page_token }))
+              .with(a_hash_including(pagination_params: { limit: max_page_size, page_token: page_token }))
           end
         end
       end

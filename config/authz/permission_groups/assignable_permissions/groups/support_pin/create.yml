@@ -1,0 +1,9 @@
+---
+name: create_support_pin
+description: Grants the ability to create support PINs
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - create_user_support_pin

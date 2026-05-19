@@ -7,7 +7,7 @@ FactoryBot.define do
     redirect_uri { generate(:url) }
     owner
     owner_type { 'User' }
-    organization
+    organization { association(:common_organization) }
     device_code_enabled { false }
   end
 

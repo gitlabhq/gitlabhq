@@ -47,7 +47,7 @@ If **Model registry** is not available, ensure that it has been enabled.
 To enable the model registry or set the [visibility level](../../../public_access.md) to public or private:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Model registry**, ensure the toggle is on and select who you want to have access.
    Users must have at least the [Reporter role](../../../permissions.md#roles) to modify

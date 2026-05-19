@@ -49,10 +49,24 @@ RSpec.describe 'Update a label', feature_category: :team_planning do
 
     it_behaves_like 'successfully updates the archived status'
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_label do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) { graphql_mutation(:labelUpdate, input, 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'with group label' do
       let(:label) { create(:group_label, group: group) }
 
       it_behaves_like 'successfully updates the archived status'
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :update_label do
+        let(:user) { current_user }
+        let(:boundary_object) { group }
+        let(:mutation) { graphql_mutation(:labelUpdate, input, 'errors') }
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
     end
 
     context 'when label does not exist' do

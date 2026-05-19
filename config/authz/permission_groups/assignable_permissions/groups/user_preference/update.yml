@@ -1,7 +1,10 @@
 ---
 name: update_user_preference
 description: Grants the ability to update user preferences
+deprecated: true
 boundaries:
   - user
+available_for:
+  - granular_access_token
 permissions:
   - update_user_preference

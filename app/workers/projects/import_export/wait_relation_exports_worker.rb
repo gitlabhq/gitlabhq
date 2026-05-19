@@ -61,7 +61,7 @@ module Projects
 
       def fail_started_jobs_no_longer_running
         started_relation_exports.each do |relation_export|
-          next if Gitlab::SidekiqStatus.running?(relation_export.jid)
+          next if Gitlab::SidekiqStatus.running_or_enqueued?(relation_export.jid)
           next if relation_export.reset.finished?
 
           log_error(message: 'Relation export job no longer running', relation: relation_export.relation)

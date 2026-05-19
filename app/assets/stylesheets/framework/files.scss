@@ -316,6 +316,7 @@ span.idiff {
   }
 }
 
+// stylelint-disable-next-line gitlab/no-js-class
 #js-openapi-viewer {
   pre.version,
   code {
@@ -495,6 +496,10 @@ span.idiff {
     flex: none;
     @apply gl-bg-subtle;
     border-left: 3px solid;
+
+    @include gl-media-breakpoint-down(md) {
+      width: 200px;
+    }
 
     .commit-row-title {
       display: flex;

@@ -1,7 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlPopover, GlButton, GlTooltipDirective, GlFormInput } from '@gitlab/ui';
-import { GL_COLOR_ORANGE_50, GL_COLOR_ORANGE_200 } from '@gitlab/ui/src/tokens/build/js/tokens';
 import $ from 'jquery';
 import { escapeRegExp } from 'lodash-es';
 import { MARKDOWN_EVENT_SHOW, MARKDOWN_EVENT_HIDE } from '~/behaviors/preview_markdown';
@@ -36,8 +35,6 @@ import { FIND_AND_REPLACE_FOCUSABLE_SELECTOR } from './constants';
 
 export default {
   findAndReplace: {
-    highlightColor: GL_COLOR_ORANGE_50,
-    highlightColorActive: GL_COLOR_ORANGE_200,
     highlightClass: 'js-highlight',
     highlightClassActive: 'js-highlight-active',
   },
@@ -275,7 +272,6 @@ export default {
 
         if (previousActive) {
           previousActive.classList.remove(options.highlightClassActive);
-          previousActive.style.backgroundColor = options.highlightColor;
         }
 
         const newActive = this.cloneDiv
@@ -284,7 +280,6 @@ export default {
 
         if (newActive) {
           newActive.classList.add(options.highlightClassActive);
-          newActive.style.backgroundColor = options.highlightColorActive;
         }
       },
     },
@@ -339,7 +334,7 @@ export default {
       this.tag = '';
 
       const transformed = CopyAsGFM.transformGFMSelection(documentFragment);
-      const area = this.$el.parentNode.querySelector('textarea');
+      const area = this.$el.parentNode.querySelector('textarea.js-gfm-input');
 
       CopyAsGFM.nodeToGFM(transformed)
         .then((gfm) => {
@@ -348,7 +343,7 @@ export default {
         .catch(() => {});
     },
     getCurrentTextArea() {
-      return this.$el.closest('.md-area')?.querySelector('textarea');
+      return this.$el.closest('.md-area')?.querySelector('textarea.js-gfm-input');
     },
     insertIntoTextarea(text) {
       const textArea = this.getCurrentTextArea();
@@ -404,7 +399,7 @@ export default {
       this.insertIntoTextarea(savedReply);
 
       setTimeout(() => {
-        this.$el.closest('.md-area')?.querySelector('textarea')?.focus();
+        this.$el.closest('.md-area')?.querySelector('textarea.js-gfm-input')?.focus();
       }, 500);
     },
     findAndReplace_show(_, form) {
@@ -501,41 +496,40 @@ export default {
       // RegExp.escape is not available in jest environment and some older browsers
       const escapedText = (RegExp.escape || escapeRegExp).call(null, textToFind);
 
-      // Regex with global modifier maintains state between calls, causing inconsistent behaviour.
-      // So we have to test against a regexp without the global flag when matching segments.
-      const regexWithoutG = new RegExp(escapedText, 'g');
-
+      // Split with a capturing group: match segments land at odd indices, non-matches at even.
+      // This avoids a regex `.test()` call per segment and sidesteps the `lastIndex` pitfall
+      // that comes with reusing a regex that has the global flag.
       const segments = textArea.value.split(new RegExp(`(${escapedText})`, 'g'));
       const options = this.$options.findAndReplace;
 
-      // Clear previous contents
-      this.cloneDiv.innerHTML = '';
+      // Build all nodes in a DocumentFragment so the DOM is updated in a single operation.
+      const fragment = document.createDocumentFragment();
       let counter = 0;
 
-      segments.forEach((segment) => {
-        // If the segment matches the text we're highlighting
-        if (regexWithoutG.test(segment)) {
+      segments.forEach((segment, index) => {
+        if (index % 2 === 1) {
+          // Odd index → this segment is a match
           const span = document.createElement('span');
           span.classList.add(options.highlightClass);
-          span.style.backgroundColor = options.highlightColor;
-          span.style.display = 'inline-block';
           span.textContent = segment; // Use textContent for safe text insertion
 
           // Highlight first match
           if (counter === 0) {
             span.classList.add(options.highlightClassActive);
-            span.style.backgroundColor = options.highlightColorActive;
           }
 
-          this.cloneDiv.appendChild(span);
+          fragment.appendChild(span);
           this.findAndReplace.totalMatchCount += 1;
           counter += 1;
         } else {
-          // Otherwise, just append the plain text
-          const textNode = document.createTextNode(segment);
-          this.cloneDiv.appendChild(textNode);
+          // Even index → plain text between matches
+          fragment.appendChild(document.createTextNode(segment));
         }
       });
+
+      // Clear previous contents and attach all new nodes at once
+      this.cloneDiv.innerHTML = '';
+      this.cloneDiv.appendChild(fragment);
 
       if (this.findAndReplace.totalMatchCount > 0) {
         this.findAndReplace.highlightedMatchIndex = 1;
@@ -617,12 +611,15 @@ export default {
         this.findAndReplace.highlightedMatchIndex = 1;
       }
     },
-    findAndReplace_replaceNext() {
+    async findAndReplace_replaceNext() {
       const textArea = this.getCurrentTextArea();
 
       if (!textArea || !textArea.value.length) {
         return false;
       }
+
+      // Save position before the re-highlight resets it to 1.
+      const savedIndex = this.findAndReplace.highlightedMatchIndex;
 
       function findNthOccurrence(str, searchStr, n) {
         let index = -1;
@@ -648,20 +645,44 @@ export default {
       textArea.setSelectionRange(index, index + this.findAndReplace.find.length);
       insertText(textArea, this.findAndReplace.replace);
 
-      // Re-higlight
-      this.findAndReplace_highlightMatchingText(this.findAndReplace.find);
+      // Re-highlight and then restore the match position. The replaced match
+      // is gone so the total drops by one; clamp to the new total so that
+      // replacing the last occurrence wraps correctly instead of going out
+      // of bounds.
+      await this.findAndReplace_highlightMatchingText(this.findAndReplace.find);
+
+      if (this.findAndReplace.totalMatchCount > 0) {
+        this.findAndReplace.highlightedMatchIndex = Math.min(
+          savedIndex,
+          this.findAndReplace.totalMatchCount,
+        );
+      }
 
       return true;
     },
     async findAndReplace_replaceAll() {
-      let hasNextMatch = null;
+      const textArea = this.getCurrentTextArea();
 
-      while (hasNextMatch !== false) {
-        hasNextMatch = this.findAndReplace_replaceNext();
+      if (!textArea || !textArea.value.length || !this.findAndReplace.find) {
+        return;
       }
+
+      const escapedText = (RegExp.escape || escapeRegExp).call(null, this.findAndReplace.find);
+      const newValue = textArea.value.replace(
+        new RegExp(escapedText, 'g'),
+        this.findAndReplace.replace,
+      );
+
+      // Replace the entire textarea content in a single undoable operation, then
+      // re-highlight once — instead of looping replaceNext() which would trigger
+      // a full DOM rebuild after every individual replacement.
+      textArea.setSelectionRange(0, textArea.value.length);
+      insertText(textArea, newValue);
+
+      await this.findAndReplace_highlightMatchingText(this.findAndReplace.find);
     },
     skipToInput() {
-      this.$el.closest('.md-area')?.querySelector('textarea')?.focus();
+      this.$el.closest('.md-area')?.querySelector('textarea.js-gfm-input')?.focus();
     },
   },
   shortcuts: {

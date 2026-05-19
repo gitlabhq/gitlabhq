@@ -223,7 +223,7 @@ gemnasium-python:
 dependency-scanning:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "v0"
+    SECURE_BINARIES_ANALYZER_VERSION: "2"
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bdependency-scanning\b/'
 

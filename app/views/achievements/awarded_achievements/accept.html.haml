@@ -1,0 +1,6 @@
+= render 'confirmation',
+  title: s_("Achievements|Accept achievement"),
+  description: s_("Achievements|Are you sure you want to accept the %{bold_start}%{achievement_name}%{bold_end} achievement? It will be shown on your profile."),
+  action_url: accept_awarded_achievement_path(id: params[:id], force: true),
+  button_variant: :confirm,
+  button_text: s_("Achievements|Accept")

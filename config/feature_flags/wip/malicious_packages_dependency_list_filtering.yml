@@ -1,0 +1,10 @@
+---
+name: malicious_packages_dependency_list_filtering
+description: Enables the `malware` filter argument on the project and group dependency list GraphQL APIs.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/587758
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235800
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/600025
+milestone: '19.0'
+group: group::security infrastructure
+type: wip
+default_enabled: false

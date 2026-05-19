@@ -11,7 +11,6 @@ import Tracking from '~/tracking';
 import {
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
   NAME_TO_ENUM_MAP,
-  NAME_TO_ROUTE_MAP,
   NEW_WORK_ITEM_GID,
   STATE_CLOSED,
   WIDGET_TYPE_ASSIGNEES,
@@ -32,14 +31,13 @@ import {
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_LINKED_RESOURCES,
   WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_NOTIFICATIONS,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_STATUS,
   WIDGET_TYPE_TIME_TRACKING,
   WIDGET_TYPE_VULNERABILITIES,
   WIDGET_TYPE_WEIGHT,
-  WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
 } from './constants';
 import {
   CLOSED_AT_ASC,
@@ -102,6 +100,7 @@ export const findEmailParticipantsWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_EMAIL_PARTICIPANTS);
 
 export const findErrorTrackingWidget = (workItem) =>
+  workItem?.features?.errorTracking ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ERROR_TRACKING);
 
 export const findHealthStatusWidget = (workItem) =>
@@ -114,28 +113,44 @@ export const findIterationWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ITERATION);
 
 export const findLabelsWidget = (workItem) =>
+  workItem?.features?.labels ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
 
 export const findLinkedItemsWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS);
 
+export const findBlockerLinkedItems = (workItem) =>
+  workItem?.features?.linkedItems?.linkedItems?.nodes ||
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS)?.linkedItems?.nodes;
+
+export const findOpenChildItemsCountsByType = (workItem) =>
+  workItem?.features?.hierarchy?.rolledUpCountsByType ||
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)?.rolledUpCountsByType;
+
 export const findLinkedResourcesWidget = (workItem) =>
+  workItem?.features?.linkedResources ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_RESOURCES);
 
 export const findMilestoneWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_MILESTONE);
+
+export const findNotificationsWidget = (workItem) =>
+  workItem?.features?.notifications ||
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_NOTIFICATIONS);
 
 export const findNotesWidget = (workItem) =>
   workItem?.features?.notes ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_NOTES);
 
 export const findStartAndDueDateWidget = (workItem) =>
+  workItem?.features?.startAndDueDate ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE);
 
 export const findStatusWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_STATUS);
 
 export const findTimeTrackingWidget = (workItem) =>
+  workItem?.features?.timeTracking ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_TIME_TRACKING);
 
 export const findVulnerabilitiesWidget = (workItem) =>
@@ -209,17 +224,13 @@ export const autocompleteDataSources = (autocompleteSourcesPaths = {}) => {
   return sources;
 };
 
-// the path for creating a new work item of that type, e.g. /groups/gitlab-org/-/epics/new
-export const newWorkItemPath = ({ fullPath, isGroup = false, workItemType, query = '' }) => {
+/**
+ * Constructs the path for creating a new work item
+ */
+export const newWorkItemPath = ({ fullPath, isGroup = false, query = '' }) => {
   const domain = gon.relative_url_root || '';
   const basePath = isGroup ? `groups/${fullPath}` : fullPath;
-  // We have a special case to redirect to /groups/my-group/-/work_items/new
-  // instead of /groups/my-group/-/issues/new
-  const type =
-    isGroup && workItemType === WORK_ITEM_TYPE_NAME_ISSUE
-      ? WORK_ITEM_TYPE_ROUTE_WORK_ITEM
-      : NAME_TO_ROUTE_MAP[workItemType] || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
-  return `${domain}/${basePath}/-/${type}/new${query}`;
+  return `${domain}/${basePath}/-/work_items/new${query}`;
 };
 
 export const getDisplayReference = (workItemFullPath, workitemReference) => {
@@ -302,7 +313,7 @@ export const getToggleFromLocalStorage = (key, defaultValue = true) => {
  * @param {string} issuableType
  * @returns {string}
  */
-export const makeDrawerItemFullPath = (activeItem, fullPath, issuableType = TYPE_ISSUE) => {
+export const makeDetailPanelItemFullPath = (activeItem, fullPath, issuableType = TYPE_ISSUE) => {
   if (activeItem?.fullPath) {
     return activeItem.fullPath;
   }
@@ -324,11 +335,11 @@ export const makeDrawerItemFullPath = (activeItem, fullPath, issuableType = TYPE
  * @param {string} issuableType
  * @returns {{iid: string, full_path: string, id: number}}
  */
-export const makeDrawerUrlParam = (activeItem, fullPath, issuableType = TYPE_ISSUE) => {
+export const makeDetailPanelUrlParam = (activeItem, fullPath, issuableType = TYPE_ISSUE) => {
   return btoa(
     JSON.stringify({
       iid: activeItem.iid,
-      full_path: makeDrawerItemFullPath(activeItem, fullPath, issuableType),
+      full_path: makeDetailPanelItemFullPath(activeItem, fullPath, issuableType),
       id: getIdFromGraphQLId(activeItem.id),
     }),
   );
@@ -528,7 +539,7 @@ export const getWorkItemTypeAllowedStatusMap = (workItemTypeNodes) => {
   workItemTypeNodes.forEach((workItemType) => {
     const statuses = workItemType.widgetDefinitions?.find(isStatusWidget)?.allowedStatuses;
     if (statuses) {
-      workItemTypeAllowedStatusMap[workItemType.name.toUpperCase()] = statuses;
+      workItemTypeAllowedStatusMap[workItemType.id] = statuses;
     }
   });
 
@@ -743,6 +754,4 @@ export function getSortedWorkItems(workItems, sortKey) {
   return sortWorkItems(workItems, sortKey, getSortValue);
 }
 
-export function getAllItemsDraftFiltersStorageKey(fullPath) {
-  return `${fullPath}-all-items-draft-filters`;
-}
+export const isWorkplanTemplate = (name) => Boolean(name?.endsWith('.plan'));

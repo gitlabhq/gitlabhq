@@ -82,18 +82,17 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     it 'builds the email correctly' do
       aggregate_failures do
         is_expected.to have_referable_subject(item, include_project: false, reply: reply_in_subject)
-        is_expected.to have_body_text(expected_template_html)
 
         expect(subject.attachments.count).to eq(attachments_count.to_i)
 
-        if attachments_count.to_i > 0
-          # Envelope for emails with attachments is always multipart/mixed
-          expect(subject.content_type).to include('multipart/mixed')
-          # Template content only renders a html body, so ensure its content type is set accordingly
-          expect(subject.parts.first.content_type).to include('text/html')
-        else
-          expect(subject.content_type).to include('text/html')
-        end
+        expect(subject.content_type).to include('multipart/alternative')
+
+        expect(subject.text_part.content_type).to include('text/plain')
+        expect(subject.html_part.content_type).to include('text/html')
+        expect(subject.html_part.body.to_s).to include(expected_template_html)
+
+        expected_plain_text = CGI.unescapeHTML(ActionController::Base.helpers.strip_tags(expected_template_html))
+        expect(subject.text_part.body.to_s).to include(expected_plain_text)
       end
     end
   end
@@ -186,6 +185,25 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       it_behaves_like 'a service desk notification email with template content'
     end
 
+    context 'when rendered HTML contains entities' do
+      let(:template_content) { 'Tom & Jerry' }
+      let(:expected_template_html) { 'Tom &amp; Jerry' }
+
+      before do
+        expect(Gitlab::Template::ServiceDeskTemplate).to receive(:find)
+          .with(template_key, item.project)
+          .and_return(template)
+      end
+
+      it 'decodes HTML entities in the plaintext part' do
+        aggregate_failures do
+          expect(subject.html_part.body.to_s).to include('Tom &amp; Jerry')
+          expect(subject.text_part.body.to_s).to include('Tom & Jerry')
+          expect(subject.text_part.body.to_s).not_to include('&amp;')
+        end
+      end
+    end
+
     context 'when issue description placeholder is used' do
       let(:template_content) { 'thank you, your new issue has been created. %{ISSUE_DESCRIPTION}' }
       let(:expected_template_html) { "<p dir=\"auto\">thank you, your new issue has been created. </p>#{item.description_html}" }
@@ -209,7 +227,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
         end
 
         it 'does not render GitLab-specific-reference links with title attribute' do
-          expect(subject.body.to_s).to include(expected_template_html)
+          expect(subject.html_part.body.to_s).to include(expected_template_html)
         end
       end
     end
@@ -390,21 +408,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
         let(:template_content) { 'some text %{ NOTE_TEXT  }' }
 
-        context 'when `disable_all_mention` is disabled' do
-          before do
-            stub_feature_flags(disable_all_mention: false)
-          end
-
-          it_behaves_like 'a service desk notification email with template content'
-        end
-
-        context 'when `disable_all_mention` is enabled' do
-          before do
-            stub_feature_flags(disable_all_mention: true)
-          end
-
-          it_behaves_like 'a service desk notification email with template content'
-        end
+        it_behaves_like 'a service desk notification email with template content'
       end
     end
 

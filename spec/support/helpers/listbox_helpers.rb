@@ -2,7 +2,7 @@
 
 module ListboxHelpers
   def select_from_listbox(text, from:, exact_item_text: false)
-    click_button from
+    find('.gl-new-dropdown-toggle:not(.disabled)', text: from).click
     select_listbox_item(text, exact_text: exact_item_text)
   end
 
@@ -37,5 +37,14 @@ module ListboxHelpers
 
   def expect_listbox_items(items)
     expect(find_all('.gl-new-dropdown-item[role="option"]').map(&:text)).to eq(items)
+  end
+
+  def expect_listbox_role_names(items)
+    expect(find_all('[data-testid="role-name"]').map(&:text)).to eq(items)
+  end
+
+  def expect_listbox_role_description(role_name, description)
+    item = find('.gl-new-dropdown-item[role="option"]', text: role_name)
+    expect(item).to have_css('[data-testid="role-description"]', text: description)
   end
 end

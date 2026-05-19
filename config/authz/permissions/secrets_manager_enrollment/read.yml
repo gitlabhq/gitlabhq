@@ -1,0 +1,3 @@
+---
+name: read_secrets_manager_enrollment
+description: Grants the ability to read Secrets Manager enrollment status.

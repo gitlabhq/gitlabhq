@@ -887,8 +887,10 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
         wait_for_requests
 
-        expect(page).to have_css('[data-testid="job-sidebar"].right-sidebar-collapsed', visible: false)
-        expect(page).not_to have_css('[data-testid="job-sidebar"].right-sidebar-expanded', visible: false)
+        expect(page).to have_css('[data-testid="job-sidebar"].right-sidebar-collapsed', visible: :hidden)
+        expect(page).not_to have_css('[data-testid="job-sidebar"].right-sidebar-expanded', visible: :hidden)
+
+        expect(page).not_to have_css('[data-testid="job-sidebar"]', visible: :visible)
       end
     end
 

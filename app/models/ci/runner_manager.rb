@@ -95,16 +95,6 @@ module Ci
       where(system_xid: system_xid)
     end
 
-    scope :with_executing_builds, -> do
-      where_exists(
-        Ci::Build
-          .joins(:runner_manager_build)
-          .executing
-          .where("#{::Ci::Build.quoted_table_name}.runner_id = #{quoted_table_name}.runner_id")
-          .where("#{::Ci::RunnerManagerBuild.quoted_table_name}.runner_machine_id = #{quoted_table_name}.id")
-      )
-    end
-
     scope :order_id_desc, -> { order(id: :desc) }
     scope :order_contacted_at_desc, -> { order(arel_table[:contacted_at].desc.nulls_last) }
 
@@ -150,6 +140,17 @@ module Ci
       else
         '^\d+\.'
       end
+    end
+
+    def self.ids_with_running_builds(ids)
+      return [] if ids.empty?
+
+      id_in(ids).where_exists(
+        ::Ci::RunningBuild
+          .joins(:runner_manager_build)
+          .where("#{::Ci::RunningBuild.quoted_table_name}.runner_id = #{quoted_table_name}.runner_id")
+          .where("#{::Ci::RunnerManagerBuild.quoted_table_name}.runner_machine_id = #{quoted_table_name}.id")
+      ).limit(ids.size).pluck(:id)
     end
 
     def uncached_contacted_at

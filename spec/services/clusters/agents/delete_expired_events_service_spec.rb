@@ -21,14 +21,14 @@ RSpec.describe Clusters::Agents::DeleteExpiredEventsService, feature_category: :
     end
 
     it 'does not delete events if the limit has not been reached' do
-      expect { subject }.not_to change(agent.activity_events, :count)
+      expect { subject }.not_to change { agent.activity_events.count }
     end
 
     context 'there are more events than the limit' do
       let(:deletion_cutoff) { event3.recorded_at }
 
       it 'removes events to remain at the limit, keeping the most recent' do
-        expect { subject }.to change(agent.activity_events, :count).from(5).to(3)
+        expect { subject }.to change { agent.activity_events.count }.from(5).to(3)
         expect(agent.activity_events).to contain_exactly(event1, event2, event3)
       end
     end

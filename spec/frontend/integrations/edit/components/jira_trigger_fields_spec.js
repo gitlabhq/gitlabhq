@@ -1,15 +1,15 @@
 import { GlFormCheckbox } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
+import { useIntegrationForm } from '~/integrations/edit/store';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('JiraTriggerFields', () => {
   let wrapper;
-  let store;
 
   const defaultProps = {
     initialTriggerCommit: false,
@@ -18,15 +18,16 @@ describe('JiraTriggerFields', () => {
   };
 
   const createComponent = (props, isInheriting = false) => {
-    store = new Vuex.Store({
-      getters: {
-        isInheriting: () => isInheriting,
-      },
+    const pinia = createTestingPinia({ stubActions: false });
+    const store = useIntegrationForm();
+    Object.assign(store, {
+      defaultState: isInheriting ? {} : null,
+      override: !isInheriting,
     });
 
     wrapper = mountExtended(JiraTriggerFields, {
       propsData: { ...defaultProps, ...props },
-      store,
+      pinia,
     });
   };
 

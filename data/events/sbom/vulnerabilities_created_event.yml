@@ -1,0 +1,6 @@
+---
+event: Sbom::VulnerabilitiesCreatedEvent
+description: Published when new vulnerabilities are created from SBOM findings during
+  vulnerability scanning, carrying a batch of finding payloads.
+feature_category: software_composition_analysis
+ee_only: true

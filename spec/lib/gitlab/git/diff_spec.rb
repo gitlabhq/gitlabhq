@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Git::Diff, feature_category: :source_code_management do
 
   before do
     @raw_diff_hash = {
-      diff: <<EOT.gsub(/^ {8}/, "").sub(/\n$/, ""),
+      diff: <<DIFF.gsub(/^ {8}/, "").sub(/\n$/, ""),
         @@ -4,3 +4,6 @@
          [submodule "gitlab-shell"]
          \tpath = gitlab-shell
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Git::Diff, feature_category: :source_code_management do
         +	path = gitlab-grack
         +	url = https://gitlab.com/gitlab-org/gitlab-grack.git
 
-EOT
+DIFF
       new_path: ".gitmodules",
       old_path: ".gitmodules",
       a_mode: '100644',
@@ -515,6 +515,76 @@ EOT
         diff = diffs[7]
 
         expect(diff.unidiff).to eq("Binary files /dev/null and b/test%2Ebin differ\n")
+      end
+    end
+  end
+
+  describe '#from_id and #to_id' do
+    context 'when initialized from a Gitaly diff' do
+      let(:diff) { described_class.new(gitaly_diff) }
+
+      it 'stores from_id' do
+        expect(diff.from_id).to eq('0792c58905eff3432b721f8c4a64363d8e28d9ae')
+      end
+
+      it 'stores to_id' do
+        expect(diff.to_id).to eq('efd587ccb47caf5f31fc954edb21f0a713d9ecc3')
+      end
+    end
+
+    context 'when initialized from a hash' do
+      let(:diff) { described_class.new(@raw_diff_hash) }
+
+      it 'does not have from_id' do
+        expect(diff.from_id).to be_nil
+      end
+
+      it 'does not have to_id' do
+        expect(diff.to_id).to be_nil
+      end
+    end
+
+    context 'when from_id is a blank ref (new file)' do
+      let(:diff) do
+        described_class.new(
+          Gitlab::GitalyClient::Diff.new(
+            from_path: 'new_file.rb', to_path: 'new_file.rb',
+            old_mode: 0, new_mode: 0100644,
+            from_id: Gitlab::Git::SHA1_BLANK_SHA,
+            to_id: 'efd587ccb47caf5f31fc954edb21f0a713d9ecc3',
+            patch: ''
+          )
+        )
+      end
+
+      it 'sets from_id to nil' do
+        expect(diff.from_id).to be_nil
+      end
+
+      it 'preserves to_id' do
+        expect(diff.to_id).to eq('efd587ccb47caf5f31fc954edb21f0a713d9ecc3')
+      end
+    end
+
+    context 'when to_id is a blank ref (deleted file)' do
+      let(:diff) do
+        described_class.new(
+          Gitlab::GitalyClient::Diff.new(
+            from_path: 'deleted_file.rb', to_path: 'deleted_file.rb',
+            old_mode: 0100644, new_mode: 0,
+            from_id: '0792c58905eff3432b721f8c4a64363d8e28d9ae',
+            to_id: Gitlab::Git::SHA1_BLANK_SHA,
+            patch: ''
+          )
+        )
+      end
+
+      it 'preserves from_id' do
+        expect(diff.from_id).to eq('0792c58905eff3432b721f8c4a64363d8e28d9ae')
+      end
+
+      it 'sets to_id to nil' do
+        expect(diff.to_id).to be_nil
       end
     end
   end

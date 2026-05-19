@@ -83,11 +83,11 @@ export default {
         @input="$emit('update-job', 'script', $event)"
       />
     </gl-form-group>
-    <gl-form-group id="job-tags-input" :label="$options.i18n.TAGS">
+    <gl-form-group id="job-tags-input" :label="$options.i18n.TAGS" label-for="job-tags-input-field">
       <gl-token-selector
         :dropdown-items="tagOptions"
         :selected-tokens="job.tags"
-        aria-labelled-by="job-tags-input"
+        :text-input-attrs="{ id: 'job-tags-input-field' }"
         data-testid="job-tags-input"
         @input="$emit('update-job', 'tags', $event)"
       />

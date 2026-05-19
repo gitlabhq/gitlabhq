@@ -12,12 +12,22 @@ module Ci
 
       if stream.valid?
         stream.limit
-        @trace = Gitlab::Ci::Ansi2json.convert(stream.stream, state)
+        @trace = converter.convert(stream.stream, state)
       end
     end
 
     def lines
       @trace&.lines
+    end
+
+    private
+
+    def converter
+      if Feature.enabled?(:ci_ansi2json_v2, build&.project)
+        Gitlab::Ci::Ansi2json::V2
+      else
+        Gitlab::Ci::Ansi2json
+      end
     end
   end
 end

@@ -6,6 +6,10 @@ RSpec.describe 'User clicks on merge request tabs', :js, feature_category: :code
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
+  before do
+    stub_current_organization(project.organization)
+  end
+
   it 'adds entry to page history' do
     visit('/')
     visit(merge_request_path(merge_request))

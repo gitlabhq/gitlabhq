@@ -1,0 +1,8 @@
+---
+migration_job_name: RenameGranularScopePermission
+description: Renames assignable permissions per naming conventions.
+feature_category: permissions
+milestone: "19.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231333
+queued_migration_version: 20260413122813
+finalized_by:

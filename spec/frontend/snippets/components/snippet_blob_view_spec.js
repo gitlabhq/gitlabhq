@@ -30,6 +30,9 @@ describe('Blob Embeddable', () => {
     id: 'gid://foo.bar/snippet',
     webUrl: 'https://foo.bar',
     visibilityLevel: VISIBILITY_LEVEL_PUBLIC_STRING,
+    project: {
+      id: 'gid://gitlab/Project/7',
+    },
   };
   const dataMock = {
     activeViewerType: SimpleViewerMock.type,
@@ -312,6 +315,35 @@ describe('Blob Embeddable', () => {
         findBlobContent().vm.$emit(BLOB_RENDER_EVENT_SHOW_SOURCE);
         expect(wrapper.vm.activeViewerType).toEqual(SimpleViewerMock.type);
       });
+    });
+  });
+
+  describe('GetBlobContent query', () => {
+    it('passes projectId when snippet has a project', async () => {
+      const handler = mockDefaultHandler();
+      createComponent({ handler });
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          projectId: 'gid://gitlab/Project/7',
+        }),
+      );
+    });
+
+    it('does not pass projectId when snippet has no project', async () => {
+      const handler = mockDefaultHandler();
+      createComponent({
+        snippetProps: { project: null },
+        handler,
+      });
+      await waitForPromises();
+
+      expect(handler).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          projectId: expect.anything(),
+        }),
+      );
     });
   });
 });

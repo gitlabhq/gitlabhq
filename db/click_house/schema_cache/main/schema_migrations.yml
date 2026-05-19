@@ -1,0 +1,22 @@
+---
+name: schema_migrations
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(applied_at) PRIMARY KEY version ORDER BY version SETTINGS
+  index_granularity = 8192
+primary_key: version
+sorting_key: version
+settings:
+  index_granularity: '8192'
+columns:
+- name: version
+  type: LowCardinality(String)
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: active
+  type: UInt8
+  default_kind: DEFAULT
+  default_expression: '1'
+- name: applied_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')

@@ -64,7 +64,7 @@ export default {
       this.$emit('scroll', { offset: e.target.scrollTop });
     },
   },
-  // Harcoded to set the height and easier computation of emojis visibility
+  // Hardcoded to set the height and easier computation of emojis visibility
   areaHeight: 253,
 };
 </script>

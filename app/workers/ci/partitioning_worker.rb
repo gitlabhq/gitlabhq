@@ -18,6 +18,7 @@ module Ci
 
       Ci::Partitions::CreateService.new(ci_partition_current).execute
       Ci::Partitions::SyncService.new(ci_partition_current).execute
+      Ci::Partitions::ArchiveService.new(ci_partition_current).execute
     end
   end
 end

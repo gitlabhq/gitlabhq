@@ -30,7 +30,6 @@ import {
   findStatusWidget,
   getDisplayReference,
 } from '../../utils';
-import { routeForWorkItemTypeName } from '../../router/utils';
 import WorkItemRelationshipIcons from './work_item_relationship_icons.vue';
 
 export default {
@@ -215,17 +214,12 @@ export default {
       if (shouldDefaultNavigate || !hasListRoute) {
         this.$emit('click', e);
       } else {
-        const { useWorkItemUrl } = this.glFeatures;
-        const workItemTypeName = workItem.workItemType.name.toLowerCase();
-        const workItemTypeParameter = useWorkItemUrl
-          ? WORK_ITEM_TYPE_ROUTE_WORK_ITEM
-          : routeForWorkItemTypeName(workItemTypeName);
         e.preventDefault();
         this.$router.push({
           name: 'workItem',
           params: {
             iid: workItem.iid,
-            type: workItemTypeParameter,
+            type: WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
           },
         });
       }

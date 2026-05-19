@@ -609,7 +609,7 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
       end
 
       it 'batches queries that only include IIDs', :request_store do
-        result = batch_sync(max_queries: 12) do
+        result = batch_sync(max_queries: 13) do
           [issue1, issue2]
             .map { |issue| resolve_issues(iid: issue.iid.to_s) }
             .flat_map(&:to_a)

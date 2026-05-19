@@ -48,6 +48,26 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
 
       it { is_expected.to be(false) }
     end
+
+    context 'when checking work_items tab' do
+      let(:tab) { :work_items }
+
+      context 'when user has ability' do
+        before do
+          allow(search_navigation).to receive(:can?).with(user, :read_work_item, project_double).and_return(true)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when user does not have ability' do
+        before do
+          allow(search_navigation).to receive(:can?).with(user, :read_work_item, project_double).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
   end
 
   describe '#tabs' do

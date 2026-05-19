@@ -264,3 +264,6 @@ export const SUPPORTED_KUSTOMIZATIONS = [
   'kustomize.toolkit.fluxcd.io/v1beta2',
   'kustomize.toolkit.fluxcd.io/v1beta1',
 ];
+
+export const ROUTE_NAME_LOGS = 'logs';
+export const ROUTE_NAME_ENVIRONMENT_DETAILS = 'environment_details';

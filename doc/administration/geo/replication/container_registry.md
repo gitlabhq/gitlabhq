@@ -175,7 +175,7 @@ For each application and Sidekiq node on the **secondary** site:
 To verify container registry replication is working, on the **secondary** site:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Nodes**.
+1. In the left sidebar, select **Geo** > **Nodes**.
    The initial replication, or "backfill", is probably still in progress.
 
 You can monitor the synchronization process on each Geo site from the **primary** site's **Geo Nodes** dashboard in your browser.
@@ -233,7 +233,7 @@ To resolve this issue:
 To help with troubleshooting, you can manually trigger the container registry replication process:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 1. In **Replication Details** for a **Secondary Site**, select **Container Repositories**.
 1. Select **Resync** for one row, or **Resync all**.
 

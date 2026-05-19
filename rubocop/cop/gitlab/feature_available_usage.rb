@@ -5,6 +5,7 @@ module RuboCop
     module Gitlab
       # Cop that checks for correct calling of #feature_available?
       class FeatureAvailableUsage < RuboCop::Cop::Base
+        RESTRICT_ON_SEND = %i[feature_available?].freeze
         OBSERVED_METHOD = :feature_available?
         LICENSED_FEATURE_LITERAL_ARG_MSG = '`feature_available?` should not be called for features that can be licensed (`%s` given), use `licensed_feature_available?(feature)` instead.'
         LICENSED_FEATURE_DYNAMIC_ARG_MSG = "`feature_available?` should not be called for features that can be licensed (`%s` isn't a literal so we cannot say if it's legit or not), using `licensed_feature_available?(feature)` may be more appropriate."
@@ -36,7 +37,6 @@ module RuboCop
         SPECIAL_CLASS = %w[License Gitlab::Saas Gitlab::Dedicated Search::Zoekt].freeze
 
         def on_send(node)
-          return unless method_name(node) == OBSERVED_METHOD
           return if caller_is_special_case?(node)
           return if feature_name(node).nil?
           return if ALL_FEATURES.include?(feature_name(node)) && args_count(node) == 2

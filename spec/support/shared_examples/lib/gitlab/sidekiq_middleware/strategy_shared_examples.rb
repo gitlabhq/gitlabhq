@@ -60,7 +60,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
         expect(fake_duplicate_job).to receive(:existing_jid).and_return('the jid')
         expect(fake_duplicate_job).not_to receive(:clear_signaling_key)
 
-        strategy.schedule(job_hash) {}
+        strategy.schedule(job_hash) { nil }
 
         expect(job_hash).to include('duplicate-of' => 'the jid')
       end
@@ -87,7 +87,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
             expect(fake_duplicate_job).to receive(:existing_jid).and_return('the jid')
             expect(fake_duplicate_job).not_to receive(:clear_signaling_key)
 
-            strategy.schedule(job_hash) {}
+            strategy.schedule(job_hash) { nil }
 
             expect(job_hash).to include('duplicate-of' => 'the jid')
           end
@@ -111,7 +111,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
               expect(fake_duplicate_job).to receive(:existing_jid).and_return('the jid')
               expect(fake_duplicate_job).not_to receive(:clear_signaling_key)
 
-              strategy.schedule(job_hash) {}
+              strategy.schedule(job_hash) { nil }
 
               expect(job_hash).to include('duplicate-of' => 'the jid')
             end
@@ -172,7 +172,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
       it 'updates latest wal location' do
         expect(fake_duplicate_job).to receive(:update_latest_wal_location!)
 
-        strategy.schedule({ 'jid' => 'new jid' }) {}
+        strategy.schedule({ 'jid' => 'new jid' }) { nil }
       end
 
       it 'returns false to drop the job' do
@@ -190,7 +190,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
         expect(Gitlab::SidekiqLogging::DeduplicationLogger).to receive(:instance).and_return(fake_logger)
         expect(fake_logger).to receive(:deduplicated_log).with(a_hash_including({ 'jid' => 'new jid' }), humanized_strategy_name, {})
 
-        strategy.schedule({ 'jid' => 'new jid' }) {}
+        strategy.schedule({ 'jid' => 'new jid' }) { nil }
       end
 
       it 'logs the deduplication options of the worker' do
@@ -200,7 +200,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
         allow(fake_duplicate_job).to receive(:options).and_return({ foo: :bar })
         expect(fake_logger).to receive(:deduplicated_log).with(a_hash_including({ 'jid' => 'new jid' }), humanized_strategy_name, { foo: :bar })
 
-        strategy.schedule({ 'jid' => 'new jid' }) {}
+        strategy.schedule({ 'jid' => 'new jid' }) { nil }
       end
     end
   end

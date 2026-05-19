@@ -7,6 +7,13 @@ module Types
 
       authorize :manage_merge_request_settings
 
+      field :cross_project_push_for_job_token_allowed,
+        GraphQL::Types::Boolean,
+        null: true,
+        description: 'Indicates the ability to push to this repository using ' \
+          'a job token from an allowlisted project',
+        method: :cross_project_push_for_job_token_allowed?,
+        authorize: :admin_project
       field :display_pipeline_variables,
         GraphQL::Types::Boolean,
         null: true,

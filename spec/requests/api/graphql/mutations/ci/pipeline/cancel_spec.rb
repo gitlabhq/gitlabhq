@@ -27,6 +27,19 @@ RSpec.describe 'PipelineCancel', feature_category: :pipeline_composition do
 
   let(:mutation_response) { graphql_mutation_response(:pipeline_cancel) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :cancel_pipeline do
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(
+        :pipeline_cancel,
+        { id: pipeline.to_global_id.to_s },
+        'errors'
+      )
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'does not cancel any pipelines not owned by the current user' do
     build = create(:ci_build, :running, pipeline: pipeline)
 

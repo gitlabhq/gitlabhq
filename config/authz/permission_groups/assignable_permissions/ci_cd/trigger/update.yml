@@ -3,5 +3,7 @@ name: update_trigger
 description: Grants the ability to update pipeline triggers
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - update_trigger

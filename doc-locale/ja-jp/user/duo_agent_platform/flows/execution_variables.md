@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: フロー実行変数
 ---
 
@@ -22,16 +22,16 @@ title: フロー実行変数
 |----------|-------------|
 | `CI_PROJECT_ID` | プロジェクトID。 |
 | `CI_PROJECT_NAME` | プロジェクト名。 |
-| `CI_PROJECT_PATH` | 名前空間付きのプロジェクトパス。 |
+| `CI_PROJECT_PATH` | ネームスペース付きのプロジェクトパス。 |
 | `CI_PROJECT_URL` | プロジェクトHTTP URL。 |
-| `CI_PROJECT_NAMESPACE` | プロジェクト名前空間。 |
+| `CI_PROJECT_NAMESPACE` | プロジェクトのネームスペース。 |
 | `CI_PROJECT_VISIBILITY` | プロジェクトの表示レベル（`public`、`internal`、または`private`）。 |
 | `CI_DEFAULT_BRANCH` | デフォルトのブランチ名。 |
 | `CI_JOB_ID` | ジョブID。 |
 | `CI_JOB_URL` | ジョブURL。 |
 | `CI_JOB_TOKEN` | ジョブ認証トークン。 |
 | `CI_JOB_IMAGE` | ジョブに使用されるDockerイメージ。 |
-| `CI_JOB_STATUS` | ジョブのステータス。 |
+| `CI_JOB_STATUS` | ジョブステータス。 |
 | `CI_JOB_TIMEOUT` | ジョブのタイムアウト（秒単位）。 |
 | `CI_JOB_STARTED_AT` | ジョブ開始タイムスタンプ（ISO 8601形式）。 |
 | `CI_PIPELINE_ID` | パイプラインID。 |
@@ -42,9 +42,9 @@ title: フロー実行変数
 | `CI_DEPENDENCY_PROXY_PASSWORD` | 依存プロキシのパスワード。 |
 | `CI_REPOSITORY_URL` | 認証情報が埋め込まれたGitクローンURL。 |
 | `CI_RUNNER_VERSION` | Runnerバージョン。 |
-| `CI_RUNNER_EXECUTABLE_ARCH` | Runnerアーキテクチャ（例：`linux/amd64`）。 |
+| `CI_RUNNER_EXECUTABLE_ARCH` | Runnerアーキテクチャ（例: `linux/amd64`）。 |
 | `CI_SERVER` | CI/CD環境では常に`yes`。 |
-| `CI_WORKLOAD_REF` | フロー実行のワークロード参照（例：`refs/workloads/c727f70ba7f`）。これはGitのブランチではなく、Gitの操作には使用できません。 |
+| `CI_WORKLOAD_REF` | フロー実行のワークロード参照（例: `refs/workloads/c727f70ba7f`）。これらは内部Git参照であり、パイプラインジョブが完了するか失敗したときに自動的に削除されます。|
 
 ### 環境変数 {#environment-variables}
 
@@ -55,7 +55,7 @@ title: フロー実行変数
 | 変数 | 説明 | 例 |
 |----------|-------------|---------|
 | `DUO_WORKFLOW_GIT_HTTP_BASE_URL` | GitLabインスタンスのベースURL。`CI_SERVER_URL`の代わりに使用します。 | `https://gitlab.com` |
-| `DUO_WORKFLOW_PROJECT_ID` | プロジェクトID:`CI_PROJECT_ID`と同じ値。 | `77056053` |
+| `DUO_WORKFLOW_PROJECT_ID` | プロジェクトID。`CI_PROJECT_ID`と同じ値。 | `77056053` |
 | `DUO_WORKFLOW_NAMESPACE_ID` | ネームスペースID。 | `91555435` |
 | `DUO_WORKFLOW_GOAL` | フローをトリガーしたイシューのURL。 | `https://gitlab.com/group/project/-/issues/10` |
 | `DUO_WORKFLOW_DEFINITION` | フロー定義識別子。 | `developer/v1` |
@@ -67,7 +67,7 @@ title: フロー実行変数
 | `DUO_WORKFLOW_GIT_AUTHOR_EMAIL` | サービスアカウントのメール。Git作成者のメールとして使用されます。 | `service_account_group_<ID>@noreply.gitlab.com` |
 | `DUO_WORKFLOW_GIT_AUTHOR_USER_NAME` | サービスアカウントの名前。Git作成者名として使用されます。 | `Duo Developer` |
 | `GITLAB_BASE_URL` | GitLabインスタンスのベースURL。`DUO_WORKFLOW_GIT_HTTP_BASE_URL`と同じ値。 | `https://gitlab.com` |
-| `GITLAB_PROJECT_PATH` | 名前空間付きのプロジェクトのフルパス。`CI_PROJECT_PATH`と同じ値。 | `my-group/my-project` |
+| `GITLAB_PROJECT_PATH` | ネームスペース付きのプロジェクトのフルパス。`CI_PROJECT_PATH`と同じ値。 | `my-group/my-project` |
 | `GITLAB_TOKEN` | GitLab APIアクセス用のOAuthトークン。`DUO_WORKFLOW_GIT_HTTP_PASSWORD`と同じ値。 | *（OAuthトークン）* |
 | `AGENT_PLATFORM_GITLAB_VERSION` | フローを実行しているGitLabバージョン。 | `18.9.0` |
 
@@ -88,7 +88,7 @@ title: フロー実行変数
 | `GITLAB_USER_LOGIN`、`GITLAB_USER_EMAIL`、`GITLAB_USER_NAME` | このジョブは、トリガーユーザーではなく、サービスアカウントとして実行されます。 |
 | `CI_PIPELINE_SOURCE`、`CI_PIPELINE_IID` | ワークロード変数ゲートによってフィルタリングされます。 |
 
-### ユーザーID {#user-identity}
+### ユーザーアイデンティティ {#user-identity}
 
 フロー実行中に使用されるCIジョブトークンは、[複合ID](../composite_identity.md)トークンであり、トリガーユーザーとサービスアカウントの両方を表します。
 
@@ -110,7 +110,7 @@ title: フロー実行変数
 
 標準の`CI_SERVER_URL`変数は使用できません。代わりに、`GITLAB_BASE_URL`または`DUO_WORKFLOW_GIT_HTTP_BASE_URL`を使用してください。
 
-たとえば、`setup_script`でAPIコールを行うには:
+たとえば、`setup_script`でAPIコールを行うには、以下を実行します:
 
 ```yaml
 setup_script:

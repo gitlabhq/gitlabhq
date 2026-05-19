@@ -29,7 +29,7 @@ module Organizations
             "GitlabSubscriptions::SeatAssignment", "GitlabSubscriptions::UserAddOnAssignment", "Authz::AdminRole",
             "Authz::GranularScope", "Authz::PersonalAccessTokenGranularScope",
             "MemberRole", "Ai::Catalog::ItemConsumer", "ProjectSnippet", "Snippet", "ImportFailure",
-            "Clusters::Cluster"]
+            "Clusters::Cluster", "AntiAbuse::Event"]
         end
       end
 

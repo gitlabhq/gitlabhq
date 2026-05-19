@@ -18,10 +18,10 @@ namespace :gitlab do
       user.send_only_admin_changed_your_password_notification!
 
       unless user.save
-        message = <<~EOF
+        message = <<~TEXT
           Unable to change password of the user with username #{username}.
           #{user.errors.full_messages.to_sentence}
-        EOF
+        TEXT
 
         abort(message)
       end

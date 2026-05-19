@@ -196,7 +196,7 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService, feature_catego
         it_behaves_like 'error response', "Following tags don't exist: [\"some other time\"]"
 
         it 'does not create timeline event' do
-          expect { execute }.not_to change(IncidentManagement::TimelineEvent, :count)
+          expect { execute }.not_to change { IncidentManagement::TimelineEvent.count }
         end
       end
     end

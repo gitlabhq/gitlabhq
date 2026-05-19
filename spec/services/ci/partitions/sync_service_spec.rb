@@ -60,6 +60,32 @@ RSpec.describe Ci::Partitions::SyncService, feature_category: :ci_scaling do
             .to change { ci_partition.reload.status }.from(current_status).to(active_status)
             .and change { next_ci_partition.reload.status }.from(preparing_status).to(current_status)
         end
+
+        context 'with pipelines in the outgoing partition' do
+          let_it_be(:pipeline_first) { create(:ci_pipeline, partition_id: ci_partition.id) }
+          let_it_be(:pipeline_last) { create(:ci_pipeline, partition_id: ci_partition.id) }
+
+          let_it_be(:job_first) { create(:ci_build, pipeline: pipeline_first) }
+          let_it_be(:job_last) { create(:ci_build, pipeline: pipeline_last) }
+
+          it 'records pipelines_id_range on outgoing and incoming partitions' do
+            execute_service
+
+            expect(ci_partition.reload.pipelines_id_range)
+              .to eq(pipeline_first.id...pipeline_last.id)
+            expect(next_ci_partition.reload.pipelines_id_range)
+              .to eq(pipeline_last.id.next...Float::INFINITY)
+          end
+        end
+
+        context 'when outgoing partition has no pipelines' do
+          it 'leaves pipelines_id_range nil on both partitions' do
+            execute_service
+
+            expect(ci_partition.reload.pipelines_id_range).to be_nil
+            expect(next_ci_partition.reload.pipelines_id_range).to be_nil
+          end
+        end
       end
 
       context 'when time window has not elapsed' do
@@ -68,6 +94,10 @@ RSpec.describe Ci::Partitions::SyncService, feature_category: :ci_scaling do
         end
 
         it_behaves_like 'next_ci_partition is ready, but ci_partition not updated'
+
+        it 'does not update pipelines_id_range' do
+          expect { execute_service }.not_to change { ci_partition.reload.pipelines_id_range }
+        end
       end
 
       context 'when next partition is not ready' do

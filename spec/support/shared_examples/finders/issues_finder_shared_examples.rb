@@ -949,26 +949,20 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           end
         end
 
-        context 'objective type' do
-          # As this is spec that runs only in CE and objective type is not available, we should move it to EE
+        context 'objective type', if: Gitlab.ee? do
           let!(:objective) { create(factory, :objective, project: project1) }
           let(:params) { { issue_types: ['objective'] } }
 
           it 'returns objective items' do
-            skip unless Gitlab.ee?
-
             expect(items).to contain_exactly(objective)
           end
         end
 
-        context 'key_result type' do
-          # As this is spec that runs only in CE and available type is not available, we should move it to EE
+        context 'key_result type', if: Gitlab.ee? do
           let!(:key_result) { create(factory, :key_result, project: project1) }
           let(:params) { { issue_types: ['key_result'] } }
 
           it 'returns key_result items' do
-            skip unless Gitlab.ee?
-
             expect(items).to contain_exactly(key_result)
           end
         end

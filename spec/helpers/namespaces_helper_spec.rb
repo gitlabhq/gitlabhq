@@ -4,13 +4,13 @@ require 'spec_helper'
 
 RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
   let_it_be(:organization) { create(:organization) }
-  let!(:admin) { create(:admin, organizations: [organization]) }
+  let_it_be(:admin) { create(:admin, organizations: [organization]) }
   let!(:admin_project_creation_level) { nil }
   let!(:admin_group) do
     create(:group, :private, project_creation_level: admin_project_creation_level, organization: organization)
   end
 
-  let!(:user) { create(:user, organizations: [organization]) }
+  let_it_be(:user) { create(:user, organizations: [organization]) }
   let!(:user_project_creation_level) { nil }
   let!(:user_group) do
     create(:group, :private, project_creation_level: user_project_creation_level, organization: organization)

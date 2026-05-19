@@ -236,7 +236,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
             .and_return([user.id, true])
 
           expect { importer.execute }
-            .to change(project.notes, :count)
+            .to change { project.notes.count }
             .by(1)
 
           expect(project.notes.last.note)

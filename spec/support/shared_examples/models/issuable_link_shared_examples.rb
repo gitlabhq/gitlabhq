@@ -17,7 +17,7 @@ RSpec.shared_examples 'issuable link' do
     it { is_expected.to validate_presence_of(:source) }
     it { is_expected.to validate_presence_of(:target) }
 
-    it do
+    it 'shows a message for already related links' do
       is_expected.to validate_uniqueness_of(:source)
                        .scoped_to(:target_id)
                        .with_message(/already related/)

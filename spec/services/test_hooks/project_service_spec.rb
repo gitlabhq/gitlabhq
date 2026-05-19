@@ -8,7 +8,7 @@ RSpec.describe TestHooks::ProjectService, feature_category: :code_testing do
   let(:current_user) { create(:user) }
 
   describe '#execute' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     let(:hook) { create(:project_hook, project: project) }
     let(:trigger) { 'not_implemented_events' }
@@ -166,7 +166,7 @@ RSpec.describe TestHooks::ProjectService, feature_category: :code_testing do
     end
 
     context 'wiki_page_events' do
-      let_it_be(:project) { create(:project, :wiki_repo) }
+      let_it_be(:project, freeze: false) { create(:project, :wiki_repo) }
 
       let(:trigger) { 'wiki_page_events' }
       let(:trigger_key) { :wiki_page_hooks }

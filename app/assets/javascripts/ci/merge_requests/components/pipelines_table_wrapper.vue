@@ -10,13 +10,15 @@ import {
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import Api from '~/api';
-import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
+import { fetchPolicies } from '~/lib/graphql';
+import { getQueryHeaders, setupQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import { s__, __ } from '~/locale';
 import getMergeRequestPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
 import getSinglePipeline from '~/ci/pipelines_page/graphql/queries/get_single_pipeline.query.graphql';
+import getPipelinesDownstream from '~/ci/merge_requests/graphql/queries/get_pipelines_downstream.query.graphql';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
 import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
@@ -92,17 +94,20 @@ export default {
       isCreatingPipeline: false,
       loaderTimeout: null,
       mergeRequestGid: null,
+      isFetchingDownstream: false,
+      downstreamData: {},
     };
   },
   apollo: {
     pipelines: {
       query: getMergeRequestPipelines,
       context() {
-        return getQueryHeaders(this.graphqlResourceEtag);
+        return {
+          ...getQueryHeaders(this.graphqlResourceEtag),
+          featureCategory: 'continuous_integration',
+        };
       },
-      // TODO: Implement proper ETag caching using graphqlEtagMergeRequestPipelines()
-      // once backend support is verified. For now, using 60s polling as backup
-      // for real-time subscriptions.
+      // TODO: Implement proper ETag caching - https://gitlab.com/gitlab-org/gitlab/-/work_items/593625
       pollInterval: 60000,
       variables() {
         return {
@@ -146,6 +151,7 @@ export default {
           this.pipelinesCount = pipelines.count;
           this.updateBadgeCount(this.pipelinesCount);
           this.subscribeToAlivePipelines();
+          this.fetchDownstreamPipelines();
         }
       },
       error() {
@@ -196,6 +202,22 @@ export default {
   computed: {
     hasPipelines() {
       return this.pipelines.length > 0;
+    },
+    pipelinesWithDownstream() {
+      return this.pipelines.map((pipeline) => {
+        const downstream = this.downstreamData[pipeline.graphqlId];
+        if (!downstream) return pipeline;
+        return {
+          ...pipeline,
+          downstream: {
+            ...pipeline.downstream,
+            nodes: this.enrichDownstreamNodes(
+              pipeline.downstream?.nodes || [],
+              downstream.nodes || [],
+            ),
+          },
+        };
+      });
     },
     isLoading() {
       return this.$apollo.queries.pipelines.loading;
@@ -312,7 +334,7 @@ export default {
     },
   },
   mounted() {
-    this.pollingVisibilityCleanup = toggleQueryPollingByVisibility(
+    this.pollingVisibilityCleanup = setupQueryPollingByVisibility(
       this.$apollo.queries.pipelines,
       60000,
     );
@@ -436,6 +458,58 @@ export default {
       });
       this.pipelineSubscriptionHandles.clear();
     },
+    // Enriches skeleton downstream nodes with full backfill details (name, path, project, etc.)
+    // while preserving existing fields (e.g. subscription-updated detailedStatus).
+    enrichDownstreamNodes(existingNodes, newNodes) {
+      return newNodes.map((newNode) => {
+        const match = existingNodes.find((n) => n.id === newNode.id);
+        return match ? { ...newNode, ...match } : newNode;
+      });
+    },
+    storeDownstreamData(fetchedPipelines) {
+      const updated = { ...this.downstreamData };
+      fetchedPipelines.forEach((fetchedPipeline) => {
+        const downstreamNodes = fetchedPipeline.downstream?.nodes || [];
+        if (!downstreamNodes.length) return;
+        updated[fetchedPipeline.id] = fetchedPipeline.downstream;
+      });
+      this.downstreamData = updated;
+    },
+    async fetchDownstreamPipelines(pipelineGraphqlId) {
+      const isBulkFetch = !pipelineGraphqlId;
+      if (isBulkFetch && this.isFetchingDownstream) return;
+
+      if (isBulkFetch) this.isFetchingDownstream = true;
+
+      try {
+        const variables = {
+          fullPath: this.targetProjectFullPath,
+          mergeRequestIid: String(this.mergeRequestId),
+        };
+
+        if (pipelineGraphqlId) {
+          variables.ids = [pipelineGraphqlId];
+        }
+
+        // no-cache prevents the backfill response from entering the Apollo cache,
+        // which would overwrite subscription-updated downstream statuses in this.pipelines.
+        const { data } = await this.$apollo.query({
+          query: getPipelinesDownstream,
+          variables,
+          fetchPolicy: fetchPolicies.NO_CACHE,
+        });
+
+        const fetchedPipelines = data?.project?.mergeRequest?.pipelines?.nodes || [];
+        this.storeDownstreamData(fetchedPipelines);
+      } catch (error) {
+        Sentry.captureException(error);
+        createAlert({
+          message: __('An error occurred while fetching downstream pipeline details.'),
+        });
+      } finally {
+        if (isBulkFetch) this.isFetchingDownstream = false;
+      }
+    },
     async refetchSinglePipeline(pipelineGid) {
       try {
         const { data } = await this.$apollo.query({
@@ -463,10 +537,12 @@ export default {
     mergePipelineUpdate(updatedPipeline) {
       const index = this.pipelines.findIndex((p) => p.graphqlId === updatedPipeline.id);
       if (index !== -1) {
+        const existing = this.pipelines[index];
         const mergedPipeline = {
           ...updatedPipeline,
           id: getIdFromGraphQLId(updatedPipeline.id),
           graphqlId: updatedPipeline.id,
+          mergeRequest: existing.mergeRequest || updatedPipeline.mergeRequest,
         };
         this.pipelines.splice(index, 1, mergedPipeline);
         this.subscribeToAlivePipelines();
@@ -474,6 +550,7 @@ export default {
     },
     onJobActionExecuted(pipeline) {
       this.refetchSinglePipeline(pipeline.graphqlId);
+      this.fetchDownstreamPipelines(pipeline.graphqlId);
     },
     /**
      * When the user clicks on the "Run pipeline" button
@@ -533,6 +610,7 @@ export default {
       }
     },
     nextPage() {
+      this.downstreamData = {};
       this.clearAllSubscriptions();
       this.pagination = {
         after: this.pageInfo?.endCursor || '',
@@ -543,6 +621,7 @@ export default {
     },
 
     prevPage() {
+      this.downstreamData = {};
       this.clearAllSubscriptions();
       this.pagination = {
         after: '',
@@ -715,7 +794,7 @@ export default {
         :show-run-pipeline-button="canRenderPipelineButton"
         :run-pipeline-button-loading="showRunPipelineButtonLoader"
         :merge-request-id="mergeRequestId"
-        :pipelines="pipelines"
+        :pipelines="pipelinesWithDownstream"
         :source-project-full-path="sourceProjectFullPath"
         class="@lg/panel:-gl-mt-px"
         @cancel-pipeline="cancelPipeline"

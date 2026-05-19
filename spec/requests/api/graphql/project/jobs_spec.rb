@@ -28,6 +28,15 @@ RSpec.describe 'Query.project.jobs', feature_category: :continuous_integration d
     QUERY
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_job] do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+
+    before_all do
+      project.add_developer(user)
+    end
+  end
+
   it 'fetches jobs' do
     post_graphql(query, current_user: user)
     expect_graphql_errors_to_be_empty

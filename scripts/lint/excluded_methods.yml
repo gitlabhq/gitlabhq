@@ -1,0 +1,83 @@
+# The methods listed here have been identified as "unused" by the linter
+#   scripts/lint/unused_methods.rb, however subsequent research shows
+#   them to be false positives, and should be ignored when running that script.
+#
+ee/app/helpers/secrets_management/enrollment_helper.rb:
+  - allow_secrets_manager_namespace_enrollment?: Called from HAML views and controllers via EE::ApplicationHelper
+  - allow_secrets_manager_instance_enrollment?: Called from HAML views and controllers via EE::ApplicationHelper
+app/models/ci/catalog/components_project.rb:
+  - fetch_component: Public API method for fetching component data by name; only called from specs currently but part of the model's interface
+app/models/project_setting.rb:
+  - reviewer_auto_assignment_enabled?: Will be used in follow-up MR for reviewer auto-assignment
+app/models/ci/catalog/components_project.rb:
+  - fetch_component: Pre-existing unused method on master; not related to this MR.
+app/models/commit_signatures/x509_commit_signature.rb:
+  - x509_commit: Accessed from lib/tasks/gitlab/x509/update.rake
+app/models/concerns/transactions.rb:
+- reset_open_transactions_baseline: Used in spec_helper.rb to configure transaction behavior
+app/models/event.rb:
+- find_sti_class: Override of an ActiveRecord internal method
+app/models/jira_import_state.rb:
+  - owner_class_attribute_default: Used internally by state_machine
+app/models/project_statistics.rb:
+  - update_wiki_size: Called dynamically, and cannot be removed unless column is removed
+  - update_snippets_size: Called dynamically, and cannot be removed unless column is removed
+  - update_lfs_objects_size: Called dynamically, and cannot be removed unless column is removed
+  - update_uploads_size: Called dynamically, and cannot be removed unless column is removed
+  - update_container_registry_size: Called dynamically, and cannot be removed unless column is removed
+app/models/project_team.rb:
+  - developer?: Used to surface access rights; referenced by specs and treated as a false positive by `scripts/lint/unused_methods.rb`.
+  - planner?: Used to surface access rights; referenced by specs and treated as a false positive by `scripts/lint/unused_methods.rb`.
+app/models/service_desk/custom_email_verification.rb:
+  - owner_class_attribute_default: Used internally by state_machine
+app/models/user.rb:
+  - inactive_message: Override of Devise method
+  - owner_class_attribute_default: Used internally by state_machine
+  - reset_password_by_token: Override of Devise method
+  - unlock_access_by_token: Override of Devise method
+  - will_save_change_to_login?: Override of Devise method
+app/helpers/sorting_titles_values_helper.rb:
+  - sort_value_stars_desc: Used to build sorting dropdowns in app/helpers/sorting_helper.rb
+app/helpers/routing/snippets_helper.rb:
+  - toggle_award_emoji_personal_snippet_path: Rails' dynamic route creation in app/helpers/award_emoji_helper.rb
+  - toggle_award_emoji_project_project_snippet_path: Rails' dynamic route creation in app/helpers/award_emoji_helper.rb
+  - toggle_award_emoji_project_project_snippet_url: Rails' dynamic route creation in app/helpers/award_emoji_helper.rb
+app/models/concerns/integrations/base/integration.rb:
+  - "#{arg}?": A metaprogramming method
+app/models/note.rb:
+  - attribute_names_for_serialization: Acts as an override of an existing private ActiveRecord method
+ee/app/helpers/ee/gitlab_routing_helper.rb:
+  - user_group_saml_omniauth_metadata_path: Used to dynamically generate a method via `#url_helper`
+app/helpers/routing/groups/members_helper.rb:
+  - request_access_group_members_path: Dynamically accessed via GroupChildEntity#request_access_path
+ee/app/models/ci/secrets/integration.rb:
+  - gcp_secret_manager?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
+  - azure_key_vault?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
+  - hashicorp_vault?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
+  - aws?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
+  - gitlab_secrets_manager?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
+ee/app/models/concerns/ee/issuable_link.rb:
+  - blocked_issuables_for_collection: Dynamically accessed by Gitlab::Graphql::Aggregations::Issuables::LazyLinksAggregate#load_queued_records
+ee/app/models/concerns/geo/blob_replicator_strategy.rb:
+  - consume_event_deleted: Called by Gitlab::Geo::Replicator#consume
+ee/app/models/concerns/geo/repository_replicator_strategy.rb:
+  - consume_event_deleted: Called by Gitlab::Geo::Replicator#consume
+ee/app/models/concerns/geo/verifiable_replicator.rb:
+  - consume_event_checksum_succeeded: Called by Gitlab::Geo::Replicator#consume
+app/models/work_items/types_framework/provider.rb:
+  - by_ids_with_widget_definition_preload: Deprecated method for old WorkItems::Type model; scheduled for removal in https://gitlab.com/gitlab-org/gitlab/-/issues/581931
+  - by_base_types_ordered_by_name: Public method on Provider, tested in specs. Temporarily unused but will be used in follow-up work
+ee/app/helpers/ee/projects_helper.rb:
+  - show_duo_otel_button?: Will be used in follow-up MR for OTel generation with duo
+ee/app/models/security/scan_profile_project_status.rb:
+  - profile_failed?: Will be used in follow-up MR to expose profile statuses via GraphQL (Task 4, #593133)
+app/models/work_item.rb:
+  - descendant_ids_for: will be used in follow-up MR
+ee/app/models/concerns/security/pipeline_execution_policy_bot_access.rb:
+  - allows_pipeline_execution_policy_bot_access?: Will be called from CI config file access integration in a follow-up MR
+ee/app/models/ai/catalog/item.rb:
+  - starred_by?: Will be used in follow-up MR adding GraphQL mutation for starring AI catalog items
+ee/app/models/ee/application_setting.rb:
+  - advanced_search_indexing_paused?: Will be used in follow-up MR !229833 for dedicated pause indexing
+app/models/ci/catalog/components_project.rb:
+  - fetch_component: Pre-existing unused method from base branch (593966-msw-infrastructure-ai-catalog)

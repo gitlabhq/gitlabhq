@@ -136,6 +136,7 @@ export const secretPushProtectionMock = {
   ),
   type: SECRET_PUSH_PROTECTION,
   available: true,
+  canUserConfigure: true,
 };
 
 export const pipelineSecretDetectionMock = {

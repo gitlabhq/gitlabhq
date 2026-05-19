@@ -7,14 +7,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Retry do
 
   shared_context 'when retry value is a numeric' do
     let(:config) { max }
-    let(:max) {}
+    let(:max) { nil }
   end
 
   shared_context 'when retry value is a hash' do
     let(:config) { { max: max, when: public_send(:when), exit_codes: exit_codes }.compact }
-    let(:when) {}
-    let(:exit_codes) {}
-    let(:max) {}
+    let(:when) { nil }
+    let(:exit_codes) { nil }
+    let(:max) { nil }
   end
 
   describe '#value' do
@@ -132,7 +132,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Retry do
 
         # Those values are documented at `doc/ci/yaml/README.md`. If any of
         # those values gets invalid, documentation must be updated. To make
-        # sure this is catched, check explicitly that all of the documented
+        # sure this is caught, check explicitly that all of the documented
         # values are valid. If they are not it means the documentation and this
         # array must be updated.
         retry_when_in_documentation = %w[

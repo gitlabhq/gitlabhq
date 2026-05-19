@@ -7,7 +7,7 @@ RSpec.describe LoadedInGroupList, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group, parent: parent) }
   let_it_be(:project) { create(:project, namespace: parent) }
 
-  before do
+  before_all do
     parent.add_developer(create(:user))
   end
 

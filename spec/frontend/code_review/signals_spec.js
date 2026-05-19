@@ -1,3 +1,4 @@
+import waitForPromises from 'helpers/wait_for_promises';
 import { start } from '~/code_review/signals';
 import diffsEventHub from '~/diffs/event_hub';
 import { EVT_MR_PREPARED, EVT_MR_DIFF_GENERATED } from '~/diffs/constants';
@@ -134,13 +135,74 @@ describe('~/code_review', () => {
               });
             });
 
-            it('emits an event and unsubscribes when the MR is prepared', async () => {
+            it('emits EVT_MR_PREPARED and unsubscribes when the MR is prepared', async () => {
               await start(callArgs);
 
               observable.next({ data: { mergeRequestMergeStatusUpdated: { preparedAt: 'x' } } });
+              await waitForPromises();
 
               expect(unsubscribeSpy).toHaveBeenCalled();
               expect(emitSpy).toHaveBeenCalledWith(EVT_MR_PREPARED);
+            });
+
+            describe('and the MR preparation is complete (preparedAt is set)', () => {
+              const freshMrData = {
+                commitCount: 3,
+                diffStatsSummary: { fileCount: 5 },
+                preparedAt: 'x',
+              };
+
+              beforeEach(() => {
+                querySpy.mockResolvedValueOnce({
+                  data: { project: { mergeRequest: { id: 'gql:id:1', preparedAt: null } } },
+                });
+                querySpy.mockResolvedValueOnce({
+                  data: { project: { mergeRequest: freshMrData } },
+                });
+              });
+
+              it('re-queries the MR with network-only fetch policy', async () => {
+                await start(callArgs);
+
+                observable.next({ data: { mergeRequestMergeStatusUpdated: { preparedAt: 'x' } } });
+                await waitForPromises();
+
+                expect(querySpy).toHaveBeenCalledTimes(2);
+                expect(querySpy).toHaveBeenLastCalledWith(
+                  expect.objectContaining({
+                    variables: { projectPath: 'x/y', iid: '1' },
+                    fetchPolicy: 'network-only',
+                  }),
+                );
+              });
+
+              it('emits EVT_MR_DIFF_GENERATED with fresh MR data', async () => {
+                await start(callArgs);
+
+                observable.next({ data: { mergeRequestMergeStatusUpdated: { preparedAt: 'x' } } });
+                await waitForPromises();
+
+                expect(emitSpy).toHaveBeenCalledWith(EVT_MR_DIFF_GENERATED, freshMrData);
+              });
+            });
+
+            describe('and the re-query fails', () => {
+              beforeEach(() => {
+                querySpy.mockResolvedValueOnce({
+                  data: { project: { mergeRequest: { id: 'gql:id:1', preparedAt: null } } },
+                });
+                querySpy.mockRejectedValueOnce(new Error('network error'));
+              });
+
+              it('does not throw and does not emit EVT_MR_DIFF_GENERATED', async () => {
+                await start(callArgs);
+
+                observable.next({ data: { mergeRequestMergeStatusUpdated: { preparedAt: 'x' } } });
+                await waitForPromises();
+
+                expect(emitSpy).toHaveBeenCalledWith(EVT_MR_PREPARED);
+                expect(emitSpy).not.toHaveBeenCalledWith(EVT_MR_DIFF_GENERATED, expect.anything());
+              });
             });
           });
         });

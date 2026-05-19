@@ -1,20 +1,48 @@
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
-import { withGitLabAPIAccess } from 'storybook_addons/gitlab_api_access';
-
+import createMockApollo from 'helpers/mock_apollo_helper';
+import savedRepliesQuery from 'ee_else_ce/vue_shared/components/markdown/saved_replies.query.graphql';
 import CommentTemplatesModal from './comment_templates_modal.vue';
 
-Vue.use(VueApollo);
+const MOCK_SAVED_REPLIES = [
+  {
+    id: 'gid://gitlab/SavedReply/1',
+    name: 'Thanks',
+    content: 'Thank you for your contribution!',
+  },
+  {
+    id: 'gid://gitlab/SavedReply/2',
+    name: 'LGTM',
+    content: 'Looks good to me! :+1:',
+  },
+  {
+    id: 'gid://gitlab/SavedReply/3',
+    name: 'Needs work',
+    content: 'This needs some additional work before it can be merged.',
+  },
+];
 
 export default {
   component: CommentTemplatesModal,
   title: 'vue_shared/markdown/comment_templates_modal',
-  decorators: [withGitLabAPIAccess],
 };
 
-const Template = (args, { argTypes, createVueApollo }) => ({
+const Template = (args, { argTypes }) => ({
   components: { CommentTemplatesModal },
-  apolloProvider: createVueApollo(),
+  apolloProvider: createMockApollo([
+    [
+      savedRepliesQuery,
+      () =>
+        Promise.resolve({
+          data: {
+            currentUser: {
+              id: 'gid://gitlab/User/1',
+              savedReplies: {
+                nodes: MOCK_SAVED_REPLIES,
+              },
+            },
+          },
+        }),
+    ],
+  ]),
   props: Object.keys(argTypes),
   template: '<CommentTemplatesModal v-bind="$props" />',
 });
@@ -28,7 +56,7 @@ Default.args = {
     },
     {
       text: 'Project comment templates',
-      href: '/qa-sandbox-136011a5d5e7/qa-test-2024-11-12-14-26-03-11787efe685f4b43/default-mr-template-project-1a6f3daa8431aae1/-/comment_templates',
+      href: '/gitlab-org/gitlab/-/comment_templates',
     },
   ],
 };

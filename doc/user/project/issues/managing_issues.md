@@ -41,7 +41,7 @@ Prerequisites:
 To edit an issue:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. To the right of the title, select **Edit**.
 1. Edit the available fields.
 1. Select **Save changes**.
@@ -117,7 +117,7 @@ Prerequisites:
 To edit multiple issues at the same time:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue**.
 1. Select **Bulk edit**. On the right, a sidebar with editable fields appears.
 1. Select the checkboxes next to each issue you want to edit.
 1. From the sidebar, edit the available fields.
@@ -158,7 +158,7 @@ Prerequisites:
 To move an issue:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Move**.
 1. Search for a project to move the issue to.
 1. Select **Move**.
@@ -198,7 +198,7 @@ Prerequisites:
 To move multiple issues at the same time:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue**.
 1. Select **Bulk edit**. On the right, a sidebar with editable fields appears.
 1. Select the checkboxes next to each issue you want to move.
 1. From the **Move** dropdown list, select the destination project.
@@ -433,7 +433,7 @@ Prerequisites:
 To disable automatic issue closing:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
+1. In the left sidebar, select **Settings** > **Repository**.
 1. Expand **Branch defaults**.
 1. Clear the **Auto-close referenced issues on default branch** checkbox.
 1. Select **Save changes**.
@@ -516,7 +516,7 @@ Prerequisites:
 To delete an issue:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Delete issue**.
 
@@ -536,7 +536,7 @@ Prerequisites:
 To change issue type:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Change type**.
 1. From the **Type** dropdown list select the new type:
@@ -597,7 +597,7 @@ Prerequisites:
 To promote an issue to an epic:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**, and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue**, and select your issue.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Change type**
 1. From the **Type** dropdown list select **Epic**.
@@ -621,7 +621,7 @@ You can use the [`/promote_to Incident` quick action](../quick_actions.md#promot
 To add an issue to an [iteration](../../group/iterations/_index.md):
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to add this issue to.
 1. Select any area outside the dropdown list.
@@ -652,7 +652,7 @@ You can use it to view, sort, and manage issues.
 To view the issue list:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue**.
 
 To set which attributes are shown in the **Work items** list, [configure display preferences](../../work_items/_index.md#configure-list-display-preferences).
 
@@ -680,7 +680,7 @@ The following sections describe how to work with the issue list.
 To filter the list of issues:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue**.
 1. Select additional filters, operators, and values as needed.
    The following filters are available:
    - Assignee
@@ -720,7 +720,7 @@ To filter the list of issues:
 To filter the list issues for text in a title or description:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue**.
 1. In the filter bar, type your search phrase.
 1. In the dropdown list that appears, select **Search for this text**.
 1. Press <kbd>Enter</kbd> or select the search icon ({{< icon name="search" >}}).
@@ -738,7 +738,7 @@ It's a limitation of PostgreSQL full text search.
 #### Filter issues by ID
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue**.
 1. In the filter bar, type `#` followed by the issue ID.
    For example, enter `#362255` to return only issue 362255.
 1. Select **Search for this text**.
@@ -785,7 +785,7 @@ To refer to an issue elsewhere in GitLab, you can use its full URL or a short re
 To copy the issue reference to your clipboard:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Copy Reference**.
 
 You can now paste the reference into another description or comment.
@@ -803,7 +803,7 @@ For more information about creating comments by sending an email and the necessa
 To copy the issue's email address:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Copy issue email address**.
 
 ## Assignees
@@ -832,7 +832,7 @@ Prerequisites:
 To change the assignee on an issue:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the right sidebar, in the **Assignees** section, select **Edit**.
 1. From the dropdown list, select the user to add as an assignee.
 1. Select any area outside the dropdown list.
@@ -878,7 +878,7 @@ Prerequisites:
 To edit health status of an issue:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the right sidebar, in the **Health status** section, select **Edit**.
 1. From the dropdown list, select the status to add to this issue:
 
@@ -934,7 +934,7 @@ Prerequisites:
 To change the status of an issue:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the right sidebar, in the **Status** section, select **Edit**.
 1. From the dropdown list, select the status.
 

@@ -1,7 +1,0 @@
-mutation setUseWorkItemsView($useWorkItemsView: Boolean) {
-  userPreferencesUpdate(input: { useWorkItemsView: $useWorkItemsView }) {
-    userPreferences {
-      useWorkItemsView
-    }
-  }
-}

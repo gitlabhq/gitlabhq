@@ -404,6 +404,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
 
         with_them do
           context 'when the granular token scopes are insufficient' do
+            let(:granular_pat) { create(:granular_pat, user: user) }
             let(:assignable) { Authz::PermissionGroups::Assignable.for_permission(permissions).first }
             let(:perm_label) { "#{assignable.resource_name}: #{assignable.action.titleize}" }
             let(:message) do
@@ -417,12 +418,48 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
           end
 
           context 'when the granular token scopes are sufficient' do
-            let(:granular_pat) { create(:granular_pat, user: user, permissions: :write_work_item, boundary: boundary) }
+            let(:granular_pat) { create(:granular_pat, user: user, permissions: :create_work_item, boundary: boundary) }
 
             it 'does not raise an error and returns the token user' do
               expect(current_user).to eq(user)
             end
           end
+        end
+      end
+
+      context 'when the boundary resource is not visible to the token user' do
+        let_it_be(:other_user) { create(:user) }
+        let_it_be(:private_project) { create(:project, :private) }
+        let_it_be(:granular_pat) { create(:granular_pat, user: other_user) }
+
+        before do
+          env['PATH_INFO'] = "/api/v4/projects/endpoint"
+
+          allow(self).to receive(:route_setting).with(:authorization)
+            .and_return(permissions: :read_code, boundary_type: :project, boundary_param: nil)
+
+          allow(self).to receive(:params).and_return(id: private_project.id)
+        end
+
+        it 'renders a generic 404 to hide existence' do
+          expect { current_user }.to raise_error(StandardError, /404.*404 Not Found/)
+        end
+      end
+
+      context 'when the boundary resource ID does not resolve' do
+        let_it_be(:granular_pat) { create(:granular_pat) }
+
+        before do
+          env['PATH_INFO'] = "/api/v4/projects/endpoint"
+
+          allow(self).to receive(:route_setting).with(:authorization)
+            .and_return(permissions: :read_code, boundary_type: :project, boundary_param: nil)
+
+          allow(self).to receive(:params).and_return(id: non_existing_record_id)
+        end
+
+        it 'renders the same generic 404 as a hidden private resource' do
+          expect { current_user }.to raise_error(StandardError, /404.*404 Not Found/)
         end
       end
     end

@@ -591,6 +591,56 @@ export function parseUrlHashAsFileHash(urlHash = '', currentDiffFileId = '') {
   return id;
 }
 
+/**
+ * Parses a Rapid Diffs line hash fragment.
+ * Format: line_<short_file_hash>_A<new_line> (added lines) or line_<short_file_hash>_<old_line>
+ * The short_file_hash is the first 9 characters of the 40-char SHA1 file hash.
+ * @param {string} hash - URL hash with or without the # prefix
+ * @returns {{ shortFileHash: string, isAddition: boolean, lineNumber: number } | null}
+ */
+export function parseRapidDiffsLineHash(hash = '') {
+  const cleanHash = hash.replace(/^#/, '');
+  const match = cleanHash.match(/^line_([0-9a-f]+)_(A?)(\d+)$/);
+  if (!match) return null;
+  return {
+    shortFileHash: match[1],
+    isAddition: match[2] === 'A',
+    lineNumber: parseInt(match[3], 10),
+  };
+}
+
+/**
+ * Finds a diff file whose file_hash starts with the given short hash prefix.
+ * @param {Array} diffFiles - Array of diff file objects
+ * @param {string} shortFileHash - Short file hash prefix (typically 9 chars)
+ * @returns {Object|undefined} The matching diff file, or undefined
+ */
+export function findDiffFileByShortHash(diffFiles, shortFileHash) {
+  return diffFiles.find((f) => f.file_hash.startsWith(shortFileHash));
+}
+
+/**
+ * Finds the legacy line_code in a diff file that corresponds to a parsed Rapid Diffs line hash.
+ * @param {Object} diffFile - A diff file object with highlighted_diff_lines
+ * @param {Object} parsedHash - Result from parseRapidDiffsLineHash
+ * @returns {string|null} The legacy line_code, or null if not found
+ */
+export function findLineCodeFromRapidDiffsHash(diffFile, parsedHash) {
+  if (!diffFile || !parsedHash) return null;
+  const lines = diffFile[INLINE_DIFF_LINES_KEY];
+  if (!lines) return null;
+
+  const { isAddition, lineNumber } = parsedHash;
+  const line = lines.find((l) => {
+    if (isAddition) {
+      return l.new_line === lineNumber && isAdded(l);
+    }
+    return l.old_line === lineNumber;
+  });
+
+  return line?.line_code || null;
+}
+
 export function markTreeEntriesLoaded({ priorEntries, loadedFiles }) {
   const newEntries = { ...priorEntries };
 

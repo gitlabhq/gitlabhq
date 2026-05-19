@@ -1,8 +1,10 @@
 ---
 name: read_release
 description: Grants the ability to read releases
-permissions:
-  - read_release
 boundaries:
   - project
   - group
+available_for:
+  - granular_access_token
+permissions:
+  - read_release

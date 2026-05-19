@@ -6,7 +6,9 @@ product_group: import
 product_categories:
 - integrations
 value_type: number
-status: active
+status: removed
+milestone_removed: '19.0'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230038
 time_frame: all
 data_source: database
 instrumentation_class: ActiveProjectsInheritingIntegrationsMetric

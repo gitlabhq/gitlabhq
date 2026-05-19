@@ -1,0 +1,13 @@
+---
+table_name: packages_debian_project_component_file_states
+description: Separate table for Debian Project Component File verification states
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228787
+milestone: '19.0'
+feature_categories:
+- geo_replication
+classes:
+- Geo::PackagesDebianProjectComponentFileState
+gitlab_schema: gitlab_main_org
+table_size: small
+sharding_key:
+  project_id: projects

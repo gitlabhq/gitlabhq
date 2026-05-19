@@ -26,6 +26,13 @@ RSpec.describe "JobCancel", feature_category: :continuous_integration do
 
   let(:mutation_response) { graphql_mutation_response(:job_cancel) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :cancel_job do
+    let(:user) { create(:user, maintainer_of: project) }
+    let(:boundary_object) { project }
+    let(:mutation) { graphql_mutation(:job_cancel, { id: job.to_global_id.to_s }, 'errors') }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'returns an error if the user is not allowed to cancel the job' do
     project.add_developer(user)
     post_graphql_mutation(mutation, current_user: user)

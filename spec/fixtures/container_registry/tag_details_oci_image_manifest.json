@@ -1,0 +1,21 @@
+{
+  "repository": "test/image-manifest",
+  "name": "latest",
+  "image": {
+    "size_bytes": 63624122,
+    "manifest": {
+      "digest": "sha256:99999999",
+      "media_type": "application/vnd.oci.image.manifest.v1+json"
+    },
+    "config": {
+      "digest": "sha256:d1b962ceb6fa709bc7649c93008ac06583f7bae748e2f110c6d49df1060b0655",
+      "media_type": "application/vnd.oci.image.config.v1+json",
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    }
+  },
+  "created_at": "2026-03-01T16:00:00.000Z",
+  "published_at": "2026-03-01T18:00:00.000Z"
+}

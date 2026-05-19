@@ -47,6 +47,17 @@ RSpec.describe 'ProjectCustomAttributeSet', feature_category: :groups_and_projec
     let(:current_user) { admin }
 
     context 'when creating a new custom attribute' do
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :update_custom_attribute do
+        let(:user) { admin }
+        let(:boundary_object) { project }
+        let(:mutation) do
+          graphql_mutation(:project_custom_attribute_set,
+            { project_path: project.full_path, key: key, value: value }, 'errors')
+        end
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+
       it 'creates the custom attribute' do
         expect { post_graphql_mutation(mutation, current_user: current_user) }
           .to change { project.custom_attributes.count }.by(1)

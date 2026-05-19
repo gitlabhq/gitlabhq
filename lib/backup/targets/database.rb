@@ -219,10 +219,11 @@ module Backup
 
       private
 
-      def include_additional_connections?
-        include_registry_db?
-      end
-
+      # TODO: The registry_* and openbao_* helper groups below
+      # (base_keys, include_*_db?, *_database_env, *_db_connection) are intentionally parallel
+      # but duplicated. Extract shared helpers parameterised by prefix (e.g. 'REGISTRY', 'OPENBAO')
+      # to reduce duplication and make adding future additional DB connections easier.
+      # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230425#note_3240284618
       def registry_db_base_keys
         %w[HOST PORT NAME SSLMODE CONNECT_TIMEOUT USER].map { |x| "REGISTRY_DATABASE_#{x}" }
       end
@@ -232,6 +233,17 @@ module Backup
       # The presence of ONLY base connection keys means backup is not fully configured.
       def include_registry_db?
         (ENV.keys.select { |x| x.start_with?('REGISTRY_DATABASE_') } - registry_db_base_keys).present?
+      end
+
+      def openbao_db_base_keys
+        %w[HOST PORT NAME SSLMODE CONNECT_TIMEOUT USER].map { |x| "OPENBAO_DATABASE_#{x}" }
+      end
+
+      # OpenBao backup is enabled when any credential key beyond the base connection keys
+      # (HOST, PORT, NAME, SSLMODE, CONNECT_TIMEOUT, USER) is present - e.g. PASSWORD,
+      # SSLCERT, SSLKEY, or ROOTCERT. Base keys alone are not sufficient to trigger backup.
+      def include_openbao_db?
+        (ENV.keys.select { |x| x.start_with?('OPENBAO_DATABASE_') } - openbao_db_base_keys).present?
       end
 
       def drop_tables(database_name, connection)
@@ -316,10 +328,43 @@ module Backup
         db_connection
       end
 
-      def additional_connections_config
-        return [] unless include_additional_connections?
+      def openbao_database_env(field)
+        ENV.fetch("OPENBAO_DATABASE_#{field.upcase}", nil)
+      end
 
-        [registry_db_connection]
+      def openbao_db_connection
+        openbao_db_config = {
+          adapter: 'postgresql',
+          database: openbao_database_env('name'),
+          username: openbao_database_env('user'),
+          password: openbao_database_env('password'),
+          host: openbao_database_env('host'),
+          port: openbao_database_env('port'),
+          sslmode: openbao_database_env('sslmode'),
+          sslcert: openbao_database_env('sslcert'),
+          sslkey: openbao_database_env('sslkey'),
+          sslrootcert: openbao_database_env('rootcert'),
+          connect_timeout: openbao_database_env('connect_timeout')
+        }
+
+        db_connection = Backup::DatabaseConnection.new(
+          'openbao',
+          custom_config: openbao_db_config
+        )
+        begin
+          db_connection.connection.postgresql_version
+        rescue ActiveRecord::DatabaseConnectionError => dce
+          raise Backup::Error,
+            "Unable to connect to the openbao database with the provided information: #{dce.message}"
+        end
+        db_connection
+      end
+
+      def additional_connections_config
+        connections = []
+        connections << registry_db_connection if include_registry_db?
+        connections << openbao_db_connection if include_openbao_db?
+        connections
       end
       strong_memoize_attr :additional_connections_config
 

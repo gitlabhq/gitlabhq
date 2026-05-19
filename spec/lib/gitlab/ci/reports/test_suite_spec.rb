@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Ci::Reports::TestSuite do
       end
 
       it 'overwrites the existing message' do
-        expect { set_suite_error }.to change(test_suite, :suite_error).from('old message').to('message')
+        expect { set_suite_error }.to change { test_suite.suite_error }.from('old message').to('message')
       end
     end
   end

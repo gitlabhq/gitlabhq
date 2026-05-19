@@ -32,6 +32,14 @@ RSpec.describe API::PersonalAccessTokens::SelfRotation, feature_category: :syste
       end
     end
 
+    it 'passes creation_source api to the service' do
+      expect(::PersonalAccessTokens::RotateService).to receive(:new)
+        .with(anything, anything, anything, hash_including(creation_source: PersonalAccessToken::CREATION_SOURCE_API))
+        .and_call_original
+
+      rotate_token
+    end
+
     context 'when current_user is an administrator', :enable_admin_mode do
       let(:current_user) { create(:admin) }
 

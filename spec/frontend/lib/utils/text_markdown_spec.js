@@ -27,7 +27,7 @@ describe('init markdown', () => {
   beforeAll(() => {
     setHTMLFixture(
       `<div class='md-area'>
-        <textarea></textarea>
+        <textarea class="js-gfm-input"></textarea>
         <button data-md-command="indentLines" id="indentButton"></button>
         <button data-md-command="outdentLines" id="outdentButton"></button>
       </div>`,
@@ -611,6 +611,53 @@ describe('init markdown', () => {
         textArea.dispatchEvent(keyEvent);
 
         expect(textArea.value).toEqual(text);
+      });
+
+      describe('with multiple textareas (immersive mode regression)', () => {
+        let titleTextarea;
+        let contentTextarea;
+        let container;
+
+        beforeEach(() => {
+          // Simulate immersive mode where a title textarea appears before the content textarea
+          container = document.createElement('div');
+          container.classList.add('md-area');
+
+          titleTextarea = document.createElement('textarea');
+          titleTextarea.id = 'title';
+          titleTextarea.classList.add('wiki-title');
+          titleTextarea.value = 'My Title';
+
+          contentTextarea = document.createElement('textarea');
+          contentTextarea.id = 'content';
+          contentTextarea.classList.add('js-gfm-input');
+          contentTextarea.value = '';
+
+          container.appendChild(titleTextarea);
+          container.appendChild(contentTextarea);
+          document.body.appendChild(container);
+        });
+
+        afterEach(() => {
+          container?.remove();
+        });
+
+        it('targets the content textarea with js-gfm-input, not the first textarea', () => {
+          const boldButton = document.createElement('button');
+          boldButton.classList.add('js-md');
+          boldButton.dataset.mdTag = '**';
+          container.appendChild(boldButton);
+
+          // Use spies to verify the right textarea is targeted
+          const titleSetSelectionRange = jest.spyOn(titleTextarea, 'setSelectionRange');
+          const contentSetSelectionRange = jest.spyOn(contentTextarea, 'setSelectionRange');
+
+          updateTextForToolbarBtn($(boldButton));
+
+          // updateTextForToolbarBtn should call setSelectionRange on content textarea, not title
+          expect(contentSetSelectionRange).toHaveBeenCalled();
+          expect(titleSetSelectionRange).not.toHaveBeenCalled();
+        });
       });
     });
 

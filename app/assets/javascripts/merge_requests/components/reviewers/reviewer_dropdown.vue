@@ -1,6 +1,7 @@
 <script>
 import { debounce, difference } from 'lodash-es';
 import { GlCollapsibleListbox, GlButton, GlAvatar, GlIcon, GlBadge, GlSprintf } from '@gitlab/ui';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { __ } from '~/locale';
 import { userIsDisabled, userDisabledAttributes } from '~/ai/agents_utils';
 import { FLOW_TRIGGER_EVENTS } from '~/vue_shared/constants';
@@ -101,7 +102,7 @@ export default {
     usersForList() {
       let users;
 
-      if (this.fetchedUsers.length) {
+      if (this.fetchedUsers.length || this.search) {
         users = this.fetchedUsers;
       } else {
         users = this.users;
@@ -226,26 +227,40 @@ export default {
       this.searching = true;
 
       let users = [];
-      try {
-        const result = await this.$apollo.query({
-          query: userAutocompleteWithMRPermissionsQuery,
-          variables: {
-            search,
-            fullPath: this.projectPath,
-            mergeRequestId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.issuableId),
-          },
-          context: {
-            fetchOptions: { signal: this.fetchController.signal },
-            queryDeduplication: false,
-          },
-        });
-        users = result.data?.namespace?.users ?? [];
-      } catch (error) {
-        if (error.name === 'AbortError') {
-          return;
-        }
 
-        throw error;
+      if (this.users.length) {
+        users = fuzzaldrinPlus.filter(
+          // We're storing `name` and `username` as a combined string in
+          // a new key `matcher` as fuzzaldrin-plus doesn't support searching
+          // using multiple keys.
+          this.users.map((u) => ({ ...u, matcher: `${u.name} ${u.username}` })),
+          search,
+          {
+            key: ['matcher'],
+          },
+        );
+      } else {
+        try {
+          const result = await this.$apollo.query({
+            query: userAutocompleteWithMRPermissionsQuery,
+            variables: {
+              search,
+              fullPath: this.projectPath,
+              mergeRequestId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.issuableId),
+            },
+            context: {
+              fetchOptions: { signal: this.fetchController.signal },
+              queryDeduplication: false,
+            },
+          });
+          users = result.data?.namespace?.users ?? [];
+        } catch (error) {
+          if (error.name === 'AbortError') {
+            return;
+          }
+
+          throw error;
+        }
       }
 
       if (!search) {

@@ -1,11 +1,9 @@
 import Vue from 'vue';
-import VueApollo from 'vue-apollo';
+import apolloProvider from '~/repository/graphql';
 import { pinia } from '~/pinia/instance';
 import FileTreeBrowser from './file_tree_browser.vue';
 
-Vue.use(VueApollo);
-
-export default async function initFileTreeBrowser(router, options, apolloProvider) {
+export default async function initFileTreeBrowser(router, options) {
   const el = document.getElementById('js-file-browser');
   if (!el) return false;
 

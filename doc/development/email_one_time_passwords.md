@@ -44,27 +44,6 @@ Example log showing successful sign-in flow, searching by IP address:
 Event reasons are defined in
 [`VerifiesWithEmail` constants](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/concerns/verifies_with_email.rb#L11-L15).
 
-### Password API authentication failures
-
-As with other 2FA methods, users enrolled in Email OTP cannot
-authenticate API requests with passwords. Look for successful password
-validation followed by 401 responses.
-
-Search for `find_with_user_password succeeded`, then look at
-time-adjacent records or records with the same IP to identify the
-request record and its response.
-
-```plaintext
-json.message: "find_with_user_password" AND json.username:replace_username_here
-```
-
-Example showing Git operations with Email OTP enrolled:
-
-![Git operation logs showing the GitLab::Auth log followed by the request log with 401 status](img/email_otp_git_unauthorized_elasticsearch_logs_v18_9.png)
-
-Note the `find_with_user_password succeeded` message appears even though
-authentication ultimately fails with 401.
-
 ### Enrollment changes
 
 View user preference modifications:
@@ -207,11 +186,10 @@ they cannot access their primary email address.
 **Feature flags:**
 
 - [`email_based_mfa`](https://gitlab.com/gitlab-org/gitlab/-/issues/584355) - Global toggle for Email OTP enforcement
-- [`enrol_new_users_in_email_otp`](https://gitlab.com/gitlab-org/gitlab/-/issues/561975) - Controls automatic enrollment for new users
 
 **Application setting:**
 
-- [`require_minimum_email_based_otp_for_users_with_passwords`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/application_setting.rb#L765) - Makes Email OTP mandatory for users without other 2FA
+- [`require_minimum_email_based_otp_for_users_with_passwords`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/application_setting.rb#L765) - Makes Email OTP mandatory for users without other 2FA, and enrolls new users with passwords
 
 ## Testing
 
@@ -241,15 +219,10 @@ Feature.enable(:email_based_mfa, user)
 # Disable Email OTP
 Feature.disable(:email_based_mfa, user)
 
-# Require Email OTP as a minimum
+# Require Email OTP as a minimum (also enrols new users with passwords)
 ApplicationSetting.current.update!(sign_in_restrictions: {require_minimum_email_based_otp_for_users_with_passwords: true })
 # Or allow users to disable it
 ApplicationSetting.current.update!(sign_in_restrictions: {require_minimum_email_based_otp_for_users_with_passwords: false })
-
-# Enrol new users when they sign up
-Feature.enable(:enrol_new_users_in_email_otp)
-# Or make it opt-in
-Feature.disable(:enrol_new_users_in_email_otp)
 
 # Set enrollment date via UpdateService (triggers automatic enrollment logic)
 Users::UpdateService.new( user, { user: user, email_otp_required_after: date } ).execute!

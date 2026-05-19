@@ -4,6 +4,8 @@ description: Grants the ability to read container repositories
 boundaries:
   - project
   - group
+available_for:
+  - granular_access_token
 permissions:
   - read_container_repository
   - read_container_repository_tag

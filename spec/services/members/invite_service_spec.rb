@@ -478,7 +478,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       let(:params) { { email: existing_member.user.email.to_s, access_level: ProjectMember::MAINTAINER } }
 
       it 'allows re-invite of an already invited email and updates the access_level' do
-        expect { result }.not_to change(ProjectMember, :count)
+        expect { result }.not_to change { ProjectMember.count }
         expect(result[:status]).to eq(:success)
         expect(existing_member.reset.access_level).to eq ProjectMember::MAINTAINER
       end
@@ -612,11 +612,11 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
   end
 
   def expect_to_create_members(count:)
-    expect { result }.to change(ProjectMember, :count).by(count)
+    expect { result }.to change { ProjectMember.count }.by(count)
   end
 
   def expect_not_to_create_members
-    expect { result }.not_to change(ProjectMember, :count)
+    expect { result }.not_to change { ProjectMember.count }
     expect(result[:status]).to eq(:error)
   end
 end

@@ -43,6 +43,7 @@ import { updateDraftWorkItemType } from '~/work_items/utils';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
+import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { resolvers } from '~/graphql_shared/issuable_client';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -52,6 +53,7 @@ import {
   createWorkItemQueryResponse,
   createWorkItemQueryResponseWithFeatures,
   namespaceWorkItemTypesQueryResponse,
+  mockWorkItemTypesConfigurationResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/work_items/graphql/cache_utils', () => ({
@@ -93,8 +95,11 @@ describe('Create work item component', () => {
     reference: 'full-path#22',
     webUrl: '/full-path/-/issues/22',
   };
+  const workItemTypesWithConfiguration =
+    mockWorkItemTypesConfigurationResponse.data.namespace.workItemTypes.nodes;
 
   let namespaceWorkItemTypesHandler;
+  let workItemTypesConfigurationHandler;
 
   const findFormTitle = () => wrapper.find('h1');
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -135,12 +140,16 @@ describe('Create work item component', () => {
     const namespaceResponse = isGroupWorkItem ? namespaceResponseCopy : namespaceQueryResponse;
 
     namespaceWorkItemTypesHandler = jest.fn().mockReturnValue(namespaceResponse);
+    workItemTypesConfigurationHandler = jest
+      .fn()
+      .mockResolvedValue(mockWorkItemTypesConfigurationResponse);
 
     const mockResult = createControlledMockApollo(
       [
         [workItemByIidQuery, workItemQuerySuccessHandler],
         [createWorkItemMutation, mutationHandler],
         [namespaceWorkItemTypesQuery, namespaceWorkItemTypesHandler],
+        [workItemTypesConfigurationQuery, workItemTypesConfigurationHandler],
       ],
       resolvers,
     );
@@ -418,8 +427,92 @@ describe('Create work item component', () => {
       await resolveAll();
 
       expect(namespaceWorkItemTypesHandler).toHaveBeenCalledWith({
-        onlyAvailable: true,
         fullPath: 'other-namespace/path',
+      });
+    });
+
+    describe('preserves draft data across namespace changes', () => {
+      const setupGroupForm = async () => {
+        createComponent({
+          props: { isGroup: true },
+          provide: { hasEpicsFeature: true },
+        });
+        await resolveAll();
+      };
+
+      it('includes the typed title in the create mutation after namespace change', async () => {
+        await setupGroupForm();
+
+        await updateWorkItemTitle('Preserved title');
+        findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+        await nextTick();
+        await resolveAll();
+
+        await submitCreateForm();
+
+        expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+          input: expect.objectContaining({ title: 'Preserved title' }),
+          useWorkItemFeatures: false,
+        });
+      });
+
+      it('includes the typed description in the create mutation after namespace change', async () => {
+        await setupGroupForm();
+
+        findDescriptionWidget().vm.$emit('updateDraft', 'Preserved description');
+        await nextTick();
+        await waitForPromises();
+
+        findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+        await nextTick();
+        await resolveAll();
+
+        await updateWorkItemTitle();
+        await submitCreateForm();
+
+        expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+          input: expect.objectContaining({
+            descriptionWidget: { description: 'Preserved description' },
+          }),
+          useWorkItemFeatures: false,
+        });
+      });
+    });
+
+    describe('isNamespaceTypeGroup propagation to widgets', () => {
+      it.each`
+        scenario              | namespaceObject                                         | expectedIsGroup
+        ${'Group typename'}   | ${{ fullPath: 'other-group', __typename: 'Group' }}     | ${true}
+        ${'Project typename'} | ${{ fullPath: 'other-project', __typename: 'Project' }} | ${false}
+      `(
+        'sets is-group=$expectedIsGroup on child widgets when a namespace with $scenario is selected',
+        async ({ namespaceObject, expectedIsGroup }) => {
+          createComponent({
+            props: { isGroup: true },
+            provide: { hasEpicsFeature: true },
+          });
+          await resolveAll();
+
+          findGroupProjectSelector().vm.$emit(
+            'selectNamespace',
+            namespaceObject.fullPath,
+            namespaceObject,
+          );
+          await nextTick();
+          await resolveAll();
+
+          expect(findAssigneesWidget().props('isGroup')).toBe(expectedIsGroup);
+        },
+      );
+
+      it('falls back to isGroup prop when no namespace object is emitted', async () => {
+        createComponent({
+          props: { isGroup: true },
+          provide: { hasEpicsFeature: true },
+        });
+        await resolveAll();
+
+        expect(findAssigneesWidget().props('isGroup')).toBe(true);
       });
     });
   });
@@ -439,8 +532,8 @@ describe('Create work item component', () => {
     it('displays a list of work item types, excluding "Ticket" and including "Select type" options, when preselectedWorkItemType is not provided', async () => {
       createComponent({ props: { preselectedWorkItemType: null } });
       await resolveAll();
-      const expectedOptions = namespaceWorkItemTypes
-        .filter((type) => type.name !== 'Ticket')
+      const expectedOptions = workItemTypesWithConfiguration
+        .filter((type) => type.canUserCreateItems)
         .concat({ name: 'Select type' }).length;
 
       expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
@@ -473,8 +566,8 @@ describe('Create work item component', () => {
         },
       });
       await resolveAll();
-      const expectedOptions = namespaceWorkItemTypes.filter(
-        (type) => type.name !== 'Ticket',
+      const expectedOptions = workItemTypesWithConfiguration.filter(
+        (type) => type.canUserCreateItems,
       ).length;
 
       expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);

@@ -104,7 +104,7 @@ This feature does not support:
   If the integration is connected manually, external pull requests [do not trigger pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/323336#note_884820753).
 - Pull requests from fork repositories. [Pull Requests from fork repositories are ignored](https://gitlab.com/gitlab-org/gitlab/-/issues/5667).
 
-Given that GitLab creates 2 pipelines, if changes are pushed to a remote branch that
+Given that GitLab creates two pipelines, if changes are pushed to a remote branch that
 references an open Pull Request, both contribute to the status of the Pull Request
 via GitHub integration. If you want to exclusively run pipelines on external pull
 requests and not on branches you can add `except: [branches]` to the job specs.

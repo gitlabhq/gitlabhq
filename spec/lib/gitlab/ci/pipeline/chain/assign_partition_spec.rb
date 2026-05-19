@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::AssignPartition, feature_category: :
     subject { step.perform! }
 
     it 'assigns partition_id to pipeline' do
-      expect { subject }.to change(pipeline, :partition_id).to(current_partition_id)
+      expect { subject }.to change { pipeline.partition_id }.to(current_partition_id)
     end
 
     context 'with partition_id on the Command' do
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::AssignPartition, feature_category: :
       end
 
       it 'assigns partition_id to pipeline' do
-        expect { subject }.to change(pipeline, :partition_id).to(125)
+        expect { subject }.to change { pipeline.partition_id }.to(125)
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::AssignPartition, feature_category: :
       end
 
       it 'assigns partition_id to pipeline' do
-        expect { subject }.to change(pipeline, :partition_id).to(125)
+        expect { subject }.to change { pipeline.partition_id }.to(125)
       end
     end
   end

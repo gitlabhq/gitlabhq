@@ -185,6 +185,7 @@ bundle exec gitlab-housekeeper -h
 | Option | Description | Example |
 |--------|-------------|---------|
 | `--push-when-approved` | Push code even if there is an existing MR with approvals. By default we do not force push code if the MR has any approvals. | `bundle exec gitlab-housekeeper --push-when-approved` |
+| `--no-push-when-conflict` | Do not push code when the existing MR has merge conflicts. By default we force push code to resolve conflicts. | `bundle exec gitlab-housekeeper --no-push-when-conflict` |
 | `-b, --target-branch=BRANCH` | Target branch to use. Defaults to master. | `bundle exec gitlab-housekeeper -b main` |
 | `-m, --max-mrs=M` | Limit of MRs to create. Defaults to 1. | `bundle exec gitlab-housekeeper -m 5` |
 | `-d, --dry-run` | Dry-run only. Print the MR titles, descriptions and diffs | `bundle exec gitlab-housekeeper -d` |

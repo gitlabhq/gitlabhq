@@ -44,7 +44,8 @@ module LoginHelpers
         create(user_or_role) # rubocop:disable Rails/SaveBang
       end
 
-    gitlab_sign_in_with(user, **kwargs)
+    submit_sign_in_form_for(user, **kwargs)
+    expect(page).not_to have_current_path(new_user_session_path)
 
     @current_user = user
   end
@@ -54,10 +55,10 @@ module LoginHelpers
     click_oauth_provider(provider)
   end
 
-  def gitlab_enable_admin_mode_sign_in_via(provider, user, uid, saml_response: nil, additional_info: {})
+  def gitlab_enable_admin_mode_sign_in_via(provider, user, uid, saml_response: nil, expect_fail: false, additional_info: {})
     response_object = saml_xml(saml_response) if saml_response.present?
     mock_auth_hash(provider, uid, user.email, response_object: response_object, additional_info: additional_info)
-    click_oauth_provider(provider, sign_in_path: new_admin_session_path)
+    click_oauth_provider(provider, sign_in_path: new_admin_session_path, expect_fail: expect_fail)
   end
 
   # Requires Javascript driver.
@@ -70,22 +71,16 @@ module LoginHelpers
     expect(page).to have_button(_('Sign in'))
   end
 
-  # Requires Javascript driver.
-  def leave_admin_mode
-    find_by_testid('user-menu-toggle').click
-    click_link(s_('CurrentUser|Leave Admin Mode'), href: destroy_admin_session_path)
-    expect(page).to have_selector('[data-testid="alert-info"]', text: _('Admin mode is inactive.'))
-  end
-
-  private
-
-  # Private: Login as the specified user
+  # Submit the login form as the specified user
+  # When using this helper, make sure to assert on the expected page state after signing in,
+  # e.g., that the user is redirected to the dashboard or an error is shown.
+  # If the expectation is to success upon sign-in use `gitlab_sign_in` instead.
   #
   # user - User instance to login with
   # remember - Whether or not to check "Remember me" (default: false)
   # two_factor_auth - If two-factor authentication is enabled (default: false)
   # password - password to attempt to login with (default: user.password)
-  def gitlab_sign_in_with(user, remember: false, two_factor_auth: false, password: nil, visit: true)
+  def submit_sign_in_form_for(user, remember: false, two_factor_auth: false, password: nil, visit: true)
     visit new_user_session_path if visit
 
     fill_in "user_login", with: user.email
@@ -99,18 +94,15 @@ module LoginHelpers
 
     check 'user_remember_me' if remember
 
-    wait_for_all_requests
-
     find('[data-testid="sign-in-button"]:enabled').click
 
-    if two_factor_auth
-      fill_in "user_otp_attempt", with: user.reload.current_otp
-      click_button "Verify code"
-    end
+    return unless two_factor_auth
 
-    # Wait for all async client-side requests after signing in if JavaScript test
-    wait_for_requests if javascript_test?
+    fill_in "user_otp_attempt", with: user.reload.current_otp
+    click_button "Verify code"
   end
+
+  private
 
   def login_via(provider, user, uid, remember_me: false, additional_info: {})
     mock_auth_hash(provider, uid, user.email, additional_info: additional_info)
@@ -118,23 +110,68 @@ module LoginHelpers
   end
 
   # The remember_me functionality requires Javascript driver.
-  def click_oauth_provider(provider, remember_me: false, sign_in_path: new_user_session_path)
-    3.times do
+  def click_oauth_provider(provider, remember_me: false, sign_in_path: new_user_session_path, expect_fail: false)
+    wait = expect_fail ? 3 : 10
+    attempts = 3
+    attempts.times do
       visit sign_in_path
       expect(page).to have_button(Gitlab::Auth::OAuth::Provider.label_for(provider))
 
-      if remember_me
-        within('body.page-initialised') do
-          check 'js-remember-me-omniauth'
-        end
-        find("form[action='/users/auth/#{provider}?remember_me=1']")
-      end
+      check_remember_me_omniauth(provider) if remember_me
 
+      navigated = click_oauth_provider_button(provider, sign_in_path, wait)
+      break if expect_fail ? !navigated : navigated
+    rescue CsrfRetry
+      # retry
+    end
+
+    expect_oauth_provider_navigation(sign_in_path, expect_fail)
+  end
+
+  def check_remember_me_omniauth(provider)
+    within('body.page-initialised') do
+      check 'js-remember-me-omniauth'
+    end
+    find("form[action='/users/auth/#{provider}?remember_me=1']")
+  end
+
+  # Clicks the OAuth provider button and returns whether navigation occurred.
+  # Raises CsrfRetry if the session cookie is missing (Chrome intermittent bug), signalling the caller to retry.
+  def click_oauth_provider_button(provider, sign_in_path, wait)
+    if javascript_test?
+      click_oauth_provider_button_js(provider, sign_in_path, wait)
+    else
       click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
-      # Chrome intermittently fails to send cookies on the POST request, causing a silent
-      # CSRF failure that redirects back to sign-in. Wait for navigation, then retry if needed.
-      page.has_no_current_path?(sign_in_path, wait: 10, ignore_query: true)
-      break unless page.has_current_path?(sign_in_path, wait: 0, ignore_query: true)
+
+      # Wait for navigation, then retry if needed.
+      page.has_no_current_path?(sign_in_path, ignore_query: true, wait: wait)
+    end
+  end
+
+  CsrfRetry = Class.new(StandardError)
+
+  def click_oauth_provider_button_js(provider, sign_in_path, wait)
+    navigated = false
+    reqs = inspect_requests do
+      click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
+
+      # Wait for navigation, then retry if needed.
+      navigated = page.has_no_current_path?(sign_in_path, ignore_query: true, wait: wait)
+    end
+
+    # Chrome intermittently fails to send cookies on the POST request, causing a silent
+    # CSRF failure that redirects back to sign-in.
+    post_request = reqs.find { |r| r.url&.include?("/users/auth/#{provider}") }
+    raise CsrfRetry unless post_request&.request_headers&.fetch('Cookie', '')&.include?('_gitlab_session')
+
+    navigated
+  end
+
+  def expect_oauth_provider_navigation(sign_in_path, expect_fail)
+    if expect_fail
+      expect(page).to have_current_path(sign_in_path, ignore_query: true)
+    else
+      expect(page).to have_no_current_path(sign_in_path, ignore_query: true)
     end
   end
 
@@ -252,6 +289,12 @@ module LoginHelpers
     routes.formatter.clear
     routes.draw do
       post "/users/auth/#{provider_name}" => "omniauth_callbacks##{provider_name}"
+    end
+
+    # Ensure the controller has an action for this provider (it may not if the
+    # provider was not configured at class-load time, e.g. iam_* providers).
+    unless OmniauthCallbacksController.method_defined?(provider_name.to_sym)
+      OmniauthCallbacksController.alias_method provider_name.to_sym, :handle_omniauth
     end
 
     # Tag the example so the after hook in spec/support/omniauth.rb

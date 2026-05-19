@@ -25,10 +25,12 @@ const handleClusterError = (err) => {
 };
 
 const buildFluxResourceUrl = ({ basePath, namespace, apiVersion, resourceType }) => {
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Kubernetes API endpoint, not a GitLab URL
   return `${basePath}/apis/${apiVersion}/namespaces/${namespace}/${resourceType}`;
 };
 
 export const buildFluxResourceWatchPath = ({ namespace, apiVersion, resourceType }) => {
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Kubernetes API watch path, not a GitLab URL
   return `/apis/${apiVersion}/namespaces/${namespace}/${resourceType}`;
 };
 
@@ -133,6 +135,7 @@ const watchFluxResource = async ({
 const getFluxResource = ({ query, variables, field, resourceType, client }) => {
   const { headers } = variables.configuration;
   const withCredentials = true;
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Kubernetes API endpoint via KAS tunnel, not a GitLab URL
   const url = `${variables.configuration.basePath}/apis/${variables.fluxResourcePath}`;
 
   return axios
@@ -242,6 +245,7 @@ export const fluxMutations = {
       'Content-Type': 'application/json-patch+json',
     };
     const withCredentials = true;
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Kubernetes API URL, not a GitLab URL
     const url = `${configuration.basePath}/apis/${fluxResourcePath}`;
 
     return axios
@@ -276,10 +280,12 @@ export const fluxQueries = {
     });
   },
   discoverFluxKustomizations(_, { configuration }) {
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Kubernetes API URL, not a GitLab URL
     const discoverUrl = `${configuration.basePath}/apis/${kustomizationsDiscoverUrl}`;
     return discoverFluxVersions(configuration, discoverUrl, SUPPORTED_KUSTOMIZATIONS);
   },
   discoverFluxHelmReleases(_, { configuration }) {
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Kubernetes API URL, not a GitLab URL
     const discoverUrl = `${configuration.basePath}/apis/${helmReleasesDiscoverUrl}`;
     return discoverFluxVersions(configuration, discoverUrl, SUPPORTED_HELM_RELEASES);
   },

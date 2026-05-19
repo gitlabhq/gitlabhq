@@ -8,23 +8,32 @@ export default {
     GlDisclosureDropdown,
     GlBadge,
   },
-  inject: ['accessTokenGranularNewUrl', 'accessTokenLegacyNewUrl'],
+  inject: {
+    accessTokenGranularNewUrl: { default: '' },
+    accessTokenLegacyNewUrl: { default: '' },
+    granularTokensEnforced: { default: false },
+  },
   props: {},
   computed: {
     dropdownItems() {
-      return [
+      const items = [
         {
           text: this.$options.i18n.fineGrainedToken,
           href: this.accessTokenGranularNewUrl,
           description: this.$options.i18n.fineGrainedTokenDescription,
           badge: this.$options.i18n.beta,
         },
-        {
+      ];
+
+      if (!this.granularTokensEnforced) {
+        items.push({
           text: this.$options.i18n.legacyToken,
           href: this.accessTokenLegacyNewUrl,
           description: this.$options.i18n.legacyTokenDescription,
-        },
-      ];
+        });
+      }
+
+      return items;
     },
   },
   i18n: {

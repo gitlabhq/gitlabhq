@@ -46,6 +46,18 @@ RSpec.describe RuboCop::Cop::Migration::WithLockRetriesDisallowedMethod, feature
       RUBY
     end
 
+    it 'registers an offense when `with_lock_retries` numblock has disallowed method' do
+      expect_offense(<<~RUBY)
+        def change
+          with_lock_retries do
+            disallowed_method
+            ^^^^^^^^^^^^^^^^^ The method is not allowed [...]
+            _1
+          end
+        end
+      RUBY
+    end
+
     describe 'for `add_foreign_key`' do
       it 'registers an offense when more than two FKs are added' do
         message = described_class::MSG_ONLY_ONE_FK_ALLOWED

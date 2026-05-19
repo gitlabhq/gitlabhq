@@ -1,0 +1,5 @@
+---
+event: Ci::JobArtifactsDeletedEvent
+description: Published after a batch of CI job artifacts is deleted. Wrapped in Sidekiq::Worker.skipping_transaction_check
+  so it can be emitted outside a transaction context.
+feature_category: job_artifacts

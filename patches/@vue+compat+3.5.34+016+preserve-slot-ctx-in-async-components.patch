@@ -1,0 +1,60 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -12040,7 +12040,14 @@
+       type = 32;
+       const slotFlag = children._;
+       if (!slotFlag && !isInternalObject(children)) {
+-        children._ctx = currentRenderingInstance;
++        /*! patch-package: Preserve existing _ctx for slot context in async component scenarios
++         * When async components resolve and create inner component vnodes, normalizeChildren
++         * is called again. Without this check, _ctx would be overwritten with the async wrapper
++         * instance instead of the original parent where the slot content was defined.
++         * This ensures directives in slot content can be resolved from the defining component. */
++        if (!children._ctx) {
++          children._ctx = currentRenderingInstance;
++        }
+       } else if (slotFlag === 3 && currentRenderingInstance) {
+         if (currentRenderingInstance.slots._ === 1) {
+           children._ = 1;
+diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+@@ -12062,7 +12062,14 @@
+       type = 32;
+       const slotFlag = children._;
+       if (!slotFlag && !isInternalObject(children)) {
+-        children._ctx = currentRenderingInstance;
++        /*! patch-package: Preserve existing _ctx for slot context in async component scenarios
++         * When async components resolve and create inner component vnodes, normalizeChildren
++         * is called again. Without this check, _ctx would be overwritten with the async wrapper
++         * instance instead of the original parent where the slot content was defined.
++         * This ensures directives in slot content can be resolved from the defining component. */
++        if (!children._ctx) {
++          children._ctx = currentRenderingInstance;
++        }
+       } else if (slotFlag === 3 && currentRenderingInstance) {
+         if (currentRenderingInstance.slots._ === 1) {
+           children._ = 1;
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -11989,7 +11989,14 @@
+       type = 32;
+       const slotFlag = children._;
+       if (!slotFlag && !isInternalObject(children)) {
+-        children._ctx = currentRenderingInstance;
++        /*! patch-package: Preserve existing _ctx for slot context in async component scenarios
++         * When async components resolve and create inner component vnodes, normalizeChildren
++         * is called again. Without this check, _ctx would be overwritten with the async wrapper
++         * instance instead of the original parent where the slot content was defined.
++         * This ensures directives in slot content can be resolved from the defining component. */
++        if (!children._ctx) {
++          children._ctx = currentRenderingInstance;
++        }
+       } else if (slotFlag === 3 && currentRenderingInstance) {
+         if (currentRenderingInstance.slots._ === 1) {
+           children._ = 1;

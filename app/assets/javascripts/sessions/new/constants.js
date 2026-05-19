@@ -13,8 +13,13 @@ export const I18N_RESEND_CODE = s__('IdentityVerification|Resend code');
 export const I18N_DIDNT_GET_CODE_RESEND_LINK = s__(
   "IdentityVerification|Didn't get the code? %{buttonStart}Resend code%{buttonEnd}.",
 );
+export const I18N_RESEND_CODE_IN = s__(
+  "IdentityVerification|Didn't get the code? You can resend in %{timer}.",
+);
 export const I18N_SKIP_FOR_NOW_BUTTON = s__('IdentityVerification|Skip for now');
-export const I18N_EMAIL_RESEND_SUCCESS = s__('IdentityVerification|A new code has been sent.');
+export const I18N_EMAIL_RESEND_SUCCESS = s__(
+  "IdentityVerification|A new code is on its way. If it doesn't arrive, check your spam folder.",
+);
 export const I18N_GENERIC_ERROR = s__(
   'IdentityVerification|Something went wrong. Please try again.',
 );

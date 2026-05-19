@@ -54,7 +54,7 @@ RSpec.describe GroupImportWorker, feature_category: :importers do
         expect { subject.perform(user.id, non_existing_record_id) }.to raise_exception(ActiveRecord::RecordNotFound)
       end
 
-      context 'import state' do
+      context 'when the import service fails' do
         before do
           expect_next_instance_of(::Groups::ImportExport::ImportService) do |service|
             expect(service).to receive(:execute).and_raise(Gitlab::ImportExport::Error)

@@ -327,6 +327,7 @@ export default {
       :toggle-text="$options.i18n.toggleText"
       :disabled="disabled"
       :aria-label="tooltipText"
+      positioning-strategy="fixed"
       data-testid="action-dropdown"
       fluid-width
       block
@@ -334,7 +335,7 @@ export default {
       @hidden="$emit('hidden')"
     >
       <slot name="before-actions"></slot>
-      <gl-disclosure-dropdown-group class="edit-dropdown-group-width">
+      <gl-disclosure-dropdown-group class="edit-dropdown-group-width gl-z-[1039]">
         <gl-disclosure-dropdown-item
           v-for="action in actions"
           :key="action.key"

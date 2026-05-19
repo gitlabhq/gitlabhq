@@ -30,13 +30,13 @@ module Gitlab
 
         return unless header_organization_id.to_i > 0
 
-        ::Organizations::Organization.find_by_id(header_organization_id)
+        ::Organizations::Organization.find_by_id_with_isolation(header_organization_id)
       end
 
       def from_user
         return unless user
 
-        user.organization
+        ::Organizations::Organization.find_by_id_with_isolation(user.organization_id)
       end
 
       def from_group_params
@@ -45,14 +45,14 @@ module Gitlab
 
         return if path.blank?
 
-        ::Organizations::Organization.with_namespace_path(path).first
+        ::Organizations::Organization.find_by_namespace_path_with_isolation(path)
       end
 
       def from_organization_params
         path = params[:organization_path]
         return if path.blank?
 
-        ::Organizations::Organization.find_by_path(path)
+        ::Organizations::Organization.find_by_path_with_isolation(path)
       end
 
       def fallback_organization

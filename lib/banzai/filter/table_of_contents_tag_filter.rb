@@ -45,12 +45,9 @@ module Banzai
 
       private
 
-      # Replace an entire `[TOC]` node
       def process_toc_tag(node)
-        build_toc
-
-        # Replace the entire paragraph containing the TOC tag
-        node.parent.replace(result[:toc].presence || '')
+        toc_ul = build_toc
+        node.parent.replace(toc_ul || '')
       end
 
       def toc_tag_gollum?(node)
@@ -58,9 +55,7 @@ module Banzai
       end
 
       def build_toc
-        return if result[:toc]
-
-        result[:toc] = +""
+        return @toc if defined?(@toc)
 
         header_root = current_header = HeaderNode.new
 
@@ -68,28 +63,38 @@ module Banzai
           header_anchor = node.css('a.anchor').first
           next unless header_anchor
 
-          # remove leading anchor `#` so we can add it back later
           href = header_anchor[:href].slice(1..)
           current_header = HeaderNode.new(node: node, href: href, previous_header: current_header)
         end
 
-        push_toc(header_root.children, root: true)
+        @toc = build_toc_list(header_root.children, root: true)
       end
 
-      def push_toc(children, root: false)
+      def build_toc_list(children, root: false)
         return if children.empty?
 
-        klass = ' class="section-nav"' if root
+        ul = doc.document.create_element('ul')
+        ul['class'] = 'section-nav' if root
 
-        result[:toc] << "<ul#{klass}>"
-        children.each { |child| push_anchor(child) }
-        result[:toc] << '</ul>'
+        children.each do |child|
+          ul.add_child(build_toc_item(child))
+        end
+
+        ul
       end
 
-      def push_anchor(header_node)
-        result[:toc] << %(<li><a href="##{header_node.href}">#{header_node.text}</a>)
-        push_toc(header_node.children)
-        result[:toc] << '</li>'
+      def build_toc_item(header_node)
+        li = doc.document.create_element('li')
+
+        a = doc.document.create_element('a')
+        a['href'] = "##{header_node.href}"
+        a.content = header_node.text
+        li.add_child(a)
+
+        nested = build_toc_list(header_node.children)
+        li.add_child(nested) if nested
+
+        li
       end
 
       class HeaderNode
@@ -97,7 +102,7 @@ module Banzai
 
         def initialize(node: nil, href: nil, previous_header: nil)
           @node = node
-          @href = CGI.escape(href) if href
+          @href = href
           @children = []
 
           @parent = find_parent(previous_header)
@@ -113,7 +118,7 @@ module Banzai
         def text
           return '' unless node
 
-          @text ||= CGI.escapeHTML(node.text.strip)
+          @text ||= node.text.strip
         end
 
         private

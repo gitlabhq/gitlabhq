@@ -313,7 +313,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
       end
 
       describe 'GET /:id/history' do
-        let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+        let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
 
         subject(:request) { get :history, params: { id: id } }
 
@@ -340,8 +340,8 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
       end
 
       describe 'GET failures' do
-        let_it_be(:bulk_import) { create(:bulk_import, user: user) }
-        let_it_be(:bulk_import_entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
+        let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
+        let_it_be(:bulk_import_entity, freeze: false) { create(:bulk_import_entity, bulk_import: bulk_import) }
         let(:id) { bulk_import.id }
         let(:entity_id) { bulk_import_entity.id }
 
@@ -378,7 +378,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
       end
 
       describe 'GET realtime_changes' do
-        let_it_be(:bulk_import) { create(:bulk_import, :created, user: user) }
+        let_it_be(:bulk_import, freeze: false) { create(:bulk_import, :created, user: user) }
 
         it 'returns bulk imports created by current user' do
           get :realtime_changes

@@ -96,7 +96,7 @@ Each of the site validation methods are equivalent in functionality, so use whic
 To create a site profile:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select **New** > **Site profile**.
 1. Complete the fields then select **Save profile**.
@@ -119,7 +119,7 @@ Prerequisites:
 To edit a site profile:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
 1. In the profile's row select the **More actions** ({{< icon name="ellipsis_v" >}}) menu, then select **Edit**.
@@ -138,7 +138,7 @@ If a site profile's target or authenticated URL is updated, the request headers 
 To delete a site profile:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
 1. In the profile's row, select the **More actions** ({{< icon name="ellipsis_v" >}}) menu, then select **Delete**.
@@ -155,7 +155,7 @@ Prerequisites:
 To validate a site profile:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
 1. In the profile's row, select **Validate**.
@@ -188,7 +188,7 @@ page.
 To retry a site profile's failed validation:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
 1. In the profile's row, select **Retry validation**.
@@ -202,7 +202,7 @@ To retry a site profile's failed validation:
 To revoke a site profile's validation status:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Beside the validated profile, select **Revoke validation**.
 
@@ -294,7 +294,7 @@ dast:
 To create a scanner profile:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select **New** > **Scanner profile**.
 1. Complete the form. For details of each field, see [Scanner profile](#scanner-profile).
@@ -313,7 +313,7 @@ Prerequisites:
 To edit a scanner profile:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Scanner profiles** tab.
 1. In the scanner's row, select the **More actions** ({{< icon name="ellipsis_v" >}}) menu, then select **Edit**.
@@ -331,7 +331,7 @@ To edit a scanner profile:
 To delete a scanner profile:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Scanner profiles** tab.
 1. In the scanner's row, select the **More actions** ({{< icon name="ellipsis_v" >}}) menu, then select **Delete**.

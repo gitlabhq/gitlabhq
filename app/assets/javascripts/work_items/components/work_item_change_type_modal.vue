@@ -3,7 +3,7 @@ import { GlModal, GlFormGroup, GlFormSelect, GlAlert } from '@gitlab/ui';
 import { differenceBy } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { __, s__, sprintf } from '~/locale';
+import { __, n__, s__, sprintf } from '~/locale';
 import { findDesignsWidget, getParentGroupName, isMilestoneWidget } from '~/work_items/utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
@@ -247,16 +247,63 @@ export default {
       }, []);
     },
     hasWidgetDifference() {
-      if (this.hasParent || this.hasChildren) {
+      if (this.hasParent || this.childrenBlockConversion) {
         return false;
       }
       return this.widgetsWithExistingData.length > 0;
     },
+    hierarchyWidget() {
+      return this.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
+    },
     parentWorkItem() {
-      return this.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)?.parent;
+      return this.hierarchyWidget?.parent;
     },
     parentWorkItemType() {
       return this.parentWorkItem?.workItemType?.name;
+    },
+    // Direct/descendant child types actually attached to this work item,
+    // derived from the hierarchy widget's rolledUpCountsByType. We only
+    // count types with at least one item to avoid false positives from
+    // empty buckets.
+    childTypesInUse() {
+      const counts = this.hierarchyWidget?.rolledUpCountsByType ?? [];
+      return counts
+        .filter((entry) => entry?.countsByState?.all > 0 && entry.workItemType)
+        .map((entry) => entry.workItemType);
+    },
+    selectedWorkItemTypeAllowedChildTypes() {
+      const hierarchyDefinition = this.selectedWorkItemTypeWidgetDefinitions?.find(
+        (definition) => definition.type === WIDGET_TYPE_HIERARCHY,
+      );
+      return hierarchyDefinition?.allowedChildTypes?.nodes ?? [];
+    },
+    unsupportedChildTypeNames() {
+      if (this.childTypesInUse.length === 0) {
+        return [];
+      }
+      const allowedIds = new Set(this.selectedWorkItemTypeAllowedChildTypes.map((type) => type.id));
+      return this.childTypesInUse
+        .filter((type) => !allowedIds.has(type.id))
+        .map((type) => type.name);
+    },
+    // Block conversion when there are children that the target type does
+    // not support. If we cannot determine the actual child types (e.g.
+    // rolledUpCountsByType missing from the supplied widgets), fall back
+    // to the conservative "block on any children" behaviour.
+    childrenBlockConversion() {
+      if (!this.hasChildren) return false;
+      if (this.childTypesInUse.length === 0) return true;
+      return this.unsupportedChildTypeNames.length > 0;
+    },
+    // Names of the child item types that prevent conversion to the
+    // currently selected target type. Falls back to the target type's
+    // allowed child type names when the offending types cannot be
+    // determined (e.g. rolledUpCountsByType is missing).
+    offendingChildTypeNames() {
+      if (this.unsupportedChildTypeNames.length > 0) {
+        return this.unsupportedChildTypeNames;
+      }
+      return this.allowedChildTypes?.map((type) => type.name).filter(Boolean) ?? [];
     },
     workItemTypeId() {
       return this.workItemTypes.find((type) => type.name === this.selectedWorkItemType?.name).id;
@@ -362,16 +409,18 @@ export default {
         return;
       }
 
-      if (this.hasChildren) {
-        this.warningMessage = sprintf(
-          s__(
-            'WorkItem|%{workItemType} does not support the %{childItemType} child item types. Remove child items to change type.',
-          ),
-          {
-            workItemType: this.selectedWorkItemType.name,
-            childItemType: this.allowedChildTypes?.[0]?.name,
-          },
+      if (this.childrenBlockConversion) {
+        const { offendingChildTypeNames } = this;
+        const template = n__(
+          'WorkItem|%{workItemType} does not support the %{childItemType} child item type. Remove child items to change type.',
+          'WorkItem|%{workItemType} does not support the %{childItemType} child item types. Remove child items to change type.',
+          offendingChildTypeNames.length,
         );
+
+        this.warningMessage = sprintf(template, {
+          workItemType: this.selectedWorkItemType.name,
+          childItemType: offendingChildTypeNames.join(', '),
+        });
 
         this.changeTypeDisabled = true;
         return;

@@ -1,7 +1,10 @@
+---
 name: update_virtual_registry
 description: Grants the ability to update virtual registries
 boundaries:
   - group
+available_for:
+  - granular_access_token
 permissions:
   - update_container_virtual_registry
   - update_container_virtual_registry_upstream

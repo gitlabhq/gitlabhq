@@ -2,6 +2,7 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Deploy a GitLab Self-Managed instance for up to 50,000 users or 1000 RPS with high availability, database replication, and infrastructure sizing.
 title: 'Reference architecture: Up to 1000 RPS or 50,000 users'
 ---
 
@@ -185,7 +186,7 @@ In these cases, refer to [scaling an environment](_index.md#scaling-an-environme
 Our testing environment uses:
 
 - HAProxy for Linux package environments
-- Cloud Provider equivalents with NGINX Ingress for Cloud Native Hybrids
+- Cloud Provider equivalents with a Gateway API or Ingress implementation for Cloud Native Hybrids
 
 ## Set up components
 
@@ -2456,11 +2457,11 @@ least 77 Webservice pods.
 
 For further information on Webservice resource usage, see the Charts documentation on [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
 
-##### NGINX
+##### Gateway API / Ingress
 
-It's also recommended deploying the NGINX controller pods across the Webservice nodes as a DaemonSet. This is to allow the controllers to scale dynamically with the Webservice pods they serve and take advantage of the higher network bandwidth larger machine types typically have.
+It's also recommended deploying the Gateway API or Ingress controller pods across the Webservice nodes as a DaemonSet. This is to allow the controllers to scale dynamically with the Webservice pods they serve and take advantage of the higher network bandwidth larger machine types typically have.
 
-This isn't a strict requirement. The NGINX controller pods can be deployed as desired as long as they have enough resources to handle the web traffic.
+This isn't a strict requirement. The Gateway API or Ingress controller pods can be deployed as desired as long as they have enough resources to handle the web traffic.
 
 #### Sidekiq
 

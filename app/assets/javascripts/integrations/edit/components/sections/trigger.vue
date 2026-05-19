@@ -1,7 +1,7 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 
+import { useIntegrationForm } from '../../store';
 import TriggerField from '../trigger_field.vue';
 
 export default {
@@ -10,7 +10,7 @@ export default {
     TriggerField,
   },
   computed: {
-    ...mapGetters(['currentKey', 'propsSource']),
+    ...mapState(useIntegrationForm, ['currentKey', 'propsSource']),
   },
 };
 </script>

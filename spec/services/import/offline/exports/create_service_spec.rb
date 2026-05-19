@@ -208,6 +208,58 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
       it_behaves_like 'an error response', error: 'Entity full paths must be provided'
     end
 
+    context 'when provider is s3_compatible with a blocked endpoint' do
+      let(:storage_config) do
+        {
+          provider: :s3_compatible,
+          bucket: 'gitlab-exports',
+          credentials: {
+            aws_access_key_id: 'minio-user-access-key',
+            aws_secret_access_key: 'minio-secret-access-key',
+            region: 'gdk',
+            endpoint: 'https://minio.example.com',
+            path_style: true
+          }
+        }
+      end
+
+      before do
+        stub_application_setting(
+          allow_s3_compatible_storage_for_offline_transfer: true,
+          deny_all_requests_except_allowed?: true
+        )
+      end
+
+      it_behaves_like 'an error response', error: 'Requests to hosts and IP addresses not on the Allow List are denied'
+
+      it 'does not attempt to connect to object storage' do
+        client_double = instance_double(Import::Clients::ObjectStorage)
+        allow(Import::Clients::ObjectStorage).to receive(:new).and_return(client_double)
+
+        expect(client_double).not_to receive(:test_connection!)
+
+        result
+      end
+    end
+
+    context 'when provider is s3_compatible and object_storage_credentials is nil' do
+      let(:storage_config) do
+        {
+          provider: :s3_compatible,
+          bucket: 'gitlab-exports',
+          credentials: nil
+        }
+      end
+
+      before do
+        stub_application_setting(allow_s3_compatible_storage_for_offline_transfer: true)
+      end
+
+      it 'does not raise a NoMethodError' do
+        expect { result }.not_to raise_error
+      end
+    end
+
     context 'when bucket cannot be reached' do
       before do
         allow_next_instance_of(Fog::Storage) do |storage|
@@ -219,32 +271,14 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
     end
 
     context 'when an unexpected error is raised' do
-      let(:raise_error_with_cause_proc) do
-        proc do
-          raise original_error
-        rescue StandardError
-          raise NoMethodError, 'undefined method caused by a connection error'
-        end
-      end
-
       before do
         allow_next_instance_of(Fog::Storage) do |storage|
-          allow(storage).to receive(:head_bucket).and_invoke(raise_error_with_cause_proc)
+          allow(storage).to receive(:head_bucket).and_raise(StandardError, 'unexpected')
         end
       end
 
-      context 'and the error was caused by an expected error when testing connection to the bucket' do
-        let(:original_error) { Excon::Error::BadRequest.new('Bad request') }
-
-        it_behaves_like 'an error response', error: 'Unable to access object storage bucket.'
-      end
-
-      context 'and the error is not caused by an expected error' do
-        let(:original_error) { StandardError.new('unexpected') }
-
-        it 'does not catch the error' do
-          expect { result }.to raise_error(NoMethodError)
-        end
+      it 'does not catch the error' do
+        expect { result }.to raise_error(StandardError, 'unexpected')
       end
     end
 

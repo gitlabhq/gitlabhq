@@ -31,7 +31,7 @@ Before you begin troubleshooting, you should:
 - Know the endpoint where your:
   - AI Gateway is hosted.
   - Model is hosted.
-- [Enable logging](logging.md#turn-on-logging-for-gitlab-duo-usage-data) to make sure that requests and responses from GitLab to the AI Gateway are being logged to [`llm.log`](../logs/_index.md#llmlog).
+- [Enable logging](logging.md#turn-on-data-collection-for-gitlab-duo) to make sure that requests and responses from GitLab to the AI Gateway are being logged to [`llm.log`](../logs/_index.md#llmlog).
 
 For more information on troubleshooting GitLab Duo, see:
 
@@ -177,7 +177,7 @@ Prerequisites:
 To check if GitLab Duo was configured correctly:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Self-hosted models**
+1. In the left sidebar, select **Self-hosted models**
 1. Expand **AI-native features**.
 1. Under **Features**, check that **Code Suggestions** and **Code generation** are set to **Self-hosted model**.
 
@@ -261,8 +261,8 @@ docker exec -it <ai-gateway-container> sh
 echo $AIGW_CUSTOM_MODELS__ENABLED # must be true
 ```
 
-If the environment variables are not set up correctly, set them by
-[creating a container](../../install/install_ai_gateway.md#find-the-ai-gateway-image).
+If the environment variables are not set up correctly,
+[create a container](../../install/install_ai_gateway.md#ai-gateway-images).
 
 ## Check if the model is reachable from AI Gateway
 
@@ -300,7 +300,7 @@ If not successful, verify your network configurations.
 
 ## The image's platform does not match the host
 
-When [finding the AI Gateway release](../../install/install_ai_gateway.md#find-the-ai-gateway-image),
+When you [use an AI Gateway image](../../install/install_ai_gateway.md#ai-gateway-images),
 you might get an error that states `The requested image's platform (linux/amd64) does not match the detected host`.
 
 To work around this error, add `--platform linux/amd64` to the `docker run` command:
@@ -406,7 +406,7 @@ gitlab-rake gitlab:duo:verify_self_hosted_setup
 
 If no logs are generated in the AI Gateway server, follow these steps to troubleshoot:
 
-1. Ensure that [AI logs are enabled](logging.md#turn-on-logging-for-gitlab-duo-usage-data).
+1. Ensure that [AI logs are enabled](logging.md#turn-on-data-collection-for-gitlab-duo).
 1. Run the following commands to view the GitLab Rails logs for any errors:
 
    ```shell
@@ -492,3 +492,15 @@ to generate a JWT token due to the certificate issue.
 If you do not use TLS to connect your self-hosted model with the Agent Platform, to resolve this issue,
 [turn off](configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform)
 TLS connection to the GitLab Duo Agent Platform service.
+
+## Response from Agentic Chat does not display in the UI
+
+Chat responses require a persistent WebSocket connection between your browser and GitLab. If your reverse proxy does not support WebSocket upgrades, responses are generated successfully but do not appear in the chat in the GitLab UI.
+
+### Symptoms
+
+- `llm.log` shows `chunk_received`, `streaming_finished`, and `final_answer_received` with no errors.
+- AI Gateway logs show a successful model response.
+- The GitLab Duo Chat UI appears to process the request but never displays a response.
+
+To resolve this issue, ensure your reverse proxy is configured to meet the [inbound connection requirements](../gitlab_duo/configure/_index.md#allow-inbound-connections-from-clients-to-the-gitlab-instance).

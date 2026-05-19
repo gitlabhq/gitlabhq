@@ -31,10 +31,10 @@ RSpec.describe SshHostKey do
 
   # Purposefully ordered so that `sort` will make changes
   let(:known_hosts) do
-    <<~EOF
+    <<~TEXT
       example.com #{key1} git@localhost
       @revoked other.example.com #{key2} git@localhost
-    EOF
+    TEXT
   end
 
   let(:extra) { known_hosts + "foo\nbar\n" }

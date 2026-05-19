@@ -60,7 +60,7 @@ Example response:
         "name": "subsubgroup-project-cluster"
       }
     ],
-    "my-clusters-group/project1-with-clustser": [
+    "my-clusters-group/project1-with-cluster": [
       {
         "id": 1,
         "name": "test"

@@ -9,17 +9,14 @@ module RuboCop
       class AddTimestamps < RuboCop::Cop::Base
         include MigrationHelpers
 
+        RESTRICT_ON_SEND = %i[add_timestamps].freeze
         MSG = 'Do not use `add_timestamps`, use `add_timestamps_with_timezone` instead'
 
         # Check methods.
         def on_send(node)
           return unless in_migration?(node)
 
-          add_offense(node.loc.selector) if method_name(node) == :add_timestamps
-        end
-
-        def method_name(node)
-          node.children[1]
+          add_offense(node.loc.selector)
         end
       end
     end

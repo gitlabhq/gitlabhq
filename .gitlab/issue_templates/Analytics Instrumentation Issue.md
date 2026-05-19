@@ -14,7 +14,7 @@
 - [ ] No
 
 ## How to verify
-<!-- How can we verify that the desired outcome has been achieved? The instructions from this section should be used to move the issue from ~“worfklow::verification”. -->
+<!-- How can we verify that the desired outcome has been achieved? The instructions from this section should be used to move the issue from ~“workflow::verification”. -->
 
 ## Further actions needed
 <!-- Any further tasks that need to be completed after the main work of the issue is done, such as announcing the changes. -->

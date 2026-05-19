@@ -163,7 +163,7 @@ RSpec.describe Banzai::Filter::References::DesignReferenceFilter, feature_catego
       end
     end
 
-    context 'the reference is to a non-existant design' do
+    context 'the reference is to a non-existent design' do
       let(:design_url) { url_for_design(build(:design, issue: issue)) }
 
       it_behaves_like 'a no-op filter'

@@ -160,6 +160,22 @@ RSpec.describe Gitlab::EventStore::Store, feature_category: :shared do
         store.publish(event)
       end
 
+      it 'refuses publishing a CloudEvent' do
+        cloud_event = double(instance_of?: true)
+        allow(cloud_event).to receive(:instance_of?).with(Gitlab::EventStore::CloudEvent).and_return(true)
+        allow(cloud_event).to receive(:is_a?).with(Gitlab::EventStore::Event).and_return(true)
+
+        store = described_class.new do |s|
+          s.subscribe worker, to: event_klass
+        end
+
+        expect { store.publish(cloud_event) }
+          .to raise_error(
+            Gitlab::EventStore::InvalidEvent,
+            /Event being published is an instance of GitLab::EventStore::CloudEvent/
+          )
+      end
+
       context 'when other workers subscribe to the same event' do
         let(:store) do
           described_class.new do |store|

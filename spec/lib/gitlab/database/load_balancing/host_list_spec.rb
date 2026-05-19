@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::HostList do
+RSpec.describe Gitlab::Database::LoadBalancing::HostList, feature_category: :database do
   let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
   let(:load_balancer) do
     Gitlab::Database::LoadBalancing::LoadBalancer.new(
@@ -19,6 +19,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::HostList do
     allow(load_balancer).to receive(:create_replica_connection_pool) do
       double(:replica_connection_pool, discarded?: false)
     end
+    allow(Gitlab::Database::LoadBalancing::Callbacks).to receive(:metrics_host_gauge)
   end
 
   describe '#initialize' do
@@ -136,6 +137,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::HostList do
   end
 
   def expect_metrics(hosts)
-    expect(Gitlab::Metrics.client.get(:db_load_balancing_hosts).get({})).to eq(hosts)
+    expect(Gitlab::Database::LoadBalancing::Callbacks).to have_received(:metrics_host_gauge)
+                                                            .with({}, hosts)
+                                                            .at_least(1).times
   end
 end

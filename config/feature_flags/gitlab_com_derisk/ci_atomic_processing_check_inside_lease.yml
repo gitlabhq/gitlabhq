@@ -1,0 +1,10 @@
+---
+name: ci_atomic_processing_check_inside_lease
+description: Check needs_processing? inside the lease instead of outside.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/598584
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235491
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/599796
+milestone: '19.0'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

@@ -43,7 +43,7 @@ Prerequisites:
 - Administrator access.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Protected paths**.
 
 Requests that exceed the rate limit are logged in `auth.log`.

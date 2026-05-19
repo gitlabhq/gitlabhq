@@ -6,7 +6,7 @@ RSpec.describe Import::Offline::Exports::WriteMetadataService, feature_category:
   using RSpec::Parameterized::TableSyntax
 
   describe '#execute' do
-    let_it_be(:offline_export) { create(:offline_export, :started, :with_configuration) }
+    let_it_be(:offline_export, freeze: false) { create(:offline_export, :started, :with_configuration) }
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
 

@@ -16,8 +16,8 @@ title: Custom project templates for groups
 {{< history >}}
 
 - Group selector for browsing group templates outside a group context [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590012)
-  in GitLab 18.11 [with a feature flag](../../administration/feature_flags/_index.md) named `constrain_group_project_templates`.
-  Disabled by default.
+  in GitLab 18.11 [with a feature flag](../../administration/feature_flags/_index.md) named `constrain_group_project_templates`. Disabled by default.
+- Group selector for browsing group templates outside a group context [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/586332) in GitLab 19.0. Feature flag `constrain_group_project_templates` removed.
 
 {{< /history >}}
 
@@ -57,15 +57,8 @@ Projects in nested subgroups are not included in the template list.
   except for **GitLab Pages** and **Security and compliance** are set to **Everyone With Access**.
 - Private projects can be selected only by users who are members of the projects.
 
-When the `constrain_group_project_templates` feature flag is enabled, users creating a project
-outside of a group context must select a group from a dropdown list before browsing its templates.
-Only groups the user has access to are listed.
-
-A [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/480779) exists:
-[Inherited members](../project/members/_index.md#membership-types) can't select project templates,
-unless the `project_templates_without_min_access` feature flag is enabled.
-This feature flag [is disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/480779)
-on GitLab.com, and so users must be granted direct membership of the template project.
+When you create a project outside of a group context, you must select a group from the dropdown list
+before you can browse its templates. Only groups you have access to are listed.
 
 ## Example structure
 

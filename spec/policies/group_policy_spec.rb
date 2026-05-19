@@ -140,6 +140,8 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     it_behaves_like 'valid permissions'
 
+    it { expect_disallowed(:update_group_organization) }
+
     context 'with subgroup_creation level set to maintainer' do
       let(:permissions) { maintainer_permissions + [:create_subgroup] }
 
@@ -161,6 +163,8 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     it_behaves_like 'valid permissions'
 
+    it { expect_allowed(:update_group_organization) }
+
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { owner.id }
     end
@@ -170,11 +174,14 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     let(:current_user) { admin }
 
     it { expect_disallowed(*all_permissions) }
+    it { expect_disallowed(:update_group_organization) }
 
     context 'with admin mode', :enable_admin_mode do
       let(:permissions) { admin_permissions }
 
       it_behaves_like 'valid permissions'
+
+      it { expect_allowed(:update_group_organization) }
     end
 
     it_behaves_like 'deploy token does not get confused with user' do
@@ -191,6 +198,8 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     let(:permissions) { admin_permissions }
 
     it_behaves_like 'valid permissions'
+
+    it { expect_allowed(:update_group_organization) }
 
     context 'when user is also an admin' do
       before do
@@ -1767,6 +1776,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     context 'with developer' do
       let(:current_user) { developer }
+
+      it { is_expected.to be_disallowed(:read_group_all_available_runners) }
+    end
+
+    context 'with security_manager' do
+      let(:current_user) { security_manager }
 
       it { is_expected.to be_allowed(:read_group_all_available_runners) }
     end

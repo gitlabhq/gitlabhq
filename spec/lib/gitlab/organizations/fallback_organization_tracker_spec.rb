@@ -60,6 +60,14 @@ RSpec.describe Gitlab::Organizations::FallbackOrganizationTracker, :request_stor
 
         it_behaves_like 'internal event not tracked'
       end
+
+      context 'when called multiple times' do
+        it 'does not call track_event multiple times' do
+          expect(Gitlab::InternalEvents).to receive(:track_event).once
+
+          3.times { described_class.trigger }
+        end
+      end
     end
   end
 

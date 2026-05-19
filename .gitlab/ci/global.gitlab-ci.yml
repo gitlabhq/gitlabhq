@@ -41,14 +41,6 @@
     NODE_ENV: "production"
     GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
 
-.cache-analytics:
-  after_script:
-    - |
-      source scripts/utils.sh
-      section_start "cache-analytics" "Uploading cache metrics"
-      bundle exec ruby scripts/cache_metrics || true
-      section_end "cache-analytics"
-
 .redis-services:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-${REDIS_CLUSTER_VERSION}
@@ -153,7 +145,7 @@
 
 .es8-services:
   services:
-    - name: elasticsearch:8.19.12
+    - name: elasticsearch:8.19.13
 
 .es8-variables:
   variables:
@@ -171,7 +163,7 @@
 
 .es9-services:
   services:
-    - name: elasticsearch:9.3.1
+    - name: elasticsearch:9.3.3
 
 .es9-variables:
   variables:
@@ -262,33 +254,22 @@
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.os2-services, services]
 
-.use-pg17-clickhouse23:
-  extends: .use-pg17
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - name: clickhouse/clickhouse-server:23.11.3.23-alpine
-      alias: clickhouse
-  variables:
-    CLICKHOUSE_USER: default
-    CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
-    CLICKHOUSE_DB: gitlab_clickhouse_test
-
-.use-pg17-clickhouse24:
-  extends: .use-pg17
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - name: clickhouse/clickhouse-server:24.9.1.3278-alpine
-      alias: clickhouse
-  variables:
-    CLICKHOUSE_USER: default
-    CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
-    CLICKHOUSE_DB: gitlab_clickhouse_test
-
 .use-pg17-clickhouse25:
   extends: .use-pg17
   services:
     - !reference [.db-services-with-auto-explain, services]
     - name: clickhouse/clickhouse-server:25.12.3-alpine
+      alias: clickhouse
+  variables:
+    CLICKHOUSE_USER: default
+    CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    CLICKHOUSE_DB: gitlab_clickhouse_test
+
+.use-pg17-clickhouse26:
+  extends: .use-pg17
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - name: clickhouse/clickhouse-server:26.2.13.2-alpine
       alias: clickhouse
   variables:
     CLICKHOUSE_USER: default
@@ -491,14 +472,12 @@
   cache: !reference [.ruby-gems-cache]
 
 .ruby-cache-pull-push:
-  extends: .cache-analytics
   cache:
     key: !reference [.ruby-gems-cache, key]
     paths: !reference [.ruby-gems-cache, paths]
     policy: pull-push
 
 .setup-test-env-cache:
-  extends: .cache-analytics
   cache:
     - !reference [.ruby-gems-cache]
     - *gitaly-binaries-cache
@@ -506,7 +485,6 @@
     - *zoekt-elasticsearch-indexer-cache  # gitlab-ci has a limit of max 4 caches, so these binaries are cached together
 
 .static-analysis-cache:
-  extends: .cache-analytics
   cache:
     - !reference [.ruby-gems-cache]
     - *node-modules-cache
@@ -547,8 +525,6 @@
     policy: pull-push
 
 .assets-compile-cache:
-  extends:
-    - .cache-analytics
   cache:
     - !reference [.ruby-gems-cache]
     - *node-modules-cache

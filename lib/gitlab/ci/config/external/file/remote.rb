@@ -31,9 +31,12 @@ module Gitlab
             end
             strong_memoize_attr :content
 
+            def include_type
+              :remote
+            end
+
             def metadata
               super.merge(
-                type: :remote,
                 location: masked_location,
                 blob: nil,
                 raw: masked_location,
@@ -75,7 +78,7 @@ module Gitlab
             end
 
             def cache_enabled?
-              Feature.enabled?(:ci_cache_remote_includes, context.project) && params[:cache].present?
+              params[:cache].present?
             end
 
             def cache_key
@@ -150,11 +153,13 @@ module Gitlab
                     next
                   end
                 rescue Timeout::Error, *Gitlab::HTTP::HTTP_TIMEOUT_ERRORS
-                  log_http_timeout if Feature.enabled?(:ci_config_http_timeout, context.project)
-
-                  if retry_or_add_error(attempt, max_attempts, "Remote file `#{masked_location}` could not be fetched after #{max_attempts} attempts because of a timeout error!")
+                  if should_retry_error?(attempt, max_attempts)
+                    sleep(backoff_delay(attempt))
                     next
                   end
+
+                  log_http_timeout
+                  raise Context::HTTPTimeoutError, "Remote file `#{masked_location}` could not be fetched after #{max_attempts} attempts because of a timeout error!"
                 rescue Gitlab::HTTP::Error
                   if retry_or_add_error(attempt, max_attempts, "Remote file `#{masked_location}` could not be fetched after #{max_attempts} attempts because of HTTP error!")
                     next
@@ -223,8 +228,8 @@ module Gitlab
                 project_id: context.project&.id,
                 extra: {
                   location: masked_location,
-                  open_timeout_s: Config::HTTP_OPEN_TIMEOUT_SECONDS,
-                  read_timeout_s: Config::HTTP_READ_TIMEOUT_SECONDS
+                  open_timeout_s: http_options[:open_timeout],
+                  read_timeout_s: http_options[:read_timeout]
                 }
               )
             end

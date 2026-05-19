@@ -7,7 +7,7 @@
   .wiki-page-header
     = render ::Layouts::PageHeadingComponent.new('') do |c|
       - c.with_heading do
-        .gl-flex.gl-gap-3
+        .gl-flex.gl-items-center.gl-gap-3
           = wiki_sidebar_toggle_button
           %h1.gl-heading-1.gl-m-0{ data: { testid: 'page-heading' } }
             = s_("Wiki|Wiki pages")
@@ -16,7 +16,7 @@
           .btn-group{ role: 'group' }
             = wiki_sort_controls(@wiki, params[:direction])
 
-        - if can?(current_user, :create_wiki, @project)
+        - if can?(current_user, :create_wiki, @wiki.container)
           = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, SecureRandom.uuid, random_title: true, view: 'create'), variant: :confirm) do
             = s_("Wiki|New page")
 

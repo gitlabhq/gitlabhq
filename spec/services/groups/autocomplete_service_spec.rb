@@ -7,11 +7,11 @@ RSpec.describe Groups::AutocompleteService, feature_category: :groups_and_projec
   let_it_be(:sub_group) { create(:group, :private, parent: group) }
   let_it_be(:project) { create(:project, group: group) }
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   subject { described_class.new(group, user) }
 
-  before do
+  before_all do
     group.add_developer(user)
   end
 
@@ -21,10 +21,10 @@ RSpec.describe Groups::AutocompleteService, feature_category: :groups_and_projec
   end
 
   describe '#labels_as_hash' do
-    let!(:label1) { create(:group_label, group: group) }
-    let!(:label2) { create(:group_label, group: group) }
-    let!(:sub_group_label) { create(:group_label, group: sub_group) }
-    let!(:parent_group_label) { create(:group_label, group: group.parent) }
+    let_it_be(:label1) { create(:group_label, group: group) }
+    let_it_be(:label2) { create(:group_label, group: group) }
+    let_it_be(:sub_group_label) { create(:group_label, group: sub_group) }
+    let_it_be(:parent_group_label) { create(:group_label, group: group.parent) }
 
     it 'returns labels from own group and ancestor groups' do
       results = subject.labels_as_hash(nil)
@@ -104,10 +104,10 @@ RSpec.describe Groups::AutocompleteService, feature_category: :groups_and_projec
   end
 
   describe '#milestones' do
-    let!(:group_milestone) { create(:milestone, group: group) }
-    let!(:subgroup_milestone) { create(:milestone, group: sub_group) }
+    let_it_be(:group_milestone) { create(:milestone, group: group) }
+    let_it_be(:subgroup_milestone) { create(:milestone, group: sub_group) }
 
-    before do
+    before_all do
       sub_group.add_maintainer(user)
     end
 

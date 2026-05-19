@@ -45,7 +45,7 @@ module Groups::GroupMembersHelper
       group_name: group.name)
   end
 
-  # Overriden in ee/app/helpers/ee/groups/group_members_helper.rb
+  # Overridden in ee/app/helpers/ee/groups/group_members_helper.rb
   def allow_group_owner_enterprise_bypass?(group)
     false
   end

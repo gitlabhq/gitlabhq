@@ -57,7 +57,9 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
 
           aggregate_failures do
             expect(response).to redirect_to(group_observability_setup_path(group))
-            expect(flash[:success]).to eq('Welcome to GitLab Observability!')
+            expect(flash[:success]).to eq(
+              s_('Observability|Observability is enabled for your group. Start by instrumenting your projects below.')
+            )
             expect(::Observability::AccessRequestService).to have_received(:new).with(group, user)
             expect(service_instance).to have_received(:execute)
           end

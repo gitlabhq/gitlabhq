@@ -2,6 +2,7 @@
 stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Use the Dependency List Export API to generate and download export files of project or group dependencies.
 title: Dependency list export API
 ---
 
@@ -29,7 +30,7 @@ Creates a CycloneDX JSON export for all the project dependencies detected in a p
 If an authenticated user does not have the [read_dependency](../user/custom_roles/abilities.md#vulnerability-management)
 permission, this request returns a `403 Forbidden` status code.
 
-SBOM exports can be only accessed by the export's author.
+SBOM exports can only be accessed by the export's author.
 
 ```plaintext
 POST /projects/:id/dependency_list_exports

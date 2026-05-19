@@ -3,5 +3,7 @@ name: read_admin_member_role
 description: Grants the ability to read admin member roles
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - read_admin_member_role

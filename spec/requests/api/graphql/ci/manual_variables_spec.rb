@@ -60,11 +60,11 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.manualVariables', feature
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:user) { create(:user) }
 
-    it 'restricts access to guest+ project members' do
+    it 'restricts access to reporter+ project members' do
       job = create(:ci_build, :manual, pipeline: pipeline)
       create(:ci_job_variable, key: 'MANUAL_TEST_VAR', job: job)
 
-      project.add_guest(user)
+      project.add_reporter(user)
 
       post_graphql(query, current_user: user)
 
@@ -104,7 +104,7 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.manualVariables', feature
 
     variables_data = graphql_data.dig('project', 'pipelines', 'nodes').first
       .dig('jobs', 'nodes').flat_map { |job| job.dig('manualVariables', 'nodes') }
-    expect(variables_data).to eq([nil, nil])
+    expect(variables_data).to be_empty
   end
 
   it 'does not produce N+1 queries' do

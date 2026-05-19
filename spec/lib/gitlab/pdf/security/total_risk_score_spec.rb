@@ -6,8 +6,8 @@ RSpec.describe Gitlab::PDF::Security::TotalRiskScore, feature_category: :vulnera
   let(:pdf) { Prawn::Document.new }
 
   describe 'constants' do
-    it 'has a TOTAL_HEIGHT of 280' do
-      expect(described_class::TOTAL_HEIGHT).to eq(280)
+    it 'has a TOTAL_HEIGHT of 250' do
+      expect(described_class::TOTAL_HEIGHT).to eq(250)
     end
   end
 

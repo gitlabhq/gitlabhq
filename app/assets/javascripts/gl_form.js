@@ -72,7 +72,12 @@ export default class GLForm {
 
   filterEnabledGFM(dataSources) {
     for (const [item, enabled] of Object.entries(this.enableGFM)) {
-      if (enabled && item !== 'emojis' && !dataSources[getEnableGFMType(item)]) {
+      if (
+        enabled &&
+        item !== 'emojis' &&
+        item !== 'types' &&
+        !dataSources[getEnableGFMType(item)]
+      ) {
         this.enableGFM[item] = false;
       }
     }

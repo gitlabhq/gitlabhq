@@ -20,7 +20,7 @@ RSpec.describe IncidentManagement::Incidents::CreateService, feature_category: :
       end
 
       it 'creates an incident issue' do
-        expect { create_incident }.to change(Issue, :count).by(1)
+        expect { create_incident }.to change { Issue.count }.by(1)
       end
 
       it 'created issue has correct attributes', :aggregate_failures do
@@ -92,7 +92,7 @@ RSpec.describe IncidentManagement::Incidents::CreateService, feature_category: :
       let(:title) { '' }
 
       it 'does not create an issue' do
-        expect { create_incident }.not_to change(Issue, :count)
+        expect { create_incident }.not_to change { Issue.count }
       end
 
       it 'responds with errors' do

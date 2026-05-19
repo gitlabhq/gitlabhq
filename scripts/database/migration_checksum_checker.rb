@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'digest'
+
 # Checks for presence of migration checksum files when adding new migrations
 class MigrationChecksumChecker
   MIGRATION_DIRS = %w[db/migrate db/post_migrate].freeze
@@ -38,7 +40,13 @@ class MigrationChecksumChecker
           issues[migration_file] = "Empty checksum file"
         else
           checksum_content = File.read(checksum_file).chomp
-          issues[migration_file] = "Invalid checksum length" if checksum_content.length != CHECKSUM_LENGTH
+          expected_checksum = Digest::SHA256.hexdigest(timestamp)
+
+          if checksum_content.length != CHECKSUM_LENGTH
+            issues[migration_file] = "Invalid checksum length"
+          elsif checksum_content != expected_checksum
+            issues[migration_file] = "Invalid checksum content (expected #{expected_checksum})"
+          end
         end
       end
     end

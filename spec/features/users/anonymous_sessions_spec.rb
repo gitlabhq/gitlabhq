@@ -12,7 +12,7 @@ RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state, feature_categor
   it 'creates a session with a short TTL when login fails', :js do
     visit new_user_session_path
     # The session key only gets created after a post
-    fill_in 'user_login', with: 'non-existant@gitlab.org'
+    fill_in 'user_login', with: 'non-existent@gitlab.org'
     fill_in 'user_password', with: '12345678'
     click_button 'Sign in'
 

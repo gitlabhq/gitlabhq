@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Diff::PairSelector do
     let(:lines) { diff.lines }
 
     let(:diff) do
-      <<-EOF.strip_heredoc
+      <<~DIFF
          class Test                       # 0
         -  def initialize(test = true)    # 1
         +  def initialize(test = false)   # 2
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Diff::PairSelector do
              end
            end
          end
-      EOF
+      DIFF
     end
 
     it 'finds all pairs' do
@@ -38,12 +38,12 @@ RSpec.describe Gitlab::Diff::PairSelector do
 
     context 'when there are only removals' do
       let(:diff) do
-        <<-EOF.strip_heredoc
+        <<~DIFF
           - class Test
           -  def initialize(test = true)
           -  end
           - end
-        EOF
+        DIFF
       end
 
       it 'returns empty collection' do
@@ -53,12 +53,12 @@ RSpec.describe Gitlab::Diff::PairSelector do
 
     context 'when there are only additions' do
       let(:diff) do
-        <<-EOF.strip_heredoc
+        <<~DIFF
           + class Test
           +  def initialize(test = true)
           +  end
           + end
-        EOF
+        DIFF
       end
 
       it 'returns empty collection' do
@@ -68,12 +68,12 @@ RSpec.describe Gitlab::Diff::PairSelector do
 
     context 'when there are no changes' do
       let(:diff) do
-        <<-EOF.strip_heredoc
+        <<~DIFF
            class Test
              def initialize(test = true)
              end
            end
-        EOF
+        DIFF
       end
 
       it 'returns empty collection' do

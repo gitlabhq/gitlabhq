@@ -50,6 +50,7 @@ module Authz
       def action_list
         # Matches action files (e.g. create.yml) while excluding .metadata.yml
         Dir.glob(File.join(File.dirname(source_file), '[a-z]*.yml'))
+          .reject { |f| YAML.safe_load(File.read(f))['deprecated'] }
           .map { |f| File.basename(f, '.yml').tr('_', ' ') }
           .sort
           .to_sentence

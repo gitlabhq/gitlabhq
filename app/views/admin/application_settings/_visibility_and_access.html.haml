@@ -42,6 +42,13 @@
       %span.form-text.gl-text-subtle#custom_http_clone_url_root_help_block
         = _('Replaces the clone URL root.')
 
+    - if mcp_server_setting_available?
+      .form-group
+        %h5= s_('AdminSettings|MCP client access')
+        = f.gitlab_ui_checkbox_component :mcp_server_enabled,
+            s_('AdminSettings|Allow connection to GitLab'),
+            help_text: s_('AdminSettings|When you turn on this setting, the GitLab Duo Agent Platform and external applications can access your data through MCP clients.')
+
     - Gitlab::SSHPublicKey.supported_types.each do |type|
       - field_name = :"#{type}_key_restriction"
       .form-group

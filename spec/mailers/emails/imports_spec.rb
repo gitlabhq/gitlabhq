@@ -128,6 +128,80 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     it_behaves_like 'appearance header and footer not enabled'
   end
 
+  describe '#offline_export_complete' do
+    let(:offline_export) { build_stubbed(:offline_export, :finished) }
+    let(:configuration) { build_stubbed(:offline_configuration, offline_export: offline_export) }
+
+    subject { Notify.offline_export_complete('user_id', 'offline_export_id') }
+
+    before do
+      allow(User).to receive(:find).and_return(user)
+      allow(Import::Offline::Export).to receive(:find).and_return(offline_export)
+      allow(offline_export).to receive(:configuration).and_return(configuration)
+    end
+
+    it 'sends complete email', :aggregate_failures do
+      start_date = I18n.l(offline_export.created_at.to_date, format: :long)
+
+      is_expected.to have_subject('Offline export complete')
+      is_expected.to have_content('Export complete')
+      is_expected.to have_content(offline_export.source_hostname)
+      is_expected.to have_content(start_date)
+      is_expected.to have_content(configuration.export_prefix)
+      is_expected.to have_content('in the configured object storage bucket')
+    end
+
+    context 'when source_hostname contains credentials' do
+      let(:offline_export) do
+        build_stubbed(:offline_export, :finished, source_hostname: 'https://user:secret@gitlab.example.com')
+      end
+
+      it 'sanitizes the source_hostname', :aggregate_failures do
+        is_expected.to have_content('https://*****:*****@gitlab.example.com')
+        is_expected.not_to have_content('secret')
+      end
+    end
+
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+  end
+
+  describe '#offline_export_failed' do
+    let(:offline_export) { build_stubbed(:offline_export, :failed) }
+    let(:configuration) { build_stubbed(:offline_configuration, offline_export: offline_export) }
+
+    subject { Notify.offline_export_failed('user_id', 'offline_export_id') }
+
+    before do
+      allow(User).to receive(:find).and_return(user)
+      allow(Import::Offline::Export).to receive(:find).and_return(offline_export)
+      allow(offline_export).to receive(:configuration).and_return(configuration)
+    end
+
+    it 'sends failed email', :aggregate_failures do
+      start_date = I18n.l(offline_export.created_at.to_date, format: :long)
+
+      is_expected.to have_subject('Offline export failed')
+      is_expected.to have_content('Export failed')
+      is_expected.to have_content(offline_export.source_hostname)
+      is_expected.to have_content(start_date)
+    end
+
+    context 'when source_hostname contains credentials' do
+      let(:offline_export) do
+        build_stubbed(:offline_export, :failed, source_hostname: 'https://user:secret@gitlab.example.com')
+      end
+
+      it 'sanitizes the source_hostname', :aggregate_failures do
+        is_expected.to have_content('https://*****:*****@gitlab.example.com')
+        is_expected.not_to have_content('secret')
+      end
+    end
+
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+  end
+
   describe '#import_source_user_reassign' do
     let(:user) { build_stubbed(:user) }
     let(:group) { build_stubbed(:group) }

@@ -27,7 +27,6 @@ import { unrestrictedPages } from './constants';
 // </pre>
 //
 
-const SANDBOX_FRAME_PATH_V10 = '/-/sandbox/mermaid_v10';
 const SANDBOX_FRAME_PATH_V11 = '/-/sandbox/mermaid_v11';
 
 // This is an arbitrary number; Can be iterated upon when suitable.
@@ -77,8 +76,7 @@ function fixElementSource(el) {
 }
 
 export function getSandboxFrameSrc() {
-  const useMermaidV11 = gon?.features?.useMermaidV11;
-  const framePath = useMermaidV11 ? SANDBOX_FRAME_PATH_V11 : SANDBOX_FRAME_PATH_V10;
+  const framePath = SANDBOX_FRAME_PATH_V11;
   const path = joinPaths(gon.relative_url_root || '', framePath);
   let absoluteUrl = relativePathToAbsolute(path, getBaseURL());
   if (darkModeEnabled()) {

@@ -26,7 +26,7 @@ import {
 jest.mock('~/alert');
 
 const defaultProps = {
-  organizationActivityPath: '/-/organizations/default/activity.json',
+  organizationActivityPath: '/o/default/-/activity.json',
   organizationActivityEventTypes: MOCK_EVENT_TYPES,
   organizationActivityAllEvent: MOCK_ALL_EVENT,
 };

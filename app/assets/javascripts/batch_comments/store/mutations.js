@@ -21,7 +21,7 @@ export default {
   },
 
   [types.SET_BATCH_COMMENTS_DRAFTS](drafts) {
-    this.drafts = drafts.map(processDraft);
+    this.drafts = Array.isArray(drafts) ? drafts.map(processDraft) : [];
   },
 
   [types.REQUEST_PUBLISH_DRAFT](draftId) {

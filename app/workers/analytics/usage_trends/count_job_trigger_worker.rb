@@ -18,7 +18,7 @@ module Analytics
       idempotent!
 
       def perform
-        recorded_at = Time.zone.now
+        recorded_at = Time.zone.now.iso8601
 
         worker_arguments = Gitlab::Analytics::UsageTrends::WorkersArgumentBuilder.new(
           measurement_identifiers: ::Analytics::UsageTrends::Measurement.measurement_identifier_values,

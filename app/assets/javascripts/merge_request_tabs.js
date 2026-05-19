@@ -19,6 +19,7 @@ import {
 } from '~/rapid_diffs/utils/linked_file';
 import createEventHub from '~/helpers/event_hub_factory';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import InternalEvents from '~/tracking/internal_events';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import Diff from './diff';
 import { initDiffStatsDropdown } from './init_diff_stats_dropdown';
@@ -237,6 +238,7 @@ export default class MergeRequestTabs {
     this.diffsClass = null;
     this.commitsLoaded = false;
     this.isFixedLayoutPreferred = this.contentWrapper.classList.contains('container-limited');
+    this.isNewMergeRequest = Boolean(document.querySelector('.js-merge-request-new-submit'));
     this.createRapidDiffsApp = createRapidDiffsApp;
     this.rapidDiffsApp = null;
     this.eventHub = createEventHub();
@@ -312,11 +314,19 @@ export default class MergeRequestTabs {
 
       const { action } = e.currentTarget.dataset || {};
 
+      const href = e.currentTarget.getAttribute('href');
+
       if (isMetaClick(e)) {
-        const targetLink = e.currentTarget.getAttribute('href');
-        visitUrl(targetLink, true);
+        visitUrl(href, true);
+      } else if (
+        this.createRapidDiffsApp &&
+        this.isDiffAction(action) &&
+        !this.loadedPages[action] &&
+        !this.isNewMergeRequest &&
+        !this.#hasDiffRefs()
+      ) {
+        visitUrl(href);
       } else if (action) {
-        const href = e.currentTarget.getAttribute('href');
         this.tabShown(action, href);
       }
     }
@@ -356,6 +366,9 @@ export default class MergeRequestTabs {
         action in pageBundles &&
         !skipPageBundle
       ) {
+        if (this.isDiffAction(action)) {
+          this.trackSpaVisit('legacy_diffs');
+        }
         toggleLoader(true);
         pageBundles[action]()
           .then(({ default: init }) => {
@@ -387,6 +400,9 @@ export default class MergeRequestTabs {
       } else if (this.isDiffAction(action)) {
         if (this.createRapidDiffsApp) {
           if (!this.rapidDiffsApp) {
+            if (!this.loadedPages[action]) {
+              this.trackSpaVisit('rapid_diffs');
+            }
             this.rapidDiffsApp = await this.createRapidDiffsApp();
             this.rapidDiffsApp.init();
           } else {
@@ -645,6 +661,13 @@ export default class MergeRequestTabs {
     return action === 'diffs' || action === 'new/diffs';
   }
 
+  trackSpaVisit(label) {
+    InternalEvents.trackEvent('view_merge_request_diffs', {
+      label,
+      property: 'spa_navigation',
+    });
+  }
+
   expandViewContainer() {
     if (this.contentWrapper.classList.contains('container-limited')) {
       this.contentWrapper.classList.remove('container-limited');
@@ -743,8 +766,19 @@ export default class MergeRequestTabs {
       newPath: position?.new_path,
       hash: noteId ? `note_${noteId}` : undefined,
     });
-    url.searchParams.set('rapid_diffs', 'true');
     visitUrl(url.toString());
+  }
+
+  #hasDiffRefs() {
+    const appDataEl = document.querySelector('[data-rapid-diffs]');
+    if (!appDataEl) return false;
+
+    try {
+      const appData = JSON.parse(appDataEl.dataset.appData);
+      return Boolean(appData?.versions);
+    } catch {
+      return false;
+    }
   }
 
   #visitLegacyDiffNote(discussion) {

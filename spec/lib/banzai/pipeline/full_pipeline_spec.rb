@@ -106,12 +106,12 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
     let(:doc)        { described_class.call(footnote_markdown, project: project)[:output] }
     let(:identifier) { doc.to_html[/fnref-1-(\d+)/, 1] }
     let(:footnote_markdown) do
-      <<~EOF
+      <<~MARKDOWN
         first[^1] and second[^😄second] and twenty[^_twenty]
         [^1]: one
         [^😄second]: two
         [^_twenty]: twenty
-      EOF
+      MARKDOWN
     end
 
     it 'properly adds the necessary ids and classes' do

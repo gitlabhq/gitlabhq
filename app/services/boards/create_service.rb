@@ -2,7 +2,9 @@
 
 module Boards
   class CreateService < Boards::BaseService
-    include Gitlab::InternalEventsTracking
+    include Gitlab::InternalEvents::ServiceTracking
+
+    track_internal_event 'board_created', on: :success
 
     def execute
       unless can_create_board?
@@ -22,7 +24,7 @@ module Boards
       board = parent_board_collection.create(params)
 
       unless board.persisted?
-        return ServiceResponse.error(message: "There was an error when creating a board.", payload: board)
+        return ServiceResponse.error(message: "There was an error when creating a board.", payload: { board: board })
       end
 
       board.tap do |created_board|
@@ -30,17 +32,7 @@ module Boards
         created_board.lists.create(list_type: :closed)
       end
 
-      track_board_creation_event(board)
-
-      ServiceResponse.success(payload: board)
-    end
-
-    def track_board_creation_event(board)
-      track_internal_event('board_created', **internal_event_context(board))
-    end
-
-    def internal_event_context(board)
-      { project: board.project, namespace: board.group }
+      ServiceResponse.success(payload: { board: board })
     end
 
     def parent_board_collection

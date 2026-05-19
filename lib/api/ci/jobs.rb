@@ -104,6 +104,10 @@ module API
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
+          optional :byte_offset, type: Integer, desc: 'Byte offset to start reading from',
+            values: 0.., documentation: { example: 0 }
+          optional :byte_limit, type: Integer, desc: 'Maximum number of bytes to return',
+            values: 1..Gitlab::Ci::Trace::Stream::LIMIT_SIZE, documentation: { example: 51200 }
         end
 
         route_setting :authorization, permissions: :read_job, boundary_type: :project
@@ -118,9 +122,17 @@ module API
           content_type 'text/plain'
           env['api.format'] = :binary
 
-          # The trace can be nil bu body method expects a string as an argument.
-          trace = build.trace.raw || ''
-          body trace
+          trace = if params[:byte_offset] || params[:byte_limit]
+                    byte_offset = params[:byte_offset] || 0
+                    byte_limit = params[:byte_limit]
+
+                    build.trace.raw_range(byte_offset: byte_offset, byte_limit: byte_limit)
+                  else
+                    build.trace.raw
+                  end
+
+          # The trace can be nil but body method expects a string as an argument.
+          body trace || ''
         end
 
         desc 'Cancel a specific job of a project' do
@@ -145,7 +157,7 @@ module API
           authorize!(:cancel_build, build)
 
           if params[:force]
-            authorize!(:maintainer_access, build)
+            authorize!(:force_cancel_build, build)
             build.force_cancel
           else
             build.cancel

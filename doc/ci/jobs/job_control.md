@@ -53,7 +53,7 @@ In blocking manual jobs:
   enabled can't be merged with a blocked pipeline.
 - The pipeline shows a status of **blocked**.
 
-When using manual jobs in triggered pipelines with a [`trigger:strategy`](../yaml/_index.md#triggerstrategy),
+When using manual jobs in downstream pipelines with a [`trigger:strategy`](../yaml/_index.md#triggerstrategy),
 the type of manual job can affect the trigger job's status while the pipeline runs.
 
 ### Run a manual job
@@ -121,7 +121,7 @@ To retry a manual job with previously-specified variables:
 Use [`manual_confirmation`](../yaml/_index.md#manual_confirmation) with `when: manual` to require confirmation for manual jobs.
 This helps prevent accidental deployments or deletions for sensitive jobs like those that deploy to production.
 
-When you trigger the job, you must confirm the action before it runs.
+When you run the job, you must confirm the action before it runs.
 
 ### Protect manual jobs
 
@@ -134,7 +134,7 @@ When you trigger the job, you must confirm the action before it runs.
 
 Use [protected environments](../environments/protected_environments.md)
 to define a list of users authorized to run a manual job. You can authorize only
-the users associated with a protected environment to trigger manual jobs, which can:
+the users associated with a protected environment to run manual jobs, which can:
 
 - More precisely limit who can deploy to an environment.
 - Block a pipeline until an approved user "approves" it.
@@ -158,8 +158,8 @@ To protect a manual job:
 
 1. In the [protected environments settings](../environments/protected_environments.md#protecting-environments),
    select the environment (`production` in this example) and add the users, roles or groups
-   that are authorized to trigger the manual job to the **Allowed to Deploy** list. Only those in
-   this list can trigger this manual job, and GitLab administrators
+   that are authorized to run the manual job to the **Allowed to Deploy** list. Only those in
+   this list can run this manual job, and GitLab administrators
    who are always able to use protected environments.
 
 You can use protected environments with blocking manual jobs to have a list of users
@@ -316,6 +316,100 @@ deploystacks:
   tags:
     - ${PROVIDER}-${STACK}
   environment: $PROVIDER/$STACK
+```
+
+### Use matrix variables in rules
+
+GitLab evaluates rules separately for each individual matrix job,
+using that job's variable values.
+
+#### Use matrix variables in `rules:if`
+
+Use matrix variables in [`rules:if`](../yaml/_index.md#rulesif) expressions
+to include or exclude individual matrix jobs based on their variable values.
+
+For example, to skip jobs when the matrix variable `SKIP` is set to `"true"`:
+
+```yaml
+test:
+  script: echo "Building $ARCH"
+  parallel:
+    matrix:
+      - ARCH: [amd64, arm64]
+        SKIP: ["false", "true"]
+  rules:
+    - if: $SKIP == "true"
+      when: never
+    - when: on_success
+```
+
+Only the jobs where `SKIP` is `"false"` are included in the pipeline.
+
+> [!note]
+> Matrix variables in `rules:if` do not support nested expansion. If a matrix variable value
+> references another CI/CD variable (for example, `FILE: $GLOBAL_FILE`), the reference is not
+> resolved. The expression uses the literal string value, so `$FILE` evaluates to `"$GLOBAL_FILE"`
+> rather than the value of `GLOBAL_FILE`.
+
+#### Use matrix variables in `rules:changes`
+
+Use matrix variables in [`rules:changes`](../yaml/_index.md#ruleschanges)
+paths to include a matrix job only when files relevant to that job have changed.
+This pattern is useful in monorepos where each matrix value corresponds to a
+component or service with its own directory.
+
+For example, to run a test job only for the component whose files changed:
+
+```yaml
+test:
+  script: echo "Testing $COMPONENT"
+  parallel:
+    matrix:
+      - COMPONENT: [frontend, backend, database]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - components/$COMPONENT/**/*
+```
+
+In this example:
+
+- Three `test` jobs are evaluated, one for each `COMPONENT` value.
+- Each job checks `rules:changes` with its own `$COMPONENT` value substituted into the path.
+- Only jobs where matching files changed are added to the pipeline.
+
+For example, if only `components/frontend/npm.lock` changed, only the `frontend` job runs.
+
+You can use multiple matrix variables in the same path:
+
+```yaml
+test:
+  script: echo "Testing $SERVICE in $ENV"
+  parallel:
+    matrix:
+      - SERVICE: [api, web]
+        ENV: [dev, prod]
+  rules:
+    - changes:
+        - config/$SERVICE/$ENV/**/*
+```
+
+#### Use matrix variables in `rules:exists`
+
+Use matrix variables in [`rules:exists`](../yaml/_index.md#rulesexists)
+paths to include a matrix job only when a specific file exists.
+
+For example:
+
+```yaml
+test:
+  script: echo "Testing $TYPE"
+  parallel:
+    matrix:
+      - TYPE: [go, ruby, python]
+  rules:
+    - exists:
+        - "**/*.$TYPE"
 ```
 
 ### Fetch artifacts from a `parallel:matrix` job

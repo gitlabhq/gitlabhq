@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Callback context for delivering Duo Messaging flow results back to the originating platform",
+  "required": [
+    "adapter"
+  ],
+  "properties": {
+    "adapter": {
+      "type": "string",
+      "description": "Adapter identifier matching a key in CallbackWorker::ADAPTER_REGISTRY (e.g. 'slack')",
+      "minLength": 1
+    }
+  },
+  "additionalProperties": true
+}

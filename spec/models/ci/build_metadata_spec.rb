@@ -125,14 +125,14 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
       let(:metadata) { build(:ci_build_metadata, build: status) }
 
       it 'copies the partition_id from job' do
-        expect { metadata.valid? }.to change(metadata, :partition_id).to(123)
+        expect { metadata.valid? }.to change { metadata.partition_id }.to(123)
       end
 
       context 'when it is already set' do
         let(:metadata) { build(:ci_build_metadata, build: status, partition_id: 125) }
 
         it 'does not change the partition_id value' do
-          expect { metadata.valid? }.not_to change(metadata, :partition_id)
+          expect { metadata.valid? }.not_to change { metadata.partition_id }
         end
       end
     end
@@ -145,7 +145,7 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
       it { is_expected.to validate_presence_of(:partition_id) }
 
       it 'does not change the partition_id value' do
-        expect { metadata.valid? }.not_to change(metadata, :partition_id)
+        expect { metadata.valid? }.not_to change { metadata.partition_id }
       end
     end
   end
@@ -153,12 +153,12 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
   context 'jsonb fields serialization' do
     it 'changing other fields does not change config_options' do
       # rubocop:disable Lint/SelfAssignment -- testing that self-assignment doesn't mark record as changed
-      expect { metadata.id = metadata.id }.not_to change(metadata, :changes)
+      expect { metadata.id = metadata.id }.not_to change { metadata.changes }
       # rubocop:enable Lint/SelfAssignment
     end
 
     it 'accessing config_options does not change it' do
-      expect { metadata.config_options }.not_to change(metadata, :changes)
+      expect { metadata.config_options }.not_to change { metadata.changes }
     end
   end
 end

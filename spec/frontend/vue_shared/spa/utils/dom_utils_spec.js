@@ -8,6 +8,7 @@ const CSS_CLASSES = {
 
 const SELECTORS = {
   superSidebar: '#super-sidebar',
+  superSidebarSections: ':is(#super-sidebar-pinned-section, #super-sidebar-non-static-section)',
 };
 
 // Mock factory functions
@@ -31,18 +32,29 @@ describe('updateActiveNavigation', () => {
   let mockSuperSidebar;
   let mockElements;
 
+  beforeAll(() => {
+    // Minimal CSS.escape stand-in for jsdom (not spec-compliant — covers the chars used in these tests)
+    global.CSS = {
+      escape: (value) => String(value).replace(/[^\w-]/g, (char) => `\\${char}`),
+    };
+  });
+
+  afterAll(() => {
+    delete global.CSS;
+  });
+
   const setupMockSuperSidebar = (config = {}) => {
     const { activeNavItems = [], newNavItems = [] } = config;
 
     const queryResults = {
-      [`.${CSS_CLASSES.activeClass}`]: activeNavItems,
+      [`${SELECTORS.superSidebarSections} .${CSS_CLASSES.activeClass}`]: activeNavItems,
     };
 
     // Add dynamic href-based queries
     if (newNavItems.length > 0) {
       // This will be set dynamically in tests
       mockSuperSidebar.querySelectorAll.mockImplementation((selector) => {
-        if (selector.includes('[href*=')) {
+        if (selector.includes('[href$=')) {
           return newNavItems;
         }
         return queryResults[selector] || [];
@@ -86,7 +98,7 @@ describe('updateActiveNavigation', () => {
     });
 
     it('removes active class from current active nav items', () => {
-      updateActiveNavigation('/test-href');
+      updateActiveNavigation('test-href');
 
       mockElements.activeNavItems.forEach((item) => {
         expect(item.classList.remove).toHaveBeenCalledWith(CSS_CLASSES.activeClass);
@@ -96,17 +108,21 @@ describe('updateActiveNavigation', () => {
     it('adds active class to new nav items matching href', () => {
       updateActiveNavigation('/test-href');
 
-      expect(mockSuperSidebar.querySelectorAll).toHaveBeenCalledWith('[href*="/test-href"]');
+      expect(mockSuperSidebar.querySelectorAll).toHaveBeenCalledWith(
+        `${SELECTORS.superSidebarSections} [href$="${CSS.escape('/test-href')}"]`,
+      );
       mockElements.newNavItems.forEach((item) => {
         expect(item.classList.add).toHaveBeenCalledWith(CSS_CLASSES.activeClass);
       });
     });
 
     it('handles href with special characters', () => {
-      const specialHref = '/agents/test-agent-123';
+      const specialHref = 'agents/test-agent-123';
       updateActiveNavigation(specialHref);
 
-      expect(mockSuperSidebar.querySelectorAll).toHaveBeenCalledWith(`[href*="${specialHref}"]`);
+      expect(mockSuperSidebar.querySelectorAll).toHaveBeenCalledWith(
+        `${SELECTORS.superSidebarSections} [href$="${CSS.escape(`/${specialHref}`)}"]`,
+      );
     });
 
     describe('when no current active nav items exist', () => {
@@ -118,7 +134,7 @@ describe('updateActiveNavigation', () => {
       });
 
       it('does not attempt to remove classes from non-existent elements', () => {
-        updateActiveNavigation('/test-href');
+        updateActiveNavigation('test-href');
 
         mockElements.activeNavItems.forEach((item) => {
           expect(item.classList.remove).not.toHaveBeenCalled();
@@ -126,7 +142,7 @@ describe('updateActiveNavigation', () => {
       });
 
       it('still adds active class to new nav items', () => {
-        updateActiveNavigation('/test-href');
+        updateActiveNavigation('test-href');
 
         expect(mockElements.newNavItems[0].classList.add).toHaveBeenCalledWith(
           CSS_CLASSES.activeClass,
@@ -143,7 +159,7 @@ describe('updateActiveNavigation', () => {
       });
 
       it('still removes current active classes', () => {
-        updateActiveNavigation('/non-matching-href');
+        updateActiveNavigation('non-matching-href');
 
         expect(mockElements.activeNavItems[0].classList.remove).toHaveBeenCalledWith(
           CSS_CLASSES.activeClass,
@@ -151,7 +167,7 @@ describe('updateActiveNavigation', () => {
       });
 
       it('does not attempt to add classes to non-existent new nav items', () => {
-        updateActiveNavigation('/non-matching-href');
+        updateActiveNavigation('non-matching-href');
 
         mockElements.newNavItems.forEach((item) => {
           expect(item.classList.add).not.toHaveBeenCalled();
@@ -169,7 +185,7 @@ describe('updateActiveNavigation', () => {
       });
 
       it('adds active class to nav items', () => {
-        expect(() => updateActiveNavigation('/test-href')).not.toThrow();
+        expect(() => updateActiveNavigation('test-href')).not.toThrow();
       });
     });
   });
@@ -180,7 +196,7 @@ describe('updateActiveNavigation', () => {
     });
 
     it('returns early without throwing an error', () => {
-      expect(() => updateActiveNavigation('/test-href')).not.toThrow();
+      expect(() => updateActiveNavigation('test-href')).not.toThrow();
     });
 
     it('does not attempt to query for nav items', () => {
@@ -195,16 +211,20 @@ describe('updateActiveNavigation', () => {
       setupMockSuperSidebar({});
     });
 
-    const edgeCaseHrefs = [
-      { value: '', description: 'empty href' },
-      { value: undefined, description: 'undefined href' },
-      { value: null, description: 'null href' },
-      { value: '/test"path', description: 'href with quotes' },
-    ];
+    it.each([{ value: null }, { value: undefined }, { value: '' }])(
+      'returns early without querying DOM for $value href',
+      ({ value }) => {
+        updateActiveNavigation(value);
+        expect(mockSuperSidebar.querySelectorAll).not.toHaveBeenCalled();
+      },
+    );
 
-    it.each(edgeCaseHrefs)('handles $description', ({ value }) => {
+    it('handles href with quotes safely', () => {
+      const value = 'test"path';
       expect(() => updateActiveNavigation(value)).not.toThrow();
-      expect(mockSuperSidebar.querySelectorAll).toHaveBeenCalledWith(`[href*="${value}"]`);
+      expect(mockSuperSidebar.querySelectorAll).toHaveBeenCalledWith(
+        `${SELECTORS.superSidebarSections} [href$="${CSS.escape(`/${value}`)}"]`,
+      );
     });
   });
 });

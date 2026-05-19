@@ -934,6 +934,99 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       it_behaves_like "additional access criteria"
     end
 
+    context 'with byte_offset and byte_limit params', :skip_before_request do
+      let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
+      let(:trace_data) { job.trace.raw }
+
+      context 'when both byte_offset and byte_limit are provided' do
+        it 'returns a slice of the trace' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user),
+            params: { byte_offset: 0, byte_limit: 5 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(trace_data.byteslice(0, 5))
+        end
+      end
+
+      context 'when only byte_offset is provided' do
+        it 'returns trace from the offset to the end' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user),
+            params: { byte_offset: 2 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(trace_data.byteslice(2..))
+        end
+      end
+
+      context 'when only byte_limit is provided' do
+        it 'returns trace from the beginning up to byte_limit bytes' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user),
+            params: { byte_limit: 3 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(trace_data.byteslice(0, 3))
+        end
+      end
+
+      context 'when byte_offset exceeds trace size' do
+        it 'returns empty body' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user),
+            params: { byte_offset: 999_999, byte_limit: 10 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq('')
+        end
+      end
+
+      context 'when job has no trace' do
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'returns empty body' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user),
+            params: { byte_offset: 0, byte_limit: 10 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq('')
+        end
+      end
+
+      context 'when byte_offset is negative' do
+        it 'returns 400' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user),
+            params: { byte_offset: -1, byte_limit: 10 }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'when byte_limit is zero' do
+        it 'returns 400' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user),
+            params: { byte_offset: 0, byte_limit: 0 }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'when byte_limit exceeds maximum allowed size' do
+        it 'returns 400' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user),
+            params: { byte_offset: 0, byte_limit: Gitlab::Ci::Trace::Stream::LIMIT_SIZE + 1 }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'when neither byte_offset nor byte_limit is provided' do
+        it 'returns the full trace' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(trace_data)
+        end
+      end
+    end
+
     it_behaves_like 'authorizing granular token permissions', :read_job do
       let(:user) { maintainer }
       let(:boundary_object) { project }

@@ -12,11 +12,14 @@ module Import
         export_configuration = export.offline_export.configuration
 
         client = offline_storage_client(export_configuration)
-        client.store_file(
-          offline_storage_filename(export_configuration),
-          compressed_filename
-        )
+        object_key = offline_storage_filename(export_configuration)
+
+        validate_upload_url!(client.request_url(object_key))
+
+        client.store_file(object_key, compressed_filename)
       end
+
+      private
 
       def offline_storage_client(configuration)
         Import::Clients::ObjectStorage.new(
@@ -26,30 +29,24 @@ module Import
         )
       end
 
-      # - `group_1/self.json` - `self` relation (JSON format)
-      # - `group_1/milestones.ndjson` - tree relation, single file
-      # - `project_1/issues/batch_1.ndjson` - tree relation, batched
-      # - `project_1/repository.tar.gz` - archive relation, single file
-      # - `project_1/uploads/batch_1.tar.gz` - archive relation, batched
       def offline_storage_filename(config)
-        portable_identifier = "#{portable.class.name.downcase}_#{portable.id}"
-
-        filename_parts = []
-        filename_parts << config.export_prefix
-        filename_parts << portable_identifier
-
-        if export.batched?
-          filename_parts << export.relation
-          filename_parts << "batch_#{batch.batch_number}#{extension}"
-        else
-          filename_parts << "#{export.relation}#{extension}"
-        end
-
-        filename_parts.join(Import::Clients::ObjectStorage::PREFIX_SEPARATOR)
+        Import::Offline::ObjectKeyBuilder.new(config).upload_object_key(
+          portable: portable,
+          relation: export.relation,
+          extension: extension,
+          batch_number: export.batched? ? batch.batch_number : nil
+        )
       end
 
       def extension
         "#{File.extname(exported_filename)}#{COMPRESSED_FILE_EXTENSION}"
+      end
+
+      def validate_upload_url!(url)
+        ::Gitlab::HTTP_V2::UrlBlocker.validate!(
+          url,
+          **Import::Framework::UrlBlockerParams.new.to_h
+        )
       end
     end
   end

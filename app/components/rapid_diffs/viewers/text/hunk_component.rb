@@ -65,7 +65,8 @@ module RapidDiffs
           buttons = @diff_hunk.header.expand_directions.map do |direction|
             tag.button(
               type: 'button',
-              class: 'rd-expand-lines-button',
+              class: 'rd-expand-lines-button has-tooltip',
+              title: expand_label(direction),
               data: { click: 'expandLines', expand_direction: direction },
               aria: { label: expand_label(direction) }
             ) do

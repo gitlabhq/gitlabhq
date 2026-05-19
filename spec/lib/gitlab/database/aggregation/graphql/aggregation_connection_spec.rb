@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::AggregationConnection, :c
 
     let(:engine_definition) do
       Gitlab::Database::Aggregation::ClickHouse::Engine.build do
-        self.table_primary_key = %w[id]
+        self.table_name = 'events'
 
         dimensions do
           column :author_id, :integer

@@ -120,9 +120,8 @@ number):
    is not in the upgrade notes, then there's nothing specific about that
    version to be aware of.
 
-   Find the patch releases in the GitLab package repository. For example,
-   to search for the latest GitLab X.2 Enterprise Edition version, go to
-   <https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=X.2>.
+   Find the patch releases in the GitLab package repository at
+   <https://packages.gitlab.com/ui/browse/gitlab/gitlab-ee>.
    ```
 
 1. Add a link to the new page under `doc/update/versions/_index.md`.
@@ -131,13 +130,40 @@ number):
 ## Version indexes
 
 Version indexes are the entry point for administrators.
-They contain a list of links to relevant upgrade notes.
+They contain a list of versions that link to relevant upgrade notes.
 
 - Create a heading `### Upgrade to X.Y` for each minor version. Do not create separate
   headings for patch releases. List minor versions in descending order (latest at the top).
-- Start each index line with the patch version in parentheses
-  and link to the upgrade note. List items in descending patch order (latest patch at the top).
-  For example, an administrator on 18.2.1 upgrading to 18.2.3 scans for `[18.2.3]` and `[18.2.2]` items.
+
+  For example:
+
+  ```markdown
+  ### Upgrade to X.Y
+
+  Before upgrading to GitLab X.Y, review the following:
+
+  - [X.Y.0] - [Item title](#item-title)
+  ```
+
+- Start each list item with the patch version in brackets and link to
+  the upgrade note. List items in descending patch order so that the latest patch
+  is first. For example, an administrator on 18.2.1 upgrading to
+  18.2.3 scans for `[18.2.3]` and `[18.2.2]` items.
+  The version in square brackets depends on the type of change:
+  - For an intentional change or new behavior, use the version that
+    introduced it. For example, `[18.4.1]`.
+  - For a bug or regression affecting multiple consecutive patches,
+    use a range of the affected versions. For example,
+    `[18.4.0 - 18.4.1]`. The fix version is documented in the
+    upgrade note body, not in the list item.
+  Each upgrade note has one list item for each minor version.
+- Documenting a bug before a fix is available is optional. Only add
+  a known issue when the bug has a significant impact on upgrades or
+  operations. If you do, use the version that introduced the bug.
+  When the fix ships, update the list item to the affected range and
+  , in the `Upgrade notes` section, add the fixed patch level to the `Affected versions` field or table.
+  Do not use separate upgrade notes for the bug and the fix. Use a single
+  upgrade note that documents both the affected and fixed versions.
 - If an item applies only to specific installation methods,
   add the installation types in parentheses. Use one, or a combination
   of the following:
@@ -148,8 +174,9 @@ They contain a list of links to relevant upgrade notes.
   - Operator
   - Geo
 - When an item affects multiple minor versions, it appears in each
-  relevant version index linking to the same anchor. Each index line uses
-  the patch version relevant to that specific branch.
+  relevant version index linking to the same anchor. Each list item
+  uses the patch version or affected range relevant to that specific
+  minor version.
 - If a specific patch release is a required upgrade stop,
   add a note in the version index. Some required stops are conditional. Include the
   condition and a way for administrators to check if they are affected.
@@ -162,7 +189,9 @@ They contain a list of links to relevant upgrade notes.
   If the issue affects many versions on both pages and the cross-page
   linking becomes confusing, duplicate the item on both pages.
 
-Example template for all the above:
+### Example template
+
+This template shows examples for how to list version indexes.
 
 ```markdown
 ### Upgrade to 18.8
@@ -184,6 +213,8 @@ Before upgrading to GitLab 18.2, review the following:
 - [18.2.3] - [Deploy token rotation issue](#deploy-token-rotation-issue)
 - [18.2.3] - [Background migration correction](#background-migration-correction)
 - [18.2.1] - [New security fix](#new-security-fix)
+- [18.2.0 - 18.2.1] - [Some known bug](#some-known-bug)
+- [18.2.0 - 18.2.4] - [Geo replication sync failure](#geo-replication-sync-failure) (Geo)
 - [18.2.0] - [Some migration change](#some-migration-change)
 - [18.2.0] - [Geo verification fix](#geo-verification-fix) (Geo)
 - [18.2.0] - [Gitaly configuration change](#gitaly-configuration-change) (Linux package)
@@ -197,6 +228,7 @@ Before upgrading to GitLab 18.2, review the following:
 > for how to check if you are affected.
 
 - [18.1.3] - [Long-running pipeline messages data change](#long-running-pipeline-messages-data-change)
+- [18.1.0 - 18.1.5] - [Geo replication sync failure](#geo-replication-sync-failure) (Geo)
 
 ### Upgrade to 17.11
 

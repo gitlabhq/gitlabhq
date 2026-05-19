@@ -2,15 +2,19 @@
 
 module BulkImports
   class UserContributionsExportMapper
-    USER_CONTRIBUTIONS_CACHE_KEY = 'bulk_imports/%{portable_class}/%{portable_id}/user_contribution_ids'
+    CACHE_KEY = 'offline_export/%{offline_export_id}/%{portable_class}/%{portable_id}/user_contribution_ids'
 
-    def initialize(portable)
+    # @param portable [Group, Project] the group or project being exported
+    # @param offline_export_id [Integer, nil] when present, scopes the cache key to a single
+    #   offline export, preventing concurrent exports of the same portable from sharing cached data
+    def initialize(portable, offline_export_id: nil)
       @portable_class = portable.class
       @portable_id = portable.id
+      @offline_export_id = offline_export_id
     end
 
     def cache_user_contributions_on_record(record)
-      return if !record || record.is_a?(User)
+      return if !offline_export_id || !record || record.is_a?(User)
 
       user_references = record.attribute_names & ::Gitlab::ImportExport::Base::RelationFactory::USER_REFERENCES
       return if user_references.empty?
@@ -30,10 +34,15 @@ module BulkImports
 
     private
 
-    attr_reader :portable_class, :portable_id
+    attr_reader :offline_export_id, :portable_class, :portable_id
 
     def generate_cache_key
-      Kernel.format(USER_CONTRIBUTIONS_CACHE_KEY, portable_class: portable_class, portable_id: portable_id)
+      Kernel.format(
+        CACHE_KEY,
+        offline_export_id: offline_export_id,
+        portable_class: portable_class,
+        portable_id: portable_id
+      )
     end
 
     def import_cache

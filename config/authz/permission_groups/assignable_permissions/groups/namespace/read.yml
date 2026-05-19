@@ -1,7 +1,9 @@
 ---
 name: read_namespace
-description: "Grants the ability to read namespaces."
+description: Grants the ability to read namespaces.
 boundaries:
   - user
+available_for:
+  - granular_access_token
 permissions:
   - read_namespace

@@ -20,7 +20,7 @@ module Mutations
           }
         end
 
-        # overriden in EE
+        # overridden in EE
         def http_integration_params(_project, args)
           args.slice(:name, :active, :type_identifier)
         end

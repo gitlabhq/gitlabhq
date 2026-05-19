@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe AwardEmojis::DestroyService, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
-  let_it_be(:awardable) { create(:note) }
+  let_it_be(:awardable, freeze: false) { create(:note) }
   let_it_be(:project) { awardable.project }
 
-  let(:name) { AwardEmoji::THUMBS_UP }
-  let!(:award_from_other_user) do
+  let_it_be(:name, freeze: false) { AwardEmoji::THUMBS_UP }
+  let_it_be(:award_from_other_user, freeze: false) do
     create(:award_emoji, name: name, awardable: awardable, user: create(:user))
   end
 
@@ -48,7 +48,7 @@ RSpec.describe AwardEmojis::DestroyService, feature_category: :team_planning do
     end
 
     context 'when the user is authorized' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 

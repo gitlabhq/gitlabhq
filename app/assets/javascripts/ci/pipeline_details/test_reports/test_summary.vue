@@ -20,6 +20,7 @@ export default {
       default: false,
     },
   },
+  emits: ['on-back-click'],
   computed: {
     heading() {
       return this.report.name || __('Summary');

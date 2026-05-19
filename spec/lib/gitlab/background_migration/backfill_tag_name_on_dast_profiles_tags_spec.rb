@@ -36,7 +36,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnDastProfilesTags,
   let!(:tag2) { tags_table.create!(name: 'python') }
   let!(:tag3) { tags_table.create!(name: 'docker') }
 
-  let!(:tagging_with_null_name) do
+  let(:tagging_with_null_name) do
     dast_profiles_tags_table.create!(dast_profile_id: dast_profile.id, tag_id: tag1.id, project_id: 1,
       tag_name: nil)
   end
@@ -46,7 +46,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnDastProfilesTags,
       tag_name: 'existing-name')
   end
 
-  let!(:another_tagging_with_null_name) do
+  let(:another_tagging_with_null_name) do
     dast_profiles_tags_table.create!(dast_profile_id: dast_profile.id, tag_id: tag3.id, project_id: 1,
       tag_name: nil)
   end
@@ -61,6 +61,13 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnDastProfilesTags,
       pause_ms: 0,
       connection: ::SecApplicationRecord.connection
     }
+  end
+
+  before do
+    without_check_constraint do
+      tagging_with_null_name
+      another_tagging_with_null_name
+    end
   end
 
   subject(:perform_migration) { described_class.new(**migration_args).perform }
@@ -82,8 +89,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnDastProfilesTags,
       end
 
       let!(:outside_batch_tagging) do
-        dast_profiles_tags_table.create!(dast_profile_id: dast_profile.id, tag_id: tag2.id, project_id: 1,
-          tag_name: nil)
+        without_check_constraint do
+          dast_profiles_tags_table.create!(dast_profile_id: dast_profile.id, tag_id: tag2.id, project_id: 1,
+            tag_name: nil)
+        end
       end
 
       it 'only updates records within the batch range' do
@@ -108,13 +117,29 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnDastProfilesTags,
 
     context 'when tag is missing' do
       let!(:tagging_with_missing_tag) do
-        dast_profiles_tags_table.create!(dast_profile_id: dast_profile.id, tag_id: non_existing_record_id,
-          project_id: 1, tag_name: nil)
+        without_check_constraint do
+          dast_profiles_tags_table.create!(dast_profile_id: dast_profile.id, tag_id: non_existing_record_id,
+            project_id: 1, tag_name: nil)
+        end
       end
 
       it 'does not update records with missing tags' do
         expect { perform_migration }.not_to change { tagging_with_missing_tag.reload.tag_name }.from(nil)
       end
+    end
+  end
+
+  private
+
+  def without_check_constraint
+    conn = ::SecApplicationRecord.connection
+    conn.execute('ALTER TABLE dast_profiles_tags DROP CONSTRAINT IF EXISTS check_tag_name_not_null')
+
+    yield.tap do
+      conn.execute <<~SQL
+        ALTER TABLE dast_profiles_tags
+          ADD CONSTRAINT check_tag_name_not_null CHECK ((tag_name IS NOT NULL)) NOT VALID
+      SQL
     end
   end
 end

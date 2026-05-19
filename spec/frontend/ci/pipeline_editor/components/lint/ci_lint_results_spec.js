@@ -42,7 +42,7 @@ describe('CI Lint Results', () => {
 
   describe('Empty results', () => {
     it('renders with no jobs, errors or warnings defined', () => {
-      createComponent({ jobs: undefined, errors: undefined, warnings: undefined }, shallowMount);
+      createComponent({ jobs: undefined, errors: undefined, warnings: undefined }, mount);
       expect(findTable().exists()).toBe(true);
     });
 

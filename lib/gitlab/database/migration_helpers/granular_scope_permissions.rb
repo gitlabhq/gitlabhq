@@ -4,9 +4,20 @@ module Gitlab
   module Database
     module MigrationHelpers
       # Helper module for background migrations that rename assignable permissions
-      # in the `granular_scopes` table.
+      # in the `granular_scopes` table. Including classes must define a `RENAMES`
+      # constant mapping old permission names to new ones:
       #
-      # Usage: include this module in a batched background migration class.
+      #    class RenameManyPermissions < BatchedMigrationJob
+      #      RENAMES = {
+      #        'old_name' => 'new_name',
+      #        'split_me' => %w[part_a part_b]
+      #      }.freeze
+      #
+      #      include Gitlab::Database::MigrationHelpers::GranularScopePermissions
+      #
+      #      feature_category :permissions
+      #    end
+      #
       # See: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#renaming-assignable-permissions
       module GranularScopePermissions
         extend ActiveSupport::Concern
@@ -15,21 +26,27 @@ module Gitlab
           delegate :execute, to: :connection
 
           cursor :id
-          job_arguments :old_permission, :new_permissions
-
           operation_name :rename_granular_scope_permission
         end
 
         def perform
-          each_sub_batch(
-            batching_scope: scope_with_permission(old_permission)
-          ) do |sub_batch|
-            rename_granular_scope_permission(old_permission, new_permissions,
-              batch_scope: sub_batch.select(:id).to_sql)
-          end
+          perform_renames(self.class::RENAMES)
         end
 
         private
+
+        def perform_renames(renames)
+          each_sub_batch(
+            batching_scope: scope_with_any_permission(renames.keys)
+          ) do |sub_batch|
+            batch_sql = sub_batch.select(:id).to_sql
+
+            renames.each do |old_name, new_names|
+              rename_granular_scope_permission(old_name, new_names,
+                batch_scope: batch_sql)
+            end
+          end
+        end
 
         def rename_granular_scope_permission(old_permission, new_permissions, batch_scope:)
           new_permissions = Array(new_permissions)
@@ -49,8 +66,8 @@ module Gitlab
           SQL
         end
 
-        def scope_with_permission(permission)
-          ->(relation) { relation.where("permissions @> #{contains_permission_sql(permission)}") }
+        def scope_with_any_permission(permissions)
+          ->(relation) { relation.where('permissions ?| array[:keys]', keys: permissions) }
         end
 
         def contains_permission_sql(permission)

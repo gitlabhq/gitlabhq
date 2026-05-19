@@ -14,7 +14,7 @@ RSpec.describe Admin::Organizations::DashboardController, feature_category: :org
     end
 
     it 'denies access' do
-      get organization_admin_organization_dashboard_path(organization)
+      get organization_admin_org_dashboard_path(organization)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -30,7 +30,7 @@ RSpec.describe Admin::Organizations::DashboardController, feature_category: :org
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it 'renders the organization admin dashboard' do
-          get organization_admin_organization_dashboard_path(organization)
+          get organization_admin_org_dashboard_path(organization)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to include(_('Organization Administration'))
@@ -41,7 +41,7 @@ RSpec.describe Admin::Organizations::DashboardController, feature_category: :org
 
       context 'when admin mode is not enabled' do
         it 'redirects to admin mode login' do
-          get organization_admin_organization_dashboard_path(organization)
+          get organization_admin_org_dashboard_path(organization)
 
           expect(response).to redirect_to(new_admin_session_path)
         end
@@ -54,7 +54,7 @@ RSpec.describe Admin::Organizations::DashboardController, feature_category: :org
       end
 
       it 'renders the organization admin dashboard' do
-        get organization_admin_organization_dashboard_path(organization)
+        get organization_admin_org_dashboard_path(organization)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to include(_('Organization Administration'))
@@ -64,7 +64,7 @@ RSpec.describe Admin::Organizations::DashboardController, feature_category: :org
         let_it_be(:other_organization) { create(:organization) }
 
         it 'denies access' do
-          get organization_admin_organization_dashboard_path(other_organization)
+          get organization_admin_org_dashboard_path(other_organization)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -74,14 +74,14 @@ RSpec.describe Admin::Organizations::DashboardController, feature_category: :org
         it 'uses organization from path, not header' do
           header_organization = create(:organization)
 
-          get organization_admin_organization_dashboard_path(organization),
+          get organization_admin_org_dashboard_path(organization),
             headers: { 'X-GitLab-Organization-ID' => header_organization.id.to_s }
 
           expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'renders the header organization' do
-          get admin_organization_dashboard_path, headers: { 'X-GitLab-Organization-ID' => organization.id.to_s }
+          get admin_org_dashboard_path, headers: { 'X-GitLab-Organization-ID' => organization.id.to_s }
 
           expect(response).to have_gitlab_http_status(:ok)
         end
@@ -96,7 +96,7 @@ RSpec.describe Admin::Organizations::DashboardController, feature_category: :org
       end
 
       it 'denies access' do
-        get organization_admin_organization_dashboard_path(organization)
+        get organization_admin_org_dashboard_path(organization)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -104,7 +104,7 @@ RSpec.describe Admin::Organizations::DashboardController, feature_category: :org
 
     context 'when user is not authenticated' do
       it 'redirects to login' do
-        get organization_admin_organization_dashboard_path(organization)
+        get organization_admin_org_dashboard_path(organization)
 
         expect(response).to redirect_to(new_user_session_path)
       end

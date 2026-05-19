@@ -1,41 +1,18 @@
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
-import Translate from '~/vue_shared/translate';
-import createDefaultClient from '~/lib/graphql';
-import { parseBoolean } from '~/lib/utils/common_utils';
-import AdminJobsTableApp from '~/ci/admin/jobs_table/admin_jobs_table_app.vue';
-import cacheConfig from '~/ci/admin/jobs_table/graphql/cache_config';
+import { initAdminJobsApp } from '~/ci/admin/jobs_table/index';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
-Vue.use(Translate);
-Vue.use(VueApollo);
+async function init() {
+  if (gon.features?.vue3MigrateJobs) {
+    try {
+      // eslint-disable-next-line no-shadow -- Override with Vue 3 app
+      const { initAdminJobsApp } = await import('~/ci/admin/jobs_table/index?vue3');
+      initAdminJobsApp();
+      return;
+    } catch (e) {
+      Sentry.captureException(e);
+    }
+  }
+  initAdminJobsApp();
+}
 
-const client = createDefaultClient({}, { cacheConfig });
-
-const apolloProvider = new VueApollo({
-  defaultClient: client,
-});
-
-const initAdminJobsApp = () => {
-  const containerEl = document.getElementById('admin-jobs-app');
-
-  if (!containerEl) return false;
-
-  const { jobStatuses, emptyStateSvgPath, url, canUpdateAllJobs } = containerEl.dataset;
-
-  return new Vue({
-    el: containerEl,
-    name: 'AdminJobsTableAppRoot',
-    apolloProvider,
-    provide: {
-      url,
-      emptyStateSvgPath,
-      jobStatuses: JSON.parse(jobStatuses),
-      canUpdateAllJobs: parseBoolean(canUpdateAllJobs),
-    },
-    render(createElement) {
-      return createElement(AdminJobsTableApp);
-    },
-  });
-};
-
-initAdminJobsApp();
+init();

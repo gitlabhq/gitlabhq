@@ -21,6 +21,7 @@ RSpec.describe 'Group navbar', :with_license, :js, feature_category: :navigation
       insert_customer_relations_nav(Gitlab.ee? ? _('Iterations') : _('Milestones'))
     end
 
+    stub_feature_flags(ai_catalog_public_explore: false)
     stub_config(dependency_proxy: { enabled: false })
     stub_config(registry: { enabled: false })
     stub_group_wikis(false)

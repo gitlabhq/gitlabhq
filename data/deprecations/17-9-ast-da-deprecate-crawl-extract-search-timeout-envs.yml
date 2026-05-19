@@ -1,4 +1,4 @@
-- title: "DAST `dast_crawl_extract_element_timeout` and `dast_crawl_search_element_timeout` variables are deprecated"
+- title: "DAST `dast_crawl_extract_element_timeout` and `dast_crawl_search_element_timeout` variables"
   removal_milestone: "18.0"
   announcement_milestone: "17.9"
   breaking_change: false

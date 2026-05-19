@@ -66,12 +66,12 @@ Once deleted, it cannot be undone or recovered.`),
   },
   methods: {
     onSubmit() {
-      eventHub.$emit('deleteMilestoneModal.requestStarted', this.milestoneUrl);
+      eventHub.$emit('delete-milestone-modal-request-started', this.milestoneUrl);
 
       return axios
         .delete(this.milestoneUrl)
         .then((response) => {
-          eventHub.$emit('deleteMilestoneModal.requestFinished', {
+          eventHub.$emit('delete-milestone-modal-request-finished', {
             milestoneUrl: this.milestoneUrl,
             successful: true,
           });
@@ -80,7 +80,7 @@ Once deleted, it cannot be undone or recovered.`),
           visitUrl(response.request.responseURL);
         })
         .catch((error) => {
-          eventHub.$emit('deleteMilestoneModal.requestFinished', {
+          eventHub.$emit('delete-milestone-modal-request-finished', {
             milestoneUrl: this.milestoneUrl,
             successful: false,
           });
@@ -105,7 +105,7 @@ Once deleted, it cannot be undone or recovered.`),
         });
     },
     onClose() {
-      this.$emit('deleteModalVisible', false);
+      this.$emit('delete-modal-visible', false);
     },
   },
   primaryProps: {

@@ -10,6 +10,7 @@ import { detectAndConfirmSensitiveTokens, CONTENT_TYPE } from '~/lib/utils/secre
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import { EDITING_MODE_CONTENT_EDITOR } from '~/vue_shared/constants';
 import { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE } from '~/notes/constants';
+import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';
@@ -174,8 +175,23 @@ export default class IssuableForm {
       return false;
     }
 
+    this.showSubmitLoading();
     form.submit();
     return this.resetAutosave();
+  }
+
+  showSubmitLoading() {
+    const button = this.submitButton.get(0);
+    if (!button || button.disabled) return;
+
+    const loader = loadingIconForLegacyJS({
+      inline: true,
+      size: 'sm',
+      classes: ['gl-mr-3'],
+    });
+
+    button.setAttribute('disabled', 'disabled');
+    button.prepend(loader);
   }
 
   resetAutosave() {

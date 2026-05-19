@@ -16,8 +16,6 @@ module Mutations
             "Following widget keys are not supported by #{work_item_type.name} type: #{not_supported_keys}"
         end
 
-        # TODO: Refactor to use `#prepare` on the input types
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/519801
         widget_params.transform_values do |input|
           input.is_a?(Array) ? input.map(&:to_h) : input.to_h
         end

@@ -1,9 +1,9 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: ファイルフック
-description: "カスタムファイルフックを作成して、ソースコードを修正せずに、外部サービスとGitLab Self-Managedインスタンスをインテグレーションします。"
+description: "カスタムファイルフックを作成して、codeコードを修正することなく、GitLabのSelf-Managedインスタンスを外部サービスと統合します。"
 ---
 
 {{< details >}}
@@ -13,45 +13,42 @@ description: "カスタムファイルフックを作成して、ソースコー
 
 {{< /details >}}
 
-カスタムファイルフックを使用して、GitLabソースコードを修正せずに、カスタムインテグレーションを導入します。
+カスタムファイルフックを使用して、GitLabのソースcodeコードを修正することなく、カスタムインテグレーションを導入します。
 
-ファイルフックは各エントリで実行されます。ファイルフックのコードでエントリまたはプロジェクトをフィルタリングし、必要に応じて多数のファイルフックを作成できます。各ファイルフックは、エントリの場合、GitLabによって非同期的にトリガーされます。エントリのリストについては、[システムフック](system_hooks.md)と[Webhook](../user/project/integrations/webhook_events.md)のドキュメントを参照してください。
+ファイルフックはイベントごとに実行されます。ファイルフックのcodeコードでイベントまたはプロジェクトをフィルタリングし、必要に応じて多くのファイルフックを作成できます。各ファイルフックは、イベント発生時にGitLabによって非同期にトリガーされます。イベントのリストについては、[システムフック](system_hooks.md)および[Webhook](../user/project/integrations/webhook_events.md)のドキュメントを参照してください。
 
-{{< alert type="note" >}}
+> [!note]
+> ファイルフックは、GitLabサーバーのファイルシステムで設定する必要があります。GitLabサーバーの管理者のみが、これらのタスクを完了できます。ファイルシステムへのアクセス権がない場合は、オプションとして[システムフック](system_hooks.md)または[Webhook](../user/project/integrations/webhooks.md)を調査してください。
 
-ファイルフックは、GitLabサーバーのファイルシステムで設定する必要があります。これらのタスクを完了できるのは、GitLabサーバーの管理者のみです。ファイルシステムへのアクセス権がない場合は、オプションとして[システムフック](system_hooks.md)または[Webhook](../user/project/integrations/webhooks.md)を調査してください。
+独自のファイルフックを作成してサポートする代わりに、GitLabのソースcodeコードに直接変更を加え、アップストリームにコントリビュートすることもできます。このようにして、バージョン間で機能が維持され、テストによってカバーされることを保証できます。
 
-{{< /alert >}}
+## カスタムファイルフックを設定する {#set-up-a-custom-file-hook}
 
-独自のファイルフックを作成してサポートする代わりに、GitLabソースコードを直接変更して、アップストリームにコントリビュートすることもできます。このようにして、機能がバージョン間で維持され、テストでカバーされるようにすることができます。
+ファイルフックは`file_hooks`ディレクトリにある必要があります。サブディレクトリは無視されます。[`file_hooks`下の`example`ディレクトリ](https://gitlab.com/gitlab-org/gitlab/-/tree/master/file_hooks/examples)に例があります。
 
-## カスタムファイルフックをセットアップする {#set-up-a-custom-file-hook}
-
-ファイルフックは、`file_hooks`ディレクトリにある必要があります。サブディレクトリは無視されます。[`file_hooks`下の`example`ディレクトリ](https://gitlab.com/gitlab-org/gitlab/-/tree/master/file_hooks/examples)に例があります。
-
-カスタムフックをセットアップするには:
+カスタムフックを設定するには:
 
 1. Sidekiqコンポーネントを実行しているGitLabサーバーで、プラグインディレクトリを見つけます。自己コンパイルによるインストールの場合、パスは通常`/home/git/gitlab/file_hooks/`です。Linuxパッケージインストールの場合、パスは通常`/opt/gitlab/embedded/service/gitlab-rails/file_hooks`です。
 
-   [複数のサーバーでの設定](reference_architectures/_index.md)の場合、フックファイルは各Sidekiqサーバーに存在する必要があります。
+   [複数のサーバーを持つ設定](reference_architectures/_index.md)の場合、フックファイルは各GitLabアプリケーション (Rails) およびSidekiqサーバーに存在する必要があります。
 
-1. `file_hooks`ディレクトリ内で、スペースや特殊文字を含まない、任意の名前のファイルを作成します。
+1. `file_hooks`ディレクトリ内に、スペースや特殊文字を含まない任意の名前のファイルを作成します。
 1. フックファイルを実行可能にし、Gitユーザーが所有していることを確認します。
-1. 期待どおりにファイルフックが機能するようにコードを記述します。これは任意の言語で記述でき、上部の「シバン」が言語タイプを適切に反映していることを確認します。たとえば、スクリプトがRubyで記述されている場合、シバンはおそらく`#!/usr/bin/env ruby`となります。
-1. ファイルフックへのデータは、`STDIN`のJSONとして提供されます。これは[システムフック](system_hooks.md)とまったく同じです。
+1. ファイルフックが期待どおりに機能するようにcodeコードを記述します。それはどの言語でも構いません。上部にあるシバンが言語タイプを適切に反映していることを確認してください。たとえば、スクリプトがRubyの場合、シバンは`#!/usr/bin/env ruby`になるでしょう。
+1. ファイルフックへのデータは、`STDIN`上でJSONとして提供されます。それは[システムフック](system_hooks.md)とまったく同じです。
 
-ファイルフックコードが適切に実装されていると仮定すると、フックは適切にトリガーされます。ファイルフックファイルリストは、各エントリで更新されます。新しいファイルフックを適用するために、GitLabを再起動する必要はありません。
+ファイルフックのcodeコードが適切に実装されていれば、フックは適切に発火します。ファイルフックのファイルリストは、各イベントで更新されます。新しいファイルフックを適用するためにGitLabを再起動する必要はありません。
 
-ファイルフックがゼロ以外の終了コードで実行されるか、実行に失敗した場合、メッセージが以下に記録されます:
+ファイルフックがゼロ以外の終了codeコードで実行されるか、実行に失敗した場合、メッセージは以下に記録されます:
 
 - 自己コンパイルによるインストールの場合: `log/file_hook.log`。
 - Linuxパッケージインストールの場合: `gitlab-rails/file_hook.log`。
 
-このファイルは、ファイルフックがゼロ以外の状態で終了した場合にのみ作成されます。ファイルフックが実行されると、開始された各`FileHookWorker`のSidekiqログ`gitlab/sidekiq/current`にエントリが追加されます。このエントリには、エントリの詳細と、実行されたスクリプトが含まれています。
+このファイルは、ファイルフックがゼロ以外の終了codeコードで終了した場合にのみ作成されます。ファイルフックが実行されると、開始された各`FileHookWorker`のSidekiqログ`gitlab/sidekiq/current`にエントリが追加されます。このエントリには、イベントと実行されたスクリプトの詳細が含まれています。
 
 ## ファイルフックの例 {#file-hook-example}
 
-この例は、`project_create`エントリでのみ応答し、GitLabインスタンスは、新しいプロジェクトが作成されたことを管理者に通知します。
+この例はイベント`project_create`のみで応答し、GitLabインスタンスは新しいプロジェクトが作成されたことを管理者に通知します。
 
 ```ruby
 #!/opt/gitlab/embedded/bin/ruby
@@ -77,7 +74,7 @@ end
 
 ## 検証の例 {#validation-example}
 
-独自のファイルフックを作成するのは難しい場合があり、システムを変更せずに確認できると簡単になります。Rakeタスクは、本番環境で使用する前に、ステージング環境でファイルフックをテストするために使用できるように提供されています。Rakeタスクはサンプルデータを使い、各ファイルフックを実行します。出力は、システムがファイルフックを認識しているかどうか、エラーなしで実行されたかどうかを判断するのに十分なはずです。
+独自のファイルフックを記述するのは難しい場合がありますが、システムを変更せずに確認できると簡単になります。Rakeタスクが提供されており、ステージング環境でファイルフックを本番環境で使用する前にテストできます。Rakeタスクはサンプルデータを使用し、各ファイルフックを実行します。出力は、システムがファイルフックを認識しているかどうか、およびエラーなしで実行されたかどうかを判断するのに十分であるはずです。
 
 ```shell
 # Omnibus installations

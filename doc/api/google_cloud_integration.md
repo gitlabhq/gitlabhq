@@ -49,12 +49,12 @@ Supported attributes:
 
 | Attribute                                         | Type             | Required | Description                                                                                                      |
 |---------------------------------------------------|------------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                                              | integer          | Yes      | The ID a project.                                                                                                |
+| `id`                                              | integer          | Yes      | The ID of a project.                                                                                                |
 | `google_cloud_project_id`                         | string           | Yes      | Google Cloud Project ID for the workload identity federation.                                                    |
 | `google_cloud_workload_identity_pool_id`          | string           | No       | ID of the Google Cloud workload identity pool to create. Defaults to `gitlab-wlif`.                              |
 | `google_cloud_workload_identity_pool_display_name`| string           | No       | Display name of the Google Cloud workload identity pool to create. Defaults to `WLIF for GitLab integration`.   |
 | `google_cloud_workload_identity_pool_provider_id` | string           | No       | ID of the Google Cloud workload identity pool provider to create. Defaults to `gitlab-wlif-oidc-provider`.       |
-| `google_cloud_workload_identity_pool_provider_display_name`| string  | No       | Display name of the Google Cloud workload identity pool provider to created. Defaults to `GitLab OIDC provider`. |
+| `google_cloud_workload_identity_pool_provider_display_name`| string  | No       | Display name of the Google Cloud workload identity pool provider to create. Defaults to `GitLab OIDC provider`. |
 
 Example request:
 

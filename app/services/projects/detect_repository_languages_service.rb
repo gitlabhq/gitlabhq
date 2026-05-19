@@ -42,7 +42,7 @@ module Projects
 
       missing_languages = detection.languages - existing_languages.map(&:name)
       created_languages = missing_languages.map do |name|
-        create_language(name, detection.language_color(name))
+        create_language(name, detection.language_color(name), detection.language_gitaly_id(name))
       end
 
       existing_languages + created_languages
@@ -50,9 +50,11 @@ module Projects
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def create_language(name, color)
+    def create_language(name, color, language_id = nil)
+      attrs = { color: color, language_id: language_id }.compact
+
       ProgrammingLanguage.transaction do
-        ProgrammingLanguage.where(name: name).first_or_create(color: color)
+        ProgrammingLanguage.where(name: name).first_or_create(attrs)
       end
     rescue ActiveRecord::RecordNotUnique
       retry

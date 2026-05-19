@@ -3,6 +3,8 @@ name: merge_merge_request
 description: Grants the ability to merge merge requests
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - merge_merge_request
   - cancel_merge_merge_request

@@ -203,10 +203,32 @@ describe('FormUrlApp', () => {
         expect(findAlert().exists()).toBe(false);
       });
 
-      it('is displayed when URL has changed', async () => {
+      it('is hidden when URL has changed but webhook has no secret token', async () => {
         await findUrlInput().vm.$emit('input', 'another_url');
 
-        expect(findAlert().exists()).toBe(true);
+        expect(findAlert().exists()).toBe(false);
+      });
+
+      describe('when webhook has a secret token', () => {
+        beforeEach(() => {
+          createComponent({
+            props: {
+              initialUrl: 'https://test.host/{key1}?secret={key2}',
+              initialUrlVariables: [mockItem1, mockItem2],
+              initialSecretToken: '****************',
+            },
+          });
+        });
+
+        it('is hidden when URL has not changed', () => {
+          expect(findAlert().exists()).toBe(false);
+        });
+
+        it('is displayed when URL has changed', async () => {
+          await findUrlInput().vm.$emit('input', 'another_url');
+
+          expect(findAlert().exists()).toBe(true);
+        });
       });
     });
   });

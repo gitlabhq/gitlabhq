@@ -3,6 +3,8 @@ import { mount, shallowMount } from '@vue/test-utils';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import Vue, { nextTick } from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import MockAdapter from 'axios-mock-adapter';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
@@ -33,6 +35,7 @@ import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/h
 import LineHighlighter from '~/blob/line_highlighter';
 import { LEGACY_FILE_TYPES } from '~/repository/constants';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER, BLAME_VIEWER } from '~/blob/components/constants';
+import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import eventHub from '~/notes/event_hub';
 import {
   simpleViewerMock,
@@ -57,6 +60,7 @@ let blobInfoMockResolver;
 let projectInfoMockResolver;
 let router;
 let mockRouterPush;
+let pinia;
 
 Vue.use(Vuex);
 
@@ -74,6 +78,8 @@ const legacyViewerUrl = '/some_file.js?format=json&viewer=simple';
 const createComponent = async (mockData = {}, mountFn = shallowMount) => {
   Vue.use(VueApollo);
   Vue.use(VueRouter);
+  Vue.use(PiniaVuePlugin);
+  pinia = createTestingPinia({ stubActions: false });
 
   router = new VueRouter({
     routes: [
@@ -138,6 +144,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
     mountFn(BlobContentViewer, {
       store: createMockStore(),
       apolloProvider: fakeApollo,
+      pinia,
       propsData: propsMock,
       mixins: [getRefMixin, highlightMixin, glFeatureFlagMixin(), InternalEvents.mixin()],
       provide: {
@@ -313,6 +320,46 @@ describe('Blob content viewer component', () => {
           await nextTick();
 
           expect(findSourceViewer().props('shouldPreloadBlame')).toBe(true); // preloads after receiving event
+        });
+      });
+
+      describe('FTB auto-collapse', () => {
+        it('collapses FTB when blame button is clicked', async () => {
+          loadViewer.mockReturnValueOnce(SourceViewer);
+          await createComponent({ blob: simpleViewerMock });
+
+          const store = useFileTreeBrowserVisibility();
+          store.fileTreeBrowserIsExpanded = true;
+          const spy = jest.spyOn(store, 'collapseForBlame');
+
+          findBlobHeader().vm.$emit('blame');
+          await nextTick();
+
+          expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        it('collapses FTB when route changes to ?blame=1', async () => {
+          loadViewer.mockReturnValueOnce(SourceViewer);
+          await createComponent({ blob: simpleViewerMock });
+
+          const store = useFileTreeBrowserVisibility();
+          store.fileTreeBrowserIsExpanded = true;
+          const spy = jest.spyOn(store, 'collapseForBlame');
+
+          await router.replace({ path: '/', query: { blame: '1' } });
+
+          expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        it('does not collapse FTB when blame is turned off', async () => {
+          await createComponent({ blob: simpleViewerMock });
+
+          const store = useFileTreeBrowserVisibility();
+          const spy = jest.spyOn(store, 'collapseForBlame');
+
+          wrapper.vm.setShowBlame(false);
+
+          expect(spy).not.toHaveBeenCalled();
         });
       });
     });

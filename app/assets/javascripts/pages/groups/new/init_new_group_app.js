@@ -1,0 +1,68 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import BindInOut from '~/behaviors/bind_in_out';
+import initFilePickers from '~/file_pickers';
+import Group from '~/group';
+import { initGroupNameAndPath } from '~/groups/create_edit_form';
+import createDefaultClient from '~/lib/graphql';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import NewGroupCreationApp from './components/app.vue';
+import GroupPathValidator from './group_path_validator';
+
+Vue.use(VueApollo);
+
+new GroupPathValidator(); // eslint-disable-line no-new
+new Group(); // eslint-disable-line no-new
+initGroupNameAndPath();
+
+BindInOut.initAll();
+initFilePickers();
+
+export function initNewGroupCreation() {
+  const el = document.querySelector('.js-new-group-creation');
+
+  if (!el) {
+    return null;
+  }
+
+  const {
+    hasErrors,
+    rootPath,
+    enforceTopLevelGroupLimit,
+    groupsUrl,
+    parentGroupUrl,
+    parentGroupName,
+    importExistingGroupPath,
+    identityVerificationRequired,
+    identityVerificationPath,
+  } = el.dataset;
+
+  const props = {
+    groupsUrl,
+    rootPath,
+    parentGroupUrl,
+    parentGroupName,
+    importExistingGroupPath,
+    hasErrors: parseBoolean(hasErrors),
+  };
+
+  const provide = {
+    identityVerificationRequired: parseBoolean(identityVerificationRequired),
+    identityVerificationPath,
+    enforceTopLevelGroupLimit: parseBoolean(enforceTopLevelGroupLimit),
+  };
+
+  const apolloProvider = new VueApollo({
+    defaultClient: createDefaultClient(),
+  });
+
+  return new Vue({
+    el,
+    name: 'NewGroupCreationAppRoot',
+    apolloProvider,
+    provide,
+    render(h) {
+      return h(NewGroupCreationApp, { props });
+    },
+  });
+}

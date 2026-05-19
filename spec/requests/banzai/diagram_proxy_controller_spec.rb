@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Banzai::DiagramProxyController, feature_category: :markdown do
+  def decode_send_data(response)
+    command, encoded_params = response.headers[Gitlab::Workhorse::SEND_DATA_HEADER].split(':')
+    params = Gitlab::Json.safe_parse(Base64.urlsafe_decode64(encoded_params))
+    [command, params]
+  end
+
   let_it_be(:user) { create(:user) }
 
   let(:diagram_type) { 'plantuml' }
@@ -33,12 +39,12 @@ RSpec.describe Banzai::DiagramProxyController, feature_category: :markdown do
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        command, encoded_params = response.headers[Gitlab::Workhorse::SEND_DATA_HEADER].split(':')
-        params = Gitlab::Json.safe_parse(Base64.urlsafe_decode64(encoded_params))
+        command, params = decode_send_data(response)
 
         expect(command).to eq('send-url')
         expect(params['URL']).to include('localhost:8080')
         expect(params['SSRFFilter']).to be(true)
+        expect(params['AllowedEndpoints']).to eq([])
       end
     end
 
@@ -55,12 +61,12 @@ RSpec.describe Banzai::DiagramProxyController, feature_category: :markdown do
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        command, encoded_params = response.headers[Gitlab::Workhorse::SEND_DATA_HEADER].split(':')
-        params = Gitlab::Json.safe_parse(Base64.urlsafe_decode64(encoded_params))
+        command, params = decode_send_data(response)
 
         expect(command).to eq('send-url')
         expect(params['URL']).to include('localhost:8000')
         expect(params['SSRFFilter']).to be(true)
+        expect(params['AllowedEndpoints']).to eq([])
       end
     end
 
@@ -151,7 +157,30 @@ RSpec.describe Banzai::DiagramProxyController, feature_category: :markdown do
         request
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('send-url:')
+
+        command, _params = decode_send_data(response)
+
+        expect(command).to eq('send-url')
+      end
+    end
+
+    context 'when outbound local requests allowlist is configured' do
+      let(:diagram_type) { 'graphviz' }
+      let(:diagram_source) { 'digraph { a -> b }' }
+
+      before do
+        sign_in(user)
+        stub_application_setting(outbound_local_requests_whitelist: ['10.88.0.3', 'kroki.internal'])
+      end
+
+      it 'forwards the allowlist as AllowedEndpoints' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        _command, params = decode_send_data(response)
+
+        expect(params['AllowedEndpoints']).to contain_exactly('10.88.0.3', 'kroki.internal')
       end
     end
 

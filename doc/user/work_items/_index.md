@@ -15,7 +15,7 @@ title: Work items
 
 Work items are the core elements for planning and tracking work in GitLab.
 Planning and tracking product development often requires breaking work into smaller, manageable parts
-while maintaining connection to the bigger picture.
+while maintaining a connection to the bigger picture.
 Work items are designed around this fundamental need, providing a unified way to represent units of
 work at any level, from strategic initiatives to individual tasks.
 
@@ -35,6 +35,10 @@ GitLab supports the following work item types:
 - [Tasks](../tasks.md): Track small units of work.
 - [Objectives and key results](../okrs.md): Track strategic goals and their measurable outcomes.
 - [Test cases](../../ci/test_cases/_index.md): Integrate test planning directly into your GitLab workflows.
+
+You can also [configure work item types](configurable_work_item_types.md)
+to create new types and control their availability across
+groups and projects.
 
 ## View all work items
 
@@ -59,7 +63,7 @@ redirect to `/work_items/:iid`.
 To view work items for a project or group:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Work items**.
+1. In the left sidebar, select **Plan** > **Work items**.
 
 ### Filter work items
 
@@ -103,7 +107,7 @@ These filters are available for work items:
   - Operators: `is`, `is not`
 - My reaction
   - Operators: `is`, `is not`
-- Organisation
+- Organization
   - Operators: `is`
 - Parent
   - Operators: `is`, `is not`
@@ -176,7 +180,7 @@ GitLab saves your display preferences at different levels:
 To configure display preferences:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Work items**.
+1. In the left sidebar, select **Plan** > **Work items**.
 1. On the right of the filter bar, select **Display options** ({{< icon name="preferences" >}}).
 1. Under **Fields**, turn on or turn off the metadata you want to display:
    - Status (for issues)
@@ -209,6 +213,27 @@ Your preference is saved and remembered across all your sessions and devices.
 You can reference work items in GitLab Flavored Markdown fields with `[work_item:123]`.
 For more information, see [GitLab-specific references](../markdown.md#gitlab-specific-references).
 
+## Work items in merge requests
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/plan-stage/-/work_items/456) in GitLab 18.11 [with a feature flag](../../administration/feature_flags/_index.md) named `mr_related_work_items`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233554) in GitLab 19.0. Feature flag `mr_related_work_items` removed.
+
+{{< /history >}}
+
+When you reference a work item in a merge request description, it appears automatically in
+the **Work items** widget in the merge request sidebar. The widget groups work items into two categories:
+
+- **Closing**: Work items linked with a
+  [closing pattern](../project/issues/managing_issues.md#closing-issues-automatically),
+  such as `Closes #123`. These work items close automatically when the MR merges.
+- **Mentioned**: Work items referenced in the description but not linked with a closing pattern,
+  such as `Related to #456`. These work items are not closed when the MR merges.
+
+If the widget contains more than two work items, it collapses by default. Select the widget
+header to expand it. Select any work item to open it in a drawer.
+
 ## Related topics
 
 - [Linked issues](../project/issues/related_issues.md)
@@ -218,3 +243,4 @@ For more information, see [GitLab-specific references](../markdown.md#gitlab-spe
 - [Iterations](../group/iterations/_index.md)
 - [Milestones](../project/milestones/_index.md)
 - [Custom fields](custom_fields.md)
+- [Configurable work item types](configurable_work_item_types.md)

@@ -44,13 +44,13 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
   describe 'New Hook' do
     let(:url) { generate(:url) }
 
-    it 'adds new hook' do
+    it 'adds new hook', :js do
       visit admin_hooks_path
 
       click_button 'Add new webhook'
       fill_in 'Name (optional)', with: 'New system hook'
       fill_in 'Description (optional)', with: 'A new system hook for testing'
-      fill_in 'hook_url', with: url
+      fill_in 'URL', with: url
       check 'Enable SSL verification'
 
       expect { click_button 'Add webhook' }.to change(SystemHook, :count).by(1)
@@ -64,13 +64,13 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
     let(:new_url) { generate(:url) }
     let_it_be(:hook) { create(:system_hook) }
 
-    it 'updates existing hook' do
+    it 'updates existing hook', :js do
       visit admin_hooks_path
 
       click_link 'Edit'
       fill_in 'Name (optional)', with: 'Existing system hook'
       fill_in 'Description (optional)', with: 'An existing system hook for testing'
-      fill_in 'hook_url', with: new_url
+      fill_in 'URL', with: new_url
       check 'Enable SSL verification'
       click_button 'Save changes'
 
@@ -125,11 +125,11 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
     describe 'New Hook' do
       let(:url) { generate(:url) }
 
-      it 'adds new hook' do
+      it 'adds new hook', :js do
         visit admin_hooks_path
 
         click_button 'Add new webhook'
-        fill_in 'hook_url', with: url
+        fill_in 'URL', with: url
         uncheck 'Repository update events'
         check 'Merge request events'
 

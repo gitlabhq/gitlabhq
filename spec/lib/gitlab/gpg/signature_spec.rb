@@ -104,12 +104,35 @@ RSpec.describe Gitlab::Gpg::Signature, feature_category: :source_code_management
 
     context 'when the signature is not cryptographically valid' do
       before do
-        invalid_signature = instance_double(GPGME::Signature, fingerprint: GpgHelpers::User1.fingerprint, valid?: false)
+        invalid_signature = instance_double(GPGME::Signature, fingerprint: GpgHelpers::User1.fingerprint, valid?: false,
+          revoked_key?: false, expired_key?: false)
         allow(GPGME::Crypto).to receive(:new).and_return(crypto)
         allow(crypto).to receive(:verify).and_yield(invalid_signature)
       end
 
       it { is_expected.to eq(:unverified) }
+    end
+
+    context 'when the signing key has been revoked' do
+      before do
+        revoked_signature = instance_double(GPGME::Signature, fingerprint: GpgHelpers::User1.fingerprint, valid?: false,
+          revoked_key?: true)
+        allow(GPGME::Crypto).to receive(:new).and_return(crypto)
+        allow(crypto).to receive(:verify).and_yield(revoked_signature)
+      end
+
+      it { is_expected.to eq(:revoked_key) }
+    end
+
+    context 'when the signing key has expired' do
+      before do
+        expired_key_signature = instance_double(GPGME::Signature, fingerprint: GpgHelpers::User1.fingerprint,
+          valid?: false, revoked_key?: false, expired_key?: true)
+        allow(GPGME::Crypto).to receive(:new).and_return(crypto)
+        allow(crypto).to receive(:verify).and_yield(expired_key_signature)
+      end
+
+      it { is_expected.to eq(:expired_key) }
     end
 
     context 'when there is no matching gpg key' do

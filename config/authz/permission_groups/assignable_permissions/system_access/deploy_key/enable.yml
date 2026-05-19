@@ -3,5 +3,7 @@ name: enable_deploy_key
 description: Grants the ability to enable deploy keys
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - enable_deploy_key

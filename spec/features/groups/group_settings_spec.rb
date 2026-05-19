@@ -9,6 +9,12 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
   include ActionView::Helpers::TagHelper
   include Namespaces::DeletableHelper
 
+  def archive_group(group, user)
+    result = Namespaces::Groups::ArchiveService.new(group, user).execute
+
+    expect(result).to be_success
+  end
+
   let_it_be(:user) { create(:user, organization: current_organization) }
   let_it_be(:admin) { create(:user, :admin, organization: current_organization) }
   let_it_be_with_reload(:group) { create(:group, path: 'foo', owners: [user]) }
@@ -18,7 +24,8 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
   end
 
   describe 'when the group path is changed' do
-    let(:new_group_path) { 'bar' }
+    let(:new_group_path) { "bar-#{SecureRandom.hex(4)}" }
+    let(:group) { create(:group, path: "foo-#{SecureRandom.hex(4)}", owners: [user]) }
     let(:old_group_full_path) { "/#{group.path}" }
     let(:new_group_full_path) { "/#{new_group_path}" }
 
@@ -181,22 +188,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
         selected_group_path = selected_group.path
 
         visit edit_group_path(selected_group)
-
-        within_testid('transfer-locations-dropdown') do
-          click_button s_('NamespaceTransfer|Select namespace')
-          fill_in _('Search'), with: target_group&.name || ''
-          wait_for_requests
-          click_button(target_group&.name || 'No parent group')
-        end
-
-        click_button s_('GroupSettings|Transfer group')
-
-        page.within(confirm_modal) do
-          expect(page).to have_text "You are about to transfer #{selected_group.full_path} to another namespace. This action changes the group's path and can lead to data loss."
-
-          fill_in 'confirm_name_input', with: selected_group.full_path
-          click_button 'Transfer group'
-        end
+        transfer_group(selected_group, target_group)
 
         within_testid('breadcrumb-links') do
           expect(page).to have_content(target_group.name) if target_group
@@ -236,6 +228,24 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
       let(:target_group) { group }
 
       it_behaves_like 'can transfer the group'
+    end
+
+    context 'when groups_and_projects_async_transfer flag is enabled' do
+      let(:selected_group) { create(:group, path: 'foo-group', owners: [user]) }
+
+      before do
+        stub_feature_flags(groups_and_projects_async_transfer: true)
+
+        visit edit_group_path(selected_group)
+        transfer_group(selected_group, group)
+      end
+
+      it 'shows async transfer banner' do
+        expect(page).to have_content(s_(
+          'TransferGroup|This group is scheduled for transfer. ' \
+            'Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails.'
+        ))
+      end
     end
   end
 
@@ -339,7 +349,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
 
     context 'when group is archived' do
       before do
-        subgroup.namespace_settings.update!(archived: true)
+        archive_group(subgroup, user)
 
         visit edit_group_path(subgroup)
       end
@@ -357,7 +367,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
 
     context 'when ancestor is archived' do
       before do
-        ancestor.namespace_settings.update!(archived: true)
+        archive_group(ancestor, user)
 
         visit edit_group_path(subgroup)
       end
@@ -602,6 +612,8 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
       fill_in 'group_path', with: new_group_path
       click_button 'Change group URL'
     end
+
+    wait_for_requests
   end
 
   def save_general_group
@@ -619,5 +631,23 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
   def updated_emails_enabled?
     group.reload.clear_memoization(:emails_enabled_memoized)
     group.emails_enabled?
+  end
+
+  def transfer_group(group, destination)
+    within_testid('transfer-locations-dropdown') do
+      click_button s_('NamespaceTransfer|Select namespace')
+      fill_in _('Search'), with: destination&.name || ''
+      wait_for_requests
+      click_button(destination&.name || 'No parent group')
+    end
+
+    click_button s_('GroupSettings|Transfer group')
+
+    page.within(confirm_modal) do
+      expect(page).to have_text "You are about to transfer #{group.full_path} to another namespace. This action changes the group's path and can lead to data loss."
+
+      fill_in 'confirm_name_input', with: group.full_path
+      click_button 'Transfer group'
+    end
   end
 end

@@ -1,0 +1,12 @@
+---
+table_name: ai_vectorizable_file_upload_states
+description: Separate table for Ai Vectorizable File Upload verification states
+introduced_by_url:
+milestone: '19.0'
+feature_categories:
+  - geo_replication
+classes:
+  - Geo::AiVectorizableFileUploadState
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects

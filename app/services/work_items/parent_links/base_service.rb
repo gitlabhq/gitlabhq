@@ -46,7 +46,7 @@ module WorkItems
         can?(current_user, :admin_parent_link, work_item)
       end
 
-      # Overriden in EE
+      # Overridden in EE
       def can_add_to_parent?(parent_work_item, _child_work_item = nil)
         can_admin_link?(parent_work_item)
       end

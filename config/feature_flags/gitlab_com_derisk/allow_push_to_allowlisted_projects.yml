@@ -1,0 +1,10 @@
+---
+name: allow_push_to_allowlisted_projects
+description: Allow CI_JOB_TOKEN to push to repositories where the source project is on the target inbound allowlist with admin_repositories policy
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/479907
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229671
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/597258
+milestone: '19.0'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

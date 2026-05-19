@@ -1,0 +1,7 @@
+---
+event: Projects::SecurityAttributeChangedEvent
+description: Published when a security attribute association is added to or removed
+  from a project. The event_type field indicates whether the attribute was added or
+  removed.
+feature_category: security_asset_inventories
+ee_only: true

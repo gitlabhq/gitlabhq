@@ -11,38 +11,78 @@ RSpec.describe BulkImports::UserContributionsExportMapper, :clean_gitlab_redis_s
 
   let(:cached_users) { [cached_user_1, cached_user_2] }
   let(:non_cached_users) { [non_cached_user_1, non_cached_user_2] }
-  let(:group_1_cache_key) { "bulk_imports/#{group_1.class.name}/#{group_1.id}/user_contribution_ids" }
-
-  subject(:user_contributions_export_mapper) { described_class.new(group_1) }
+  let(:offline_export) { build_stubbed(:offline_export) }
 
   describe '#cache_user_contributions_on_record' do
     shared_examples 'there are no references to cache' do
       it 'does not cache any user ids' do
         user_contributions_export_mapper.cache_user_contributions_on_record(record)
 
-        expect(Gitlab::Cache::Import::Caching.values_from_set(group_1_cache_key)).to be_empty
+        expect(Gitlab::Cache::Import::Caching.values_from_set(cache_key)).to be_empty
       end
     end
 
-    context 'when record is nil' do
-      let(:record) { nil }
+    context 'when offline_export_id is present' do
+      let(:cache_key) do
+        "offline_export/#{offline_export.id}/#{group_1.class.name}/#{group_1.id}/user_contribution_ids"
+      end
 
-      it_behaves_like 'there are no references to cache'
+      subject(:user_contributions_export_mapper) { described_class.new(group_1, offline_export_id: offline_export.id) }
+
+      context 'when record is nil' do
+        let(:record) { nil }
+
+        it_behaves_like 'there are no references to cache'
+      end
+
+      context 'when record is a User' do
+        let(:record) { create(:user) }
+
+        it_behaves_like 'there are no references to cache'
+      end
+
+      context 'when record does not have references to a user' do
+        let(:record) { create(:board) }
+
+        it_behaves_like 'there are no references to cache'
+      end
+
+      context 'when record has references to a user' do
+        let(:record) do
+          create(
+            :issue,
+            author_id: non_cached_user_1.id,
+            updated_by_id: non_cached_user_2.id,
+            closed_by_id: cached_user_1.id,
+            last_edited_by_id: cached_user_2.id
+          )
+        end
+
+        before do
+          Gitlab::Cache::Import::Caching.set_add(cache_key, cached_users.map(&:id))
+        end
+
+        it 'caches all user reference ids' do
+          user_contributions_export_mapper.cache_user_contributions_on_record(record)
+
+          all_cached_ids = (cached_users + non_cached_users).map { |user| user.id.to_s }
+
+          expect(Gitlab::Cache::Import::Caching.values_from_set(cache_key)).to match_array(all_cached_ids)
+        end
+
+        it 'caches user_ids with a longer timeout to allow for longer exports' do
+          all_cached_ids = (cached_users + non_cached_users).map(&:id)
+
+          expect(Gitlab::Cache::Import::Caching).to receive(:set_add).with(
+            cache_key, match_array(all_cached_ids), timeout: 72.hours.to_i
+          )
+
+          user_contributions_export_mapper.cache_user_contributions_on_record(record)
+        end
+      end
     end
 
-    context 'when record is a User' do
-      let(:record) { create(:user) }
-
-      it_behaves_like 'there are no references to cache'
-    end
-
-    context 'when record does not have references to a user' do
-      let(:record) { create(:board) }
-
-      it_behaves_like 'there are no references to cache'
-    end
-
-    context 'when record has references to a user' do
+    context 'when offline_export_id is not present' do
       let(:record) do
         create(
           :issue,
@@ -53,24 +93,10 @@ RSpec.describe BulkImports::UserContributionsExportMapper, :clean_gitlab_redis_s
         )
       end
 
-      before do
-        Gitlab::Cache::Import::Caching.set_add(group_1_cache_key, cached_users.map(&:id))
-      end
+      subject(:user_contributions_export_mapper) { described_class.new(group_1) }
 
-      it 'caches all user reference ids' do
-        user_contributions_export_mapper.cache_user_contributions_on_record(record)
-
-        all_cached_ids = (cached_users + non_cached_users).map { |user| user.id.to_s }
-
-        expect(Gitlab::Cache::Import::Caching.values_from_set(group_1_cache_key)).to match_array(all_cached_ids)
-      end
-
-      it 'caches user_ids with a longer timeout to allow for longer exports' do
-        all_cached_ids = (cached_users + non_cached_users).map(&:id)
-
-        expect(Gitlab::Cache::Import::Caching).to receive(:set_add).with(
-          group_1_cache_key, match_array(all_cached_ids), timeout: 72.hours.to_i
-        )
+      it 'does not cache any user ids' do
+        expect(Gitlab::Cache::Import::Caching).not_to receive(:set_add)
 
         user_contributions_export_mapper.cache_user_contributions_on_record(record)
       end
@@ -78,8 +104,14 @@ RSpec.describe BulkImports::UserContributionsExportMapper, :clean_gitlab_redis_s
   end
 
   describe '#get_contributing_users' do
+    let(:cache_key) do
+      "offline_export/#{offline_export.id}/#{group_1.class.name}/#{group_1.id}/user_contribution_ids"
+    end
+
+    subject(:user_contributions_export_mapper) { described_class.new(group_1, offline_export_id: offline_export.id) }
+
     it 'returns an ActiveRecord::Relation of users from the cached ids' do
-      Gitlab::Cache::Import::Caching.set_add(group_1_cache_key, cached_users.map(&:id))
+      Gitlab::Cache::Import::Caching.set_add(cache_key, cached_users.map(&:id))
 
       expect(user_contributions_export_mapper.get_contributing_users.to_a).to match_array(cached_users)
     end
@@ -95,29 +127,40 @@ RSpec.describe BulkImports::UserContributionsExportMapper, :clean_gitlab_redis_s
     let_it_be(:project) { create(:project) }
     let_it_be(:group_2) { create(:group) }
 
+    let(:cache_key) do
+      "offline_export/#{offline_export.id}/#{group_1.class.name}/#{group_1.id}/user_contribution_ids"
+    end
+
+    subject(:user_contributions_export_mapper) { described_class.new(group_1, offline_export_id: offline_export.id) }
+
     it 'clears the user contributions cache for the given portable' do
-      Gitlab::Cache::Import::Caching.set_add(group_1_cache_key, cached_users.map(&:id))
+      Gitlab::Cache::Import::Caching.set_add(cache_key, cached_users.map(&:id))
 
       expect { user_contributions_export_mapper.clear_cache }.to change {
         user_contributions_export_mapper.get_contributing_users.count
       }.from(2).to(0)
     end
 
-    it 'only clears the cache for matching portable class and id' do
+    it 'only clears the cache for matching portable class, portable id and offline export id' do
       allow(project).to receive(:id).and_return(group_1.id)
+      other_export = build_stubbed(:offline_export)
 
-      project_user_contributions_mapper = described_class.new(project)
-      group_2_user_contributions_mapper = described_class.new(group_2)
+      project_user_contributions_mapper = described_class.new(project, offline_export_id: offline_export.id)
+      group_2_user_contributions_mapper = described_class.new(group_2, offline_export_id: offline_export.id)
+      other_offline_user_contributions_mapper = described_class.new(group_1, offline_export_id: other_export.id)
 
-      project_cache_key = "bulk_imports/#{project.class.name}/#{project.id}/user_contribution_ids"
-      group_2_cache_key = "bulk_imports/#{group_2.class.name}/#{group_2.id}/user_contribution_ids"
+      project_cache_key = "offline_export/#{offline_export.id}/Project/#{project.id}/user_contribution_ids"
+      group_2_cache_key = "offline_export/#{offline_export.id}/Group/#{group_2.id}/user_contribution_ids"
+      other_export_cache_key = "offline_export/#{other_export.id}/Group/#{group_1.id}/user_contribution_ids"
 
       Gitlab::Cache::Import::Caching.set_add(project_cache_key, cached_users.map(&:id))
       Gitlab::Cache::Import::Caching.set_add(group_2_cache_key, cached_users.map(&:id))
+      Gitlab::Cache::Import::Caching.set_add(other_export_cache_key, cached_users.map(&:id))
 
       expect { user_contributions_export_mapper.clear_cache }
         .to not_change { project_user_contributions_mapper.get_contributing_users.count }
         .and not_change { group_2_user_contributions_mapper.get_contributing_users.count }
+        .and not_change { other_offline_user_contributions_mapper.get_contributing_users.count }
     end
   end
 end

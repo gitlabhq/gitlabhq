@@ -34,18 +34,7 @@ module Capybara
         end
       end
 
-      module WaitForRequestsAfterClickLink
-        def click_link(locator = nil, **options, &block)
-          super
-
-          yield if block
-
-          wait_for_requests
-        end
-      end
-
       prepend WaitForRequestsAfterClickButton
-      prepend WaitForRequestsAfterClickLink
     end
   end
 end

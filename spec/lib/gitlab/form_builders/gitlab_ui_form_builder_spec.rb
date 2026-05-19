@@ -16,9 +16,9 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
       end
 
       it 'renders a submit input' do
-        expected_html = <<~EOS
+        expected_html = <<~HTML
         <input type="submit" name="commit" value="Save" class="gl-button btn-confirm custom-class" data-test="true" data-disable-with="Save" />
-        EOS
+        HTML
 
         expect(html_strip_whitespace(submit_html)).to eq(html_strip_whitespace(expected_html))
       end
@@ -30,13 +30,13 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
       end
 
       it 'renders a submit button' do
-        expected_html = <<~EOS
+        expected_html = <<~HTML
         <button class="gl-button btn btn-md btn-confirm custom-class" data-test="true" type="submit">
           <span class="gl-button-text">
             Save
           </span>
         </button>
-        EOS
+        HTML
 
         expect(html_strip_whitespace(submit_html)).to eq(html_strip_whitespace(expected_html))
       end
@@ -47,13 +47,13 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
         end
 
         it 'renders a submit button with the specified variant' do
-          expected_html = <<~EOS
+          expected_html = <<~HTML
           <button type="submit" class="gl-button btn btn-md btn-default ">
             <span class="gl-button-text">
               Restore
             </span>
           </button>
-          EOS
+          HTML
 
           expect(html_strip_whitespace(submit_html)).to eq(html_strip_whitespace(expected_html))
         end
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
 
       context 'without optional arguments' do
         it 'renders correct html' do
-          expected_html = <<~EOS
+          expected_html = <<~HTML
             <div class="gl-form-checkbox custom-control custom-checkbox">
               <input name="user[view_diffs_file_by_file]" type="hidden" value="0" autocomplete="off" />
               <input class="custom-control-input" type="checkbox" value="1" name="user[view_diffs_file_by_file]" id="user_view_diffs_file_by_file" />
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
                 <span>Show one file at a time on merge request&#39;s Changes tab</span>
               </label>
             </div>
-          EOS
+          HTML
 
           expect(html_strip_whitespace(checkbox_html)).to eq(html_strip_whitespace(expected_html))
         end
@@ -102,7 +102,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
         end
 
         it 'renders help text' do
-          expected_html = <<~EOS
+          expected_html = <<~HTML
             <div class="gl-form-checkbox custom-control custom-checkbox wrapper-foo-bar">
               <input name="user[view_diffs_file_by_file]" type="hidden" value="1" autocomplete="off" />
               <input class="custom-control-input checkbox-foo-bar" type="checkbox" value="3" name="user[view_diffs_file_by_file]" id="user_view_diffs_file_by_file" />
@@ -111,7 +111,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
                 <p class="help-text" data-testid="pajamas-component-help-text">Instead of all the files changed, show only one file at a time.</p>
               </label>
             </div>
-          EOS
+          HTML
 
           expect(html_strip_whitespace(checkbox_html)).to eq(html_strip_whitespace(expected_html))
         end
@@ -127,14 +127,14 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
         end
 
         it 'renders labels with correct for attributes' do
-          expected_html = <<~EOS
+          expected_html = <<~HTML
             <div class="gl-form-checkbox custom-control custom-checkbox">
               <input class="custom-control-input" type="checkbox" value="one" name="user[view_diffs_file_by_file][]" id="user_view_diffs_file_by_file_one" />
               <label class="custom-control-label" for="user_view_diffs_file_by_file_one">
                 <span>Show one file at a time on merge request&#39;s Changes tab</span>
               </label>
             </div>
-          EOS
+          HTML
 
           expect(html_strip_whitespace(checkbox_html)).to eq(html_strip_whitespace(expected_html))
         end
@@ -152,7 +152,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
       end
 
       it 'renders correct html' do
-        expected_html = <<~EOS
+        expected_html = <<~HTML
           <div class="gl-form-checkbox custom-control custom-checkbox">
             <input name="user[view_diffs_file_by_file]" type="hidden" value="0" autocomplete="off" />
             <input class="custom-control-input" type="checkbox" value="1" name="user[view_diffs_file_by_file]" id="user_view_diffs_file_by_file" />
@@ -161,7 +161,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
               <p class="help-text" data-testid="pajamas-component-help-text">Instead of all the files changed, show only one file at a time.</p>
             </label>
           </div>
-        EOS
+        HTML
 
         expect(html_strip_whitespace(checkbox_html)).to eq(html_strip_whitespace(expected_html))
       end
@@ -183,14 +183,14 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
 
       context 'without optional arguments' do
         it 'renders correct html' do
-          expected_html = <<~EOS
+          expected_html = <<~HTML
             <div class="gl-form-radio custom-control custom-radio">
               <input class="custom-control-input" type="radio" value="admin" checked="checked" name="user[access_level]" id="user_access_level_admin" />
               <label class="custom-control-label" for="user_access_level_admin">
                 <span>Admin</span>
               </label>
             </div>
-          EOS
+          HTML
 
           expect(html_strip_whitespace(radio_html)).to eq(html_strip_whitespace(expected_html))
         end
@@ -206,7 +206,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
         end
 
         it 'renders help text' do
-          expected_html = <<~EOS
+          expected_html = <<~HTML
             <div class="gl-form-radio custom-control custom-radio">
               <input class="custom-control-input radio-foo-bar" type="radio" value="admin" checked="checked" name="user[access_level]" id="user_access_level_admin" />
               <label class="custom-control-label label-foo-bar" for="user_access_level_admin">
@@ -214,7 +214,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
                 <p class="help-text" data-testid="pajamas-component-help-text">Administrators have access to all groups, projects, and users and can manage all features in this installation</p>
               </label>
             </div>
-          EOS
+          HTML
 
           expect(html_strip_whitespace(radio_html)).to eq(html_strip_whitespace(expected_html))
         end
@@ -233,7 +233,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
       end
 
       it 'renders correct html' do
-        expected_html = <<~EOS
+        expected_html = <<~HTML
           <div class="gl-form-radio custom-control custom-radio">
             <input class="custom-control-input" type="radio" value="admin" checked="checked" name="user[access_level]" id="user_access_level_admin" />
             <label class="custom-control-label" for="user_access_level_admin">
@@ -241,7 +241,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
               <p class="help-text" data-testid="pajamas-component-help-text">Administrators have access to all groups, projects, and users and can manage all features in this installation</p>
             </label>
           </div>
-        EOS
+        HTML
 
         expect(html_strip_whitespace(radio_html)).to eq(html_strip_whitespace(expected_html))
       end
@@ -260,9 +260,9 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
 
     context 'without optional arguments' do
       it 'renders correct html' do
-        expected_html = <<~EOS
+        expected_html = <<~HTML
           <input class="datepicker form-control gl-form-input" type="text" name="user[expires_at]" id="user_expires_at" />
-        EOS
+        HTML
 
         expect(html_strip_whitespace(datepicker_html)).to eq(html_strip_whitespace(expected_html))
       end
@@ -278,9 +278,9 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
       end
 
       it 'renders correct html' do
-        expected_html = <<~EOS
+        expected_html = <<~HTML
           <input id="milk_gone_bad" data-action="throw" value="2022-08-01" class="datepicker form-control gl-form-input" type="text" name="user[expires_at]" />
-        EOS
+        HTML
 
         expect(html_strip_whitespace(datepicker_html)).to eq(html_strip_whitespace(expected_html))
       end

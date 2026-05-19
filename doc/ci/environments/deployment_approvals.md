@@ -95,7 +95,7 @@ A GitLab administrator can approve or reject all deployments.
 To allow self-approval of a deployment job:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Approval options**, select the **Allow pipeline triggerer to approve deployment** checkbox.
 
@@ -113,7 +113,7 @@ Prerequisites:
 To approve or reject a deployment:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Select the environment's name.
 1. Find the deployment and select its **Status badge**.
 1. Optional. Add a comment which describes your reason for approving or rejecting the deployment.
@@ -126,7 +126,7 @@ approver groups. [Issue 457541](https://gitlab.com/gitlab-org/gitlab/-/issues/45
 proposes to change this behavior so that the same user can give multiple
 approvals per deployment from different approver groups.
 
-Deployment approval doesn't automatically trigger the corresponding deployment job. You must [manually run the job](../jobs/job_control.md#run-a-manual-job).
+Deployment approval doesn't automatically start the corresponding deployment job. You must [manually run the job](../jobs/job_control.md#run-a-manual-job).
 
 ### View the approval details of a deployment
 
@@ -140,7 +140,7 @@ granted.
 To view the approval details of a deployment:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Select the environment's name.
 1. Find the deployment and select its **Status badge**.
 
@@ -158,7 +158,7 @@ Review the status of your deployments, including whether a deployment is blocked
 To view your deployments:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Operate** > **Environments**.
+1. In the left sidebar, select **Operate** > **Environments**.
 1. Select the environment being deployed to.
 
 A deployment with the **blocked** label is blocked.

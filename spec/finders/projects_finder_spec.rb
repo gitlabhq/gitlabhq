@@ -15,7 +15,7 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       create(:project, :private, name: 'A', path: 'A')
     end
 
-    let_it_be(:internal_project) do
+    let_it_be(:internal_project, freeze: false) do
       create(:project, :internal, :merge_requests_disabled, group: group, name: 'B', path: 'B', updated_at: 4.days.ago)
     end
 
@@ -274,8 +274,8 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       end
 
       describe 'filter by topic_id' do
-        let_it_be(:topic1) { create(:topic, organization_id: public_project.organization_id) }
-        let_it_be(:topic2) { create(:topic, organization_id: public_project.organization_id) }
+        let_it_be(:topic1, freeze: false) { create(:topic, organization_id: public_project.organization_id) }
+        let_it_be(:topic2, freeze: false) { create(:topic, organization_id: public_project.organization_id) }
 
         before do
           public_project.reload
@@ -489,7 +489,7 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       end
 
       describe 'filters by without_deleted by default' do
-        let_it_be(:pending_delete_project) { create(:project, :public, pending_delete: true) }
+        let_it_be(:pending_delete_project, freeze: false) { create(:project, :public, pending_delete: true) }
 
         it 'returns projects that are not pending_delete' do
           expect(subject).not_to include(pending_delete_project)

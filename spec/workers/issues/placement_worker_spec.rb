@@ -162,7 +162,7 @@ RSpec.describe Issues::PlacementWorker, feature_category: :team_planning do
           personal_issue_a.update!(relative_position: RelativePositioning::MAX_POSITION)
 
           expect(Issues::RebalancingWorker).to receive(:perform_async)
-            .with(nil, personal_project.id, nil)
+            .with(nil, nil, personal_project.project_namespace.id)
 
           run_worker
         end
@@ -182,6 +182,28 @@ RSpec.describe Issues::PlacementWorker, feature_category: :team_planning do
         end
 
         it_behaves_like 'running the issue placement worker for a personal namespace'
+      end
+    end
+
+    context 'with group-level work items (no project)' do
+      let_it_be(:group) { create(:group) }
+      let_it_be_with_reload(:group_epic) do
+        create(:work_item, :group_level, namespace: group, relative_position: nil)
+      end
+
+      def run_worker
+        described_class.new.perform({ 'namespace_id' => group.id })
+      end
+
+      it 'schedules rebalancing with namespace root_ancestor when issue.project is nil' do
+        group_epic.update!(relative_position: RelativePositioning::MAX_POSITION)
+        allow(Issue).to receive(:move_nulls_to_end) { raise RelativePositioning::NoSpaceLeft }
+
+        expect(Issues::RebalancingWorker).to receive(:perform_async).with(nil, nil, group.root_ancestor.id)
+        expect(Gitlab::ErrorTracking).to receive(:log_exception)
+          .with(RelativePositioning::NoSpaceLeft, namespace_id: group.id)
+
+        run_worker
       end
     end
   end

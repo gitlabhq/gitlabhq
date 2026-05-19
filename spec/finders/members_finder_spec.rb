@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MembersFinder, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group) }
-  let_it_be(:nested_group) { create(:group, parent: group) }
+  let_it_be(:nested_group, freeze: false) { create(:group, parent: group) }
   let_it_be(:project, reload: true) { create(:project, namespace: nested_group) }
   let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
@@ -182,14 +182,17 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
   end
 
   context 'with :shared_into_ancestors' do
-    let_it_be(:invited_group) do
+    let_it_be(:invited_group, freeze: false) do
       create(:group).tap do |invited_group|
         create(:group_group_link, shared_group: nested_group, shared_with_group: invited_group)
       end
     end
 
-    let_it_be(:invited_group_member) { create(:group_member, :developer, group: invited_group, user: user1) }
-    let_it_be(:namespace_parent_member) { create(:group_member, :owner, group: group, user: user2) }
+    let_it_be(:invited_group_member, freeze: false) do
+      create(:group_member, :developer, group: invited_group, user: user1)
+    end
+
+    let_it_be(:namespace_parent_member, freeze: false) { create(:group_member, :owner, group: group, user: user2) }
     let_it_be(:namespace_member) { create(:group_member, :developer, group: nested_group, user: user3) }
     let_it_be(:project_member) { create(:project_member, :developer, project: project, user: user4) }
 
@@ -217,7 +220,7 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
       described_class.new(project, user2).execute(include_relations: [:inherited, :direct, :invited_groups])
     end
 
-    let_it_be(:linked_group) { create(:group, parent: group) }
+    let_it_be(:linked_group, freeze: false) { create(:group, parent: group) }
     let_it_be(:nested_linked_group) { create(:group, parent: linked_group) }
     let_it_be(:linked_group_member) { linked_group.add_guest(user1) }
     let_it_be(:nested_linked_group_member) { nested_linked_group.add_guest(user2) }

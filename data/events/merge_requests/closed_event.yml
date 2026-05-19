@@ -1,0 +1,6 @@
+---
+event: MergeRequests::ClosedEvent
+description: Published when a merge request is closed, so EE subscribers (such as
+  security policy and AutoFlow workers) can react to the state change.
+feature_category: code_review_workflow
+ee_only: true

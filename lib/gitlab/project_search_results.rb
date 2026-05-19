@@ -2,11 +2,15 @@
 
 module Gitlab
   class ProjectSearchResults < SearchResults
-    attr_reader :project, :repository_ref
+    attr_reader :project, :repository_ref, :organization_id
 
-    def initialize(current_user, query, project:, repository_ref: nil, order_by: nil, sort: nil, filters: {})
+    def initialize(
+      current_user, query, project:, repository_ref: nil, order_by: nil,
+      sort: nil, filters: {}, organization_id: nil
+    )
       @project = project
       @repository_ref = repository_ref.presence
+      @organization_id = organization_id
 
       # use the default filter for project searches since we are already limiting by a single project
       super(
@@ -133,7 +137,9 @@ module Gitlab
 
     # rubocop: disable CodeReuse/ActiveRecord
     def notes_finder(type)
-      note_finder = NotesFinder.new(current_user, search: query, target_type: type, project: project)
+      finder_params = { search: query, target_type: type, project: project }
+      finder_params[:organization_id] = organization_id if organization_id
+      note_finder = NotesFinder.new(current_user, finder_params)
       note_finder.execute.user.order(updated_at: :desc)
     end
     # rubocop: enable CodeReuse/ActiveRecord

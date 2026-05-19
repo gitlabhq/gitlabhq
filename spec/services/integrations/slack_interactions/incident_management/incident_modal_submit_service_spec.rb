@@ -183,6 +183,7 @@ RSpec.describe Integrations::SlackInteractions::IncidentManagement::IncidentModa
           expect(incident.severity).to eq('unknown')
           expect(incident.confidential).to be_falsey
           expect(incident.escalation_status).to be_triggered
+          expect(incident.work_item_type.base_type).to eq('incident')
         end
 
         it 'sends incident link to slack' do

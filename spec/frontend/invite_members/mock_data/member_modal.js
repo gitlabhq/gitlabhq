@@ -6,6 +6,15 @@ export const propsData = {
   accessLevels: { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 },
   defaultAccessLevel: 30,
   helpLink: 'https://example.com',
+  rootGroupName: '',
+  isTopLevelGroup: false,
+  canInviteToRootGroup: false,
+};
+
+export const rootGroupPropsData = {
+  rootGroupName: 'Top Level Group',
+  isTopLevelGroup: false,
+  canInviteToRootGroup: true,
 };
 
 export const inviteSource = 'unknown';

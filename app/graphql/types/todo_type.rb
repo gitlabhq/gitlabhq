@@ -11,9 +11,14 @@ module Types
 
     authorize :read_todo
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     field :id, GraphQL::Types::ID,
       description: 'ID of the to-do item.',
-      null: false
+      null: false,
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :project, Types::ProjectType,
       description: 'Project the to-do item is associated with.',
@@ -29,7 +34,8 @@ module Types
 
     field :action, Types::TodoActionEnum,
       description: 'Action of the to-do item.',
-      null: false
+      null: false,
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :target, Types::TodoableInterface,
       description: 'Target of the to-do item.',
@@ -53,20 +59,24 @@ module Types
 
     field :target_url, GraphQL::Types::String, # rubocop:disable GraphQL/ExtractType -- Target already exists
       description: 'URL of the to-do item target.',
-      null: true
+      null: true,
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :body, GraphQL::Types::String,
       description: 'Body of the to-do item.',
       null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       calls_gitaly: true # TODO This is only true when `target_type` is `Commit`. See https://gitlab.com/gitlab-org/gitlab/issues/34757#note_234752665
 
     field :state, Types::TodoStateEnum,
       description: 'State of the to-do item.',
-      null: false
+      null: false,
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :created_at, Types::TimeType,
       description: 'Timestamp the to-do item was created.',
-      null: false
+      null: false,
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :note, Types::Notes::NoteType,
       description: 'Note which created the to-do item.',

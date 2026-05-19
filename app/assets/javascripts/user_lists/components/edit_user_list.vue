@@ -1,9 +1,9 @@
 <script>
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { s__, sprintf } from '~/locale';
 import statuses from '../constants/edit';
+import { useEditUserList } from '../store/edit';
 import UserListForm from './user_list_form.vue';
 
 export default {
@@ -17,7 +17,7 @@ export default {
     saveButtonLabel: s__('UserLists|Save'),
   },
   computed: {
-    ...mapState(['userList', 'status', 'errorMessage']),
+    ...mapState(useEditUserList, ['userList', 'status', 'errorMessage']),
     title() {
       return sprintf(s__('UserLists|Edit %{name}'), { name: this.userList?.name });
     },
@@ -35,7 +35,7 @@ export default {
     this.fetchUserList();
   },
   methods: {
-    ...mapActions(['fetchUserList', 'updateUserList', 'dismissErrorAlert']),
+    ...mapActions(useEditUserList, ['fetchUserList', 'updateUserList', 'dismissErrorAlert']),
   },
 };
 </script>

@@ -1,5 +1,4 @@
 import Vue, { nextTick } from 'vue';
-import { GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { cloneDeep } from 'lodash-es';
 import { PiniaVuePlugin } from 'pinia';
@@ -8,21 +7,20 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import TreeList from '~/repository/file_tree_browser/components/tree_list.vue';
+import FileTreeSearch from '~/repository/file_tree_browser/components/file_tree_search.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
-import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
-import { Mousetrap } from '~/lib/mousetrap';
-import { waitForElement } from '~/lib/utils/dom_utils';
 import refQuery from '~/repository/queries/ref.query.graphql';
+import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import FileTreeBrowserPopover from '~/repository/file_tree_browser/components/file_tree_browser_popover.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { scrollUp } from '~/lib/utils/scroll_utils';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mockResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -36,7 +34,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
   ),
   visitUrl: jest.fn(),
 }));
-jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 jest.mock('~/lib/utils/dom_utils');
 jest.mock('~/lib/utils/scroll_utils');
 
@@ -60,7 +57,10 @@ describe('Tree List', () => {
     getQueryHandlerSuccess = jest.fn().mockResolvedValue(apiResponse);
     userCalloutDismissSpy = jest.fn();
 
-    apolloProvider = createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]);
+    apolloProvider = createMockApollo([
+      [paginatedTreeQuery, getQueryHandlerSuccess],
+      ...(options.blobQueryHandler ? [[blobInfoQuery, options.blobQueryHandler]] : []),
+    ]);
     apolloProvider.defaultClient.cache.writeQuery({
       query: refQuery,
       data: { ref: currentRef, escapedRef: currentRef },
@@ -73,6 +73,9 @@ describe('Tree List', () => {
         currentRef: 'main',
         refType: 'heads',
         ...options.propsData,
+      },
+      directives: {
+        GlHoverLoad: createMockDirective('gl-hover-load'),
       },
       mocks: {
         $router: { push: jest.fn() },
@@ -96,13 +99,12 @@ describe('Tree List', () => {
   });
 
   const findFileTreeToggle = () => wrapper.findComponent(FileTreeBrowserToggle);
+  const findFileTreeSearch = () => wrapper.findComponent(FileTreeSearch);
   const findTree = () => wrapper.find('[role="tree"]');
   const findHeader = () => wrapper.find('h3');
   const findTreeItems = () => wrapper.findAll('[role="treeitem"]');
   const findFileRows = () => wrapper.findAllComponents(FileRow);
   const findFileRowPlaceholders = () => wrapper.findAll('[data-placeholder-item]');
-  const findSearchButton = () => wrapper.findByTestId('search-trigger');
-  const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findUserCalloutDismisser = () => wrapper.findComponent(UserCalloutDismisser);
   const findFileTreeBrowserPopover = () => wrapper.findComponent(FileTreeBrowserPopover);
 
@@ -117,6 +119,10 @@ describe('Tree List', () => {
       nextPageCursor: '',
       pageSize: 100,
     });
+  });
+
+  it('renders the file tree search component', () => {
+    expect(findFileTreeSearch().exists()).toBe(true);
   });
 
   it('renders a title', () => {
@@ -217,6 +223,22 @@ describe('Tree List', () => {
 
     expect(treeItems.at(1).attributes('aria-setsize')).toBe('2');
     expect(treeItems.at(1).attributes('aria-posinset')).toBe('2');
+  });
+
+  it('renders a gl-hover-load directive on file rows', () => {
+    const fileRow = findFileRows().at(0); // tree item (type: 'tree')
+    const hoverLoadDirective = getBinding(fileRow.element, 'gl-hover-load');
+
+    expect(hoverLoadDirective).not.toBeUndefined();
+    expect(hoverLoadDirective.value).toBeInstanceOf(Function);
+  });
+
+  it('renders a gl-hover-load directive on blob rows', () => {
+    const fileRow = findFileRows().at(1); // blob item (type: 'blob')
+    const hoverLoadDirective = getBinding(fileRow.element, 'gl-hover-load');
+
+    expect(hoverLoadDirective).not.toBeUndefined();
+    expect(hoverLoadDirective.value).toBeInstanceOf(Function);
   });
 
   describe('pagination', () => {
@@ -414,176 +436,6 @@ describe('Tree List', () => {
     });
   });
 
-  describe('search button', () => {
-    it('renders search button with correct props', () => {
-      const button = findSearchButton();
-
-      expect(button.props('icon')).toBe('search');
-      expect(button.attributes('aria-label')).toBe('Search files (*.vue, *.rb...)');
-      expect(button.text()).toBe('Search files (*.vue, *.rb...)');
-    });
-
-    it('dispatches global search event when search button is clicked', async () => {
-      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
-      const mockSearchInput = document.createElement('input');
-      mockSearchInput.id = 'search';
-      waitForElement.mockResolvedValue(mockSearchInput);
-
-      findSearchButton().vm.$emit('click');
-      await nextTick();
-
-      expect(dispatchEventSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'globalSearch:open',
-        }),
-      );
-    });
-
-    it('sets search input value to "~" after opening global search', async () => {
-      const mockSearchInput = document.createElement('input');
-      mockSearchInput.id = 'search';
-      waitForElement.mockResolvedValue(mockSearchInput);
-
-      findSearchButton().vm.$emit('click');
-      await waitForPromises();
-
-      expect(mockSearchInput.value).toBe('~');
-    });
-
-    it('dispatches input event on search input after setting value', async () => {
-      const mockSearchInput = document.createElement('input');
-      mockSearchInput.id = 'search';
-      const dispatchEventSpy = jest.spyOn(mockSearchInput, 'dispatchEvent');
-      waitForElement.mockResolvedValue(mockSearchInput);
-
-      findSearchButton().vm.$emit('click');
-      await waitForPromises();
-
-      expect(dispatchEventSpy).toHaveBeenCalledWith(expect.any(Event));
-      expect(dispatchEventSpy.mock.calls[0][0].type).toBe('input');
-    });
-
-    it('triggers a tracking event when search button is clicked', async () => {
-      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
-      findSearchButton().vm.$emit('click');
-      await nextTick();
-
-      expect(trackEventSpy).toHaveBeenCalledWith(
-        'focus_file_tree_browser_filter_bar_on_repository_page',
-        { label: 'click' },
-        undefined,
-      );
-    });
-  });
-
-  describe('handles search button focus correctly when shortcuts are enabled', () => {
-    beforeEach(() => {
-      shouldDisableShortcuts.mockReturnValue(false);
-      createComponent();
-    });
-
-    it('opens global search when shortcut is triggered', async () => {
-      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
-      const mockSearchInput = document.createElement('input');
-      mockSearchInput.id = 'search';
-      waitForElement.mockResolvedValue(mockSearchInput);
-
-      const mousetrapInstance = wrapper.vm.mousetrap;
-      mousetrapInstance.trigger('f');
-
-      await waitForPromises();
-
-      expect(dispatchEventSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'globalSearch:open',
-        }),
-      );
-      expect(mockSearchInput.value).toBe('~');
-    });
-
-    it('triggers a tracking event when shortcut is used', async () => {
-      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-      const mockSearchInput = document.createElement('input');
-      mockSearchInput.id = 'search';
-      waitForElement.mockResolvedValue(mockSearchInput);
-
-      const mousetrapInstance = wrapper.vm.mousetrap;
-      mousetrapInstance.trigger('f');
-
-      await waitForPromises();
-
-      expect(trackEventSpy).toHaveBeenCalledWith(
-        'focus_file_tree_browser_filter_bar_on_repository_page',
-        { label: 'shortcut' },
-        undefined,
-      );
-    });
-
-    it('displays tooltip', () => {
-      createComponent();
-      expect(findTooltip().exists()).toBe(true);
-    });
-
-    it('binds and unbinds Mousetrap shortcut', () => {
-      const bindSpy = jest.spyOn(Mousetrap.prototype, 'bind');
-      const unbindSpy = jest.spyOn(Mousetrap.prototype, 'unbind');
-
-      createComponent();
-      expect(bindSpy).toHaveBeenCalledWith(
-        keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR),
-        wrapper.vm.triggerFocusFilterBar,
-      );
-
-      wrapper.destroy();
-      expect(unbindSpy).toHaveBeenCalledWith(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
-    });
-
-    it('sets correct aria-keyshortcuts attribute on search button', () => {
-      const button = findSearchButton();
-      expect(button.attributes('aria-keyshortcuts')).toBe(
-        keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR)[0],
-      );
-    });
-  });
-
-  describe('handles search button focus correctly when shortcuts are disabled', () => {
-    beforeEach(() => {
-      shouldDisableShortcuts.mockReturnValue(true);
-      createComponent();
-    });
-
-    it('does not open global search when shortcuts are disabled', async () => {
-      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
-
-      const mousetrapInstance = wrapper.vm.mousetrap;
-      mousetrapInstance.trigger('f');
-
-      await nextTick();
-
-      expect(dispatchEventSpy).not.toHaveBeenCalled();
-    });
-
-    it('does not display tooltip', () => {
-      createComponent();
-      expect(findTooltip().exists()).toBe(false);
-    });
-
-    it('does not bind mousetrap shortcut when shortcuts are disabled', () => {
-      const bindSpy = jest.spyOn(Mousetrap.prototype, 'bind');
-
-      expect(bindSpy).not.toHaveBeenCalledWith(
-        keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR),
-        wrapper.vm.triggerFocusFilterBar,
-      );
-    });
-
-    it('does not set aria-keyshortcuts attribute on search button', () => {
-      const button = findSearchButton();
-      expect(button.attributes('aria-keyshortcuts')).toBeUndefined();
-    });
-  });
-
   describe('deep path navigation with pagination', () => {
     it('paginates to find directories not on first page', async () => {
       const page1 = cloneDeep(mockResponse);
@@ -688,6 +540,7 @@ describe('Tree List', () => {
 
       getQueryHandlerSuccess = jest.fn().mockResolvedValueOnce(response);
 
+      // eslint-disable-next-line no-restricted-properties
       const route = Vue.observable({ params: {} });
       wrapper = shallowMountExtended(TreeList, {
         apolloProvider: createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]),
@@ -822,6 +675,34 @@ describe('Tree List', () => {
       const focusedItem = items.wrappers.find((item) => item.attributes('tabindex') === '0');
       const fileRow = focusedItem.findComponent(FileRow);
       expect(fileRow.props('file').name).toBe(expectedName);
+    });
+
+    it.each([
+      { metaKey: true, ctrlKey: false, altKey: false },
+      { metaKey: false, ctrlKey: true, altKey: false },
+      { metaKey: false, ctrlKey: false, altKey: true },
+    ])('does not intercept keydown when a modifier key is pressed', async (modifiers) => {
+      await createComponent();
+
+      const activeItemBefore = findTreeItems().wrappers.find(
+        (item) => item.attributes('tabindex') === '0',
+      );
+      const activeItemIdBefore = activeItemBefore?.attributes('data-item-id');
+
+      const event = new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
+        ...modifiers,
+        bubbles: true,
+      });
+
+      findTree().element.dispatchEvent(event);
+      await waitForPromises();
+
+      const activeItemAfter = findTreeItems().wrappers.find(
+        (item) => item.attributes('tabindex') === '0',
+      );
+
+      expect(activeItemAfter.attributes('data-item-id')).toBe(activeItemIdBefore);
     });
 
     it('expands sibling directories at same level with * key', async () => {
@@ -1267,6 +1148,61 @@ describe('Tree List', () => {
 
         expect(userCalloutDismissSpy).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('hover preload', () => {
+    let getBlobQueryHandlerSuccess;
+
+    beforeEach(async () => {
+      getBlobQueryHandlerSuccess = jest.fn().mockResolvedValue({ data: { project: null } });
+      await createComponent(mockResponse, { blobQueryHandler: getBlobQueryHandlerSuccess });
+    });
+
+    it('preloads folder data on hover over a tree item', async () => {
+      const hoverLoadDirective = getBinding(findFileRows().at(0).element, 'gl-hover-load');
+      hoverLoadDirective.value();
+      await waitForPromises();
+
+      expect(getQueryHandlerSuccess).toHaveBeenCalledWith(
+        expect.objectContaining({ path: 'dir_1/dir_2' }),
+      );
+    });
+
+    it('preloads blob data on hover over a blob item', () => {
+      const hoverLoadDirective = getBinding(findFileRows().at(1).element, 'gl-hover-load');
+      hoverLoadDirective.value();
+
+      expect(getBlobQueryHandlerSuccess).toHaveBeenCalledWith(
+        expect.objectContaining({ filePath: ['dir_1/file.txt'] }),
+      );
+    });
+
+    it('does not preload on hover over a submodule item', async () => {
+      const response = cloneDeep(mockResponse);
+      response.data.project.repository.paginatedTree.nodes[0].submodules.nodes.push({
+        __typename: 'Submodule',
+        id: 'gid://Submodule123',
+        sha: '1234567890abcdef',
+        name: 'submodule-project',
+        flatPath: 'submodule-project',
+        type: 'commit',
+        path: 'submodule-project',
+        treeUrl: 'https://example.com/submodule-project',
+        webUrl: 'https://example.com/submodule-project',
+      });
+      await createComponent(response, { blobQueryHandler: getBlobQueryHandlerSuccess });
+      triggerIntersectionForAll();
+      await nextTick();
+
+      const callCountBefore = getQueryHandlerSuccess.mock.calls.length;
+      const submoduleRow = findFileRows().wrappers.find((w) => w.props('file').submodule);
+      const hoverLoadDirective = getBinding(submoduleRow.element, 'gl-hover-load');
+      hoverLoadDirective.value();
+      await waitForPromises();
+
+      expect(getQueryHandlerSuccess.mock.calls).toHaveLength(callCountBefore);
+      expect(getBlobQueryHandlerSuccess).not.toHaveBeenCalled();
     });
   });
 

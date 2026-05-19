@@ -8,7 +8,7 @@ title: Code Suggestions
 
 {{< details >}}
 
-- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
+- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -37,6 +37,7 @@ title: Code Suggestions
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for code generation to Claude Sonnet 4 in GitLab 18.2.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
+- Changed GitLab Duo Core user access to Code Suggestions. Now available as part of the GitLab Duo Agent Platform starting in GitLab 19.0.
 
 {{< /history >}}
 
@@ -44,7 +45,7 @@ title: Code Suggestions
 > Code Suggestions is available for:
 >
 > - GitLab Duo Agent Platform. Billing is [usage-based](../../../subscriptions/gitlab_credits.md).
-> - GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q. Billing is based on your add-on.
+> - GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q. Billing is based on your add-on.
 
 Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
 
@@ -55,10 +56,9 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 
 ## Prerequisites
 
-To use Code Suggestions:
-
-- If you have GitLab Duo Core, [turn on IDE features](../turn_on_off.md#turn-gitlab-duo-core-on-or-off).
-- [Set up Code Suggestions](../../project/repository/code_suggestions/set_up.md).
+- If you have GitLab Duo Core, [IDE features are on](../turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+- [Code Suggestions is set up](../../project/repository/code_suggestions/set_up.md).
+- You have a GitLab project.
 
 > [!note]
 > GitLab Duo requires GitLab 17.2 or later. For GitLab Duo Core access, and for the best user experience and results,
@@ -68,10 +68,8 @@ To use Code Suggestions:
 
 To use Code Suggestions:
 
-1. Open your Git project in a [supported IDE](../../project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions).
-1. Add the project as a remote of your local repository using
-   [`git remote add`](../../../topics/git/commands.md#git-remote-add).
-1. Add your project directory, including the hidden `.git/` folder, to your IDE workspace or project.
+1. Open a project in your IDE.
+   The local project must have a Git remote configured that points to a repository on GitLab.
 1. Author your code.
    As you type, suggestions are displayed. Code Suggestions provides code snippets
    or completes the current line, depending on the cursor position.

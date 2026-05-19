@@ -2,13 +2,7 @@
 
 module Clusters
   class AgentPolicy < BasePolicy
-    alias_method :cluster_agent, :subject
-
-    delegate { cluster_agent.project }
-
-    condition(:admin_agent) do
-      Ability.allowed?(@user, :owner_access, @subject.project)
-    end
+    delegate { @subject.project }
 
     # This condition is more expensive than the same permission check in ProjectPolicy,
     # so having a higher score.

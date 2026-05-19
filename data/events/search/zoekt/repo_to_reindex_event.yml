@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::RepoToReindexEvent
+description: Published when Zoekt repositories require reindexing, so the subscribed
+  worker can enqueue reindex tasks (one event per node for parallel processing).
+feature_category: global_search
+ee_only: true

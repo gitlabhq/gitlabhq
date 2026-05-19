@@ -5,7 +5,7 @@ require 'json'
 
 RSpec.describe Gitlab::Webpack::Manifest do
   let(:manifest) do
-    <<-EOF
+    <<-JSON
       {
         "errors": [],
         "assetsByChunkName": {
@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Webpack::Manifest do
           "entry2": "entry2.js"
         }
       }
-    EOF
+    JSON
   end
 
   around do |example|

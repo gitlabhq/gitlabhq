@@ -19,6 +19,10 @@ module RapidDiffs
       end
     end
 
+    expose :head_sha, if: ->(diff, _) { latest_or_merge_head?(diff) } do |merge_request_diff| # rubocop:disable Style/SymbolProc -- head_commit_sha takes 0 args; &:head_commit_sha passes options as argument
+      merge_request_diff.head_commit_sha
+    end
+
     expose :selected do |merge_request_diff|
       next merge_request_diff.head_commit_sha == options[:start_sha] if options[:start_sha].present?
       next true if latest_or_merge_head?(merge_request_diff)
@@ -33,8 +37,7 @@ module RapidDiffs
       # as we should show the latest diff when it is selected.
       diffs_project_merge_request_path(
         merge_request.target_project,
-        merge_request,
-        path_options
+        merge_request
       )
     end
 
@@ -51,7 +54,7 @@ module RapidDiffs
         merge_request.target_project,
         merge_request,
         current_merge_request_diff || merge_request_diffs.first,
-        path_options.merge(start_sha: merge_request_diff.head_commit_sha)
+        { start_sha: merge_request_diff.head_commit_sha }
       )
     end
   end

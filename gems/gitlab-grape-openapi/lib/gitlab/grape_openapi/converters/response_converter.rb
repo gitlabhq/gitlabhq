@@ -19,7 +19,7 @@ module Gitlab
         private
 
         def extract_success_response
-          entity_definition = @route.options[:entity]
+          entity_definition = @route.options[:entity] || @route.options[:success]
 
           case entity_definition
           when nil
@@ -132,7 +132,18 @@ module Gitlab
         end
 
         def add_simple_response(status_code:, description:)
-          @responses[status_code.to_s] = { description: description }
+          key = status_code.to_s
+
+          # `http_codes` (processed by `extract_failure_responses`) may include
+          # success codes that are also covered by a `success`/`entity`
+          # declaration. Preserve the existing response content (the entity
+          # `$ref`) and only refresh the description, so the entity is not
+          # silently dropped.
+          if @responses[key]
+            @responses[key][:description] = description
+          else
+            @responses[key] = { description: description }
+          end
         end
 
         def infer_success_code

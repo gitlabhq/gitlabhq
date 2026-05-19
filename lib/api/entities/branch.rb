@@ -7,7 +7,7 @@ module API
 
       expose :name, documentation: { type: 'String', example: 'master' }
 
-      expose :commit, using: Entities::Commit do |repo_branch, options|
+      expose :commit, using: ::API::Entities::Commit, documentation: { type: '::API::Entities::Commit' } do |repo_branch, options|
         options[:project].repository.commit(repo_branch.dereferenced_target)
       end
 

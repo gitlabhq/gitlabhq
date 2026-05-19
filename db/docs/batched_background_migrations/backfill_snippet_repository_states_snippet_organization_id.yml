@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillSnippetRepositoryStatesSnippetOrganizationId
-description: Backfills sharding key `snippet_repository_states.snippet_organization_id` from `snippet_repositories`.
+description: Backfills sharding key `snippet_repository_states.snippet_organization_id`
+  from `snippet_repositories`.
 feature_category: geo_replication
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224563
 milestone: '18.10'
 queued_migration_version: 20260223183051
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20260421234734'

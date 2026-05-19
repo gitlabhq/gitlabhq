@@ -73,6 +73,11 @@ module QA
 
           # Check if import page has a successfully imported project
           #
+          # Periodically refreshes the page to recover from stalled JS polling.
+          # The Vue import status polling can stop due to page visibility API in headless CI
+          # or a single network error permanently killing the poll chain.
+          # Refreshing outside the within_element scope avoids stale element references.
+          #
           # @param [String] source_project_name
           # @param [Integer] wait
           # @return [Boolean]
@@ -81,20 +86,24 @@ module QA
             wait: QA::Support::WaitForRequests::DEFAULT_MAX_WAIT_TIME,
             allow_partial_import: false
           )
-            within_element('project-import-row', source_project: gh_project_name) do
-              wait_until(
-                max_duration: wait,
-                sleep_interval: 5,
-                reload: false
-              ) do
+            Support::Waiter.wait_until(
+              max_duration: wait,
+              sleep_interval: 5,
+              raise_on_failure: false
+            ) do
+              completed = within_element('project-import-row', source_project: gh_project_name) do
                 status_selector = 'import-status-indicator'
 
-                next has_element?(status_selector, text: "Complete", wait: 1) unless allow_partial_import
-
-                ["Partially completed", "Complete"].any? do |status|
-                  has_element?(status_selector, text: status, wait: 1)
+                if allow_partial_import
+                  ["Partially completed", "Complete"].any? do |status|
+                    has_element?(status_selector, text: status, wait: 1)
+                  end
+                else
+                  has_element?(status_selector, text: "Complete", wait: 1)
                 end
               end
+
+              completed || (refresh && false)
             end
           end
           alias_method :wait_for_success, :has_imported_project?

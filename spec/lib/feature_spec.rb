@@ -92,6 +92,33 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
     end
   end
 
+  describe '.current_endpoint' do
+    it 'returns nil when no caller_id is present' do
+      expect(described_class.current_endpoint).to be_nil
+    end
+
+    context 'when caller_id is present', :request_store do
+      where(:caller_id_type, :caller_id_value) do
+        [
+          ['controller actions', 'ProjectsController#show'],
+          ['API endpoints', 'GET /api/v4/projects/:id'],
+          ['worker jobs', 'BackgroundMigrationWorker']
+        ]
+      end
+
+      with_them do
+        it 'returns an Endpoint with the correct flipper_id' do
+          Gitlab::ApplicationContext.push(caller_id: caller_id_value)
+
+          endpoint = described_class.current_endpoint
+
+          expect(endpoint).to be_a(Feature::Endpoint)
+          expect(endpoint.flipper_id).to eq("Endpoint:#{caller_id_value}")
+        end
+      end
+    end
+  end
+
   describe '.get' do
     let(:feature) { double(:feature) }
     let(:key) { 'my_feature' }
@@ -511,6 +538,36 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
 
       it 'returns false when no actor is informed' do
         expect(described_class.enabled?(:enabled_feature_flag)).to be_falsey
+      end
+    end
+
+    context 'with endpoint actors' do
+      let(:endpoint) { Feature::Endpoint.new('ProjectsController#show') }
+      let(:another_endpoint) { Feature::Endpoint.new('GET /api/v4/projects/:id') }
+
+      before do
+        stub_feature_flag_definition(:endpoint_feature)
+        described_class.enable(:endpoint_feature, endpoint)
+      end
+
+      it 'returns true when endpoint is enabled' do
+        expect(described_class.enabled?(:endpoint_feature, endpoint)).to be_truthy
+      end
+
+      it 'returns false when a different endpoint is enabled' do
+        expect(described_class.enabled?(:endpoint_feature, another_endpoint)).to be_falsey
+      end
+
+      it 'returns false when no actor is provided' do
+        expect(described_class.enabled?(:endpoint_feature)).to be_falsey
+      end
+
+      it 'works with opt_out' do
+        described_class.enable(:endpoint_feature)
+        described_class.opt_out(:endpoint_feature, endpoint)
+
+        expect(described_class.enabled?(:endpoint_feature, endpoint)).to be_falsey
+        expect(described_class.enabled?(:endpoint_feature, another_endpoint)).to be_truthy
       end
     end
 
@@ -1461,6 +1518,22 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
               '999999 is not found!'
             )
           end
+        end
+      end
+
+      context 'when endpoint target is provided' do
+        subject do
+          described_class.new(endpoint: 'GET /api/v4/projects/:id,ProjectsController#show')
+        end
+
+        it 'returns endpoint actors for each caller_id' do
+          targets = subject.targets
+
+          expect(targets).to all(be_a(Feature::Endpoint))
+          expect(targets.map(&:flipper_id)).to eq([
+            'Endpoint:GET /api/v4/projects/:id',
+            'Endpoint:ProjectsController#show'
+          ])
         end
       end
 

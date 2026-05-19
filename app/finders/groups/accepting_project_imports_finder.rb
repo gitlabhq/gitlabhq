@@ -10,7 +10,7 @@ module Groups
       ::Group.from_union(
         [
           current_user.manageable_groups,
-          managable_groups_originating_from_group_shares
+          manageable_groups_originating_from_group_shares
         ]
       )
     end
@@ -19,7 +19,7 @@ module Groups
 
     attr_reader :current_user
 
-    def managable_groups_originating_from_group_shares
+    def manageable_groups_originating_from_group_shares
       GroupGroupLink
         .with_owner_or_maintainer_access
         .groups_accessible_via(

@@ -26,12 +26,22 @@ module Gitlab
         @cases = client.cases(@repo.id.to_i)
         @categories = client.categories
 
+        preallocate_iids!
         import_cases
 
         true
       end
 
       private
+
+      def preallocate_iids!
+        return if @cases.blank?
+
+        max_iid = @cases.filter_map { |bug| bug['ixBug']&.to_i }.max
+        return unless Gitlab::Import::IidPreallocator.valid_iid_value?(max_iid)
+
+        Gitlab::Import::IidPreallocator.new(project, { issues: max_iid }).execute
+      end
 
       def fb_session
         @import_data_credentials ||= project.import_data.credentials[:fb_session] if project.import_data && project.import_data.credentials

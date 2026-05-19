@@ -276,7 +276,6 @@ export const truncateHtml = (html, originalText, highlights) => {
     if (!hasStartedTruncating && currentPos + nodeLength <= startPos) {
       node.textContent = '';
       currentPos += nodeLength;
-      // eslint-disable-next-line no-continue
       continue;
     }
 
@@ -302,7 +301,6 @@ export const truncateHtml = (html, originalText, highlights) => {
       }
 
       currentPos += nodeLength;
-      // eslint-disable-next-line no-continue
       continue;
     }
 

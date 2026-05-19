@@ -1,8 +1,8 @@
 # @feature_category: portfolio_management
-query hasWorkItems($fullPath: ID!, $types: [IssueType!]) {
+query hasWorkItems($fullPath: ID!, $types: [IssueType!], $workItemTypeIds: [WorkItemsTypeID!]) {
   namespace(fullPath: $fullPath) {
     id
-    workItems(types: $types, first: 1) {
+    workItems(types: $types, workItemTypeIds: $workItemTypeIds, first: 1) {
       nodes {
         id
       }

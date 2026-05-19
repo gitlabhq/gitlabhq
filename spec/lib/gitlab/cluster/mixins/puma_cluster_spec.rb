@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Cluster::Mixins::PumaCluster do
 
   def with_puma_config(workers:)
     Dir.mktmpdir do |dir|
-      File.write "#{dir}/puma.rb", <<-EOF
+      File.write "#{dir}/puma.rb", <<-RUBY
         require './lib/gitlab/cluster/lifecycle_events'
         require './lib/gitlab/cluster/mixins/puma_cluster'
 
@@ -87,7 +87,7 @@ RSpec.describe Gitlab::Cluster::Mixins::PumaCluster do
 
         # redirect stderr to stdout
         $stderr.reopen($stdout)
-      EOF
+      RUBY
 
       yield("#{dir}/puma.rb")
     end

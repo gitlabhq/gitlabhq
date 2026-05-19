@@ -27,7 +27,7 @@ export default {
     config: {
       type: Object,
       required: true,
-      validator: (config) => config.fullPath,
+      validator: (config) => config.fullPath || config.initialWorkItemTypes,
     },
     value: {
       type: Object,

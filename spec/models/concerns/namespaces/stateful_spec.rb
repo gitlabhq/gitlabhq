@@ -15,40 +15,31 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
     it { is_expected.to define_enum_for(:state).with_values(**states).without_instance_methods }
   end
 
-  describe 'NULL and zero handling during migration' do
+  describe 'zero handling' do
     describe 'state reading' do
-      where(:db_value) do
-        [nil, 0]
-      end
+      it 'treats 0 state as ancestor_inherited' do
+        namespace.update_column(:state, 0)
+        namespace.reload
 
-      with_them do
-        it "treats #{params[:db_value].inspect} state as ancestor_inherited" do
-          namespace.update_column(:state, db_value)
-          namespace.reload
-
-          expect(namespace.state).to eq('ancestor_inherited')
-          expect(namespace.state_name).to eq(:ancestor_inherited)
-        end
+        expect(namespace.state).to eq('ancestor_inherited')
+        expect(namespace.state_name).to eq(:ancestor_inherited)
       end
     end
 
     describe 'transitions from ancestor_inherited' do
-      where(:db_value, :event, :to_state) do
-        nil | :archive           | :archived
-        nil | :schedule_deletion | :deletion_scheduled
-        nil | :start_deletion    | :deletion_in_progress
-        0   | :archive           | :archived
-        0   | :schedule_deletion | :deletion_scheduled
-        0   | :start_deletion    | :deletion_in_progress
+      where(:event, :to_state) do
+        :archive           | :archived
+        :schedule_deletion | :deletion_scheduled
+        :start_deletion    | :deletion_in_progress
       end
 
       with_them do
         before do
-          namespace.update_column(:state, db_value)
+          namespace.update_column(:state, 0)
           namespace.reload
         end
 
-        it "transitions from #{params[:db_value].inspect} to #{params[:to_state]} on #{params[:event]}" do
+        it "transitions from 0 to #{params[:to_state]} on #{params[:event]}" do
           expect { namespace.public_send(event, transition_user: user) }
             .to change { namespace.state_name }
                   .from(:ancestor_inherited)
@@ -57,7 +48,7 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
       end
     end
 
-    describe 'transitions back to ancestor_inherited write 0 instead of NULL' do
+    describe 'transitions back to ancestor_inherited write 0' do
       it 'writes 0 to the database when transitioning to ancestor_inherited' do
         namespace.update!(state: :archived)
 
@@ -208,6 +199,80 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
             'last_error' => nil
           )
           expect(metadata['last_updated_at']).to be_present
+        end
+      end
+    end
+
+    describe 'cache invalidation on archive transitions' do
+      context 'when namespace is a group' do
+        let_it_be_with_reload(:group) { create(:group) }
+
+        it 'expires namespace descendants cache when archiving' do
+          expect(Namespaces::Descendants).to receive(:expire_recursive_for).with(group)
+
+          group.archive(transition_user: user)
+        end
+
+        it 'expires namespace descendants cache when unarchiving' do
+          group.update!(state: :archived)
+
+          expect(Namespaces::Descendants).to receive(:expire_recursive_for).with(group)
+
+          group.unarchive(transition_user: user)
+        end
+      end
+
+      context 'when namespace is a project namespace' do
+        let_it_be_with_reload(:project) { create(:project) }
+        let_it_be(:project_namespace) { project.project_namespace }
+
+        it 'expires namespace descendants cache for the parent when archiving' do
+          expect(Namespaces::Descendants).to receive(:expire_for).with([project_namespace.parent_id])
+
+          project_namespace.archive(transition_user: user)
+        end
+
+        it 'expires namespace descendants cache for the parent when unarchiving' do
+          project_namespace.update!(state: :archived)
+
+          expect(Namespaces::Descendants).to receive(:expire_for).with([project_namespace.parent_id])
+
+          project_namespace.unarchive(transition_user: user)
+        end
+      end
+
+      context 'when namespace is a user namespace' do
+        it 'does not expire namespace descendants cache' do
+          user_namespace = create(:user_namespace)
+          user_namespace.update!(state: :archived)
+
+          expect(Namespaces::Descendants).not_to receive(:expire_for)
+          expect(Namespaces::Descendants).not_to receive(:expire_recursive_for)
+
+          user_namespace.unarchive(transition_user: user)
+        end
+      end
+
+      context 'when transitioning from archived via non-archive events' do
+        let_it_be_with_reload(:group) { create(:group) }
+
+        it 'expires cache when scheduling deletion from archived state' do
+          group.update!(state: :archived)
+
+          expect(Namespaces::Descendants).to receive(:expire_recursive_for).with(group)
+
+          group.schedule_deletion(transition_user: user)
+        end
+
+        it 'expires cache when cancel_deletion restores to archived' do
+          group.update!(state: :deletion_scheduled)
+          group.namespace_details.update!(
+            state_metadata: { preserved_states: { 'schedule_deletion' => 'archived' } }
+          )
+
+          expect(Namespaces::Descendants).to receive(:expire_recursive_for).with(group)
+
+          group.cancel_deletion(transition_user: user)
         end
       end
     end

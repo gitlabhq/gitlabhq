@@ -2,6 +2,7 @@
 import { GlIcon, GlTooltipDirective, GlButton, GlAttributeList } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import DynamicPanel from '~/vue_shared/components/dynamic_panel.vue';
 import { s__, __, sprintf } from '~/locale';
 import { timeFormattedAsDate, timeFormattedAsDateFull } from '../utils';
 import PersonalAccessTokenStatusBadge from './personal_access_token_status_badge.vue';
@@ -14,6 +15,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    DynamicPanel,
     MountingPortal,
     CrudComponent,
     GlIcon,
@@ -22,6 +24,9 @@ export default {
     PersonalAccessTokenStatusBadge,
     PersonalAccessTokenGranularScopes,
     PersonalAccessTokenLegacyScopes,
+  },
+  inject: {
+    granularTokensEnforced: { default: false },
   },
   props: {
     token: {
@@ -37,6 +42,9 @@ export default {
     },
     isTokenGranular() {
       return this.token?.granular;
+    },
+    canRotate() {
+      return this.isTokenActive && (!this.granularTokensEnforced || this.isTokenGranular);
     },
     expiryDate() {
       return timeFormattedAsDate(this.token.expiresAt);
@@ -112,98 +120,97 @@ export default {
 
 <template>
   <mounting-portal v-if="Boolean(token)" mount-to="#contextual-panel-portal" append>
-    <div class="panel-content gl-h-full gl-pt-4 gl-leading-reset">
-      <div class="gl-border-b gl-px-5 gl-pb-4">
-        <div class="gl-flex gl-grow gl-items-center gl-justify-between">
-          <span class="gl-text-sm gl-font-bold">{{ $options.i18n.panelHeader }}</span>
+    <dynamic-panel :header="$options.i18n.panelHeader" @close="$emit('close')">
+      <template #actions>
+        <template v-if="isTokenActive">
           <gl-button
+            variant="danger"
             category="tertiary"
-            icon="close"
             size="small"
-            :title="$options.i18n.closePanel"
-            @click="$emit('close')"
-          />
-        </div>
-      </div>
-      <div class="js-dynamic-panel-inner panel-content-inner !gl-px-5">
-        <section>
-          <div>
-            <div class="gl-flex gl-items-center">
-              <div>
-                <h2 class="gl-heading-1 !gl-mt-5 gl-mb-2">
-                  {{ token.name }}
-                </h2>
-                <div class="gl-flex gl-items-center gl-gap-2 gl-text-subtle">
-                  <personal-access-token-status-badge :token="token" />
-                  <span v-gl-tooltip="createdTimestamp" data-testid="token-created-on">
-                    {{ createdOnText }}
-                  </span>
-                </div>
-              </div>
-              <div class="gl-ml-auto">
-                <gl-button
-                  v-if="isTokenGranular"
-                  data-testid="duplicate-token"
-                  @click="$emit('duplicate', token)"
-                >
-                  {{ $options.i18n.duplicate }}
-                </gl-button>
+            data-testid="revoke-token"
+            @click="handleRevoke"
+          >
+            {{ $options.i18n.revoke }}
+          </gl-button>
 
-                <template v-if="isTokenActive">
-                  <gl-button data-testid="rotate-token" @click="handleRotate">
-                    {{ $options.i18n.rotate }}
-                  </gl-button>
-                  <gl-button
-                    variant="danger"
-                    category="secondary"
-                    data-testid="revoke-token"
-                    @click="handleRevoke"
-                  >
-                    {{ $options.i18n.revoke }}
-                  </gl-button>
-                </template>
+          <gl-button
+            v-if="canRotate"
+            v-gl-tooltip.bottom="$options.i18n.rotate"
+            category="tertiary"
+            size="small"
+            icon="retry"
+            :aria-label="$options.i18n.rotate"
+            data-testid="rotate-token"
+            @click="handleRotate"
+          />
+        </template>
+
+        <gl-button
+          v-if="isTokenGranular"
+          v-gl-tooltip.bottom="$options.i18n.duplicate"
+          category="tertiary"
+          size="small"
+          icon="copy-to-clipboard"
+          data-testid="duplicate-token"
+          :aria-label="$options.i18n.duplicate"
+          @click="$emit('duplicate', token)"
+        />
+      </template>
+
+      <section>
+        <div>
+          <div class="gl-flex gl-items-center">
+            <div>
+              <h2 class="gl-heading-1 !gl-mt-5 gl-mb-2">
+                {{ token.name }}
+              </h2>
+              <div class="gl-flex gl-items-center gl-gap-2 gl-text-subtle">
+                <personal-access-token-status-badge :token="token" />
+                <span v-gl-tooltip="createdTimestamp" data-testid="token-created-on">
+                  {{ createdOnText }}
+                </span>
               </div>
             </div>
           </div>
+        </div>
 
-          <gl-attribute-list :items="attributesList" class="gl-mt-4" description-class="gl-ml-6">
-            <template #description="{ item }">
-              <template v-if="item.type === 'expiresAt'">
-                <span v-gl-tooltip="expiryTimestamp" data-testid="token-expiry">
-                  {{ expiryDate }}
-                </span>
-              </template>
-
-              <template v-else-if="item.type === 'lastUsedAt'">
-                <span v-gl-tooltip="lastUsedTimestamp" data-testid="token-last-used">
-                  {{ lastUsedDate }}
-                </span>
-              </template>
-
-              <template v-else-if="item.type === 'ipUsage'">
-                <template v-if="token.lastUsedIps.length">
-                  <div v-for="(ip, index) in token.lastUsedIps" :key="index" class="gl-mb-2">
-                    {{ ip }}
-                  </div>
-                </template>
-                <template v-else>
-                  <span class="gl-text-subtle">{{ $options.i18n.noIpUsage }}</span>
-                </template>
-              </template>
-            </template>
-          </gl-attribute-list>
-
-          <crud-component class="gl-mt-5">
-            <template #title>
-              <gl-icon name="token-permissions" />
-              <span>{{ $options.i18n.scopes }}</span>
+        <gl-attribute-list :items="attributesList" class="gl-mt-4" description-class="gl-ml-6">
+          <template #description="{ item }">
+            <template v-if="item.type === 'expiresAt'">
+              <span v-gl-tooltip="expiryTimestamp" data-testid="token-expiry">
+                {{ expiryDate }}
+              </span>
             </template>
 
-            <personal-access-token-granular-scopes v-if="isTokenGranular" :scopes="token.scopes" />
-            <personal-access-token-legacy-scopes v-else :scopes="token.scopes" />
-          </crud-component>
-        </section>
-      </div>
-    </div>
+            <template v-else-if="item.type === 'lastUsedAt'">
+              <span v-gl-tooltip="lastUsedTimestamp" data-testid="token-last-used">
+                {{ lastUsedDate }}
+              </span>
+            </template>
+
+            <template v-else-if="item.type === 'ipUsage'">
+              <template v-if="token.lastUsedIps.length">
+                <div v-for="(ip, index) in token.lastUsedIps" :key="index" class="gl-mb-2">
+                  {{ ip }}
+                </div>
+              </template>
+              <template v-else>
+                <span class="gl-text-subtle">{{ $options.i18n.noIpUsage }}</span>
+              </template>
+            </template>
+          </template>
+        </gl-attribute-list>
+
+        <crud-component class="gl-mt-5">
+          <template #title>
+            <gl-icon name="token-permissions" />
+            <span>{{ $options.i18n.scopes }}</span>
+          </template>
+
+          <personal-access-token-granular-scopes v-if="isTokenGranular" :scopes="token.scopes" />
+          <personal-access-token-legacy-scopes v-else :scopes="token.scopes" />
+        </crud-component>
+      </section>
+    </dynamic-panel>
   </mounting-portal>
 </template>

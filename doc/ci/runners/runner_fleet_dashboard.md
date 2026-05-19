@@ -69,7 +69,7 @@ Prerequisites:
 To view the runner fleet dashboard:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. Select **Fleet dashboard**.
 
 ## Export compute minutes used by instance runners
@@ -85,7 +85,7 @@ CSV file shows the runner type and job status for each project. The CSV is sent 
 To export compute minutes used by instance runners:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Runners**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
 1. Select **Fleet dashboard**.
 1. Select **Export CSV**.
 

@@ -33,20 +33,23 @@ details are available for GitLab Duo Agent Platform and any other AI tool that s
 
 Specify `AGENTS.md` files for GitLab Duo to use with:
 
-- GitLab Duo Chat in your local environment.
-- Foundational and custom flows.
+- GitLab Duo Chat in the GitLab UI and your local environment.
+- Foundational and custom flows, excluding Code Review Flow.
 
 ## How GitLab Duo uses `AGENTS.md` files
 
 You can create `AGENTS.md` files at multiple levels, depending on how you use GitLab Duo:
 
-| Level                                                           | Agentic Chat in the GitLab UI | Editor extensions | GitLab Duo CLI |
+| Level                                                           | GitLab UI | Editor extensions | GitLab Duo CLI |
 |-----------------------------------------------------------------|--------------------------|------------------|--------------|
-| User-level: Apply to all of your projects and workspaces        | {{< no >}}  |  {{< yes >}}    | {{< yes >}} |
-| Workspace-level: Apply only to a specific project or workspace  | {{< yes >}} | {{< yes >}}         | {{< yes >}} |
+| User-level: Apply to all of your projects        | {{< no >}}  |  {{< yes >}}    | {{< yes >}} |
+| Project-level: Apply only to a specific project  | {{< yes >}} | {{< yes >}}         | {{< yes >}} |
 | Subdirectory-level: Apply only to a specific project within a monorepo or within a project with distinct components | {{< no >}} | {{< yes >}} | {{< yes >}} |
 
-GitLab Duo Chat combines available instructions from user-level and workspace-level `AGENTS.md`
+If you use a multi-root workspace in your IDE, you can create project-level `AGENTS.md` files
+for each project in the workspace.
+
+GitLab Duo combines available instructions from user-level and project-level `AGENTS.md`
 files for all conversations. If a task requires working with files in a directory that contains an
 additional `AGENTS.md` file, Chat applies those instructions as well.
 
@@ -83,7 +86,7 @@ instructions. Previously existing conversations do not.
 
 ### Create user-level `AGENTS.md` files
 
-User-level `AGENTS.md` files apply to all of your projects and workspaces.
+User-level `AGENTS.md` files apply to all of your projects.
 
 1. Create an `AGENTS.md` file in your home directory:
    - On Linux or macOS, create the file at `~/.gitlab/duo/AGENTS.md`.
@@ -160,11 +163,11 @@ If you have set a specific environment variable, then you create the
 - If you have set the `XDG_CONFIG_HOME` environment variable, create the file at
   `$XDG_CONFIG_HOME/gitlab/duo/AGENTS.md`.
 
-### Create workspace-level `AGENTS.md` files
+### Create project-level `AGENTS.md` files
 
-Workspace-level `AGENTS.md` files apply only to a specific project or workspace.
+Project-level `AGENTS.md` files apply only to a specific project.
 
-1. In the root of your project workspace, create an `AGENTS.md` file.
+1. In the root of your project, create an `AGENTS.md` file.
 1. Add instructions to the file. For example:
 
    ```markdown

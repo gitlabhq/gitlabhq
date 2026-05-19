@@ -215,7 +215,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
   end
 
   describe 'pipeline' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 
     before do
       allow_any_instance_of(MergeRequestPresenter).to receive(:can?).and_call_original
@@ -339,7 +339,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
       end
 
       context 'with pipeline' do
-        let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
+        let_it_be(:pipeline, freeze: false) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 
         it 'returns merged favicon overlay' do
           expect(subject[:favicon_overlay_path]).to match_asset_path('/assets/mr_favicons/favicon_status_merged.png')
@@ -353,7 +353,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
       end
 
       context 'with pipeline' do
-        let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
+        let_it_be(:pipeline, freeze: false) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 
         it 'returns pipeline favicon overlay' do
           expect(subject[:favicon_overlay_path]).to match_asset_path('/assets/ci_favicons/favicon_status_pending.png')

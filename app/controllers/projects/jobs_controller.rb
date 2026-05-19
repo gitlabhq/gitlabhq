@@ -29,6 +29,10 @@ class Projects::JobsController < Projects::ApplicationController
   feature_category :continuous_integration
   urgency :low
 
+  before_action only: [:index, :show] do
+    push_frontend_feature_flag(:vue3_migrate_jobs, current_user)
+  end
+
   def index; end
 
   def show

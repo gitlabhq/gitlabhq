@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Control when jobs run by using rules, conditions, and variable expressions.
 title: Specify when jobs run with `rules`
 ---
 
@@ -119,6 +120,9 @@ The rule for this job compares all files and paths in the current branch
 recursively (`**/*`) against the `main` branch. The rule matches and the
 job runs only when there are changes to the files in the branch.
 
+For `parallel:matrix` jobs, you can [use matrix variables in `rules:changes` paths](job_control.md#use-matrix-variables-in-rules)
+to run each job instance only when files relevant to that matrix value have changed.
+
 ## Run a job when a file is not present
 
 You can use `rules: exists` to configure a job to run only when a specific file does not exist.
@@ -137,6 +141,9 @@ job:
 
 In this example, if the `example_dir/example.yml` file exists in the branch, the job does not run.
 If the file does not exist, the job can run in merge request pipelines.
+
+For `parallel:matrix` jobs, you can [use matrix variables in `rules:exists` paths](job_control.md#use-matrix-variables-in-rules)
+to include a job instance only when a specific file exists.
 
 ## Common `if` clauses with predefined variables
 
@@ -228,7 +235,7 @@ Use the `CI_PIPELINE_SOURCE` variable to control when to add jobs for these pipe
 | `merge_request_event`           | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/merged_results_pipelines.md), and [merge trains](../pipelines/merge_trains.md). |
 | `ondemand_dast_scan`            | For [DAST on-demand scan](../../user/application_security/dast/on-demand_scan.md) pipelines. |
 | `ondemand_dast_validation`      | For [DAST on-demand validation](../../user/application_security/dast/profiles.md#site-profile-validation) pipelines |
-| `parent_pipeline`               | For pipelines triggered by a [parent/child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines). Use this pipeline source in the child pipeline configuration so that it can be triggered by the parent pipeline. |
+| `parent_pipeline`               | For child pipelines triggered by a [parent pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines). Use this pipeline source in the child pipeline configuration so that it can be triggered by the parent pipeline. |
 | `pipeline`                      | For [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines). |
 | `push`                          | For pipelines triggered by a Git push event, including for branches and tags. |
 | `schedule`                      | For [scheduled pipelines](../pipelines/schedules.md). |
@@ -312,7 +319,7 @@ You can also avoid duplicate pipelines by changing the job rules to avoid either
 pipelines or merge request pipelines. However, if you use a `- when: always` rule without
 `workflow: rules`, GitLab displays a [pipeline warning](../debugging.md#pipeline-warnings).
 
-For example, the following does not trigger double pipelines, but is not recommended
+For example, the following does not cause double pipelines, but is not recommended
 without `workflow: rules`:
 
 ```yaml
@@ -413,7 +420,10 @@ the expression. For example:
 
 - `if: $VARIABLE`
 
-You can also [use CI/CD inputs in variable expressions](../inputs/examples.md#use-cicd-inputs-in-variable-expressions).
+You can also:
+
+- [Use CI/CD inputs in variable expressions](../inputs/examples.md#use-cicd-inputs-in-variable-expressions).
+- [Use `parallel:matrix` variables in `rules:if` expressions](job_control.md#use-matrix-variables-in-rules).
 
 ### Compare a variable to a regular expression
 

@@ -65,7 +65,7 @@ module Gitlab
       cte = base_and_ancestors_cte(upto_id, hierarchy_order)
 
       recursive_query = if hierarchy_order
-                          # othewise depth won't be available for outer query
+                          # otherwise depth won't be available for outer query
                           cte.apply_to(unscoped_model.all.select(objects_table[Arel.star])).order(depth: hierarchy_order)
                         else
                           cte.apply_to(unscoped_model.all)

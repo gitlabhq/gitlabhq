@@ -1,3 +1,4 @@
-import { initHookTestDropdowns } from '~/webhooks';
+import initWebhookForm, { initHookTestDropdowns } from '~/webhooks';
 
+initWebhookForm();
 initHookTestDropdowns();

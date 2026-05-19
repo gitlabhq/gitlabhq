@@ -34,17 +34,17 @@ end
 
 RSpec.describe Issue, "Mentionable", feature_category: :team_planning do
   describe '#mentioned_users' do
-    let!(:user) { create(:user, username: 'stranger') }
-    let!(:user2) { create(:user, username: 'john') }
-    let!(:user3) { create(:user, username: 'jim') }
-    let(:issue) { create(:issue, description: "#{user.to_reference} mentioned") }
+    let_it_be(:user) { create(:user, username: 'stranger') }
+    let_it_be(:user2) { create(:user, username: 'john') }
+    let_it_be(:user3) { create(:user, username: 'jim') }
+    let_it_be(:issue) { create(:issue, description: "#{user.to_reference} mentioned") }
 
     subject { issue.mentioned_users }
 
     it { expect(subject).to contain_exactly(user) }
 
     context 'when a note on personal snippet' do
-      let!(:note) { create(:note_on_personal_snippet, note: "#{user.to_reference} mentioned #{user3.to_reference}") }
+      let(:note) { create(:note_on_personal_snippet, note: "#{user.to_reference} mentioned #{user3.to_reference}") }
 
       subject { note.mentioned_users }
 
@@ -96,7 +96,7 @@ RSpec.describe Issue, "Mentionable", feature_category: :team_planning do
     let(:commit)  { project.commit }
     let(:commit2) { project.commit }
 
-    let!(:issue) do
+    let(:issue) do
       create(:issue, project: project, description: "See #{commit.to_reference}")
     end
 

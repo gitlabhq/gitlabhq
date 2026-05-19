@@ -4,18 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
-
-  before_all do
-    group.add_owner(user)
-  end
 
   subject(:service_response) { described_class.new(group, user).execute }
 
   context 'when the group is already unarchived' do
-    before do
-      group.namespace_settings.update!(archived: false)
-    end
+    let_it_be(:group) { create(:group, owners: [user]) }
 
     it 'returns an error' do
       expect(service_response).to be_error
@@ -24,13 +17,12 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
   end
 
   context 'when ancestor group is archived' do
-    let_it_be(:parent) { create(:group) }
+    let_it_be(:parent) { create(:group, :archived) }
     let_it_be(:group) { create(:group, parent: parent) }
     let_it_be(:user) { create(:user) }
 
     before_all do
       group.add_owner(user)
-      parent.update!(archived: true)
     end
 
     it 'returns an error response' do
@@ -40,14 +32,29 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
   end
 
   context 'when the group is archived' do
-    let_it_be_with_reload(:subgroup) { create(:group, :archived, parent: group) }
-    let_it_be_with_reload(:sub_subgroup) { create(:group, :archived, parent: subgroup) }
+    let_it_be_with_reload(:group) { create(:group, :archived, owners: [user]) }
 
-    let_it_be_with_reload(:archived_project) { create(:project, :archived, group: group) }
-    let_it_be_with_reload(:archived_subgroup_project) { create(:project, :archived, group: subgroup) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+    let_it_be_with_reload(:sub_subgroup) { create(:group, parent: subgroup) }
+
+    let_it_be_with_reload(:project) { create(:project, group: group) }
+    let_it_be_with_reload(:subgroup_project) { create(:project, group: subgroup) }
 
     before do
-      group.namespace_settings.update!(archived: true)
+      # These represents legacy namespaces that were archived independently before we added
+      # the restrictions that only the top-level entity will store the `archived` state with
+      # its descendant having `ancestor_inherited` status.
+      subgroup.namespace_settings.update!(archived: true)
+      subgroup.update!(state: :archived)
+
+      sub_subgroup.namespace_settings.update!(archived: true)
+      sub_subgroup.update!(state: :archived)
+
+      project.update!(archived: true)
+      project.project_namespace.update!(state: :archived)
+
+      subgroup_project.update!(archived: true)
+      subgroup_project.project_namespace.update!(state: :archived)
     end
 
     shared_examples 'rolls back all changes on failure' do
@@ -70,7 +77,7 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
         expect { service_response }
           .to not_change { group.namespace_settings.reload.archived }
             .and not_change { subgroup.namespace_settings.reload.archived }
-              .and not_change { archived_project.reload.archived }
+              .and not_change { project.reload.archived }
       end
     end
 
@@ -92,8 +99,8 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
       it 'unarchives all projects', :aggregate_failures do
         service_response
 
-        expect(archived_project.reload.archived).to be(false)
-        expect(archived_subgroup_project.reload.archived).to be(false)
+        expect(project.reload.archived).to be(false)
+        expect(subgroup_project.reload.archived).to be(false)
       end
 
       it 'returns a success response with the group' do
@@ -123,15 +130,6 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
       end
 
       it_behaves_like 'rolls back all changes on failure'
-    end
-  end
-
-  describe "#error_response" do
-    subject(:error_response_result) { described_class.new(group, user).send(:error_response, "Test error message") }
-
-    it "returns a service response error" do
-      expect(error_response_result).to be_error
-      expect(error_response_result.message).to eq("Test error message")
     end
   end
 end

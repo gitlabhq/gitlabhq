@@ -314,5 +314,39 @@ describe('WorkItemDescriptionTemplateListbox', () => {
         );
       });
     });
+
+    describe('when the templates list contains workplan ".plan" templates', () => {
+      it('hides templates whose name ends with ".plan"', async () => {
+        const templatesWithWorkplan = {
+          data: {
+            namespace: {
+              __typename: 'Namespace',
+              id: 'gid://gitlab/Project/1',
+              workItemDescriptionTemplates: {
+                __typename: 'WorkItemDescriptionTemplateConnection',
+                nodes: [
+                  ...mockTemplatesList,
+                  {
+                    name: 'feature.plan',
+                    __typename: 'WorkItemDescriptionTemplate',
+                    category: 'GROUP A',
+                    projectId: 5,
+                  },
+                ],
+              },
+            },
+          },
+        };
+
+        createComponent({ templatesResult: templatesWithWorkplan });
+        await waitForPromises();
+        findListbox().vm.$emit('shown');
+        await nextTick();
+
+        const text = findListbox().text();
+        expect(text).toContain('Bug');
+        expect(text).not.toContain('feature.plan');
+      });
+    });
   });
 });

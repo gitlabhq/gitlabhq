@@ -31,7 +31,7 @@ Prerequisites:
 To configure default settings for an integration:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select an integration.
 1. Complete the fields.
 1. Select **Save changes**.
@@ -72,7 +72,7 @@ Prerequisites:
 To remove default settings for an integration:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select an integration.
 1. Select **Reset** and confirm.
 
@@ -87,7 +87,7 @@ Prerequisites:
 To view projects in your instance that [use custom settings](../../user/project/integrations/_index.md#use-custom-settings-for-a-project-or-group-integration):
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Integrations**.
+1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select an integration.
 1. Select the **Projects using custom settings** tab.
 
@@ -124,7 +124,7 @@ Prerequisites:
 To allow only integrations on the allowlist:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Integration settings** section.
 1. Select **Allow only integrations on this allowlist**.
 1. Select the checkbox for each integration you want to allow on the instance.
@@ -139,7 +139,7 @@ Prerequisites:
 To allow all integrations on a GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Integration settings** section.
 1. Select **Allow all integrations**.
 1. Select **Save changes**.

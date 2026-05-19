@@ -52,6 +52,7 @@ for your client.
 | Personal access token | `Private-Token` | Paste token as-is, or define an environment variable to hold the token |
 | Deploy token          | `Deploy-Token`  | Paste token as-is, or define an environment variable to hold the token |
 | CI Job token          | `Job-Token`     | `${CI_JOB_TOKEN}`                                                      |
+| OAuth token           | `Authorization` | Prefix the token with `Bearer` (for example, `Bearer <oauth_token>`)  |
 
 > [!note]
 > The `<name>` field must be named to match the token you chose.
@@ -86,6 +87,7 @@ Add the following section to your
 | Personal access token | `Private-Token` | Paste token as-is, or define an environment variable to hold the token |
 | Deploy token          | `Deploy-Token`  | Paste token as-is, or define an environment variable to hold the token |
 | CI Job token          | `Job-Token`     | `System.getenv("CI_JOB_TOKEN")`                                        |
+| OAuth token           | `Authorization` | Prefix the token with `Bearer` (for example, `Bearer <oauth_token>`)  |
 
 > [!note]
 > The `<name>` field must be named to match the token you chose.
@@ -908,7 +910,7 @@ To prevent users from publishing duplicate Maven packages, you can use the [Grap
 In the UI:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Packages and registries**.
+1. In the left sidebar, select **Settings** > **Packages and registries**.
 1. In the **Maven** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
 

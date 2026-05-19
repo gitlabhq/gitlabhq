@@ -24,7 +24,7 @@ RSpec.describe 'projects/hooks/index' do
     expect(rendered).not_to have_css('.gl-badge', text: s_('Webhooks|Temporarily disabled'))
   end
 
-  context 'webhook is rate limited' do
+  context 'when webhook is rate limited' do
     before do
       allow(existing_hook).to receive(:rate_limited?).and_return(true)
     end
@@ -36,7 +36,7 @@ RSpec.describe 'projects/hooks/index' do
     end
   end
 
-  context 'webhook is permanently disabled' do
+  context 'when webhook is permanently disabled' do
     before do
       allow(existing_hook).to receive(:permanently_disabled?).and_return(true)
     end
@@ -48,7 +48,7 @@ RSpec.describe 'projects/hooks/index' do
     end
   end
 
-  context 'webhook is temporarily disabled' do
+  context 'when webhook is temporarily disabled' do
     before do
       allow(existing_hook).to receive(:temporarily_disabled?).and_return(true)
     end

@@ -2,6 +2,7 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Deploy a GitLab Self-Managed instance for up to 1,000 users or 20 RPS with a single-node installation and recommended sizing.
 title: 'Reference architecture: Up to 20 RPS or 1,000 users'
 ---
 

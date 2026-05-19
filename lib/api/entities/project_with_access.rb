@@ -3,8 +3,8 @@
 module API
   module Entities
     class ProjectWithAccess < Project
-      expose :permissions do
-        expose :project_access, using: Entities::ProjectAccess do |project, options|
+      expose :permissions, documentation: { type: 'Hash' } do
+        expose :project_access, using: ::API::Entities::ProjectAccess do |project, options|
           if options[:project_members]
             options[:project_members].find { |member| member.source_id == project.id }
           else
@@ -12,7 +12,7 @@ module API
           end
         end
 
-        expose :group_access, using: Entities::GroupAccess do |project, options|
+        expose :group_access, using: ::API::Entities::GroupAccess do |project, options|
           if project.group
             if options[:group_members]
               options[:group_members].find { |member| project.group.traversal_ids.include?(member.source_id) }

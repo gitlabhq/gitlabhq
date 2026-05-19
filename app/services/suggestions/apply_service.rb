@@ -69,3 +69,5 @@ module Suggestions
     end
   end
 end
+
+Suggestions::ApplyService.prepend_mod_with('Suggestions::ApplyService')

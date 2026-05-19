@@ -179,7 +179,6 @@ export default class Shortcuts {
       for (const Dep of Extension.dependencies ?? []) {
         if (extensionsCurrentlyLoading.has(Dep) || Dep === Shortcuts) {
           // We've encountered a circular dependency, so stop recursing.
-          // eslint-disable-next-line no-continue
           continue;
         }
 

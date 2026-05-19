@@ -253,6 +253,7 @@ RSpec.describe '1_settings', feature_category: :settings do
       it { expect(Settings.iam_auth_service.grpc.host).to eq('localhost') }
       it { expect(Settings.iam_auth_service.grpc.port).to eq(8085) }
       it { expect(Settings.iam_auth_service.jwt_audience).to eq('gitlab-rails') }
+      it { expect(Settings.iam_auth_service.jwt_issuer).to eq('http://localhost') }
     end
 
     context 'with custom configuration' do
@@ -262,7 +263,8 @@ RSpec.describe '1_settings', feature_category: :settings do
           secret_file: '/etc/gitlab/iam-auth/.gitlab_iam_auth_secret',
           http: { host: 'iam.example.com', port: 443 },
           grpc: { host: 'iam.example.com', port: 443 },
-          jwt_audience: 'custom-audience'
+          jwt_audience: 'custom-audience',
+          jwt_issuer: 'https://iam.example.com'
         })
         load_settings
       end
@@ -274,6 +276,7 @@ RSpec.describe '1_settings', feature_category: :settings do
       it { expect(Settings.iam_auth_service.grpc.host).to eq('iam.example.com') }
       it { expect(Settings.iam_auth_service.grpc.port).to eq(443) }
       it { expect(Settings.iam_auth_service.jwt_audience).to eq('custom-audience') }
+      it { expect(Settings.iam_auth_service.jwt_issuer).to eq('https://iam.example.com') }
     end
   end
 
@@ -298,6 +301,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         batched_background_migration_worker_ci_database
         batched_background_migration_worker_sec_database
         batched_git_ref_updates_cleanup_scheduler_worker
+        background_operation_environments_auto_delete
         bbo_users_delete_unconfirmed_secondary
         bulk_imports_stale_import_worker
         cells_schedule_claims_verification_worker
@@ -327,7 +331,6 @@ RSpec.describe '1_settings', feature_category: :settings do
         delete_expired_trigger_token_worker
         deploy_tokens_expiring_worker
         drop_timed_out_worker
-        environments_auto_delete_cron_worker
         environments_auto_stop_cron_worker
         expire_build_artifacts_worker
         gitlab_export_prune_project_export_jobs_worker

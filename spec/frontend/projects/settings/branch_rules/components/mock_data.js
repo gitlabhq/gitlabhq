@@ -380,6 +380,32 @@ export const protectableBranchesMockResponse = {
   },
 };
 
+export const branchProtectionsNullProtectionMockResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      __typename: 'Project',
+      group: {
+        id: 'gid://gitlab/Group/1',
+        __typename: 'Group',
+      },
+      branchRules: {
+        __typename: 'BranchRuleConnection',
+        nodes: [
+          {
+            __typename: 'BranchRule',
+            name: 'main',
+            isDefault: true,
+            id: 'gid://gitlab/Projects/BranchRule/1',
+            matchingBranchesCount: 3,
+            branchProtection: null,
+          },
+        ],
+      },
+    },
+  },
+};
+
 // Mocks for drawer component
 
 export const allowedToMergeDrawerProps = {

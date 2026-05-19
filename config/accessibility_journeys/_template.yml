@@ -1,0 +1,27 @@
+# Accessibility Journey Configuration Template
+# Copy this file and rename it to: [STAGE]_[JOURNEY_NAME].yml
+# Example: create_reviewing_code.yml, plan_managing_issues.yml
+
+stage: CHANGE_ME # Stage: create, plan, verify, etc.
+journey_name: CHANGE_ME # Snake_case journey name
+feature_category: CHANGE_ME # Feature category for RSpec
+description: 'CHANGE_ME: Brief description of this golden user journey'
+
+# Optional: Manually specify feature test directories to search for reference files
+# This helps the generator find the most relevant feature tests
+# feature_test_hints:
+#   - projects/files        # Search in spec/features/projects/files/
+#   - projects/tree         # Search in spec/features/projects/tree/
+#   - work_items/issues     # Search in spec/features/work_items/issues/
+
+e2e_test_files:
+  # Example entry - duplicate this for each E2E test
+  - path: qa/qa/specs/features/browser_ui/X_stage/feature/test_spec.rb
+    description: Brief description of what this test validates
+    focus_area: Category Name # Used to group tests in contexts
+    has_ui: true # Set to false if no UI to test
+
+
+  # Add more E2E test entries here...
+  # Tests with the same focus_area will be grouped together
+  # Tests with has_ui: false will be filtered out

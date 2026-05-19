@@ -3,5 +3,7 @@ name: read_geo_site
 description: Grants the ability to read Geo sites
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - read_geo_site

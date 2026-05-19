@@ -3,5 +3,7 @@ name: delete_admin_member_role
 description: Grants the ability to delete admin member roles
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - delete_admin_member_role

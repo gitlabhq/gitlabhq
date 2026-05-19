@@ -4,6 +4,8 @@ action: click_go_to_preferences
 extra_properties:
 identifiers:
 product_group: analytics_instrumentation
+product_categories:
+- application_instrumentation
 milestone:
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73809
 tiers:

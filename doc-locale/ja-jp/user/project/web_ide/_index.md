@@ -313,7 +313,7 @@ Vimキーバインドを有効にするには、[Vim](https://open-vsx.org/exten
 
 ## 関連トピック {#related-topics}
 
-- [GitLab Duo Chat（非エージェント型）をWeb IDEで使用](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-the-web-ide)
+- [Web IDEにおけるGitLab Duo非エージェンティックチャット](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-the-web-ide)
 
 ## トラブルシューティング {#troubleshooting}
 
@@ -356,7 +356,7 @@ The URL you're using to access the Web IDE and the configured OAuth callback URL
 OAuthコールバックURLを更新するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **アプリケーション**を選択します。
+1. 左サイドバーで、**アプリケーション**を選択します。
 1. **GitLab Web IDE**で、**編集**を選択します。
 1. OAuthコールバックURLを入力します。複数のURLを改行で区切って入力できます。
 

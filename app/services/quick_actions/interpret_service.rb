@@ -143,6 +143,10 @@ module QuickActions
       project || group
     end
 
+    def has_labels?
+      find_labels_by_name_no_tilde(nil).any?
+    end
+
     def find_labels(labels_params = nil)
       extracted_references = extract_references(labels_params, :label) | find_labels_by_name_no_tilde(labels_params)
       extracted_references.reject(&:archived)

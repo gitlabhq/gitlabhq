@@ -52,8 +52,6 @@ export default {
       import('ee_component/repository/components/lock_directory_button.vue'),
     HeaderLockIcon: () =>
       import('ee_component/repository/components/header_area/header_lock_icon.vue'),
-    SetupCiPipelineButton: () =>
-      import('ee_component/repository/components/header_area/setup_ci_pipeline_button.vue'),
     FileTreeBrowserToggle,
   },
   directives: {
@@ -219,13 +217,6 @@ export default {
     },
     shortcutsEnabled() {
       return !shouldDisableShortcuts();
-    },
-    showSetupCiPipelineButton() {
-      return (
-        this.isProjectOverview &&
-        this.glAbilities.accessDuoAgenticChat &&
-        this.glFeatures.updateVisualLanguage
-      );
     },
   },
   mounted() {
@@ -407,7 +398,6 @@ export default {
         >
           {{ $options.i18n.findFile }}
         </gl-button>
-        <setup-ci-pipeline-button v-if="showSetupCiPipelineButton" />
         <!-- web ide -->
         <web-ide-link
           :class="[

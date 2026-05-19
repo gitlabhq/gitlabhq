@@ -5,7 +5,7 @@
 
 import fs from 'node:fs';
 import glob from 'glob';
-import mermaid from 'mermaid';
+import mermaid from 'mermaid-v11';
 import DOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 

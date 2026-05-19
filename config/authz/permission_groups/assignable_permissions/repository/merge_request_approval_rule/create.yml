@@ -1,7 +1,9 @@
 ---
 name: create_merge_request_approval_rule
 description: Grants the ability to create merge request approval rules
-permissions:
-  - create_merge_request_approval_rule
 boundaries:
   - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_merge_request_approval_rule

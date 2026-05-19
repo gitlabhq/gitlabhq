@@ -1,6 +1,11 @@
 ---
 name: delete_work_item
 description: Grants the ability to delete work items
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - delete_work_item
   - delete_epic
@@ -18,6 +23,8 @@ permissions:
   - delete_issue_link
   - delete_issue_note
   - delete_issue_note_award_emoji
+  - delete_iteration
+  - delete_iteration_cadence
   - delete_merge_request_award_emoji
   - delete_merge_request_note
   - delete_merge_request_note_award_emoji
@@ -28,6 +35,3 @@ permissions:
   - delete_snippet_note
   - delete_snippet_note_award_emoji
   - delete_wiki_page_meta_note
-boundaries:
-  - group
-  - project

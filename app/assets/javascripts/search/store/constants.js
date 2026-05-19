@@ -1,4 +1,5 @@
 import { s__ } from '~/locale';
+import { WIKI_ICON } from '~/wikis/constants';
 import {
   CONFIDENTAL_FILTER_PARAM,
   INCLUDE_ARCHIVED_FILTER_PARAM,
@@ -50,7 +51,7 @@ export const ICON_MAP = {
   milestones: 'milestone',
   users: 'users',
   projects: 'project',
-  wiki_blobs: 'book',
+  wiki_blobs: WIKI_ICON,
   snippet_titles: 'snippet',
 };
 

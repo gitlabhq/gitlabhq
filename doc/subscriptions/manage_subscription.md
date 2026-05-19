@@ -8,7 +8,8 @@ title: Manage subscription
 
 ## Buy a subscription
 
-You can buy a subscription for GitLab.com or GitLab Self-Managed.
+After you [sign up](https://gitlab.com/users/sign_up) for GitLab,
+you can buy a subscription for GitLab.com or GitLab Self-Managed.
 The subscription determines which features are available for your private projects.
 
 After you subscribe to GitLab, you can manage the details of your subscription.
@@ -30,7 +31,9 @@ You don't need to install anything to use GitLab.com, you only need to [sign up]
 When you sign up, you choose:
 
 - [A subscription](https://about.gitlab.com/pricing/).
+  View the [GitLab.com feature comparison](https://about.gitlab.com/pricing/feature-comparison/) and decide which tier you want.
 - The number of seats you want.
+- A GitLab Credits option.
 
 A GitLab.com subscription applies to a top-level group.
 Members of every subgroup and project in the group:
@@ -46,16 +49,15 @@ In this case, the user sees only the features available to that subscription.
 
 To subscribe to GitLab.com:
 
-1. View the [GitLab.com feature comparison](https://about.gitlab.com/pricing/feature-comparison/)
-   and decide which tier you want.
-1. Create a user account for yourself by using the
-   [sign up page](https://gitlab.com/users/sign_up).
-1. Create a [group](../user/group/_index.md#create-a-group). Your subscription tier applies to the top-level group, its subgroups, and projects.
-1. Create additional users and
-   [add them to the group](../user/group/_index.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
-   the features of your subscription tier, and they consume a seat in your subscription.
-1. In the left sidebar, select **Settings** > **Billing** and choose a tier. You are taken to the Customers Portal.
-1. Fill out the form to complete your purchase.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **Billing**.
+1. Select **Upgrade subscription**.
+1. Select a tier and a GitLab Credits option.
+1. Select **Continue to checkout**. You are redirected to the Customers Portal.
+1. In the **Seats** field, enter the number of seats you want.
+1. Review the subscription details and billing information.
+1. Select the **I accept the Privacy Statement and Terms of Service** checkbox.
+1. Select **Buy subscription**.
 
 ### For GitLab Self-Managed
 
@@ -95,7 +97,7 @@ Prerequisites:
 To see the status of your GitLab.com subscription:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Billing**.
+1. In the left sidebar, select **Settings** > **Billing**.
 
 The following information is displayed:
 
@@ -124,7 +126,7 @@ Prerequisites:
 You can view the status of your subscription:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Subscription**.
+1. In the left sidebar, select **Subscription**.
 
 The **Subscription** page includes the following information:
 
@@ -171,11 +173,17 @@ For more information, see the documentation on:
 
 {{< /details >}}
 
+Prerequisites:
+
+- You must be a billing account manager.
+
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **Upgrade plan** on the relevant subscription card.
-1. Confirm the active form of payment, or add a new form of payment.
+1. Select the plan you want to upgrade to.
+1. Select **Continue to checkout**.
+1. Review the upgrade details and billing information.
 1. Select the **I accept the Privacy Statement and Terms of Service** checkbox.
 1. Select **Upgrade subscription**.
 
@@ -188,6 +196,8 @@ The following is emailed to you:
 On GitLab Self-Managed, the new tier takes effect on the next subscription sync.
 You can also [synchronize your subscription manually](#subscription-data-synchronization)
 to upgrade right away.
+
+On GitLab.com, you can also select a GitLab Credits option when you buy a subscription.
 
 ## Renew subscription
 
@@ -422,7 +432,7 @@ Prerequisites:
 You can also manually synchronize subscription data at any time.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Subscription**.
+1. In the left sidebar, select **Subscription**.
 1. In the **Subscription details** section, select **Sync** ({{< icon name="retry" >}}).
 
 A synchronization job is then queued. When the job finishes, the subscription
@@ -490,7 +500,18 @@ Example of a license sync request:
 
 {{< /details >}}
 
-To change the group linked to a GitLab.com subscription:
+Prerequisites:
+
+- A group namespace.
+
+Only one group namespace can be linked to a subscription.
+
+If your Premium or Ultimate subscription is on a personal namespace, before linking your subscription, you should either:
+
+- [Transfer your project](../user/project/working_with_projects.md#transfer-a-project) to a group.
+- [Convert your personal namespace to a group](../tutorials/convert_personal_namespace_to_group/_index.md) to preserve your existing URL.
+
+To link your subscription to a group or change the group linked to a GitLab.com subscription:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
    [linked](billing_account.md#link-a-gitlabcom-account) GitLab.com account.
@@ -509,8 +530,6 @@ To change the group linked to a GitLab.com subscription:
    - Contact the partner to purchase additional seats now or at the end of your subscription term.
 
 1. Select **Confirm changes**.
-
-Only one namespace can be linked to a subscription.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/8iOsN8ajBUw).
@@ -532,4 +551,5 @@ You cannot transfer:
 - A subscription with compute minutes which is already linked to a namespace.
 - A subscription with a Premium or Ultimate plan to a namespace which already has a Premium or Ultimate plan.
 - A subscription with a GitLab Duo add-on to a namespace which already has a subscriptions with a GitLab Duo add-on.
+- A subscription with a Premium or Ultimate plan to a personal namespace.
 - A subscription purchased using a discount code.

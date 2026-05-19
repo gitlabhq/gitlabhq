@@ -18,6 +18,7 @@ module Ci
         :read_releases,
         :admin_releases,
         :read_repositories,
+        :admin_repositories,
         :read_secure_files,
         :admin_secure_files,
         :read_terraform_state,

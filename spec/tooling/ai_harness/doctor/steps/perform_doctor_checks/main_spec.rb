@@ -10,6 +10,8 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::Main, feature_cate
 
       expect(AiHarness::Doctor::Steps::PerformDoctorChecks::ResolveRepoRoot)
         .to receive(:resolve).ordered { |ctx| ctx }
+      expect(AiHarness::Doctor::Steps::PerformDoctorChecks::LoadConfig)
+        .to receive(:load).ordered { |ctx| ctx }
       expect(AiHarness::Doctor::Steps::PerformDoctorChecks::CheckParity)
         .to receive(:check).ordered { |ctx| ctx }
       expect(AiHarness::Doctor::Steps::PerformDoctorChecks::CheckAiReferences)
@@ -32,6 +34,7 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::Main, feature_cate
       context = { results: [], fix: false }
 
       allow(AiHarness::Doctor::Steps::PerformDoctorChecks::ResolveRepoRoot).to receive(:resolve) { |ctx| ctx }
+      allow(AiHarness::Doctor::Steps::PerformDoctorChecks::LoadConfig).to receive(:load) { |ctx| ctx }
       allow(AiHarness::Doctor::Steps::PerformDoctorChecks::CheckParity).to receive(:check) { |ctx| ctx }
       allow(AiHarness::Doctor::Steps::PerformDoctorChecks::CheckAiReferences).to receive(:check) { |ctx| ctx }
       allow(AiHarness::Doctor::Steps::PerformDoctorChecks::CheckGitignore).to receive(:check) { |ctx| ctx }

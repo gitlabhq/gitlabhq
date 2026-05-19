@@ -33,12 +33,12 @@ Example response:
   {
     "id": 1,
     "email": "email@example.com",
-    "confirmed_at" : "2021-03-26T19:07:56.248Z"
+    "confirmed_at": "2021-03-26T19:07:56.248Z"
   },
   {
     "id": 3,
     "email": "email2@example.com",
-    "confirmed_at" : null
+    "confirmed_at": null
   }
 ]
 ```
@@ -88,7 +88,7 @@ Example response:
 {
   "id": 1,
   "email": "email@example.com",
-  "confirmed_at" : "2021-03-26T19:07:56.248Z"
+  "confirmed_at": "2021-03-26T19:07:56.248Z"
 }
 ```
 
@@ -110,7 +110,7 @@ Supported attributes:
 {
   "id": 4,
   "email": "email@example.com",
-  "confirmed_at" : "2021-03-26T19:07:56.248Z"
+  "confirmed_at": "2021-03-26T19:07:56.248Z"
 }
 ```
 

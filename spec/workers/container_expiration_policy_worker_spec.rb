@@ -11,7 +11,7 @@ RSpec.describe ContainerExpirationPolicyWorker, feature_category: :container_reg
   describe '#perform' do
     subject { worker.perform }
 
-    context 'process cleanups' do
+    context 'when processing cleanups' do
       it 'calls the limited capacity worker' do
         expect(ContainerExpirationPolicies::CleanupContainerRepositoryWorker).to receive(:perform_with_capacity)
 
@@ -32,7 +32,7 @@ RSpec.describe ContainerExpirationPolicyWorker, feature_category: :container_reg
       end
     end
 
-    context 'process stale ongoing cleanups' do
+    context 'when processing stale ongoing cleanups' do
       let_it_be(:stuck_cleanup1) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: 1.day.ago) }
       let_it_be(:stuck_cleanup2) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: nil) }
       let_it_be(:container_repository1) { create(:container_repository, :cleanup_scheduled) }
@@ -47,7 +47,7 @@ RSpec.describe ContainerExpirationPolicyWorker, feature_category: :container_reg
       end
     end
 
-    context 'policies without container repositories' do
+    context 'with policies without container repositories' do
       let_it_be(:container_expiration_policy1) { create(:container_expiration_policy, enabled: true) }
       let_it_be(:container_repository1) { create(:container_repository, project_id: container_expiration_policy1.project_id) }
       let_it_be(:container_expiration_policy2) { create(:container_expiration_policy, enabled: true) }
@@ -61,7 +61,7 @@ RSpec.describe ContainerExpirationPolicyWorker, feature_category: :container_reg
       end
     end
 
-    context 'counts logging' do
+    context 'when logging counts' do
       let_it_be(:container_repository1) { create(:container_repository, :cleanup_scheduled) }
       let_it_be(:container_repository2) { create(:container_repository, :cleanup_unfinished) }
       let_it_be(:container_repository3) { create(:container_repository, :cleanup_unfinished) }

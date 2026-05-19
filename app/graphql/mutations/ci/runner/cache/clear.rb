@@ -8,6 +8,8 @@ module Mutations
           graphql_name 'RunnerCacheClear'
 
           authorize :admin_runners
+          authorize_granular_token permissions: :clear_runner_cache, boundary_argument: :project_id,
+            boundary_type: :project
 
           argument :project_id, ::Types::GlobalIDType[Project],
             required: true,

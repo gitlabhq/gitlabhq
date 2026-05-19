@@ -1,0 +1,44 @@
+---
+stage: none
+group: none
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>"
+title: Event store event index
+---
+
+<!--
+DO NOT EDIT THIS PAGE DIRECTLY
+
+This page is automatically generated from the YAML files in `data/events/`
+using the template at `data/events/templates/_event_template.md.erb`
+and the Rake task at `lib/tasks/gitlab/docs/compile_events.rake`.
+
+To add or update an event, edit the corresponding YAML file in `data/events/`.
+Then regenerate this page by running:
+
+  bin/rake gitlab:docs:compile_events
+
+To verify this page is up to date, run:
+
+  bin/rake gitlab:docs:check_events
+-->
+
+This page lists all domain events published through the
+[GitLab EventStore](../event_store.md), grouped by domain.
+
+Each event is defined in `app/events/` and carries a JSON Schema-validated payload.
+To find subscribers, search the subscription files under
+`lib/gitlab/event_store/subscriptions/` and `ee/lib/gitlab/event_store/subscriptions/`.
+
+<!-- vale off -->
+<%- domains.each do |domain| -%>
+<%- domain_entries = entries.select { |e| e['domain'] == domain } -%>
+
+## <%= domain.tr('_', ' ').split.map { |w| w == 'gitlab' ? 'GitLab' : w.capitalize }.join(' ') %>
+
+| Event | Feature category | Edition | Description |
+|-------|-----------------|---------|-------------|
+<%- domain_entries.each do |event| -%>
+| `<%= event['event'] %>` | `<%= event['feature_category'] %>` | <%= event['ee_only'] ? 'EE' : 'CE' %> | <%= event['description'] %> |
+<%- end -%>
+<%- end -%>
+<!-- vale on -->

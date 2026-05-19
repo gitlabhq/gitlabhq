@@ -11,7 +11,6 @@ Gitlab/DocumentationLinks/HardcodedUrl:
     - 'lib/gitlab/audit/auditor.rb'
     - 'lib/gitlab/ci/config/entry/processable.rb'
     - 'lib/gitlab/config_checker/external_database_checker.rb'
-    - 'lib/gitlab/database/migration_helpers/v2.rb'
     - 'lib/gitlab/database/migrations/batched_background_migration_helpers.rb'
     - 'lib/gitlab/database/migrations/extension_helpers.rb'
     - 'lib/gitlab/database/query_analyzers/prevent_cross_database_modification.rb'

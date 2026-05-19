@@ -12,6 +12,9 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateDefaultTrackedContext
   let(:vulnerability_reads) { table(:vulnerability_reads, database: :sec) }
   let(:vulnerability_statistics) { table(:vulnerability_statistics, database: :sec) }
   let(:vulnerability_historical_statistics) { table(:vulnerability_historical_statistics, database: :sec) }
+  let(:sbom_components) { table(:sbom_components, database: :sec) }
+  let(:sbom_occurrences) { table(:sbom_occurrences, database: :sec) }
+  let(:sbom_occurrence_refs) { table(:sbom_occurrence_refs, database: :sec) }
   let(:identifiers) { table(:vulnerability_identifiers, database: :sec) }
   let(:scanners) { table(:vulnerability_scanners, database: :sec) }
   let(:vulnerabilities) { table(:vulnerabilities, database: :sec) }
@@ -42,6 +45,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateDefaultTrackedContext
       :aggregate_failures do
       expect { perform_migration }
         .to change { tracked_contexts.count }.by(-1)
+        .and change { sbom_occurrence_refs.count }.by(-1)
         .and not_change { vulnerability_occurrences.count }
         .and not_change { vulnerability_reads.count }
         .and not_change { vulnerability_statistics.count }
@@ -49,6 +53,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateDefaultTrackedContext
 
       expect(tracked_contexts.pluck(:id)).to contain_exactly(valid_tracked_context.id)
 
+      expect(sbom_occurrence_refs.pluck(:id)).to contain_exactly(valid_sbom_occurrence_ref.id)
       expect(vulnerability_occurrences.pluck(:security_project_tracked_context_id))
         .to all(eq(valid_tracked_context.id))
       expect(vulnerability_reads.pluck(:security_project_tracked_context_id))
@@ -60,6 +65,8 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateDefaultTrackedContext
     end
   end
 
+  # rubocop:disable RSpec/MultipleMemoizedHelpers -- BBM deals with lot of tables
+  # and its simpler to verify all of the changes at once.
   describe '#perform' do
     context "with a project with duplicate default contexts" do
       let!(:project) do
@@ -98,6 +105,14 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateDefaultTrackedContext
         create_vulnerability_historical_statistic(project.id, invalid_tracked_context.id)
       end
 
+      let!(:valid_sbom_occurrence_ref) do
+        create_sbom_occurrence_ref(project.id, valid_tracked_context.id)
+      end
+
+      let!(:invalid_sbom_occurrence_ref) do
+        create_sbom_occurrence_ref(project.id, invalid_tracked_context.id)
+      end
+
       it_behaves_like 'a successful migration'
 
       context "with project using hashed storage" do
@@ -107,7 +122,6 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateDefaultTrackedContext
       end
     end
 
-    # rubocop:disable RSpec/MultipleMemoizedHelpers -- full two-project setup required to verify no cross-contamination
     context 'with multiple projects with duplicate default contexts in the same batch' do
       let!(:project_a) do
         create_project(path: "project-a", default_branch: "main")
@@ -165,15 +179,34 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateDefaultTrackedContext
         create_vulnerability_historical_statistic(project_b.id, invalid_context_b.id)
       end
 
+      let!(:valid_sbom_ref_a) do
+        create_sbom_occurrence_ref(project_a.id, valid_context_a.id)
+      end
+
+      let!(:invalid_sbom_ref_a) do
+        create_sbom_occurrence_ref(project_a.id, invalid_context_a.id)
+      end
+
+      let!(:valid_sbom_ref_b) do
+        create_sbom_occurrence_ref(project_b.id, valid_context_b.id)
+      end
+
+      let!(:invalid_sbom_ref_b) do
+        create_sbom_occurrence_ref(project_b.id, invalid_context_b.id)
+      end
+
       it 'cleans up each project independently without cross-contamination', :aggregate_failures do
         expect { perform_migration }
           .to change { tracked_contexts.count }.by(-2)
+          .and change { sbom_occurrence_refs.count }.by(-2)
           .and not_change { vulnerability_occurrences.count }
           .and not_change { vulnerability_reads.count }
           .and not_change { vulnerability_statistics.count }
           .and not_change { vulnerability_historical_statistics.count }
 
         expect(tracked_contexts.pluck(:id)).to contain_exactly(valid_context_a.id, valid_context_b.id)
+
+        expect(sbom_occurrence_refs.pluck(:id)).to contain_exactly(valid_sbom_ref_a.id, valid_sbom_ref_b.id)
 
         expect(vulnerability_occurrences.find_by(id: occurrence_a.id).security_project_tracked_context_id)
           .to eq(valid_context_a.id)
@@ -196,7 +229,6 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateDefaultTrackedContext
         expect(project_b_hist.security_project_tracked_context_id).to eq(valid_context_b.id)
       end
     end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     context 'when there is an exception' do
       let!(:project) do
@@ -222,6 +254,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateDefaultTrackedContext
       end
     end
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   private
 
@@ -356,6 +389,32 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateDefaultTrackedContext
       updated_at: now,
       date: Time.zone.today,
       security_project_tracked_context_id: security_project_tracked_context_id
+    )
+  end
+
+  def create_sbom_occurrence_ref(project_id, tracked_context_id)
+    component = sbom_components.create!(
+      name: "component-#{SecureRandom.hex(4)}",
+      component_type: 0,
+      organization_id: 1,
+      created_at: now,
+      updated_at: now
+    )
+
+    occurrence = sbom_occurrences.create!(
+      project_id: project_id,
+      component_id: component.id,
+      commit_sha: SecureRandom.hex(20),
+      uuid: SecureRandom.uuid,
+      created_at: now,
+      updated_at: now
+    )
+
+    sbom_occurrence_refs.create!(
+      project_id: project_id,
+      sbom_occurrence_id: occurrence.id,
+      security_project_tracked_context_id: tracked_context_id,
+      commit_sha: SecureRandom.hex(20)
     )
   end
 

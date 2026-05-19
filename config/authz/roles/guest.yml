@@ -9,22 +9,30 @@ project:
   - _delete_authored_timelog
   - _read_assigned_work_item
   - _read_authored_work_item
+  - _read_dependency_proxy_package
+  - _read_private_snippet
   - _read_public_build
   - _read_public_pipeline
   - _read_public_pipeline_schedule
   - _reopen_assigned_work_item
   - _reopen_authored_work_item
   - _update_assigned_work_item
+  - _update_authored_snippet
   - _update_authored_work_item
   - admin_issue_link
   - admin_issue_relation
   - award_emoji
   - create_issue
   - create_note
+  - create_task
+  - create_work_item
   - delete_saved_view
   - export_work_items
+  - read_ai_agents
+  - read_ai_catalog_item
   - read_ai_catalog_item_consumer
   - read_analytics
+  - read_contribution_analytics
   - read_cycle_analytics
   - read_insights
   - read_issue
@@ -32,11 +40,15 @@ project:
   - read_issue_board_list
   - read_iteration
   - read_label
+  - read_limit_alert
+  - read_member_role
   - read_milestone
   - read_namespace
   - read_namespace_via_membership
   - read_note
+  - read_pages_content
   - read_project
+  - read_project_for_iids
   - read_project_member
   - read_release
   - read_saved_replies
@@ -45,6 +57,8 @@ project:
   - read_upload
   - read_wiki
   - read_work_item
+  - set_new_issue_metadata
+  - set_new_work_item_metadata
   - update_saved_view
   - update_saved_view_visibility
   - upload_file
@@ -62,11 +76,14 @@ group:
   - admin_issue_relation
   - award_emoji
   - delete_saved_view
+  - read_ai_catalog_item_consumer
   - read_epic_link_relation
   - read_epic_relation
   - read_group
   - read_group_release_stats
   - read_issue
+  - read_limit_alert
+  - read_member_role
   - read_namespace
   - read_namespace_via_membership
   - read_note
@@ -75,7 +92,10 @@ group:
   - read_saved_replies
   - read_saved_view
   - read_subgroup_epic
+  - read_virtual_registry
   - read_wiki
   - read_work_item
+  - set_new_issue_metadata
+  - set_new_work_item_metadata
   - update_saved_view
   - update_saved_view_visibility

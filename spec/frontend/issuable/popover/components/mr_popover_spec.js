@@ -24,6 +24,7 @@ describe('MR Popover', () => {
           createdAt: '2020-07-01T04:08:01Z',
           state: 'opened',
           title: 'MR title',
+          titleHtml: 'MR title',
           headPipeline: {
             id: '1',
             detailedStatus: {
@@ -48,6 +49,7 @@ describe('MR Popover', () => {
           createdAt: '2020-07-01T04:08:01Z',
           state: 'opened',
           title: 'MR title',
+          titleHtml: 'MR title',
           headPipeline: {
             id: '1',
             detailedStatus: null,

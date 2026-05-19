@@ -1,0 +1,7 @@
+---
+event: Ai::ActiveContext::Code::ProcessPendingEnabledNamespaceEvent
+description: Published to process the next pending Ai::ActiveContext::Code::EnabledNamespace
+  by enrolling its eligible projects as Ai::ActiveContext::Code::Repository records.
+  Re-emitted by the subscriber worker while pending namespaces remain.
+feature_category: global_search
+ee_only: true

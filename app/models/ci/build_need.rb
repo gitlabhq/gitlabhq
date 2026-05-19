@@ -8,9 +8,12 @@ module Ci
     MAX_JOB_NAME_LENGTH = 255
 
     self.primary_key = :id
-    self.sequence_name = 'ci_build_needs_id_seq'
+    self.table_name = :p_ci_build_needs
 
     before_validation :set_project_id, on: :create
+
+    query_constraints :id, :partition_id
+    partitionable scope: :build, partitioned: true
 
     belongs_to :build,
       ->(need) { in_partition(need) },
@@ -18,8 +21,6 @@ module Ci
       foreign_key: :build_id,
       partition_foreign_key: :partition_id,
       inverse_of: :needs
-
-    partitionable scope: :build
 
     validates :build, presence: true
     validates :name, presence: true, length: { maximum: MAX_JOB_NAME_LENGTH }

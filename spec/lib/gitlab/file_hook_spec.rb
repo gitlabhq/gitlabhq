@@ -7,11 +7,11 @@ RSpec.describe Gitlab::FileHook do
   let(:tmp_file) { Tempfile.new('file_hook-dump') }
 
   let(:file_hook_source) do
-    <<~EOS
+    <<~RUBY
       #!/usr/bin/env ruby
       x = $stdin.read
       File.write('#{tmp_file.path}', x)
-    EOS
+    RUBY
   end
 
   context 'with file_hooks present' do
@@ -90,10 +90,10 @@ RSpec.describe Gitlab::FileHook do
 
     context 'non-zero exit' do
       let(:file_hook_source) do
-        <<~EOS
+        <<~RUBY
           #!/usr/bin/env ruby
           exit 1
-        EOS
+        RUBY
       end
 
       before do

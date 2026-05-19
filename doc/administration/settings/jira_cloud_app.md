@@ -51,7 +51,7 @@ Prerequisites:
 To create an OAuth application on your GitLab Self-Managed instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Applications**.
+1. In the left sidebar, select **Applications**.
 1. Select **New application**.
 1. In **Redirect URI**:
    - If you're installing the app from the Atlassian Marketplace listing, enter `https://gitlab.com/-/jira_connect/oauth_callbacks`.
@@ -141,7 +141,7 @@ Alternatively, you might want to [install the GitLab for Jira Cloud app manually
 To set up your GitLab Self-Managed instance for Atlassian Marketplace installation in GitLab 15.7 and later:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. In **Jira Connect Proxy URL**, enter `https://gitlab.com` to install the app from the Atlassian Marketplace.
 1. Select **Save changes**.
@@ -182,116 +182,114 @@ to check if Jira Cloud is linked to:
 
 ## Install the GitLab for Jira Cloud app manually
 
+{{< history >}}
+
+- Connect-based manual install method [removed](https://gitlab.com/gitlab-org/gitlab-jira-forge/-/work_items/9) in GitLab 19.0.
+
+{{< /history >}}
+
 > [!warning]
-> In GitLab 17.5 and earlier, you might encounter an issue when you install the GitLab for Jira Cloud app manually.
-> For more information, see [issue 505372](https://gitlab.com/gitlab-org/gitlab/-/issues/505372).
-> This issue does not affect [installations from the Atlassian Marketplace](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace).
+> The previous manual install method relied on Atlassian Connect development mode. Atlassian
+> [disabled Connect-based private installs on 2026-03-31](https://www.atlassian.com/blog/developer/announcing-connect-end-of-support-timeline-and-next-steps).
+> If you previously installed the app manually with the **App descriptor URL** workflow,
+> migrate to the Forge-based install described in this section.
 
-If you do not want to [use the official Atlassian Marketplace listing](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
-install the GitLab for Jira Cloud app manually.
-This installation method is based on Atlassian Connect.
+Install the GitLab for Jira Cloud app manually if you cannot
+[use the official Atlassian Marketplace listing](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace).
+For example, if:
 
-You must install each Jira Cloud app from a single location. Jira fetches a
-[manifest file](https://developer.atlassian.com/cloud/jira/platform/connect-app-descriptor/)
-from the location you provide. The manifest file describes the app to the system.
+- Your instance does not meet the [Marketplace prerequisites](#prerequisites).
+- You do not want GitLab.com to [handle app lifecycle events](#gitlabcom-handling-of-app-lifecycle-events) or to know that your instance has installed the app.
+- You do not want GitLab.com to [redirect branch creation links](#gitlabcom-handling-of-branch-creation) to your instance.
 
-To support your GitLab Self-Managed instance with Jira Cloud, do one of the following:
-
-- [Install the app in development mode](#install-the-app-in-development-mode).
-- [Create an Atlassian Marketplace listing](#create-an-atlassian-marketplace-listing).
+The manual install method is now based on [Atlassian Forge](https://developer.atlassian.com/platform/forge/).
+You publish a private copy of the [GitLab for Jira Cloud Forge app](https://gitlab.com/gitlab-org/gitlab-jira-forge)
+under your own Atlassian developer account, pointed at your GitLab Self-Managed or GitLab Dedicated instance.
 
 ### Prerequisites
 
-- The instance must be publicly available.
+- The instance must be publicly available over HTTPS, with a publicly trusted certificate.
 - You must set up [OAuth authentication](#set-up-oauth-authentication).
 - Your network configuration must allow:
-  - Inbound and outbound connections between your GitLab Self-Managed instance and Jira Cloud ([Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections)).
+  - Inbound HTTPS connections from Jira Cloud to `<instance_url>/-/jira_connect` ([Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections)).
+  - Outbound HTTPS connections from your GitLab instance to `*.atlassian.net` to push development data to Jira.
   - For instances behind a firewall:
     1. Set up an internet-facing [reverse proxy](#using-a-reverse-proxy) in front of your GitLab Self-Managed instance.
-    1. Configure the reverse proxy to allow inbound connections from Jira Cloud ([Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections)).
+    1. Configure the reverse proxy to allow inbound connections from Jira Cloud.
     1. Ensure your GitLab Self-Managed instance can still make the outbound connections described previously.
+- Fully air-gapped instances cannot use the integration. The outbound path to `*.atlassian.net` is required for the development panel and other Jira-side surfaces.
 - The Jira user that installs and configures the app must meet certain [requirements](#jira-user-requirements).
+- An Atlassian developer account and an [Atlassian API token](https://id.atlassian.com/manage-profile/security/api-tokens) for the Forge CLI.
+- A machine with [Node.js 22 LTS](https://nodejs.org/), the [Forge CLI](https://developer.atlassian.com/platform/forge/getting-started/), `envsubst`, `git`, and `curl`.
 
 ### Set up your instance for manual installation
 
 [Prerequisites](#prerequisites-1)
 
-To set up your GitLab Self-Managed instance for manual installation in GitLab 15.7 and later:
+To set up your GitLab Self-Managed instance for manual installation:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. Leave **Jira Connect Proxy URL** blank to install the app manually.
 1. Select **Save changes**.
 
-### Install the app in development mode
+### Publish a private Forge app
 
-[Prerequisites](#prerequisites-1)
+To publish a private copy of the GitLab for Jira Cloud Forge app and install it on your Jira site:
 
-To configure your Jira instance so you can install apps from outside the Atlassian Marketplace:
+1. Clone the [`gitlab-jira-forge`](https://gitlab.com/gitlab-org/gitlab-jira-forge) repository:
 
-1. Sign in to your Jira instance as an administrator.
-1. [Enable development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--enable-development-mode-in-your-site)
-   on your Jira instance.
-1. Sign in to GitLab as an administrator.
-1. In Jira, select the horizontal ellipsis ({{< icon name="ellipsis_h" >}}) beside **Apps** and select **Manage your apps**.
-1. [Install GitLab from your Jira instance](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--install-and-test-your-app) using one of these methods:
+   ```shell
+   git clone --depth 1 https://gitlab.com/gitlab-org/gitlab-jira-forge.git
+   cd gitlab-jira-forge
+   ```
 
-   **For instances with centralized app management:**
+1. Export the required environment variables. Replace the example values
+   with your GitLab instance URL, Jira site, and Atlassian credentials:
 
-   1. If you see "App management has moved to Administration", select **Take me there**. Otherwise follow the **For instances with legacy app management** instructions below.
-   1. Select **Install a private app**.
-   1. For the **Choose a product to install this app on** dropdown list, select **Jira**.
-   1. In **App descriptor URL**, provide the full URL to your manifest file based
-      on your instance configuration.
+   ```shell
+   export GITLAB_URL=https://gitlab.example.com
+   export JIRA_SITE=acme.atlassian.net
+   export FORGE_EMAIL=admin@example.com
+   export FORGE_API_TOKEN=<your-atlassian-api-token>
+   ```
 
-      By default, your manifest file is located at `/-/jira_connect/app_descriptor.json`.
-      For example, if your instance domain is `app.pet-store.cloud`,
-      your manifest file is located at `https://app.pet-store.cloud/-/jira_connect/app_descriptor.json`.
+1. Run the wrapper script to register, deploy, and install the app:
 
-   1. Select **Install app**.
-   1. Refresh the page.
-   1. Locate the app **GitLab for Jira (`<gitlab.example.com>`)**, select the horizontal ellipsis ({{< icon name="ellipsis_h" >}}) and then select **Get started** to [configure the GitLab for Jira Cloud app](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app).
+   ```shell
+   ./scripts/install-self-managed.sh
+   ```
 
-   **For instances with legacy app management:**
+   The wrapper:
+   - Verifies the required tools and variables.
+   - Runs `forge register` on first use to create a Forge app under your Atlassian account.
+   - Generates `manifest.yml` from the template, pinned to your `GITLAB_URL`.
+   - Runs `forge deploy -e production`.
+   - Runs `forge install --site $JIRA_SITE --product jira`.
 
-   1. Select **Upload app**.
-   1. In **App descriptor URL**, provide the full URL to your manifest file based
-      on your instance configuration.
+   The script caches the registered `APP_ID` in `.env.self-managed`. Back up this file:
+   if you lose it, you must re-register the app, which forces all installed Jira sites to re-install.
 
-      By default, your manifest file is located at `/-/jira_connect/app_descriptor.json`.
-      For example, if your instance domain is `app.pet-store.cloud`,
-      your manifest file is located at `https://app.pet-store.cloud/-/jira_connect/app_descriptor.json`.
+For step-by-step instructions, manual `forge` commands, troubleshooting, and the upgrade workflow, see the
+[Self-managed install guide](https://gitlab.com/gitlab-org/gitlab-jira-forge/-/blob/main/docs/self-managed-install.md)
+in the `gitlab-jira-forge` repository.
 
-   1. Select **Upload**.
-   1. Locate the app **GitLab for Jira (`<gitlab.example.com>`)**, select the chevron ({{< icon name="chevron-right" >}}) and then select **Get started** to [configure the GitLab for Jira Cloud app](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app).
+After the app is installed, [configure the GitLab for Jira Cloud app](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app)
+in Jira to link your GitLab namespaces.
 
-1. [Disable development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--enable-development-mode-in-your-site)
-   on your Jira instance.
+### Update the manually installed app
 
-If a GitLab upgrade makes changes to the app descriptor, you must reinstall the app.
+To pull upstream manifest changes into your private Forge app, re-run the wrapper with `--update`:
 
-### Create an Atlassian Marketplace listing
+```shell
+./scripts/install-self-managed.sh --update
+```
 
-[Prerequisites](#prerequisites-1)
-
-If you do not want to [use development mode](#install-the-app-in-development-mode), you can create your own Atlassian Marketplace listing.
-This way, you can install the GitLab for Jira Cloud app from the Atlassian Marketplace.
-
-To create an Atlassian Marketplace listing:
-
-1. Register as an Atlassian Marketplace vendor.
-1. List your application with the application descriptor URL.
-   - Your manifest file is located at: `https://your.domain/your-path/-/jira_connect/app_descriptor.json`
-   - You should list your application as `private` because public
-     applications can be viewed and installed by any user.
-1. Generate test license tokens for your application.
-
-Like the GitLab.com Marketplace listing, this method uses
-[automatic updates](../../integration/jira/connect-app.md#update-the-gitlab-for-jira-cloud-app).
-
-For more information about creating an Atlassian Marketplace listing, see the
-[Atlassian documentation](https://developer.atlassian.com/platform/marketplace/listing-connect-apps/#create-your-marketplace-listing).
+The script fast-forwards the local clone, regenerates the manifest, and redeploys the app.
+For more information about minor and major version upgrades, see
+[Upgrading](https://gitlab.com/gitlab-org/gitlab-jira-forge/-/blob/main/docs/self-managed-install.md#upgrading)
+in the self-managed install guide.
 
 ## Connect multiple GitLab instances
 
@@ -330,7 +328,7 @@ You might want to use a proxy if you're managing multiple GitLab instances but o
 To configure your GitLab instance to serve as a proxy:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. Select **Enable public key storage**.
 1. Select **Save changes**.
@@ -501,7 +499,7 @@ the reverse proxy FQDN as an additional JWT audience.
 To set an additional JWT audience:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. In **Jira Connect Additional Audience URL**, enter the additional audience
    (for example, `https://gitlab.mycompany.com`).

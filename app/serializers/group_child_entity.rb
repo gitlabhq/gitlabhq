@@ -6,7 +6,7 @@ class GroupChildEntity < Grape::Entity
   include MarkupHelper
   include Namespaces::DeletableHelper
 
-  expose :id, :name, :description, :visibility, :full_name, :full_path,
+  expose :id, :name, :description, :visibility, :full_name, :path, :full_path,
     :created_at, :updated_at, :avatar_url
 
   expose :type do |instance|

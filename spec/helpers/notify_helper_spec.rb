@@ -65,14 +65,14 @@ RSpec.describe NotifyHelper, feature_category: :shared do
 
   describe '#work_item_type_for' do
     where(:work_item, :expected_type, :for_ee?) do
-      lazy { build(:issue) }              | 'issue' | false
-      lazy { build(:issue, :task) }       | 'issue' | false
-      lazy { build(:issue, :test_case) }  | 'issue' | true
-      lazy { build(:issue, :key_result) } | 'issue' | true
-      lazy { build(:issue, :objective) }  | 'issue' | true
-      lazy { build(:issue, :ticket) }     | 'issue' | false
-      lazy { build(:incident) }           | 'issue' | false
-      lazy { build(:issue, :epic) }       | 'epic'  | true
+      lazy { build(:issue) }              | 'Issue'      | false
+      lazy { build(:issue, :task) }       | 'Task'       | false
+      lazy { build(:issue, :test_case) }  | 'Test Case'  | true
+      lazy { build(:issue, :key_result) } | 'Key Result' | true
+      lazy { build(:issue, :objective) }  | 'Objective'  | true
+      lazy { build(:issue, :ticket) }     | 'Ticket'     | false
+      lazy { build(:incident) }           | 'Incident'   | false
+      lazy { build(:issue, :epic) }       | 'Epic'       | true
     end
 
     with_them do

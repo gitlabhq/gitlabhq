@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'digest'
 require_relative '../../../scripts/database/migration_checksum_checker'
 
 RSpec.describe MigrationChecksumChecker, "#check", feature_category: :database do
@@ -9,7 +10,7 @@ RSpec.describe MigrationChecksumChecker, "#check", feature_category: :database d
   let(:timestamp) { '20250320005730' }
   let(:migration_file) { "#{db_migration_path}/#{timestamp}_test_migration.rb" }
   let(:checksum_file) { "#{checksum_dir_path}/#{timestamp}" }
-  let(:valid_checksum) { "85210d36999484fafe57284bc5c68985d68f48061530ff79429c84875a6420f2" }
+  let(:valid_checksum) { Digest::SHA256.hexdigest(timestamp) }
 
   before do
     stub_const('MigrationChecksumChecker::MIGRATION_DIRS', [db_migration_path])
@@ -76,6 +77,26 @@ RSpec.describe MigrationChecksumChecker, "#check", feature_category: :database d
     it 'returns an error result' do
       expect(check.error_code).to eq(1)
       expect(check.error_message).to include('Invalid checksum length for migration')
+      expect(check.error_message).to include(migration_file)
+    end
+  end
+
+  context "when a migration has a checksum file with incorrect content" do
+    let(:wrong_checksum) { "a" * 64 }
+
+    before do
+      File.write(checksum_file, wrong_checksum)
+    end
+
+    after do
+      File.delete(migration_file)
+      File.delete(checksum_file)
+    end
+
+    it 'returns an error result with expected checksum' do
+      expect(check.error_code).to eq(1)
+      expect(check.error_message).to include('Invalid checksum content')
+      expect(check.error_message).to include(valid_checksum)
       expect(check.error_message).to include(migration_file)
     end
   end

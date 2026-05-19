@@ -1,0 +1,19 @@
+---
+description: Tracks when a user clicks a tab to navigate between merge request report pages
+internal_events: true
+status: active
+action: click_tab_on_merge_request_report
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: The type of report (e.g. security_scan)
+product_group: security_insights
+product_categories:
+  - vulnerability_management
+milestone: '19.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230746
+tiers:
+  - ultimate

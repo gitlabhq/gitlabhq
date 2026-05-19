@@ -10,11 +10,16 @@ describe('CommitListItemOverflowMenu', () => {
 
   const mockToastShow = jest.fn();
 
+  const mockProjectRootPath = '/gitlab-org/gitlab-shell';
+
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(CommitListItemOverflowMenu, {
       propsData: {
         commit: mockCommit,
         ...props,
+      },
+      provide: {
+        projectRootPath: mockProjectRootPath,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -99,13 +104,13 @@ describe('CommitListItemOverflowMenu', () => {
   });
 
   describe('browse files item', () => {
-    it('has correct text and icon', () => {
+    it('links to the repository tree at the commit SHA', () => {
       const browseFilesItem = findBrowseFilesItem();
 
       expect(browseFilesItem.props('item')).toMatchObject({
         text: 'Browse files at this commit',
         icon: 'folder-open',
-        href: mockCommit.webUrl,
+        href: `${mockProjectRootPath}/-/tree/${mockCommit.sha}`,
       });
     });
   });

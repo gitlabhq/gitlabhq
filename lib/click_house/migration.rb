@@ -126,7 +126,7 @@ module ClickHouse
     end
 
     def write(text = '')
-      $stdout.puts(text) if verbose
+      puts(text) if verbose # rubocop:disable Rails/Output -- mirrors ActiveRecord::Migration#write
     end
 
     def announce(message)

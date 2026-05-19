@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::InitialIndexingEvent
+description: Published once per pending Zoekt index assigned to an online node, so
+  the subscribed worker can perform the initial indexing of its repositories.
+feature_category: global_search
+ee_only: true

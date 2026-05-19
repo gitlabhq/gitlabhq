@@ -64,6 +64,19 @@ RSpec.describe Admin::ImpersonationTokensController, :enable_admin_mode, feature
     end
   end
 
+  describe '#rotate', :with_current_organization do
+    let(:token) { create(:personal_access_token, :impersonation, user: user) }
+
+    it 'passes creation_source ui to the service' do
+      expect(::PersonalAccessTokens::RotateService).to receive(:new)
+        .with(admin, token, nil,
+          hash_including(creation_source: PersonalAccessToken::CREATION_SOURCE_UI, keep_token_lifetime: true))
+        .and_call_original
+
+      put rotate_admin_user_impersonation_token_path(user_id: user.username, id: token.id)
+    end
+  end
+
   describe '#index', :with_current_organization do
     let(:dependency_proxy_enabled) { true }
 

@@ -76,7 +76,7 @@ share the same correlation ID in their logs, allowing you to trace requests acro
 On the **primary** site:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 
 We perform the following health checks on each **secondary** site
 to help identify if something is wrong:
@@ -211,7 +211,7 @@ node running Rails (Puma, Sidekiq, or Geo Log Cursor) on the Geo **secondary** s
 GitLab does **not** verify objects that are stored in Object Storage. If you are using Object Storage, you will see all of the "verified" checks showing 0 successes. This is expected and not a cause for concern.
 
 ```shell
-sudo gitlab-rake geo:status
+sudo gitlab-rake gitlab:geo:status
 ```
 
 The output includes:
@@ -680,7 +680,7 @@ If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for t
 In this case, make sure to update the changed URL on all your sites:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
+1. In the left sidebar, select **Geo** > **Sites**.
 1. Change the URL and save the change.
 
 ### Message: `ERROR: canceling statement due to conflict with recovery` during backup

@@ -11,7 +11,7 @@ module Ci
         Gitlab::AppLogger.info "#{self.class}: Cleaning running, timed-out builds"
 
         Ci::Partition.find_each do |partition|
-          drop(running_stuck_builds(partition), failure_reason: :stuck_or_timeout_failure)
+          drop(running_stuck_builds(partition), failure_reason: :no_updates_running)
         end
       end
 

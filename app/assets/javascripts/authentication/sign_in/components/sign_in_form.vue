@@ -121,9 +121,6 @@ export default {
 
       return baseFields;
     },
-    isPasskeysEnabled() {
-      return this.glFeatures.passkeys ?? false;
-    },
     formAction() {
       return this.addUrlFragment(this.signInPath);
     },
@@ -284,7 +281,7 @@ export default {
       >
     </gl-form>
     <gl-form
-      v-if="isPasskeysEnabled && showPasswordField"
+      v-if="showPasswordField"
       :action="passkeysSignInPath"
       method="post"
       class="gl-mt-3"

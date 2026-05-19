@@ -71,6 +71,8 @@ module RuboCop
           add_offense(send_node, message: message, &corrector)
         end
 
+        alias_method :on_numblock, :on_block
+
         private
 
         def autocorrect_pure_definitions(def_node, body)

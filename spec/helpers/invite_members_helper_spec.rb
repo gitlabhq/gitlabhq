@@ -47,6 +47,48 @@ RSpec.describe InviteMembersHelper do
       end
     end
 
+    context 'when invite_to_root_group feature flag is enabled' do
+      before do
+        stub_feature_flags(invite_to_root_group: true)
+        allow(helper).to receive_messages(current_user: current_user, can?: false)
+      end
+
+      context 'when user is Owner of the root group' do
+        let(:current_user) { owner }
+
+        it 'includes root group invite attributes' do
+          allow(helper).to receive(:can?).with(owner, :invite_group_members, project.root_ancestor).and_return(true)
+
+          result = helper.common_invite_group_modal_data(project, ProjectMember)
+
+          expect(result[:root_group_name]).to eq(project.root_ancestor.name)
+          expect(result[:is_top_level_group]).to eq('false')
+          expect(result[:can_invite_to_root_group]).to eq('true')
+        end
+
+        context 'when source is the root group' do
+          it 'returns is_top_level_group as true' do
+            result = helper.common_invite_group_modal_data(group, GroupMember)
+
+            expect(result[:is_top_level_group]).to eq('true')
+          end
+        end
+      end
+
+      context 'when user is NOT Owner of the root group' do
+        let(:current_user) { developer }
+
+        it 'returns can_invite_to_root_group as false' do
+          allow(helper).to receive(:can?).with(developer, :invite_group_members,
+            project.root_ancestor).and_return(false)
+
+          result = helper.common_invite_group_modal_data(project, ProjectMember)
+
+          expect(result[:can_invite_to_root_group]).to eq('false')
+        end
+      end
+    end
+
     context 'when sharing with groups outside the hierarchy is enabled' do
       before do
         group.update!(prevent_sharing_groups_outside_hierarchy: false)
@@ -70,6 +112,55 @@ RSpec.describe InviteMembersHelper do
       }
 
       expect(helper.common_invite_modal_dataset(project)).to include(attributes)
+    end
+
+    context 'when invite_to_root_group feature flag is enabled' do
+      before do
+        stub_feature_flags(invite_to_root_group: true)
+        allow(helper).to receive_messages(current_user: current_user, can?: false)
+      end
+
+      context 'when user is Owner of the root group' do
+        let(:current_user) { owner }
+
+        it 'returns can_invite_to_root_group as true' do
+          allow(helper).to receive(:can?).with(owner, :invite_group_members, project.root_ancestor).and_return(true)
+
+          result = helper.common_invite_modal_dataset(project)
+
+          expect(result[:can_invite_to_root_group]).to eq('true')
+          expect(result[:root_group_name]).to eq(project.root_ancestor.name)
+        end
+
+        context 'when source is the root group' do
+          it 'returns is_top_level_group as true' do
+            result = helper.common_invite_modal_dataset(group)
+
+            expect(result[:is_top_level_group]).to eq('true')
+          end
+        end
+
+        context 'when source is a project' do
+          it 'returns is_top_level_group as false' do
+            result = helper.common_invite_modal_dataset(project)
+
+            expect(result[:is_top_level_group]).to eq('false')
+          end
+        end
+      end
+
+      context 'when user is NOT Owner of the root group' do
+        let(:current_user) { developer }
+
+        it 'returns can_invite_to_root_group as false' do
+          allow(helper).to receive(:can?).with(developer, :invite_group_members,
+            project.root_ancestor).and_return(false)
+
+          result = helper.common_invite_modal_dataset(project)
+
+          expect(result[:can_invite_to_root_group]).to eq('false')
+        end
+      end
     end
   end
 

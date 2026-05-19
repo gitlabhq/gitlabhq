@@ -166,6 +166,14 @@ describe('Batch comments store actions', () => {
         expect(useNotes().convertToDiscussion).toHaveBeenCalledWith('2');
       });
     });
+
+    it('clears memoized promise on failure so retries are possible', async () => {
+      mock.onAny().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+
+      await expect(store.fetchDrafts()).rejects.toThrow();
+
+      expect(store.fetchDraftsPromise).toBeNull();
+    });
   });
 
   describe('publishReview', () => {

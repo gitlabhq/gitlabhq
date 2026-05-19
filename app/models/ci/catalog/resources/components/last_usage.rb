@@ -15,6 +15,15 @@ module Ci
           scope :for_catalog_resource_with_component_versions, ->(catalog_resource_id) {
             where(catalog_resource_id: catalog_resource_id).includes(component: :version)
           }
+          scope :by_version_id, ->(id) {
+            joins(:component).where(catalog_resource_components: { version_id: id })
+          }
+          scope :by_version_ids, ->(ids) {
+            joins(:component).where(catalog_resource_components: { version_id: ids })
+          }
+          scope :by_component_name, ->(name) {
+            joins(:component).where(catalog_resource_components: { name: name })
+          }
 
           belongs_to :component, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :last_usages
           belongs_to :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :component_last_usages

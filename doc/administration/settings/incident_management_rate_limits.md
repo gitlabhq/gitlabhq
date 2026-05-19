@@ -40,7 +40,7 @@ Prerequisites:
 To set inbound incident management alert limits:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Network**.
+1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Incident Management Limits**.
 1. Select the **Enable Incident Management inbound alert limit** checkbox.
 1. Optional. Input a custom value for **Maximum requests per project per rate limit period**. Default is 3600.

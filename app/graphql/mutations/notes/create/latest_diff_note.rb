@@ -27,6 +27,18 @@ module Mutations
             'Use alone for removed lines, with newLine for unchanged context lines. ' \
             'At least one of newLine or oldLine is required.'
 
+        argument :end_new_line,
+          GraphQL::Types::Int,
+          required: false,
+          description: 'End line number on the new version of the file for a multiline note. ' \
+            'When provided, newLine is required and marks the start of the comment range.'
+
+        argument :end_old_line,
+          GraphQL::Types::Int,
+          required: false,
+          description: 'End line number on the old version of the file for a multiline note. ' \
+            'When provided, oldLine is required and marks the start of the comment range.'
+
         argument :noteable_id,
           ::Types::GlobalIDType[::MergeRequest],
           required: true,
@@ -45,10 +57,31 @@ module Mutations
               'oldLine or newLine arguments are required'
           end
 
+          validate_line_range!(args)
+
           super
         end
 
         private
+
+        def validate_line_range!(args)
+          validate_end_line_has_start!(args[:end_new_line], args[:new_line], 'newLine', 'endNewLine')
+          validate_end_line_has_start!(args[:end_old_line], args[:old_line], 'oldLine', 'endOldLine')
+        end
+
+        def validate_end_line_has_start!(end_line, start_line, start_name, end_name)
+          return unless end_line
+
+          unless start_line
+            raise Gitlab::Graphql::Errors::ArgumentError,
+              "#{start_name} is required when #{end_name} is provided"
+          end
+
+          return if end_line > start_line
+
+          raise Gitlab::Graphql::Errors::ArgumentError,
+            "#{end_name} must be greater than #{start_name}"
+        end
 
         def create_note_params(noteable, args)
           super.merge({
@@ -66,6 +99,8 @@ module Mutations
             file_path: args[:file_path],
             new_line: args[:new_line],
             old_line: args[:old_line],
+            end_new_line: args[:end_new_line],
+            end_old_line: args[:end_old_line],
             head_sha: args[:head_sha]
           ).execute
 

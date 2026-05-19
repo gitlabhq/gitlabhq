@@ -3,5 +3,7 @@ name: read_sidekiq_metric
 description: Grants the ability to read Sidekiq metrics
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - read_sidekiq_metric

@@ -1,5 +1,5 @@
 <script>
-import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert, GlButton } from '@gitlab/ui';
+import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert, GlBadge, GlButton } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import Api from '~/api';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -19,6 +19,8 @@ import {
   SECRET_PUSH_PROTECTION,
   SECRET_DETECTION,
   LICENSE_INFORMATION_SOURCE,
+  CVS_CONTAINER_SCANNING,
+  CVS_DEPENDENCY_SCANNING,
 } from '../constants';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
@@ -49,6 +51,7 @@ export default {
     GlTabs,
     LocalStorageSync,
     SectionLayout,
+    GlBadge,
     GlButton,
     UserCalloutDismisser,
     TrainingSection,
@@ -57,6 +60,14 @@ export default {
     ContainerScanningForRegistryFeatureCard: () =>
       import(
         'ee_component/security_configuration/components/container_scanning_for_registry_feature_card.vue'
+      ),
+    CvsContainerScanningFeatureCard: () =>
+      import(
+        'ee_component/security_configuration/components/cvs_container_scanning_feature_card.vue'
+      ),
+    CvsDependencyScanningFeatureCard: () =>
+      import(
+        'ee_component/security_configuration/components/cvs_dependency_scanning_feature_card.vue'
       ),
     PageHeading,
     VulnerabilityArchives: () =>
@@ -145,6 +156,9 @@ export default {
     shouldShowScannerProfiles() {
       return this.glFeatures?.securityScanProfilesFeature;
     },
+    shouldShowScanProfileUpgradeHint() {
+      return this.shouldShowScannerProfiles && !window.gon?.licensed_features?.securityScanProfiles;
+    },
     shouldShowMergeRequestsDisabledAlert() {
       return !this.mergeRequestsEnabled;
     },
@@ -176,7 +190,12 @@ export default {
       if (feature.type === LICENSE_INFORMATION_SOURCE) {
         return 'license-information-source-feature-card';
       }
-
+      if (feature.type === CVS_CONTAINER_SCANNING) {
+        return 'cvs-container-scanning-feature-card';
+      }
+      if (feature.type === CVS_DEPENDENCY_SCANNING) {
+        return 'cvs-dependency-scanning-feature-card';
+      }
       return 'feature-card';
     },
     dismissAutoDevopsEnabledAlert() {
@@ -246,12 +265,15 @@ export default {
           @dismiss="dismissAutoDevopsEnabledAlert"
         />
 
-        <section-layout
-          v-if="shouldShowScannerProfiles"
-          stacked
-          class="gl-border-b-0"
-          :heading="$options.i18n.securityProfiles"
-        >
+        <section-layout v-if="shouldShowScannerProfiles" stacked class="gl-border-b-0">
+          <template #heading>
+            <h2 class="gl-mt-0 gl-flex gl-gap-3 gl-text-size-h2">
+              {{ $options.i18n.securityProfiles }}
+              <gl-badge v-if="shouldShowScanProfileUpgradeHint" variant="tier" icon="license">{{
+                __('Ultimate')
+              }}</gl-badge>
+            </h2>
+          </template>
           <template #description>
             <p>
               {{ $options.i18n.securityProfilesDesc }}

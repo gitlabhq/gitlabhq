@@ -75,7 +75,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true&integrated=true"
 ```
 
@@ -106,7 +107,8 @@ PATCH /projects/:id/error_tracking/settings
 | `integrated` | boolean | no       | Pass `true` to enable the integrated error tracking backend. |
 
 ```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PATCH \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true"
 ```
 
@@ -202,6 +204,7 @@ DELETE /projects/:id/error_tracking/client_keys/:key_id
 | `key_id`  | integer | yes | The ID of the client key. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys/13"
 ```

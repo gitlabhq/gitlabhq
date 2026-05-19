@@ -20,7 +20,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
       end
 
       it 'shows expanded note' do
-        expect(page).to have_selector(fragment, visible: true)
+        expect(page).to have_selector(fragment, visible: :visible)
       end
     end
 
@@ -33,7 +33,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
       end
 
       it 'shows expanded note', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9350' do
-        expect(page).to have_selector(fragment, visible: true)
+        expect(page).to have_selector(fragment, visible: :visible)
       end
     end
   end
@@ -48,7 +48,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
     end
 
     it 'shows the linked line', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/496702' do
-      expect(page).to have_selector("[id='#{line_code}']", visible: true, obscured: false)
+      expect(page).to have_selector("[id='#{line_code}']", visible: :visible, obscured: false)
     end
   end
 

@@ -155,10 +155,22 @@ RSpec.describe Repositories::PostReceiveWorker, :clean_gitlab_redis_shared_state
           CHANGES
         end
 
-        it 'expires the branches cache' do
-          expect(project.repository).to receive(:expire_branches_cache).once
+        it 'does not expire the branches cache' do
+          expect(project.repository).not_to receive(:expire_branches_cache)
 
           perform
+        end
+
+        context 'when ref_cache_with_rebuild_queue is disabled' do
+          before do
+            stub_feature_flags(ref_cache_with_rebuild_queue: false)
+          end
+
+          it 'expires the branches cache' do
+            expect(project.repository).to receive(:expire_branches_cache).once
+
+            perform
+          end
         end
 
         it 'expires the status cache' do
@@ -227,12 +239,26 @@ RSpec.describe Repositories::PostReceiveWorker, :clean_gitlab_redis_shared_state
           perform
         end
 
-        it 'only invalidates tags once' do
+        it 'does not invalidate tags' do
           expect(project.repository).to receive(:repository_event).exactly(3).times.with(:push_tag).and_call_original
-          expect(project.repository).to receive(:expire_caches_for_tags).once.and_call_original
-          expect(project.repository).to receive(:expire_tags_cache).once.and_call_original
+          expect(project.repository).not_to receive(:expire_caches_for_tags)
+          expect(project.repository).not_to receive(:expire_tags_cache)
 
           perform
+        end
+
+        context 'when ref_cache_with_rebuild_queue is disabled' do
+          before do
+            stub_feature_flags(ref_cache_with_rebuild_queue: false)
+          end
+
+          it 'only invalidates tags once' do
+            expect(project.repository).to receive(:repository_event).exactly(3).times.with(:push_tag).and_call_original
+            expect(project.repository).to receive(:expire_caches_for_tags).once.and_call_original
+            expect(project.repository).to receive(:expire_tags_cache).once.and_call_original
+
+            perform
+          end
         end
 
         it 'calls Git::ProcessRefChangesService' do

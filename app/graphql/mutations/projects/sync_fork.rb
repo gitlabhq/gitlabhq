@@ -7,6 +7,8 @@ module Mutations
 
       include FindsProject
 
+      authorize_granular_token permissions: :push_code, boundary_argument: :project_path, boundary_type: :project
+
       argument :project_path, GraphQL::Types::ID,
         required: true,
         description: 'Full path of the project to initialize.'

@@ -61,7 +61,7 @@ module Ci
 
     with_score 20
     condition(:read_runners_in_any_associated_projects) do
-      next true if maintainer_in_owner_scope?
+      next true if can_admin_runners_in_owner_scope?
 
       # Check if runner is associated to any projects where user has read_runners permission
       DeclarativePolicy.user_scope do
@@ -71,10 +71,10 @@ module Ci
       end
     end
 
-    condition(:maintainer_in_owner_scope) do
-      # Check if user is a maintainer+ in the scope owning the runner
+    condition(:can_admin_runners_in_owner_scope) do
+      # Check if user can admin runners in the scope owning the runner
       # doc/ci/runners/runners_scope.md#project-runner-ownership
-      can?(:maintainer_access, @subject.owner)
+      can?(:admin_runners, @subject.owner)
     end
 
     with_score 20
@@ -122,7 +122,7 @@ module Ci
       enable :read_runner
     end
 
-    rule { is_project_runner & maintainer_in_owner_scope }.policy do
+    rule { is_project_runner & can_admin_runners_in_owner_scope }.policy do
       enable :update_runner
     end
 

@@ -49,6 +49,7 @@ module Gitlab
           when :'Iterations::Cadence' then setup_iterations_cadence
           when :events then setup_event
           when :milestone, :milestones then ensure_milestone_title_is_unique
+          when :epic, :epics then setup_epic
           end
 
           update_group_references
@@ -79,6 +80,10 @@ module Gitlab
 
         def setup_event
           @relation_hash = {} if @relation_hash['author_id'].nil?
+        end
+
+        def setup_epic
+          @relation_hash['relative_position'] = nil
         end
 
         def ensure_milestone_title_is_unique

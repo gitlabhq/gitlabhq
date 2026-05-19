@@ -26,7 +26,7 @@ Participants are available for work items (such as issues, tasks, epics) and mer
 To view participants of a work item:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Work items**, then select your work item.
+1. In the left sidebar, select **Plan** > **Work items**, then select your work item.
 1. In the right sidebar, in the **Participants** section, view all users who
    participated in the work item.
 

@@ -16,7 +16,7 @@ module Types
           null: false,
           description: 'Operator type: equals, not_equals, AND, OR.'
 
-        field :value, GraphQL::Types::String,
+        field :value, Types::Ci::Inputs::ValueType,
           null: true,
           description: 'Expected value for comparison nodes.'
 

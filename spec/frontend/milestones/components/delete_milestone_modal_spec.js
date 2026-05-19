@@ -48,7 +48,7 @@ describe('Delete milestone modal', () => {
       jest.spyOn(axios, 'delete').mockImplementation((url) => {
         expect(url).toBe(mockProps.milestoneUrl);
         expect(eventHub.$emit).toHaveBeenCalledWith(
-          'deleteMilestoneModal.requestStarted',
+          'delete-milestone-modal-request-started',
           mockProps.milestoneUrl,
         );
         eventHub.$emit.mockReset();
@@ -60,7 +60,7 @@ describe('Delete milestone modal', () => {
       });
       await findModal().vm.$emit('primary');
       expect(visitUrl).toHaveBeenCalledWith(responseURL);
-      expect(eventHub.$emit).toHaveBeenCalledWith('deleteMilestoneModal.requestFinished', {
+      expect(eventHub.$emit).toHaveBeenCalledWith('delete-milestone-modal-request-finished', {
         milestoneUrl: mockProps.milestoneUrl,
         successful: true,
       });
@@ -78,7 +78,7 @@ describe('Delete milestone modal', () => {
         jest.spyOn(axios, 'delete').mockImplementation((url) => {
           expect(url).toBe(mockProps.milestoneUrl);
           expect(eventHub.$emit).toHaveBeenCalledWith(
-            'deleteMilestoneModal.requestStarted',
+            'delete-milestone-modal-request-started',
             mockProps.milestoneUrl,
           );
           eventHub.$emit.mockReset();
@@ -90,7 +90,7 @@ describe('Delete milestone modal', () => {
           message: alertMessage,
         });
         expect(visitUrl).not.toHaveBeenCalled();
-        expect(eventHub.$emit).toHaveBeenCalledWith('deleteMilestoneModal.requestFinished', {
+        expect(eventHub.$emit).toHaveBeenCalledWith('delete-milestone-modal-request-finished', {
           milestoneUrl: mockProps.milestoneUrl,
           successful: false,
         });

@@ -36,14 +36,127 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
       end
 
       context 'when group already has observability settings' do
-        before do
-          create(:observability_group_o11y_setting, group: group)
-        end
+        let_it_be(:o11y_setting) { create(:observability_group_o11y_setting, group: group) }
 
         it 'returns early without building a new setting' do
           get_setup_page
           expect(response).to have_gitlab_http_status(:success)
           expect(assigns(:group).observability_group_o11y_setting.persisted?).to be_truthy
+        end
+
+        describe 'hero section' do
+          context 'when no CI/CD export variable is set and no pipelines have run' do
+            it 'renders the "Enable CI/CD observability" state' do
+              get_setup_page
+
+              aggregate_failures do
+                expect(response.body).to include('Enable CI/CD observability')
+                expect(response.body).to include('Open CI/CD settings')
+              end
+            end
+          end
+
+          context 'when CI/CD export variable is set but no pipelines have finished' do
+            before do
+              create(:ci_group_variable, group: group, key: 'GITLAB_OBSERVABILITY_EXPORT', value: 'metrics,logs,traces')
+            end
+
+            it 'renders the "Ready to collect telemetry" state' do
+              get_setup_page
+
+              aggregate_failures do
+                expect(response.body).to include('Ready to collect telemetry')
+                expect(response.body).to include('View CI/CD settings')
+              end
+            end
+          end
+
+          context 'when pipelines have finished since setup' do
+            before do
+              finder = instance_double(
+                Observability::PipelinesSinceSetupExist,
+                execute: true
+              )
+              allow(Observability::PipelinesSinceSetupExist)
+                .to receive(:new).and_return(finder)
+            end
+
+            it 'renders the "pipelines are sending telemetry" state' do
+              get_setup_page
+
+              aggregate_failures do
+                expect(response.body).to include('Your CI/CD pipelines are sending telemetry')
+                expect(response.body).to include('Explore your data')
+                expect(response.body).to include(group_observability_path(group, 'dashboard'))
+              end
+            end
+          end
+        end
+
+        describe 'page layout and section order' do
+          it 'renders the connect your application section before endpoint details' do
+            get_setup_page
+
+            body = response.body
+            instrument_pos = body.index('Connect your application')
+            endpoints_pos  = body.index('Endpoint details')
+
+            aggregate_failures do
+              expect(instrument_pos).to be_present,
+                'expected "Connect your application" section to be present'
+              expect(endpoints_pos).to be_present, 'expected "Endpoint details" section to be present'
+              expect(instrument_pos).to be < endpoints_pos,
+                '"Connect your application" section should appear before endpoint details'
+            end
+          end
+
+          it 'renders OpenTelemetry language setup guides' do
+            get_setup_page
+
+            aggregate_failures do
+              expect(response.body).to include('Ruby')
+              expect(response.body).to include('Go')
+              expect(response.body).to include('Python')
+              expect(response.body).to include('Node.js')
+              expect(response.body).to include('Java')
+              expect(response.body).to include('.NET')
+            end
+          end
+
+          it 'renders CI/CD export settings before test endpoints section' do
+            get_setup_page
+
+            body = response.body
+            cicd_pos    = body.index('CI/CD export settings')
+            testing_pos = body.index('Test your endpoints')
+
+            aggregate_failures do
+              expect(cicd_pos).to be_present, 'expected CI/CD export settings section to be present'
+              expect(testing_pos).to be_present, 'expected "Test your endpoints" section to be present'
+              expect(cicd_pos).to be < testing_pos,
+                'CI/CD export settings should appear before "Test your endpoints"'
+            end
+          end
+
+          it 'collapses advanced configuration under "Non-TLS endpoints and advanced configuration"' do
+            get_setup_page
+
+            aggregate_failures do
+              expect(response.body).to include('Non-TLS endpoints and advanced configuration')
+              expect(response.body).to include('Firewall configuration')
+            end
+          end
+
+          it 'renders endpoint details before the CI/CD export settings' do
+            get_setup_page
+
+            body = response.body
+            endpoints_pos = body.index('Endpoint details')
+            cicd_pos      = body.index('CI/CD export settings')
+
+            expect(endpoints_pos).to be < cicd_pos,
+              'Endpoint details should appear before CI/CD export settings'
+          end
         end
       end
 

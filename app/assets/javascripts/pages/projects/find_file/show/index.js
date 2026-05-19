@@ -1,9 +1,9 @@
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsFindFile from '~/behaviors/shortcuts/shortcuts_find_file';
 import ProjectFindFile from '~/projects/project_find_file';
-import InitBlobRefSwitcher from '../ref_switcher';
+import { initFindFileRefSwitcher } from './init_find_file_ref_switcher';
 
-InitBlobRefSwitcher();
+initFindFileRefSwitcher();
 const findElement = document.querySelector('.js-file-finder');
 const projectFindFile = new ProjectFindFile(document.querySelector('.file-finder-holder'), {
   treeUrl: findElement.dataset.findTreeUrl,

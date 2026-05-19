@@ -28,7 +28,7 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
       it { is_expected.to eq(service_results(2, 2, 2)) }
 
       it 'consumes events' do
-        expect { execute }.to change(Projects::SyncEvent, :count).from(2).to(0)
+        expect { execute }.to change { Projects::SyncEvent.count }.from(2).to(0)
 
         expect(project1.reload.ci_project_mirror).to have_attributes(
           namespace_id: parent_group_1.id
@@ -74,7 +74,7 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
         it { is_expected.to eq(service_results(0, 0, nil)) }
 
         it 'does nothing' do
-          expect { execute }.not_to change(Projects::SyncEvent, :count)
+          expect { execute }.not_to change { Projects::SyncEvent.count }
         end
       end
 
@@ -97,7 +97,7 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
         it { is_expected.to eq(service_results(3, 2, 2)) }
 
         it 'does not delete non-executed events' do
-          expect { execute }.to change(Projects::SyncEvent, :count).from(3).to(1)
+          expect { execute }.to change { Projects::SyncEvent.count }.from(3).to(1)
           expect(@new_project_sync_event.reload).to be_persisted
         end
       end
@@ -128,7 +128,7 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
 
       shared_examples 'event consuming' do
         it 'consumes events' do
-          expect { execute }.to change(Namespaces::SyncEvent, :count).from(7).to(0)
+          expect { execute }.to change { Namespaces::SyncEvent.count }.from(7).to(0)
 
           expect(group.reload.ci_namespace_mirror).to have_attributes(
             traversal_ids: [parent_group_1.id, parent_group_2.id, group.id]
@@ -184,7 +184,7 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
 
       it 'processes the events', :aggregate_failures do
         # 2 pending events from resource1 + 2 pending events from resource2
-        expect { execute }.to change(Ci::Catalog::Resources::SyncEvent.status_pending, :count).from(4).to(0)
+        expect { execute }.to change { Ci::Catalog::Resources::SyncEvent.status_pending.count }.from(4).to(0)
 
         expect(resource1.reload.name).to eq(project1.name)
         expect(resource2.reload.name).to eq(project2.name)
@@ -220,7 +220,7 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
           resource1.destroy!
 
           # 2 pending events from resource1 + 2 pending events from resource2
-          expect { execute }.to change(Ci::Catalog::Resources::SyncEvent.status_pending, :count).from(4).to(0)
+          expect { execute }.to change { Ci::Catalog::Resources::SyncEvent.status_pending.count }.from(4).to(0)
 
           expect(resource2.reload.name).to eq(project2.name)
           expect(resource2.reload.description).to eq(project2.description)

@@ -32,7 +32,7 @@ RSpec.describe ArrayMembersValidator do
     end
   end
 
-  context 'validation message' do
+  context 'with validation message' do
     subject(:test_class) do
       Class.new do
         include ActiveModel::Model

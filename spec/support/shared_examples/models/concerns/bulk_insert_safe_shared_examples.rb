@@ -27,7 +27,7 @@ RSpec.shared_examples 'a BulkInsertSafe model' do |klass|
 
     it 'does not raise an error when method is bulk-insert safe' do
       BulkInsertSafe::ALLOWED_CALLBACKS.each do |name|
-        expect { target_class.set_callback(name) {} }.not_to raise_error
+        expect { target_class.set_callback(name) { nil } }.not_to raise_error
       end
     end
   end

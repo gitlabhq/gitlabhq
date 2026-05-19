@@ -3,8 +3,8 @@
 module API
   module Entities
     class UnleashStrategy < Grape::Entity
-      expose :name
-      expose :parameters
+      expose :name, documentation: { type: 'String' }
+      expose :parameters, documentation: { type: 'Hash' }
     end
   end
 end

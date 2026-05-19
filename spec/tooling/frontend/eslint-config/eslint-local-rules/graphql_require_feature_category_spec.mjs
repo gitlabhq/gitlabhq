@@ -1,6 +1,5 @@
 import { vi } from 'vitest';
 import { RuleTester } from 'eslint';
-// eslint-disable-next-line import/no-unresolved
 import { parser as graphqlParser } from '@graphql-eslint/eslint-plugin/parser';
 import { graphqlRequireFeatureCategory } from '../../../../../tooling/eslint-config/eslint-local-rules/graphql_require_feature_category';
 

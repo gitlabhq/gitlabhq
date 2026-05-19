@@ -15,7 +15,7 @@ module Gitlab
         def should_skip?
           return false unless @owner.is_a?(Class)
 
-          mutation_response_field? || permission_metadata_field?
+          mutation_response_field? || permission_metadata_field? || edge_wrapper_field?
         end
 
         private
@@ -24,6 +24,16 @@ module Gitlab
         # Authorization happens on the mutation field itself, not the response wrapper
         def mutation_response_field?
           !!(@owner <= ::Mutations::BaseMutation)
+        end
+
+        # Edge wrapper fields (e.g., `node`, `cursor`)
+        # Types::BaseEdge sets field_class to Types::BaseField, so the
+        # extension fires on edge fields. The `node` field picks up
+        # directives via return-type lookup, but boundary extraction
+        # fails because the auto-generated edge class is anonymous.
+        # Authorization happens on the actual data type's fields instead.
+        def edge_wrapper_field?
+          !!(@owner <= ::GraphQL::Types::Relay::BaseEdge)
         end
 
         # Permission metadata fields (e.g., `issue.userPermissions`)

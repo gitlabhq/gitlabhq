@@ -1,7 +1,0 @@
----
-name: download_project_relation_export
-description: Grants the ability to download project relation exports
-permissions:
-  - download_project_relation_export
-boundaries:
-  - project

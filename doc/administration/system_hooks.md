@@ -66,7 +66,8 @@ group changes, and repository pushes from any project.
 
 {{< history >}}
 
-- **Name** and **Description** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141977) in GitLab 16.9.
+- **Name** and **Description** text boxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141977) in GitLab 16.9.
+- **URL masking**, **Custom headers**, and **Custom webhook template** text boxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/503457) in GitLab 19.0.
 
 {{< /history >}}
 
@@ -77,22 +78,70 @@ Prerequisites:
 To create a system hook:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **System hooks**.
+1. In the left sidebar, select **System hooks**.
 1. Select **Add new webhook**.
 1. In **URL**, enter the URL of the webhook endpoint.
-   The URL must be percent-encoded if it contains one or more special characters.
-1. Optional. In **Name**, enter the name of the webhook.
-1. Optional. In **Description**, enter the description of the webhook.
-1. Optional. In **Secret token**, enter the secret token to validate requests.
+   Use percent-encoding for special characters.
+1. Optional. In the **Name** text box, enter a name for the webhook.
+1. Optional. In the **Description** text box, enter a description for the webhook.
+1. Optional. In the **Secret token** text box, enter a secret token to validate requests.
 
    The token is sent with the webhook request in the `X-Gitlab-Token` HTTP header.
-   Your webhook endpoint can check the token to verify the request is legitimate.
+   Your webhook endpoint can use this token to verify the legitimacy of the request.
 
+1. Optional. To mask sensitive portions of the URL, select **Add URL masking**.
+   For more information, see [mask sensitive portions of system hook URLs](#mask-sensitive-portions-of-system-hook-urls).
+1. Optional. To add authentication headers for external services, select **Add custom header**.
+   For more information, see [custom headers](#custom-headers).
 1. In the **Trigger** section, select the checkbox for each GitLab
-   [event](../user/project/integrations/webhook_events.md) you want to trigger the webhook.
+   [event](#optional-triggers) you want to trigger the hook.
+1. Optional. Set a **Custom webhook template** to control the request body.
+   For more information, see [custom webhook template](#custom-webhook-template).
 1. Optional. Clear the **Enable SSL verification** checkbox
    to disable [SSL verification](../user/project/integrations/_index.md#ssl-verification).
 1. Select **Add system hook**.
+
+### Mask sensitive portions of system hook URLs
+
+Masking sensitive portions of URLs for system hooks works the same as for project and group webhooks. Masked portions of
+URLs are:
+
+- Replaced with configured values when hooks are executed.
+- Not logged.
+- Encrypted at rest in the database.
+
+For more information on configuration, see project and group documentation for
+[masking sensitive portions of webhook URLs](../user/project/integrations/webhooks.md#mask-sensitive-portions-of-webhook-urls).
+
+### Custom headers
+
+Custom headers for system hooks work the same as for project and group webhooks. You can configure up to 20 custom
+headers per hook. Custom headers are shown in **Recent events** with masked values.
+
+For header requirements, see project and group documentation for
+[custom headers](../user/project/integrations/webhooks.md#custom-headers).
+
+### Optional triggers
+
+System hooks fire automatically on the [supported events](#triggered-events), such as user and
+group lifecycle changes. You can also enable these optional triggers:
+
+| Trigger                      | Description |
+|:-----------------------------|:------------|
+| **Repository update events** | A push that includes tags or multiple branches. |
+| **Push events**              | A push to any branch. |
+| **Tag push events**          | A tag is added or deleted. |
+| **Merge request events**     | A merge request is created, updated, merged, or closed. |
+
+#### Filter push events by branch
+
+Filtering push events by branch works the same as for project and group webhooks. For more information, see project and
+group documentation for [filter push events by branch](../user/project/integrations/webhooks.md#filter-push-events-by-branch).
+
+### Custom webhook template
+
+Custom webhook templates work the same as for project and group webhooks. For usage and examples, see project and group
+documentation for [custom webhook template](../user/project/integrations/webhooks.md#custom-webhook-template).
 
 ## System hook limits
 

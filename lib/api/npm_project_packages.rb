@@ -120,7 +120,7 @@ module API
       end
 
       desc 'Create or deprecate NPM package' do
-        detail 'Create was introduced in GitLab 11.8 & deprecate suppport was added in 16.0'
+        detail 'Create was introduced in GitLab 11.8 & deprecate support was added in 16.0'
         success code: 200
         failure [
           { code: 400, message: 'Bad Request' },

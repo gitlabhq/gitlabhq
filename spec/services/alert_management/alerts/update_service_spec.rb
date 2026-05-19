@@ -16,11 +16,11 @@ RSpec.describe AlertManagement::Alerts::UpdateService, feature_category: :incide
 
   describe '#execute' do
     shared_examples 'does not add a todo' do
-      specify { expect { response }.not_to change(Todo, :count) }
+      specify { expect { response }.not_to change { Todo.count } }
     end
 
     shared_examples 'does not add a system note' do
-      specify { expect { response }.not_to change(Note, :count) }
+      specify { expect { response }.not_to change { Note.count } }
     end
 
     shared_examples 'adds a system note' do |note_matcher = nil|

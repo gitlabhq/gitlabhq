@@ -289,7 +289,7 @@ end
 1. Verify that the post-deploy migration was executed on GitLab.com using ChatOps with
    `/chatops gitlab run auto_deploy status <merge_sha>`. If the output returns `db/gprd`,
    the post-deploy migration has been executed in the production database. For more information, see
-   [How to determine if a post-deploy migration has been executed on GitLab.com](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
+   [How to determine if a post-deploy migration has been executed on GitLab.com](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/database-migrations/post-deploy-migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
 1. Wait until the next week so that the FK can be validated over a weekend.
 1. Use [Database Lab](database_lab.md) to check if validation was successful.
    Ensure the output does not indicate the foreign key is `NOT VALID`.
@@ -400,19 +400,23 @@ migrating all primary keys to `bigint`, using `bigint` foreign keys
 saves time, and requires fewer steps, when migrating the parent table
 to `bigint` primary keys.
 
-## Consider `reverse_lock_order`
+## `reverse_lock_order`
 
-Consider using `reverse_lock_order` for [high traffic tables](../migration_style_guide.md#high-traffic-tables)
-Both `add_concurrent_foreign_key` and `remove_foreign_key_if_exists` take a
-boolean option `reverse_lock_order` which defaults to false.
+`add_concurrent_foreign_key`, `add_concurrent_partitioned_foreign_key`,
+`remove_foreign_key_if_exists`, and `remove_partitioned_foreign_key` all
+default to `reverse_lock_order: true`. This acquires locks in target-source
+order before the constraint operation, which prevents deadlocks with
+concurrent application transactions.
 
 You can read more about the context for this in the
 [the original issue](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67448).
 
-This can be useful where we have known queries that are also acquiring locks
-(usually row locks) on the same tables at a high frequency.
+### When deadlocks happen
 
-Consider, for example, the scenario where you want to add a foreign key like:
+Deadlocks can occur when a migration and application code acquire locks on
+the same tables in opposite order.
+
+Consider the scenario where you want to add a foreign key like:
 
 ```sql
 ALTER TABLE ONLY todos
@@ -429,27 +433,36 @@ Todo.transaction do
 end
 ```
 
-If you try to create the foreign key in between the 2 insert statements we can
-end up with a deadlock on both transactions in Postgres. Here is how it happens:
+If you try to create the foreign key in between the two insert statements,
+a deadlock can occur:
 
-1. `Note.create`: acquires a row lock on `notes`
-1. `ALTER TABLE ...` acquires a table lock on `todos`
-1. `ALTER TABLE ... FOREIGN KEY` attempts to acquire a table lock on `notes` but this blocks on the other transaction which has a row lock
-1. `Todo.create` attempts to acquire a row lock on `todos` but this blocks on the other transaction which has a table lock on `todos`
+1. `Note.create`: acquires a row lock on `notes`.
+1. `ALTER TABLE ...` acquires a table lock on `todos`.
+1. `ALTER TABLE ... FOREIGN KEY` attempts to acquire a table lock on `notes` but blocks on the other transaction which has a row lock.
+1. `Todo.create` attempts to acquire a row lock on `todos` but blocks on the other transaction which has a table lock on `todos`.
 
-This illustrates how both transactions can be stuck waiting for each other to
-finish and they will both timeout. We usually have transaction retries in our
-migrations so it is usually OK but the application code might also timeout and
-there might be an error for that user. If this application code is running very
-frequently it's possible that we will be constantly timing out the migration
-and users may also be regularly getting errors.
+Both transactions are stuck waiting for each other to finish and they both
+time out. Migration transaction retries usually handle this, but the
+application code might also time out and cause errors for users. If this
+application code runs frequently, the migration can constantly time out
+and users may regularly get errors.
+
+### Removing foreign keys
 
 The deadlock case with removing a foreign key is similar because it also
-acquires locks on both tables but a more common scenario, using the example
-above, would be a `DELETE FROM notes WHERE id = ...`. This query will acquire a
+acquires locks on both tables. A more common scenario, using the example
+above, is a `DELETE FROM notes WHERE id = ...`. This query acquires a
 lock on `notes` followed by a lock on `todos` and the exact same deadlock
-described above can happen. For this reason it's almost always best to use
-`reverse_lock_order` for removing a foreign key.
+described above can happen. `remove_foreign_key_if_exists` and
+`remove_partitioned_foreign_key` also default to `reverse_lock_order: true`
+to prevent this.
+
+### Opting out
+
+In rare cases where the foreign key points from a parent table to a child
+table (for example, `merge_requests.latest_merge_request_diff_id` referencing
+`merge_request_diffs.id`), the default lock order may not be optimal.
+You can opt out by setting `reverse_lock_order: false` explicitly.
 
 ## Updating foreign keys in migrations
 

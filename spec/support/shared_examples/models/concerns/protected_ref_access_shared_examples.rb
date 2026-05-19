@@ -13,9 +13,7 @@ RSpec.shared_examples 'protected ref access' do
 
       it { is_expected.to validate_presence_of(:access_level) }
 
-      it do
-        is_expected.to validate_uniqueness_of(:access_level).scoped_to(protected_ref_fk)
-      end
+      it { is_expected.to validate_uniqueness_of(:access_level).scoped_to(protected_ref_fk) }
     end
 
     context 'when not role?' do
@@ -27,9 +25,7 @@ RSpec.shared_examples 'protected ref access' do
 
       it { is_expected.not_to validate_inclusion_of(:access_level).in_array(described_class.allowed_access_levels) }
 
-      it do
-        is_expected.not_to validate_uniqueness_of(:access_level).scoped_to(protected_ref_fk)
-      end
+      it { is_expected.not_to validate_uniqueness_of(:access_level).scoped_to(protected_ref_fk) }
     end
   end
 

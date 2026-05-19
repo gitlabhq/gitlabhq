@@ -74,6 +74,7 @@ describe('ToolbarMoreDropdown', () => {
 
     beforeEach(() => {
       mockTextArea = document.createElement('textarea');
+      mockTextArea.classList.add('js-gfm-input');
       document.body.innerHTML = '<div class="md-area"></div>';
       document.querySelector('.md-area').appendChild(mockTextArea);
 
@@ -115,6 +116,7 @@ describe('ToolbarMoreDropdown', () => {
 
     beforeEach(() => {
       mockTextArea = document.createElement('textarea');
+      mockTextArea.classList.add('js-gfm-input');
       document.body.innerHTML = '<div class="md-area"></div>';
       document.querySelector('.md-area').appendChild(mockTextArea);
 
@@ -216,6 +218,45 @@ describe('ToolbarMoreDropdown', () => {
 
       expect(() => wrapper.vm.insertMarkdown('test')).not.toThrow();
       expect(updateText).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('with multiple textareas (immersive mode regression)', () => {
+    let titleTextarea;
+    let contentTextarea;
+
+    beforeEach(() => {
+      document.body.innerHTML = `
+        <div class="md-area">
+          <textarea id="title" class="wiki-title"></textarea>
+          <textarea id="content" class="js-gfm-input"></textarea>
+        </div>
+      `;
+
+      titleTextarea = document.getElementById('title');
+      contentTextarea = document.getElementById('content');
+      titleTextarea.value = 'My Title';
+
+      jest.spyOn(wrapper.vm.$el, 'closest').mockReturnValue(document.querySelector('.md-area'));
+    });
+
+    afterEach(() => {
+      document.body.innerHTML = '';
+    });
+
+    it('inserts horizontal rule into the content textarea, not the title textarea', async () => {
+      const btn = wrapper.findByRole('button', { name: 'Horizontal rule' });
+
+      await btn.trigger('click');
+
+      expect(updateText).toHaveBeenCalledWith({
+        textArea: contentTextarea,
+        tag: '\n---\n',
+        cursorOffset: 0,
+        wrap: false,
+      });
+
+      expect(titleTextarea.value).toBe('My Title');
     });
   });
 });

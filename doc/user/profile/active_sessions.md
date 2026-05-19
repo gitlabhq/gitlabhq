@@ -99,7 +99,7 @@ To revoke all sessions for all users:
 
    DRY_RUN = true unless defined?(DRY_RUN)
    # Replace `your-group-path` with your group ID or the full path to your group
-   GROUP_IDENTIFIER = 'your-group-path' unless defined?(GROUP_IDENTIFIER) 
+   GROUP_IDENTIFIER = 'your-group-path' unless defined?(GROUP_IDENTIFIER)
 
    # ---------------------------------------------------------------
 
@@ -215,7 +215,7 @@ To revoke all sessions for all users:
    ```
 
 1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Run the following command to target the group. Replace `your-group-path` with your group ID or the full path to your group: 
+1. Run the following command to target the group. Replace `your-group-path` with your group ID or the full path to your group:
 
    ```ruby
    GROUP_IDENTIFIER = 'your-group-path'

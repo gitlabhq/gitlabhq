@@ -59,9 +59,13 @@ depending on the specific model and feature combination.
 | GPT | [GPT-5.1](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-51) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | GPT | [GPT-5.2](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-52) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | GPT | [GPT-oss-120B](https://huggingface.co/openai/gpt-oss-120b) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |
-| GPT | [GPT-oss-20B](https://huggingface.co/openai/gpt-oss-20b) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
+| Mistral Devstral | [Devstral 2 123B](https://huggingface.co/mistralai/Devstral-2-123B-Instruct-2512) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | Mistral Codestral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | Mistral | [Mistral Small 24B Instruct 2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |
+| GLM | [GLM-5.1-FP8](https://huggingface.co/zai-org/GLM-5.1-FP8) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| Kimi | [Kimi-K2.5](https://huggingface.co/moonshotai/Kimi-K2.5) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-dashed" >}} Partial functionality |
+| Kimi | [Kimi-K2.6](https://huggingface.co/moonshotai/Kimi-K2.6) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-dashed" >}} Partial functionality |
+| MiniMax | [MiniMax-M2.7](https://huggingface.co/MiniMaxAI/MiniMax-M2.7) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-dashed" >}} Partial functionality |
 | Llama | [Llama 3 8B](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | Llama | [Llama 3.1 8B](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | Llama | [Llama 3 70B](https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality |
@@ -82,7 +86,7 @@ depending on the specific model and feature combination.
 
 {{< /history >}}
 
-You can use your own compatible models and platform with GitLab Duo features. For compatible models not included in supported model families, use the general model family. This includes models that you host yourself (for example, served through vLLM or LiteLLM), with the requirement that they are exposed through an OpenAI API–compatible `/v1` endpoint.
+You can use your own compatible models and platform with GitLab Duo Agent Platform and GitLab Duo features. For compatible models not included in supported model families, use the general model family. This includes models that you host yourself (for example, served through vLLM or LiteLLM), with the requirement that they are exposed through an OpenAI API-compatible `/v1` endpoint.
 
 Compatible models are excluded from the definition of Customer Integrated Models in the [AI Functionality Terms](https://handbook.gitlab.com/handbook/legal/ai-functionality-terms/). Compatible models and platforms must adhere to the OpenAI API specification. Models and platforms that have
 previously been marked as experimental or beta are now considered compatible models.
@@ -90,18 +94,32 @@ previously been marked as experimental or beta are now considered compatible mod
 This feature is in beta and is therefore subject to change as we gather feedback and improve the integration:
 
 - GitLab does not provide technical support for issues specific to your chosen model or platform.
-- Not all GitLab Duo features are guaranteed to work optimally with every compatible model.
+- Not all Agent Platform or GitLab Duo features are guaranteed to work optimally with every compatible model.
 - Response quality, speed, and performance overall might vary significantly based on your model choice.
 
-| Model family | Model |
-|-------------|-------|
-| General | Any model compatible with the [OpenAI API specification](https://platform.openai.com/docs/api-reference) |
+#### GitLab Duo
+
+| Model family   | Model |
+|----------------|-------|
+| General        | Any model compatible with the [OpenAI API specification](https://platform.openai.com/docs/api-reference) |
 | CodeGemma      | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b) |
 | CodeGemma      | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) |
 | CodeGemma      | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) |
 | Code Llama     | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf) |
 | DeepSeek Coder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct) |
 | DeepSeek Coder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base) |
+
+<!-- vale gitlab_base.Spelling = YES -->
+
+#### GitLab Duo Agent Platform
+
+| Model family   | Model |
+|----------------|-------|
+| General        | Any model compatible with the [OpenAI API specification](https://platform.openai.com/docs/api-reference) |
+| Gemini         | [Gemini 3.1 Pro](https://deepmind.google/models/gemini/pro/) |
+| Gemini         | [Gemini 3.0 Flash](https://deepmind.google/models/gemini/flash/) |
+| Gemma 4        | [Gemma-4-31B-IT](https://huggingface.co/google/gemma-4-31B-it) |
+| Qwen 3.6       | [Qwen3.6-35B-A3B](https://huggingface.co/Qwen/Qwen3.6-35B-A3B) |
 
 <!-- vale gitlab_base.Spelling = YES -->
 
@@ -122,7 +140,7 @@ To choose which features use GitLab-managed models, see [select a GitLab-managed
 When enabled for a specific feature:
 
 - All calls to those features configured with a GitLab-managed model use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
-- No detailed logs are generated in the GitLab-hosted AI Gateway, even when [AI logs are enabled](logging.md#turn-on-logging-for-gitlab-duo-usage-data). This prevents unintended leaks of sensitive information.
+- No detailed logs are generated in the GitLab-hosted AI Gateway, even when [AI logs are enabled](logging.md#turn-on-data-collection-for-gitlab-duo). This prevents unintended leaks of sensitive information.
 
 ## Hardware requirements
 

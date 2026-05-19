@@ -13,12 +13,6 @@ description: Manage the user lifecycle with automated account provisioning.
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8902) in GitLab 15.8.
-
-{{< /history >}}
-
 You can use the open standard System for Cross-domain Identity Management (SCIM) to automatically:
 
 - Create users.
@@ -39,7 +33,7 @@ Prerequisites:
 To configure GitLab SCIM:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **SCIM Token** section and select **Generate a SCIM token**.
 1. For configuration of your identity provider, save the:
    - Token from the **Your SCIM token** field.
@@ -47,13 +41,9 @@ To configure GitLab SCIM:
 
 ## Configure an identity provider
 
-You can configure the following as an identity provider:
-
-- [Okta](#configure-okta).
-- [Microsoft Entra ID (formerly Azure Active Directory)](#configure-microsoft-entra-id-formerly-azure-active-directory)
-
-> [!note]
-> Other identity providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
+GitLab supports SCIM with several identity providers. Other identity providers might still work with
+GitLab, but they have not been tested and are not supported. For help with an unsupported provider,
+contact the provider directly. GitLab Support can help review related log entries.
 
 ### Configure Okta
 
@@ -91,7 +81,7 @@ To configure Okta for SCIM:
 1. Select **Save**.
 1. Assign users in the **Assignments** tab. Assigned users are created and managed in your GitLab group.
 
-### Configure Microsoft Entra ID (formerly Azure Active Directory)
+### Configure Microsoft Entra ID
 
 {{< history >}}
 
@@ -178,7 +168,7 @@ Next, provision the users:
 > While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
 > your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
 
-While [configuring Entra ID for SCIM](#configure-microsoft-entra-id-formerly-azure-active-directory), you configure
+While configuring Entra ID for SCIM, you configure
 attribute mappings. For an example, see [example configuration](../../user/group/saml_sso/example_saml_config.md#scim-mapping).
 
 The following table provides attribute mappings that are required for GitLab.
@@ -239,7 +229,7 @@ the GitLab instance, while the SCIM identity remains linked to the GitLab user.
 To update the user SCIM identity, use the
 [internal GitLab SCIM API](../../development/internal_api/_index.md#update-a-single-scim-provisioned-user-1).
 
-### Reactivate access
+## Reactivate access
 
 {{< history >}}
 

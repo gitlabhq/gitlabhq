@@ -446,7 +446,7 @@ curl --request DELETE \
 
 ## Instance-wide endpoints
 
-Beside the group- and project-specific GitLab APIs explained previously,
+Besides the group- and project-specific GitLab APIs explained previously,
 the container registry has its own endpoints.
 To query those, follow the Registry's built-in mechanism to obtain and use an
 [authentication token](https://distribution.github.io/distribution/spec/auth/token/).
@@ -465,12 +465,11 @@ You must specify the correct
 to retrieve a valid token:
 
 ```shell
-$ SCOPE="repository:${CI_REGISTRY_IMAGE}:delete" #or push,pull
+SCOPE="repository:${CI_PROJECT_PATH}:delete" # or push, pull
 
-$ curl --request GET \
-    --user "${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" \
-    --url "https://gitlab.example.com/jwt/auth?service=container_registry&scope=${SCOPE}"
-{"token":" ... "}
+curl --request GET \
+  --user "${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" \
+  --url "${CI_SERVER_URL}/jwt/auth?service=container_registry&scope=${SCOPE}"
 ```
 
 ### Delete image tags by reference

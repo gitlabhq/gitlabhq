@@ -64,7 +64,7 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu, feature_category: :naviga
   end
 
   context 'Menu items' do
-    subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
+    subject { described_class.new(context).renderable_items.find { |e| e.item_id == item_id } }
 
     shared_examples 'access rights checks' do
       it { is_expected.not_to be_nil }
@@ -73,6 +73,79 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu, feature_category: :naviga
         let(:user) { nil }
 
         it { is_expected.to be_nil }
+      end
+    end
+
+    context 'with observability explorer items' do
+      let_it_be(:group) { create(:group) }
+      let_it_be_with_refind(:project) { create(:project, group: group) }
+
+      let(:user) { project.first_owner }
+
+      before do
+        stub_feature_flags(observability_sass_features: project.group)
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?)
+          .with(user, :read_observability_portal, project.group)
+          .and_return(true)
+      end
+
+      shared_examples 'observability explorer menu item' do
+        it { is_expected.not_to be_nil }
+
+        context 'when the user does not have access' do
+          let(:user) { nil }
+
+          before do
+            allow(Ability).to receive(:allowed?)
+              .with(nil, :read_observability_portal, project.group)
+              .and_return(false)
+          end
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when user does not have read_observability_portal permission' do
+          before do
+            allow(Ability).to receive(:allowed?)
+              .with(user, :read_observability_portal, project.group)
+              .and_return(false)
+          end
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when project does not belong to a group' do
+          let_it_be_with_refind(:project) { create(:project) }
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when observability_sass_features feature flag is disabled' do
+          before do
+            stub_feature_flags(observability_sass_features: false)
+          end
+
+          it { is_expected.to be_nil }
+        end
+      end
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:item_id, :expected_title, :expected_link_path) do
+        :traces_explorer  | s_('Observability|Traces')  | '/-/observability/traces-explorer'
+        :metrics_explorer | s_('Observability|Metrics') | '/-/observability/metrics-explorer/summary'
+        :logs_explorer    | s_('Observability|Logs')    | '/-/observability/logs/logs-explorer'
+      end
+
+      with_them do
+        it_behaves_like 'observability explorer menu item'
+
+        it 'has the correct title and link' do
+          item = described_class.new(context).renderable_items.find { |e| e.item_id == item_id }
+          expect(item.title).to eq expected_title
+          expect(item.link).to include(expected_link_path)
+        end
       end
     end
 

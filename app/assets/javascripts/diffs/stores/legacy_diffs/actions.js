@@ -73,6 +73,9 @@ import {
   parseUrlHashAsFileHash,
   isUrlHashNoteLink,
   findDiffFile,
+  parseRapidDiffsLineHash,
+  findDiffFileByShortHash,
+  findLineCodeFromRapidDiffsHash,
 } from '../../store/utils';
 
 export function setBaseConfig(options) {
@@ -219,6 +222,7 @@ export function fetchDiffFilesBatch(linkedFileLoading = false) {
     view: 'inline',
   };
   const hash = window.location.hash.replace('#', '').split('diff-content-').pop();
+  const rapidDiffsHash = parseRapidDiffsLineHash(hash);
   let totalLoaded = 0;
   let scrolledVirtualScroller = hash === '';
 
@@ -238,10 +242,27 @@ export function fetchDiffFilesBatch(linkedFileLoading = false) {
         this[types.SET_BATCH_LOADING_STATE]('loaded');
 
         if (!scrolledVirtualScroller && !linkedFileLoading) {
-          const index = this.diffFiles.findIndex(
+          let index = this.diffFiles.findIndex(
             (f) =>
               f.file_hash === hash || f[INLINE_DIFF_LINES_KEY].find((l) => l.line_code === hash),
           );
+
+          if (index < 0 && rapidDiffsHash) {
+            const matchedFile = findDiffFileByShortHash(
+              this.diffFiles,
+              rapidDiffsHash.shortFileHash,
+            );
+            if (matchedFile) {
+              index = this.diffFiles.indexOf(matchedFile);
+              const legacyLineCode = findLineCodeFromRapidDiffsHash(matchedFile, rapidDiffsHash);
+              if (legacyLineCode) {
+                window.history.replaceState(null, null, `#${legacyLineCode}`);
+                this[types.SET_HIGHLIGHTED_ROW](legacyLineCode);
+                this[types.SET_CURRENT_DIFF_FILE](matchedFile.file_hash);
+                setTimeout(() => handleLocationHash());
+              }
+            }
+          }
 
           if (index >= 0) {
             eventHub.$emit('scrollToIndex', index);
@@ -396,7 +417,12 @@ export function setHighlightedRow({ lineCode, event }) {
     event.preventDefault();
     window.history.replaceState(null, undefined, removeParams(['file'], event.target.href));
   }
-  const fileHash = lineCode.split('_')[0];
+  const rapidDiffsHash = parseRapidDiffsLineHash(lineCode);
+  let fileHash = lineCode.split('_')[0];
+  if (rapidDiffsHash) {
+    const matchedFile = findDiffFileByShortHash(this.diffFiles, rapidDiffsHash.shortFileHash);
+    fileHash = matchedFile?.file_hash || fileHash;
+  }
   this[types.SET_HIGHLIGHTED_ROW](lineCode);
   this[types.SET_CURRENT_DIFF_FILE](fileHash);
 
@@ -1094,6 +1120,7 @@ export function fetchLinkedFile(linkedFileUrl) {
   const isNoteLink = isUrlHashNoteLink(window?.location?.hash);
   const [, fragmentFileHash, oldNumber, newNumber] =
     window.location.hash.substring(1).match(/^([0-9a-f]{40})_([0-9]+)_([0-9]+)$/) || [];
+  const rapidDiffsHash = parseRapidDiffsLineHash(window.location.hash);
 
   this[types.SET_BATCH_LOADING_STATE]('loading');
   this[types.SET_RETRIEVING_BATCHES](true);
@@ -1119,6 +1146,18 @@ export function fetchLinkedFile(linkedFileUrl) {
           oldLine: parseInt(oldNumber, 10),
           newLine: parseInt(newNumber, 10),
         });
+      }
+
+      if (rapidDiffsHash) {
+        const matchedFile = findDiffFileByShortHash(
+          diffData.diff_files,
+          rapidDiffsHash.shortFileHash,
+        );
+        const legacyLineCode = findLineCodeFromRapidDiffsHash(matchedFile, rapidDiffsHash);
+        if (legacyLineCode) {
+          window.history.replaceState(null, null, `#${legacyLineCode}`);
+          this[types.SET_HIGHLIGHTED_ROW](legacyLineCode);
+        }
       }
 
       this[types.SET_BATCH_LOADING_STATE]('loaded');

@@ -5,13 +5,13 @@ module API
     module Ml
       module Mlflow
         class RegisteredModel < Grape::Entity
-          expose :name
+          expose :name, documentation: { type: 'String' }
           expose :creation_timestamp, documentation: { type: 'Integer' }
           expose :last_updated_timestamp, documentation: { type: 'Integer' }
-          expose :description
-          expose(:user_id) { |model| model.user_id.to_s }
-          expose :metadata, as: :tags, using: KeyValue
-          expose :versions, as: :latest_versions, using: ModelVersion
+          expose :description, documentation: { type: 'String' }
+          expose(:user_id, documentation: { type: 'String' }) { |model| model.user_id.to_s }
+          expose :metadata, as: :tags, using: ::API::Entities::Ml::Mlflow::KeyValue, documentation: { is_array: true }
+          expose :versions, as: :latest_versions, using: ::API::Entities::Ml::Mlflow::ModelVersion, documentation: { is_array: true }
 
           private
 

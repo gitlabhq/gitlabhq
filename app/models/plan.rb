@@ -52,12 +52,9 @@ class Plan < ApplicationRecord
     DEFAULT_PLANS
   end
 
-  # rubocop: disable Database/AvoidUsingPluckWithoutLimit -- This method is prepared for manual usage in
-  # Rails console on SaaS. Using pluck without limit in this case should be enough safe.
-  def self.ids_for_names(names)
-    where(name: names).pluck(:id)
+  def self.uids_for_names(names)
+    names.filter_map { |name| plan_name_uids[name] }
   end
-  # rubocop: enable Database/AvoidUsingPluckWithoutLimit
 
   # rubocop: disable Database/AvoidUsingPluckWithoutLimit -- This method is prepared for manual usage in
   # Rails console on SaaS. Using pluck without limit in this case should be enough safe.
@@ -66,9 +63,12 @@ class Plan < ApplicationRecord
   end
   # rubocop: enable Database/AvoidUsingPluckWithoutLimit
 
-  def self.plan_name_uids_for_ids(plan_ids)
-    id_in(plan_ids).map(&:plan_name_uid_before_type_cast)
+  # rubocop: disable Database/AvoidUsingPluckWithoutLimit -- This method is prepared for manual usage in
+  # Rails console on SaaS. Using pluck without limit in this case should be enough safe.
+  def self.ids_for_plan_name_uids(uids)
+    where(plan_name_uid: uids).pluck(:id)
   end
+  # rubocop: enable Database/AvoidUsingPluckWithoutLimit
 
   def actual_limits
     limits || build_limits

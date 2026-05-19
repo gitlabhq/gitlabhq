@@ -21,7 +21,7 @@ RSpec.describe Clusters::Agents::CreateActivityEventService, feature_category: :
     subject { described_class.new(agent, **params).execute }
 
     it 'creates an activity event record' do
-      expect { subject }.to change(agent.activity_events, :count).from(0).to(1)
+      expect { subject }.to change { agent.activity_events.count }.from(0).to(1)
 
       event = agent.activity_events.last
 

@@ -5,7 +5,7 @@ FactoryBot.define do
     sequence(:client_key) { |n| "atlassian-client-key-#{n}" }
     shared_secret { 'jrNarHaRYaumMvfV3UnYpwt8' }
     base_url { 'https://sample.atlassian.net' }
-    organization { association(:organization) }
+    organization { association(:common_organization) }
     display_url { 'https://custom.example.com' }
   end
 end

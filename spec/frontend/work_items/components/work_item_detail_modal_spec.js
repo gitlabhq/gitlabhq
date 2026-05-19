@@ -84,7 +84,7 @@ describe('WorkItemDetailModal component', () => {
       workItemId,
       workItemIid: '1',
       workItemFullPath: '',
-      isDrawer: false,
+      isDetailPanel: false,
       isBoard: false,
     });
   });

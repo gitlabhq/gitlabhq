@@ -11,6 +11,12 @@ import {
   BASE_ADDITIONAL_PROPERTIES,
 } from './constants';
 
+export const parseToNumeric = (value) => {
+  if (value == null || value === '') return undefined;
+  const parsed = Number(value);
+  return Number.isNaN(parsed) ? undefined : parsed;
+};
+
 export const addExperimentContext = (opts) => {
   const { experiment, ...options } = opts;
 
@@ -37,7 +43,8 @@ export const createEventPayload = (el, { suffix = '' } = {}) => {
   } = el?.dataset || {};
 
   const action = `${trackAction}${suffix || ''}`;
-  let value = trackValue || el.value || undefined;
+  let value = trackValue ?? el.value;
+  value = parseToNumeric(value);
 
   if (el.type === 'checkbox' && !el.checked) {
     value = 0;
@@ -90,13 +97,14 @@ export const createInternalEventPayload = (el) => {
     console.error('Failed to parse eventAdditional attribute:', eventAdditional);
   }
 
+  const parsedEventValue = parseToNumeric(eventValue);
   return {
     event: eventTracking,
     additionalProperties: omitBy(
       {
         label: eventLabel,
         property: eventProperty,
-        value: parseInt(eventValue, 10) || undefined,
+        value: parsedEventValue,
         ...parsedEventAdditional,
       },
       isUndefined,
@@ -164,7 +172,11 @@ export const getReferrersCache = () => {
 export const addReferrersCacheEntry = (cache, entry) => {
   const referrers = JSON.stringify([{ ...entry, timestamp: Date.now() }, ...cache]);
 
-  window.localStorage.setItem(URLS_CACHE_STORAGE_KEY, referrers);
+  try {
+    window.localStorage.setItem(URLS_CACHE_STORAGE_KEY, referrers);
+  } catch {
+    // localStorage may be full or unavailable; tracking is best-effort.
+  }
 };
 
 function validateProperty(obj, key, allowedTypes) {

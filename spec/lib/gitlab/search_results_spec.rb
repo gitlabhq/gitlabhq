@@ -348,7 +348,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
           expect(results.objects('projects')).to eq([unarchived_result])
         end
 
-        context 'when the query is Gitlab::Search::Params::MIN_TERM_LENGTH characters long' do
+        context 'when the query is Search::Params::MIN_TERM_LENGTH characters long' do
           let(:query) { 'Te' }
 
           it 'returns the project' do
@@ -356,7 +356,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
           end
         end
 
-        context 'when the query is less than Gitlab::Search::Params::MIN_TERM_LENGTH characters long' do
+        context 'when the query is less than Search::Params::MIN_TERM_LENGTH characters long' do
           let(:query) { 'T' }
 
           it 'does not return the project' do

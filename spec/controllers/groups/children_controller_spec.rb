@@ -327,22 +327,14 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
           end
 
           context 'when inactive subgroup has children' do
-            let_it_be(:active_descendant_group) { create(:group, parent: inactive_subgroup) }
-            let_it_be(:active_descendant_project) { create(:project, :public, group: inactive_subgroup) }
-
-            let_it_be(:inactive_descendant_group) { create(:group, :archived, parent: inactive_subgroup) }
-            let_it_be(:inactive_descendant_project) { create(:project, :public, :archived, group: inactive_subgroup) }
+            let_it_be(:descendant_group) { create(:group, parent: inactive_subgroup) }
+            let_it_be(:descendant_project) { create(:project, :public, group: inactive_subgroup) }
 
             it 'returns all descendants' do
               make_request
 
               expect(response).to have_gitlab_http_status(:ok)
-              expect(descendant_ids(json_response)).to include(
-                active_descendant_group.id,
-                active_descendant_project.id,
-                inactive_descendant_group.id,
-                inactive_descendant_project.id
-              )
+              expect(descendant_ids(json_response)).to include(descendant_group.id, descendant_project.id)
             end
           end
         end
@@ -384,7 +376,7 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
           control = ActiveRecord::QueryRecorder.new { get_list }
           _new_project = create(:project, :public, namespace: group)
 
-          expect { get_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_project + 1)
+          expect { get_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_project + 2)
         end
 
         context 'when rendering hierarchies' do

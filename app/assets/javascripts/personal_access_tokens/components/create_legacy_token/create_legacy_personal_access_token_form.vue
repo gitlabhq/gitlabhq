@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-  <created-personal-access-token v-if="token" v-model="token" />
+  <created-personal-access-token v-if="token" :token="token" :href="accessTokenTableUrl" />
 
   <div v-else>
     <page-heading :heading="$options.i18n.heading">

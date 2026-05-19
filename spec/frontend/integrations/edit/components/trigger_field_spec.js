@@ -1,17 +1,17 @@
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { shallowMount } from '@vue/test-utils';
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 
 import TriggerField from '~/integrations/edit/components/trigger_field.vue';
 import { integrationTriggerEventTitles } from '~/integrations/constants';
+import { useIntegrationForm } from '~/integrations/edit/store';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('TriggerField', () => {
   let wrapper;
-  let store;
 
   const defaultProps = {
     event: { name: 'push_events' },
@@ -20,15 +20,16 @@ describe('TriggerField', () => {
   const mockField = { name: 'push_channel' };
 
   const createComponent = ({ props = {}, isInheriting = false } = {}) => {
-    store = new Vuex.Store({
-      getters: {
-        isInheriting: () => isInheriting,
-      },
+    const pinia = createTestingPinia({ stubActions: false });
+    const store = useIntegrationForm();
+    Object.assign(store, {
+      defaultState: isInheriting ? {} : null,
+      override: !isInheriting,
     });
 
     wrapper = shallowMount(TriggerField, {
       propsData: { ...defaultProps, ...props },
-      store,
+      pinia,
     });
   };
 

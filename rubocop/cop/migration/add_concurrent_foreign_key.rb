@@ -10,6 +10,7 @@ module RuboCop
       class AddConcurrentForeignKey < RuboCop::Cop::Base
         include MigrationHelpers
 
+        RESTRICT_ON_SEND = %i[add_foreign_key].freeze
         MSG = '`add_foreign_key` requires downtime, use `add_concurrent_foreign_key` instead'
 
         # @!method false_node?(node)
@@ -24,10 +25,6 @@ module RuboCop
 
         def on_send(node)
           return unless in_migration?(node)
-
-          name = node.children[1]
-
-          return unless name == :add_foreign_key
           return if in_with_lock_retries?(node)
           return if not_valid_fk?(node)
 

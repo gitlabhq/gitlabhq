@@ -1,0 +1,6 @@
+---
+event: MergeRequests::DraftStateChangeEvent
+description: Published when an MR title update toggles the "Draft:" prefix and the
+  draft status actually changes. Title updates that leave the draft state unchanged
+  do not fire it.
+feature_category: code_review_workflow

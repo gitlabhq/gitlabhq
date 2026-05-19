@@ -48,7 +48,7 @@ Epics often need detailed specifications that are too long for an epic descripti
 Keep the full documentation in a wiki:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Wiki**.
+1. In the left sidebar, select **Plan** > **Wiki**.
 1. Create a wiki page with your detailed requirements (for example, with slug `product-requirements`).
 1. In the top bar, select **Search or go to** and find your project's group.
 1. Select **Plan** > **Work items**.

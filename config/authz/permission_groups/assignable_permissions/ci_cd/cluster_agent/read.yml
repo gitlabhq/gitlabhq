@@ -3,5 +3,7 @@ name: read_cluster_agent
 description: Grants the ability to read cluster agents
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - read_cluster_agent

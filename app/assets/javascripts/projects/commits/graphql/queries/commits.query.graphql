@@ -6,11 +6,21 @@ query getCommitList(
   $after: String
   $author: String
   $query: UntrustedRegexp
+  $committedAfter: Time
+  $committedBefore: Time
 ) {
   project(fullPath: $projectPath) {
     id
     repository {
-      commits(ref: $ref, first: $first, after: $after, author: $author, query: $query) {
+      commits(
+        ref: $ref
+        first: $first
+        after: $after
+        author: $author
+        query: $query
+        committedAfter: $committedAfter
+        committedBefore: $committedBefore
+      ) {
         pageInfo {
           hasNextPage
           hasPreviousPage
@@ -26,6 +36,7 @@ query getCommitList(
           description
           webPath
           webUrl
+          tags
           authoredDate
           authorName
           authorGravatar

@@ -19,10 +19,13 @@ module Authz
 
       def execute
         return success unless should_check_authorization?
-        return disabled_error unless feature_enabled?
+        return disabled_error if token.granular? && !feature_enabled?
+        return resource_not_found_error if resource_unresolved?
         return missing_inputs_error unless missing_inputs.empty?
+        return success if authorized?
+        return resource_not_found_error if hidden_boundary
 
-        authorized? ? success : access_denied_error
+        access_denied_error
       end
 
       private
@@ -60,23 +63,39 @@ module Authz
         Feature.enabled?(:granular_personal_access_tokens, token.user)
       end
 
+      def granular_token_required?
+        return false unless feature_enabled?
+        return false unless token.legacy?
+
+        root_namespaces.any?(&:granular_tokens_enforced?)
+      end
+
+      def root_namespaces
+        root_namespace_ids = boundaries.filter_map { |b| b.namespace&.traversal_ids&.first }.uniq
+        return [] if root_namespace_ids.empty?
+
+        Namespace.id_in(root_namespace_ids).with_namespace_settings.to_a
+      end
+
       def boundaries_by_priority
         boundaries.sort_by { |b| BOUNDARY_TYPE_ORDER.fetch(b.type_label.to_sym, BOUNDARY_TYPE_ORDER.size) }
       end
       strong_memoize_attr :boundaries_by_priority
 
       def authorized?
-        boundaries_by_priority.any? do |boundary|
-          missing_permissions_by_boundary[boundary].empty?
-        end
+        boundary_evaluations.values.any? { |eval| eval[:missing].empty? }
+      end
+
+      def hidden_boundary
+        boundaries_by_priority.find { |boundary| !token.can?(:read_boundary, boundary) }
+      end
+
+      def resource_unresolved?
+        boundaries.empty? && permissions.present?
       end
 
       def token_supports_granular_permissions?
         token.respond_to?(:granular?) && token.respond_to?(:can?)
-      end
-
-      def granular_token_required?
-        false # to be implemented as a namespace setting
       end
 
       def missing_inputs
@@ -84,16 +103,14 @@ module Authz
       end
       strong_memoize_attr :missing_inputs
 
-      def missing_permissions_by_boundary
+      def boundary_evaluations
         boundaries_by_priority.each_with_object({}) do |boundary, memo|
-          next memo if memo.values.any?(&:empty?) # short-circuit if token is already authorized on a boundary
-
-          memo[boundary] = permissions.reject do |permission|
-            token.can?(permission, boundary)
-          end
+          missing = permissions.reject { |permission| token.can?(permission, boundary) }
+          memo[boundary] = { missing: missing }
+          break memo if missing.empty?
         end
       end
-      strong_memoize_attr :missing_permissions_by_boundary
+      strong_memoize_attr :boundary_evaluations
 
       def disabled_error
         error "Access denied: Fine-grained #{token_type.pluralize} are not yet supported."
@@ -108,13 +125,17 @@ module Authz
       end
 
       def access_denied_error
-        boundary, missing_perms = missing_permissions_by_boundary.find { |_, m| m.any? }
-        perms = missing_perms.map do |permission|
+        boundary, eval = boundary_evaluations.find { |_, e| e[:missing].any? }
+        perms = eval[:missing].map do |permission|
           assignable = Authz::PermissionGroups::Assignable.for_permission(permission).first
           "#{assignable.resource_name}: #{assignable.action.titleize}"
         end.uniq.sort.join(', ')
         error "Access denied: This operation requires a fine-grained #{token_type} " \
           "with the following #{boundary.type_label} permissions: [#{perms}]."
+      end
+
+      def resource_not_found_error
+        ::ServiceResponse.error(message: '404 Not Found', reason: :resource_not_found)
       end
 
       def token_type

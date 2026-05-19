@@ -1,0 +1,67 @@
+---
+name: ci_finished_pipelines
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree PARTITION BY toYear(finished_at) ORDER BY id SETTINGS
+  index_granularity = 8192, deduplicate_merge_projection_mode = 'rebuild'
+partition_key: toYear(finished_at)
+primary_key: id
+sorting_key: id
+settings:
+  index_granularity: '8192'
+  deduplicate_merge_projection_mode: "'rebuild'"
+columns:
+- name: id
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'0/'"
+- name: committed_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: started_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: finished_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: '0'
+  is_in_partition_key: true
+- name: duration
+  type: UInt64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: date
+  type: Date32
+  default_kind: MATERIALIZED
+  default_expression: toStartOfMonth(finished_at)
+- name: status
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: source
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: ref
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: name
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: is_default_branch
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'

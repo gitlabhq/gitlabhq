@@ -3,5 +3,7 @@ name: read_experiment
 description: Grants the ability to read experiments
 boundaries:
   - instance
+available_for:
+  - granular_access_token
 permissions:
   - read_experiment

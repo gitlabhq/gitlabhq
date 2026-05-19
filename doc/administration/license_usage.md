@@ -46,5 +46,5 @@ offline environment, you must provide GitLab with this information.
 > Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](license_file.md#submit-license-usage-data).
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Subscription**.
+1. In the left sidebar, select **Subscription**.
 1. In the upper-right corner, select **Export license usage file**.

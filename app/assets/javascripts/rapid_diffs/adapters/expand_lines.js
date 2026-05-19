@@ -5,12 +5,12 @@ import { s__ } from '~/locale';
 import { EXPANDED_LINES } from '~/rapid_diffs/adapter_events';
 
 const getSurroundingLines = (hunkHeaderRow) => {
-  const wrapperElements = Array.from(hunkHeaderRow.parentElement.children);
-  const rowIndex = wrapperElements.indexOf(hunkHeaderRow);
-  const lineBefore = wrapperElements.slice(0, rowIndex).findLast((el) => 'hunkLines' in el.dataset);
-  const lineAfter = wrapperElements
-    .slice(rowIndex, wrapperElements.length)
-    .find((el) => 'hunkLines' in el.dataset);
+  const allRows = Array.from(
+    hunkHeaderRow.closest('table').querySelectorAll('[data-hunk-lines], [data-hunk-header]'),
+  );
+  const headerIndex = allRows.indexOf(hunkHeaderRow);
+  const lineBefore = allRows.slice(0, headerIndex).findLast((el) => 'hunkLines' in el.dataset);
+  const lineAfter = allRows.slice(headerIndex + 1).find((el) => 'hunkLines' in el.dataset);
   return [lineBefore, lineAfter].map((lineRow) => (lineRow ? new DiffLineRow(lineRow) : null));
 };
 

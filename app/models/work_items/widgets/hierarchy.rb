@@ -25,13 +25,13 @@ module WorkItems
       end
 
       def rolled_up_counts_by_type
-        work_item.work_item_type.descendant_types.map do |descendant_type|
+        work_item.work_item_type.descendant_types(resource_parent: work_item.resource_parent).map do |descendant_type|
           { work_item_type: descendant_type, counts_by_state: counts_by_state(descendant_type) }
         end
       end
 
       def depth_limit_reached_by_type
-        work_item.work_item_type.descendant_types.map do |child_type|
+        work_item.work_item_type.descendant_types(resource_parent: work_item.resource_parent).map do |child_type|
           { work_item_type: child_type, depth_limit_reached: work_item.max_depth_reached?(child_type) }
         end
       end

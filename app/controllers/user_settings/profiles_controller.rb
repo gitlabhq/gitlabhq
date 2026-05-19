@@ -65,7 +65,6 @@ module UserSettings
         :mastodon,
         :name,
         :orcid,
-        :user_detail_organization,
         :company,
         :private_profile,
         :pronouns,

@@ -42,7 +42,8 @@ module QA
         # The target branch is also created and new pipeline respectively
         aggregate_failures do
           expect(project).to have_branch(new_branch_name)
-          expect { project.pipelines.size > 1 }.to eventually_be_truthy
+
+          expect { project.pipelines.size > 1 }.to eventually_be_truthy.within(max_duration: 60, sleep_interval: 5)
         end
       end
 

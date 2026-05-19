@@ -8,7 +8,12 @@ class ApplicationSetting < ApplicationRecord
   include Sanitizable
   include Gitlab::EncryptedAttribute
   include IgnorableColumns
+  include SafelyChangeColumnDefault
 
+  columns_changing_default :tool_approval_for_session_enabled
+
+  ignore_column :container_registry_data_repair_detail_worker_max_concurrency,
+    remove_with: '19.2', remove_after: '2026-06-22'
   ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
   ignore_column :lock_model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
 
@@ -332,6 +337,18 @@ class ApplicationSetting < ApplicationRecord
       less_than_or_equal_to: Commit::MAX_DIFF_LINES_SETTING_UPPER_BOUND
     }
 
+  validates :diff_max_versions,
+    numericality: {
+      only_integer: true,
+      greater_than: 0
+    }
+
+  validates :diff_max_commits,
+    numericality: {
+      only_integer: true,
+      greater_than: 0
+    }
+
   validates :user_default_internal_regex, js_regex: true, allow_nil: true
   validates :default_preferred_language, presence: true, inclusion: { in: Gitlab::I18n.available_locales }
 
@@ -397,6 +414,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :wiki_page_max_content_bytes, numericality: { only_integer: true, greater_than_or_equal_to: 1.kilobyte }
   validates :wiki_asciidoc_allow_uri_includes, inclusion: { in: [true, false], message: N_('must be a boolean value') }
+  validates :secrets_manager_instance_enrolled, inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :email_restrictions, untrusted_regexp: true
 
@@ -595,7 +613,7 @@ class ApplicationSetting < ApplicationRecord
   validates :integrations, json_schema: { filename: "application_setting_integrations" }
 
   jsonb_accessor :topology_service_settings,
-    topology_service_concurrency_limit: [:integer, { default: 200 }]
+    topology_service_concurrency_limit: [:integer, { default: 40 }]
 
   validates :topology_service_settings, json_schema: { filename: "application_setting_topology_service_settings" }
 
@@ -666,7 +684,6 @@ class ApplicationSetting < ApplicationRecord
       :ci_max_includes,
       :ci_max_total_yaml_size_bytes,
       :container_registry_cleanup_tags_service_max_list_size,
-      :container_registry_data_repair_detail_worker_max_concurrency,
       :container_registry_delete_tags_service_timeout,
       :container_registry_expiration_policies_worker_capacity,
       :decompress_archive_file_timeout,
@@ -755,6 +772,17 @@ class ApplicationSetting < ApplicationRecord
     future_date: true,
     if: :granular_tokens_enforced_after_changed?
 
+  jsonb_accessor :diff_limits,
+    diff_max_versions: [:integer, { default: 1_000 }],
+    diff_max_commits: [:integer, { default: 1_000_000 }]
+
+  validates :diff_limits, json_schema: { filename: "application_setting_diff_limits" }
+
+  jsonb_accessor :mcp_server_settings,
+    mcp_server_enabled: [:boolean, { default: true }]
+
+  validates :mcp_server_settings, json_schema: { filename: "application_setting_mcp_server_settings" }
+
   jsonb_accessor :group_settings,
     top_level_group_creation_enabled: [:boolean, { default: true }],
     disable_invite_members: [:boolean, { default: false }]
@@ -809,7 +837,6 @@ class ApplicationSetting < ApplicationRecord
   validates :sign_in_restrictions, json_schema: { filename: 'application_setting_sign_in_restrictions' }
 
   jsonb_accessor :search,
-    global_search_issues_enabled: [:boolean, { default: true }],
     global_search_work_items_enabled: [:boolean, { default: true }],
     global_search_merge_requests_enabled: [:boolean, { default: true }],
     global_search_snippet_titles_enabled: [:boolean, { default: true }],
@@ -856,8 +883,6 @@ class ApplicationSetting < ApplicationRecord
   validates :helm_max_packages_count,
     presence: true,
     numericality: { only_integer: true, greater_than: 0 }
-
-  jsonb_accessor :oauth_provider, ropc_without_client_credentials: [:boolean, { default: true }]
 
   validates :package_registry, json_schema: { filename: 'application_setting_package_registry' }
 
@@ -1244,7 +1269,7 @@ class ApplicationSetting < ApplicationRecord
     HUMANIZED_ATTRIBUTES[attribute.to_sym] || super
   end
 
-  # overriden in EE
+  # overridden in EE
   def self.rate_limits_definition
     {
       autocomplete_users_limit: [:integer, { default: 300 }],
@@ -1350,6 +1375,12 @@ class ApplicationSetting < ApplicationRecord
 
   def custom_default_search_scope_set?
     ::Search::Scopes.all_scope_names.include?(default_search_scope)
+  end
+
+  def granular_tokens_enforced?
+    return false unless Feature.enabled?(:granular_personal_access_tokens_enforcement, :instance)
+
+    enforce_granular_tokens? && granular_tokens_enforced_after <= Date.current
   end
 
   private

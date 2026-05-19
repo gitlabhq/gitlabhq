@@ -297,7 +297,9 @@ module Ci
       end
 
       before_transition any => :failed do |pipeline, transition|
-        transition.args.first.try do |reason|
+        positional_args, _ = pipeline.class.parse_transition_args(transition)
+
+        positional_args.first.try do |reason|
           pipeline.failure_reason = reason
         end
       end
@@ -307,7 +309,13 @@ module Ci
       end
 
       after_transition any => [:success] do |pipeline|
-        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
+        pipeline.run_after_commit do
+          PipelineMetricsWorker.perform_async(pipeline.id)
+
+          unless Ci::ProjectMetric.first_pipeline_success_recorded?(pipeline.project_id)
+            Ci::TrackFirstPipelineSucceededWorker.perform_async(pipeline.id)
+          end
+        end
       end
 
       after_transition any => UNLOCKABLE_STATUSES do |pipeline|
@@ -327,6 +335,8 @@ module Ci
       after_transition do |pipeline, transition|
         next if transition.loopback?
 
+        _, keyword_args = pipeline.class.parse_transition_args(transition)
+
         pipeline.run_after_commit do
           unless pipeline.user&.blocked?
             Gitlab::AppLogger.info(
@@ -345,11 +355,9 @@ module Ci
             ::JiraConnect::SyncBuildsWorker.perform_async(pipeline.id, seq_id)
           end
 
-          if Feature.enabled?(:ci_expire_pipeline_cache_workers, pipeline.project)
-            Ci::ExpirePipelineCacheWorker.perform_async(pipeline.id, { 'partition_id' => pipeline.partition_id })
-          else
-            Ci::ExpirePipelineCacheService.new.execute(pipeline) # rubocop: disable CodeReuse/ServiceClass
-          end
+          next if keyword_args[:skip_cache_expiration]
+
+          Ci::ExpirePipelineCacheService.new.execute(pipeline) # rubocop: disable CodeReuse/ServiceClass
         end
       end
 
@@ -508,6 +516,7 @@ module Ci
     scope :created_after, ->(time) { where(arel_table[:created_at].gt(time)) }
     scope :created_on_or_after, ->(time) { where(arel_table[:created_at].gteq(time)) }
     scope :created_before, ->(time) { where(arel_table[:created_at].lt(time)) }
+    scope :finished_after, ->(time) { where(arel_table[:finished_at].gt(time)) }
     scope :created_before_id, ->(id) { where(arel_table[:id].lt(id)) }
     scope :before_pipeline, ->(pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
     scope :with_pipeline_source, ->(source) { where(source: source) }
@@ -746,6 +755,16 @@ module Ci
       SQL
 
       connection.select_values(sanitize_sql_array([project_ids_sql, project_ids, limit]))
+    end
+
+    def self.parse_transition_args(transition)
+      last = transition.args.last
+
+      if last.is_a?(Hash)
+        [transition.args[0..-2], last]
+      else
+        [transition.args, {}]
+      end
     end
 
     def ci_pipeline_statuses_rate_limited?
@@ -1090,22 +1109,22 @@ module Ci
     end
 
     # rubocop: disable Metrics/CyclomaticComplexity -- breaking apart hurts readability
-    def set_status(new_status)
+    def set_status(new_status, ...)
       Gitlab::OptimisticLocking.retry_lock(self, name: 'ci_pipeline_set_status') do
         case new_status
         when 'created' then nil
-        when 'waiting_for_resource' then request_resource
-        when 'preparing' then prepare
-        when 'waiting_for_callback' then wait_for_callback
-        when 'pending' then enqueue
-        when 'running' then run
-        when 'success' then succeed
-        when 'failed' then drop
-        when 'canceling' then start_cancel
-        when 'canceled' then cancel
-        when 'skipped' then skip
-        when 'manual' then block
-        when 'scheduled' then delay
+        when 'waiting_for_resource' then request_resource(...)
+        when 'preparing' then prepare(...)
+        when 'waiting_for_callback' then wait_for_callback(...)
+        when 'pending' then enqueue(...)
+        when 'running' then run(...)
+        when 'success' then succeed(...)
+        when 'failed' then drop(...)
+        when 'canceling' then start_cancel(...)
+        when 'canceled' then cancel(...)
+        when 'skipped' then skip(...)
+        when 'manual' then block(...)
+        when 'scheduled' then delay(...)
         else
           raise Ci::HasStatus::UnknownStatusError, "Unknown status `#{new_status}`"
         end
@@ -1215,18 +1234,18 @@ module Ci
     end
 
     def builds_in_self_and_project_descendants
-      latest_pipelines = self_and_project_descendants.preload(:source_bridge)
-      latest_pipelines = latest_pipelines.reject { |pipeline| pipeline&.source_bridge&.retried? }
+      latest_pipelines = self_and_project_descendants.preload(source_pipeline: :source_bridge)
+      latest_pipelines = latest_pipelines.reject { |pipeline| pipeline.source_pipeline&.source_bridge&.retried? }
 
-      Ci::Build.in_partition(self).latest.where(pipeline: latest_pipelines)
+      in_pipelines_and_partitions(Ci::Build.latest, latest_pipelines)
     end
 
     def bridges_in_self_and_project_descendants
-      Ci::Bridge.in_partition(self).latest.where(pipeline: self_and_project_descendants)
+      in_pipelines_and_partitions(Ci::Bridge.latest, self_and_project_descendants)
     end
 
     def jobs_in_self_and_project_descendants
-      Ci::Processable.in_partition(self).latest.where(pipeline: self_and_project_descendants)
+      in_pipelines_and_partitions(Ci::Processable.latest, self_and_project_descendants)
     end
 
     def environments_in_self_and_project_descendants(deployment_status: nil)
@@ -1253,35 +1272,45 @@ module Ci
 
     # With multi-project and parent-child pipelines
     def self_and_upstreams
-      object_hierarchy.base_and_ancestors
+      pipelines_from_hierarchy(
+        ::Gitlab::Ci::PipelineSourceHierarchy.new(self).base_and_ancestors
+      )
     end
 
     # With multi-project and parent-child pipelines
     def self_and_downstreams
-      object_hierarchy.base_and_descendants
+      pipelines_from_hierarchy(
+        ::Gitlab::Ci::PipelineSourceHierarchy.new(self).base_and_descendants
+      )
     end
 
     # With multi-project and parent-child pipelines
     def upstream_and_all_downstreams
-      pairs = ::Gitlab::Ci::PipelineSourceHierarchy.new(self)
-        .all_objects.pluck(:pipeline_id, :partition_id)
-
-      self.class.where([:id, :partition_id] => pairs)
+      pipelines_from_hierarchy(
+        ::Gitlab::Ci::PipelineSourceHierarchy.new(self).all_objects
+      )
     end
 
     # With only parent-child pipelines
     def self_and_project_ancestors
-      object_hierarchy(project_condition: :same).base_and_ancestors
+      pipelines_from_hierarchy(
+        ::Gitlab::Ci::PipelineSourceHierarchy.new(self, options: { project_condition: :same }).base_and_ancestors
+      )
     end
 
     # With only parent-child pipelines
     def self_and_project_descendants
-      object_hierarchy(project_condition: :same).base_and_descendants
+      pipelines_from_hierarchy(
+        ::Gitlab::Ci::PipelineSourceHierarchy.new(self, options: { project_condition: :same }).base_and_descendants
+      )
     end
 
     # With only parent-child pipelines
     def all_child_pipelines
-      object_hierarchy(project_condition: :same).descendants
+      pipelines_from_hierarchy(
+        ::Gitlab::Ci::PipelineSourceHierarchy.new(self, options: { project_condition: :same }).base_and_descendants,
+        except: id_and_partition_pair
+      )
     end
 
     # Follow the parent-child relationships and return the top-level parent
@@ -1371,7 +1400,7 @@ module Ci
         .with_job
         .where(job_id: hierarchy_builds.select(:id))
         .downloadable
-        .in_partition(self)
+        .in_partition(hierarchy_builds.where_values_hash['partition_id'] || self)
 
       non_expired = artifacts.not_expired
 
@@ -1819,6 +1848,11 @@ module Ci
         .new(self.class.unscoped.where(id: id, partition_id: partition_id), options: options)
     end
 
+    def pipelines_from_hierarchy(relation, except: [])
+      pairs = relation.pluck(:pipeline_id, :partition_id) - except
+      self.class.id_and_partition_in(pairs)
+    end
+
     def internal_pipeline?
       source != "external"
     end
@@ -1865,6 +1899,20 @@ module Ci
 
       variables_attributes = Gitlab::Json.safe_parse(artifact.file.read)
       variables_attributes.map { |var_attrs| Ci::PipelineVariableItem.new(pipeline: self, **var_attrs) }
+    end
+
+    def in_pipelines_and_partitions(scope, pipelines)
+      # We need explicit partition_id values to apply partition pruning
+      partition_ids =
+        if pipelines.is_a?(ActiveRecord::Relation)
+          pipelines.distinct.pluck(:partition_id)
+        else
+          pipelines.pluck(:partition_id).uniq
+        end
+
+      scope
+        .in_pipelines(pipelines)
+        .in_partition(partition_ids)
     end
   end
 end

@@ -154,5 +154,33 @@ RSpec.describe 'Merge Request button', feature_category: :groups_and_projects do
       let(:url) { project_commits_path(project, 'feature') }
       let(:fork_url) { project_commits_path(forked_project, 'feature') }
     end
+
+    context 'when project_commits_refactor is enabled' do
+      before do
+        stub_feature_flags(project_commits_refactor: true)
+      end
+
+      context 'logged in as developer', :js do
+        before do
+          sign_in(user)
+          project.add_developer(user)
+          visit project_commits_path(project, 'feature')
+        end
+
+        it 'does not show Create merge request button' do
+          expect(page).not_to have_link('Create merge request')
+        end
+      end
+
+      # TODO: Implement merge request button functionality in refactored UI
+      # See: https://gitlab.com/gitlab-org/gitlab/-/work_items/598206
+      # The following scenarios from the shared example will be tested once implemented:
+      # - not logged in (button not shown)
+      # - logged in as developer (button shown)
+      # - merge requests disabled (button not shown)
+      # - project archived (button not shown)
+      # - logged in as non-member (button not shown)
+      # - on own fork of project (button shown)
+    end
   end
 end

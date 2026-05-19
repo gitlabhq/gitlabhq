@@ -271,18 +271,31 @@ export default {
         originalBranch,
         newMergeRequestPath,
       } = this;
+      const shouldCreateNewMR = this.shouldCreateNewMR(formData, isNewBranch);
 
       if (this.shouldRedirectToExistingMR(resultingBranch)) {
         redirectToExistingMergeRequest({ url, projectPath, fromMergeRequestIid });
       } else if (!this.canPushToBranch) {
-        redirectToForkMergeRequest({
-          url,
-          forkProjectPath: targetProjectPath,
-          sourceBranch: resultingBranch,
-          upstreamProjectId: projectId,
-          targetBranch: originalBranch,
-        });
-      } else if (this.shouldCreateNewMR(formData, isNewBranch)) {
+        if (shouldCreateNewMR) {
+          redirectToForkMergeRequest({
+            url,
+            forkProjectPath: targetProjectPath,
+            sourceBranch: resultingBranch,
+            upstreamProjectId: projectId,
+            targetBranch: originalBranch,
+          });
+        } else {
+          redirectToBlobWithAlert({
+            url,
+            resultingBranch,
+            responseData,
+            formData,
+            isNewBranch: true,
+            targetProjectPath,
+            successMessageFn: this.successMessageForAlert,
+          });
+        }
+      } else if (shouldCreateNewMR) {
         redirectToCreateMergeRequest({ newMergeRequestPath, sourceBranch: resultingBranch });
       } else {
         redirectToBlobWithAlert({

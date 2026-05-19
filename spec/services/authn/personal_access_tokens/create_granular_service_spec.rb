@@ -49,15 +49,34 @@ RSpec.describe Authn::PersonalAccessTokens::CreateGranularService, feature_categ
         ]
       end
 
-      it 'tracks the creation event' do
+      it 'tracks the creation event with creation_source defaulting to unknown' do
         scopes = 'instance, groups_and_projects'
         permissions = 'instance: read_admin_member_role | groups_and_projects: delete_page, read_page'
 
         expect { execute }.to trigger_internal_events('create_pat')
-          .with(user: current_user, additional_properties: { type: 'granular', scopes: scopes,
-                                                             permissions: permissions })
+          .with(user: current_user,
+            additional_properties: { type: 'granular', scopes: scopes, permissions: permissions,
+                                     creation_source: PersonalAccessToken::CREATION_SOURCE_UNKNOWN })
           .and increment_usage_metrics('counts.count_total_personal_access_token_created_granular')
           .and not_increment_usage_metrics('counts.count_total_personal_access_token_created_legacy')
+      end
+
+      context 'when creation_source param is provided' do
+        let(:service) do
+          described_class.new(current_user: current_user, organization: organization,
+            params: params.merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API),
+            granular_scopes: granular_scopes)
+        end
+
+        it 'tracks the creation event with the provided creation_source' do
+          scopes = 'instance, groups_and_projects'
+          permissions = 'instance: read_admin_member_role | groups_and_projects: delete_page, read_page'
+
+          expect { execute }.to trigger_internal_events('create_pat')
+            .with(user: current_user,
+              additional_properties: { type: 'granular', scopes: scopes, permissions: permissions,
+                                       creation_source: PersonalAccessToken::CREATION_SOURCE_API })
+        end
       end
     end
 

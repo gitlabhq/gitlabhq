@@ -34,13 +34,24 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection
 
   describe '#set_job_status' do
     it 'does update existing status of job' do
-      collection.set_job_status(test_a.id, 'success', 100)
+      collection.set_job_status(test_a.id, 'success', 100, nil)
 
       expect(collection.status_of_jobs(['test-a'])).to eq('success')
     end
 
     it 'ignores a missing job' do
-      collection.set_job_status(-1, 'failed', 100)
+      collection.set_job_status(-1, 'failed', 100, nil)
+    end
+
+    context 'when finished_at is provided' do
+      let(:collection) { described_class.new(pipeline, observe_processing_delay: true) }
+      let(:finished_at) { Time.current }
+
+      it 'updates finished_at on the job' do
+        collection.set_job_status(test_a.id, 'success', 100, finished_at)
+
+        expect(collection.max_finished_at_of_jobs(['test-a'])).to eq(finished_at)
+      end
     end
   end
 
@@ -104,6 +115,44 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection
     it 'returns jobs marked as processing' do
       expect(collection.processing_jobs.map { |job| job[:id] })
         .to contain_exactly(build_a.id, build_b.id, test_a.id, test_b.id, deploy.id)
+    end
+  end
+
+  describe '#max_finished_at_of_jobs' do
+    let(:collection) { described_class.new(pipeline, observe_processing_delay: true) }
+
+    it 'returns the maximum finished_at among named jobs' do
+      expect(collection.max_finished_at_of_jobs(%w[build-a build-b]))
+        .to eq([build_a.finished_at, build_b.finished_at].max)
+    end
+
+    it 'returns nil when no named jobs have finished_at' do
+      expect(collection.max_finished_at_of_jobs(%w[test-a test-b])).to be_nil
+    end
+
+    it 'returns nil for empty names' do
+      expect(collection.max_finished_at_of_jobs([])).to be_nil
+    end
+
+    context 'when observe_processing_delay is false' do
+      let(:collection) { described_class.new(pipeline, observe_processing_delay: false) }
+
+      it 'returns nil because finished_at is not plucked' do
+        expect(collection.max_finished_at_of_jobs(%w[build-a build-b])).to be_nil
+      end
+    end
+  end
+
+  describe '#max_finished_at_prior_to_stage' do
+    let(:collection) { described_class.new(pipeline, observe_processing_delay: true) }
+
+    it 'returns the maximum finished_at from jobs in prior stages' do
+      expect(collection.max_finished_at_prior_to_stage(1))
+        .to eq([build_a.finished_at, build_b.finished_at].max)
+    end
+
+    it 'returns nil when no prior stage jobs have finished_at' do
+      expect(collection.max_finished_at_prior_to_stage(0)).to be_nil
     end
   end
 

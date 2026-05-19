@@ -27,6 +27,45 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
     end
   end
 
+  describe 'log gating with ref_cache_verbose_logging feature flag' do
+    before do
+      cache.write(:branch_names, %w[main])
+    end
+
+    context 'when ref_cache_verbose_logging is disabled' do
+      before do
+        stub_feature_flags(ref_cache_verbose_logging: false)
+      end
+
+      it 'does not emit info-level logs' do
+        expect(Gitlab::AppLogger).not_to receive(:info)
+
+        cache.fetch(:branch_names) { %w[main] }
+      end
+
+      it 'still emits error-level logs' do
+        allow(Gitlab::Redis::RepositoryCache).to receive(:with).and_wrap_original do |original, &block|
+          original.call do |redis|
+            allow(redis).to receive(:multi).and_raise(::Redis::ConnectionError, 'Connection refused')
+            block.call(redis)
+          end
+        end
+
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            message: 'rebuild_failed',
+            rebuildable_cache: hash_including(
+              event: :rebuild_failed,
+              cache_key: :branch_names
+            )
+          )
+        )
+
+        expect { cache.write(:branch_names, %w[main feature]) }.to raise_error(::Redis::ConnectionError)
+      end
+    end
+  end
+
   describe '#cache_key' do
     subject { cache.cache_key(:foo) }
 
@@ -269,9 +308,11 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
 
         expect(Gitlab::AppLogger).to receive(:error).with(
           hash_including(
-            message: 'RebuildableSetCache',
-            event: :simple_update_failed,
-            cache_key: :branch_names
+            message: 'simple_update_failed',
+            rebuildable_cache: hash_including(
+              event: :simple_update_failed,
+              cache_key: :branch_names
+            )
           )
         )
 
@@ -302,9 +343,11 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
 
         expect(Gitlab::AppLogger).to receive(:error).with(
           hash_including(
-            message: 'RebuildableSetCache',
-            event: :dual_write_failed,
-            cache_key: :branch_names
+            message: 'dual_write_failed',
+            rebuildable_cache: hash_including(
+              event: :dual_write_failed,
+              cache_key: :branch_names
+            )
           )
         )
 
@@ -375,8 +418,11 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
       it 'skips the rebuild and returns the value' do
         expect(Gitlab::AppLogger).to receive(:info).with(
           hash_including(
-            event: :rebuild_skipped,
-            reason: 'another rebuild in progress'
+            message: 'rebuild_skipped',
+            rebuildable_cache: hash_including(
+              event: :rebuild_skipped,
+              reason: 'another rebuild in progress'
+            )
           )
         )
 
@@ -591,8 +637,11 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
 
         expect(Gitlab::AppLogger).to receive(:error).with(
           hash_including(
-            event: :rebuild_failed,
-            cache_key: :branch_names
+            message: 'rebuild_failed',
+            rebuildable_cache: hash_including(
+              event: :rebuild_failed,
+              cache_key: :branch_names
+            )
           )
         )
 
@@ -619,8 +668,11 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
       it 'logs the cache hit' do
         expect(Gitlab::AppLogger).to receive(:info).with(
           hash_including(
-            event: :cache_hit,
-            cache_key: :branch_names
+            message: 'cache_hit',
+            rebuildable_cache: hash_including(
+              event: :cache_hit,
+              cache_key: :branch_names
+            )
           )
         )
 
@@ -663,10 +715,13 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
       it 'logs cache miss with trust info' do
         expect(Gitlab::AppLogger).to receive(:info).with(
           hash_including(
-            event: :cache_miss,
-            cache_key: :branch_names,
-            exists: true,
-            trusted: false
+            message: 'cache_miss',
+            rebuildable_cache: hash_including(
+              event: :cache_miss,
+              cache_key: :branch_names,
+              exists: true,
+              trusted: false
+            )
           )
         ).ordered
 
@@ -687,10 +742,13 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
       it 'logs cache miss with exists info' do
         expect(Gitlab::AppLogger).to receive(:info).with(
           hash_including(
-            event: :cache_miss,
-            cache_key: :branch_names,
-            exists: false,
-            trusted: false
+            message: 'cache_miss',
+            rebuildable_cache: hash_including(
+              event: :cache_miss,
+              cache_key: :branch_names,
+              exists: false,
+              trusted: false
+            )
           )
         ).ordered
 

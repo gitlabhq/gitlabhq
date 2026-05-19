@@ -7,7 +7,7 @@ title: Custom flows
 
 {{< details >}}
 
-- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
+- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
@@ -29,6 +29,7 @@ title: Custom flows
 - Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 - Feature flag `ai_catalog_project_level_enablement` removed in GitLab 18.11.
+- **Merge request ready** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592454) in GitLab 19.0 with a [flag](../../../administration/feature_flags/_index.md) named `merge_request_ready_flow_trigger`. Disabled by default.
 
 {{< /history >}}
 
@@ -38,6 +39,11 @@ title: Custom flows
 
 Custom flows are AI-powered workflows you create and configure to
 automate complex, multi-step tasks across your GitLab projects.
+
+## Prerequisites
+
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
+- Have [custom flows turned on](#turn-custom-flows-on-or-off).
 
 ## Flow visibility
 
@@ -73,7 +79,7 @@ Prerequisites:
 To view a list of flows associated with your project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Automate** > **Flows**.
+1. In the left sidebar, select **AI** > **Flows**.
    - To view flows enabled in the project, select the **Enabled** tab.
    - To view flows managed by the project, select the **Managed** tab.
 
@@ -82,6 +88,11 @@ Select a flow to view its details.
 ## Create a flow
 
 You can create a flow from a project, or by using the AI Catalog.
+
+> [!note]
+> You cannot define a custom flow to call a specific custom agent from a project
+> or the AI Catalog. Custom flows create and use their own agents based
+> on their YAML configuration.
 
 Prerequisites:
 
@@ -94,7 +105,7 @@ Prerequisites:
 To create a flow:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Automate** > **Flows**.
+1. In the left sidebar, select **AI** > **Flows**.
 1. Select **New flow**.
 1. Under **Basic information**:
    1. In **Display name**, enter a name.
@@ -148,7 +159,7 @@ Prerequisites:
 To enable a flow:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Automate** > **Flows**.
+1. In the left sidebar, select **AI** > **Flows**.
 1. Select the **Managed** tab, then select the flow you want to enable.
 1. In the upper-right corner, select **Enable**.
 1. Under **Project**, select the project you want to enable the flow in.
@@ -161,6 +172,7 @@ To enable a flow:
      as a reviewer to a merge request.
    - **Pipeline events**: When a pipeline changes state.
      The possible states are `created`, `started`, `succeeded`, and `failed`.
+   - **Merge request ready**: When a draft merge request is marked as ready for review.
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -181,13 +193,14 @@ To enable a flow:
      to an issue or merge request.
    - **Assign reviewer**: When the service account user is assigned
      as a reviewer to a merge request.
+   - **Merge request ready**: When a draft merge request is marked as ready for review.
 1. Select **Enable**.
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
-The flow appears in the group and project **Automate** > **Flows** pages.
+The flow appears in the group and project **AI** > **Flows** pages.
 Members of any project in the top-level group can now enable the flow in their project.
 
 A service account is created in the group. The name of the account
@@ -205,7 +218,7 @@ Prerequisites:
 To enable a flow in a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Automate** > **Flows**.
+1. In the left sidebar, select **AI** > **Flows**.
 1. In the upper-right corner, select **Enable flow from group**.
 1. From the dropdown list, select the flow you want to enable.
 1. For **Add triggers**, select which events trigger the flow:
@@ -215,9 +228,10 @@ To enable a flow in a project:
      to an issue or merge request.
    - **Assign reviewer**: When the service account user is assigned
      as a reviewer to a merge request.
+   - **Merge request ready**: When a draft merge request is marked as ready for review.
 1. Select **Enable**.
 
-The flow appears in the project's **Automate** > **Flows** list.
+The flow appears in the project's **AI** > **Flows** list.
 
 The top-level group's service account is added to the project.
 This account is assigned the Developer role.
@@ -232,7 +246,7 @@ Prerequisites:
 To disable a flow:
 
 1. In the top bar, select **Search or go to** and find your group or project.
-1. Select **Automate** > **Flows**.
+1. Select **AI** > **Flows**.
 1. Find the flow you want to remove and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Disable**.
 1. On the confirmation dialog, select **Disable**.
 
@@ -294,7 +308,7 @@ Prerequisites:
 - You must be a member of the managing project and have the Maintainer or Owner role.
 
 1. In the top bar, select **Search or go to** and find your group or project.
-1. Select **Automate** > **Flows**.
+1. Select **AI** > **Flows**.
 1. Select the flow you want to edit.
 1. In the upper-right corner, select **Edit**.
 1. Edit any fields you want to change, then select **Save changes**.
@@ -312,7 +326,7 @@ Prerequisites:
 To hide a flow:
 
 1. In the top bar, select **Search or go to** and find your group or project.
-1. Select **Automate** > **Flows**.
+1. Select **AI** > **Flows**.
 1. Find the flow you want to hide and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Hide**.
 1. In the confirmation dialog, select **Confirm**.
 
@@ -325,7 +339,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the top bar, select **Search or go to** and find your group or project.
-1. Select **Automate** > **Flows**.
+1. Select **AI** > **Flows**.
 1. Find the flow you want to delete and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
 1. In the confirmation dialog, select **Delete**.
 
@@ -333,10 +347,69 @@ Prerequisites:
 
 When you enable a flow in a group, a related service account is automatically created. The service account:
 
-- Uses [composite identity authentication](../security.md) to ensure that the flow can never access more than the user who runs the flow.
+- Uses [composite identity authentication](../composite_identity.md) to ensure that the flow can never access more than the user who runs the flow.
 - Is added as a member to any project under the top-level group that enables the flow, so the flow can't access resources outside that group.
 - Is granted access to any additional groups that are shared with the top-level group. The service account is treated like any other group member for group sharing.
 
 > [!note]
 > Sharing flow service accounts across multiple top-level groups can create unintended access
 > permissions and security risks.
+
+## Turn custom flows on or off
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.
+
+{{< /history >}}
+
+By default, custom flows are turned on.
+You can turn them on or off for a top-level group or for an instance.
+
+When custom flows are turned off:
+
+- Users cannot create, enable, disable, modify, or execute custom flows.
+- Existing custom flows are no longer visible
+  in the project under **AI** > **Flows** > **Enabled**.
+- Custom flows created in the project appear
+  under **AI** > **Flows** > **Managed**, but cannot be modified or executed.
+- [Foundational flows](foundational_flows/_index.md) remain available.
+
+{{< tabs >}}
+
+{{< tab title="GitLab.com" >}}
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Custom agents and flows**, select or clear the
+   **Allow custom flows** checkbox.
+1. Select **Save changes**.
+
+This setting cascades to all subgroups in the group.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed" >}}
+
+Prerequisites:
+
+- You must be an administrator.
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Custom agents and flows**, select or clear the
+   **Allow custom flows** checkbox.
+1. Select **Save changes**.
+
+When the instance-level setting is turned off,
+group-level settings cannot override it.
+
+{{< /tab >}}
+
+{{< /tabs >}}

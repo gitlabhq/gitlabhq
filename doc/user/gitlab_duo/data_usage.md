@@ -28,32 +28,35 @@ GitLab Duo AI-native features are powered by a generative AI model. The processi
 
 ## Data retention
 
-The below reflects the current retention periods of GitLab AI model
-[Sub-Processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors):
+### Model sub-processors
 
-For GitLab Duo requests, GitLab has a zero-day data retention policy
-with Anthropic, Fireworks AI, AWS, and Google.
+The below reflects the current retention periods of GitLab AI model
+[sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors):
+
+For GitLab Duo requests, GitLab has a zero data retention policy
+with Anthropic, AWS, Fireworks AI, and Google.
 
 These vendors discard model input and output data immediately after the output is
 provided and do not store input and output data for abuse monitoring. The exception
-to this is when Fireworks AI, Anthropic, and VertexAI prompt caching is enabled for
+to this policy is when Fireworks AI and Vertex AI prompt caching is enabled for
 Code Suggestions and GitLab Duo Agentic Chat.
 
-> [!note]
-> For OpenAI models, you cannot turn off prompt caching. If you have turned off prompt caching and you use an OpenAI model, GitLab attempts to invalidate the cache by adding the current timestamp to the prompt. Ensure that you use a model that is suitable for your data retention requirements.
+For OpenAI models, you cannot turn off prompt caching. Certain OpenAI models, including GPT-5.5 and GPT-5.5 Pro, are subject to [limited vendor-side data retention](https://developers.openai.com/api/docs/guides/your-data#safety-retention). Models subject to this limited vendor-side data retention are designated in the [GitLab Duo supported models documentation](model_selection.md#supported-models).
 
-All GitLab AI model Sub-Processors are restricted from using model input and
+All GitLab AI model sub-processors are restricted from using model input and
 output to train models and are under data protection agreements with GitLab that
 prohibit the use of Customer Content for their own purposes, except to perform
 their independent legal obligations.
 
+### GitLab
+
 GitLab Duo Chat and GitLab Duo Agent Platform retain chat history and workflow
-history, respectively, to help you return quickly to previously discussed topics and for anti-abuse purposes.
-You can delete chats in the GitLab Duo Chat interface. GitLab does not otherwise
-retain input and output data unless customers provide consent through a GitLab
+history, respectively, to help you return quickly to previously discussed topics. You can delete chats in the GitLab Duo Chat interface. On GitLab.com, chat and workflow history may be retained for anti-abuse purposes.
+
+GitLab does not otherwise retain input and output data unless customers provide consent through a GitLab
 [support ticket](https://about.gitlab.com/support/portal/).
 
-When groups or instances enable extended logging for GitLab Duo Agent Platform workflows, trace data is retained. This is separate from the zero-day retention policy with AI model providers.
+When groups or instances enable extended logging for GitLab Duo Agent Platform workflows, trace data is retained. This is separate from any zero data retention policy with AI model sub-processors.
 
 For more information, see [AI feature logging](../../administration/logs/_index.md).
 
@@ -137,6 +140,12 @@ Secret scanning runs in the following scenarios:
 > [!note]
 > Secret scanning does not occur when you interact with GitLab Duo Chat through the web interface.
 
+### Exception: Secret false positive detection
+
+[Secret false positive detection](../application_security/vulnerabilities/secret_false_positive_detection.md) is an opt-in feature that sends information about the vulnerability, including code context surrounding detected secrets, to LLMs for analysis. This is a deliberate exception to the [secret detection and redaction](#secret-detection-and-redaction) behavior.
+
+Because this feature is opt-in, you must explicitly enable it at both the group and project level before any vulnerability data is sent to LLMs. Review your organization's data policies before enabling this feature.
+
 ## Share group usage data with GitLab
 
 {{< history >}}
@@ -161,7 +170,7 @@ Prerequisites:
 To turn on data collection for your group:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **GitLab Duo**.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Data collection**, select the **Collect usage data** checkbox.
 1. Select **Save changes**.

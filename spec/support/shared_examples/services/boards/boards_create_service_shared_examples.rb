@@ -7,7 +7,7 @@ RSpec.shared_examples 'boards create service' do
     end
 
     it 'creates the default lists' do
-      board = service.execute.payload
+      board = service.execute.payload[:board]
 
       expect(board.lists.size).to eq 2
       expect(board.lists.first).to be_backlog
@@ -21,7 +21,7 @@ RSpec.shared_examples 'boards create service' do
     end
 
     it 'does not create a new board' do
-      expect(service).to receive(:can_create_board?) { false }
+      expect(service).to receive(:can_create_board?).and_return(false)
 
       expect { service.execute }.not_to change { parent.boards.count }
     end

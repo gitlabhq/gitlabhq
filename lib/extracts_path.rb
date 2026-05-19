@@ -45,12 +45,34 @@ module ExtractsPath
 
     rectify_renamed_default_branch! && return
 
+    # Gitlab::Git::Commit.find swallows Gitaly errors and returns nil.
+    # If @commit is nil, verify Gitaly is available before assuming the ref doesn't exist.
+    # Skip the check if @ref is blank since we can't look up a commit without a ref anyway.
+    verify_gitaly_availability! if @ref.present? && !@commit
+
     raise InvalidPathError unless @commit
 
     @hex_path = Digest::SHA1.hexdigest(@path)
     @logs_path = logs_file_project_ref_path(@project, @ref, @path)
   rescue RuntimeError, NoMethodError, InvalidPathError
     render_404
+  end
+
+  # Check if Gitaly is available using the health check service.
+  # Raises Gitlab::Git::CommandError if Gitaly is unavailable, which will be
+  # caught by HandlesGitalyErrors and show the graceful degradation message.
+  # Only performs the check if the controller includes HandlesGitalyErrors,
+  # to avoid adding unnecessary Gitaly RPCs to controllers that can't handle the result.
+  def verify_gitaly_availability!
+    return unless self.class.include?(HandlesGitalyErrors)
+    return unless repository_container
+
+    storage = repository_container.repository_storage
+    result = Gitlab::GitalyClient::HealthCheckService.new(storage).check
+
+    return if result[:success]
+
+    raise Gitlab::Git::CommandError, result[:message] || 'Gitaly is not available'
   end
 
   def ref_type

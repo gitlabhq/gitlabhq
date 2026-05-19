@@ -57,7 +57,7 @@ RSpec.describe API::Labels, feature_category: :team_planning do
         put_labels_api(route_type, user, spec_params)
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq('new_name, color, description, priority, archived are missing, '\
+        expect(json_response['error']).to eq('new_name, color, description, priority, archived are missing, ' \
                                              'at least one parameter must be provided')
       end
 

@@ -30,7 +30,7 @@ module AlertManagement
         params.slice(*permitted_params_keys)
       end
 
-      # overriden in EE
+      # overridden in EE
       def permitted_params_keys
         %i[name active type_identifier]
       end

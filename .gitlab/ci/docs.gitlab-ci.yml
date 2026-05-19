@@ -35,7 +35,7 @@ review-docs-cleanup:
 
 .docs-markdown-lint-image:
   # When updating the image version here, update it in /scripts/lint-doc.sh too.
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/lint-markdown:alpine-3.22-vale-3.13.0-markdownlint2-0.19.0-lychee-0.21.0
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/lint-markdown:alpine-3.23-vale-3.14.1-markdownlint2-0.22.1-lychee-0.24.2
 
 docs-lint markdown:
   extends:
@@ -61,6 +61,19 @@ docs-lint markdown:
       - markdownlint-cli2-codequality.json
     reports:
       codequality: markdownlint-cli2-codequality.json
+
+# This job runs when release notes are added or changed.
+# It validates that every H3 feature heading has a <!-- categories: ... --> tag
+# and that the category name(s) exactly match a 'name' field in categories.yml in the www-gitlab-com repo.
+
+docs-lint release-note-categories:
+  extends:
+    - .docs:rules:release-note-categories
+  image: $DEFAULT_CI_IMAGE
+  stage: lint
+  needs: []
+  script:
+    - python3 scripts/lint/validate_release_categories.py --release-notes doc/releases/**/*.md
 
 docs-lint mermaid:
   extends:
@@ -152,13 +165,13 @@ docs-lint links:
   script:
     - lychee --offline --no-progress --include-fragments doc
 
-docs-lint deprecations-and-removals:
+docs-lint generated-content:
   variables:
     SETUP_DB: "false"
   extends:
     - .ruby-cache
     - .default-before_script
-    - .docs:rules:deprecations-and-removals
+    - .docs:rules:generated-content
     - .lint-base
   stage: lint
   needs:
@@ -168,6 +181,7 @@ docs-lint deprecations-and-removals:
   script:
     - bundle exec rake gitlab:docs:check_deprecations
     - bundle exec rake gitlab:docs:check_windows
+    - bundle exec rake gitlab:docs:check_events
 
 docs-lint redirects:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
@@ -200,7 +214,7 @@ docs-i18n-lint links:
   before_script:
     - source scripts/utils.sh
   script:
-    - lychee --offline --include-fragments --exclude "\.(png|jpg|gif|svg)$" --exclude "ja-jp/development.*#" doc-locale
+    - lychee --offline --include-fragments --exclude "\.(png|jpg|gif|svg)$" --exclude "(ja-jp|ko-kr|fr-fr)/development" doc-locale
 
 # Japanese-specific Vale linting with language-specific rules
 docs-i18n-lint japanese-vale:
@@ -212,6 +226,36 @@ docs-i18n-lint japanese-vale:
   variables:
     LANGUAGE_CODE: "ja-jp"
     LANGUAGE_NAME: "Japanese"
+  script:
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
+    - scripts/i18n_lint_language_vale.sh
+
+# Korean-specific Vale linting with language-specific rules
+docs-i18n-lint korean-vale:
+  extends:
+    - .docs:rules:docs-i18n-lint-korean
+    - .docs-markdown-lint-image
+    - .lint-base
+  stage: lint
+  variables:
+    LANGUAGE_CODE: "ko-kr"
+    LANGUAGE_NAME: "Korean"
+  script:
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
+    - scripts/i18n_lint_language_vale.sh
+
+# French-specific Vale linting with language-specific rules
+docs-i18n-lint french-vale:
+  extends:
+    - .docs:rules:docs-i18n-lint-french
+    - .docs-markdown-lint-image
+    - .lint-base
+  stage: lint
+  variables:
+    LANGUAGE_CODE: "fr-fr"
+    LANGUAGE_NAME: "French"
   script:
     - source ./scripts/utils.sh
     - install_gitlab_gem
@@ -229,3 +273,26 @@ docs-i18n-lint paths:
     - source ./scripts/utils.sh
     - install_gitlab_gem
     - scripts/i18n_verify_paths.sh
+
+# Auto-fix GLFM alert-box callouts (e.g. [!note], [!warning]) in localized
+# markdown files. Runs on files changed in the MR; commits fixes back as
+# the GitLab Argo Bot. See: gitlab-com/localization/docs-site-localization#912
+docs-i18n-fix-alert-boxes:
+  extends:
+    - .default-retry
+    - .docs-markdown-lint-image
+  stage: prepare
+  needs: []
+  variables:
+    GIT_DEPTH: 1
+    GIT_SUBMODULE_STRATEGY: none
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "merge_request_event"'
+      when: never
+    - !reference [.docs:rules:docs-i18n-lint, rules]
+  before_script:
+    - apk add --no-cache perl
+    - git fetch --depth=20 origin "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+    - git fetch --depth=20 origin "$CI_MERGE_REQUEST_DIFF_BASE_SHA"
+  script:
+    - scripts/i18n_fix_alert_box.sh --ci

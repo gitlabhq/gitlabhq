@@ -17,7 +17,6 @@ access_security_scans_api
 access_summarize_new_merge_request
 access_summarize_review
 access_workspaces_feature
-access_x_ray_on_instance
 activate_group_member
 add_catalog_resource
 add_cluster
@@ -153,7 +152,6 @@ block_pipl_user
 build_download_code
 build_push_code
 build_read_container_image
-build_read_project
 build_service_proxy_enabled
 bulk_admin_epic
 cache_blob
@@ -169,7 +167,6 @@ change_push_rules
 change_reject_non_dco_commits
 change_reject_unsigned_commits
 change_repository_storage
-change_restrict_user_defined_variables
 change_seat_control
 change_share_with_group_lock
 change_visibility_level
@@ -199,7 +196,6 @@ create_group_with_default_branch_protection
 create_incident
 create_instance_runners
 create_iteration
-create_iteration_cadence
 create_jira_connect_subscription
 create_key_result
 create_merge_request_approval_rules
@@ -300,7 +296,6 @@ destroy_vulnerability
 destroy_vulnerability_feedback
 destroy_wiki
 destroy_work_item
-developer_access
 disable_two_factor
 download_wiki_code
 duo_generate_direct_access_token
@@ -324,7 +319,6 @@ export_work_items
 fork_project
 generate_description
 get_user_associations_count
-guest_access
 import_issues
 import_project_members_from_another_project
 import_requirements
@@ -336,7 +330,6 @@ keep_job_artifacts
 link
 link_forked_project
 log_in
-maintainer_access
 make_profile_private
 manage_ai_flow_triggers
 manage_deploy_tokens
@@ -358,22 +351,17 @@ metrics_dashboard
 modify_approvers_rules
 modify_merge_request_author_setting
 modify_merge_request_committer_setting
-modify_product_analytics_settings
 modify_security_policy
 modify_value_stream_dashboard_settings
 move_design
 move_work_item
 override_group_member
-owner_access
 pages_multiple_versions
-planner_access
 project_bot_access
 promote_to_epic
 provide_status_check_response
 provision_cloud_runner
 provision_gke_runner
-public_access
-public_user_access
 publish_status_page
 push_code_to_protected_branches
 push_to_delete_protected_branch
@@ -394,7 +382,6 @@ read_admin_subscription
 read_admin_system_information
 read_admin_users
 read_ai_agents
-read_ai_catalog_item
 read_ai_catalog_item_consumer
 read_alert_management_alert
 read_alert_management_metric_image
@@ -463,13 +450,11 @@ read_external_status_check_response
 read_finding_token_status
 read_geo_registry
 read_google_cloud_artifact_registry
-read_grafana
 read_group_activity
 read_group_activity_analytics
 read_group_all_available_runners
 read_group_analytics_dashboards
 read_group_approval_rule
-read_group_audit_events
 read_group_boards
 read_group_build_report_results
 read_group_contribution_analytics
@@ -502,12 +487,10 @@ read_issuable_participables
 read_issuable_resource_link
 read_issue_analytics
 read_issue_iid
-read_iteration_cadence
 read_job_artifacts
 read_jobs_statistics
 read_licenses
 read_limit_alert
-read_manual_variables
 read_member_access_request
 read_merge_request_closing_issue
 read_merge_request_iid
@@ -533,7 +516,6 @@ read_pipeline_metadata
 read_pipeline_schedule_variables
 read_pod_logs
 read_pro_ai_analytics
-read_project_audit_events
 read_project_for_iids
 read_project_level_analytics_dashboard
 read_project_level_value_stream_dashboard_overview_counts
@@ -626,7 +608,6 @@ rename_project
 reopen_issue
 reopen_merge_request
 report_spam
-reporter_access
 reposition_note
 request_access
 reset_merge_request_approvals
@@ -635,7 +616,6 @@ resolve_vulnerability_with_ai
 retry_failed_status_checks
 rollover_issues
 rotate_token
-security_manager_access
 set_confidentiality
 set_emails_disabled
 set_epic_created_at
@@ -661,11 +641,9 @@ start_trial
 summarize_comments
 take_ownership_pipeline_schedule
 transfer_projects
-trigger_ai_flow
 trigger_amazon_q
 troubleshoot_job_with_ai
 unlink
-unschedule_job
 update_admin_role
 update_alert_management_alert
 update_alert_management_metric_image
@@ -677,7 +655,6 @@ update_container_image
 update_default_branch_protection
 update_deploy_key_title
 update_deploy_keys_project
-update_deploy_token
 update_design
 update_duo_workflow
 update_escalation_status
@@ -690,7 +667,6 @@ update_group_member
 update_group_stage
 update_issuable_metric_image
 update_issue_link
-update_iteration
 update_max_artifacts_size
 update_max_pages_size
 update_name
@@ -705,7 +681,6 @@ update_project_member
 update_project_secrets
 update_protected_tags
 update_requirement
-update_runner
 update_runners_registration_token
 update_saved_replies
 update_security_orchestration_policy_project

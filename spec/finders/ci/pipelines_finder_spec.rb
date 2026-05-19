@@ -13,7 +13,7 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
   describe "#execute" do
     context 'when params is empty' do
       let(:params) { {} }
-      let!(:pipelines) { create_list(:ci_pipeline, 2, project: project) }
+      let_it_be(:pipelines) { create_list(:ci_pipeline, 2, project: project) }
 
       it 'returns all pipelines' do
         is_expected.to match_array(pipelines)
@@ -23,7 +23,7 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
     %w[running pending].each do |target|
       context "when scope is #{target}" do
         let(:params) { { scope: target } }
-        let!(:pipeline) { create(:ci_pipeline, project: project, status: target) }
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project, status: target) }
 
         it 'returns matched pipelines' do
           is_expected.to eq([pipeline])
@@ -33,7 +33,7 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
 
     context 'when scope is finished' do
       let(:params) { { scope: 'finished' } }
-      let!(:pipelines) do
+      let_it_be(:pipelines) do
         [create(:ci_pipeline, project: project, status: 'success'),
           create(:ci_pipeline, project: project, status: 'failed'),
           create(:ci_pipeline, project: project, status: 'canceled')]
@@ -58,7 +58,7 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
         let(:params) { { scope: 'branches' } }
 
         context 'when project has no branches' do
-          let!(:project) { empty_project }
+          let(:project) { empty_project }
 
           it 'returns empty result' do
             is_expected.to be_empty
@@ -66,9 +66,9 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
         end
 
         context 'when project has child pipelines' do
-          let!(:child_pipeline) { create(:ci_pipeline, project: project, ref: pipeline_branch2.ref, source: :parent_pipeline) }
+          let_it_be(:child_pipeline) { create(:ci_pipeline, project: project, ref: pipeline_branch2.ref, source: :parent_pipeline) }
 
-          let!(:pipeline_source) do
+          let_it_be(:pipeline_source) do
             create(:ci_sources_pipeline, pipeline: child_pipeline, source_pipeline: pipeline_branch2)
           end
 
@@ -86,7 +86,7 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
         let(:params) { { scope: 'tags' } }
 
         context 'when project has no tags' do
-          let!(:project) { empty_project }
+          let(:project) { empty_project }
 
           it 'returns empty result' do
             is_expected.to be_empty
@@ -94,9 +94,9 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
         end
 
         context 'when project has child pipelines' do
-          let!(:child_pipeline) { create(:ci_pipeline, :tag, project: project, source: :parent_pipeline, ref: 'v1.0.0') }
+          let_it_be(:child_pipeline) { create(:ci_pipeline, :tag, project: project, source: :parent_pipeline, ref: 'v1.0.0') }
 
-          let!(:pipeline_source) do
+          let_it_be(:pipeline_source) do
             create(:ci_sources_pipeline, pipeline: child_pipeline, source_pipeline: pipeline_tag1)
           end
 
@@ -112,10 +112,10 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
     end
 
     context 'when project has child pipelines' do
-      let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
-      let!(:child_pipeline) { create(:ci_pipeline, project: project, source: :parent_pipeline) }
+      let_it_be(:parent_pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, project: project, source: :parent_pipeline) }
 
-      let!(:pipeline_source) do
+      let_it_be(:pipeline_source) do
         create(:ci_sources_pipeline, pipeline: child_pipeline, source_pipeline: parent_pipeline)
       end
 
@@ -135,9 +135,9 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
     Ci::HasStatus::AVAILABLE_STATUSES.each do |target|
       context "when status is #{target}" do
         let(:params) { { status: target } }
-        let!(:pipeline) { create(:ci_pipeline, project: project, status: target) }
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project, status: target) }
 
-        before do
+        before_all do
           exception_status = Ci::HasStatus::AVAILABLE_STATUSES - [target]
           create(:ci_pipeline, project: project, status: exception_status.first)
         end
@@ -149,7 +149,7 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
     end
 
     context 'when ref is specified' do
-      let!(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
       context 'when ref exists' do
         let(:params) { { ref: 'master' } }
@@ -204,8 +204,8 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
     end
 
     context 'when username is specified' do
-      let(:user) { create(:user) }
-      let!(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
 
       context 'when username exists' do
         let(:params) { { username: user.username } }
@@ -225,8 +225,8 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
     end
 
     context 'when yaml_errors is specified' do
-      let!(:pipeline1) { create(:ci_pipeline, project: project, yaml_errors: 'Syntax error') }
-      let!(:pipeline2) { create(:ci_pipeline, project: project) }
+      let_it_be(:pipeline1) { create(:ci_pipeline, project: project, yaml_errors: 'Syntax error') }
+      let_it_be(:pipeline2) { create(:ci_pipeline, project: project) }
 
       context 'when yaml_errors is true' do
         let(:params) { { yaml_errors: true } }
@@ -254,9 +254,9 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
     end
 
     context 'when updated_at filters are specified' do
-      let!(:pipeline1) { create(:ci_pipeline, project: project, updated_at: 2.days.ago) }
-      let!(:pipeline2) { create(:ci_pipeline, project: project, updated_at: 4.days.ago) }
-      let!(:pipeline3) { create(:ci_pipeline, project: project, updated_at: 1.hour.ago) }
+      let_it_be(:pipeline1) { create(:ci_pipeline, project: project, updated_at: 2.days.ago) }
+      let_it_be(:pipeline2) { create(:ci_pipeline, project: project, updated_at: 4.days.ago) }
+      let_it_be(:pipeline3) { create(:ci_pipeline, project: project, updated_at: 1.hour.ago) }
 
       context 'when both filters are specified' do
         let(:params) { { updated_before: 1.day.ago, updated_after: 3.days.ago } }
@@ -284,9 +284,9 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
     end
 
     context 'when created_at filters are specified' do
-      let!(:pipeline1) { create(:ci_pipeline, project: project, created_at: 2.days.ago) }
-      let!(:pipeline2) { create(:ci_pipeline, project: project, created_at: 4.days.ago) }
-      let!(:pipeline3) { create(:ci_pipeline, project: project, created_at: 1.hour.ago) }
+      let_it_be(:pipeline1) { create(:ci_pipeline, project: project, created_at: 2.days.ago) }
+      let_it_be(:pipeline2) { create(:ci_pipeline, project: project, created_at: 4.days.ago) }
+      let_it_be(:pipeline3) { create(:ci_pipeline, project: project, created_at: 1.hour.ago) }
 
       context 'when both filters are specified' do
         let(:params) { { created_before: 1.day.ago, created_after: 3.days.ago } }
@@ -315,9 +315,9 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
 
     context 'when ids filter is specified' do
       let(:params) { { ids: pipeline1.id } }
-      let!(:pipeline1) { create(:ci_pipeline, project: project) }
-      let!(:pipeline2) { create(:ci_pipeline, project: project) }
-      let!(:pipeline3) { create(:ci_pipeline, project: project, source: :parent_pipeline) }
+      let_it_be(:pipeline1) { create(:ci_pipeline, project: project) }
+      let_it_be(:pipeline2) { create(:ci_pipeline, project: project) }
+      let_it_be(:pipeline3) { create(:ci_pipeline, project: project, source: :parent_pipeline) }
 
       it 'returns matches pipelines' do
         is_expected.to match_array([pipeline1])
@@ -326,9 +326,9 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
 
     context 'when iids filter is specified' do
       let(:params) { { iids: [pipeline1.iid, pipeline3.iid] } }
-      let!(:pipeline1) { create(:ci_pipeline, project: project) }
-      let!(:pipeline2) { create(:ci_pipeline, project: project) }
-      let!(:pipeline3) { create(:ci_pipeline, project: project, source: :parent_pipeline) }
+      let_it_be(:pipeline1) { create(:ci_pipeline, project: project) }
+      let_it_be(:pipeline2) { create(:ci_pipeline, project: project) }
+      let_it_be(:pipeline3) { create(:ci_pipeline, project: project, source: :parent_pipeline) }
 
       it 'returns matches pipelines' do
         is_expected.to match_array([pipeline1, pipeline3])
@@ -352,7 +352,7 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
     end
 
     context 'when sha is specified' do
-      let!(:pipeline) { create(:ci_pipeline, project: project, sha: '97de212e80737a608d939f648d959671fb0a0142') }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: '97de212e80737a608d939f648d959671fb0a0142') }
 
       context 'when sha exists' do
         let(:params) { { sha: '97de212e80737a608d939f648d959671fb0a0142' } }
@@ -372,12 +372,12 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
     end
 
     context 'when the project has limited access to pipelines' do
-      let(:project) { create(:project, :private, :repository) }
-      let(:current_user) { create(:user) }
-      let!(:pipelines) { create_list(:ci_pipeline, 2, project: project) }
+      let_it_be(:current_user) { create(:user) }
+      let_it_be(:project) { create(:project, :private, :repository) }
+      let_it_be(:pipelines) { create_list(:ci_pipeline, 2, project: project) }
 
       context 'when the user has access' do
-        before do
+        before_all do
           project.add_developer(current_user)
         end
 
@@ -395,9 +395,9 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
 
     context 'when source is specified' do
       let(:params) { { source: 'web' } }
-      let!(:web_pipeline) { create(:ci_pipeline, project: project, source: 'web') }
-      let!(:push_pipeline) { create(:ci_pipeline, project: project, source: 'push') }
-      let!(:api_pipeline) { create(:ci_pipeline, project: project, source: 'api') }
+      let_it_be(:web_pipeline) { create(:ci_pipeline, project: project, source: 'web') }
+      let_it_be(:push_pipeline) { create(:ci_pipeline, project: project, source: 'push') }
+      let_it_be(:api_pipeline) { create(:ci_pipeline, project: project, source: 'api') }
 
       it 'returns only the matched pipeline' do
         is_expected.to eq([web_pipeline])
@@ -428,9 +428,9 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
 
       let(:params) { { order_by: order_by, sort: sort } }
 
-      let!(:pipeline_1) { create(:ci_pipeline, :scheduled, project: project, iid: 11, ref: 'master', created_at: Time.now, updated_at: Time.now, user: create(:user)) }
-      let!(:pipeline_2) { create(:ci_pipeline, :created, project: project, iid: 12, ref: 'feature', created_at: 1.day.ago, updated_at: 2.hours.ago, user: create(:user)) }
-      let!(:pipeline_3) { create(:ci_pipeline, :success, project: project, iid: 8, ref: 'patch', created_at: 2.days.ago, updated_at: 1.hour.ago, user: create(:user)) }
+      let_it_be(:pipeline_1) { create(:ci_pipeline, :scheduled, project: project, iid: 11, ref: 'master', created_at: Time.now, updated_at: Time.now, user: create(:user)) }
+      let_it_be(:pipeline_2) { create(:ci_pipeline, :created, project: project, iid: 12, ref: 'feature', created_at: 1.day.ago, updated_at: 2.hours.ago, user: create(:user)) }
+      let_it_be(:pipeline_3) { create(:ci_pipeline, :success, project: project, iid: 8, ref: 'patch', created_at: 2.days.ago, updated_at: 1.hour.ago, user: create(:user)) }
 
       where(:order_by, :sort, :ordered_pipelines) do
         'id'         | 'asc'  | [:pipeline_1, :pipeline_2, :pipeline_3]

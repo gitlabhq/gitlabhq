@@ -35,7 +35,7 @@ Prerequisites:
 To turn on the diagram proxy:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Kroki** or **PlantUML**.
 1. Select the **Proxy Kroki diagrams through GitLab** or
    **Proxy PlantUML diagrams through GitLab** checkbox.

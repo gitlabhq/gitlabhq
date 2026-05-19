@@ -21,8 +21,7 @@ RSpec.describe ActiveContext::Queues do
     stub_const('TestModule::TestQueue', test_queue_class)
     allow(ActiveContext::Redis).to receive(:with_redis).and_yield(redis)
 
-    described_class.instance_variable_set(:@queues, nil)
-    described_class.instance_variable_set(:@raw_queues, nil)
+    described_class.instance_variable_set(:@queue_classes_map, nil)
     described_class.instance_variable_set(:@queues_registered, nil)
   end
 
@@ -104,12 +103,21 @@ RSpec.describe ActiveContext::Queues do
     end
 
     context 'when calling .raw_queues' do
-      it 'calls register_all_queues!' do
-        expect(described_class).to receive(:register_all_queues!).at_least(:once).and_call_original
-
+      it 'builds queue instances from configured classes' do
         expect(described_class.raw_queues.length).to eq 8
         expect(length_raw_queues_for_class(Test::Queues::Mock)).to eq Test::Queues::Mock.number_of_shards
         expect(length_raw_queues_for_class(test_queue_class)).to eq test_queue_class.number_of_shards
+      end
+
+      it 'dynamically reflects changes to number_of_shards' do
+        # Initial call - should have 3 shards
+        expect(length_raw_queues_for_class(test_queue_class)).to eq 3
+
+        # Simulate shard count change (e.g., admin updates queue_shard_count)
+        allow(test_queue_class).to receive(:number_of_shards).and_return(5)
+
+        # Next call should pick up the new shard count immediately
+        expect(length_raw_queues_for_class(test_queue_class)).to eq 5
       end
     end
 

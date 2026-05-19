@@ -1,0 +1,146 @@
+---
+name: siphon_namespaces
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  id ORDER BY id SETTINGS index_granularity = 2048
+primary_key: id
+sorting_key: id
+settings:
+  index_granularity: '2048'
+columns:
+- name: id
+  type: Int64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: name
+  type: String
+- name: path
+  type: String
+- name: owner_id
+  type: Nullable(Int64)
+- name: created_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: updated_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: type
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "'User'"
+- name: description
+  type: String
+  default_kind: DEFAULT
+  default_expression: "''"
+- name: avatar
+  type: Nullable(String)
+- name: membership_lock
+  type: Nullable(Bool)
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: share_with_group_lock
+  type: Nullable(Bool)
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: visibility_level
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '20'
+- name: request_access_enabled
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'true'
+- name: ldap_sync_status
+  type: LowCardinality(String)
+  default_kind: DEFAULT
+  default_expression: "'ready'"
+- name: ldap_sync_error
+  type: Nullable(String)
+- name: ldap_sync_last_update_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: ldap_sync_last_successful_update_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: ldap_sync_last_sync_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: lfs_enabled
+  type: Nullable(Bool)
+- name: parent_id
+  type: Nullable(Int64)
+- name: shared_runners_minutes_limit
+  type: Nullable(Int64)
+- name: repository_size_limit
+  type: Nullable(Int64)
+- name: require_two_factor_authentication
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: two_factor_grace_period
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '48'
+- name: cached_markdown_version
+  type: Nullable(Int64)
+- name: project_creation_level
+  type: Nullable(Int64)
+- name: runners_token
+  type: Nullable(String)
+- name: file_template_project_id
+  type: Nullable(Int64)
+- name: saml_discovery_token
+  type: Nullable(String)
+- name: runners_token_encrypted
+  type: Nullable(String)
+- name: custom_project_templates_group_id
+  type: Nullable(Int64)
+- name: auto_devops_enabled
+  type: Nullable(Bool)
+- name: extra_shared_runners_minutes_limit
+  type: Nullable(Int64)
+- name: last_ci_minutes_notification_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: last_ci_minutes_usage_notification_level
+  type: Nullable(Int64)
+- name: subgroup_creation_level
+  type: Nullable(Int64)
+  default_kind: DEFAULT
+  default_expression: '1'
+- name: emails_disabled
+  type: Nullable(Bool)
+- name: max_pages_size
+  type: Nullable(Int64)
+- name: max_artifacts_size
+  type: Nullable(Int64)
+- name: mentions_disabled
+  type: Nullable(Bool)
+- name: default_branch_protection
+  type: Nullable(Int8)
+- name: unlock_membership_to_ldap
+  type: Nullable(Bool)
+- name: max_personal_access_token_lifetime
+  type: Nullable(Int64)
+- name: push_rule_id
+  type: Nullable(Int64)
+- name: shared_runners_enabled
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'true'
+- name: allow_descendants_override_disabled_shared_runners
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: traversal_ids
+  type: Array(Int64)
+  default_kind: DEFAULT
+  default_expression: "[]"
+- name: organization_id
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: state
+  type: Int8

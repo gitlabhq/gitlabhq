@@ -1,0 +1,7 @@
+---
+event: PackageMetadata::IngestedAdvisoryEvent
+description: Published once per advisory record after package security advisories
+  are ingested. Only fires for advisories whose published_date is within the last
+  14 days (PUBLISHED_ADVISORY_INTERVAL); older advisories are ingested without an
+  event.
+feature_category: software_composition_analysis

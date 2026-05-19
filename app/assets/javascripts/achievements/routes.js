@@ -14,5 +14,7 @@ export default [
   {
     name: EDIT_ROUTE_NAME,
     path: '/:id/edit',
+    component: AchievementsForm,
+    props: { isEditMode: true },
   },
 ];

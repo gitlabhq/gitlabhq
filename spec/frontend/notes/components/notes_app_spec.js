@@ -20,6 +20,7 @@ import NotesActivityHeader from '~/notes/components/notes_activity_header.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import * as constants from '~/notes/constants';
 import OrderedLayout from '~/notes/components/ordered_layout.vue';
+import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 // TODO: use generated fixture (https://gitlab.com/gitlab-org/gitlab-foss/issues/62491)
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -667,6 +668,60 @@ describe('note_app', () => {
       wrapper = createComponent('', '');
       expect(wrapper.findComponent(NotesActivityHeader).props('noteableType')).toBe('');
       expect(wrapper.vm.noteableType).toBe('');
+    });
+  });
+
+  describe('system note discussions', () => {
+    const createSystemNoteDiscussion = () => {
+      const discussion = createDiscussionMock();
+      discussion.individual_note = false;
+      discussion.notes[0].system = true;
+      discussion.notes[0].system_note_icon_name = 'pencil';
+      discussion.notes = [discussion.notes[0]];
+
+      return discussion;
+    };
+
+    const mountWithDiscussion = (discussion) => {
+      useNotes()[types.ADD_NEW_NOTE]({ discussion });
+
+      wrapper = shallowMount(NotesApp, {
+        propsData,
+        pinia,
+        stubs: {
+          'ordered-layout': OrderedLayout,
+        },
+      });
+    };
+
+    it('renders as a system note when discussion only has a single system note', () => {
+      mountWithDiscussion(createSystemNoteDiscussion());
+
+      expect(wrapper.findComponent(SystemNote).exists()).toBe(true);
+      expect(wrapper.findComponent(NoteableDiscussion).exists()).toBe(false);
+    });
+
+    it('renders as a discussion when a system note discussion has replies', () => {
+      const discussion = createSystemNoteDiscussion();
+
+      useNotes()[types.ADD_NEW_NOTE]({ discussion });
+      useNotes()[types.ADD_NEW_REPLY_TO_DISCUSSION]({
+        ...discussion.notes[0],
+        id: '1500',
+        system: false,
+        discussion_id: discussion.id,
+      });
+
+      wrapper = shallowMount(NotesApp, {
+        propsData,
+        pinia,
+        stubs: {
+          'ordered-layout': OrderedLayout,
+        },
+      });
+
+      expect(wrapper.findComponent(SystemNote).exists()).toBe(false);
+      expect(wrapper.findComponent(NoteableDiscussion).exists()).toBe(true);
     });
   });
 });

@@ -53,6 +53,8 @@ module RuboCop
             add_offense(node, message: 'if and ternary operators are not allowed within a rule block.')
           end
         end
+
+        alias_method :on_numblock, :on_block
       end
     end
   end

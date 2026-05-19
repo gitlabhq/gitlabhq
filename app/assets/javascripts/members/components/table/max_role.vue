@@ -132,14 +132,14 @@ export default {
       @select="handleSelect"
     >
       <template #list-item="{ item }">
-        <div data-testid="access-level-link" :class="{ 'gl-font-bold': item.memberRoleId }">
+        <div data-testid="access-level-link">
           {{ item.text }}
         </div>
         <div
-          v-if="item.memberRoleId && item.description"
+          v-if="item.dropdownDescription || item.description"
           class="gl-line-clamp-2 gl-whitespace-normal gl-pt-1 gl-text-sm gl-text-subtle"
         >
-          {{ item.description }}
+          {{ item.dropdownDescription || item.description }}
         </div>
       </template>
       <template #footer>

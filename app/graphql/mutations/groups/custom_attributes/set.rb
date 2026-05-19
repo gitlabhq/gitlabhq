@@ -12,6 +12,10 @@ module Mutations
 
         authorize :update_custom_attribute
 
+        authorize_granular_token permissions: :update_custom_attribute,
+          boundary_argument: :group_path,
+          boundary_type: :group
+
         argument :group_path, GraphQL::Types::ID,
           required: true,
           description: 'Full path of the group.'

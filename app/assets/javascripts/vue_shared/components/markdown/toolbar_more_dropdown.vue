@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     getCurrentTextArea() {
-      return this.$el.closest('.md-area')?.querySelector('textarea');
+      return this.$el.closest('.md-area')?.querySelector('textarea.js-gfm-input');
     },
     insertMarkdown(markdownText, trackingProperty, selectText) {
       const textArea = this.getCurrentTextArea();

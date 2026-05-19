@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GitLab Duo Chat（非エージェント型）
+title: GitLab Duo非エージェンティックチャット
 ---
 
 {{< details >}}
@@ -23,8 +23,8 @@ title: GitLab Duo Chat（非エージェント型）
 
 {{< history >}}
 
-- GitLab 16.0のSaaSの[実験的機能](../../policy/development_stages_support.md#experiment)として[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695)されました。
-- GitLab 16.6でSaaSの[ベータ版](../../policy/development_stages_support.md#beta)に変更されました。
+- GitLab 16.0で、GitLab.com向けに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695)されました（[実験](../../policy/development_stages_support.md#experiment)として）。
+- GitLab 16.6で、GitLab.com向けに[ベータ](../../policy/development_stages_support.md#beta)版に変更されました。
 - GitLab 16.8でGitLab Self-Managedのベータ版として[導入](https://gitlab.com/groups/gitlab-org/-/epics/11251)されました。
 - GitLab 16.9でベータ版のまま、UltimateプランからPremiumプランに[変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808)されました。
 - GitLab 16.11で[一般提供](../../policy/development_stages_support.md#generally-available)になりました。
@@ -91,7 +91,7 @@ GitLab UIでChatを使用するには:
 1. メッセージボックスに質問を入力し、<kbd>Enter</kbd>キーを押すか、**送信**を選択します。
    - チャットに[コンテキスト](../gitlab_duo/context.md)を追加できます。
    - インタラクティブなAIチャットが回答を生成するまで、数秒かかる場合があります。
-1. オプション。次のことができます: 
+1. オプション。次のことが可能です。
    - フォローアップの質問をします。
    - [別の会話](#have-multiple-conversations)を開始します。
 
@@ -161,7 +161,7 @@ GitLabのWeb IDEでGitLab Duo Chatを使用するには、次の手順に従い�
    - エディタで開いているファイルで、コードを選択します。
      1. 右クリックして、**GitLab Duo Chat**を選択します。
      1. **Explain selected snippet**、**Fix**、**Generate tests**、**Open Quick Chat**または**Refactor**を選択します。
-   - キーボードショートカットを使用します:
+   - キーボードショートカットを使用します: 
      - WindowsまたはLinuxの場合: <kbd>ALT</kbd> + <kbd>d</kbd>
      - macOSの場合: <kbd>Option</kbd> + <kbd>d</kbd>
 1. メッセージボックスに質問を入力し、<kbd>Enter</kbd>キーを押すか、**送信**を選択します。
@@ -191,7 +191,7 @@ GitLabのWeb IDEでGitLab Duo Chatを使用するには、次の手順に従い�
 GitLab for VS Code extensionでGitLab Duo Chatを使用するには:
 
 1. VS Codeでファイルを開きます。Gitリポジトリ内のファイルである必要はありません。
-1. 左サイドバーで、**GitLab Duo Chat** ({{< icon name="duo-chat" >}})を選択します。
+1. 左サイドバーで、**GitLab Duo Chat** ({{< icon name="duo-chat" >}}) を選択します。
 1. メッセージボックスに質問を入力し、<kbd>Enter</kbd>キーを押すか、**送信**を選択します。
 
 エディタでコードを選択した場合、この選択はGitLab Duo Chatへの質問に含まれます。たとえば、コードを選択して、Chatに`Can you simplify this?`と質問できます。
@@ -218,7 +218,7 @@ Quick Chatを開いたら、次の手順を実行します:
 1. メッセージボックスに質問を入力します。次の方法も使用できます:
    - `/`と入力して、使用可能なすべてのコマンドを表示します。
    - `/re`と入力して、`/refactor`および`/reset`を表示します。
-1. 質問を送信するには、**送信**を選択するか、<kbd>Commnad</kbd> + <kbd>Enter</kbd>キーを押します。
+1. 質問を送信するには、**送信**を選択するか、<kbd>Command</kbd> + <kbd>Enter</kbd>キーを押します。
 1. 応答に含まれるコードを使用するには、コードブロックの上にある**Copy Snippet**リンクと**Insert Snippet**リンクを使用します。
 1. チャットを終了するには、ガターでチャットアイコンを選択するか、チャットにフォーカスしているときに**Escape**キーを押します。
 
@@ -263,9 +263,9 @@ GitLab for Visual Studio extensionでGitLab Duo Chatを使用するには:
 
 前提条件: 
 
-- [JetBrains IDE用GitLabプラグインのインストールと設定](../../editor_extensions/jetbrains_ide/setup.md)が完了していること。
+- GitLab DuoプラグインをJetBrains IDE向けに[インストールして構成済み](../../editor_extensions/jetbrains_ide/setup.md)であること。
 
-JetBrains IDE用GitLabプラグインでGitLab Duo Chatを使用するには、次の手順を実行します:
+JetBrains IDE向けのGitLab DuoプラグインでGitLab Duo Chatを使用するには:
 
 1. JetBrains IDEでプロジェクトを開きます。
 1. チャットウィンドウまたはエディタウィンドウでGitLab Duo Chatを開きます。
@@ -274,7 +274,7 @@ JetBrains IDE用GitLabプラグインでGitLab Duo Chatを使用するには、�
 
 チャットウィンドウでGitLab Duo Chatを開くには、次のいずれかの方法を使用します:
 
-- 右側のツールウィンドウバーで、**GitLab Duo Chat**を選択します。
+- 右のツールウィンドウバーで、**GitLab Duo Non-Agentic Chat**を選択します。
 - キーボードショートカットから:
   - WindowsおよびLinuxの場合: <kbd>ALT</kbd> + <kbd>d</kbd>
   - macOSの場合: <kbd>Option</kbd> + <kbd>d</kbd>
@@ -346,9 +346,9 @@ Quick Chatを開いたら、次の手順を実行します:
 GitLab for EclipseプラグインでGitLab Duo Chatを使用するには:
 
 1. Eclipseでプロジェクトを開きます。
-1. **GitLab Duo Chat**（{{< icon name="duo-chat" >}}）を選択するか、キーボードショートカットを使用します:
-   - WindowsおよびLinuxの場合: <kbd>ALT</kbd> + <kbd>d</kbd>
-   - macOSの場合: <kbd>Option</kbd> + <kbd>d</kbd>
+1. 右上隅で、**GitLab Duo Chat** ({{< icon name="duo-chat" >}}) を選択するか、キーボードショートカットを使用します:
+   - WindowsおよびLinuxの場合: <kbd>Alt</kbd>+<kbd>D</kbd>
+   - macOSの場合: <kbd>Option</kbd>+<kbd>D</kbd>
 1. メッセージボックスに質問を入力し、<kbd>Enter</kbd>キーを押すか、**送信**を選択します。
 
 ## Chatの会話の有効期限を設定する {#configure-chat-conversation-expiration}
@@ -373,12 +373,16 @@ GitLab for EclipseプラグインでGitLab Duo Chatを使用するには:
    - **会話作成後**。
 1. **変更を保存**を選択します。
 
+## IDEショートカット {#ide-shortcuts}
+
+サポートされているIDEでチャットを使用する場合、[キーボードショートカット](../shortcuts.md#gitlab-duo-chat)を使用できます。
+
 ## 利用可能な言語モデル {#available-language-models}
 
 異なる言語モデルをGitLab Duo Chatのソースにすることができます。
 
 - GitLab.comまたはGitLab Self-Managedでは、デフォルトのGitLabマネージドモデルと、GitLabがホストするクラウドベースのAIゲートウェイが使用されます。
-- GitLab Self-Managedでは、GitLab 17.9以降の場合、[サポートされているセルフホストモデルを使用したGitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)が利用できます。セルフホストモデルは、外部モデルに何も送信されないようにすることで、セキュリティとプライバシーを最大限に高めます。GitLabマネージドモデル、その他のサポートされている言語モデル、または独自の互換性のあるモデルを使用できます。
+- GitLab Self-Managedでは、GitLab 17.9以降の場合、[サポートされているセルフホストモデルを使用したGitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)が利用できます。セルフホストモデルは、外部モデルに何も送信されないようにすることで、セキュリティとプライバシーを最大限に高めます。GitLabが管理するモデル、その他のサポートされている言語モデル、または独自の互換性のあるモデルを使用できます。
 
 ## 入力と出力の長さ {#input-and-output-length}
 

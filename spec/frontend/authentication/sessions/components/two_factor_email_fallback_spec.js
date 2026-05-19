@@ -83,19 +83,30 @@ describe('TwoFactorEmailFallback', () => {
     });
 
     it('shows email verification when success event is emitted from footer', async () => {
+      const showResendAfter = Date.now() + 60_000;
       const footer = findEmailOtpFallbackFooter();
 
-      footer.vm.$emit('success');
+      footer.vm.$emit('success', showResendAfter);
       await waitForPromises();
 
       expect(wrapper.vm.showEmailVerification).toBe(true);
 
       await nextTick();
       const emailVerification = findEmailVerification();
-      expect(emailVerification.props()).toMatchObject(defaultProps.emailVerificationData);
+      expect(emailVerification.props()).toMatchObject({
+        ...defaultProps.emailVerificationData,
+        initialShowResendAfter: showResendAfter,
+      });
 
       expect(findEmailVerification().exists()).toBe(true);
       expect(findEmailOtpFallbackFooter().exists()).toBe(false);
+    });
+
+    it('passes null initialShowResendAfter when success emits null', async () => {
+      findEmailOtpFallbackFooter().vm.$emit('success', null);
+      await nextTick();
+
+      expect(findEmailVerification().props('initialShowResendAfter')).toBeNull();
     });
 
     it('creates alert when error event is emitted from footer', async () => {

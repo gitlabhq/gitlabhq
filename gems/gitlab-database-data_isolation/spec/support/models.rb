@@ -9,6 +9,7 @@ class ApplicationRecord < ActiveRecord::Base
 end
 
 class Project < ApplicationRecord
+  has_many :issues
 end
 
 class Issue < ApplicationRecord

@@ -5,6 +5,7 @@ class ProjectStatistics < ApplicationRecord
 
   belongs_to :project
   belongs_to :namespace
+  belongs_to :root_namespace, class_name: 'Namespace', optional: true
 
   attribute :wiki_size, default: 0
   attribute :snippets_size, default: 0

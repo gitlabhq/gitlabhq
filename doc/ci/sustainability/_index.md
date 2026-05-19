@@ -84,7 +84,10 @@ To choose efficient runners:
 
 To schedule strategically:
 
-- Schedule resource-intensive pipelines to run during off-peak hours when possible.
+- Schedule resource-intensive pipelines to run when most renewable energy is available
+  in your CI server's region. Check [Electricity Maps](https://app.electricitymaps.com/map/live/hourly)
+  to find the best times and regions.
+  Midday is usually a good default choice.
 - Consider carbon-aware scheduling for non-urgent pipelines.
 - Batch similar jobs together to improve resource utilization.
 

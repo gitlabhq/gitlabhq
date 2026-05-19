@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import apolloProvider from '~/repository/graphql';
 import RepositoryApp from '~/repository/components/app.vue';
 import createStore from '~/code_navigation/store';
 
-export default function initRepositoryApp(router, apolloProvider, options = {}) {
+export default function initRepositoryApp(router, options = {}) {
   const viewBlobEl = document.querySelector('#js-view-blob-app');
   const {
     blobPath,

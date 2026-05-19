@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillMergeRequestDiffCommitsToPartitioned
+description: Backfills tables `merge_request_diff_commits_b5377a7a34` and `merge_request_commits_metadata` from
+  `merge_request_diff_commits`
+feature_category: code_review_workflow
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224072
+milestone: '19.0'
+queued_migration_version: 20260410102007
+finalized_by: # version of the migration that finalized this BBM

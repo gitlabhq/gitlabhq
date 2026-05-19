@@ -50,16 +50,6 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
   end
 
   describe '#fetch_work_item_type' do
-    context 'when given a WorkItems::Type object' do
-      let_it_be(:issue_type_from_db) { create(:work_item_type, :issue) }
-
-      it 'returns the work item type' do
-        result = provider.fetch_work_item_type(issue_type_from_db)
-
-        expect(result).to eq(issue_type)
-      end
-    end
-
     context 'when given a WorkItems::TypesFramework::SystemDefined::Type object' do
       it 'returns the work item type' do
         result = provider.fetch_work_item_type(issue_type)
@@ -392,8 +382,8 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
   end
 
   describe '#base_types_by_ids' do
-    let_it_be(:incident_type) { create(:work_item_type, :incident) }
-    let_it_be(:another_issue_type) { create(:work_item_type, :issue) }
+    let(:incident_type) { build(:work_item_system_defined_type, :incident) }
+    let(:another_issue_type) { build(:work_item_system_defined_type, :issue) }
 
     context 'when given multiple IDs with different base types' do
       it 'returns unique base types' do
@@ -477,6 +467,115 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
   describe '#type_class' do
     it 'returns SystemDefined::Type class' do
       expect(provider.send(:type_class)).to eq(WorkItems::TypesFramework::SystemDefined::Type)
+    end
+  end
+
+  describe '#namespaced_type' do
+    it 'returns a NamespacedType wrapping the given type' do
+      result = provider.send(:namespaced_type, issue_type)
+
+      expect(result).to be_a(SimpleDelegator)
+      expect(result.id).to eq(issue_type.id)
+    end
+
+    it 'returns nil when type is nil' do
+      result = provider.send(:namespaced_type, nil)
+
+      expect(result).to be_nil
+    end
+
+    context 'when namespace is a group' do
+      let(:provider) { described_class.new(group) }
+
+      it 'sets is_a_group to true' do
+        result = provider.send(:namespaced_type, issue_type)
+
+        expect(result.send(:is_a_group)).to be(true)
+      end
+    end
+
+    context 'when namespace is a project' do
+      let(:provider) { described_class.new(project) }
+
+      it 'sets is_a_group to false' do
+        result = provider.send(:namespaced_type, issue_type)
+
+        expect(result.send(:is_a_group)).to be(false)
+      end
+    end
+
+    context 'when namespace is nil' do
+      let(:provider) { described_class.new(nil) }
+
+      it 'sets is_a_group to false' do
+        result = provider.send(:namespaced_type, issue_type)
+
+        expect(result.send(:is_a_group)).to be(false)
+      end
+    end
+  end
+
+  describe '#group_namespace?' do
+    context 'when namespace is a group' do
+      let(:provider) { described_class.new(group) }
+
+      it 'returns true' do
+        expect(provider.send(:group_namespace?)).to be(true)
+      end
+    end
+
+    context 'when namespace is a project' do
+      let(:provider) { described_class.new(project) }
+
+      it 'returns false' do
+        expect(provider.send(:group_namespace?)).to be(false)
+      end
+    end
+
+    context 'when namespace is nil' do
+      let(:provider) { described_class.new(nil) }
+
+      it 'returns false' do
+        expect(provider.send(:group_namespace?)).to be(false)
+      end
+    end
+  end
+
+  describe '#tasks_on_boards?' do
+    context 'when namespace is nil' do
+      let(:provider) { described_class.new(nil) }
+
+      it 'returns false' do
+        expect(provider.send(:tasks_on_boards?)).to be(false)
+      end
+    end
+
+    context 'when namespace has work_item_tasks_on_boards_feature_flag_enabled?' do
+      let(:provider) { described_class.new(group) }
+
+      it 'returns the value from namespace' do
+        allow(group).to receive(:work_item_tasks_on_boards_feature_flag_enabled?).and_return(true)
+
+        expect(provider.send(:tasks_on_boards?)).to be(true)
+      end
+    end
+
+    context 'when initialized with a Project' do
+      let(:provider) { described_class.new(project) }
+
+      it 'resolves the FF check via resource_parent (the Project), not the ProjectNamespace' do
+        allow(project).to receive(:work_item_tasks_on_boards_feature_flag_enabled?).and_return(true)
+
+        expect(provider.send(:tasks_on_boards?)).to be(true)
+      end
+    end
+
+    context 'when namespace does not respond to work_item_tasks_on_boards_feature_flag_enabled?' do
+      let(:provider) { described_class.new(organization) }
+
+      it 'returns false' do
+        expect(provider.send(:tasks_on_boards?)).to be(false)
+      end
     end
   end
 

@@ -154,6 +154,22 @@ describe('WorkItemAttributesWrapper component', () => {
 
       expect(findWorkItemLabels().exists()).toBe(true);
     });
+
+    it('renders when features.labels is present', () => {
+      createComponent({
+        workItem: {
+          ...workItemResponseFactory({ labelsWidgetPresent: false }).data.workItem,
+          features: {
+            labels: {
+              allowsScopedLabels: false,
+              labels: { nodes: [] },
+            },
+          },
+        },
+      });
+
+      expect(findWorkItemLabels().exists()).toBe(true);
+    });
   });
 
   describe('dates widget', () => {
@@ -174,6 +190,22 @@ describe('WorkItemAttributesWrapper component', () => {
       createComponent();
 
       await waitForPromises();
+
+      expect(findWorkItemDates().exists()).toBe(true);
+    });
+
+    it('renders when features.startAndDueDate is present', () => {
+      createComponent({
+        workItem: {
+          ...workItemResponseFactory({ datesWidgetPresent: false }).data.workItem,
+          features: {
+            startAndDueDate: {
+              startDate: '2024-01-01',
+              dueDate: '2024-01-31',
+            },
+          },
+        },
+      });
 
       expect(findWorkItemDates().exists()).toBe(true);
     });
@@ -261,6 +293,24 @@ describe('WorkItemAttributesWrapper component', () => {
       createComponent({ workItem: response.data.workItem });
 
       expect(findWorkItemTimeTracking().exists()).toBe(exists);
+    });
+
+    it('renders when features.timeTracking is present', () => {
+      createComponent({
+        workItem: {
+          ...workItemResponseFactory({ timeTrackingWidgetPresent: false }).data.workItem,
+          features: {
+            timeTracking: {
+              timeEstimate: 0,
+              humanReadableAttributes: { timeEstimate: '' },
+              timelogs: { nodes: [] },
+              totalTimeSpent: 0,
+            },
+          },
+        },
+      });
+
+      expect(findWorkItemTimeTracking().exists()).toBe(true);
     });
   });
 

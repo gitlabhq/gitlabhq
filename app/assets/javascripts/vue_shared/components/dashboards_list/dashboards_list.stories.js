@@ -17,16 +17,11 @@ const defaultArgs = {
       name: 'Built in dashboard',
       description: 'Built in dashboard',
       slug: 'built-in', // might need `url` instead once they are shareable
-      createdBy: {
-        id: 1337,
-        name: 'GitLab',
-        username: 'gitlab',
-        avatarUrl: '/fake/user/avatar.jpg',
-        webPath: '/fake/user/web/path',
-      },
+      system: true,
       isCustom: false,
       isStarred: true,
       shareLink: '/fake/link/to/share',
+      dashboardUrl: '/fake/dashboard/built-in',
     },
     {
       name: 'First custom dashboard',
@@ -44,6 +39,7 @@ const defaultArgs = {
       isEditable: true,
       shareLink: '/fake/link/to/share',
       updatedAt: '2025-09-10',
+      dashboardUrl: '/fake/dashboard/1',
     },
     {
       name: 'Cool dashboard',
@@ -62,6 +58,7 @@ const defaultArgs = {
       isEditable: true,
       shareLink: '/fake/link/to/share',
       updatedAt: '2025-10-28',
+      dashboardUrl: '/fake/dashboard/2',
     },
   ],
 };

@@ -13,9 +13,9 @@ RSpec.describe ::Gitlab::GitPostReceive do
       let_it_be(:deploy_key) { create(:deploy_key, user: project.first_owner) }
       let_it_be(:identifier) { "key-#{deploy_key.id}" }
       let(:changes) do
-        <<~EOF
+        <<~GIT_REFS
           654322 210986 refs/tags/test1
-        EOF
+        GIT_REFS
       end
 
       it 'returns false' do
@@ -27,11 +27,11 @@ RSpec.describe ::Gitlab::GitPostReceive do
   describe '#includes_branches?' do
     context 'with no branches' do
       let(:changes) do
-        <<~EOF
+        <<~GIT_REFS
           654321 210987 refs/nobranches/tag1
           654322 210986 refs/tags/test1
           654323 210985 refs/merge-requests/mr1
-        EOF
+        GIT_REFS
       end
 
       it 'returns false' do
@@ -41,11 +41,11 @@ RSpec.describe ::Gitlab::GitPostReceive do
 
     context 'with branches' do
       let(:changes) do
-        <<~EOF
+        <<~GIT_REFS
           654322 210986 refs/heads/test1
           654321 210987 refs/tags/tag1
           654323 210985 refs/merge-requests/mr1
-        EOF
+        GIT_REFS
       end
 
       it 'returns true' do
@@ -55,10 +55,10 @@ RSpec.describe ::Gitlab::GitPostReceive do
 
     context 'with malformed changes' do
       let(:changes) do
-        <<~EOF
+        <<~GIT_REFS
           ref/heads/1 a
           somebranch refs/heads/2
-        EOF
+        GIT_REFS
       end
 
       it 'returns false' do
@@ -70,11 +70,11 @@ RSpec.describe ::Gitlab::GitPostReceive do
   describe '#includes_tags?' do
     context 'with no tags' do
       let(:changes) do
-        <<~EOF
+        <<~GIT_REFS
           654321 210987 refs/notags/tag1
           654322 210986 refs/heads/test1
           654323 210985 refs/merge-requests/mr1
-        EOF
+        GIT_REFS
       end
 
       it 'returns false' do
@@ -84,11 +84,11 @@ RSpec.describe ::Gitlab::GitPostReceive do
 
     context 'with tags' do
       let(:changes) do
-        <<~EOF
+        <<~GIT_REFS
           654322 210986 refs/heads/test1
           654321 210987 refs/tags/tag1
           654323 210985 refs/merge-requests/mr1
-        EOF
+        GIT_REFS
       end
 
       it 'returns true' do
@@ -98,10 +98,10 @@ RSpec.describe ::Gitlab::GitPostReceive do
 
     context 'with malformed changes' do
       let(:changes) do
-        <<~EOF
+        <<~GIT_REFS
           ref/tags/1 a
           sometag refs/tags/2
-        EOF
+        GIT_REFS
       end
 
       it 'returns false' do
@@ -113,11 +113,11 @@ RSpec.describe ::Gitlab::GitPostReceive do
   describe '#includes_default_branch?' do
     context 'with no default branch' do
       let(:changes) do
-        <<~EOF
+        <<~GIT_REFS
           654321 210987 refs/heads/test1
           654322 210986 refs/tags/#{project.default_branch}
           654323 210985 refs/heads/test3
-        EOF
+        GIT_REFS
       end
 
       it 'returns false' do
@@ -127,9 +127,9 @@ RSpec.describe ::Gitlab::GitPostReceive do
 
     context 'with a project with no default branch' do
       let(:changes) do
-        <<~EOF
+        <<~GIT_REFS
           654321 210987 refs/heads/test1
-        EOF
+        GIT_REFS
       end
 
       it 'returns true' do
@@ -140,11 +140,11 @@ RSpec.describe ::Gitlab::GitPostReceive do
 
     context 'with default branch' do
       let(:changes) do
-        <<~EOF
+        <<~GIT_REFS
           654322 210986 refs/heads/test1
           654321 210987 refs/tags/test2
           654323 210985 refs/heads/#{project.default_branch}
-        EOF
+        GIT_REFS
       end
 
       it 'returns true' do

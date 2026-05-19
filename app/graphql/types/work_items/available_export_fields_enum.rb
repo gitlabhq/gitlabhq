@@ -24,7 +24,7 @@ module Types
       value 'DUE_DATE', value: 'due date', description: 'Due date (UTC) of the work item.'
 
       value 'CLOSED_AT', value: 'closed at', description: 'Closed at (UTC) date of the work item.'
-      value 'CREATED_AT', value: 'created at', description: 'Crated at (UTC) date of the work item.'
+      value 'CREATED_AT', value: 'created at', description: 'Created at (UTC) date of the work item.'
       value 'UPDATED_AT', value: 'updated at', description: 'Updated at (UTC) date of the work item.'
 
       value 'MILESTONE', value: 'milestone', description: 'Milestone of the work item.'

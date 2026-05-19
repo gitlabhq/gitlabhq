@@ -4,13 +4,7 @@ class Import::UrlController < ApplicationController
   feature_category :importers
   urgency :low
 
-  before_action only: :new do
-    push_frontend_feature_flag(:import_by_url_new_page, current_user)
-  end
-
   def new
-    return render_404 unless Feature.enabled?(:import_by_url_new_page, current_user)
-
     unless can?(current_user, :import_projects, current_user.namespace)
       return access_denied!(s_('ProjectImportByURL|You do not have permission to import projects.'))
     end

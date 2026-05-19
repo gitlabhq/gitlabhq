@@ -24,16 +24,16 @@ module Ci
       can?(:read_build, @subject.job.project)
     end
 
-    condition(:has_access_to_project) do
-      can?(:developer_access, @subject.job.project)
+    condition(:can_read_developer_artifacts) do
+      can?(:_read_developer_job_artifact, @subject.job.project)
     end
 
-    condition(:has_maintainer_access_to_project) do
-      can?(:maintainer_access, @subject.job.project)
+    condition(:can_read_maintainer_artifacts) do
+      can?(:_read_maintainer_job_artifact, @subject.job.project)
     end
 
     rule { can_read_project_build & ~none_access }.enable :read_job_artifacts
-    rule { ~public_access & ~has_access_to_project }.prevent :read_job_artifacts
-    rule { maintainer_only_access & ~has_maintainer_access_to_project }.prevent :read_job_artifacts
+    rule { ~public_access & ~can_read_developer_artifacts }.prevent :read_job_artifacts
+    rule { maintainer_only_access & ~can_read_maintainer_artifacts }.prevent :read_job_artifacts
   end
 end

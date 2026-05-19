@@ -1,6 +1,6 @@
 ---
 stage: Growth
-group: Engagement
+group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Send banners and notifications to users on your instance.
 title: Broadcast messages
@@ -81,7 +81,7 @@ To display messages to users on your GitLab instance, add a broadcast message.
 To add a broadcast message:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Messages**.
+1. In the left sidebar, select **Messages**.
 1. On the right, select **Add new message**.
 1. Add your **Message** text:
    - Message contents can include Markdown, emoji, and the `a` and `br` HTML tags.
@@ -121,7 +121,7 @@ If you must make changes to a broadcast message, you can edit it.
 To edit a broadcast message:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Messages**.
+1. In the left sidebar, select **Messages**.
 1. From the list of broadcast messages, select the edit button for the message.
 1. After making the required changes, select **Update broadcast message**.
 
@@ -135,7 +135,7 @@ You can delete a broadcast message while it's active.
 To delete a broadcast message:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Messages**.
+1. In the left sidebar, select **Messages**.
 1. From the list of broadcast messages, select the delete button for the message.
 
 When a broadcast message is deleted, it's removed from the list of broadcast messages.

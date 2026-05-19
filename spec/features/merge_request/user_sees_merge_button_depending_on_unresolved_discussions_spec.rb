@@ -16,10 +16,13 @@ RSpec.describe 'Merge request > User sees merge button depending on unresolved t
   context 'when project.only_allow_merge_if_all_discussions_are_resolved == true' do
     before do
       project.update_column(:only_allow_merge_if_all_discussions_are_resolved, true)
-      visit project_merge_request_path(project, merge_request)
     end
 
     context 'with unresolved threads' do
+      before do
+        visit project_merge_request_path(project, merge_request)
+      end
+
       it 'does not allow to merge' do
         expect(page).not_to have_button('Merge', exact: true)
 
@@ -32,6 +35,7 @@ RSpec.describe 'Merge request > User sees merge button depending on unresolved t
     context 'with all threads resolved' do
       before do
         merge_request.discussions.each { |d| d.resolve!(user) }
+
         visit project_merge_request_path(project, merge_request)
       end
 
@@ -44,10 +48,13 @@ RSpec.describe 'Merge request > User sees merge button depending on unresolved t
   context 'when project.only_allow_merge_if_all_discussions_are_resolved == false' do
     before do
       project.update_column(:only_allow_merge_if_all_discussions_are_resolved, false)
-      visit project_merge_request_path(project, merge_request)
     end
 
     context 'with unresolved threads' do
+      before do
+        visit project_merge_request_path(project, merge_request)
+      end
+
       it 'does not allow to merge' do
         expect(page).to have_button('Merge', exact: true)
       end
@@ -56,6 +63,7 @@ RSpec.describe 'Merge request > User sees merge button depending on unresolved t
     context 'with all threads resolved' do
       before do
         merge_request.discussions.each { |d| d.resolve!(user) }
+
         visit project_merge_request_path(project, merge_request)
       end
 

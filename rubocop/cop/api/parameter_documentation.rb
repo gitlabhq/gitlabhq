@@ -15,14 +15,31 @@ module RuboCop
       #       requires :status, type: String, values: -> { Status.names }
       #     end
       #
+      #   # good (has Proc with documentation)
+      #     params do
+      #       requires :status, type: String, values: -> { Status.names }, documentation: { example: 'active' }
+      #     end
+      #
+      #   # bad (has Proc in values hash without documentation)
+      #     params do
+      #       requires :key, type: String,
+      #       values: { value: ->(v) { v.length <= 255 }, message: 'must be less than 256 characters' }
+      #     end
+      #
+      #   # good (has Proc in values hash with documentation)
+      #     params do
+      #       requires :key, type: String,
+      #       values: { value: ->(v) { v.length <= 255 }, message: 'must be less than 256 characters' }
+      #       documentation: { example: 'short_key' }
+      #     end
+      #
       #   # bad (has Proc in default without documentation)
       #     params do
       #       optional :limit, type: Integer, default: -> { Config.default_limit }
       #     end
       #
-      #   # good (has Proc with documentation)
+      #   # good (has Proc in values hash with documentation)
       #     params do
-      #       requires :status, type: String, values: -> { Status.names }, documentation: { example: 'active' }
       #       optional :limit, type: Integer, default: -> { Config.default_limit }, documentation: { example: 10 }
       #     end
       #
@@ -89,6 +106,14 @@ module RuboCop
           )
         PATTERN
 
+        # @!method proc_in_values_hash?(node)
+        def_node_matcher :proc_in_values_hash?, <<~PATTERN
+          (send _
+            ...
+            (hash <(pair (sym ${:values :default}) (hash <(pair _ #{PROC_PATTERN}) ...>)) ...>)
+          )
+        PATTERN
+
         # @!method variable_used?(node)
         def_node_matcher :variable_used?, <<~PATTERN
           (send _
@@ -100,7 +125,7 @@ module RuboCop
         def on_send(node)
           return if has_documentation?(node)
 
-          key = proc_used?(node) || proc_variable_used?(node)
+          key = proc_used?(node) || proc_in_values_hash?(node) || proc_variable_used?(node)
           add_offense(node, message: MESSAGES[key]) if key
         end
         alias_method :on_csend, :on_send

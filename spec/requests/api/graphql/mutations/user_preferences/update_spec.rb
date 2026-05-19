@@ -218,4 +218,67 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       end
     end
   end
+
+  # orbit_settings uses snake_case JSON keys (following ai_setting_feature_settings precedent).
+  # The graphql_mutation helper camelizes nested hash keys, which would corrupt snake_case keys.
+  # These tests use post_graphql with a raw query string to accurately reflect how the
+  # real frontend sends the payload (no camelization of JSON content).
+  describe 'orbit_settings specific tests' do
+    let(:orbit_mutation_query) do
+      <<~GQL
+        mutation($input: UserPreferencesUpdateInput!) {
+          userPreferencesUpdate(input: $input) {
+            userPreferences { orbitSettings }
+            errors
+          }
+        }
+      GQL
+    end
+
+    def post_orbit_mutation(orbit_settings_value, user: current_user)
+      # Pass variables as a pre-serialized JSON string to prevent the test helper
+      # from camelizing snake_case keys inside the JSON payload.
+      post_graphql(
+        orbit_mutation_query,
+        current_user: user,
+        variables: { input: { orbitSettings: orbit_settings_value } }.to_json
+      )
+    end
+
+    context 'when disabling Orbit via orbit_settings' do
+      it 'persists orbit_settings with snake_case key and returns it in response' do
+        post_orbit_mutation({ 'enabled' => false })
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(graphql_data.dig('userPreferencesUpdate', 'userPreferences', 'orbitSettings'))
+          .to eq({ 'enabled' => false })
+        expect(UserPreference.find_by(user: current_user).orbit_settings)
+          .to eq({ 'enabled' => false })
+      end
+    end
+
+    context 'when merging with existing orbit_settings' do
+      before do
+        current_user.create_user_preference!(orbit_settings: { 'enabled' => true })
+      end
+
+      it 'merges with existing settings' do
+        post_orbit_mutation({ 'enabled' => false })
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(UserPreference.find_by(user: current_user).orbit_settings)
+          .to eq({ 'enabled' => false })
+      end
+    end
+
+    context 'when orbit_settings is empty' do
+      it 'allows empty object' do
+        post_orbit_mutation({})
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(graphql_data.dig('userPreferencesUpdate', 'userPreferences', 'orbitSettings'))
+          .to eq({})
+      end
+    end
+  end
 end

@@ -7,7 +7,7 @@ module Gitlab
         class AggregationConnection < GraphQL::Pagination::Connection
           delegate :count, to: :items
 
-          # rubocop: disable Naming/PredicateName -- these methods are part of the GraphQL pagination API
+          # rubocop: disable Naming/PredicatePrefix -- these methods are part of the GraphQL pagination API
           def has_next_page
             load_nodes
             @has_next_page
@@ -16,7 +16,7 @@ module Gitlab
           def has_previous_page
             selection_range.first > 0
           end
-          # rubocop: enable Naming/PredicateName
+          # rubocop: enable Naming/PredicatePrefix
 
           def cursor_for(node)
             load_nodes

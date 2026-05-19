@@ -7,14 +7,14 @@ module Authn
         super + [encrypted_field]
       end
 
-      def find_token_authenticatable(token, unscoped = false)
+      def find_token_authenticatable(token, unscoped = false, uniqueness_check: false)
         return if token.blank?
 
         token_owner_record =
           if required?
-            find_by_encrypted_token(token, unscoped)
+            find_by_encrypted_token(token, unscoped, uniqueness_check: uniqueness_check)
           elsif optional?
-            find_by_encrypted_token(token, unscoped) ||
+            find_by_encrypted_token(token, unscoped, uniqueness_check: uniqueness_check) ||
               find_by_plaintext_token(token, unscoped)
           elsif migrating?
             find_by_plaintext_token(token, unscoped)
@@ -102,8 +102,8 @@ module Authn
         insecure_strategy.find_token_authenticatable(token, unscoped)
       end
 
-      def find_by_encrypted_token(token, unscoped)
-        finder_class.new(self, token, unscoped).execute
+      def find_by_encrypted_token(token, unscoped, uniqueness_check: false)
+        finder_class.new(self, token, unscoped, uniqueness_check: uniqueness_check).execute
       end
 
       def insecure_strategy

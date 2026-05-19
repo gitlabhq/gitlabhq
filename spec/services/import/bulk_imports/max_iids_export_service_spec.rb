@@ -16,13 +16,14 @@ RSpec.describe Import::BulkImports::MaxIidsExportService, feature_category: :imp
     end
   end
 
+  let(:export) { build(:bulk_import_export, project: project) }
   let(:export_path) { Dir.mktmpdir('max_iids_export_spec') }
 
   after do
     FileUtils.rm_rf(export_path)
   end
 
-  subject(:service) { described_class.new(project, export_path) }
+  subject(:service) { described_class.new(export, export_path) }
 
   describe '#execute' do
     it 'writes max_iids.json to the export path' do
@@ -46,10 +47,9 @@ RSpec.describe Import::BulkImports::MaxIidsExportService, feature_category: :imp
     end
 
     it 'omits resource types with no records' do
-      empty_project = create(:project)
-      empty_service = described_class.new(empty_project, export_path)
+      export.project = create(:project)
 
-      empty_service.execute
+      service.execute
 
       content = Gitlab::Json.safe_parse(File.read(File.join(export_path, 'max_iids.json')))
 
@@ -71,30 +71,30 @@ RSpec.describe Import::BulkImports::MaxIidsExportService, feature_category: :imp
 
   describe 'resource_queries delegation' do
     it 'uses Project::MaxIidsSaver.resource_queries for projects' do
-      project_service = described_class.new(project, export_path)
-
-      expect(project_service.send(:resource_queries)).to eq(
+      expect(service.send(:resource_queries)).to eq(
         Gitlab::ImportExport::Project::MaxIidsSaver.resource_queries
       )
     end
 
     it 'uses Group::MaxIidsSaver.resource_queries for groups' do
-      group = create(:group)
-      group_service = described_class.new(group, export_path)
+      export.project = nil
+      export.group = build(:group)
 
-      expect(group_service.send(:resource_queries)).to eq(
+      expect(service.send(:resource_queries)).to eq(
         Gitlab::ImportExport::Group::MaxIidsSaver.resource_queries
       )
     end
 
     context 'with an unsupported portable type' do
+      # BulkImports::Export validates presence of group or project, and portable is the export's group or project.
+      # This could only happen if the export is invalid and not persisted
       it 'logs a warning and returns an empty hash' do
-        unsupported_portable = build(:user)
-        unsupported_service = described_class.new(unsupported_portable, export_path)
+        export = build(:bulk_import_export, group: nil, project: nil)
+        unsupported_service = described_class.new(export, export_path)
 
         expect(Gitlab::AppLogger).to receive(:warn).with(
           message: 'MaxIidsExportService: unsupported portable type',
-          portable_type: 'User'
+          portable_type: 'NilClass'
         )
 
         expect(unsupported_service.send(:resource_queries)).to eq({})
@@ -109,7 +109,9 @@ RSpec.describe Import::BulkImports::MaxIidsExportService, feature_category: :imp
       end
     end
 
-    subject(:service) { described_class.new(group, export_path) }
+    let(:export) { build(:bulk_import_export, group: group) }
+
+    subject(:service) { described_class.new(export, export_path) }
 
     it 'writes the correct max IID for group resources' do
       service.execute

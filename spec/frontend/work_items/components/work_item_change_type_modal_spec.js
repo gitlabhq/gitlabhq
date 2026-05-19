@@ -173,9 +173,99 @@ describe('WorkItemChangeTypeModal component', () => {
     await nextTick();
 
     expect(findWarningAlert().text()).toBe(
-      'Task does not support the Task child item types. Remove child items to change type.',
+      'Task does not support the Task child item type. Remove child items to change type.',
     );
     expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(true);
+  });
+
+  it('falls back to blocking conversion when hasChildren is true but rolledUpCountsByType is missing', async () => {
+    createComponent({
+      workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+      hasChildren: true,
+      widgets: [
+        {
+          type: 'HIERARCHY',
+          hasChildren: true,
+          // rolledUpCountsByType intentionally omitted to exercise the
+          // conservative fallback path in childrenBlockConversion.
+          parent: null,
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+      ],
+    });
+
+    await waitForPromises();
+
+    findGlFormSelect().vm.$emit('change', taskTypeId);
+
+    await nextTick();
+
+    expect(findWarningAlert().exists()).toBe(true);
+    expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(true);
+  });
+
+  describe('when child items are present and the target type supports them', () => {
+    // Mirrors the work item's hierarchy widget as supplied by the parent;
+    // rolledUpCountsByType is what the modal consults to know the actual
+    // types of the children.
+    const hierarchyWithTaskChild = {
+      type: 'HIERARCHY',
+      hasChildren: true,
+      rolledUpCountsByType: [
+        {
+          countsByState: { opened: 1, all: 1, closed: 0, __typename: 'WorkItemStateCountsType' },
+          workItemType: {
+            id: 'gid://gitlab/WorkItems::Type/5',
+            name: 'Task',
+            iconName: 'work-item-task',
+            __typename: 'WorkItemType',
+          },
+          __typename: 'WorkItemTypeCountsByState',
+        },
+      ],
+      parent: null,
+      __typename: 'WorkItemWidgetHierarchy',
+    };
+    const incidentTypeId =
+      namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes.find(
+        (type) => type.name === 'Incident',
+      ).id;
+
+    it('allows changing Issue with a Task child to Incident, which also allows Task children', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+        hasChildren: true,
+        widgets: [hierarchyWithTaskChild],
+      });
+
+      await waitForPromises();
+
+      findGlFormSelect().vm.$emit('change', incidentTypeId);
+
+      await nextTick();
+
+      expect(findWarningAlert().exists()).toBe(false);
+      expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(false);
+    });
+
+    it('blocks converting Issue with a Task child to Task and names Task as the unsupported child type', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+        hasChildren: true,
+        widgets: [hierarchyWithTaskChild],
+      });
+
+      await waitForPromises();
+
+      findGlFormSelect().vm.$emit('change', taskTypeId);
+
+      await nextTick();
+
+      expect(findWarningAlert().text()).toBe(
+        'Task does not support the Task child item type. Remove child items to change type.',
+      );
+      expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(true);
+    });
   });
 
   describe('when widget data has difference', () => {

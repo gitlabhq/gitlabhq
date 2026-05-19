@@ -83,40 +83,40 @@ RSpec.describe JiraImportState, feature_category: :integrations do
     let(:project) { create(:project) }
 
     context 'when jira import is in initial state' do
-      let!(:jira_import) { build(:jira_import_state, project: project) }
+      let(:jira_import) { build(:jira_import_state, project: project) }
 
       it_behaves_like 'can transition', [:schedule, :do_fail]
       it_behaves_like 'cannot transition', [:start, :finish]
     end
 
     context 'when jira import is in scheduled state' do
-      let!(:jira_import) { build(:jira_import_state, :scheduled, project: project) }
+      let(:jira_import) { build(:jira_import_state, :scheduled, project: project) }
 
       it_behaves_like 'can transition', [:start, :do_fail]
       it_behaves_like 'cannot transition', [:finish]
     end
 
     context 'when jira import is in started state' do
-      let!(:jira_import) { build(:jira_import_state, :started, project: project) }
+      let(:jira_import) { build(:jira_import_state, :started, project: project) }
 
       it_behaves_like 'can transition', [:finish, :do_fail]
       it_behaves_like 'cannot transition', [:schedule]
     end
 
     context 'when jira import is in failed state' do
-      let!(:jira_import) { build(:jira_import_state, :failed, project: project) }
+      let(:jira_import) { build(:jira_import_state, :failed, project: project) }
 
       it_behaves_like 'cannot transition', [:schedule, :finish, :do_fail]
     end
 
     context 'when jira import is in finished state' do
-      let!(:jira_import) { build(:jira_import_state, :finished, project: project) }
+      let(:jira_import) { build(:jira_import_state, :finished, project: project) }
 
       it_behaves_like 'cannot transition', [:schedule, :do_fail, :start]
     end
 
     context 'after transition to scheduled' do
-      let!(:jira_import) { build(:jira_import_state, project: project) }
+      let(:jira_import) { build(:jira_import_state, project: project) }
 
       it 'triggers the import job' do
         expect(Gitlab::JiraImport::Stage::StartImportWorker).to receive(:perform_async).and_return('some-job-id')
@@ -129,7 +129,7 @@ RSpec.describe JiraImportState, feature_category: :integrations do
     end
 
     context 'after transition to finished' do
-      let!(:jira_import) { build(:jira_import_state, :started, jid: 'some-other-jid', project: project) }
+      let(:jira_import) { build(:jira_import_state, :started, jid: 'some-other-jid', project: project) }
 
       subject { jira_import.finish }
 

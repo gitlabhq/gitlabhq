@@ -49,6 +49,26 @@ RSpec.describe Admin::PlanLimitsController do
       end
     end
 
+    context "when max_pipelines_per_merge_train is passed in params" do
+      let(:params) do
+        {
+          plan_limits: {
+            plan_id: plan.id,
+            max_pipelines_per_merge_train: 5, id: plan_limits.id
+          }
+        }
+      end
+
+      it "updates the max_pipelines_per_merge_train plan limit" do
+        sign_in(create(:admin))
+
+        post :create, params: params
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(plan_limits.reload.max_pipelines_per_merge_train).to eq(5)
+      end
+    end
+
     context 'without admin access' do
       let(:file_size) { 1.megabyte }
 

@@ -1,12 +1,13 @@
 <script>
-import { GlSprintf } from '@gitlab/ui';
-import { s__, n__, sprintf } from '~/locale';
+import { GlSprintf, GlButton } from '@gitlab/ui';
+import { s__, n__, __, sprintf } from '~/locale';
 import CompareDropdownLayout from '~/diffs/components/compare_dropdown_layout.vue';
 
 export default {
   name: 'CompareVersions',
   components: {
     GlSprintf,
+    GlButton,
     CompareDropdownLayout,
   },
   props: {
@@ -27,6 +28,15 @@ export default {
         commitsText: this.formatCommitsText(v.commits_count),
       }));
     },
+    selectedSourceVersion() {
+      return this.sourceVersions.find((v) => v.selected);
+    },
+    selectedTargetVersion() {
+      return this.targetVersions.find((v) => v.selected);
+    },
+    selectedTargetIsBranch() {
+      return Boolean(this.selectedTargetVersion?.branch);
+    },
     formattedTargetVersions() {
       return this.targetVersions.map((v) => {
         if (v.version_index == null) {
@@ -43,6 +53,14 @@ export default {
           versionName: this.targetVersionName(v),
         };
       });
+    },
+    isViewingNonLatest() {
+      const sourceIsNonLatest = this.selectedSourceVersion && !this.selectedSourceVersion.latest;
+      const targetIsNonLatest = this.selectedTargetVersion?.version_index != null;
+      return sourceIsNonLatest || targetIsNonLatest;
+    },
+    latestVersionPath() {
+      return this.targetVersions.find((v) => v.version_index == null)?.href;
     },
   },
   methods: {
@@ -63,28 +81,50 @@ export default {
     },
   },
   i18n: {
-    compareMessage: s__('MergeRequest|Compare %{target} and %{source}'),
+    compareMessage: s__(
+      'MergeRequest|%{targetStart}Compare%{targetEnd} %{sourceStart}and%{sourceEnd}',
+    ),
+    showLatestVersion: __('Show latest version'),
   },
 };
 </script>
 
 <template>
-  <div class="gl-flex gl-min-w-0 gl-items-center">
+  <div class="gl-max-w-[max-content] gl-flex-1 gl-py-2 @sm/panel:gl-flex @sm/panel:gl-items-center">
     <gl-sprintf :message="$options.i18n.compareMessage">
-      <template #target>
-        <compare-dropdown-layout
-          :versions="formattedTargetVersions"
-          class="mr-version-compare-dropdown gl-mx-1"
-          data-testid="target-version-dropdown"
-        />
+      <template #target="{ content }">
+        <span class="gl-inline-flex gl-items-center gl-whitespace-nowrap">
+          {{ content }}
+          <compare-dropdown-layout
+            :versions="formattedTargetVersions"
+            :truncate="selectedTargetIsBranch"
+            class="mr-version-compare-dropdown gl-mx-1"
+            :class="{
+              'gl-min-w-min !gl-max-w-[300px] gl-flex-1': selectedTargetIsBranch,
+            }"
+            data-testid="target-version-dropdown"
+          />
+        </span>
       </template>
-      <template #source>
-        <compare-dropdown-layout
-          :versions="formattedSourceVersions"
-          class="mr-version-dropdown gl-mx-1"
-          data-testid="source-version-dropdown"
-        />
+      <template #source="{ content }">
+        <span class="gl-inline-flex gl-items-center gl-whitespace-nowrap">
+          {{ content }}
+          <compare-dropdown-layout
+            :versions="formattedSourceVersions"
+            class="mr-version-dropdown gl-mx-1"
+            data-testid="source-version-dropdown"
+          />
+        </span>
       </template>
     </gl-sprintf>
+    <gl-button
+      v-if="isViewingNonLatest"
+      :href="latestVersionPath"
+      size="small"
+      class="gl-ml-3 gl-shrink-0"
+      data-testid="show-latest-version-button"
+    >
+      {{ $options.i18n.showLatestVersion }}
+    </gl-button>
   </div>
 </template>

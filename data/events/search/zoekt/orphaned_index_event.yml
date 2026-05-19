@@ -1,0 +1,7 @@
+---
+event: Search::Zoekt::OrphanedIndexEvent
+description: Published when Zoekt indices that no longer have an associated replica
+  or namespace are detected, so the subscribed worker can mark them as orphaned for
+  deletion.
+feature_category: global_search
+ee_only: true

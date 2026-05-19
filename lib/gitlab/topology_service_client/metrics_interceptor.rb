@@ -5,12 +5,15 @@ module Gitlab
     # gRPC client interceptor for recording OpenTelemetry metrics
     # Records call duration, request/response sizes, and status codes
     class MetricsInterceptor < GRPC::ClientInterceptor
+      extend ::Gitlab::Utils::Override
+
       def initialize(cell_id:, topology_service_address:)
         super()
         @metrics = Metrics.new(cell_id: cell_id, topology_service_address: topology_service_address)
       end
 
       # Intercept unary request-response RPC calls
+      override :request_response
       def request_response(request: nil, call: nil, method: nil, metadata: nil) # rubocop:disable Lint/UnusedMethodArgument -- all and metadata are unused but required by gRPC interceptor interface
         service_name, method_name = extract_service_and_method(method)
         request_size = estimate_message_size(request)
@@ -22,7 +25,8 @@ module Gitlab
       end
 
       # Intercept client streaming RPC calls
-      def client_streaming(requests: nil, call: nil, method: nil, metadata: nil) # rubocop:disable Lint/UnusedMethodArgument -- all and metadata are unused but required by gRPC interceptor interface
+      override :client_streamer
+      def client_streamer(requests: nil, call: nil, method: nil, metadata: nil) # rubocop:disable Lint/UnusedMethodArgument -- all and metadata are unused but required by gRPC interceptor interface
         service_name, method_name = extract_service_and_method(method)
         request_size = 0
 
@@ -40,7 +44,8 @@ module Gitlab
       end
 
       # Intercept server streaming RPC calls
-      def server_streaming(request: nil, call: nil, method: nil, metadata: nil) # rubocop:disable Lint/UnusedMethodArgument -- all and metadata are unused but required by gRPC interceptor interface
+      override :server_streamer
+      def server_streamer(request: nil, call: nil, method: nil, metadata: nil) # rubocop:disable Lint/UnusedMethodArgument -- all and metadata are unused but required by gRPC interceptor interface
         start_time = monotonic_time
         service_name, method_name = extract_service_and_method(method)
         request_size = estimate_message_size(request)
@@ -93,6 +98,7 @@ module Gitlab
       end
 
       # Intercept bidirectional streaming RPC calls
+      override :bidi_streamer
       def bidi_streamer(requests: nil, call: nil, method: nil, metadata: nil) # rubocop:disable Lint/UnusedMethodArgument -- all and metadata are unused but required by gRPC interceptor interface
         start_time = monotonic_time
         service_name, method_name = extract_service_and_method(method)

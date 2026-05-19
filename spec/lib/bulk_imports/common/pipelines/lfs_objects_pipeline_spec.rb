@@ -62,10 +62,10 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
       extraction_service = instance_double("BulkImports::ArchiveExtractionService")
 
       expect(BulkImports::FileDownloadService)
-        .to receive(:new)
+        .to receive(:for_context)
         .with(
           context: context,
-          relative_url: "/#{entity.pluralized_name}/#{CGI.escape(entity.source_full_path)}/export_relations/download?relation=lfs_objects",
+          relation: 'lfs_objects',
           tmpdir: tmpdir,
           filename: 'lfs_objects.tar.gz')
         .and_return(download_service)

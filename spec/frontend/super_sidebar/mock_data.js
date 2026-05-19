@@ -219,6 +219,7 @@ export const sidebarData = {
   new_user_registration_path: '/sign_up',
   trial_registration_path: '/trial_registrations/new',
   has_multiple_organizations: false,
+  explore_analytics_dashboards_path: '/explore/analytics/dashboards',
 };
 
 export const loggedOutSidebarData = {
@@ -340,6 +341,7 @@ export const sortedFrequentItems = [
 export const sidebarDataCountResponse = ({
   openIssuesCount = 8,
   openMergeRequestsCount = 236456,
+  openWorkItemsCount = 5,
 } = {}) => {
   return {
     data: {
@@ -348,6 +350,7 @@ export const sidebarDataCountResponse = ({
         sidebar: {
           openIssuesCount,
           openMergeRequestsCount,
+          openWorkItemsCount,
           __typename: 'NamespaceSidebar',
         },
         __typename: 'Namespace',

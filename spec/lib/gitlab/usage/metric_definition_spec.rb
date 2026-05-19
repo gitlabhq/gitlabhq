@@ -12,6 +12,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       introduced_by_url: 'http://gdk.test',
       key_path: 'uuid',
       product_group: 'platform_insights',
+      product_categories: %w[service_ping],
       time_frame: 'none',
       data_source: 'database',
       tiers: %w[free premium ultimate],
@@ -263,6 +264,59 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
           attributes.delete(:milestone_removed)
 
           expect_validation_errors
+        end
+      end
+
+      context 'when product_categories is required' do
+        context 'when metric is active' do
+          before do
+            attributes[:status] = 'active'
+          end
+
+          it 'has validation errors when product_categories is missing' do
+            attributes.delete(:product_categories)
+
+            expect_validation_errors
+          end
+
+          it 'has validation errors when product_categories is an empty array' do
+            attributes[:product_categories] = []
+
+            expect_validation_errors
+          end
+
+          it 'has no validation errors when product_categories is provided' do
+            attributes[:product_categories] = %w[service_ping]
+
+            expect_no_validation_errors
+          end
+        end
+
+        context 'when metric is removed' do
+          before do
+            attributes[:status] = 'removed'
+            attributes[:milestone_removed] = '19.0'
+            attributes[:removed_by_url] = 'http://gdk.test'
+          end
+
+          it 'has no validation errors when product_categories is missing' do
+            attributes.delete(:product_categories)
+
+            expect_no_validation_errors
+          end
+        end
+
+        context 'when metric is broken' do
+          before do
+            attributes[:status] = 'broken'
+            attributes[:repair_issue_url] = 'http://gdk.test'
+          end
+
+          it 'has no validation errors when product_categories is missing' do
+            attributes.delete(:product_categories)
+
+            expect_no_validation_errors
+          end
         end
       end
 

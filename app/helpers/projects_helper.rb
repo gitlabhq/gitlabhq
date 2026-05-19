@@ -658,30 +658,12 @@ module ProjectsHelper
     end
   end
 
-  def hidden_issue_icon(issue)
-    return unless issue_hidden?(issue)
-
-    hidden_resource_icon(issue)
-  end
-
-  def issue_css_classes(issue)
-    classes = ["issue"]
-    classes << "closed" if issue.closed?
-    classes << "gl-cursor-grab" if @sort == 'relative_position'
-    classes.join(' ')
-  end
-
-  def issue_manual_ordering_class
-    return unless @sort == 'relative_position' && !issue_repositioning_disabled?
-
-    'manual-ordering'
-  end
-
   def dashboard_projects_app_data
     {
       initial_sort: group_project_list_sort_by,
       programming_languages: programming_languages,
-      base_path: root_path
+      base_path: root_path,
+      can_create_project: current_user.can_create_project?
     }.to_json
   end
 
@@ -1013,6 +995,11 @@ module ProjectsHelper
       ),
       duo_foundational_flows_cascading_settings: project_cascading_namespace_settings_tooltip_data(
         :duo_foundational_flows_enabled,
+        project,
+        method(:edit_group_path)
+      ),
+      tool_approval_for_session_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+        :tool_approval_for_session_enabled,
         project,
         method(:edit_group_path)
       )

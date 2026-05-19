@@ -1,6 +1,10 @@
 ---
 name: update_pipeline_schedule
 description: Grants the ability to update pipeline schedules
+boundaries:
+  - project
+available_for:
+  - granular_access_token
 permissions:
   - create_pipeline_schedule_variable
   - delete_pipeline_schedule_variable
@@ -8,5 +12,3 @@ permissions:
   - play_pipeline_schedule
   - update_pipeline_schedule
   - update_pipeline_schedule_variable
-boundaries:
-  - project

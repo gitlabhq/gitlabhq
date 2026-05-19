@@ -24,6 +24,14 @@ include:
     SAST_EXCLUDED_PATHS: "qa, spec, doc, ee/spec, config/gitlab.yml.example, tmp, storybook"  # GitLab-specific
     SAST_EXCLUDED_ANALYZERS: bandit, flawfinder, phpcs-security-audit, pmd-apex, security-code-scan, spotbugs, eslint, nodejs-scan, sobelow
 
+gitlab-advanced-sast:
+  variables:
+    GITLAB_ADVANCED_SAST_ENABLED: 'true'
+    AST_ENABLE_MR_PIPELINES: 'true'
+  tags:
+    - saas-linux-2xlarge-amd64
+  rules: !reference [".reports:rules:gitlab-advanced-sast", rules]
+
 semgrep-sast:
   rules: !reference [".reports:rules:semgrep-sast", rules]
 

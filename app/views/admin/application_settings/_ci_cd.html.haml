@@ -134,4 +134,7 @@
                 .form-group
                   = f.label :pipeline_hierarchy_size, plan_limit_setting_description(:pipeline_hierarchy_size)
                   = f.number_field :pipeline_hierarchy_size, class: 'form-control gl-form-input', min: 0
+                .form-group
+                  = f.label :max_pipelines_per_merge_train, plan_limit_setting_description(:max_pipelines_per_merge_train)
+                  = f.number_field :max_pipelines_per_merge_train, class: 'form-control gl-form-input', min: 1
                 = f.submit s_('AdminSettings|Save %{name} limits').html_safe % { name: plan.name.capitalize }, pajamas_button: true

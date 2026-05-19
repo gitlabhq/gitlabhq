@@ -394,7 +394,7 @@ Use `include:template` to include [`.gitlab-ci.yml` templates](https://gitlab.co
 
 **Supported values**:
 
-- The filename of a CI/CD template, for example `Auto-DevOps.gitlab-ci.yml`. 
+- The filename of a CI/CD template, for example `Auto-DevOps.gitlab-ci.yml`.
 - You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
 **Example of `include:template`**:
@@ -535,22 +535,15 @@ include:
 
 #### `include:cache`
 
-{{< details >}}
-
-- Status: Experiment
-
-{{< /details >}}
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351252) in GitLab 18.9 as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `ci_cache_remote_includes`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351252) in GitLab 18.9 as an
+  [experiment](../../policy/development_stages_support.md#experiment) with a
+  [feature flag](../../administration/feature_flags/_index.md) named `ci_cache_remote_includes`.
+  Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235028) in GitLab 19.0. Feature flag `ci_cache_remote_includes` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 Use `cache` with `include:remote` to cache the fetched remote file content and reduce HTTP requests.
 When enabled, the remote file is cached for a specified time-to-live (TTL), improving pipeline performance
@@ -1148,6 +1141,7 @@ spec:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393401) in GitLab 16.6.
+- Support for array type inputs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/566155) in GitLab 19.0.
 
 {{< /history >}}
 
@@ -1157,7 +1151,7 @@ The limit is 50 options per input.
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
-**Supported values**: An array of input options. Only string and number [`type`](#specinputstype) inputs can be used with options.
+**Supported values**: An array of input options.
 
 **Example of `spec:inputs:options`**:
 
@@ -2753,9 +2747,9 @@ You should not combine `dependencies` with `needs` in the same job.
 **Example of `dependencies`**:
 
 ```yaml
-build osx:
+build mac:
   stage: build
-  script: make build:osx
+  script: make build:mac
   artifacts:
     paths:
       - binaries/
@@ -2767,11 +2761,11 @@ build linux:
     paths:
       - binaries/
 
-test osx:
+test mac:
   stage: test
-  script: make test:osx
+  script: make test:mac
   dependencies:
-    - build osx
+    - build mac
 
 test linux:
   stage: test
@@ -2785,8 +2779,8 @@ deploy:
   environment: production
 ```
 
-In this example, two jobs have artifacts: `build osx` and `build linux`. When `test osx` is executed,
-the artifacts from `build osx` are downloaded and extracted in the context of the build.
+In this example, two jobs have artifacts: `build mac` and `build linux`. When `test mac` is executed,
+the artifacts from `build mac` are downloaded and extracted in the context of the build.
 The same thing happens for `test linux` and artifacts from `build linux`.
 
 The `deploy` job downloads artifacts from all previous jobs because of
@@ -2794,7 +2788,8 @@ the [stage](#stages) precedence.
 
 **Additional details**:
 
-- The job status does not matter. If a job fails or it's a manual job that isn't triggered, no error occurs.
+- If the earlier job does not generate artifacts, or is a manual job that didn't run,
+  the dependent job still runs and does not generate an error.
 - If the artifacts of a dependent job are [expired](#artifactsexpire_in) or
   [deleted](../jobs/job_artifacts.md#delete-job-log-and-artifacts), then the job fails.
 
@@ -3283,7 +3278,7 @@ This feature is in [beta](../../policy/development_stages_support.md).
 
 Use `identity` to authenticate with third party services using identity federation.
 
-**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default:` section](#default).
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Supported values**: An identifier. Supported providers:
 
@@ -4760,7 +4755,8 @@ for `PROVIDER` and `STACK`:
 - `parallel:matrix` jobs add the matrix values to the job names to differentiate
   the jobs from each other. However, long values can cause job names to exceed the
   255-character limit. For more information, see [epic 11791](https://gitlab.com/groups/gitlab-org/-/work_items/11791).
-- You cannot use the matrix values as variables for [`rules:if`](#rulesif).
+- Matrix variable values are available as CI/CD variables in [`rules:if`](#rulesif) expressions.
+  For more information, see [Use matrix variables in `rules:if`](../jobs/job_control.md#use-matrix-variables-in-rulesif).
 - You cannot create multiple matrix configurations with the same values but different names.
   Job names are generated from the matrix values, not the names, so matrix entries
   with identical values generate identical job names that overwrite each other.
@@ -4783,6 +4779,7 @@ for `PROVIDER` and `STACK`:
 - [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).
 - [Run a matrix of triggered parallel jobs](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
 - [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
+- [Use matrix variables in rules](../jobs/job_control.md#use-matrix-variables-in-rules).
 - [Matrix expressions in `needs:parallel:matrix`](matrix_expressions.md#matrix-expressions-in-needsparallelmatrix).
 
 ---
@@ -5890,7 +5887,7 @@ job:
 > [!note]
 > This feature is available for testing, but not ready for production use.
 
-Use `run` to define a series of [steps](../steps/_index.md) to be executed in a job. Each step can be either a script or a predefined step.
+Use `run` to define a series of [steps](../functions/_index.md) to be executed in a job. Each step can be either a script or a predefined step.
 
 You can also provide optional environment variables and inputs.
 
@@ -6200,6 +6197,11 @@ to the image specified in the [`image`](#image) keyword.
 Job configuration and default configuration does not merge together.
 If the pipeline has [`default:services`](#default) defined, and the job also has `services`,
 the job configuration takes precedence and the default configuration is not used.
+
+> [!warning]
+> To enable inter-service networking, set `FF_NETWORK_PER_BUILD` to `true`.
+> Without this flag, services may not work properly. For more information, see
+> [feature flags](https://docs.gitlab.com/runner/configuration/feature-flags)
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).

@@ -1,4 +1,7 @@
 <script>
+import { scrollPastCoveringElements } from '~/lib/utils/sticky';
+import { getNoteIdFromHash } from '~/notes/utils/note_hash';
+import { hasScrolled, markAsScrolled } from '~/rapid_diffs/utils/scroll_to_linked_fragment';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 import NoteableDiscussion from './noteable_discussion.vue';
 
@@ -10,6 +13,8 @@ export default {
   },
   inject: {
     store: { type: Object },
+    linkedFileData: { default: null },
+    filePaths: { default: null },
   },
   props: {
     discussions: {
@@ -25,6 +30,30 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+  },
+  mounted() {
+    this.scrollToNoteFragment();
+  },
+  methods: {
+    scrollToNoteFragment() {
+      if (hasScrolled() || !this.linkedFileData || !this.filePaths) return;
+      if (
+        this.linkedFileData.old_path !== this.filePaths.oldPath ||
+        this.linkedFileData.new_path !== this.filePaths.newPath
+      )
+        return;
+      const noteId = getNoteIdFromHash();
+      if (!noteId) return;
+      const noteElement = document.getElementById(`note_${noteId}`);
+      if (!noteElement) return;
+      // Clear the hash first so the click registers as a change,
+      // re-triggering :target evaluation for client-rendered notes
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      noteElement.querySelector(`a[href$="#note_${noteId}"]`)?.click();
+      noteElement.scrollIntoView({ block: 'start' });
+      scrollPastCoveringElements(noteElement);
+      markAsScrolled();
     },
   },
 };

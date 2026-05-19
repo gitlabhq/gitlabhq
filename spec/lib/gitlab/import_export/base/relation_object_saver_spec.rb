@@ -24,7 +24,7 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
     end
 
     it 'saves relation object' do
-      expect { saver.execute }.to change(project.issues, :count).by(1)
+      expect { saver.execute }.to change { project.issues.count }.by(1)
     end
 
     context 'when subrelation collection is present' do

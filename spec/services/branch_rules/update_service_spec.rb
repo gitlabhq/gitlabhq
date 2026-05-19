@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BranchRules::UpdateService, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:user) { create(:user, guest_of: project) }
   let_it_be(:deploy_key_id) { create(:deploy_key, user: user, write_access_to: project).id }
   let_it_be(:protected_branch, reload: true) { create(:protected_branch, project: project) }

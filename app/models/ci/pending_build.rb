@@ -16,7 +16,9 @@ module Ci
       class_name: 'Ci::Build',
       partition_foreign_key: :partition_id
     belongs_to :namespace, inverse_of: :pending_builds, class_name: 'Namespace'
-    belongs_to :plan
+    belongs_to :plan, # rubocop: disable Rails/InverseOf -- Plan does not declare has_many :pending_builds
+      foreign_key: :plan_name_uid,
+      primary_key: :plan_name_uid
 
     partitionable scope: :build
 

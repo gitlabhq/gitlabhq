@@ -3,10 +3,10 @@
 module API
   module Entities
     class GroupAssociationDetails < Entities::BasicGroupDetails
-      expose :parent_id
-      expose :organization_id
+      expose :parent_id, documentation: { type: 'Integer', example: 1 }
+      expose :organization_id, documentation: { type: 'Integer', example: 1 }
 
-      expose :access_levels do |group, options|
+      expose :access_levels, documentation: { type: 'Integer', example: 50 } do |group, options|
         group.highest_group_member(options[:current_user])&.access_level
       end
 

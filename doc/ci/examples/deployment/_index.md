@@ -127,7 +127,7 @@ The jobs also use two secure variables:
 To store API keys as secure variables:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 
 The variables defined in the project settings are sent along with the build script to the runner.

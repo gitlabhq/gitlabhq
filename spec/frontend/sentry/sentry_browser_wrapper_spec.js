@@ -3,6 +3,8 @@
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 const mockError = new Error('error!');
+const mockMessage = 'message!';
+const mockMessageOptions = { level: 'warning' };
 const mockBreadcrumb = { category: 'mockCategory' };
 
 describe('SentryBrowserWrapper', () => {
@@ -38,19 +40,33 @@ describe('SentryBrowserWrapper', () => {
         { 0: mockError },
       );
     });
+
+    it('captureMessage will report to console instead', () => {
+      Sentry.captureMessage(mockMessage, mockMessageOptions);
+
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith(
+        '[Sentry stub]',
+        'captureMessage(...) called with:',
+        { 0: mockMessage, 1: mockMessageOptions },
+      );
+    });
   });
 
   describe('when _Sentry is defined', () => {
     let mockCaptureException;
+    let mockCaptureMessage;
     let mockAddBreadcrumb;
 
     beforeEach(() => {
       mockCaptureException = jest.fn();
+      mockCaptureMessage = jest.fn();
       mockAddBreadcrumb = jest.fn();
 
       // eslint-disable-next-line no-underscore-dangle
       window._Sentry = {
         captureException: mockCaptureException,
+        captureMessage: mockCaptureMessage,
         addBreadcrumb: mockAddBreadcrumb,
       };
     });
@@ -59,6 +75,12 @@ describe('SentryBrowserWrapper', () => {
       Sentry.captureException(mockError);
 
       expect(mockCaptureException).toHaveBeenCalledWith(mockError);
+    });
+
+    it('captureMessage is called', () => {
+      Sentry.captureMessage(mockMessage, mockMessageOptions);
+
+      expect(mockCaptureMessage).toHaveBeenCalledWith(mockMessage, mockMessageOptions);
     });
 
     it('addBreadcrumb is called', () => {

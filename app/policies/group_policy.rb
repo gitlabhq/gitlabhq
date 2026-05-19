@@ -2,13 +2,17 @@
 
 class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   include FindGroupProjects
+  include ::Authz::RolePermissions
+  include ::Authn::SubgroupProvisionedServiceAccountRestriction
+
+  define_role_permissions(:group)
 
   desc "Group is public"
   with_options scope: :subject, score: 0
   condition(:public_group) { @subject.public? }
 
   with_score 0
-  condition(:logged_in_viewable) { @user && @subject.internal? && !@user.external? }
+  condition(:logged_in_viewable) { @user && @subject.try(:internal?) && !@user.external? }
 
   condition(:has_access) { access_level != GroupMember::NO_ACCESS }
 
@@ -148,55 +152,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable(*Authz::Role.get(:public_anonymous).direct_permissions(:group))
   end
 
-  # Role permissions are maintained in yaml in config/authz/roles/
-  rule { guest }.policy do
-    enable :guest_access
-
-    enable(*Authz::Role.get(:guest).direct_permissions(:group))
-  end
-
-  rule { planner }.policy do
-    enable :planner_access
-
-    enable(*Authz::Role.get(:planner).direct_permissions(:group))
-  end
-
-  rule { reporter }.policy do
-    enable :reporter_access
-
-    enable(*Authz::Role.get(:reporter).direct_permissions(:group))
-  end
-
-  rule { security_manager }.policy do
-    enable :security_manager_access
-
-    enable(*Authz::Role.get(:security_manager).direct_permissions(:group))
-  end
-
-  rule { developer }.policy do
-    enable :developer_access
-
-    enable(*Authz::Role.get(:developer).direct_permissions(:group))
-  end
-
-  rule { maintainer }.policy do
-    enable :maintainer_access
-
-    enable(*Authz::Role.get(:maintainer).direct_permissions(:group))
-  end
-
-  rule { owner }.policy do
-    enable :owner_access
-
-    enable(*Authz::Role.get(:owner).direct_permissions(:group))
-  end
-
   rule { admin }.policy do
-    enable :update_max_artifacts_size
-    enable :create_projects
-    enable :read_custom_attribute
-    enable :delete_custom_attribute
-    enable :update_custom_attribute
+    enable(*Authz::Role.get(:admin).permissions(:group))
   end
 
   rule { archived & ~group_scheduled_for_deletion }.policy do
@@ -214,21 +171,12 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { logged_in_viewable }.enable :read_group
 
-  rule { guest | can?(:admin_issue) }.policy do
-    enable :set_new_issue_metadata
-    enable :set_new_work_item_metadata
-  end
-
   rule { admin | organization_owner }.policy do
     enable :read_group
   end
 
-  rule { can?(:read_all_resources) }.policy do
-    enable :read_confidential_issues
-  end
-
   rule { has_projects }.policy do
-    enable :read_group
+    enable(*Authz::Role.get(:descendant_project_member).direct_permissions(:group))
   end
 
   rule { can?(:read_group) }.policy do
@@ -314,8 +262,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   rule { owner | admin | organization_owner }.policy do
-    enable :owner_access
     enable :read_statistics
+    enable :update_group_organization
   end
 
   rule { maintainer & can?(:create_projects) }.policy do

@@ -130,59 +130,6 @@ RSpec.describe MergeRequests::MergeabilityCheckBatchWorker, feature_category: :c
           end.not_to exceed_query_limit(control)
         end
       end
-
-      context 'when batch_merge_status_updates feature flag is disabled' do
-        before do
-          stub_feature_flags(batch_merge_status_updates: false)
-        end
-
-        it 'updates merge_status individually per merge request' do
-          recorder = ActiveRecord::QueryRecorder.new do
-            subject.perform(
-              [mr1.id, mr4.id, mr5.id, mr6.id],
-              user.id
-            )
-          end
-
-          expect(merge_status_update_count(recorder, 'checking')).to eq(2)
-          expect(merge_status_update_count(recorder, 'cannot_be_merged_rechecking')).to eq(2)
-        end
-
-        it 'executes MergeabilityCheckService on merge requests that needs to be checked' do
-          expect_next_instance_of(MergeRequests::MergeabilityCheckService, mr1) do |service|
-            expect(service).to receive(:execute).and_return(ServiceResponse.success)
-          end
-          expect(MergeRequests::MergeabilityCheckService).not_to receive(:new).with(mr2.id)
-          expect(MergeRequests::MergeabilityCheckService).not_to receive(:new).with(mr3.id)
-          expect(MergeRequests::MergeabilityCheckService).not_to receive(:new).with(1234)
-
-          subject.perform([mr1.id, mr2.id, mr3.id, 1234], user.id)
-        end
-
-        it 'structurally logs a failed mergeability check' do
-          expect_next_instance_of(MergeRequests::MergeabilityCheckService, mr1) do |service|
-            expect(service).to receive(:execute).and_return(ServiceResponse.error(message: "solar flares"))
-          end
-
-          expect(Sidekiq.logger).to receive(:error).once
-            .with(
-              merge_request_id: mr1.id,
-              worker: described_class.to_s,
-              message: 'Failed to check mergeability of merge request: solar flares')
-
-          subject.perform([mr1.id], user.id)
-        end
-
-        context 'when user is nil' do
-          let(:user) { nil }
-
-          it 'does not run any mergeability checks' do
-            expect(MergeRequests::MergeabilityCheckService).not_to receive(:new)
-
-            subject.perform([mr1.id], user)
-          end
-        end
-      end
     end
 
     it_behaves_like 'an idempotent worker' do

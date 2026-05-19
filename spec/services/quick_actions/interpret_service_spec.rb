@@ -3160,7 +3160,10 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       shared_examples 'updates the severity' do |new_severity|
         it do
-          expect { set_severity }.to change { issuable.severity }.from('unknown').to(new_severity)
+          _, updates, message = set_severity
+
+          expect(updates[:severity]).to eq(new_severity)
+          expect(message).to eq(format(_("Severity updated to %{severity}."), severity: new_severity.capitalize))
         end
       end
 
@@ -3191,6 +3194,16 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       context 'severity given with text format' do
         let(:content) { '/severity medium' }
+
+        it_behaves_like 'updates the severity', 'medium'
+      end
+
+      context 'when existing description has a severity quick action' do
+        before do
+          issuable.update!(description: '/severity s1')
+        end
+
+        let(:content) { '/severity s3' }
 
         it_behaves_like 'updates the severity', 'medium'
       end

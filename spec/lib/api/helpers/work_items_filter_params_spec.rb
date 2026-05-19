@@ -140,6 +140,50 @@ RSpec.describe API::Helpers::WorkItemsFilterParams, feature_category: :team_plan
       end
     end
 
+    context 'with search in param' do
+      context 'when in is present with search' do
+        let(:params) { { search: 'foo', in: %w[title description] } }
+
+        it 'joins in to a comma-separated string' do
+          expect(transform[:in]).to eq('title,description')
+        end
+      end
+
+      context 'when in is absent' do
+        let(:params) { { search: 'foo' } }
+
+        it 'does not add an in key' do
+          expect(transform).not_to have_key(:in)
+        end
+      end
+    end
+
+    context 'with timeframe param' do
+      context 'when timeframe has start and end' do
+        let(:start_date) { Date.new(2024, 1, 1) }
+        let(:end_date) { Date.new(2024, 3, 31) }
+        let(:params) { { timeframe: { start: start_date, end: end_date } } }
+
+        it 'expands timeframe into start_date and end_date' do
+          expect(transform[:start_date]).to eq(start_date)
+          expect(transform[:end_date]).to eq(end_date)
+        end
+
+        it 'removes the timeframe key' do
+          expect(transform).not_to have_key(:timeframe)
+        end
+      end
+
+      context 'when timeframe is absent' do
+        let(:params) { { state: 'opened' } }
+
+        it 'does not add start_date or end_date' do
+          expect(transform).not_to have_key(:start_date)
+          expect(transform).not_to have_key(:end_date)
+        end
+      end
+    end
+
     context 'with combined params' do
       let(:params) do
         {

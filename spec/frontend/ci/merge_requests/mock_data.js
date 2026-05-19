@@ -121,6 +121,10 @@ export const generateMockPipeline = ({
     fullPath: 'gitlab-org/gitlab',
     __typename: 'Project',
   },
+  downstream: {
+    nodes: [],
+    __typename: 'PipelineConnection',
+  },
   user: {
     id: 'gid://gitlab/User/1',
     avatarUrl: '/uploads/-/system/user/avatar/5327378/avatar.png',
@@ -387,6 +391,7 @@ export const mockPipelines = [
             detailsPath: '/root/ci-project/-/pipelines/701#build',
             __typename: 'DetailedStatus',
             tooltip: 'passed',
+            name: 'SUCCESS',
           },
           __typename: 'CiStage',
         },
@@ -400,6 +405,7 @@ export const mockPipelines = [
             detailsPath: '/root/ci-project/-/pipelines/701#test',
             __typename: 'DetailedStatus',
             tooltip: 'passed',
+            name: 'SUCCESS_WITH_WARNINGS',
           },
           __typename: 'CiStage',
         },
@@ -413,6 +419,7 @@ export const mockPipelines = [
             detailsPath: '/root/ci-project/-/pipelines/701#deploy',
             __typename: 'DetailedStatus',
             tooltip: 'passed',
+            name: 'SUCCESS',
           },
           __typename: 'CiStage',
         },
@@ -503,6 +510,7 @@ export const mockPipelines = [
             detailsPath: '/root/ci-project/-/pipelines/699#build',
             __typename: 'DetailedStatus',
             tooltip: 'passed',
+            name: 'SUCCESS',
           },
           __typename: 'CiStage',
         },
@@ -516,6 +524,7 @@ export const mockPipelines = [
             detailsPath: '/root/ci-project/-/pipelines/699#test',
             __typename: 'DetailedStatus',
             tooltip: 'passed',
+            name: 'SUCCESS_WITH_WARNINGS',
           },
           __typename: 'CiStage',
         },
@@ -529,6 +538,7 @@ export const mockPipelines = [
             detailsPath: '/root/ci-project/-/pipelines/699#deploy',
             __typename: 'DetailedStatus',
             tooltip: 'passed',
+            name: 'SUCCESS',
           },
           __typename: 'CiStage',
         },
@@ -601,16 +611,82 @@ export const generatePipelineCreationRequest = ({
   __typename: 'CiPipelineCreationRequest',
 });
 
+export const generateMockDownstreamSkeleton = ({ id = '100', status = 'RUNNING' } = {}) => ({
+  id: `gid://gitlab/Ci::Pipeline/${id}`,
+  detailedStatus: {
+    id: `${status.toLowerCase()}-${id}-${id}`,
+    name: status,
+    icon: `status_${status.toLowerCase()}`,
+    __typename: 'DetailedStatus',
+  },
+  sourceJob: {
+    id: `gid://gitlab/Ci::Build/${id}`,
+    retried: false,
+    __typename: 'CiBuild',
+  },
+  __typename: 'Pipeline',
+});
+
+export const generateMockDownstreamPipeline = ({ id = '100', status = 'RUNNING' } = {}) => ({
+  id: `gid://gitlab/Ci::Pipeline/${id}`,
+  iid: id,
+  name: `child-pipeline-${id}`,
+  path: `/root/ci-project/-/pipelines/${id}`,
+  detailedStatus: {
+    id: `${status.toLowerCase()}-${id}-${id}`,
+    name: status,
+    icon: `status_${status.toLowerCase()}`,
+    text: status,
+    detailsPath: `/root/ci-project/-/pipelines/${id}`,
+    tooltip: status.toLowerCase(),
+    label: status.toLowerCase(),
+    __typename: 'DetailedStatus',
+  },
+  project: {
+    id: 'gid://gitlab/Project/2',
+    fullPath: 'root/child-project',
+    name: 'child-project',
+    __typename: 'Project',
+  },
+  sourceJob: {
+    id: `gid://gitlab/Ci::Build/${id}`,
+    name: `trigger-job-${id}`,
+    retried: false,
+    __typename: 'CiBuild',
+  },
+  __typename: 'Pipeline',
+});
+
+export const generateMockDownstreamResponse = (pipelinesWithDownstream = []) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      mergeRequest: {
+        id: 'gid://gitlab/MergeRequest/1',
+        pipelines: {
+          nodes: pipelinesWithDownstream.map(({ pipelineId, downstreamNodes }) => ({
+            id: `gid://gitlab/Ci::Pipeline/${pipelineId}`,
+            downstream: {
+              nodes: downstreamNodes,
+              __typename: 'PipelineConnection',
+            },
+            __typename: 'Pipeline',
+          })),
+          __typename: 'PipelineConnection',
+        },
+        __typename: 'MergeRequest',
+      },
+      __typename: 'Project',
+    },
+  },
+});
+
 export const generateSinglePipelineResponse = (pipeline) => ({
   data: {
     project: {
       id: 'gid://gitlab/Project/1',
       pipeline: {
         ...pipeline,
-        downstream: {
-          nodes: [],
-          __typename: 'PipelineConnection',
-        },
       },
       __typename: 'Project',
     },

@@ -7,7 +7,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
   include Ci::PipelineVariableHelpers
 
   let_it_be(:namespace) { create_default(:namespace) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:owner) { create(:owner) }
   let_it_be(:admin) { create(:admin) }
@@ -248,7 +248,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
 
       context 'when job has artifacts' do
-        let_it_be(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+        let_it_be(:job, freeze: false) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
         context 'with not expiry date' do
           context 'when artifacts are unlocked' do
@@ -552,7 +552,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     context 'when requesting triggered job JSON' do
       let_it_be(:trigger) { create(:ci_trigger, project: project) }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project, trigger: trigger) }
-      let_it_be(:job) { create(:ci_build, pipeline: pipeline) }
+      let_it_be(:job, freeze: false) { create(:ci_build, pipeline: pipeline) }
       let(:user) { developer }
 
       before do

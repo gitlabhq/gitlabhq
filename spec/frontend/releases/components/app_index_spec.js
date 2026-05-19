@@ -499,4 +499,36 @@ describe('app_index.vue', () => {
       });
     });
   });
+
+  describe('compare paths', () => {
+    beforeEach(async () => {
+      await createComponent();
+    });
+
+    it('adds previousReleaseSha and comparePath to each release', () => {
+      const releaseBlocks = wrapper.findAllComponents(ReleaseBlock);
+
+      releaseBlocks.wrappers.forEach((releaseBlock, index) => {
+        const release = releaseBlock.props('release');
+        const previousReleaseSha = releaseBlock.props('previousReleaseSha');
+        const comparePath = releaseBlock.props('comparePath');
+
+        if (index === 0) {
+          // First release should not have a previous release
+          expect(previousReleaseSha).toBe('');
+          expect(comparePath).toBe('');
+        } else {
+          // Subsequent releases should have compare data if they have different commits
+          const currentSha = release.commit?.sha;
+          const previousRelease = allReleases.data.project.releases.nodes[index - 1];
+          const previousSha = previousRelease.commit?.sha;
+
+          if (currentSha && previousSha && currentSha !== previousSha) {
+            expect(previousReleaseSha).toBe(previousSha);
+            expect(comparePath).toBe(`/${projectPath}/-/compare/${previousSha}...${currentSha}`);
+          }
+        }
+      });
+    });
+  });
 });

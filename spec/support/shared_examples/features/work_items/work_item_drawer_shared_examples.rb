@@ -2,15 +2,15 @@
 
 RSpec.shared_examples 'when accessing the work item drawer' do
   it 'shows drawer when clicking issue' do
-    expect(page).to have_selector('[data-testid="work-item-drawer"]')
+    expect(page).to have_selector('[data-testid="work-item-detail-panel"]')
   end
 
   it 'focus on first element of the drawer when clicking issue' do
-    expect(page).to have_selector('[data-testid="work-item-drawer-ref-link"]', focused: true)
+    expect(page).to have_selector('[data-testid="work-item-detail-panel-ref-link"]', focused: true)
   end
 
   it 'shows issue details when drawer is open', :aggregate_failures do
-    within_testid('work-item-drawer') do
+    within_testid('work-item-detail-panel') do
       expect(page).to have_content(issue.title)
     end
   end
@@ -26,7 +26,7 @@ RSpec.shared_examples 'when accessing the work item drawer' do
     end
 
     it 'closes drawer when clicking close button' do
-      expect(page).not_to have_selector('[data-testid="work-item-drawer"]')
+      expect(page).not_to have_selector('[data-testid="work-item-detail-panel"]')
     end
   end
 end
@@ -43,16 +43,16 @@ RSpec.shared_examples 'work item drawer on the boards' do
   include_examples 'when accessing the work item drawer'
 
   it 'closes drawer when clicking issue' do
-    expect(page).to have_selector('[data-testid="work-item-drawer"]')
+    expect(page).to have_selector('[data-testid="work-item-detail-panel"]')
 
     first_card.click
 
-    expect(page).not_to have_selector('[data-testid="work-item-drawer"]')
+    expect(page).not_to have_selector('[data-testid="work-item-detail-panel"]')
   end
 
   context 'when editing issue title' do
     it 'edits issue title' do
-      within_testid('work-item-drawer') do
+      within_testid('work-item-detail-panel') do
         find_by_testid('work-item-edit-form-button').click
 
         wait_for_requests
@@ -91,13 +91,13 @@ RSpec.shared_examples 'work item drawer on the boards' do
 
   context 'when editing confidentiality' do
     before do
-      within_testid('work-item-drawer') do
+      within_testid('work-item-detail-panel') do
         find_by_testid('work-item-actions-dropdown').click
       end
     end
 
     it 'make issue confidential' do
-      within_testid('work-item-drawer') do
+      within_testid('work-item-detail-panel') do
         expect(page).not_to have_content('Confidential')
 
         find_by_testid('confidentiality-toggle-action').click
@@ -181,15 +181,15 @@ RSpec.shared_examples 'work item drawer on the list page' do
   include_examples 'when accessing the work item drawer'
 
   it 'closes drawer when clicking issue' do
-    expect(page).to have_selector('[data-testid="work-item-drawer"]')
+    expect(page).to have_selector('[data-testid="work-item-detail-panel"]')
 
     page.execute_script("arguments[0].click();", first_card.native)
 
-    expect(page).not_to have_selector('[data-testid="work-item-drawer"]')
+    expect(page).not_to have_selector('[data-testid="work-item-detail-panel"]')
   end
 
   it 'updates title of a work item on the list', :aggregate_failures do
-    within_testid('work-item-drawer') do
+    within_testid('work-item-detail-panel') do
       find_by_testid('work-item-edit-form-button').click
       wait_for_requests
       find_by_testid('work-item-title-input').set('Test title')
@@ -203,7 +203,7 @@ RSpec.shared_examples 'work item drawer on the list page' do
   end
 
   it 'updates the assigned user of a work item on the list', :aggregate_failures do
-    within_testid('work-item-drawer') do
+    within_testid('work-item-detail-panel') do
       within_testid('work-item-assignees') do
         click_button 'Edit'
         select_listbox_item(user.username)
@@ -215,7 +215,7 @@ RSpec.shared_examples 'work item drawer on the list page' do
   end
 
   it 'make work item confidential on the list', :aggregate_failures do
-    within_testid('work-item-drawer') do
+    within_testid('work-item-detail-panel') do
       find_by_testid('work-item-actions-dropdown').click
       expect(page).not_to have_content('Confidential')
       find_by_testid('confidentiality-toggle-action').click
@@ -228,7 +228,7 @@ RSpec.shared_examples 'work item drawer on the list page' do
   end
 
   it 'updates a label of a work item on the list', :aggregate_failures do
-    within_testid('work-item-drawer') do
+    within_testid('work-item-detail-panel') do
       within_testid 'work-item-labels' do
         expect(page).not_to have_css '.gl-label', text: label.title
 
@@ -244,7 +244,7 @@ RSpec.shared_examples 'work item drawer on the list page' do
   end
 
   it 'updates milestone of a work item on the list', :aggregate_failures do
-    within_testid('work-item-drawer') do
+    within_testid('work-item-detail-panel') do
       within_testid 'work-item-milestone' do
         expect(page).not_to have_link(milestone.title)
 
@@ -262,7 +262,7 @@ RSpec.shared_examples 'work item drawer on the list page' do
   it 'updates comment count when user adds comments from the drawer', :aggregate_failures do
     expect(first_card).not_to have_selector('[data-testid="issuable-comments"]')
 
-    within_testid('work-item-drawer') do
+    within_testid('work-item-detail-panel') do
       fill_in 'Add a reply', with: 'Test comment from drawer'
       click_button 'Comment'
       wait_for_requests

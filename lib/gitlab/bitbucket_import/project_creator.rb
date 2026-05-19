@@ -41,11 +41,7 @@ module Gitlab
       end
 
       def clone_url
-        if credentials[:username].present? && credentials[:app_password].present?
-          token = "#{credentials[:username]}:#{credentials[:app_password]}"
-
-          return repo.clone_url(token, auth_type: :basic)
-        elsif credentials[:email].present? && credentials[:api_token].present?
+        if credentials[:email].present? && credentials[:api_token].present?
           token = "x-bitbucket-api-token-auth:#{credentials[:api_token]}"
 
           return repo.clone_url(token, auth_type: :basic)

@@ -137,7 +137,7 @@ export default {
       }
     },
     updateIsNarrowScreen() {
-      this.isNarrowScreen = PanelBreakpointInstance.isBreakpointDown('md');
+      this.isNarrowScreen = PanelBreakpointInstance.isBreakpointDown('sm');
     },
   },
 };

@@ -50,6 +50,7 @@ export default {
       default: '',
     },
   },
+  emits: ['pipeline-action-request-complete'],
   jobItemTypes: {
     jobDropdown: JOB_DROPDOWN,
   },
@@ -146,7 +147,7 @@ export default {
           v-for="job in failedJobs"
           :key="job.id"
           :job="job"
-          @jobActionExecuted="$emit('pipelineActionRequestComplete')"
+          @job-action-executed="$emit('pipeline-action-request-complete')"
         />
       </gl-disclosure-dropdown-group>
 
@@ -155,7 +156,7 @@ export default {
           v-for="job in nonFailedJobs"
           :key="job.id"
           :job="job"
-          @jobActionExecuted="$emit('pipelineActionRequestComplete')"
+          @job-action-executed="$emit('pipeline-action-request-complete')"
         />
       </gl-disclosure-dropdown-group>
     </ul>

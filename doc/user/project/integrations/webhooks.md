@@ -88,8 +88,18 @@ Use these features to set up webhooks that meet your specific requirements.
 {{< history >}}
 
 - **Name** and **Description** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141977) in GitLab 16.9.
+- **Signing token** text box [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0 [with a flag](../../../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+For new webhooks, use a signing token instead of a secret token. The signing token computes
+an HMAC-SHA256 signature over the payload, so your endpoint can verify both the authenticity
+and integrity of the request. The secret token only provides a plain-text value in a header,
+which offers weaker guarantees. The secret token is not recommended for new webhooks.
 
 Create a webhook to send notifications about events in your project or group.
 
@@ -101,18 +111,117 @@ Prerequisites:
 To create a webhook:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Webhooks**.
+1. In the left sidebar, select **Settings** > **Webhooks**.
 1. Select **Add new webhook**.
 1. In **URL**, enter the URL of the webhook endpoint.
    Use percent-encoding for special characters.
 1. Optional. Enter a **Name** and **Description** for the webhook.
-1. Optional. In **Secret token**, enter a token to validate requests.
+1. Optional. Configure request authentication. Use a signing token for stronger security:
+   - **Signing token** (recommended): Select **Generate signing token**.
+     Copy and save the token now because it is displayed only once.
+     Your webhook endpoint can use this token to [verify the HMAC-SHA256 signature](#verify-the-signature).
+   - **Secret token** (not recommended): Enter a token in the **Secret token** field.
+     This token is sent as plain text in the `X-Gitlab-Token` HTTP header and provides weaker
+     security guarantees than a signing token. Use the signing token instead for new webhooks.
 1. In the **Trigger** section, select the events to trigger the webhook.
 1. Optional. To disable SSL verification, clear the **Enable SSL verification** checkbox.
 1. Select **Add webhook**.
 
-The secret token is sent with the webhook request in the `X-Gitlab-Token` HTTP header.
-Your webhook endpoint can use this token to verify the legitimacy of the request.
+### Signing tokens
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0 [with a flag](../../../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Use a signing token to verify that webhook payloads originate from GitLab and have not been tampered with.
+Unlike the secret token, the signing token is
+used to compute an HMAC-SHA256 signature over the payload. This means recipients can independently verify
+both the authenticity and integrity of the received payload.
+
+GitLab webhook delivery follows the [Standard Webhooks](https://www.standardwebhooks.com/)
+specification. Every webhook request includes the `webhook-id` and `webhook-timestamp` headers.
+When a signing token is configured, GitLab also includes the `webhook-signature` header with the
+HMAC-SHA256 signature. Each signature has the format `v1,{base64_signature}`. The header may
+contain multiple space-separated signatures. GitLab currently sends one signature, but this
+may change in the future. The signature is computed over the string
+`{message_id}.{timestamp}.{body}`, where:
+
+- `{message_id}` is the value of the `webhook-id` header.
+- `{timestamp}` is the value of the `webhook-timestamp` header.
+- `{body}` is the raw JSON request body.
+
+#### Verify the signature
+
+To verify the signature in your webhook endpoint:
+
+1. Retrieve the `webhook-id`, `webhook-timestamp`, and `webhook-signature` header values.
+1. Split the `webhook-signature` value on spaces to get the list of signatures.
+1. Construct the message string: `"{message_id}.{timestamp}.{body}"`.
+1. Decode the signing token: strip the `whsec_` prefix, then base64-decode the remainder.
+1. Compute the HMAC-SHA256 digest using the decoded key.
+1. Encode the digest as base64 and prefix with `v1,`.
+1. Check whether the computed signature matches any entry in the signature list.
+   Use a constant-time comparison to prevent timing attacks.
+
+Example in Ruby:
+
+```ruby
+require 'base64'
+require 'openssl'
+
+def valid_signature?(signing_token, message_id, timestamp, body, received_signatures)
+  raw_key = Base64.strict_decode64(signing_token.delete_prefix('whsec_'))
+  message = "#{message_id}.#{timestamp}.#{body}"
+  digest = OpenSSL::HMAC.digest('sha256', raw_key, message)
+  expected = "v1,#{Base64.strict_encode64(digest)}"
+  received_signatures.split(' ').any? do |sig|
+    ActiveSupport::SecurityUtils.secure_compare(expected, sig)
+  end
+end
+```
+
+Example in Python:
+
+```python
+import base64
+import hashlib
+import hmac
+
+def valid_signature(signing_token, message_id, timestamp, body, received_signatures):
+    raw_key = base64.b64decode(signing_token.removeprefix('whsec_'))
+    message = f"{message_id}.{timestamp}.{body}".encode('utf-8')
+    digest = hmac.new(raw_key, message, hashlib.sha256).digest()
+    expected = "v1," + base64.b64encode(digest).decode('utf-8')
+    return any(
+        hmac.compare_digest(expected, sig)
+        for sig in received_signatures.split(' ')
+    )
+```
+
+#### Backward compatibility
+
+The signing token works alongside the existing secret token. You can configure both on the same webhook:
+
+- The `X-Gitlab-Token` header is still sent if a secret token is configured.
+- The `webhook-signature` and `webhook-id` headers are sent if a signing token is configured.
+
+To migrate an existing webhook using the secret token to a signing token without downtime, configure both tokens on the same
+webhook during the transition. Update your receiver to verify the signature when `webhook-signature` is
+present and fall back to the secret token otherwise.
+
+Once your receiver handles signatures correctly, you can remove the secret token from the webhook settings.
+
+#### Security considerations
+
+To prevent replay attacks, validate that the timestamp in `webhook-timestamp` is recent before processing the payload.
+
+The signing token is never returned by the API.
 
 ### Mask sensitive portions of webhook URLs
 
@@ -123,7 +232,7 @@ are encrypted at rest in the database.
 To mask sensitive portions of a webhook URL:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Webhooks**.
+1. In the left sidebar, select **Settings** > **Webhooks**.
 1. In **URL**, enter the full URL of the webhook.
 1. To define masked portions, select **Add URL masking**.
 1. In **Sensitive portion of URL**, enter the part of the URL you want to mask.
@@ -212,7 +321,6 @@ The resulting request payload for a `push` event is:
 ```
 
 Custom webhook templates cannot access properties in arrays.
-Support for this feature is proposed in [issue 463332](https://gitlab.com/gitlab-org/gitlab/-/issues/463332).
 
 ### Filter push events by branch
 
@@ -370,7 +478,7 @@ Prerequisites:
 To view the request history for a webhook:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Webhooks**.
+1. In the left sidebar, select **Settings** > **Webhooks**.
 1. Select **Edit** for the webhook.
 1. Go to the **Recent events** section.
 
@@ -403,7 +511,7 @@ This page contains the body and headers of:
 To inspect the request and response details of a webhook event:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Webhooks**.
+1. In the left sidebar, select **Settings** > **Webhooks**.
 1. Select **Edit** for the webhook.
 1. Go to the **Recent events** section.
 1. Select **View details** for the event.
@@ -425,7 +533,7 @@ Prerequisites:
 To test a webhook:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Webhooks** to see all webhooks for this project.
+1. In the left sidebar, select **Settings** > **Webhooks** to see all webhooks for this project.
 1. To test a webhook directly from the list of configured webhooks:
    1. Locate the webhook you want to test.
    1. From the **Test** dropdown list, select the type of event to test.
@@ -490,7 +598,7 @@ GitLab automatically disables project or group webhooks that fail four consecuti
 To view auto-disabled webhooks:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Webhooks**.
+1. In the left sidebar, select **Settings** > **Webhooks**.
 
 In the webhook list, auto-disabled webhooks display as:
 
@@ -534,19 +642,29 @@ The webhook is re-enabled if the test request returns a response code in the `2x
 
 - `X-Gitlab-Webhook-UUID` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230830) in GitLab 16.2.
 - `Idempotency-Key` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388692) in GitLab 17.4.
+- `webhook-id` and `webhook-timestamp` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0.
+- `webhook-signature` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0 [with a flag](../../../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
 
 {{< /history >}}
 
-GitLab includes the following headers in webhook requests to your endpoint:
+GitLab includes the following headers in webhook requests to your endpoint.
 
-| Header                  | Description                                                                                                    | Example |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------- | ------- |
-| `User-Agent`            | User agent in the format `"Gitlab/<VERSION>"`.                                                                 | `"GitLab/15.5.0-pre"` |
-| `X-Gitlab-Instance`     | Hostname of the GitLab instance that sent the webhook.                                                         | `"https://gitlab.com"` |
-| `X-Gitlab-Webhook-UUID` | Unique ID for each webhook.                                                                                    | `"02affd2d-2cba-4033-917d-ec22d5dc4b38"` |
-| `X-Gitlab-Event`        | Webhook type name. Corresponds to event types in the format `"<EVENT> Hook"`.                                  | `"Push Hook"` |
-| `X-Gitlab-Event-UUID`   | Unique ID for non-recursive webhooks. Recursive webhooks (triggered by earlier webhooks) share the same value. | `"13792a34-cac6-4fda-95a8-c58e00a3954e"` |
-| `Idempotency-Key`       | Unique ID consistent across webhook retries. Use to ensure idempotency in integrations.                        | `"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"` |
+> [!flag]
+> The availability of the `webhook-signature` header is controlled by a feature flag.
+> For more information, see the history.
+
+| Header                   | Description                                                                                                                                                     | Example |
+|:-------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------|
+| `Idempotency-Key`        | Unique ID consistent across webhook retries. Available for legacy reasons; prefer `webhook-id`.                                                                 | `"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"` |
+| `User-Agent`             | User agent in the format `"Gitlab/<VERSION>"`.                                                                                                                  | `"GitLab/15.5.0-pre"` |
+| `webhook-id`             | Unique message ID consistent across webhook retries. Equal to `Idempotency-Key`.                                                                                | `"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"` |
+| `webhook-signature`      | Space-separated list of HMAC-SHA256 signatures, each in the format `v1,{base64_signature}`. Included only when a [signing token](#signing-tokens) is configured. | `"v1,abc123def456=="` |
+| `webhook-timestamp`      | Unix timestamp (seconds since epoch) when the request was generated.                                                                                            | `"1744578123"` |
+| `X-Gitlab-Event-UUID`    | Unique ID for non-recursive webhooks. Recursive webhooks (triggered by earlier webhooks) share the same value.                                                  | `"13792a34-cac6-4fda-95a8-c58e00a3954e"` |
+| `X-Gitlab-Event`         | Webhook type name. Corresponds to event types in the format `"<EVENT> Hook"`.                                                                                   | `"Push Hook"` |
+| `X-Gitlab-Instance`      | Hostname of the GitLab instance that sent the webhook.                                                                                                          | `"https://gitlab.com"` |
+| `X-Gitlab-Token`         | Secret token for the webhook, sent as plain text. Included only when a secret token is configured.                                                              | `"my-secret-token"` |
+| `X-Gitlab-Webhook-UUID`  | Unique ID for each webhook.                                                                                                                                     | `"02affd2d-2cba-4033-917d-ec22d5dc4b38"` |
 
 ### Image URL display in webhook body
 

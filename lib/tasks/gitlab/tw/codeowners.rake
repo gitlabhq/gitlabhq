@@ -18,8 +18,8 @@ module TwCodeowners
 
   # For groups without an assigned TW, comment out the line.
   CODE_OWNER_RULES = [
-    # CodeOwnerRule.new('Activation', ''),
-    # CodeOwnerRule.new('Acquisition', ''),
+    CodeOwnerRule.new('Activation', '@kpaizee'),
+    CodeOwnerRule.new('Acquisition', '@kpaizee'),
     CodeOwnerRule.new('Agent Foundations', '@fneill'),
     CodeOwnerRule.new('AI Coding', '@uchandran'),
     CodeOwnerRule.new('AI Framework', '@ashrafkhamis'),
@@ -56,6 +56,7 @@ module TwCodeowners
     CodeOwnerRule.new('Knowledge', '@brendan777'),
     # CodeOwnerRule.new('MLOps', ''),
     # CodeOwnerRule.new('Mobile Devops', ''),
+    CodeOwnerRule.new('Monetization', '@kpaizee'),
     CodeOwnerRule.new('Optimize', '@lciutacu'),
     CodeOwnerRule.new('Organizations', '@z_painter'),
     CodeOwnerRule.new('Organization', '@lciutacu'),

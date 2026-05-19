@@ -342,10 +342,6 @@ RSpec.describe UserDetail, feature_category: :system_access do
       it { is_expected.to validate_length_of(:location).is_at_most(500) }
     end
 
-    describe '#organization' do
-      it { is_expected.to validate_length_of(:organization).is_at_most(500) }
-    end
-
     describe '#company' do
       context 'when too long' do
         subject(:company_validation) { build(:user_detail, company: 'a' * 501) }
@@ -357,7 +353,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
         it 'adds error to organization' do
           company_validation.validate
 
-          expect(company_validation.errors[:organization]).to include('is too long (maximum is 500 characters)')
+          expect(company_validation.errors[:base]).to include('Organization is too long (maximum is 500 characters)')
         end
       end
 
@@ -424,7 +420,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
     it_behaves_like 'prevents `nil` value', :bluesky
     it_behaves_like 'prevents `nil` value', :orcid
     it_behaves_like 'prevents `nil` value', :mastodon
-    it_behaves_like 'prevents `nil` value', :organization
+    it_behaves_like 'prevents `nil` value', :company
     it_behaves_like 'prevents `nil` value', :twitter
     it_behaves_like 'prevents `nil` value', :website_url
   end
@@ -447,7 +443,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
         :website_url  | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
         :github       | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
         :location     | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
-        :organization | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+        :company      | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
 
         # iframe scripts sanitization
         :bluesky      | '<iframe src=javascript:alert()><iframe>'                    | ''
@@ -459,7 +455,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
         :website_url  | '<iframe src=javascript:alert()><iframe>'                    | ''
         :github       | '<iframe src=javascript:alert()><iframe>'                    | ''
         :location     | '<iframe src=javascript:alert()><iframe>'                    | ''
-        :organization | '<iframe src=javascript:alert()><iframe>'                    | ''
+        :company      | '<iframe src=javascript:alert()><iframe>'                    | ''
 
         # js scripts sanitization
         :bluesky      | '<script>alert("Test")</script>'                             | ''
@@ -471,7 +467,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
         :website_url  | '<script>alert("Test")</script>'                             | ''
         :github       | '<script>alert("Test")</script>'                             | ''
         :location     | '<script>alert("Test")</script>'                             | ''
-        :organization | '<script>alert("Test")</script>'                             | ''
+        :company      | '<script>alert("Test")</script>'                             | ''
       end
       # rubocop:enable Layout/LineLength
 
@@ -491,9 +487,9 @@ RSpec.describe UserDetail, feature_category: :system_access do
         :website_url  | 'http://example.com?test&attr'               | 'http://example.com?test&attr'
         :github       | 'test&attr'                                  | 'test&attr'
 
-        # HTML entities NOT encoded - location, organization preserve &
+        # HTML entities NOT encoded - location, company preserve &
         :location     | 'test&attr'                                  | 'test&attr'
-        :organization | 'test&attr'                                  | 'test&attr'
+        :company | 'test&attr' | 'test&attr'
 
         # Legitimate edge cases
         :website_url  | 'https://example.com/search?q=hello%20world' | 'https://example.com/search?q=hello%20world'
@@ -561,9 +557,9 @@ RSpec.describe UserDetail, feature_category: :system_access do
         :twitter      | 'test&attr'                                 | 'test&amp;attr'
         :github       | 'test&attr'                                 | 'test&amp;attr'
 
-        # HTML entities NOT encoded - location, organization, website_url preserve &
+        # HTML entities NOT encoded - location, company, website_url preserve &
         :location     | 'test&attr'                                 | 'test&attr'
-        :organization | 'test&attr'                                 | 'test&attr'
+        :company      | 'test&attr'                                 | 'test&attr'
         :website_url  | 'http://example.com?test&attr'              | 'http://example.com?test&attr'
 
         # Does not apply Sanitizable validations
@@ -600,58 +596,6 @@ RSpec.describe UserDetail, feature_category: :system_access do
       expect(user_detail.as_json).not_to have_key('email_otp')
     end
   end
-
-  # rubocop:disable Layout/LineLength -- This trigger will be removed in a MR
-  describe 'organization and company column sync trigger' do
-    using RSpec::Parameterized::TableSyntax
-
-    describe 'on insert' do
-      where(:test_case, :organization_value, :company_value, :expected_organization, :expected_company) do
-        'only organization set'      | 'Org Inc'  | ''         | 'Org Inc'  | 'Org Inc'
-        'only company set'           | ''         | 'Corp Ltd' | 'Corp Ltd' | 'Corp Ltd'
-        'both set, different values' | 'Org Inc'  | 'Corp Ltd' | 'Corp Ltd' | 'Corp Ltd'
-        'both empty'                 | ''         | ''         | ''         | ''
-      end
-
-      with_them do
-        let(:user) do
-          create(:user, user_detail_organization: organization_value, company: company_value)
-        end
-
-        it "syncs correctly when #{params[:test_case]}" do
-          expect(user.reload.user_detail_organization).to eq(expected_organization)
-          expect(user.company).to eq(expected_company)
-        end
-      end
-    end
-
-    describe 'on update' do
-      where(:test_case, :initial_org, :initial_company, :update_attrs, :expected_organization, :expected_company) do
-        'update organization when company empty' | ''    | ''    | { user_detail_organization: 'New Org' } | 'New Org' | 'New Org'
-        'update company when organization empty' | ''    | ''    | { company: 'New Co' } | 'New Co' | 'New Co'
-        'update organization when company set'   | 'Old' | 'Old' | { user_detail_organization: 'New Org' } | 'New Org' | 'New Org'
-        'update company when organization set'   | 'Old' | 'Old' | { company: 'New Co' } | 'New Co' | 'New Co'
-        'update both'                            | 'Old' | 'Old' | { user_detail_organization: 'Org',
-company: 'Co' } | 'Co' | 'Co'
-        'clear organization when company set'    | 'Old' | 'Old' | { user_detail_organization: '' } | '' | ''
-        'clear company when organization set'    | 'Old' | 'Old' | { company: '' } | '' | ''
-      end
-
-      with_them do
-        let(:user) do
-          create(:user, user_detail_organization: initial_org, company: initial_company)
-        end
-
-        it "syncs correctly when #{params[:test_case]}" do
-          user.update!(update_attrs)
-
-          expect(user.reload.user_detail_organization).to eq(expected_organization)
-          expect(user.company).to eq(expected_company)
-        end
-      end
-    end
-  end
-  # rubocop:enable Layout/LineLength
 
   describe 'provisioning source mutual exclusivity' do
     let_it_be(:group) { create(:group) }

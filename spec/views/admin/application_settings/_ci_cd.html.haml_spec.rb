@@ -36,7 +36,7 @@ RSpec.describe 'admin/application_settings/_ci_cd' do
 
   subject { render partial: 'admin/application_settings/ci_cd' }
 
-  context 'limits' do
+  context 'with limits' do
     before do
       assign(:plans, [default_plan_limits.plan])
     end

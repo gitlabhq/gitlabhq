@@ -2,6 +2,7 @@
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { exploreCatalogPath } from '~/lib/utils/path_helpers/explore';
 import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
 import catalogReleasesQuery from '../graphql/queries/catalog_releases.query.graphql';
 
@@ -83,7 +84,7 @@ export default normalizeRender({
   },
   computed: {
     detailsPagePath() {
-      return this.isCatalogRelease ? `/explore/catalog/${this.projectPath}` : '';
+      return this.isCatalogRelease ? exploreCatalogPath(this.projectPath) : '';
     },
     isCatalogRelease() {
       return this.isCiCdCatalogProject ? this.catalogReleases?.includes(this.releasePath) : false;

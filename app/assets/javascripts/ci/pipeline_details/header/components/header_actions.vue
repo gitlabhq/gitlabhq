@@ -47,6 +47,7 @@ export default {
       required: true,
     },
   },
+  emits: ['cancelPipeline', 'deletePipeline', 'retryPipeline'],
   computed: {
     canRetryPipeline() {
       const { retryable, userPermissions } = this.pipeline;

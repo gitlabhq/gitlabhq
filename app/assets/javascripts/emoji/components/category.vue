@@ -19,6 +19,7 @@ export default {
       required: true,
     },
   },
+  emits: ['appear', 'click'],
   data() {
     return {
       renderGroup: false,

@@ -51,7 +51,7 @@ RSpec.shared_examples 'work items rolled up dates' do
           wait_for_all_requests
         end
 
-        within_testid('work-item-drawer') do
+        within_testid('work-item-detail-panel') do
           find_and_click_edit work_item_due_dates_selector
           # set empty value before the value to ensure
           # the current value don't mess with the new value input

@@ -32,13 +32,6 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_projects_path, :projects
 
-  it 'links to the "Explore projects" page' do
-    visit dashboard_projects_path
-    wait_for_requests
-
-    expect(page).to have_link("Explore projects", href: explore_projects_path)
-  end
-
   context 'when user has access to the project' do
     it 'shows role badge' do
       visit member_dashboard_projects_path

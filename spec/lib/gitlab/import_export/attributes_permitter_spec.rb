@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::AttributesPermitter, feature_category: :importers do
   let(:yml_config) do
-    <<-EOF
+    <<-YAML
       tree:
         project:
           - labels:
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::ImportExport::AttributesPermitter, feature_category: :imp
       methods:
         labels:
           - :type
-    EOF
+    YAML
   end
 
   let(:file) { Tempfile.new(%w[import_export .yml]) }

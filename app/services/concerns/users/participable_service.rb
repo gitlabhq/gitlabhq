@@ -13,12 +13,16 @@ module Users
 
     private
 
+    def participation_object
+      raise NotImplementedError
+    end
+
     def noteable_owner
       return [] unless noteable && noteable.author.present?
       return [] if noteable.author.placeholder? || noteable.author.import_user?
 
       [noteable.author].tap do |users|
-        preload_status(users)
+        preload_associations(users)
       end
     end
 
@@ -33,7 +37,7 @@ module Users
     def filter_and_sort_users(users_relation)
       if params[:search]
         users_relation.gfm_autocomplete_search(params[:search]).limit(SEARCH_LIMIT).tap do |users|
-          preload_status(users)
+          preload_associations(users)
         end
       else
         sorted(users_relation)
@@ -42,7 +46,7 @@ module Users
 
     def sorted(users)
       users.uniq.to_a.compact.sort_by(&:username).tap do |users|
-        preload_status(users)
+        preload_associations(users)
       end
     end
 
@@ -131,8 +135,11 @@ module Users
     end
     strong_memoize_attr :group_counts
 
-    def preload_status(users)
-      users.each { |u| lazy_user_availability(u) }
+    def preload_associations(users, &block)
+      users.each do |user|
+        lazy_user_availability(user)
+        yield(user) if block # allow preloading other records in EE mode
+      end
     end
 
     def lazy_user_availability(user)

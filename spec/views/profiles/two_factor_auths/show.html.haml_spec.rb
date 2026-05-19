@@ -26,7 +26,7 @@ RSpec.describe 'profiles/two_factor_auths/show.html.haml', feature_category: :sy
       disable_two_factor_authentication_data: {},
       email_otp_enrollment_restriction_confirm_data: {}
     )
-    stub_feature_flags(passkeys: false, email_based_mfa: false)
+    stub_feature_flags(email_based_mfa: false)
   end
 
   context 'when user is allowed to use passkeys authentication' do
@@ -113,10 +113,6 @@ RSpec.describe 'profiles/two_factor_auths/show.html.haml', feature_category: :sy
   end
 
   context 'for passkey sign-in status' do
-    before do
-      stub_feature_flags(passkeys: true)
-    end
-
     context 'when passkeys are active' do
       before do
         assign(:passkeys, [build_stubbed(:webauthn_registration, user: user)])

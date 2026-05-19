@@ -41,7 +41,7 @@ Merge requests provide more granular filtering options.
 ### On an epic
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**.
+1. In the left sidebar, select **Plan** > **Work items**.
 1. In the filter bar, select the filter **Type**, operator **is**, and value **Epic**.
 1. Identify your desired epic, and select its title.
 1. Go to the **Activity** section.
@@ -50,7 +50,7 @@ Merge requests provide more granular filtering options.
 ### On an issue
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. Go to **Activity**.
 1. For **Sort or filter**, select **Show all activity**.
 

@@ -4,7 +4,11 @@ export default function renderStickyTableHeaders(els) {
   if (!window.gon?.features?.editorStickyTableHeaders) return;
 
   els.forEach((table) => {
-    if (table.closest('[data-sticky-header], .gl-table-shadow, .ProseMirror, .tableWrapper')) {
+    if (
+      table.closest(
+        '[data-sticky-header], .gl-table-shadow, .ProseMirror, .tableWrapper, .rd-text-view-root',
+      )
+    ) {
       return;
     }
 

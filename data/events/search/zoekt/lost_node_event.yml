@@ -1,0 +1,7 @@
+---
+event: Search::Zoekt::LostNodeEvent
+description: Published when a Zoekt node is detected as lost (no longer reporting)
+  while at least one online node remains, so the subscribed worker can clean up the
+  node's resources.
+feature_category: global_search
+ee_only: true

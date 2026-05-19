@@ -3,6 +3,8 @@ name: update_remote_mirror
 description: Grants the ability to update remote mirrors
 boundaries:
   - project
+available_for:
+  - granular_access_token
 permissions:
   - sync_remote_mirror
   - update_remote_mirror

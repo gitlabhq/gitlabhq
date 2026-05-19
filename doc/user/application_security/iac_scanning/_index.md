@@ -362,7 +362,7 @@ Prerequisites:
 To use a specific analyzer version:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Build** > **Pipeline editor**.
+1. In the left sidebar, select **Build** > **Pipeline editor**.
 1. Add the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable, after the line that includes the
    `SAST-IaC.gitlab-ci.yml` template.
 

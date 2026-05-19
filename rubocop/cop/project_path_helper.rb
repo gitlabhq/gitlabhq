@@ -18,7 +18,7 @@ module RuboCop
         return unless namespace_expr && project_expr
 
         return unless namespace_expr.send_type?
-        return unless method_name(namespace_expr) == :namespace
+        return unless method_name(namespace_expr) == :namespace # rubocop:disable InternalAffairs/UseRestrictOnSend -- Checks child node method name, not the dispatch method
         return unless receiver(namespace_expr) == project_expr
 
         add_offense(node.loc.selector) do |corrector|

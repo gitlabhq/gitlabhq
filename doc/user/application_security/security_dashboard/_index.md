@@ -83,7 +83,7 @@ Both dashboards include:
 To view a security dashboard:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security dashboard**.
+1. In the left sidebar, select **Secure** > **Security dashboard**.
 
 ### Project security dashboard
 
@@ -217,11 +217,9 @@ To view details:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17422) in GitLab 18.11 [with a feature flag](../../../administration/feature_flags/_index.md) named `new_security_dashboard_vulnerabilities_by_identifier`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/592130) in GitLab 19.0. Feature flag `new_security_dashboard_vulnerabilities_by_identifier` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 The **Top 10 CWEs** chart is available on group and project dashboards. It shows the 10 most common CWE identifiers associated with the open vulnerabilities in the group or project.
 
@@ -266,18 +264,16 @@ To apply a filter to the whole dashboard:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224664) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `new_security_dashboard_pdf_export`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/589201) in GitLab 18.11.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/589201) in GitLab 19.0. Feature flag `new_security_dashboard_pdf_export` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 You can export the security dashboard as a PDF for use in reports and presentations. The export captures the current state of all of the charts and panels in the dashboard, including any active filters.
 
 To export the dashboard as a PDF:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Secure** > **Security dashboard**.
+1. In the left sidebar, select **Secure** > **Security dashboard**.
 1. Optional. Apply filters to customize the data included in the export.
 1. Select **Export as PDF**.
 
@@ -331,7 +327,7 @@ with up to 365 days of historical data for a given project. The dashboard is a h
 To view a project's security dashboard:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security dashboard**.
+1. In the left sidebar, select **Secure** > **Security dashboard**.
 1. Filter and search for what you need.
    - To filter the chart by severity, select the legend name.
    - To view a specific time frame, use the time range handles ({{< icon name="scroll-handle" >}}).
@@ -348,7 +344,7 @@ to use in documentation, presentations, and so on. To download the image of the 
 chart:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security dashboard**.
+1. In the left sidebar, select **Secure** > **Security dashboard**.
 1. Select **Save chart as an image** ({{< icon name="download" >}}).
 
 You are prompted to download the image in SVG format.
@@ -373,7 +369,7 @@ supplies the following:
 To view group security dashboard:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Security** > **Security dashboard**.
+1. In the left sidebar, select **Security** > **Security dashboard**.
 1. Hover over the **Vulnerabilities over time** chart to get more details about vulnerabilities.
    - You can display the vulnerability trends over a 30, 60, or 90-day time frame (the default is 90 days).
    - To view aggregated data beyond a 90-day time frame, use the [`VulnerabilitiesCountByDay` GraphQL API](../../../api/graphql/reference/_index.md#vulnerabilitiescountbyday). GitLab retains the data for 365 days.

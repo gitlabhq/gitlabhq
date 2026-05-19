@@ -160,7 +160,6 @@ RSpec.describe 'Project', feature_category: :source_code_management do
 
     before do
       sign_in(project.first_owner)
-      visit path
     end
 
     it 'shows project topics' do
@@ -336,22 +335,25 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     before do
       project.add_maintainer(user)
       sign_in user
-      visit project_path(project)
     end
 
     it 'has working links to files' do
+      visit project_path(project)
+
       click_link('PROCESS.md')
 
       expect(page).to have_selector('.file-holder')
     end
 
     it 'has working links to directories' do
+      visit project_path(project)
       click_link('encoding')
 
       expect(page).to have_selector('.breadcrumb-item', text: 'encoding')
     end
 
     it 'has working links to submodules' do
+      visit project_path(project)
       submodule = find_link('645f6c4c')
 
       expect(submodule[:href]).to eq('https://gitlab.com/gitlab-org/gitlab-grack/-/tree/645f6c4c82fd3f5e06f67134450a570b795e55a6')
@@ -377,6 +379,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
       let(:project) { create(:project, :repository, group: subgroup) }
 
       it 'renders tree table without errors' do
+        visit project_path(project)
         wait_for_requests
 
         expect(page).to have_selector('.tree-item')

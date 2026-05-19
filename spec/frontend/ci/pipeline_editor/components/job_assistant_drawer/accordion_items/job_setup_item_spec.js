@@ -34,6 +34,21 @@ describe('Job setup item', () => {
     createComponent();
   });
 
+  describe('tags form group accessibility', () => {
+    it('passes label-for to the tags form group', () => {
+      const tagsFormGroup = wrapper.find('#job-tags-input');
+      expect(tagsFormGroup.attributes('label-for')).toBe('job-tags-input-field');
+    });
+
+    it('passes text-input-attrs with correct id to the token selector', () => {
+      expect(findJobTagsInput().props('textInputAttrs')).toEqual({ id: 'job-tags-input-field' });
+    });
+
+    it('does not use aria-labelledby on the token selector', () => {
+      expect(findJobTagsInput().attributes('aria-labelledby')).toBeUndefined();
+    });
+  });
+
   it('should emit update job event when filling inputs', () => {
     expect(wrapper.emitted('update-job')).toBeUndefined();
 

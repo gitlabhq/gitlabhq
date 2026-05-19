@@ -1,0 +1,7 @@
+---
+event: ProjectAuthorizations::AuthorizationsRemovedEvent
+description: Published after project authorization rows are deleted, but only for
+  users who are truly removed — not for those whose access level merely changes (those
+  users are excluded by comparing against authorizations being added in the same operation).
+  Events are batched.
+feature_category: permissions

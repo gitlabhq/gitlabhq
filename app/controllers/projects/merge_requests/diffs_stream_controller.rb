@@ -22,7 +22,7 @@ module Projects
       end
 
       def streaming_diff_options
-        return rapid_diff_options unless Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip)
+        return rapid_diff_options unless Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :beta)
 
         rapid_diff_options.merge(only_context_commits: show_only_context_commits?)
       end

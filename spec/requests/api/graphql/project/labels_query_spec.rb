@@ -18,6 +18,23 @@ RSpec.describe 'getting project label information', feature_category: :team_plan
     end
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_label] do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:label) { create(:label, project: project) }
+    let(:boundary_object) { project }
+    let(:query) do
+      graphql_query_for('project', { full_path: project.full_path }, [
+        query_graphql_field(:labels, nil, 'nodes { id }')
+      ])
+    end
+
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+
+    before_all do
+      project.add_developer(user)
+    end
+  end
+
   context 'when searching title within a hierarchy' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:labels_params) { { title: 'priority::1', includeAncestorGroups: true } }

@@ -9,11 +9,11 @@ import GreetingHeader from '~/homepage/components/greeting_header.vue';
 import SetStatusModal from '~/set_status_modal/set_status_modal_wrapper.vue';
 import getUserStatusQuery from '~/homepage/graphql/queries/user_status.query.graphql';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { GREETING_MESSAGES } from '~/homepage/constants';
-import { buildTimeAwareGreetings } from '~/homepage/utils/build_time_aware_greetings';
-import { useFakeDate } from 'helpers/fake_date';
+import { getRandomGreeting } from '~/homepage/utils/build_time_aware_greetings';
 
-const FIXED_DATE = new Date(2025, 2, 19, 10, 0); // Wednesday 10am
+jest.mock('~/homepage/utils/build_time_aware_greetings', () => ({
+  getRandomGreeting: jest.fn().mockReturnValue('Mocked greeting'),
+}));
 
 Vue.use(VueApollo);
 
@@ -120,9 +120,10 @@ describe('GreetingHeader', () => {
   const findStatusModal = () => wrapper.findComponent(SetStatusModal);
 
   describe('Name display', () => {
-    it('renders full name above the greeting', () => {
+    it('renders full name above the greeting in an H2', () => {
       createComponent();
       expect(findName().text()).toBe('John Doe');
+      expect(findName().element.tagName).toBe('H2');
     });
 
     it('falls back to username when full name is not available', () => {
@@ -133,11 +134,6 @@ describe('GreetingHeader', () => {
     it('falls back to username when full name is empty', () => {
       createComponent({ gonData: { current_user_fullname: '' } });
       expect(findName().text()).toBe('johndoe');
-    });
-
-    it('does not render name line when no name or username is available', () => {
-      createComponent({ gonData: { current_user_fullname: null, current_username: null } });
-      expect(findName().exists()).toBe(false);
     });
 
     it('handles single name correctly', () => {
@@ -168,20 +164,17 @@ describe('GreetingHeader', () => {
   });
 
   describe('Greeting', () => {
-    useFakeDate(FIXED_DATE);
-
-    it('renders a greeting in the h1 element', () => {
+    it('renders the greeting returned by getRandomGreeting', () => {
       createComponent();
       const greeting = findGreeting();
       expect(greeting.exists()).toBe(true);
-      expect(greeting.element.tagName).toBe('H1');
-      expect(greeting.text().length).toBeGreaterThan(0);
+      expect(greeting.element.tagName).toBe('P');
+      expect(greeting.text()).toBe('Mocked greeting');
     });
 
-    it('renders a greeting from the combined greeting pool', () => {
+    it('calls getRandomGreeting to obtain the message', () => {
       createComponent();
-      const allGreetings = [...GREETING_MESSAGES, ...buildTimeAwareGreetings(FIXED_DATE)];
-      expect(allGreetings).toContain(findGreeting().text());
+      expect(getRandomGreeting).toHaveBeenCalled();
     });
   });
 

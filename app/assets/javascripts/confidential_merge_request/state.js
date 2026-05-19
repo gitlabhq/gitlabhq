@@ -1,5 +1,5 @@
-import Vue from 'vue';
+import { observable } from '~/lib/utils/observable';
 
-export default Vue.observable({
+export default observable('confidential_mr_state', {
   selectedProject: {},
 });

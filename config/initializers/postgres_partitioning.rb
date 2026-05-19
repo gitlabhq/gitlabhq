@@ -20,6 +20,7 @@ Gitlab::Application.config.to_prepare do
       BatchedGitRefUpdates::Deletion,
       Ci::BuildExecutionConfig,
       Ci::BuildName,
+      Ci::BuildNeed,
       Ci::BuildTag,
       Ci::BuildTraceMetadata,
       Ci::BuildSource,
@@ -88,7 +89,8 @@ Gitlab::Application.config.to_prepare do
         Ai::ActiveContext::Code::EnabledNamespace,
         Ai::ActiveContext::Code::Repository,
         Ai::DuoWorkflows::Checkpoint,
-        Analytics::KnowledgeGraph::CodeIndexingTask
+        Analytics::KnowledgeGraph::CodeIndexingTask,
+        AuditEvents::AiAuditEvent
       ])
   else
     Gitlab::Database::Partitioning.register_tables(
@@ -142,4 +144,7 @@ Gitlab::Application.config.to_prepare do
   )
 end
 
-Gitlab::Database::Partitioning.sync_partitions_ignore_db_error
+# Sync partitions after models/tables are registered when `to_prepare` is executed
+Gitlab::Application.config.after_initialize do
+  Gitlab::Database::Partitioning.sync_partitions_ignore_db_error
+end
