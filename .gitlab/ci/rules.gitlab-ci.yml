@@ -3372,6 +3372,10 @@
 
 .setup:rules:verify-start-workflow-service-assets:
   rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
+      when: never
     - <<: *if-default-refs
       changes:
         - "ee/app/services/ai/duo_workflows/start_workflow_service.rb"
