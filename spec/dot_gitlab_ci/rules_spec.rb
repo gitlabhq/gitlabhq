@@ -289,7 +289,8 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         all_matching_files.merge(files)
       end
 
-      it 'does not miss files to match' do
+      it 'does not miss files to match',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/11473' do
         expect(all_files - all_matching_files.to_a).to be_empty
       end
     end

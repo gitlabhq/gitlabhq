@@ -1,0 +1,13 @@
+gitleaks 8.24.3
+minio 2022-07-15T03-44-22Z
+nodejs 22.19.0
+postgres 16.10 14.9
+redis 7.0.14
+ruby 3.3.9 3.2.9
+rust 1.89.0
+yarn 1.22.19
+
+# For linting documentation
+markdownlint-cli2 0.17.2
+lychee 0.18.1
+vale 3.11.2
