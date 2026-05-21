@@ -1,0 +1,47 @@
+# Database DDL Lock Configuration
+#
+# This configuration prevents DDL migrations from being merged during Postgres upgrades,
+# replacing the need for hard Production Change Locks (PCL) that block all deployments.
+#
+# Configuration options:
+#
+# start_date: "2025-12-09T09:00:00Z"
+#   The date when DDL migration merges will be blocked.
+#   Format: ISO 8601 (YYYY-MM-DDThh:mm:ssZ in UTC)
+#
+# end_date: "2025-12-09T09:00:00Z"
+#   The date when the block will be lifted.
+#   Format: ISO 8601 (YYYY-MM-DDThh:mm:ssZ in UTC)
+#
+# details: "Contention due to Postgres 17 upgrade"
+#   An explanation shown to developers when their MR is blocked. Be specific about why the lock is in place.
+#
+# upgrade_issue_url: "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/12345"
+#   Link to the issue tracking the upgrade progress.
+#
+# warning_days: 7
+#   Number of days before start_date when warnings begin appearing on MRs.
+#   Gives developers advance notice to plan their work accordingly.
+#
+# We can plan the locks ahead, having a pre-established lock list for upcoming upgrades.
+# The list of locks is ordered by start_date.
+#
+# Example:
+#    locks:
+#      - start_date: "2024-12-09T09:00:00Z"
+#        end_date: "2024-12-09T09:00:00Z"
+#        details: "Contention due to Postgres 16 upgrade"
+#        upgrade_issue_url: ""
+#        warning_days: 7
+#      - start_date: "2025-12-09T09:00:00Z"
+#        end_date: "2025-12-09T09:00:00Z"
+#        details: "Contention due to Postgres 17 upgrade"
+#        upgrade_issue_url: "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/12345"
+#        warning_days: 7
+#      - start_date: "2026-12-09T09:00:00Z"
+#        end_date: "2026-12-09T09:00:00Z"
+#        details: "Contention due to Postgres 18 upgrade"
+#        upgrade_issue_url: ""
+#        warning_days: 7
+
+locks: []

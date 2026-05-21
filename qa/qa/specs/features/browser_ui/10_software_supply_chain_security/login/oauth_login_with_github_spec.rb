@@ -4,6 +4,10 @@ module QA
   RSpec.describe 'Software Supply Chain Security', :orchestrated, :oauth, feature_category: :system_access do
     describe 'OAuth' do
       it 'connects and logs in with GitHub OAuth',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/17856',
+          type: :flaky
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/402405' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
