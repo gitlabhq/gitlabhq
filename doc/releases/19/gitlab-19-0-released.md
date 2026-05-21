@@ -1,12 +1,12 @@
 ---
 stage: Release Notes
 group: Monthly Release
-title: "GitLab 19.0 release notes - not yet released"
-description: "Summary of features included in 19.0"
+date: 2026-05-21
+title: GitLab 19.0
+description: GitLab 19.0 released with Group-level custom review instructions for GitLab Duo
 ---
 
-The following features are being delivered for GitLab 19.0.
-These features are now available on GitLab.com.
+On May 21, 2026, GitLab 19.0 was released with the following features.
 
 We'd also like to announce this month's [Notable Contributor](https://contributors.gitlab.com/notable-contributors):
 Norman Debald!
@@ -46,7 +46,7 @@ Use present tense, and speak about "you" instead of "the user."
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Add-ons: Duo Enterprise
+- Add-ons: GitLab Duo Enterprise
 - Links: [Documentation](../../user/gitlab_duo/customize_duo/review_instructions.md#configure-custom-review-instructions-for-a-group), [Related issue](https://gitlab.com/groups/gitlab-org/-/work_items/21504)
 
 {{< /details >}}
@@ -206,7 +206,7 @@ only from that repository. You can also use partial paths or patterns to match m
 
 You can now configure flows and external agents to run on the **Merge request ready** event.
 
-When a draft merge request is marked as ready for review, GitLab Duo automatically runs the flow or external agent. 
+When a draft merge request is marked as ready for review, GitLab Duo automatically runs the flow or external agent.
 
 To configure a trigger, go to **AI** > **Triggers** in your project.
 
@@ -518,6 +518,34 @@ providers and SCIM clients receive consistent success responses.
 
 ## Unified DevOps and Security
 
+### Auto remediation for vulnerable dependencies (Experiment)
+
+<!-- categories: Software Composition Analysis -->
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com
+- Links: [Documentation](../../user/application_security/remediate/auto_remediation.md), [Related epic](https://gitlab.com/groups/gitlab-org/-/work_items/17403)
+
+{{< /details >}}
+
+Auto remediation for dependencies is now available as an experiment in GitLab 19.0. When dependency
+scanning detects a vulnerable Ruby dependency with a known fix, GitLab automatically
+opens a merge request to update it to a safe version without human input. Only Ruby projects are supported
+in the experiment.
+
+After each pipeline, GitLab identifies the highest-severity vulnerability with an
+available patch or minor version upgrade. GitLab generates the manifest file change and
+opens a merge request through a service account. The merge request then goes through
+your project's standard review and approval workflow.
+
+During the experiment, up to three auto-remediation merge requests can be open per
+project at a time.
+
+To share feedback or request to try out the experiment make a comment on [epic 600511](https://gitlab.com/gitlab-org/gitlab/-/work_items/600511).
+To enable the experiment on your project, a GitLab team member must enable the `dependency_management_auto_remediation` feature flag for your project.
+
 ### Dependency scanning in security configuration profiles
 
 <!-- categories: Security Testing Configuration -->
@@ -539,6 +567,24 @@ The profile activates two scan triggers:
 
 - **Merge Request Pipelines**: Automatically runs a dependency scanning scan each time new commits are pushed to a branch with an open merge request. Results include only new vulnerabilities introduced by the merge request.
 - **Branch Pipelines (default only)**: Runs automatically when changes are merged or pushed to the default branch, providing a complete view of your default branch's dependency posture.
+
+### Dependency resolution for Gradle SBOM scanning
+
+<!-- categories: Software Composition Analysis -->
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
+- Links: [Documentation](../../user/application_security/dependency_scanning/dependency_scanning_sbom/_index.md#dependency-resolution) | [Related epic](https://gitlab.com/groups/gitlab-org/-/work_items/590734)
+
+{{< /details >}}
+
+GitLab dependency scanning using SBOM now automatically generates a dependency graph (`gradle.graph.txt`)
+for Gradle projects. Previously, Gradle dependency scanning required
+you to generate a dependency graph
+manually as part of your build. Now, when a graph file is not available, the analyzer
+generates one automatically, removing this manual step for Java and Kotlin projects using Gradle.
 
 ### Improved array support for CI/CD inputs
 
@@ -703,6 +749,22 @@ You can now use a job token to push to another project when:
 This feature is behind the `allow_push_to_allowlisted_projects` feature flag, disabled by default
 in GitLab 19.0. Ask your administrator to enable it.
 
+### Mermaid diagram rendering upgraded to version 11
+
+<!-- categories: Markdown -->
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Links: [Documentation](../../user/markdown.md#mermaid), [Related issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/491514)
+
+{{< /details >}}
+
+GitLab now uses [Mermaid version 11](../../user/markdown.md#mermaid) for rendering diagrams in Markdown.
+
+Previously, GitLab supported Mermaid version 10. With this upgrade, you get access to all the new diagram types, syntax improvements, and bug fixes introduced in Mermaid 11, including enhanced rendering for flowcharts, sequence diagrams, and more.
+
 ### Rapid Diffs for merge request reviews (Beta)
 
 <!-- categories: Code Review Workflow -->
@@ -753,5 +815,5 @@ We’re also releasing GitLab Runner 19.0 today! GitLab Runner is the highly-sca
 - [Broken RPM S3 download links for `amd64`, `arm64`, `arm`, and `armhf` in GitLab Runner 18.9.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/39362)
 - [Negative exit codes are reported incorrectly on Windows](https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/39292)
 - [Incorrect Kubernetes executor service container naming documentation](https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/39235)
-        
+
 The list of all changes is in the GitLab Runner [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-runner/blob/19-0-stable/CHANGELOG.md).
