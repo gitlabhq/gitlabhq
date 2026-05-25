@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.5.6 (2026-05-25)
+
+### Fixed (3 changes)
+
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/gitlab/-/commit/8753172b6a6d599b7cb3b0e2926766ceb3c18d33) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235631)) **GitLab Enterprise Edition**
+- [Backport use upstream for DWS API requests in Workhorse](https://gitlab.com/gitlab-org/gitlab/-/commit/210aff6396a5a8d439df948f8ae2a1e9b7d3685a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216575)) **GitLab Enterprise Edition**
+- [Exclude Git HTTP requests from authenticated web throttle](https://gitlab.com/gitlab-org/gitlab/-/commit/ed5324f087c0b04644af08ed2d724872f111c9cc) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213641))
+
 ## 18.5.5 (2026-01-07)
 
 ### Fixed (4 changes)
