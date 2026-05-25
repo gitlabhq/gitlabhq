@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.9.8 (2026-05-25)
+
+### Fixed (1 change)
+
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/gitlab/-/commit/6c944fe284f7a9b2417e30aef56926502a01d7d6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236084)) **GitLab Enterprise Edition**
+
+### Other (1 change)
+
+- [Fix flaky new_project_spec tests](https://gitlab.com/gitlab-org/gitlab/-/commit/f0a9dc5cee7bdbede191cd94cf309e75b6ae33ff) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236519))
+
 ## 18.9.7 (2026-05-13)
 
 ### Fixed (1 change)
