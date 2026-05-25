@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.7.7 (2026-05-25)
+
+### Fixed (2 changes)
+
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/gitlab/-/commit/91ee50d0b7f0722b4509b495561e3373c6977b16) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236532)) **GitLab Enterprise Edition**
+- [GLQL advanced finder, remove project_ids](https://gitlab.com/gitlab-org/gitlab/-/commit/54ecf5ebbb75e19ebabf25e36832e204fac82a15) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227278)) **GitLab Enterprise Edition**
+
 ## 18.7.6 (2026-03-10)
 
 ### Fixed (1 change)
