@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.8.10 (2026-05-25)
+
+### Fixed (3 changes)
+
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/gitlab/-/commit/b7cc91d0018b6ddb9982248342b0758f0cae4bb6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236078)) **GitLab Enterprise Edition**
+- [Fix PG::UniqueViolation in project_daily_statistics sync trigger](https://gitlab.com/gitlab-org/gitlab/-/commit/4449349ea08444b00de4176a6b43b83abe6d5a74) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227227))
+- [Handle RecordInvalid in runner authentication token reset service](https://gitlab.com/gitlab-org/gitlab/-/commit/9b6c2fbb3ea87c7da2b019d2a1fe35d2d9242f49) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229987))
+
+### Other (1 change)
+
+- [Fix flaky new_project_spec by scoping within pane](https://gitlab.com/gitlab-org/gitlab/-/commit/e4f795514572f9a107c5ffddae5ab8e5637d34a4) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230428))
+
 ## 18.8.9 (2026-04-07)
 
 ### Security (12 changes)
