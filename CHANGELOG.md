@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.6.7 (2026-05-25)
+
+### Fixed (1 change)
+
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/gitlab/-/commit/5570b7a7ddbabd1a5c67e77f0f785f5aad28e136) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236529)) **GitLab Enterprise Edition**
+
 ## 18.6.6 (2026-02-09)
 
 ### Fixed (1 change)
