@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.0.1 (2026-05-26)
+
+### Security (7 changes)
+
+- [Prevent blocked bot_users from authenticating](https://gitlab.com/gitlab-org/security/gitlab/-/commit/956669dfd81f4fdabc7e3559246ab96880b3f041) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6214))
+- [Fix unauthorized project exposure via WorkItem GraphQL traversal](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b6a97ad2eb991800e83ff13130ac4ed227ed5d25) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6208))
+- [Enforce duo_foundational_flows_enabled in foundational flows execution](https://gitlab.com/gitlab-org/security/gitlab/-/commit/66c2237ae10d2f7625370f133d6df39bffbd3188) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6201))
+- [Fix authorization bypass in Operations and Environments dashboards](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e30e18f0c342b4918821846a384f6e5a8ec54f1c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6202))
+- [Backport of "Add size limit to redirects_yml in update_redirection_actions" into 19.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6ab4e4a5ea81e07963ba1c8e137c030a21eb214b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6185))
+- [Use vulnerability author identity for AI workflow triggers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/573b32e250b90da1b4b2c3109f4fcd9c46d5444d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6188))
+- [Fix child pipeline ref type to match parent pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1ca6aa4b4977996366dd818110699945ae735881) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6193))
+
 ## 19.0.0 (2026-05-21)
 
 ### Added (232 changes)
