@@ -85,6 +85,8 @@ class Wiki
   DIRECTION_DESC = 'desc'
   DIRECTION_ASC = 'asc'
 
+  REDIRECTS_YML_SIZE_LIMIT = 0.5.megabytes
+
   attr_reader :container, :user
 
   # Returns a string describing what went wrong after
@@ -470,7 +472,10 @@ class Wiki
   def update_redirection_actions(new_path, old_path = nil, **options)
     return [] unless old_path != new_path
 
-    old_contents = repository.blob_at(default_branch, REDIRECTS_YML)
+    old_contents = repository.blob_at(default_branch, REDIRECTS_YML, limit: REDIRECTS_YML_SIZE_LIMIT)
+
+    raise ArgumentError, 'Redirects file is too large' if old_contents&.truncated?
+
     redirects = old_contents ? YAML.safe_load(old_contents.data).to_h : {}
     redirects[old_path] = new_path if old_path
     redirects.except!(new_path)
