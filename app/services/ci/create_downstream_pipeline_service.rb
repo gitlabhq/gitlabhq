@@ -143,14 +143,36 @@ module Ci
     end
 
     def can_create_downstream_pipeline?(target_ref)
-      return false unless can?(current_user, :update_pipeline, project)
-      return false unless can?(current_user, :create_pipeline, downstream_project)
-
-      can_run_pipeline_on_branch?(target_ref)
+      can?(current_user, :update_pipeline, project) &&
+        can?(current_user, :create_pipeline, downstream_project) &&
+        can_write_ref?(target_ref)
     end
 
-    def can_run_pipeline_on_branch?(target_ref)
-      ::Gitlab::UserAccess.new(current_user, container: downstream_project).can_run_pipeline_on_branch?(target_ref)
+    def can_write_ref?(target_ref)
+      access = ::Gitlab::UserAccess.new(current_user, container: downstream_project)
+
+      if Gitlab::Git.branch_ref?(target_ref)
+        # Use can_run_pipeline_on_branch? instead of can_update_branch? to preserve
+        # the EE override that allows security policy bots (Guests) to create pipelines
+        # via the :create_bot_pipeline permission.
+        access.can_run_pipeline_on_branch?(Gitlab::Git.ref_name(target_ref))
+      elsif Gitlab::Git.tag_ref?(target_ref)
+        access.can_create_tag?(Gitlab::Git.ref_name(target_ref))
+      elsif @bridge.triggers_child_pipeline? && MergeRequest.merge_request_ref?(target_ref)
+        # For MR refs, check permissions based on fork vs same-project
+        # See: lib/gitlab/ci/pipeline/chain/validate/abilities.rb
+        merge_request = @bridge.pipeline.merge_request
+        if merge_request.nil?
+          false
+        elsif merge_request.for_fork?
+          true
+        else # => merge_request.for_same_project? == true
+          access.can_run_pipeline_on_branch?(merge_request.source_branch)
+        end
+      else
+        # Treat any other ref pattern as branch -- Ci::CreatePipelineService will check this later anyway
+        access.can_run_pipeline_on_branch?(target_ref)
+      end
     end
 
     def downstream_project

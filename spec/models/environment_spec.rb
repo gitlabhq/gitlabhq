@@ -540,6 +540,40 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
   end
 
+  describe '.with_deployment_accessible_project_features' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:environment) { create(:environment, project: project) }
+
+    subject(:result) { described_class.with_deployment_accessible_project_features }
+
+    it 'includes environments for projects with all features enabled' do
+      expect(result).to include(environment)
+    end
+
+    where(:disabled_feature) do
+      [[:environments_access_level], [:builds_access_level], [:repository_access_level]]
+    end
+
+    with_them do
+      before do
+        attrs = { disabled_feature => ProjectFeature::DISABLED }
+
+        # builds_access_level and merge_requests_access_level must not exceed
+        # repository_access_level due to ProjectFeature validation constraints
+        if disabled_feature == :repository_access_level
+          attrs.merge!(builds_access_level: ProjectFeature::DISABLED,
+            merge_requests_access_level: ProjectFeature::DISABLED)
+        end
+
+        project.project_feature.update!(attrs)
+      end
+
+      it 'excludes environments for projects with the feature disabled' do
+        expect(result).not_to include(environment)
+      end
+    end
+  end
+
   describe '.for_tier' do
     let_it_be(:environment) { create(:environment, :production) }
 

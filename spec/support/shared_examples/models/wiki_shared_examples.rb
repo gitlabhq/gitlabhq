@@ -1192,6 +1192,60 @@ RSpec.shared_examples 'wiki model' do
     end
   end
 
+  describe '#update_redirection_actions' do
+    let(:new_path) { 'new-page' }
+    let(:old_path) { 'old-page' }
+
+    before do
+      subject.create_page('test page', 'content')
+    end
+
+    context 'when the redirects file exceeds the size limit' do
+      let(:blob) { instance_double(Gitlab::Git::Blob, truncated?: true) }
+
+      before do
+        allow(subject.repository).to receive(:blob_at)
+          .with(subject.default_branch, Wiki::REDIRECTS_YML, limit: Wiki::REDIRECTS_YML_SIZE_LIMIT)
+          .and_return(blob)
+      end
+
+      it 'raises an ArgumentError' do
+        expect { subject.send(:update_redirection_actions, new_path, old_path) }
+          .to raise_error(ArgumentError, 'Redirects file is too large')
+      end
+    end
+
+    context 'when the redirects file is within the size limit' do
+      let(:blob) { instance_double(Gitlab::Git::Blob, truncated?: false, data: YAML.dump({ 'some-page' => 'other-page' })) }
+
+      before do
+        allow(subject.repository).to receive(:blob_at)
+          .with(subject.default_branch, Wiki::REDIRECTS_YML, limit: Wiki::REDIRECTS_YML_SIZE_LIMIT)
+          .and_return(blob)
+        allow(subject.repository).to receive(:update_file_actions).and_return([])
+      end
+
+      it 'does not raise an error' do
+        expect { subject.send(:update_redirection_actions, new_path, old_path) }
+          .not_to raise_error
+      end
+    end
+
+    context 'when there is no redirects file' do
+      before do
+        allow(subject.repository).to receive(:blob_at)
+          .with(subject.default_branch, Wiki::REDIRECTS_YML, limit: Wiki::REDIRECTS_YML_SIZE_LIMIT)
+          .and_return(nil)
+        allow(subject.repository).to receive(:create_file_actions).and_return([])
+      end
+
+      it 'does not raise an error' do
+        expect { subject.send(:update_redirection_actions, new_path, old_path) }
+          .not_to raise_error
+      end
+    end
+  end
+
   describe '#preview_slug' do
     where(:title, :file_extension, :format, :expected_slug) do
       'The Best Thing'       | :md  | :markdown  | 'The-Best-Thing'

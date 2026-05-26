@@ -15,6 +15,10 @@ class Projects::TagsController < Projects::ApplicationController
   urgency :low, [:new, :show, :index]
 
   def index
+    # ProjectPolicy#foundational_flows_available? reads the cascading duo_foundational_flows_enabled
+    # setting, which fires extra queries beyond the default 100 threshold.
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/work_items/600660', new_threshold: 101)
+
     tags_params = params
       .permit(:search, :sort, :per_page, :page_token, :page)
       .with_defaults(sort: sort_value_recently_updated)

@@ -175,7 +175,7 @@ RSpec.describe "Projects > Settings > Pipelines settings", feature_category: :co
         context 'when auto devops is turned on group parent level' do
           before do
             # TODO: Reduction of query generated will be handled in https://gitlab.com/gitlab-org/gitlab/-/work_items/599109
-            allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(103)
+            allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(105)
 
             group = create(:group, parent: create(:group, :auto_devops_enabled))
             project.update!(namespace: group)

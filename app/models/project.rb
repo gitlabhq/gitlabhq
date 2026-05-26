@@ -2276,14 +2276,6 @@ class Project < ApplicationRecord
     end
   end
 
-  def first_human_owner
-    if group
-      group.owners.where(user_type: :human, state: :active).order(:id).first
-    else
-      owner
-    end
-  end
-
   # rubocop: disable CodeReuse/ServiceClass
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do
