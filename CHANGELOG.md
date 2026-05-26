@@ -2,6 +2,33 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.11.4 (2026-05-26)
+
+### Fixed (4 changes)
+
+- [Use primary DB connection for advanced search bulk indexer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/692a9797f145292710b2a1048a2905cae17f01e9) **GitLab Enterprise Edition**
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0b4e5a4c42711a5fce94a9c9f2458f14a28de8ad) **GitLab Enterprise Edition**
+- [Send allowed endpoints to Workhorse for diagram proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cc78abff17fe69fa83a78101a74484e5fdc23c8b)
+- [Fixes dropping successful builds](https://gitlab.com/gitlab-org/security/gitlab/-/commit/efae3ef9ccd78a53099a5536aac78b136860a785)
+
+### Changed (1 change)
+
+- [Add AI scopes to vulnerability findings](https://gitlab.com/gitlab-org/security/gitlab/-/commit/da0319b29ddcbf1dc1ae9c03541aeac2f47c5392) **GitLab Enterprise Edition**
+
+### Security (7 changes)
+
+- [Prevent blocked bot_users from authenticating](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5eb0c54c32757ca0dce66714b9a1904f5899178c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6173))
+- [Fix unauthorized project exposure via WorkItem GraphQL traversal](https://gitlab.com/gitlab-org/security/gitlab/-/commit/31cd80a9987d16b89b99d0d84a78807b5582b912) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6207))
+- [Enforce duo_foundational_flows_enabled in foundational flows execution](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a1a0290282becdc7bd2ca168b7fa12a4e247d0e4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6035))
+- [Fix authorization bypass in Operations and Environments dashboards](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dee4c424d7f37ba6effdbf9ba2ef8002b203ab7e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6104))
+- [Backport of "Add size limit to redirects_yml in update_redirection_actions" into 18.11](https://gitlab.com/gitlab-org/security/gitlab/-/commit/18ea3ecd7e50f54c6042f17b86df2c12e3fdc219) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6155))
+- [Use vulnerability author identity for AI workflow triggers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/96648a1c80e73dc5c751c4c56a2f57c5fbeb096a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6159))
+- [Fix child pipeline ref type to match parent pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cd3fff4d91e7ecf8b36f57d9ced38d47c988d429) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6041))
+
+### Other (1 change)
+
+- [Fix flaky new_project_spec tests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/38a7dbaefc1d23f51fdc774d892ce0ab6157ed3c)
+
 ## 18.11.3 (2026-05-13)
 
 ### Fixed (3 changes)
