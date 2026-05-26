@@ -92,6 +92,11 @@ export const POLICY_READ_REPOSITORIES = {
   text: READ,
   resource: RESOURCE_REPOSITORIES,
 };
+export const POLICY_ADMIN_REPOSITORIES = {
+  value: 'ADMIN_REPOSITORIES',
+  text: READ_AND_WRITE,
+  resource: RESOURCE_REPOSITORIES,
+};
 export const POLICY_READ_SECURE_FILES = {
   value: 'READ_SECURE_FILES',
   text: READ,
@@ -150,7 +155,7 @@ export const POLICIES_BY_RESOURCE = [
   },
   {
     resource: RESOURCE_REPOSITORIES,
-    policies: [POLICY_NONE, POLICY_READ_REPOSITORIES],
+    policies: [POLICY_NONE, POLICY_READ_REPOSITORIES, POLICY_ADMIN_REPOSITORIES],
   },
   {
     resource: RESOURCE_SECURE_FILES,

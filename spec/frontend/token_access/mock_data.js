@@ -440,6 +440,11 @@ export const POLICIES_BY_RESOURCE = [
         text: 'Read',
         resource: { value: 'REPOSITORIES', text: 'Repositories' },
       },
+      {
+        value: 'ADMIN_REPOSITORIES',
+        text: 'Read and write',
+        resource: { value: 'REPOSITORIES', text: 'Repositories' },
+      },
     ],
   },
   {
