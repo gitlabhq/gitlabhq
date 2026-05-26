@@ -30,11 +30,21 @@ RSpec.describe JwtController, feature_category: :system_access do
 
       it_behaves_like 'with invalid credentials'
     end
+
+    context 'with blocked auth bot_users' do
+      [:project_bot, :service_account].each do |user_type|
+        context "when #{user_type}" do
+          let(:user) { create(:user, user_type, :blocked) }
+
+          it_behaves_like 'with invalid credentials'
+        end
+      end
+    end
   end
 
   shared_examples 'a token that expires today' do
-    let(:pat) { create(:personal_access_token, user: user, scopes: ['api'], expires_at: Date.today) }
-    let(:headers) { { authorization: credentials('personal_access_token', pat.token) } }
+    let(:personal_access_token) { create(:personal_access_token, user: user, scopes: ['api'], expires_at: Date.today) }
+    let(:headers) { { authorization: credentials('personal_access_token', personal_access_token.token) } }
 
     it 'fails authentication' do
       expect(::Gitlab::AuthLogger).to receive(:warn).with(
@@ -230,41 +240,32 @@ RSpec.describe JwtController, feature_category: :system_access do
     end
 
     context 'when using authenticated request' do
-      context 'using personal access tokens' do
-        let(:personal_access_token) { create(:personal_access_token, scopes: ['read_registry']) }
-        let(:headers) { { authorization: credentials('personal_access_token', personal_access_token.token) } }
-
-        before do
-          stub_container_registry_config(enabled: true)
-        end
-
-        subject { get '/jwt/auth', params: parameters, headers: headers }
-
-        it_behaves_like 'updating personal access token last used'
-      end
-
-      context 'using CI token' do
+      context 'using tokens' do
         let(:user) { create(:user) }
         let(:build) { create(:ci_build, :running, user: user) }
         let(:project) { build.project }
-        let(:headers) { { authorization: credentials('gitlab-ci-token', build.token) } }
+        let(:headers) { {} }
 
-        context 'project with enabled CI' do
-          subject! { get '/jwt/auth', params: parameters, headers: headers }
+        context 'using CI token' do
+          let(:headers) { { authorization: credentials('gitlab-ci-token', build.token) } }
 
-          it { expect(service_class).to have_received(:new).with(project, user, ActionController::Parameters.new(parameters.merge(auth_type: :build)).permit!) }
+          context 'project with enabled CI' do
+            subject! { get '/jwt/auth', params: parameters, headers: headers }
 
-          it_behaves_like 'user logging'
-        end
+            it { expect(service_class).to have_received(:new).with(project, user, ActionController::Parameters.new(parameters.merge(auth_type: :build)).permit!) }
 
-        context 'project with disabled CI' do
-          before do
-            project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+            it_behaves_like 'user logging'
           end
 
-          subject! { get '/jwt/auth', params: parameters, headers: headers }
+          context 'project with disabled CI' do
+            before do
+              project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+            end
 
-          it { expect(response).to have_gitlab_http_status(:unauthorized) }
+            subject! { get '/jwt/auth', params: parameters, headers: headers }
+
+            it { expect(response).to have_gitlab_http_status(:unauthorized) }
+          end
         end
 
         context 'using deploy tokens' do
@@ -289,28 +290,31 @@ RSpec.describe JwtController, feature_category: :system_access do
         end
 
         context 'using personal access tokens' do
-          let(:pat) { create(:personal_access_token, user: user, scopes: ['read_registry']) }
-          let(:headers) { { authorization: credentials('personal_access_token', pat.token) } }
+          let(:personal_access_token) { create(:personal_access_token, user: user, scopes: ['read_registry']) }
+          let(:headers) { { authorization: credentials('personal_access_token', personal_access_token.token) } }
 
           before do
             stub_container_registry_config(enabled: true)
           end
 
-          subject! { get '/jwt/auth', params: parameters, headers: headers }
+          subject(:jwt_request) { get '/jwt/auth', params: parameters, headers: headers }
 
           it 'authenticates correctly' do
+            jwt_request
+
             expect(response).to have_gitlab_http_status(:ok)
             expect(service_class).to have_received(:new)
               .with(
                 nil,
                 user,
-                ActionController::Parameters.new(parameters.merge(auth_type: :personal_access_token, raw_token: pat.token)).permit!
+                ActionController::Parameters.new(parameters.merge(auth_type: :personal_access_token, raw_token: personal_access_token.token)).permit!
               )
           end
 
           it_behaves_like 'rejecting a blocked user'
           it_behaves_like 'user logging'
           it_behaves_like 'a token that expires today'
+          it_behaves_like 'updating personal access token last used'
         end
       end
 
@@ -324,6 +328,12 @@ RSpec.describe JwtController, feature_category: :system_access do
           request_jwt_auth
 
           expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters.merge(auth_type: :gitlab_or_ldap)).permit!)
+        end
+
+        it 'accepts the authorization attempt' do
+          request_jwt_auth
+
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it_behaves_like 'rejecting a blocked user'

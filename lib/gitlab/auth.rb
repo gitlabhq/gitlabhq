@@ -304,6 +304,8 @@ module Gitlab
 
         return unless valid_scoped_token?(token, all_available_scopes)
 
+        return if token.user.blocked?
+
         if project && (token.user.project_bot? || token.user.service_account?)
           return unless can_read_project?(token.user, project)
         end

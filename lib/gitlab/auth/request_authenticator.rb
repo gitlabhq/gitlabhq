@@ -55,6 +55,8 @@ module Gitlab
       end
 
       def can_sign_in_bot?(user)
+        return false if user&.blocked?
+
         # Allow bots and service accounts to access both API and archive endpoints
         (user&.project_bot? || user&.service_account?) && (api_request? || archive_request?)
       end
