@@ -865,6 +865,37 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       end
     end
 
+    context 'when downstream pipeline is for a tag' do
+      let(:trigger) do
+        {
+          trigger: {
+            project: downstream_project.full_path,
+            branch: "#{Gitlab::Git::TAG_REF_PREFIX}v1.0.0"
+          }
+        }
+      end
+
+      context 'when user has access to create tags' do
+        it 'creates the downstream pipeline' do
+          expect { subject }.to change { downstream_project.ci_pipelines.count }.by(1)
+          expect(subject).to be_success
+        end
+      end
+
+      context 'when user does not have access to create protected tags' do
+        before do
+          create(:protected_tag, :maintainers_can_create, project: downstream_project, name: 'v*')
+        end
+
+        it 'changes status of the bridge build' do
+          subject
+
+          expect(bridge.reload).to be_failed
+          expect(bridge.failure_reason).to eq 'insufficient_bridge_permissions'
+        end
+      end
+    end
+
     context 'when there is no such branch in downstream project' do
       let(:trigger) do
         {

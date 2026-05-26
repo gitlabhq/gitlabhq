@@ -389,7 +389,7 @@ module Ci
         project: project,
         source: :parent_pipeline,
         target_revision: {
-          ref: parent_pipeline.ref,
+          ref: parent_pipeline.full_ref_path,
           checkout_sha: parent_pipeline.sha,
           before: parent_pipeline.before_sha,
           source_sha: parent_pipeline.source_sha,

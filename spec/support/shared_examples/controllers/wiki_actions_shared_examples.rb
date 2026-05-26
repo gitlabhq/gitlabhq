@@ -411,6 +411,25 @@ RSpec.shared_examples 'wiki controller actions' do
         it_behaves_like 'renders 404 with CTA to create page'
       end
     end
+
+    context 'when the redirects file exceeds the size limit' do
+      let(:id) { 'non-existent-page' }
+
+      before do
+        blob = instance_double(Gitlab::Git::Blob, truncated?: true)
+        allow(Wiki).to receive(:for_container).and_return(wiki)
+        allow(wiki.repository).to receive(:blob_at).and_call_original
+        allow(wiki.repository).to receive(:blob_at)
+          .with(wiki.default_branch, Wiki::REDIRECTS_YML, limit: Wiki::REDIRECTS_YML_SIZE_LIMIT)
+          .and_return(blob)
+      end
+
+      it 'renders a 404' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'POST #preview_markdown' do
