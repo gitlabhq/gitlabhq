@@ -357,6 +357,35 @@ RSpec.describe Projects::RepositoriesController, feature_category: :source_code_
           end
         end
       end
+
+      context 'with bot_users' do
+        context 'when blocked' do
+          [:project_bot, :service_account].each do |user_type|
+            context "when #{user_type}" do
+              let(:user) { create(:user, user_type, :blocked) }
+
+              context 'when a token param is present' do
+                it 'redirects to sign in page' do
+                  get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master', token: user.static_object_token }, format: 'zip'
+
+                  expect(response).to have_gitlab_http_status(:found)
+                  expect(response.location).to end_with('/users/sign_in')
+                end
+              end
+
+              context 'when a token header is present' do
+                it 'redirects to sign in page' do
+                  request.headers['X-Gitlab-Static-Object-Token'] = user.static_object_token
+                  get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: 'zip'
+
+                  expect(response).to have_gitlab_http_status(:found)
+                  expect(response.location).to end_with('/users/sign_in')
+                end
+              end
+            end
+          end
+        end
+      end
     end
   end
 
