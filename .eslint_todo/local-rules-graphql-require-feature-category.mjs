@@ -831,7 +831,7 @@ export default {
     'ee/app/assets/javascripts/ai/graphql/get_flow_status.query.graphql',
     'ee/app/assets/javascripts/ai/graphql/get_foundational_chat_agents.graphql',
     'ee/app/assets/javascripts/ai/graphql/get_user_workflow.query.graphql',
-    'ee/app/assets/javascripts/ai/graphql/get_workflow_events.query.graphql',
+    'ee/app/assets/javascripts/ai/graphql/get_workflow_latest_checkpoint.query.graphql',
     'ee/app/assets/javascripts/ai/graphql/search_groups.query.graphql',
     'ee/app/assets/javascripts/ai/graphql/update_ai_settings.mutation.graphql',
     'ee/app/assets/javascripts/ai/model_selection/graphql/get_ai_namepace_feature_settings.query.graphql',
