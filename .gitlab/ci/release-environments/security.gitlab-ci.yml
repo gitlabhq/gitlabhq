@@ -70,9 +70,6 @@ release-environments-build-omnibus-env:
       dotenv: $BUILD_ENV
     paths:
       - $BUILD_ENV
-  # As we are testing, GitLab Omnibus build is allowed to fail
-  # https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/21244
-  allow_failure: true
 
 release-environments-build-omnibus:
   stage: prepare
@@ -104,9 +101,6 @@ release-environments-build-omnibus:
     strategy: depend
     inputs:
       skip_qa_test: true
-  # As we are testing, GitLab Omnibus build is allowed to fail
-  # https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/21244
-  allow_failure: true
 
 release-environments-deploy-env:
   stage: prepare
