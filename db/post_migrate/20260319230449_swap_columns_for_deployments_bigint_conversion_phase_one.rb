@@ -79,7 +79,11 @@ class SwapColumnsForDeploymentsBigintConversionPhaseOne < Gitlab::Database::Migr
       unless Gitlab.com_except_jh?
         SM_ONLY_INDEX.each do |index|
           bigint_idx_name = bigint_index_name(index)
-          swap_indexes(TABLE_NAME, index, bigint_idx_name)
+          if index_exists_by_name?(TABLE_NAME, index) && index_exists_by_name?(TABLE_NAME, bigint_idx_name)
+            swap_indexes(TABLE_NAME, index, bigint_idx_name)
+          else
+            say "Skipping swap for non-existant index: #{index}: or bigint: #{bigint_idx_name}"
+          end
         end
       end
 
