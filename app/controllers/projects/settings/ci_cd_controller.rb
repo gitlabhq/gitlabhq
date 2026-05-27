@@ -15,6 +15,7 @@ module Projects
 
       before_action do
         push_frontend_feature_flag(:ci_variables_pages, current_user)
+        push_frontend_feature_flag(:allow_push_to_allowlisted_projects, @project)
         push_frontend_ability(ability: :admin_project, resource: @project, user: current_user)
         push_frontend_ability(ability: :admin_protected_environments, resource: @project, user: current_user)
       end

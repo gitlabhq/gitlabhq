@@ -27,7 +27,7 @@ describe('TokenPermissions component', () => {
   const findCrossProjectCheckbox = () => findAllCheckboxes().at(1);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
-  const createComponent = () => {
+  const createComponent = ({ glFeatures = { allowPushToAllowlistedProjects: true } } = {}) => {
     const handlers = [
       [getCiJobTokenPermissionsQuery, mockQuery],
       [updateCiJobTokenPermissionsMutation, mockMutation],
@@ -36,6 +36,7 @@ describe('TokenPermissions component', () => {
     wrapper = shallowMountExtended(TokenPermissions, {
       provide: {
         fullPath,
+        glFeatures,
       },
       apolloProvider: createMockApollo(handlers),
       mocks: {
@@ -202,6 +203,17 @@ describe('TokenPermissions component', () => {
       await nextTick();
 
       expect(findCrossProjectCheckbox().attributes('checked')).toBeUndefined();
+    });
+  });
+
+  describe('when allowPushToAllowlistedProjects feature flag is disabled', () => {
+    beforeEach(async () => {
+      createComponent({ glFeatures: { allowPushToAllowlistedProjects: false } });
+      await waitForPromises();
+    });
+
+    it('does not render the cross-project push checkbox', () => {
+      expect(findAllCheckboxes()).toHaveLength(1);
     });
   });
 });

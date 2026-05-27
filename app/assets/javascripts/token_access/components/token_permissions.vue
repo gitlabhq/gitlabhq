@@ -4,6 +4,7 @@ import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import updateCiJobTokenPermissionsMutation from '../graphql/mutations/update_ci_job_token_permissions.mutation.graphql';
 import getCiJobTokenPermissionsQuery from '../graphql/queries/get_ci_job_token_permissions.query.graphql';
@@ -18,6 +19,7 @@ export default {
     CrudComponent,
     HelpIcon,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['fullPath'],
   apollo: {
     ciCdSettings: {
@@ -130,6 +132,7 @@ export default {
       </gl-form-checkbox>
 
       <gl-form-checkbox
+        v-if="glFeatures.allowPushToAllowlistedProjects"
         :checked="localAllowCrossProjectPush"
         :disabled="!localAllowPushToRepo"
         @input="updateAllowCrossProjectPush"
