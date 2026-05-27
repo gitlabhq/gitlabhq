@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.10.7 (2026-05-26)
+
+### Fixed (2 changes)
+
+- [Use primary DB connection for advanced search bulk indexer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/47102744a484988b6dc5cd92444182badc31e54b) **GitLab Enterprise Edition**
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/999822531f09c139794b417e92244703265e5b44) **GitLab Enterprise Edition**
+
+### Security (7 changes)
+
+- [Prevent blocked bot_users from authenticating](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3e6a898a7746863c93185d5df5dcc43b679beb4d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6174))
+- [Fix unauthorized project exposure via WorkItem GraphQL traversal](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1661207c53118847e7d56c6f0c270c0f4a1aa691) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6206))
+- [Enforce duo_foundational_flows_enabled in foundational flows execution](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b95e448d67ed49658bb3d49be515aa410a1c660d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6006))
+- [Fix authorization bypass in Operations and Environments dashboards](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8424cc318560f47eb229ca67a596f07a2b761651) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6105))
+- [Backport of "Add size limit to redirects_yml in update_redirection_actions" into 18.10](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dd1e9450ad7ea67ff429c35c7c72dfd1f59ad650) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6156))
+- [Use vulnerability author identity for AI workflow triggers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/43b0fd4b7a31ddc2932cd2785e842fd6ab9f3b03) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6160))
+- [Fix child pipeline ref type to match parent pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/afc6771ddca2be7982bfbd9a0c10acb79b716c6c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6043))
+
+### Other (1 change)
+
+- [Fix flaky new_project_spec tests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9c15b9ef6063ddb0188038cd15f01887081f2f55)
+
 ## 18.10.6 (2026-05-13)
 
 ### Added (1 change)

@@ -110,6 +110,52 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
 
       it { is_expected.to be_can_sign_in_bot(user) }
     end
+
+    context 'when the user is a blocked' do
+      context 'when an archive request' do
+        context 'with a project bot' do
+          let(:user) { build(:user, :project_bot, :blocked) }
+
+          before do
+            env['SCRIPT_NAME'] = '/project/-/archive/main/project-main.tar.gz'
+          end
+
+          it { is_expected.not_to be_can_sign_in_bot(user) }
+        end
+
+        context 'with a service account' do
+          let_it_be(:user) { build(:user, :service_account, :blocked) }
+
+          before do
+            env['SCRIPT_NAME'] = '/project/-/archive/main/project-main.tar.gz'
+          end
+
+          it { is_expected.not_to be_can_sign_in_bot(user) }
+        end
+      end
+
+      context 'when an API request' do
+        context 'with a project bot' do
+          let(:user) { build(:user, :project_bot, :blocked) }
+
+          before do
+            env['SCRIPT_NAME'] = '/api/some_resource'
+          end
+
+          it { is_expected.not_to be_can_sign_in_bot(user) }
+        end
+
+        context 'with a service account' do
+          let(:user) { build(:user, :service_account, :blocked) }
+
+          before do
+            env['SCRIPT_NAME'] = '/api/some_resource'
+          end
+
+          it { is_expected.not_to be_can_sign_in_bot(user) }
+        end
+      end
+    end
   end
 
   describe '#find_authenticated_requester' do

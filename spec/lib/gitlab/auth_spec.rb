@@ -849,6 +849,19 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, request: request))
             .to have_attributes(auth_failure)
         end
+
+        context 'with a blocked bot_user' do
+          [:project_bot, :service_account].each do |user_type|
+            context "when #{user_type}" do
+              let(:user) { create(:user, user_type, :blocked) }
+
+              it 'fails to authenticate' do
+                expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, request: request))
+                  .to have_attributes(auth_failure)
+              end
+            end
+          end
+        end
       end
 
       context 'when using a resource access token' do
