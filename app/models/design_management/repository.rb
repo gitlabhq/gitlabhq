@@ -23,10 +23,14 @@ module DesignManagement
     strong_memoize_attr :repository
 
     def full_path
+      raise ActiveRecord::RecordNotFound, "Project not found for DesignManagement::Repository ##{id}" unless project
+
       project.full_path + repo_type.path_suffix
     end
 
     def disk_path
+      raise ActiveRecord::RecordNotFound, "Project not found for DesignManagement::Repository ##{id}" unless project
+
       project.disk_path + repo_type.path_suffix
     end
 
