@@ -132,12 +132,12 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         }
       end
 
-      it 'returns child params' do
+      it 'returns child params with full branch ref' do
         child_params = {
           project: project,
           source: :parent_pipeline,
           target_revision: {
-            ref: pipeline.ref,
+            ref: "refs/heads/#{pipeline.ref}",
             checkout_sha: pipeline.sha,
             before: pipeline.before_sha,
             source_sha: pipeline.source_sha,
@@ -152,6 +152,35 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         }
 
         expect(bridge.downstream_pipeline_params).to eq(child_params)
+      end
+
+      context 'when parent pipeline is for a tag' do
+        let(:tag_pipeline) { create(:ci_pipeline, project: project, tag: true, ref: 'v1.0.0') }
+        let(:bridge) do
+          create(:ci_bridge, :variables, status: :created, options: options, pipeline: tag_pipeline)
+        end
+
+        it 'returns child params with full tag ref' do
+          child_params = {
+            project: project,
+            source: :parent_pipeline,
+            target_revision: {
+              ref: "refs/tags/#{tag_pipeline.ref}",
+              checkout_sha: tag_pipeline.sha,
+              before: tag_pipeline.before_sha,
+              source_sha: tag_pipeline.source_sha,
+              target_sha: tag_pipeline.target_sha,
+              variables_attributes: bridge.downstream_variables
+            },
+            execute_params: {
+              ignore_skip_ci: true,
+              bridge: bridge,
+              merge_request: tag_pipeline.merge_request
+            }
+          }
+
+          expect(bridge.downstream_pipeline_params).to eq(child_params)
+        end
       end
     end
   end

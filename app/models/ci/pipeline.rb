@@ -1615,6 +1615,18 @@ module Ci
       MergeRequest.merge_request_ref?(ref)
     end
 
+    def full_ref_path
+      if merge_request_ref? || workload?
+        ref
+      elsif tag?
+        "#{Gitlab::Git::TAG_REF_PREFIX}#{ref}"
+      elsif child?
+        parent_pipeline.full_ref_path
+      else
+        "#{Gitlab::Git::BRANCH_REF_PREFIX}#{ref}"
+      end
+    end
+
     def matches_sha_or_source_sha?(sha)
       self.sha == sha || self.source_sha == sha
     end

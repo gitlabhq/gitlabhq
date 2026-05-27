@@ -191,6 +191,13 @@ class Environment < ApplicationRecord
     where('EXISTS (?)', deployments)
   end
 
+  scope :with_deployment_accessible_project_features, -> {
+    joins(project: :project_feature)
+      .merge(ProjectFeature.with_feature_enabled(:environments))
+      .merge(ProjectFeature.with_feature_enabled(:builds))
+      .merge(ProjectFeature.with_feature_enabled(:repository))
+  }
+
   scope :stopped_review_apps, ->(before, limit) do
     stopped
       .in_review_folder

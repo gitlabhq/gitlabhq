@@ -61,7 +61,6 @@ module Types
     field :project, Types::ProjectType, null: true,
       scopes: [:api, :read_api, :ai_workflows],
       description: 'Project the work item belongs to.',
-      skip_type_authorization: [:read_project],
       experiment: { milestone: '15.3' }
     field :state, WorkItemStateEnum, null: false,
       scopes: [:api, :read_api, :ai_workflows],

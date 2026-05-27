@@ -1364,6 +1364,52 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#full_ref_path' do
+    subject { pipeline.full_ref_path }
+
+    context 'when pipeline is for a branch' do
+      let(:pipeline) { build(:ci_pipeline, ref: 'master') }
+
+      it { is_expected.to eq("#{Gitlab::Git::BRANCH_REF_PREFIX}master") }
+    end
+
+    context 'when pipeline is for a tag' do
+      let(:pipeline) { build(:ci_pipeline, ref: 'v1.0.0', tag: true) }
+
+      it { is_expected.to eq("#{Gitlab::Git::TAG_REF_PREFIX}v1.0.0") }
+    end
+
+    context 'when pipeline is for a merge request ref' do
+      let(:pipeline) { build(:ci_pipeline, ref: 'refs/merge-requests/1/head') }
+
+      it { is_expected.to eq('refs/merge-requests/1/head') }
+    end
+
+    context 'when pipeline is for a workload ref' do
+      let(:pipeline) { build(:ci_pipeline, ref: 'refs/workloads/1') }
+
+      it { is_expected.to eq('refs/workloads/1') }
+    end
+
+    context 'when pipeline is a child pipeline' do
+      let(:parent_pipeline) { create(:ci_pipeline, ref: 'master') }
+      let(:pipeline) { create(:ci_pipeline, source: :parent_pipeline, child_of: parent_pipeline, ref: 'master') }
+
+      it 'delegates to parent pipeline' do
+        expect(subject).to eq("#{Gitlab::Git::BRANCH_REF_PREFIX}master")
+      end
+
+      context 'when parent is a tag pipeline' do
+        let(:parent_pipeline) { create(:ci_pipeline, ref: 'v1.0.0', tag: true) }
+        let(:pipeline) { create(:ci_pipeline, source: :parent_pipeline, child_of: parent_pipeline, ref: 'v1.0.0') }
+
+        it 'returns the tag ref from parent' do
+          expect(subject).to eq("#{Gitlab::Git::TAG_REF_PREFIX}v1.0.0")
+        end
+      end
+    end
+  end
+
   describe '#merge_request_event_type' do
     subject { pipeline.merge_request_event_type }
 

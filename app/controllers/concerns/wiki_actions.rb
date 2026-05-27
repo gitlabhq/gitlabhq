@@ -12,6 +12,8 @@ module WikiActions
 
   RESCUE_GIT_TIMEOUTS_IN = %w[index show raw edit history diff pages templates].freeze
 
+  RedirectsFileTooLargeError = Class.new(StandardError)
+
   included do
     content_security_policy do |p|
       next if p.directives.blank?
@@ -64,6 +66,10 @@ module WikiActions
       @error = s_('Wiki|Could not access the Wiki Repository at this time.')
 
       render 'shared/wikis/empty'
+    end
+
+    rescue_from RedirectsFileTooLargeError do
+      render 'shared/wikis/404', status: :not_found
     end
   end
 
@@ -510,7 +516,13 @@ module WikiActions
 
   def redirections
     strong_memoize(:redirections) do
-      redirects_file = wiki.repository.blob_at(wiki.default_branch, Wiki::REDIRECTS_YML, limit: 0.5.megabytes)
+      redirects_file = wiki.repository.blob_at(
+        wiki.default_branch,
+        Wiki::REDIRECTS_YML,
+        limit: Wiki::REDIRECTS_YML_SIZE_LIMIT
+      )
+
+      raise RedirectsFileTooLargeError, 'Redirects file is too large' if redirects_file&.truncated?
 
       if redirects_file
         YAML.safe_load(redirects_file.data)
