@@ -1,9 +1,8 @@
 - form = local_assigns.fetch(:form)
 
 %fieldset.form-group.gl-form-group{ aria: { describedby: :mr_default_title_template_description }, data: { testid: 'mr-default-title-template-fieldset' } }
-  - beta_badge = render(Pajamas::ExperimentBadgeComponent.new(type: :beta))
   = form.label :mr_default_title_template, class: 'gl-block col-form-label' do
-    = safe_join([s_('ProjectSettings|Merge request title template'), ' ', beta_badge])
+    = s_('ProjectSettings|Merge request title template')
     .label-description{ id: :mr_default_title_template_description }
       = s_('ProjectSettings|Set a default title for merge requests.')
   = form.text_field :mr_default_title_template, class: 'form-control gl-form-input', maxlength: Project::MAX_MR_TITLE_TEMPLATE_LENGTH, data: { testid: 'mr-default-title-template-input' }, placeholder: s_('ProjectSettings|Enter a merge request title template')
