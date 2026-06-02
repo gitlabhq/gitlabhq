@@ -365,7 +365,15 @@ class Commit
   def diff_stats
     return unless diff_refs
 
-    container.repository.diff_stats(diff_refs.base_sha, diff_refs.head_sha)
+    left_sha = diff_refs.base_sha
+
+    # If `base_sha` is a blank ref, it means the commit has no parent (e.g. the
+    # initial commit of a repository or an orphaned branch). We use `empty_tree_id`
+    # so Gitaly can compute the diff against an empty tree instead of returning
+    # empty stats.
+    left_sha = container.repository.empty_tree_id if Gitlab::Git.blank_ref?(left_sha)
+
+    container.repository.diff_stats(left_sha, diff_refs.head_sha)
   end
   strong_memoize_attr(:diff_stats)
 

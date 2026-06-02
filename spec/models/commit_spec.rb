@@ -137,6 +137,23 @@ RSpec.describe Commit, feature_category: :source_code_management do
 
       expect(commit.diff_stats).to be_nil
     end
+
+    context 'when commit has no parent (initial commit)' do
+      let(:commit) { project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') } # initial commit SHA
+
+      it 'calls repository.diff_stats with empty_tree_id as left_sha' do
+        expect(project.repository)
+          .to receive(:diff_stats)
+          .with(project.repository.empty_tree_id, commit.diff_refs.head_sha)
+          .and_call_original
+
+        commit.diff_stats
+      end
+
+      it 'returns non-empty diff stats' do
+        expect(commit.diff_stats.count).to be > 0
+      end
+    end
   end
 
   describe '#author', :request_store do
