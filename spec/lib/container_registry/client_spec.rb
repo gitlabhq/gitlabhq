@@ -7,6 +7,17 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
 
   include_context 'container registry client'
 
+  describe 'ACCEPTED_TYPES' do
+    it 'advertises every manifest media type we accept from the registry' do
+      expect(described_class::ACCEPTED_TYPES).to contain_exactly(
+        'application/vnd.docker.distribution.manifest.v2+json',
+        'application/vnd.oci.image.manifest.v1+json',
+        'application/vnd.docker.distribution.manifest.list.v2+json',
+        'application/vnd.oci.image.index.v1+json'
+      )
+    end
+  end
+
   shared_examples 'handling timeouts' do
     let(:retry_options) do
       ContainerRegistry::Client::RETRY_OPTIONS.merge(
@@ -75,7 +86,7 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
     it 'GET /v2/:name/manifests/mytag' do
       stub_request(method, url)
         .with(headers: {
-          'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
+          'Accept' => ContainerRegistry::Client::ACCEPTED_TYPES.join(', '),
           'Authorization' => "bearer #{token}",
           'User-Agent' => "GitLab/#{Gitlab::VERSION}"
         })
@@ -287,7 +298,7 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
   describe '#put_tag' do
     let(:manifest_headers) do
       {
-        'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
+        'Accept' => ContainerRegistry::Client::ACCEPTED_TYPES.join(', '),
         'Authorization' => "bearer #{token}",
         'Content-Type' => 'application/vnd.docker.distribution.manifest.v2+json',
         'User-Agent' => "GitLab/#{Gitlab::VERSION}"
