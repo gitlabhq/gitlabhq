@@ -251,14 +251,7 @@ module Gitlab
           end
         end
 
-        # Authenticate Duo endpoints BEFORE reading body
-        if duo_endpoint?(request)
-          if request.get?
-            strip_get_request_body(request)
-          elsif !::Gitlab::Middleware::DuoApiAuthenticator.verify!(request)
-            return error_response(nil, 401, message: "Unauthorized")
-          end
-        end
+        strip_get_request_body(request) if duo_endpoint?(request) && request.get?
 
         validate_json_request!(env, request, limits)
         @app.call(env)

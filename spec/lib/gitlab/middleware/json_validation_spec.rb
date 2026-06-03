@@ -446,54 +446,8 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
             expect(env['rack.input'].read).to eq('{}')
           end
         end
-      end
 
-      context 'for Duo Workflow paths' do
-        let(:env) do
-          {
-            'REQUEST_METHOD' => 'POST',
-            'CONTENT_TYPE' => content_type,
-            'PATH_INFO' => '/api/v4/ai/duo_workflows/workflows/123',
-            'rack.input' => StringIO.new(body)
-          }
-        end
-
-        context 'when request authorized' do
-          before do
-            allow(::Gitlab::Middleware::DuoApiAuthenticator).to receive(:verify!).and_return(true)
-          end
-
-          it 'validates Duo Workflow API' do
-            # Should validate but not fail due to route-specific internal API limits
-
-            expect(::Gitlab::Json::StreamValidator).to receive(:new).and_call_original
-            expect(app).to receive(:call).with(env)
-
-            result = middleware.call(env)
-
-            expect(result).to match_array([200, {}, ['OK']])
-          end
-        end
-
-        context 'when request unauthorized' do
-          before do
-            allow(::Gitlab::Middleware::DuoApiAuthenticator).to receive(:verify!).and_return(false)
-          end
-
-          it 'returns and error response without parsing JSON body' do
-            # When duo requests are unauthorized they should not parse the body of the request
-            expect(::Gitlab::Json::StreamValidator).not_to receive(:new).and_call_original
-            expect(app).not_to receive(:call).with(env)
-
-            result = middleware.call(env)
-
-            expect(result).to match_array(
-              [401, { "Content-Type" => "application/json" }, ["{\"error\":\"Unauthorized\"}"]]
-            )
-          end
-        end
-
-        context 'when request is GET' do
+        context 'for Duo Workflow GET requests' do
           let(:env) do
             {
               'REQUEST_METHOD' => 'GET',
@@ -503,8 +457,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
             }
           end
 
-          it 'strips the request body and continues without authenticating' do
-            expect(::Gitlab::Middleware::DuoApiAuthenticator).not_to receive(:verify!)
+          it 'strips the request body and passes through' do
             expect(app).to receive(:call).with(env)
 
             middleware.call(env)
@@ -584,7 +537,6 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
       context 'with internal API routes' do
         before do
           allow(::Gitlab::Middleware::InternalApiAuthenticator).to receive(:verify!).and_return(true)
-          allow(::Gitlab::Middleware::DuoApiAuthenticator).to receive(:verify!).and_return(true)
         end
 
         where(:description, :path_info) do
@@ -606,10 +558,6 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
       end
 
       context 'with Duo Workflow routes' do
-        before do
-          allow(::Gitlab::Middleware::DuoApiAuthenticator).to receive(:verify!).and_return(true)
-        end
-
         where(:description, :path_info) do
           [
             ['Duo workflow endpoint', '/api/v4/ai/duo_workflows/workflows/123'],
