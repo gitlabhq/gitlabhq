@@ -55,6 +55,19 @@ RSpec.describe Gitlab::DiscussionsDiff::HighlightCache, :clean_gitlab_redis_cach
   end
 
   describe '#read_multiple' do
+    context 'when cached diff exceeds the default max_total_elements limit' do
+      it 'parses successfully without raising JSON::ParserError' do
+        # Write a mapping whose JSON element count exceeds the default
+        # max_total_elements limit of 100_000 to simulate a large diff hunk.
+        # Each Gitlab::Diff::Line hash has 7 keys, contributing ~15 elements
+        # to the total count (hash_key + hash_set per key, plus array_append).
+        large_mapping = { 99 => Array.new(7000) { |i| fake_file(i) } }
+        described_class.write_multiple(large_mapping)
+
+        expect { described_class.read_multiple([99]) }.not_to raise_error
+      end
+    end
+
     it 'reads multiple keys and serializes content into Gitlab::Diff::Line objects' do
       described_class.write_multiple(mapping)
 
