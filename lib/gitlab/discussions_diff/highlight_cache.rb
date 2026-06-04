@@ -54,7 +54,15 @@ module Gitlab
           content.map! do |lines|
             next unless lines
 
-            Gitlab::Json.safe_parse(gzip_decompress(lines.force_encoding(Encoding::UTF_8))).map! do |line|
+            # Disable the max_total_elements limit because diff content is
+            # already bounded upstream by patch_hard_limit_bytes. A diff
+            # exceeding the hard byte limit is pruned and cannot be commented
+            # on, so the element count is implicitly bounded.
+            # See: https://gitlab.com/gitlab-org/gitlab/-/issues/601142
+            Gitlab::Json.safe_parse(
+              gzip_decompress(lines.force_encoding(Encoding::UTF_8)),
+              parse_limits: { max_total_elements: 0 }
+            ).map! do |line|
               Gitlab::Diff::Line.safe_init_from_hash(line)
             end
           end
