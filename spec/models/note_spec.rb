@@ -2269,4 +2269,74 @@ RSpec.describe Note, feature_category: :team_planning do
       end
     end
   end
+
+  describe '#show_outdated_changes?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:noteable) { create(:merge_request, source_project: project) }
+    let_it_be(:note) { build(:note, noteable: noteable, system: true) }
+
+    let(:change_position) do
+      Gitlab::Diff::Position.new(
+        old_path: 'foo.rb',
+        new_path: 'foo.rb',
+        line_range: {
+          'end' => {
+            old_line: 8,
+            new_line: 15
+          }
+        },
+        old_line: 8,
+        new_line: 15,
+        diff_refs: noteable.diff_refs
+      )
+    end
+
+    before do
+      allow(note).to receive(:change_position).and_return(change_position)
+    end
+
+    it 'returns true' do
+      expect(note.show_outdated_changes?).to be_truthy
+    end
+
+    context 'when change_position contains invalid format' do
+      let(:change_position) do
+        # Simulate a JSON string instead of a Gitlab::Diff::Position
+        Gitlab::Diff::Position.new(
+          old_path: 'foo.rb',
+          new_path: 'foo.rb',
+          line_range: {
+            end: {
+              old_line: 8,
+              new_line: 15
+            }
+          },
+          old_line: 8,
+          new_line: 15,
+          diff_refs: noteable.diff_refs
+        ).to_json
+      end
+
+      it 'returns false' do
+        expect(note.show_outdated_changes?).to be_falsey
+      end
+    end
+
+    context 'when noteable is not a merge request' do
+      let_it_be(:noteable) { create(:issue, project: project) }
+      let(:change_position) { nil } # issue notes has no position
+
+      it 'returns false' do
+        expect(note.show_outdated_changes?).to be_falsey
+      end
+    end
+
+    context 'when is not a system note' do
+      let_it_be(:note) { build(:note, noteable: noteable, system: false) }
+
+      it 'returns false' do
+        expect(note.show_outdated_changes?).to be_falsey
+      end
+    end
+  end
 end
