@@ -766,3 +766,6 @@ gem 'gitlab_query_language', '~> 0.23.0', feature_category: :integrations
 
 # standard Gem, version increase to resolve vulnerabilities
 gem "zlib", "~>3.2", ">= 3.2.3", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/work_items/596593
+
+# standard Gem, pin version to resolve vulnerabilities
+gem "erb", "= 4.0.3.1", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/work_items/596593
