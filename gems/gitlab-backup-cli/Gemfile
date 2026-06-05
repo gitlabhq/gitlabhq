@@ -14,4 +14,4 @@ group :development, :test do
   gem 'pry'
 end
 
-gem 'activesupport', '~> 7.2'
+gem 'activesupport', '~> 7.2.3'
