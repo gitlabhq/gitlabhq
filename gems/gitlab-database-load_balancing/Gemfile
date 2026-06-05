@@ -17,4 +17,4 @@ gem 'activerecord-gitlab', path: '../activerecord-gitlab'
 gem 'gitlab-utils', path: '../gitlab-utils'
 gem 'gitlab-safe_request_store', path: '../gitlab-safe_request_store'
 
-gem 'rails', '~> 7.2'
+gem 'rails', '~> 7.2.3'

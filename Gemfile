@@ -744,3 +744,6 @@ gem "zlib", "~> 3.2", ">= 3.2.3", feature_category: :shared # rubocop:todo Gemfi
 
 # Gems required in omnibus-gitlab pipeline
 gem 'license_finder', '~> 7.0', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+
+# standard Gem, pin version to resolve vulnerabilities and match omnibus-gitlab
+gem "erb", "= 4.0.3.1", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/work_items/596593

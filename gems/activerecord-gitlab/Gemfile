@@ -8,4 +8,4 @@ source "https://rubygems.org"
 
 gemspec
 
-gem 'activerecord', '~> 7.2' # rubocop:disable Gemfile/MissingFeatureCategory
+gem 'activerecord', '~> 7.2.3' # rubocop:disable Gemfile/MissingFeatureCategory -- feature_category: :rails_platform is already specified in root Gemfile
