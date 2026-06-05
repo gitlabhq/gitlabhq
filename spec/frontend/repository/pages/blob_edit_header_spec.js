@@ -483,7 +483,14 @@ describe('BlobEditHeader', () => {
             file_path: 'test.js',
           });
 
-          await submitForm();
+          const formData = new FormData();
+          formData.append('commit_message', 'Test commit');
+          formData.append('branch_name', 'patch-1');
+          formData.append('original_branch', 'main');
+          formData.append('create_merge_request', '1');
+
+          findCommitChangesModal().vm.$emit('submit-form', formData);
+          await axios.waitForAll();
         });
 
         it('on submit, redirects to merge request creation', () => {
@@ -503,6 +510,47 @@ describe('BlobEditHeader', () => {
         });
       });
 
+      describe('when working on a fork and user deselects "Create a merge request for this change"', () => {
+        beforeEach(async () => {
+          createWrapper({
+            glFeatures: { blobEditRefactor: true },
+            provided: {
+              canPushToBranch: false,
+              targetProjectId: 456,
+              targetProjectPath: 'user/gitlab-fork',
+              nextForkBranchName: 'patch-1',
+            },
+          });
+
+          clickCommitChangesButton();
+          mock.onPut().replyOnce(HTTP_STATUS_OK, {
+            branch: 'patch-1',
+            file_path: 'test.js',
+          });
+
+          // NOT appending create_merge_request - simulates unchecked checkbox
+          await submitForm();
+        });
+
+        it('redirects to blob view with success message instead of MR form', () => {
+          expect(redirectUtils.redirectToBlobWithAlert).toHaveBeenCalledWith({
+            url: window.location.href,
+            resultingBranch: 'patch-1',
+            responseData: { branch: 'patch-1', file_path: 'test.js' },
+            formData: expect.objectContaining({
+              file_path: 'test.js',
+              file: content,
+              branch_name: 'patch-1',
+              original_branch: 'main',
+            }),
+            isNewBranch: true,
+            targetProjectPath: 'user/gitlab-fork',
+            successMessageFn: expect.any(Function),
+          });
+          expect(redirectUtils.redirectToForkMergeRequest).not.toHaveBeenCalled();
+        });
+      });
+
       describe('when renaming a file in fork', () => {
         beforeEach(async () => {
           createWrapper({
@@ -519,7 +567,14 @@ describe('BlobEditHeader', () => {
           clickCommitChangesButton();
           mock.onPost().replyOnce(HTTP_STATUS_OK, {});
 
-          await submitForm();
+          const formData = new FormData();
+          formData.append('commit_message', 'Test commit');
+          formData.append('branch_name', 'patch-1');
+          formData.append('original_branch', 'main');
+          formData.append('create_merge_request', '1');
+
+          findCommitChangesModal().vm.$emit('submit-form', formData);
+          await axios.waitForAll();
         });
 
         afterEach(() => {
