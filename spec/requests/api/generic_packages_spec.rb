@@ -136,12 +136,16 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         'PRIVATE' | :guest     | false | :invalid_user_basic_auth       | :unauthorized
         'PRIVATE' | :anonymous | false | :none                          | :unauthorized
         'PUBLIC'  | :developer | true  | :job_token                     | :success
+        'PUBLIC'  | :developer | true  | :job_basic_auth                | :success
         'PUBLIC'  | :developer | true  | :invalid_job_token             | :unauthorized
         'PUBLIC'  | :developer | false | :job_token                     | :forbidden
+        'PUBLIC'  | :developer | false | :job_basic_auth                | :forbidden
         'PUBLIC'  | :developer | false | :invalid_job_token             | :unauthorized
         'PRIVATE' | :developer | true  | :job_token                     | :success
+        'PRIVATE' | :developer | true  | :job_basic_auth                | :success
         'PRIVATE' | :developer | true  | :invalid_job_token             | :unauthorized
         'PRIVATE' | :developer | false | :job_token                     | :not_found
+        'PRIVATE' | :developer | false | :job_basic_auth                | :not_found
         'PRIVATE' | :developer | false | :invalid_job_token             | :unauthorized
       end
 
@@ -345,9 +349,11 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         'PRIVATE' | :anonymous | false | :none                          | :unauthorized
         'PUBLIC'  | :developer | true  | :invalid_job_token             | :unauthorized
         'PUBLIC'  | :developer | false | :job_token                     | :forbidden
+        'PUBLIC'  | :developer | false | :job_basic_auth                | :forbidden
         'PUBLIC'  | :developer | false | :invalid_job_token             | :unauthorized
         'PRIVATE' | :developer | true  | :invalid_job_token             | :unauthorized
         'PRIVATE' | :developer | false | :job_token                     | :not_found
+        'PRIVATE' | :developer | false | :job_basic_auth                | :not_found
         'PRIVATE' | :developer | false | :invalid_job_token             | :unauthorized
       end
 
@@ -594,6 +600,13 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       context 'when valid job token is used' do
         it_behaves_like 'creates a package and package file' do
           let(:auth_header) { job_token_header }
+          let(:should_set_build_info) { true }
+        end
+      end
+
+      context 'when valid job token via basic auth is used' do
+        it_behaves_like 'creates a package and package file' do
+          let(:auth_header) { job_basic_auth_header }
           let(:should_set_build_info) { true }
         end
       end
