@@ -10,16 +10,16 @@ module Gitlab
         class Caches < ::Gitlab::Config::Entry::ComposableArray
           include ::Gitlab::Config::Entry::Validatable
 
-          MULTIPLE_CACHE_LIMIT = 4
-
           validations do
             validate do
               unless config.is_a?(Hash) || config.is_a?(Array)
                 errors.add(:config, 'can only be a Hash or an Array')
               end
 
-              if config.is_a?(Array) && config.count > MULTIPLE_CACHE_LIMIT
-                errors.add(:config, "no more than #{MULTIPLE_CACHE_LIMIT} caches can be created")
+              limit = ::Gitlab::CurrentSettings.ci_max_caches_per_job
+
+              if config.is_a?(Array) && config.count > limit
+                errors.add(:config, "no more than #{limit} caches can be created")
               end
             end
           end

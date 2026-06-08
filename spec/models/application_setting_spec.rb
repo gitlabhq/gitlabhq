@@ -49,6 +49,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         can_create_organization: true,
         ci_delete_pipelines_in_seconds_limit: ChronicDuration.parse('1 year'),
         ci_job_live_trace_enabled: false,
+        ci_max_caches_per_job: 4,
         ci_max_includes: 150,
         ci_max_total_yaml_size_bytes: 314572800,
         code_suggestions_api_rate_limit: 60,
@@ -1033,6 +1034,12 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
     it 'validates deletion_adjourned_period' do
       is_expected.to validate_numericality_of(:deletion_adjourned_period)
         .is_greater_than(0).is_less_than_or_equal_to(90)
+    end
+
+    it 'validates ci_max_caches_per_job is a positive integer' do
+      is_expected.to validate_numericality_of(:ci_max_caches_per_job)
+        .only_integer
+        .is_greater_than(0)
     end
 
     it 'validates local_markdown_version is an integer between 0 and 65535' do
