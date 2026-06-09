@@ -1310,7 +1310,7 @@ GEM
       plist (~> 3.1)
       train-core
       wmi-lite (~> 1.0)
-    oj (3.16.16)
+    oj (3.17.3)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     oj-introspect (0.9.0)
@@ -2402,7 +2402,7 @@ DEPENDENCIES
   oauth2 (~> 2.0)
   octokit (~> 9.0)
   ohai (~> 19.1.16)
-  oj (~> 3.16.0, >= 3.16.16)
+  oj (~> 3.17.0)
   oj-introspect (~> 0.9)
   omniauth (~> 2.1.0)
   omniauth-alicloud (~> 3.0.0)
@@ -2974,7 +2974,7 @@ CHECKSUMS
   observer (0.1.2) sha256=d8a3107131ba661138d748e7be3dbafc0d82e732fffba9fccb3d7829880950ac
   octokit (9.2.0) sha256=4fa47ff35ce654127edf2c836ab9269bcc8829f5542dc1e86871f697ce7f4316
   ohai (19.1.24) sha256=a15f3fd2298321a494c536a7af0e97020d71e4034963d42598bd4f33eacd7758
-  oj (3.16.16) sha256=3635b36128991796434f55da8decc0de236a323535adcb36fc04e6d0253c013d
+  oj (3.17.3) sha256=ebe3967b0bb7ac4f206561d0d9ac8875b9973f778600d7b61b5c355662a707ed
   oj-introspect (0.9.0) sha256=b7af4974654e8733902bb7707ec96155c1c577d0ba2564eb1d72cd091546834f
   omniauth (2.1.4) sha256=42a05b0496f0d22e1dd85d42aaf602f064e36bb47a6826a27ab55e5ba608763c
   omniauth-alicloud (3.0.0) sha256=9c5c4f3abb40d774b946015f177d503fbde99b2b57c0858284c25cc39369013e
