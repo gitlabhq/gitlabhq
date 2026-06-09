@@ -80641,6 +80641,21 @@ msgstr ""
 msgid "UserMapping|The invitation could not be declined."
 msgstr ""
 
+msgid "UserMapping|The provided CSV file could not be processed."
+msgstr ""
+
+msgid "UserMapping|The provided CSV file exceeds the maximum number of columns (%{max_columns})."
+msgstr ""
+
+msgid "UserMapping|The provided CSV file exceeds the maximum number of rows (%{max_rows})."
+msgstr ""
+
+msgid "UserMapping|The provided CSV file exceeds the maximum size of %{max_size}."
+msgstr ""
+
+msgid "UserMapping|The provided CSV file has too many rows or columns to be processed."
+msgstr ""
+
 msgid "UserMapping|The provided CSV was not correctly formatted."
 msgstr ""
 

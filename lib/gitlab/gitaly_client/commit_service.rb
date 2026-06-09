@@ -34,7 +34,7 @@ module Gitlab
 
         response = gitaly_client_call(@repository.storage, :commit_service, :list_files, request, timeout: GitalyClient.medium_timeout)
         response.flat_map do |msg|
-          msg.paths.map { |d| EncodingHelper.encode!(d.dup) }
+          msg.paths.map { |d| EncodingHelper.encode_utf8_safe_path(d) }
         end
       end
 
@@ -295,8 +295,8 @@ module Gitlab
           msg.paths.map do |path|
             Gitlab::Git::ChangedPath.new(
               status: path.status,
-              path: EncodingHelper.encode!(path.path),
-              old_path: EncodingHelper.encode!(path.old_path),
+              path: EncodingHelper.encode_utf8_safe_path(path.path),
+              old_path: EncodingHelper.encode_utf8_safe_path(path.old_path),
               old_mode: path.old_mode.to_i.to_s(8),
               new_mode: path.new_mode.to_i.to_s(8),
               old_blob_id: path.old_blob_id,

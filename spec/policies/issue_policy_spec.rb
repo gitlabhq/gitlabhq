@@ -689,12 +689,12 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       let_it_be(:banned_user) { create(:user, :banned) }
       let_it_be(:hidden_issue) { create(:issue, project: project, author: banned_user) }
 
-      it 'does not allow non-admin user to read the issue' do
-        expect(permissions(user, hidden_issue)).not_to be_allowed(:read_issue)
+      it 'does not allow non-admin user to access or modify the issue' do
+        expect(permissions(user, hidden_issue)).not_to be_allowed(:read_issue, :update_issue, :admin_issue)
       end
 
-      it 'allows admin to read the issue', :enable_admin_mode do
-        expect(permissions(admin, hidden_issue)).to be_allowed(:read_issue)
+      it 'allows admin to access and modify the issue', :enable_admin_mode do
+        expect(permissions(admin, hidden_issue)).to be_allowed(:read_issue, :update_issue, :admin_issue)
       end
     end
 
