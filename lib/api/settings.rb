@@ -242,6 +242,7 @@ module API
       optional :concurrent_bitbucket_server_import_jobs_limit, type: Integer, desc: 'Bitbucket Server Importer maximum number of simultaneous import jobs'
       optional :allow_runner_registration_token, type: Boolean, desc: 'Allow registering runners using a registration token'
       optional :ci_max_includes, type: Integer, desc: 'Maximum number of includes per pipeline'
+      optional :ci_max_caches_per_job, type: Integer, desc: 'Maximum number of caches that can be defined in a single CI/CD job'
       optional :ci_job_live_trace_enabled, type: Boolean, desc: 'Turn on incremental logging for job logs.'
       optional :git_push_pipeline_limit, type: Integer, desc: 'Set the limit for pipelines and branches that can be triggered when creating a Git push. Set to 0 to disable the limit'
       optional :security_policy_global_group_approvers_enabled, type: Boolean, desc: 'Query scan result policy approval groups globally'

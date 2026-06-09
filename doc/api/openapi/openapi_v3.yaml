@@ -15956,7 +15956,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_a1ab34e8cb8e"
+              "$ref": "#/components/schemas/RequestBody_6d93c836f54a"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -77811,6 +77811,8 @@ components:
           type: string
         ci_max_includes:
           type: string
+        ci_max_caches_per_job:
+          type: string
         allow_account_deletion:
           type: string
         gitlab_shell_operation_limit:
@@ -90293,7 +90295,7 @@ components:
           nullable: true
       required:
       - avatar
-    RequestBody_a1ab34e8cb8e:
+    RequestBody_6d93c836f54a:
       type: object
       properties:
         admin_mode:
@@ -91094,6 +91096,11 @@ components:
         ci_max_includes:
           type: integer
           description: Maximum number of includes per pipeline
+          nullable: true
+        ci_max_caches_per_job:
+          type: integer
+          description: Maximum number of caches that can be defined in a single CI/CD
+            job
           nullable: true
         ci_job_live_trace_enabled:
           type: boolean

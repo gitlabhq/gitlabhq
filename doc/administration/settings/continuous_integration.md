@@ -261,6 +261,30 @@ To set the maximum number of included files per pipeline:
 1. Enter a value in the **Maximum includes** text box.
 1. Select **Save changes**.
 
+#### Maximum number of caches per job
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+Limit how many [`cache`](../../ci/yaml/_index.md#cache) entries a single CI/CD job can define.
+This limit caps the number of Gitaly calls a job can trigger during pipeline creation when caches use `cache:key:files`.
+
+By default, a job can define up to 4 caches.
+When a job exceeds this limit, the configuration fails to parse with an error.
+
+The value must be at least 1. Raising the limit above the default can impact pipeline creation performance.
+
+To change the maximum number of caches per job:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Enter a value in the **Maximum caches per job** text box.
+1. Select **Save changes**.
+
 #### Limit downstream pipeline trigger rate
 
 {{< history >}}

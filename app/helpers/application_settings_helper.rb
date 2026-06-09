@@ -643,6 +643,7 @@ module ApplicationSettingsHelper
       :gitlab_dedicated_instance,
       :gitlab_environment_toolkit_instance,
       :ci_max_includes,
+      :ci_max_caches_per_job,
       :allow_account_deletion,
       :gitlab_shell_operation_limit,
       :namespace_aggregation_schedule_lease_duration_in_seconds,

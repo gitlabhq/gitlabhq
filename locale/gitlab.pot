@@ -6388,6 +6388,9 @@ msgstr ""
 msgid "AdminSettings|Manage which integrations can be enabled on this instance."
 msgstr ""
 
+msgid "AdminSettings|Maximum caches per job"
+msgstr ""
+
 msgid "AdminSettings|Maximum downstream pipeline trigger rate"
 msgstr ""
 
@@ -6599,6 +6602,9 @@ msgid "AdminSettings|The host of your data collector instance."
 msgstr ""
 
 msgid "AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire."
+msgstr ""
+
+msgid "AdminSettings|The maximum number of caches that can be defined in a single CI/CD job. Default is 4. Higher values can impact pipeline creation performance."
 msgstr ""
 
 msgid "AdminSettings|The maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit)."
