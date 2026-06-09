@@ -16,6 +16,7 @@ class ApplicationSetting < ApplicationRecord
   ignore_column :namespace_deletion_settings, remove_with: '18.11', remove_after: '2026-03-17'
 
   INSTANCE_REVIEW_MIN_USERS = 50
+
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
 
@@ -543,7 +544,8 @@ class ApplicationSetting < ApplicationRecord
       ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }],
       ci_partitions_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 month') }],
       ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
-      git_push_pipeline_limit: [:integer, { default: 4 }]
+      git_push_pipeline_limit: [:integer, { default: 4 }],
+      ci_max_caches_per_job: [:integer, { default: 4 }]
     }
   end
 
@@ -561,6 +563,9 @@ class ApplicationSetting < ApplicationRecord
     }
   validates :ci_delete_pipelines_in_seconds_limit, presence: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 1.day }
+  validates :ci_max_caches_per_job,
+    numericality: { only_integer: true, greater_than: 0 },
+    presence: true
 
   validates :default_ci_config_path,
     format: { without: %r{(\.{2}|\A/)}, message: N_('cannot include leading slash or directory traversal.') },

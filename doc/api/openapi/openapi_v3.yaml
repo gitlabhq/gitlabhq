@@ -15805,7 +15805,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_9e45547f49c6"
+              "$ref": "#/components/schemas/RequestBody_97a94789c16b"
   "/api/v4/projects/{id}/issues/{eventable_id}/resource_state_events":
     get:
       operationId: getApiV4ProjectsIdIssuesEventableIdResourceStateEvents
@@ -70865,6 +70865,8 @@ components:
           type: string
         ci_max_includes:
           type: string
+        ci_max_caches_per_job:
+          type: string
         allow_account_deletion:
           type: string
         gitlab_shell_operation_limit:
@@ -87620,7 +87622,7 @@ components:
           nullable: true
       required:
       - avatar
-    RequestBody_9e45547f49c6:
+    RequestBody_97a94789c16b:
       type: object
       properties:
         admin_mode:
@@ -88421,6 +88423,11 @@ components:
         ci_max_includes:
           type: integer
           description: Maximum number of includes per pipeline
+          nullable: true
+        ci_max_caches_per_job:
+          type: integer
+          description: Maximum number of caches that can be defined in a single CI/CD
+            job
           nullable: true
         ci_job_live_trace_enabled:
           type: boolean

@@ -1,13 +1,17 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Caches do
+RSpec.describe Gitlab::Ci::Config::Entry::Caches, feature_category: :pipeline_composition do
   using RSpec::Parameterized::TableSyntax
 
   subject(:entry) { described_class.new(config) }
 
+  let(:max_caches_per_job) { 4 }
+
   before do
+    allow(Gitlab::CurrentSettings.current_application_settings)
+      .to receive(:ci_max_caches_per_job).and_return(max_caches_per_job)
     entry.compose!
   end
 
@@ -64,6 +68,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Caches do
       it 'is invalid' do
         expect(entry.errors).to eq(["caches config no more than 4 caches can be created"])
         expect(entry).not_to be_valid
+      end
+
+      context 'when an admin has raised ci_max_caches_per_job' do
+        let(:max_caches_per_job) { 5 }
+
+        it 'allows up to the configured limit' do
+          expect(entry).to be_valid
+        end
       end
     end
   end

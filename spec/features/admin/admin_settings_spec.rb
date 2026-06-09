@@ -595,6 +595,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           uncheck 'Enable pipeline suggestion banner'
           uncheck 'Show the migrate from Jenkins banner'
           fill_in 'application_setting_ci_max_includes', with: 200
+          fill_in 'application_setting_ci_max_caches_per_job', with: 8
           fill_in 'application_setting_downstream_pipeline_trigger_limit_per_project_user_sha', with: 500
           click_button 'Save changes'
         end
@@ -606,6 +607,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.suggest_pipeline_enabled).to be false
         expect(current_settings.show_migrate_from_jenkins_banner).to be false
         expect(current_settings.ci_max_includes).to be 200
+        expect(current_settings.ci_max_caches_per_job).to be 8
         expect(current_settings.downstream_pipeline_trigger_limit_per_project_user_sha).to be 500
       end
 

@@ -259,8 +259,7 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/cacheConfigBase"
-          },
-          "maxItems": 4
+          }
         }
       ]
     },

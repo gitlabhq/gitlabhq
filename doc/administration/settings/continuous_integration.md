@@ -261,6 +261,27 @@ To set the maximum number of included files per pipeline:
 1. Enter a value in the **Maximum includes** text box.
 1. Select **Save changes**.
 
+#### Set maximum caches per job
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421962) in GitLab 18.11.
+
+{{< /history >}}
+
+Limit how many [`cache`](../../ci/yaml/_index.md#cache) entries a single CI/CD job can define.
+This limit caps the number of Gitaly calls a job can trigger during pipeline creation when caches use `cache:key:files`.
+
+By default, a job can define up to 4 caches.
+When a job exceeds this limit, the configuration fails to parse with an error.
+
+The value must be at least 1. Higher values can impact pipeline creation performance.
+
+To set the maximum number of caches per job:
+
+1. Enter a value in the **Maximum caches per job** text box.
+1. Select **Save changes**.
+
 #### Limit downstream pipeline trigger rate
 
 {{< history >}}
