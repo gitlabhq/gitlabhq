@@ -590,13 +590,17 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     let_it_be(:merge_request) { create(:merge_request, source_project: project, author: author) }
 
     context 'for a regular user' do
-      it { expect_disallowed(:read_merge_request) }
+      it 'does not allow non-admin user to access or modify the MR' do
+        expect_disallowed(:read_merge_request, :update_merge_request, :approve_merge_request)
+      end
     end
 
     context 'for an admin user', :enable_admin_mode do
       let(:user) { admin }
 
-      it { expect_allowed(:read_merge_request) }
+      it 'allows admin to access and modify the MR' do
+        expect_allowed(:read_merge_request, :update_merge_request, :approve_merge_request)
+      end
     end
   end
 end

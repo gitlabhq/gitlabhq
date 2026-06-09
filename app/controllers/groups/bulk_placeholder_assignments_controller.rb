@@ -7,6 +7,7 @@ module Groups
     PERMITTED_FILE_EXTENSIONS = %w[csv].freeze
 
     before_action :authorize_owner_access!
+    before_action -> { check_rate_limit!(:placeholder_reassignment, scope: current_user) }, only: :create
 
     feature_category :importers
 
@@ -72,7 +73,7 @@ module Groups
     end
 
     def maximum_size
-      Gitlab::CurrentSettings.max_attachment_size.megabytes
+      ::Import::UserMapping::ReassignmentCsvValidator::MAX_CSV_SIZE
     end
 
     def render_unprocessable_entity(message)

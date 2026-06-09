@@ -98,6 +98,29 @@ RSpec.describe Gitlab::EncodingHelper, feature_category: :shared do
     end
   end
 
+  describe '#encode_utf8_safe_path' do
+    it 'returns valid UTF-8 for normal paths' do
+      expect(ext_class.encode_utf8_safe_path('.gitmodules')).to eq('.gitmodules')
+    end
+
+    it 'replaces invalid UTF-8 bytes' do
+      expect(ext_class.encode_utf8_safe_path("\x80\x90\xA0")).to eq("���")
+      expect(ext_class.encode_utf8_safe_path("\x80\x90\xA0").encoding).to eq(Encoding::UTF_8)
+    end
+
+    it 'preserves valid multibyte UTF-8' do
+      expect(ext_class.encode_utf8_safe_path("テスト")).to eq("テスト")
+    end
+
+    it 'returns empty string for nil' do
+      expect(ext_class.encode_utf8_safe_path(nil)).to eq('')
+    end
+
+    it 'returns empty string for non-string inputs' do
+      expect(ext_class.encode_utf8_safe_path(123)).to eq('')
+    end
+  end
+
   describe '#encode_utf8_with_escaping!' do
     where(:input, :expected) do
       "abcd" | "abcd"
