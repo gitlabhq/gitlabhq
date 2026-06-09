@@ -1103,6 +1103,61 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           expect_sender(first_note.author)
         end
 
+        context 'when note was created by an external participant' do
+          let_it_be(:external_author) { 'external@example.com' }
+          # Use new project to avoid flakiness because we change the global project
+          let_it_be(:external_participant_project) { create(:project) }
+          let_it_be(:external_participant_issue) do
+            create(:issue, project: external_participant_project, external_author: 'service.desk@example.com')
+          end
+
+          let_it_be(:external_participant_email_participant) do
+            create(:issue_email_participant, issue: external_participant_issue, email: 'service.desk@example.com')
+          end
+
+          let_it_be(:external_participant_note) do
+            create(
+              :discussion_note_on_issue,
+              noteable: external_participant_issue,
+              project: external_participant_project,
+              note: 'Hello world',
+              author: support_bot
+            )
+          end
+
+          let_it_be(:external_participant_note_metadata) do
+            create(:note_metadata, note: external_participant_note, email_participant: external_author)
+          end
+
+          subject(:email) do
+            described_class.service_desk_new_note_email(
+              external_participant_issue.id,
+              external_participant_note.id,
+              external_participant_email_participant
+            )
+          end
+
+          context 'when service desk outgoing name is set' do
+            let_it_be(:external_participant_settings) do
+              create(:service_desk_setting, project: external_participant_project, outgoing_name: 'Acme Support')
+            end
+
+            it 'uses "<external_author> via <outgoing_name>" in "from" header display name' do
+              sender = email.header[:from].addrs[0]
+              expect(sender.display_name).to eq('external@example.com via Acme Support')
+              expect(sender.address).to eq(gitlab_sender)
+            end
+          end
+
+          context 'when service desk outgoing name is blank' do
+            it 'falls back to the note author name in the via suffix' do
+              sender = email.header[:from].addrs[0]
+              expect(sender.display_name).to eq("external@example.com via #{support_bot.name}")
+              expect(sender.address).to eq(gitlab_sender)
+            end
+          end
+        end
+
         it 'has the correct subject and body' do
           aggregate_failures do
             is_expected.to have_referable_subject(issue, include_project: false, reply: true)

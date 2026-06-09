@@ -48,6 +48,7 @@ module Emails
       email_sender = sender(
         @note.author_id,
         send_from_user_email: false,
+        sender_name: service_desk_new_note_sender_name,
         sender_email: service_desk_sender_email_address
       )
 
@@ -188,6 +189,16 @@ module Emails
       @service_desk_setting.custom_email
     end
 
+    def service_desk_new_note_sender_name
+      external_author = @note.note_metadata&.external_author
+      return if external_author.blank?
+
+      format(s_('Notify|%{external_author} via %{outgoing_name}'),
+        external_author: external_author,
+        outgoing_name: @service_desk_setting&.outgoing_name.presence || @note.author.name
+      )
+    end
+
     def template_content(email_type)
       template = Gitlab::Template::ServiceDeskTemplate.find(email_type, @project)
       text = substitute_template_replacements(template.content)
@@ -202,16 +213,21 @@ module Emails
     end
 
     def substitute_template_replacements(template_body)
-      template_body
-        .gsub(/%\{\s*ISSUE_ID\s*\}/, work_item_id)
-        .gsub(/%\{\s*ISSUE_PATH\s*\}/, work_item_path)
-        .gsub(/%\{\s*NOTE_TEXT\s*\}/, note_text)
-        .gsub(/%\{\s*ISSUE_DESCRIPTION\s*\}/, work_item_description)
-        .gsub(/%\{\s*SYSTEM_HEADER\s*\}/, text_header_message.to_s)
-        .gsub(/%\{\s*SYSTEM_FOOTER\s*\}/, text_footer_message.to_s)
-        .gsub(/%\{\s*UNSUBSCRIBE_URL\s*\}/, unsubscribe_sent_notification_url(@sent_notification))
-        .gsub(/%\{\s*ADDITIONAL_TEXT\s*\}/, service_desk_email_additional_text.to_s)
-        .gsub(/%\{\s*ISSUE_URL\s*\}/, full_work_item_url)
+      replacements = {
+        'ISSUE_ID' => work_item_id,
+        'ISSUE_PATH' => work_item_path,
+        'NOTE_TEXT' => note_text,
+        'ISSUE_DESCRIPTION' => work_item_description,
+        'SYSTEM_HEADER' => text_header_message.to_s,
+        'SYSTEM_FOOTER' => text_footer_message.to_s,
+        'UNSUBSCRIBE_URL' => unsubscribe_sent_notification_url(@sent_notification),
+        'ADDITIONAL_TEXT' => service_desk_email_additional_text.to_s,
+        'ISSUE_URL' => full_work_item_url
+      }
+
+      template_body.gsub(/%\{\s*(\w+)\s*\}/) do |match|
+        replacements.fetch(::Regexp.last_match(1), match)
+      end
     end
 
     def full_work_item_url

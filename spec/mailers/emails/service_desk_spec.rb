@@ -410,6 +410,28 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
         it_behaves_like 'a service desk notification email with template content'
       end
+
+      context 'when note text contains placeholder syntax for another template variable' do
+        let_it_be(:placeholder_in_note) { '%{UNSUBSCRIBE_URL}' }
+        let_it_be(:note) { create(:note_on_issue, noteable: item, project: project, note: placeholder_in_note) }
+        let(:template_content) { 'reply: %{NOTE_TEXT}' }
+
+        subject(:email) { ServiceEmailClass.service_desk_new_note_email(item_id, note.id, email_participant) }
+
+        before do
+          allow(Gitlab::Template::ServiceDeskTemplate).to receive(:find)
+            .with(template_key, item.project)
+            .and_return(template)
+        end
+
+        it 'renders the note text literally without resolving nested placeholders', :aggregate_failures do
+          rendered_html = email.html_part.body.to_s
+          rendered_unsubscribe_url = unsubscribe_sent_notification_url(SentNotification.last)
+
+          expect(rendered_html).to include(placeholder_in_note)
+          expect(rendered_html).not_to include(rendered_unsubscribe_url)
+        end
+      end
     end
 
     # handle email without and with template in this context to reduce code duplication

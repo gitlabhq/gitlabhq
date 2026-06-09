@@ -299,6 +299,18 @@ module Emails
       email_with_layout(to: @user.notification_email_or_default, subject: subject(_("New email address added")))
     end
 
+    def saml_extern_uid_changed_email(user, group_name)
+      return unless user
+
+      @user = user
+      @group_name = group_name
+
+      email_with_layout(
+        to: @user.notification_email_or_default,
+        subject: subject(_("SAML authentication identifier changed"))
+      )
+    end
+
     def new_achievement_email(user, achievement, user_achievement)
       return unless user&.active?
 

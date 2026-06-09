@@ -330,7 +330,10 @@ module Gitlab
 
       def json_request?(request)
         # Ensure we get synonyms registered in config/initializers/mime_types
-        Mime[:json] == request.media_type
+        return true if Mime[:json] == request.media_type
+
+        # Catches API requests with no-content type and request bodies
+        request.media_type.blank? && request.path.delete_prefix(relative_url).start_with?('/api/')
       end
 
       # JSON Validation using Oj streaming

@@ -1,0 +1,3 @@
+- name = sanitize_name(@user.name)
+- group_name = html_escape(@group_name)
+= (s_("Notify|%{p_start}Hi %{name}!%{p_end}%{p_start}The SAML authentication identifier (extern_uid) linked to your account was changed by an owner of the %{group_name} group.%{p_end}%{p_start}As a security measure, you must sign in with your GitLab credentials and re-link your SAML identity before you can use SAML single sign-on again.%{p_end}%{p_start}If you did not expect this change, contact your group owner or a GitLab administrator immediately.%{p_end}") % { p_start: '<p>'.html_safe, p_end: '</p>'.html_safe, name: name, group_name: content_tag(:strong, group_name) }).html_safe
