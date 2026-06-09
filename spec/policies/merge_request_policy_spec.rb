@@ -622,15 +622,21 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     let_it_be(:user) { create(:user) }
     let_it_be(:admin) { create(:user, :admin) }
     let_it_be(:author) { create(:user, :banned) }
-    let_it_be(:project) { create(:project, :public) }
-    let_it_be(:hidden_merge_request) { create(:merge_request, source_project: project, author: author) }
-
-    it 'does not allow non-admin user to read the merge_request' do
-      expect(permissions(user, hidden_merge_request)).not_to be_allowed(:read_merge_request)
+    let_it_be(:project)  do
+      create(:project, :public).tap do |project|
+        project.add_maintainer(admin)
+        project.add_maintainer(user)
+      end
     end
 
-    it 'allows admin to read the merge_request', :enable_admin_mode do
-      expect(permissions(admin, hidden_merge_request)).to be_allowed(:read_merge_request)
+    let_it_be(:hidden_merge_request) { create(:merge_request, source_project: project, author: author) }
+
+    it 'does not allow non-admin user to access or modify the MR' do
+      expect(permissions(user, hidden_merge_request)).not_to be_allowed(:read_merge_request, :update_merge_request, :approve_merge_request)
+    end
+
+    it 'allows admin to access and modify the MR', :enable_admin_mode do
+      expect(permissions(admin, hidden_merge_request)).to be_allowed(:read_merge_request, :update_merge_request, :approve_merge_request)
     end
   end
 end
