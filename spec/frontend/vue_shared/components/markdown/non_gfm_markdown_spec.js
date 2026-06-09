@@ -37,6 +37,28 @@ describe('NonGitlabMarkdown', () => {
     expect(findImageTags()).toHaveLength(0);
   });
 
+  it('should strip style attributes from rendered HTML', () => {
+    const markdownWithStyle =
+      '<p style="color: red; background: url(javascript:alert(1))">styled text</p>';
+    createComponent({ propsData: { markdown: markdownWithStyle } });
+
+    const markdownBlock = findMarkdownBlock();
+    expect(markdownBlock.exists()).toBe(true);
+    expect(markdownBlock.find('[style]').exists()).toBe(false);
+    expect(markdownBlock.text()).toContain('styled text');
+  });
+
+  it('should strip class attributes from rendered HTML', () => {
+    const markdownWithClass = '<p class="gl-text-red-50">styled text with class</p>';
+    createComponent({ propsData: { markdown: markdownWithClass } });
+
+    const markdownBlock = findMarkdownBlock();
+    const element = markdownBlock.find('p');
+    expect(markdownBlock.exists()).toBe(true);
+    expect(element.find('[class]').exists()).toBe(false);
+    expect(element.text()).toBe('styled text with class');
+  });
+
   describe('rendering markdown without code snippet', () => {
     beforeEach(() => {
       createComponent({ propsData: { markdown: nonCodeContent } });

@@ -58,11 +58,14 @@ describe('text_utility', () => {
   });
 
   describe('strictMarkdownConfig', () => {
-    it('does not allow images', () => {
-      expect(strictMarkdownConfig).toEqual({
-        ...markdownConfig,
-        ALLOWED_TAGS: expect.not.arrayContaining(['img']),
-      });
+    it('does not allow the img tag', () => {
+      expect(markdownConfig.ALLOWED_TAGS).toContain('img');
+      expect(strictMarkdownConfig.ALLOWED_TAGS).not.toContain('img');
+    });
+
+    it.each(['style', 'class'])('does not allow the %s attribute', (attr) => {
+      expect(markdownConfig.ALLOWED_ATTR).toContain(attr);
+      expect(strictMarkdownConfig.ALLOWED_ATTR).not.toContain(attr);
     });
   });
 
