@@ -51,7 +51,7 @@ module Todos
           .for_target(issues)
           .merge(Issue.confidential_only)
           .where('todos.user_id != issues.author_id')
-          .where('todos.user_id != issue_assignees.user_id')
+          .where('issue_assignees.user_id IS NULL OR todos.user_id != issue_assignees.user_id')
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

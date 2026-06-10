@@ -80,7 +80,9 @@ RSpec.describe API::GroupPlaceholderReassignments, feature_category: :importers 
     it 'verifies file size limit' do
       expect(::Import::PlaceholderReassignmentsUploader)
         .to receive(:workhorse_authorize)
-        .with(a_hash_including(maximum_size: Gitlab::CurrentSettings.max_attachment_size.megabytes))
+        .with(a_hash_including(
+          maximum_size: ::Import::UserMapping::ReassignmentCsvValidator::MAX_CSV_SIZE
+        ))
         .and_call_original
 
       make_request
@@ -136,6 +138,20 @@ RSpec.describe API::GroupPlaceholderReassignments, feature_category: :importers 
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response['message']).to eq(s_('UserMapping|You must upload a CSV file with a .csv file extension.'))
+      end
+    end
+
+    context 'when the user has exceeded the rate limit' do
+      before do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+      end
+
+      it 'returns 429 without processing the upload' do
+        expect(::Import::SourceUsers::BulkReassignFromCsvService).not_to receive(:new)
+
+        make_request
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
 

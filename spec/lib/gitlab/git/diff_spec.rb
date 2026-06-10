@@ -197,10 +197,39 @@ DIFF
 
         let(:diff) { described_class.new(gitaly_diff) }
 
-        it 'is flagged with encoded_file_path' do
-          expect(diff.old_path).to eq(".gitmodules")
-          expect(diff.new_path).to eq(".gitmodules")
+        it 'replaces invalid bytes and flags encoded_file_path' do
+          expect(diff.old_path).to eq("�.gitmodules")
+          expect(diff.new_path).to eq("�.gitmodules")
+          expect(diff.old_path.encoding).to eq(Encoding::UTF_8)
+          expect(diff.new_path.encoding).to eq(Encoding::UTF_8)
           expect(diff.encoded_file_path).to be(true)
+        end
+      end
+
+      context 'when the file path is a pure binary filename' do
+        let(:gitaly_diff) do
+          Gitlab::GitalyClient::Diff.new(
+            from_path: "\x80\x90\xA0",
+            to_path: "\x80\x90\xA0",
+            old_mode: 0100644,
+            new_mode: 0100644,
+            from_id: '0792c58905eff3432b721f8c4a64363d8e28d9ae',
+            to_id: 'efd587ccb47caf5f31fc954edb21f0a713d9ecc3'
+          )
+        end
+
+        let(:diff) { described_class.new(gitaly_diff) }
+
+        it 'produces valid UTF-8 paths and flags encoded_file_path' do
+          expect(diff.old_path.encoding).to eq(Encoding::UTF_8)
+          expect(diff.new_path.encoding).to eq(Encoding::UTF_8)
+          expect(diff.old_path).to be_valid_encoding
+          expect(diff.new_path).to be_valid_encoding
+          expect(diff.encoded_file_path).to be(true)
+        end
+
+        it 'does not break JSON serialization' do
+          expect { Oj.dump(diff.to_hash) }.not_to raise_error
         end
       end
 

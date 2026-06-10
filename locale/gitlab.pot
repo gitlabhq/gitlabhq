@@ -48238,6 +48238,9 @@ msgstr ""
 msgid "Notify|%{committed_by_start} by %{author_name} %{committed_by_end} %{committed_at_start} at %{committed_date} %{committed_at_end}"
 msgstr ""
 
+msgid "Notify|%{external_author} via %{outgoing_name}"
+msgstr ""
+
 msgid "Notify|%{invite_email}, now known as %{user_name}, has accepted your invitation to join the %{target_name} %{target_model_name}."
 msgstr ""
 
@@ -48254,6 +48257,9 @@ msgid "Notify|%{mr_highlight}Merge request%{highlight_end} %{mr_link} %{reviewer
 msgstr ""
 
 msgid "Notify|%{mr_highlight}Merge request%{highlight_end} %{mr_link} %{reviewer_highlight}was unapproved by%{highlight_end} %{reviewer_avatar} %{reviewer_link}"
+msgstr ""
+
+msgid "Notify|%{p_start}Hi %{name}!%{p_end}%{p_start}The SAML authentication identifier (extern_uid) linked to your account was changed by an owner of the %{group_name} group.%{p_end}%{p_start}As a security measure, you must sign in with your GitLab credentials and re-link your SAML identity before you can use SAML single sign-on again.%{p_end}%{p_start}If you did not expect this change, contact your group owner or a GitLab administrator immediately.%{p_end}"
 msgstr ""
 
 msgid "Notify|%{p_start}To update the remote url in your local repository run (for ssh):%{p_end} %{ssh_url_to_repo} %{p_start}or for http(s):%{p_end} %{http_url_to_repo}"
@@ -62459,6 +62465,9 @@ msgid "SAML"
 msgstr ""
 
 msgid "SAML SSO"
+msgstr ""
+
+msgid "SAML authentication identifier changed"
 msgstr ""
 
 msgid "SAML discovery tokens"
@@ -80639,6 +80648,21 @@ msgid "UserMapping|The invitation could not be accepted."
 msgstr ""
 
 msgid "UserMapping|The invitation could not be declined."
+msgstr ""
+
+msgid "UserMapping|The provided CSV file could not be processed."
+msgstr ""
+
+msgid "UserMapping|The provided CSV file exceeds the maximum number of columns (%{max_columns})."
+msgstr ""
+
+msgid "UserMapping|The provided CSV file exceeds the maximum number of rows (%{max_rows})."
+msgstr ""
+
+msgid "UserMapping|The provided CSV file exceeds the maximum size of %{max_size}."
+msgstr ""
+
+msgid "UserMapping|The provided CSV file has too many rows or columns to be processed."
 msgstr ""
 
 msgid "UserMapping|The provided CSV was not correctly formatted."

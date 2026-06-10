@@ -881,6 +881,40 @@ class ProjectPolicy < BasePolicy
     prevent :read_compliance_framework
     prevent :read_vulnerability
     prevent :update_vulnerability_flag
+    prevent :read_security_configuration
+    prevent :read_security_settings
+    prevent :update_security_setting
+    prevent :read_project_security_dashboard
+    prevent :read_security_resource
+    prevent :read_security_inventory
+    prevent :admin_security_attributes
+    prevent :read_security_orchestration_policies
+    prevent :modify_security_policy
+    prevent :read_compliance_dashboard
+    prevent :read_compliance_adherence_report
+    prevent :read_compliance_violations_report
+    prevent :read_project_security_exclusions
+    prevent :manage_project_security_exclusions
+    prevent :read_security_scan_profiles
+    prevent :apply_security_scan_profiles
+    prevent :read_secret_push_protection_info
+    prevent :enable_secret_push_protection
+    prevent :enable_container_scanning_for_registry
+    prevent :update_cvs_for_container_scanning
+    prevent :update_cvs_for_dependency_scanning
+    prevent :read_on_demand_dast_scan
+    prevent :create_on_demand_dast_scan
+    prevent :edit_on_demand_dast_scan
+    prevent :update_on_demand_dast_scan
+    prevent :_create_dast_pipeline
+    prevent :_run_dast_pipeline
+    prevent :admin_vulnerability_external_issue_link
+    prevent :admin_vulnerability_issue_link
+    prevent :create_vulnerability_export
+    prevent :create_vulnerability_archive_export
+    prevent :read_security_project_tracked_ref
+    prevent :read_audit_event
+    prevent :read_any_audit_event
   end
 
   rule { ~admin & ~organization_owner & ~project_runner_registration_allowed }.policy do
