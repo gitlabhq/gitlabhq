@@ -42,6 +42,28 @@ RSpec.describe Todos::Destroy::ConfidentialIssueService, feature_category: :team
           expect { subject }.not_to change { Todo.count }
         end
       end
+
+      # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/592295:
+      # the cleanup query joined issue_assignees and filtered with
+      # `todos.user_id != issue_assignees.user_id`. When the issue has no
+      # assignee, the LEFT JOIN produces a NULL user_id and the inequality
+      # evaluates to NULL (SQL unknown), so the stale todo was never deleted.
+      context 'when confidential issue has no assignee' do
+        let(:issue_without_assignee) do
+          create(:issue, :confidential, project: project, author: author, assignees: [])
+        end
+
+        subject { described_class.new(issue_id: issue_without_assignee.id).execute }
+
+        it 'removes todos for users who can no longer access the issue' do
+          create(:todo, user: guest, target: issue_without_assignee, project: project)
+          create(:todo, user: user, target: issue_without_assignee, project: project)
+          create(:todo, user: project_member, target: issue_without_assignee, project: project)
+          create(:todo, user: author, target: issue_without_assignee, project: project)
+
+          expect { subject }.to change { Todo.where(target: issue_without_assignee).count }.from(4).to(2)
+        end
+      end
     end
 
     context 'when project_id parameter is present' do
@@ -62,7 +84,7 @@ RSpec.describe Todos::Destroy::ConfidentialIssueService, feature_category: :team
         create(:todo, user: user, target: issue_1, project: project)
         create(:todo, user: guest, target: issue_2, project: project)
 
-        expect { subject }.to change { Todo.count }.from(14).to(10)
+        expect { subject }.to change { Todo.count }.from(14).to(9)
       end
     end
   end

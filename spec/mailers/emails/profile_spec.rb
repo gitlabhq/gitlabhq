@@ -886,6 +886,33 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
   end
 
+  describe 'SAML extern_uid changed' do
+    let_it_be(:user) { create(:user) }
+    let(:group_name) { 'My Group' }
+
+    subject { Notify.saml_extern_uid_changed_email(user, group_name) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+
+    it 'is sent to the user' do
+      is_expected.to deliver_to user.email
+    end
+
+    it 'has the correct subject' do
+      is_expected.to have_subject(/SAML authentication identifier changed/i)
+    end
+
+    it 'includes the group name' do
+      is_expected.to have_body_text(/My Group/)
+    end
+
+    it 'includes the re-link instruction' do
+      is_expected.to have_body_text(/sign in with your GitLab credentials/)
+    end
+  end
+
   describe 'awarded a new achievement' do
     let(:user) { build(:user) }
     let(:achievement) { build(:achievement) }

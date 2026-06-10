@@ -99,6 +99,8 @@ class IssuePolicy < IssuablePolicy
 
   rule { hidden & ~admin }.policy do
     prevent :read_issue
+    prevent :update_issue
+    prevent :admin_issue
   end
 
   rule { can?(:read_issue) & notes_widget_enabled }.policy do

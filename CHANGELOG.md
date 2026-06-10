@@ -2,6 +2,31 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.11.5 (2026-06-10)
+
+### Fixed (6 changes)
+
+- [Make CI cache limit per job configurable by admins](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4bca974d217af37d624ea0f0a2dc39d2953f8558)
+- [Show ultimate_only agents when paid license is present](https://gitlab.com/gitlab-org/security/gitlab/-/commit/09c42f02794ac9184be66d44e2d9c300f65ac9df) **GitLab Enterprise Edition**
+- [Add fat manifest types to container registry Accept](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e0200d30eec02d958cc6b5ecaafde5cab7165634)
+- [Fix MCP tools checkbox visibility for Premium groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7276f828549b4fa27679661c0c199928a9169801) **GitLab Enterprise Edition**
+- [Ensure uploads.id has the correct default](https://gitlab.com/gitlab-org/security/gitlab/-/commit/14294e4b2668d038f09e529211169ea81c4fcf40)
+- [Patching deployment bigint swap for missing index](https://gitlab.com/gitlab-org/security/gitlab/-/commit/872c91723d7f88a1dab3ac944ee69e25db7374ed)
+
+### Security (11 changes)
+
+- [[Backport for 18-11] Validate JSON body with no content-type](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8a82483b1e29b365cb4785090d9194e078a1ff66) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6246))
+- [Don't render dashboard panels when the schema fails validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/93ba14ce937dfe9601b666e07a0f28c581c79551) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6243))
+- [Fix Service Desk template placeholder re-entrance, from header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4babc73b49bc2c1be6c4098a06750056e5c4bbce) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6237))
+- [Disallow style attribute in non_gfm_markdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9a88327f56ad1a82dc7451c724b47195a7100513) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6241))
+- [18.11 Backport: Fix SAML identity takeover via trusted_extern_uid](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fbc94d9af1d767940838cd34d5ff854aaac985c6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6211))
+- [Security fix privilages escalation when sec module disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e6abc15d8c3f8d444555721d1e82ffa49dd92786) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6205))
+- [Use encode_utf8_no_detect for diff file paths to handle binary filenames](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d387dc575039fe0c5a072cbdf0659f4315270b81) by @garyh ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6179))
+- [Limit resource usage when parsing placeholder reassignment CSVs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2c6d0e7260da3f3892c400c5b24c8f45a8204be5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6218))
+- [Prevent non admins from accessing banned user mrs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1a8e0f7b716e62ceff643c29d68413e0d8feadc5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6165))
+- [HTML injection in audit events can lead to ATO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a34f75870d96ec5d5b7d455ad62f860191e7ce57) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6187))
+- [Delete confidential-issue todos when issue has no assignee](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6f0c1ac3dd2e8fa4c1ff88c26de2da80cfa68f5b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6198))
+
 ## 18.11.4 (2026-05-26)
 
 ### Fixed (4 changes)

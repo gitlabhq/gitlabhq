@@ -59,6 +59,12 @@ module Gitlab
       detect && detect[:type] == :binary
     end
 
+    def encode_utf8_safe_path(path)
+      return '' unless path.respond_to?(:force_encoding)
+
+      encode_utf8_no_detect(path.dup)
+    end
+
     # This is like encode_utf8 except we skip autodetection of the encoding. We
     # assume the data must be interpreted as UTF-8.
     def encode_utf8_no_detect(message)
