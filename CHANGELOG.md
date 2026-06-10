@@ -2,6 +2,39 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.0.2 (2026-06-10)
+
+### Fixed (10 changes)
+
+- [Make CI cache limit per job configurable by admins](https://gitlab.com/gitlab-org/security/gitlab/-/commit/37572a08f791a41b56e5b016177971e8469205a4)
+- [Bypass admin_project_member for composite identity SAs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5a49e804ee3f1af86f5527b8cde10318b5d9f2bb) **GitLab Enterprise Edition**
+- [Allow job token basic auth for generic package upload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a5aec1cd1704a3b94d29153890860467e4e770d8)
+- [Add fat manifest types to container registry Accept](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ed2c63f39c4de13a113d526c0c0b885712394940)
+- [fix: Move SANDBOX_SYSTEM_DIR to /var/tmp for non-root compatibility](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2f3bf24ca88d9d377a1b7009c490a2c3c2a2f358) **GitLab Enterprise Edition**
+- [Fix MCP tools checkbox visibility for Premium groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6237908812aea4c2d0c1eabf3b08c8e87e1d4451) **GitLab Enterprise Edition**
+- [Fix Code Review custom instructions API permissions checks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5c0a2476216bc76995470cf960f13e5d579cd96c) **GitLab Enterprise Edition**
+- [Do not show Duo template project selector on subgroups settings page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e052d0f406b723b3cf5d0b69c506b76dee44ccf2) **GitLab Enterprise Edition**
+- [Ensure uploads.id has the correct default](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d8f4d577c7cdfe6ed15a5eecdc6eb10b1e0a8252)
+- [Patching deployment bigint swap for missing index](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1d1cb4b8f5418d65063560459565ca761b4cdb5e)
+
+### Changed (1 change)
+
+- [Remove Beta badge from MR title template setting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6b9bfa58727b12f0d3ecdbbbe01e8aa1e1945ceb)
+
+### Security (11 changes)
+
+- [[Backport for 19-0]Validate JSON body with no content-type](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1c5d5435ee79c6310ed63b4cc36c26b4138e61e5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6245))
+- [Don't render dashboard panels when the schema fails validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/344b62921551e357741f3db9fae383ca19c171c8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6238))
+- [Fix Service Desk template placeholder re-entrance, from header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0220c0404c74d543abcdc2b7c2f7db4d0ef6d843) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6236))
+- [Disallow style attribute in non_gfm_markdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7c4cb8d41f65a9ee2f9fab34a144f1842194a1b6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6240))
+- [19.0 Backport: Fix SAML identity takeover via trusted_extern_uid](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5f597cb616b66b2abd8bbb71bd59e8c31e5751d3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6210))
+- [Gate security/compliance abilities behind project feature toggle - 19-0-stable-ee](https://gitlab.com/gitlab-org/security/gitlab/-/commit/21620667bd74d719ed4af99499d6e32e9135f733) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6204))
+- [Use encode_utf8_no_detect for diff file paths to handle binary filenames](https://gitlab.com/gitlab-org/security/gitlab/-/commit/054f8cabee1051a83770b287983aa44a797a860a) by @garyh ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6190))
+- [Limit resource usage when parsing placeholder reassignment CSVs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/03395e3f69e289b2ec352748baec0ee4f14fc25b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6217))
+- [Prevent non admins from accessing banned user mrs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2ffed8e8ff84728fcfd40c361aa7e4fbd468889f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6196))
+- [HTML injection in audit events can lead to ATO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9d25ff8de6bb340f56192fbf7a4950361583a3ef) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6186))
+- [Delete confidential-issue todos when issue has no assignee](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ffdcb4e761b65ef3234cb6650e288663862682b5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6197))
+
 ## 19.0.1 (2026-05-26)
 
 ### Security (7 changes)
