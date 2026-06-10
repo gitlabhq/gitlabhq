@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.10.8 (2026-06-10)
+
+### Fixed (4 changes)
+
+- [Make CI cache limit per job configurable by admins](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a02a71fd284441bb19cb4f3d549cde0d5f26b56c)
+- [Allow job token basic auth for generic package upload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/53c891252f43ae91c35d852185b407d029559fce)
+- [Fix MCP tools checkbox visibility for Premium groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/98770fdee0851af0a8bc25641a6ace888949991c) **GitLab Enterprise Edition**
+- [Add fat manifest types to container registry Accept](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7b50b79363327ca9f08e599c49ebbe5ccba7fae0)
+
+### Security (11 changes)
+
+- [[Backport for 18-10] Validate JSON body with no content-type](https://gitlab.com/gitlab-org/security/gitlab/-/commit/00f309dcd6c00f979077bc8402c2e6a3e3039305) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6247))
+- [Don't render dashboard panels when the schema fails validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e333e86a350aeb158ee0f48eb72e04556eb85aea) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6244))
+- [Fix Service Desk template placeholder re-entrance, from header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4a59e3128e173742089210b63b4e24b9c9975f7d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6239))
+- [Disallow style attribute in non_gfm_markdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f7dc4418a1f55b5bdba7e745592dcc79dd507450) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6242))
+- [18.10 Backport: Fix SAML identity takeover via trusted_extern_uid](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2d0de02ef3fa05ce4a76439e3645c26eaffc35d0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6212))
+- [Gate security/compliance abilities behind project feature toggle](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e09677d67a50571c6be5c4f9e38d949a346888be) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6215))
+- [Use encode_utf8_no_detect for diff file paths to handle binary filenames](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8c7a55f42d10b01007ebff1f2fa384daf5cbd497) by @garyh ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6180))
+- [Limit resource usage when parsing placeholder reassignment CSVs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3615da8bbaec9f0bb185083135f31b5612896176) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6219))
+- [Prevent non admins from accessing banned user mrs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aaf83a5cfccb4dd569aacc7877cfa0d9e53daa81) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6166))
+- [HTML injection in audit events can lead to ATO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/56098da5e193c0994cd9038c8bab017ec50feb8c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6189))
+- [Delete confidential-issue todos when issue has no assignee](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8c51856c97f13b125d56b9c92031583a377fe705) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6199))
+
 ## 18.10.7 (2026-05-26)
 
 ### Fixed (2 changes)
