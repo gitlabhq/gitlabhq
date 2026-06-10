@@ -39,7 +39,7 @@ module API
             tags %w[packages]
           end
 
-          route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
+          route_setting :authentication, job_token_allowed: %i[request basic_auth], basic_auth_personal_access_token: true, deploy_token_allowed: true
           route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization,
             job_token_policies: :admin_packages
 
@@ -83,7 +83,7 @@ module API
             optional :select, type: String, desc: 'Response format selector. If set to "package_file", returns the created package file object in the response', values: %w[package_file]
           end
 
-          route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
+          route_setting :authentication, job_token_allowed: %i[request basic_auth], basic_auth_personal_access_token: true, deploy_token_allowed: true
           route_setting :authorization, permissions: :upload_generic_package, boundary_type: :project,
             job_token_policies: :admin_packages
 
