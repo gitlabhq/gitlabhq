@@ -57,8 +57,14 @@ class Gitlab::Ci::Build::AutoRetry
   end
 
   def retry_on_reason_or_always?
-    options_retry_when.include?(failure_reason.to_s) ||
+    expanded_retry_when.include?(failure_reason.to_s) ||
       options_retry_when.include?('always')
+  end
+
+  def expanded_retry_when
+    options_retry_when.flat_map do |reason|
+      [reason, *Enums::Ci::CommitStatus.failure_reason_aliases[reason]]
+    end
   end
 
   def retry_on_exit_code?

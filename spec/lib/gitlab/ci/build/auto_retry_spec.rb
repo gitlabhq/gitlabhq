@@ -64,6 +64,41 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry, feature_category: :pipeline_composi
 
       specify { expect(subject).to eq(false) }
     end
+
+    context 'with legacy retry:when aliases' do
+      using RSpec::Parameterized::TableSyntax
+
+      before do
+        allow(build).to receive_messages(retries_count: 0, retryable?: true)
+        build.options[:retry] = { when: [retry_when], max: 2 }
+        build.failure_reason = failure_reason
+      end
+
+      subject { auto_retry.allowed? }
+
+      where(:retry_when, :failure_reason, :result) do
+        # each legacy alias matches every specific reason that replaced it
+        'stuck_or_timeout_failure' | :stuck_pending_with_matching_runners | true
+        'stuck_or_timeout_failure' | :stuck_pending_no_matching_runners   | true
+        'stuck_or_timeout_failure' | :no_updates_running                  | true
+        'stuck_or_timeout_failure' | :no_updates_canceling                | true
+        'job_execution_timeout'    | :server_timeout_running              | true
+        'job_execution_timeout'    | :server_timeout_canceling            | true
+        # legacy aliases still match their own historical value
+        'stuck_or_timeout_failure' | :stuck_or_timeout_failure            | true
+        'job_execution_timeout'    | :job_execution_timeout               | true
+        # aliases do not match reasons from the other bucket or unrelated ones
+        'stuck_or_timeout_failure' | :server_timeout_running              | false
+        'job_execution_timeout'    | :no_updates_running                  | false
+        'stuck_or_timeout_failure' | :script_failure                      | false
+        # a specific reason still matches only itself, not its siblings
+        'no_updates_running'       | :no_updates_canceling                | false
+      end
+
+      with_them do
+        it { is_expected.to eq(result) }
+      end
+    end
   end
 
   describe '#options_retry_max' do
