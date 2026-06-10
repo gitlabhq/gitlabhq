@@ -32,6 +32,8 @@ class MergeRequestPolicy < IssuablePolicy
 
   rule { hidden & ~admin }.policy do
     prevent :read_merge_request
+    prevent :update_merge_request
+    prevent :approve_merge_request
   end
 
   condition(:can_merge) { @subject.can_be_merged_by?(@user) }

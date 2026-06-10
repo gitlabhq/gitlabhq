@@ -140,6 +140,72 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
 
         middleware.call(env)
       end
+
+      context 'when Content-Type is blank but body is present' do
+        let(:content_type) { '' }
+        let(:body) { '{"key": "value"}' }
+
+        it 'validates the JSON body' do
+          expect(::Gitlab::Json::StreamValidator).to receive(:new).and_call_original
+          expect(app).to receive(:call).with(env)
+
+          result = middleware.call(env)
+          expect(result).to match_array([200, {}, ['OK']])
+        end
+
+        context 'when JSON exceeds depth limit' do
+          let(:options) { { default_limits: { max_depth: 2, mode: :enforced } } }
+          let(:body) { '{"a": {"b": {"c": "too deep"}}}' }
+
+          it 'rejects the request with 400' do
+            result = middleware.call(env)
+
+            expect(result[0]).to eq(400)
+            response_body = Gitlab::Json.parse(result[2].first)
+            expect(response_body['error']).to eq('Parameters nested too deeply')
+          end
+        end
+
+        context 'with an exponential branching payload' do
+          let(:options) { { default_limits: { max_depth: 32, mode: :enforced } } }
+          let(:body) do
+            # Builds a 4-ary tree that bypasses StreamValidator limits
+            node = '"x"'
+            10.times { node = "{\"a\":#{node},\"b\":#{node},\"c\":#{node},\"d\":#{node}}" }
+            node
+          end
+
+          it 'rejects the malicious payload with 400' do
+            result = middleware.call(env)
+
+            expect(result[0]).to eq(400)
+          end
+        end
+
+        context 'with invalid JSON' do
+          let(:body) { 'not valid json' }
+
+          it 'rejects with 400' do
+            result = middleware.call(env)
+
+            expect(result[0]).to eq(400)
+            response_body = Gitlab::Json.parse(result[2].first)
+            expect(response_body['error']).to eq('Invalid JSON format')
+          end
+        end
+      end
+
+      context 'when Content-Type is nil and body is empty' do
+        let(:content_type) { '' }
+        let(:body) { '' }
+
+        it 'passes through without validation' do
+          expect(app).to receive(:call).with(env)
+          expect(::Gitlab::Json::StreamValidator).not_to receive(:new)
+
+          middleware.call(env)
+        end
+      end
     end
 
     context 'with different JSON content types' do
@@ -225,6 +291,26 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
         expect(result[1]).to eq({ 'Content-Type' => 'application/json' })
         response_body = Gitlab::Json.parse(result[2].first)
         expect(response_body['error']).to eq('Invalid JSON format')
+      end
+    end
+
+    context 'when Content-Type is blank and path is not an API path' do
+      let(:content_type) { '' }
+      let(:body) { '{"key": "value"}' }
+      let(:env) do
+        {
+          'REQUEST_METHOD' => 'POST',
+          'CONTENT_TYPE' => content_type,
+          'PATH_INFO' => '/users/sign_in',
+          'rack.input' => StringIO.new(body)
+        }
+      end
+
+      it 'passes through without validation' do
+        expect(app).to receive(:call).with(env)
+        expect(::Gitlab::Json::StreamValidator).not_to receive(:new)
+
+        middleware.call(env)
       end
     end
 

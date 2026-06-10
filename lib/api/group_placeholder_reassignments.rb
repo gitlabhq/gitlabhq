@@ -56,7 +56,7 @@ module API
 
         ::Import::PlaceholderReassignmentsUploader.workhorse_authorize(
           has_length: false,
-          maximum_size: Gitlab::CurrentSettings.max_attachment_size.megabytes
+          maximum_size: ::Import::UserMapping::ReassignmentCsvValidator::MAX_CSV_SIZE
         )
       end
 
@@ -72,6 +72,8 @@ module API
       end
       route_setting :authorization, permissions: :create_placeholder_reassignment, boundary_type: :group
       post ':id/placeholder_reassignments' do
+        check_rate_limit!(:placeholder_reassignment, scope: current_user)
+
         require_gitlab_workhorse!
 
         unless csv_upload_params[:file].original_filename.ends_with?('.csv')

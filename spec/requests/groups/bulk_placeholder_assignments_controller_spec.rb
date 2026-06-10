@@ -114,6 +114,20 @@ RSpec.describe Groups::BulkPlaceholderAssignmentsController, feature_category: :
         end
       end
 
+      context 'when the user has exceeded the rate limit' do
+        before do
+          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+        end
+
+        it 'returns too_many_requests without invoking the reassignment service' do
+          expect(::Import::SourceUsers::BulkReassignFromCsvService).not_to receive(:new)
+
+          request
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+        end
+      end
+
       context 'and the file contents are invalid' do
         before do
           expect_next_instance_of(::Import::UserMapping::ReassignmentCsvValidator) do |service|

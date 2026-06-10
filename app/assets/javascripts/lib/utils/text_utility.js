@@ -465,12 +465,13 @@ export const markdownConfig = {
 };
 
 /**
- * Markdown configuration that does not allow images. Preferred
- * when using client-side/non-gfm markdown.
+ * Markdown configuration that does not allow images, the `style` or `class`
+ * attributes. Preferred when using client-side/non-gfm markdown.
  */
 export const strictMarkdownConfig = {
   ...markdownConfig,
   ALLOWED_TAGS: markdownConfig.ALLOWED_TAGS.filter((tag) => tag !== 'img'),
+  ALLOWED_ATTR: markdownConfig.ALLOWED_ATTR.filter((attr) => attr !== 'style' && attr !== 'class'),
 };
 
 /**
