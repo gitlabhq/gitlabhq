@@ -5,14 +5,16 @@ class Import::UrlController < ApplicationController
   urgency :low
 
   def new
-    unless can?(current_user, :import_projects, current_user.namespace)
-      return access_denied!(s_('ProjectImportByURL|You do not have permission to import projects.'))
+    if namespace_id.present?
+      namespace = Namespace.find_by_id(namespace_id)
+      @namespace = namespace if namespace && can?(current_user, :import_projects, namespace)
+
+      render_404 unless @namespace
+    else
+      unless can?(current_user, :import_projects, current_user.namespace)
+        access_denied!(s_('ProjectImportByURL|You do not have permission to import projects.'))
+      end
     end
-
-    return unless namespace_id.present?
-
-    namespace = Namespace.find_by_id(namespace_id)
-    @namespace = namespace if namespace && can?(current_user, :import_projects, namespace)
   end
 
   def validate
