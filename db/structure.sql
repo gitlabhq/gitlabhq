@@ -48964,6 +48964,8 @@ CREATE INDEX index_security_categories_on_namespace_id_where_not_deleted ON secu
 
 CREATE INDEX index_security_finding_enrichments_on_cve_enrichment_id_and_id ON security_finding_enrichments USING btree (cve_enrichment_id, id);
 
+CREATE INDEX index_security_findings_on_scan_id_and_severity_and_id ON ONLY security_findings USING btree (scan_id, severity, id);
+
 CREATE UNIQUE INDEX index_security_inventory_filters_on_project_id ON security_inventory_filters USING btree (project_id);
 
 CREATE INDEX index_security_inventory_filters_on_traversal_ids ON security_inventory_filters USING btree (traversal_ids);
