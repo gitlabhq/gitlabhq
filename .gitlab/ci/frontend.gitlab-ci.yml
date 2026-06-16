@@ -743,7 +743,10 @@ test-storybook:
     - yarn_install_script_storybook
     - yarn --cwd ./storybook playwright install --with-deps chromium
     - yarn run storybook:build  # Build a static Storybook so stories are pre-compiled (avoids dev-server on-demand compile timeouts)
-    - yarn --cwd ./storybook run serve &
+    # `kill $STORYBOOK_PID` only reaps the yarn wrapper, leaving its http-server child
+    # orphaned and still holding the job's stdout/stderr pipe; redirect output so the
+    # runner's Wait() gets EOF instead of failing "WaitDelay expired before I/O complete".
+    - yarn --cwd ./storybook run serve > /dev/null 2>&1 &
     - STORYBOOK_PID=$!
     - until curl -f http://localhost:6006 >/dev/null 2>&1; do sleep 1; done  # Wait for Storybook to start
     - yarn run storybook:dev:test
